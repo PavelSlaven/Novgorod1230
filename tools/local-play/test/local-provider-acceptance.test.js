@@ -5,8 +5,8 @@ import { join } from 'node:path';
 import test from 'node:test';
 
 import { acceptanceProviderFromEnv, phase10TerminalObservation,
-  acceptanceExitCode, appendRenderedUiEvidence, pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalGemmaBrowserAcceptance } from
-  '../local-gemma-acceptance.mjs';
+  acceptanceExitCode, appendRenderedUiEvidence, pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalProviderBrowserAcceptance } from
+  '../local-provider-acceptance.mjs';
 import { recordNarrationQuality } from '../gameplay-gap-campaign.mjs';
 
 test('degraded factual delivery remains terminal evidence but blocks narration quality once', () => {
@@ -82,19 +82,19 @@ test('browser acceptance records degraded delivery as a non-pass terminal report
     createCompletionObserver: async () => ({ async observe() {
       observations += 1; return { terminal: observations > 1 }; }, async close() {} }) };
   try {
-    const report = await runLocalGemmaBrowserAcceptance(common);
+    const report = await runLocalProviderBrowserAcceptance(common);
     assert.equal(report.terminal.terminal, true);
     assert.equal(report.status, 'quality_failed');
     assert.equal(report.narration_quality_pass, false);
     assert.equal(report.findings.length, 1);
     assert.equal(acceptanceExitCode(report), 1);
     assert.equal(acceptanceExitCode({ status: 'captured' }), 0);
-    await assert.rejects(runLocalGemmaBrowserAcceptance({ ...common, resume: true }),
+    await assert.rejects(runLocalProviderBrowserAcceptance({ ...common, resume: true }),
       /not a resumable continuation/u);
     const interrupted = JSON.parse(await readFile(join(directory, 'campaign.json'), 'utf8'));
     interrupted.status = 'interrupted'; delete interrupted.terminal;
     await writeFile(join(directory, 'campaign.json'), `${JSON.stringify(interrupted)}\n`);
-    const resumed = await runLocalGemmaBrowserAcceptance({ ...common, resume: true });
+    const resumed = await runLocalProviderBrowserAcceptance({ ...common, resume: true });
     assert.equal(resumed.status, 'quality_failed');
     assert.equal(resumed.resume_count, 1);
   } finally { await rm(directory, { recursive: true, force: true }); }
@@ -198,7 +198,7 @@ test('acceptance provider reads an optional key from a file, never the CLI', asy
     await writeFile(keyFile, 'test-secret\n');
     const provider = await acceptanceProviderFromEnv({
       RUS_ACCEPTANCE_LLM_BASE_URL: 'http://192.0.2.1:8000/v1',
-      RUS_ACCEPTANCE_LLM_MODEL: 'unseen-gemma',
+      RUS_ACCEPTANCE_LLM_MODEL: 'qwen3.8-27b-uncensored-w4a16-tp2',
       RUS_ACCEPTANCE_LLM_API_KEY_FILE: keyFile,
       RUS_ACCEPTANCE_LLM_BACKEND: 'unseen-engine',
       RUS_ACCEPTANCE_LLM_BACKEND_VERSION: 'v7',
@@ -207,22 +207,31 @@ test('acceptance provider reads an optional key from a file, never the CLI', asy
     });
     assert.deepEqual(provider, { mode: 'custom',
       compatibility: 'openai_compatible',
-      baseUrl: 'http://192.0.2.1:8000/v1', model: 'unseen-gemma',
+      baseUrl: 'http://192.0.2.1:8000/v1',
+      model: 'qwen3.8-27b-uncensored-w4a16-tp2',
       apiKey: 'test-secret', evidence: { backend: 'unseen-engine',
         backendVersion: 'v7', runtime: 'one slot, 32k context',
         hardware: 'unseen accelerator' } });
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test('acceptance provider keeps the managed default unless external selection is complete', async () => {
+test('acceptance provider has no managed fallback and requires exact Qwen metadata', async () => {
   assert.equal(await acceptanceProviderFromEnv({}), null);
   await assert.rejects(acceptanceProviderFromEnv({
     RUS_ACCEPTANCE_LLM_BASE_URL: 'http://192.0.2.1:8000/v1'
   }), /required together/u);
   await assert.rejects(acceptanceProviderFromEnv({
     RUS_ACCEPTANCE_LLM_BASE_URL: 'http://192.0.2.1:8000/v1',
-    RUS_ACCEPTANCE_LLM_MODEL: 'unseen-gemma'
+    RUS_ACCEPTANCE_LLM_MODEL: 'qwen3.8-27b-uncensored-w4a16-tp2'
   }), /backend version, runtime and hardware metadata/u);
+  await assert.rejects(acceptanceProviderFromEnv({
+    RUS_ACCEPTANCE_LLM_BASE_URL: 'http://192.0.2.1:8000/v1',
+    RUS_ACCEPTANCE_LLM_MODEL: 'retired-model',
+    RUS_ACCEPTANCE_LLM_BACKEND: 'vllm',
+    RUS_ACCEPTANCE_LLM_BACKEND_VERSION: '1',
+    RUS_ACCEPTANCE_LLM_RUNTIME_METADATA: 'runtime',
+    RUS_ACCEPTANCE_LLM_HARDWARE_METADATA: 'hardware'
+  }), /must be qwen3\.8-27b-uncensored-w4a16-tp2/u);
 });
 
 test('completion observer requires committed Phase 10 narration on actual DOM', () => {
@@ -317,7 +326,7 @@ test('browser runner reloads to a browser screen read before each new turn', asy
     return { async check() {}, async click() {}, count: async () => 0 };
   } };
   try {
-    const report = await runLocalGemmaBrowserAcceptance({ outputDirectory: directory,
+    const report = await runLocalProviderBrowserAcceptance({ outputDirectory: directory,
       focus: 'causal screen reads', turns: 2, provider, chromiumPath: 'chromium',
       headless: true, snapshot: () => ({ head: 'a'.repeat(40), dirty: false }),
       start: async () => ({ url: 'http://127.0.0.1:3000',
@@ -382,7 +391,7 @@ test('browser runner persists failed turn evidence before reporting failure', as
     evidence: { backend: 'test', backendVersion: '1', runtime: 'test',
       hardware: 'test' } };
   try {
-    await assert.rejects(runLocalGemmaBrowserAcceptance({
+    await assert.rejects(runLocalProviderBrowserAcceptance({
       outputDirectory: directory, focus: 'unseen failure', turns: 1,
       provider, chromiumPath: 'chromium', headless: true,
       snapshot: () => ({ head: 'a'.repeat(40), dirty: false }),
@@ -482,7 +491,7 @@ test('browser runner resumes the same party and rejects changed identity',
       const success = join(root, 'success');
       activeDirectory = success;
       await seed(success);
-      const report = await runLocalGemmaBrowserAcceptance({ ...common,
+      const report = await runLocalProviderBrowserAcceptance({ ...common,
         outputDirectory: success,
         snapshot: () => ({ head, dirty: false }) });
       assert.equal(report.campaign_id, 'campaign:existing');
@@ -497,7 +506,7 @@ test('browser runner resumes the same party and rejects changed identity',
       const changedHead = join(root, 'changed-head');
       await seed(changedHead);
       let started = false;
-      await assert.rejects(runLocalGemmaBrowserAcceptance({ ...common,
+      await assert.rejects(runLocalProviderBrowserAcceptance({ ...common,
         outputDirectory: changedHead,
         snapshot: () => ({ head: 'b'.repeat(40), dirty: false }),
         start: async () => { started = true; return start(); }
@@ -506,7 +515,7 @@ test('browser runner resumes the same party and rejects changed identity',
 
       const changedProvider = join(root, 'changed-provider');
       await seed(changedProvider);
-      await assert.rejects(runLocalGemmaBrowserAcceptance({ ...common,
+      await assert.rejects(runLocalProviderBrowserAcceptance({ ...common,
         outputDirectory: changedProvider,
         snapshot: () => ({ head, dirty: false }), provider: { ...provider,
           model: 'changed-model' }
@@ -559,7 +568,7 @@ test('resumed pre-click proposal waits for Continue screen read before submit', 
         trace_ref: 'trace:resume', campaign_id: 'campaign:resume', explorer_ref: 'explorer:resume',
         producer_ref: `production-runtime:${head}`, proposal: { raw_text: input.raw_text }, after_count: 0 }
     }, null, 2)}\n`);
-    const report = await runLocalGemmaBrowserAcceptance({ outputDirectory: directory,
+    const report = await runLocalProviderBrowserAcceptance({ outputDirectory: directory,
       focus: 'resume read', turns: 1, sequence: 1, resume: true, provider,
       chromiumPath: 'chromium', headless: true, snapshot: () => ({ head, dirty: false }),
       start: async () => ({ url: 'http://127.0.0.1:3000', managedRuntime: {
@@ -625,7 +634,7 @@ test('resumed browser request keeps its original read and rejects a late substit
         if (selector === '.error') return { count: async () => 0 };
         return { async check() {}, async click() {}, count: async () => 0 };
       } };
-    const result = await runLocalGemmaBrowserAcceptance({ outputDirectory: directory,
+    const result = await runLocalProviderBrowserAcceptance({ outputDirectory: directory,
       focus: 'request resume', turns: 1, sequence: 1, resume: true, provider,
       chromiumPath: 'chromium', headless: true, snapshot: () => ({ head, dirty: false }),
       start: async () => ({ url: 'http://127.0.0.1:3000', managedRuntime: {

@@ -11,8 +11,6 @@ import { loadActiveRuntimeCatalogPin } from
 import {
   SPATIAL_V3_PRODUCTION_RELEASE
 } from '../../apps/game-server/src/composition/production-spatial-v3.js';
-import { createLlmSettingsFileStore } from
-  '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
 import {
   ensureLocalPostgres,
   localPlayError
@@ -67,8 +65,7 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
       ? { RUS_WORLD_KNOWLEDGE_MODEL_PATH: managedRuntime.giga.modelPath } : {}),
     ...(managedRuntime.giga.hfHome ? { HF_HOME: managedRuntime.giga.hfHome } : {}),
     HF_HUB_OFFLINE: '1',
-    TRANSFORMERS_OFFLINE: '1',
-    RUS_LOCAL_LLM_RUNTIME_STATUS: JSON.stringify(runtimeStatus(managedRuntime))
+    TRANSFORMERS_OFFLINE: '1'
   };
 }
 
@@ -105,8 +102,6 @@ export async function startLocalPlay({
   loadPin = loadActiveRuntimeCatalogPin,
   createPool = (options) => new pg.Pool(options),
   provisionRuntime = provisionManagedRuntime,
-  startManagedLlm = true,
-  loadLlmSettings = loadSavedLlmSettings,
   spawnServer = defaultSpawnServer,
   fetchImpl = fetch,
   sleep = delay,
@@ -130,10 +125,8 @@ export async function startLocalPlay({
   if (!(await isPortAvailable(port))) {
     throw localPlayError('LOCAL_PLAY_PORT_UNAVAILABLE', `Port ${port} is already in use.`);
   }
-  const savedLlmSettings = await loadLlmSettings(env);
   const managedRuntime = await provisionRuntime({ repositoryRoot: ROOT,
-    env, fetchImpl, log, startLlm: startManagedLlm
-      && savedLlmSettings?.settings?.mode !== 'custom' });
+    env, fetchImpl, log });
   let postgres;
   try { postgres = await ensurePostgres({ settings: localPostgresSettings }); }
   catch (error) { await managedRuntime.close(); throw error; }
@@ -162,18 +155,11 @@ export async function startLocalPlay({
   const baseUrl = `http://127.0.0.1:${port}`;
   try {
     await assertReadiness({ baseUrl, fetchImpl, sleep, child });
-    const settings = await readSuccess(fetchImpl,
-      `${baseUrl}/api/v1/llm-settings`);
-    if (managedRuntime.llm && settings.mode === 'local') {
-      await applyManagedLocalProvider(fetchImpl, baseUrl);
-    }
+    await readSuccess(fetchImpl, `${baseUrl}/api/v1/llm-settings`);
   } catch (error) {
     child.kill?.('SIGTERM');
     await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     throw error;
-  }
-  if (!managedRuntime.hardware.supported) {
-    log(`Локальная Gemma недоступна: ${managedRuntime.hardware.reasons.join(' ')} Открой настройки LLM и выбери внешний OpenAI-compatible provider.`);
   }
   log(`Local game ready: ${baseUrl}`);
   let closed = false;
@@ -243,31 +229,8 @@ async function readSuccess(fetchImpl, url) {
   return payload.data;
 }
 
-async function applyManagedLocalProvider(fetchImpl, baseUrl) {
-  const response = await fetchImpl(`${baseUrl}/api/v1/llm-settings`, {
-    method: 'PUT', headers: { 'content-type': 'application/json',
-      accept: 'application/json' }, body: JSON.stringify({ mode: 'local' })
-  });
-  const payload = await response.json().catch(() => null);
-  if (!response.ok || payload?.ok !== true) throw localPlayError(
-    'LOCAL_PLAY_PROVIDER_UNAVAILABLE',
-    `Локальная Gemma не прошла readiness: ${payload?.error?.code ?? `HTTP ${response.status}`}.`);
-}
-
-function runtimeStatus(runtime) {
-  return runtime.llm ? { ready: true, ...runtime.llm.identity }
-    : { ready: false, reasons: runtime.hardware.reasons,
-        hardware: runtime.hardware.facts };
-}
-
 function defaultSpawnServer({ env }) {
   return spawn(process.execPath, ['apps/game-server/src/server.js'], { cwd: ROOT, env, stdio: 'inherit' });
-}
-
-function loadSavedLlmSettings(env) {
-  return createLlmSettingsFileStore({
-    ...(env.RUS_LLM_SETTINGS_PATH ? { filePath: env.RUS_LLM_SETTINGS_PATH } : {})
-  }).load();
 }
 
 function delay(milliseconds) { return new Promise((resolve) => setTimeout(resolve, milliseconds)); }

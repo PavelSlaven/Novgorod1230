@@ -45,8 +45,8 @@ Browser-клиент, который получает только versioned pub
   факт commit без ETA/percent либо private role/provider/trace. Polling optional:
   ошибка или null не прерывает authoritative turn/recovery, после их завершения
   polling останавливается; reload продолжает тот же сохранённый request ID.
-- компактным LLM settings overlay для default, локального Gemma preset и
-  произвольного OpenAI-compatible endpoint: browser вызывает только game-server
+- компактным LLM settings overlay для unconfigured/default Qwen identity и
+  пользовательского OpenAI-compatible vLLM endpoint: browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в
   browser storage, logs или telemetry. Server возвращает сохранённые non-secret
   поля после reload; gameplay provider и transport UI не выбирает сам.

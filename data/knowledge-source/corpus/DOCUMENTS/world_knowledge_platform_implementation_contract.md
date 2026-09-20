@@ -561,28 +561,24 @@ Narrator не может:
 Текущий пользовательский выбор:
 
 ```text
-Managed local Gemma (default)
-Произвольный OpenAI-compatible endpoint
+Unconfigured (до явной настройки)
+OpenAI-compatible vLLM endpoint
 ```
 
 Semantics:
 
 ```text
-Local/default:
-  installer → pinned Gemma Q4_K_P + pinned CUDA llama.cpp
-  все production gameplay, narrator, planner, auditor и repair roles
-  → managed local OpenAI-compatible chat/completions
-
 Custom:
-  те же roles → один явно выбранный baseUrl/model/optional key
+  все production gameplay, narrator, planner, auditor и repair roles
+  → один явно выбранный baseUrl/exact default model/optional key
 ```
 
-Local preset — `HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced` exact
-revision через pinned `llama.cpp`. `play:local` проверяет hardware/disk,
-resumable скачивает и сверяет checksum, запускает и останавливает owned
-inference. После provisioning runtime offline. Custom endpoint обязан
-реализовать `chat/completions`. Readiness проверяется до партии/Apply.
-Local/custom не допускает fallback на DeepSeek, другую model или provider:
+Default gameplay model — exact `qwen3.8-27b-uncensored-w4a16-tp2` через
+OpenAI-compatible vLLM. Endpoint и optional key задаёт пользователь; launcher
+не provisions, не скачивает и не запускает gameplay model. До настройки UI
+остаётся честно unconfigured. Custom endpoint обязан реализовать
+`chat/completions`; readiness проверяется при Apply. Режим не допускает
+fallback на DeepSeek, managed model или другой provider:
 connection/auth/model/timeout/invalid response возвращают typed failure,
 незавершённый ход не фиксируется.
 
@@ -3780,9 +3776,8 @@ LLM fixture, canned response и network interception запрещены. Private
 
 `play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL
 и pinned Giga, запускает production server и owned processes, а runner
-гарантированно закрывает их. По умолчанию он также provisions local Gemma.
-Для явно назначенного владельцем acceptance endpoint/model допустим внешний
-OpenAI-compatible provider; runner не запускает второй gameplay/generative
+гарантированно закрывает их. Gameplay provider — явно настроенный внешний
+OpenAI-compatible vLLM endpoint; runner не запускает gameplay/generative
 inference process на текущем ПК. Development explorer и все production roles используют один явно
 зафиксированный endpoint/model без fallback. Отдельный post-turn NLI-аудитор
 может быть размещён на той же GPU0 или CPU только вне runtime и после trace;
@@ -3791,8 +3786,7 @@ evidence фиксирует model/revision, backend, размещение, laten
 границу timeout 120 с; поздний вызов ограничивается остатком общего safety
 deadline владельца хода.
 
-Evidence фиксирует exact HEAD, default Gemma model и revision/checksum либо
-точный selected served model identity для внешнего endpoint, inference
+Evidence фиксирует exact HEAD, exact selected served model identity, inference
 version/backend, Giga
 revision, provider config identity, hardware/runtime metadata,
 campaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет

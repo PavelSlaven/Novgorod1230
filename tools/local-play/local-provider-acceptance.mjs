@@ -15,7 +15,7 @@ import { createFirstPlayablePartyRepository } from
   '../../apps/game-server/src/infrastructure/postgres/first-playable/repository.js';
 import { createPartyLog } from
   '../../apps/game-server/src/infrastructure/filesystem/party-log.js';
-import { LOCAL_LLM_PRESET } from
+import { DEFAULT_GAMEPLAY_MODEL } from
   '../../apps/game-server/src/runtime/llm-settings.js';
 import { validateFactualTurnDeliveryScreen } from '@rus/presentation';
 import { auditEvent, createGameplayGapExplorer, gitSnapshot, recordNarrationQuality } from
@@ -29,8 +29,8 @@ const CHROMIUM = [process.env.RUS_CHROMIUM_PATH,
   'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe']
   .find((candidate) => candidate && existsSync(candidate));
 
-export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
-  focus, turns = 8, campaignId = `local-gemma-${randomUUID()}`,
+export async function runLocalProviderBrowserAcceptance({ outputDirectory,
+  focus, turns = 8, campaignId = `local-provider-${randomUUID()}`,
   scenarioId = 'lower_dvina_trace_v1',
   sequence = 1, afterP0P1FixRef = null, start = startIsolatedLocalPlay,
   launch = (options) => chromium.launch(options), snapshot = gitSnapshot,
@@ -38,7 +38,8 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
   resume = false, signal = null,
   createCompletionObserver = defaultCompletionObserver,
   createExplorer = createGameplayGapExplorer } = {}) {
-  if (!outputDirectory || !focus || !/^[a-z0-9_]+$/u.test(scenarioId)
+  if (!outputDirectory || !focus || provider == null
+      || !/^[a-z0-9_]+$/u.test(scenarioId)
       || (turns !== null && (!Number.isInteger(turns) || turns < 1))
       || typeof resume !== 'boolean'
       || !chromiumPath) throw new TypeError(
@@ -63,7 +64,7 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
   } else {
     report = { schema: 'world_knowledge_gameplay_campaign_v1',
       campaign_id: campaignId,
-      explorer_ref: `local-gemma-explorer:${campaignId}`,
+      explorer_ref: `local-provider-explorer:${campaignId}`,
       scenario_id: scenarioId, mode: 'acceptance_candidate',
       independent_unseen: true, sequence, focus,
       after_p0_p1_fix_ref: afterP0P1FixRef ?? before.head,
@@ -81,37 +82,28 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     settingsDirectory = join(directory, 'runtime');
     await mkdir(settingsDirectory, { recursive: true });
     const settingsPath = join(settingsDirectory, 'settings.json');
-    if (provider != null) {
-      await writeFile(settingsPath, `${JSON.stringify({ version: 2,
-        settings: { mode: provider.mode,
-          compatibility: provider.compatibility,
-          base_url: provider.baseUrl, model: provider.model,
-          api_key: provider.apiKey }, ordinary_materialization_identity: null,
-        qualification_version: null }, null, 2)}\n`);
-    }
+    await writeFile(settingsPath, `${JSON.stringify({ version: 2,
+      settings: { mode: provider.mode,
+        compatibility: provider.compatibility,
+        base_url: provider.baseUrl, model: provider.model,
+        api_key: provider.apiKey }, ordinary_materialization_identity: null,
+      qualification_version: null }, null, 2)}\n`);
     local = await start({ env: { ...process.env, RUS_DEVELOPER_MODE: 'true',
       LOG_DIRECTORY: logDirectory,
       ...(settingsDirectory ? { RUS_LLM_SETTINGS_PATH:
         settingsPath } : {}) },
-      startManagedLlm: provider == null,
       acceptanceDataRoot: join(directory, 'postgres') });
-    if (!provider && !local.managedRuntime?.llm) throw new Error(
-      'Final acceptance requires the managed local Gemma runtime.');
-    const selectedProvider = provider ?? { mode: 'local',
-      compatibility: 'openai_compatible', baseUrl: LOCAL_LLM_PRESET.base_url,
-      model: LOCAL_LLM_PRESET.model, apiKey: null };
-    const identity = provider ? { mode: 'custom',
+    const selectedProvider = provider;
+    const identity = { mode: 'custom',
       provider: 'openai_compatible', base_url: provider.baseUrl,
       model: provider.model, backend: provider.evidence.backend,
       backend_version: provider.evidence.backendVersion,
       runtime_metadata: provider.evidence.runtime,
-      hardware_metadata: provider.evidence.hardware }
-      : local.managedRuntime.llm.identity;
+      hardware_metadata: provider.evidence.hardware };
     const execution = { interface: 'chromium_playwright_dom_only',
       gameplay_transport: 'browser_ui_only',
       browser: { executable: chromiumPath, headless },
       llm_provider: identity,
-      ...(!provider ? { local_runtime: identity } : {}),
       giga: local.managedRuntime.giga.identity,
       postgres: { version: local.postgres.version } };
     if (resume && JSON.stringify(report.execution) !== JSON.stringify(execution)) {
@@ -591,6 +583,8 @@ export async function acceptanceProviderFromEnv(env = process.env) {
     .some(Boolean)) return null;
   if (!baseUrl || !model) throw new Error(
     'RUS_ACCEPTANCE_LLM_BASE_URL and RUS_ACCEPTANCE_LLM_MODEL are required together.');
+  if (model !== DEFAULT_GAMEPLAY_MODEL) throw new Error(
+    `RUS_ACCEPTANCE_LLM_MODEL must be ${DEFAULT_GAMEPLAY_MODEL}.`);
   if (!backend || !backendVersion || !runtime || !hardware) throw new Error(
     'External acceptance requires backend version, runtime and hardware metadata.');
   const apiKey = keyFile ? (await readFile(keyFile, 'utf8')).trim() : null;
@@ -623,7 +617,7 @@ if (process.argv[1]
   const controller = new AbortController();
   for (const event of ['SIGINT', 'SIGTERM']) process.once(event, () =>
     controller.abort(event));
-  const report = await runLocalGemmaBrowserAcceptance({ outputDirectory,
+  const report = await runLocalProviderBrowserAcceptance({ outputDirectory,
     focus, turns: count === 'completion' ? null : Number(count),
     scenarioId: process.env.RUS_ACCEPTANCE_SCENARIO_ID
       || 'lower_dvina_trace_v1',

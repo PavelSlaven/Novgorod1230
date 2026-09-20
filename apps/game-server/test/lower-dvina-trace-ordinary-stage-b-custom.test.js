@@ -150,7 +150,7 @@ for (const semanticType of ['cordage', null, undefined]) test(`custom Stage B qu
   }
   await owner.probe({ mode: 'custom', base_url: candidate.baseUrl,
     model: candidate.model, api_key: null });
-  assert.equal(owner.read().mode, 'local');
+  assert.equal(owner.read().mode, 'unconfigured');
   assert.equal(calls.length, contract.cases.length + 5);
   assert.equal(maxActiveCalls, 1);
   assert.ok(calls.every((call) => call.overrides.requestTimeoutMs === 120000));

@@ -6,10 +6,8 @@ import { assertReadiness, buildServerEnv, startLocalPlay,
   localGitProvenance, validateLocalPlay } from '../local-play.js';
 
 const digest = 'a'.repeat(64);
-const managed = { hardware: { supported: true, reasons: [], facts: {} },
-  giga: { python: 'managed-python', hfHome: 'managed-hf',
-    modelPath: 'managed-giga-model' },
-  llm: { identity: { model: 'gemma' } }, close: async () => {} };
+const managed = { giga: { python: 'managed-python', hfHome: 'managed-hf',
+  modelPath: 'managed-giga-model' }, close: async () => {} };
 const git = { head: 'b'.repeat(40), branch: 'codex/test' };
 
 test('buildServerEnv fixes production and managed-runtime settings', () => {
@@ -24,7 +22,7 @@ test('buildServerEnv fixes production and managed-runtime settings', () => {
   assert.equal(env.RUS_WORLD_KNOWLEDGE_PYTHON, 'managed-python');
   assert.equal(env.RUS_WORLD_KNOWLEDGE_MODEL_PATH, 'managed-giga-model');
   assert.equal(env.HF_HUB_OFFLINE, '1');
-  assert.equal(JSON.parse(env.RUS_LOCAL_LLM_RUNTIME_STATUS).ready, true);
+  assert.equal(env.RUS_LOCAL_LLM_RUNTIME_STATUS, undefined);
   assert.equal(env.RUS_GIT_HEAD, git.head);
   assert.equal(env.RUS_GIT_BRANCH, git.branch);
 });
@@ -114,65 +112,67 @@ test('Git provenance failure stops launcher before provisioning and spawn', asyn
   assert.equal(spawned, false);
 });
 
-test('local play provisions, applies managed Gemma, and owns shutdown', async () => {
+test('local play provisions Giga only and owns shutdown', async () => {
   const child = new EventEmitter(); child.exitCode = null;
   child.kill = () => { child.exitCode = 0; queueMicrotask(() => child.emit('exit', 0)); };
   const closed = [];
-  let applied = false;
   const runtime = { ...managed, close: async () => closed.push('runtime') };
   const postgres = { worldUrl: 'world', partyUrl: 'party', state: 'existing',
     close: async () => closed.push('postgres') };
   const result = await startLocalPlay({ env: {},
     readGit: async () => git,
-    loadLlmSettings: async () => null,
-    provisionRuntime: async ({ startLlm }) => {
-      assert.equal(startLlm, true); return runtime;
+    provisionRuntime: async (options) => {
+      assert.equal('startLlm' in options, false); return runtime;
     }, ensurePostgres: async () => postgres,
     createPool: () => ({ end: async () => {} }),
     loadPin: async () => ({ compatible_world_pin_manifest_digest: digest }),
     spawnServer: () => child, isPortAvailable: async () => true,
     fetchImpl: async (url, options = {}) => {
-      if (options.method === 'PUT') { applied = true; return response({ settings: {} }); }
       return response(url.endsWith('/health') ? health()
-        : url.endsWith('/llm-settings') ? { mode: 'local' } : {
+        : url.endsWith('/llm-settings') ? { mode: 'unconfigured' } : {
         scenarios: [{ scenario_id: 'lower_dvina_trace_v1', available: true }]
       });
     }, log: () => {} });
-  assert.equal(applied, true);
   await result.close();
   assert.deepEqual(closed.sort(), ['postgres', 'runtime']);
 });
 
-test('launcher always makes managed Gemma available on supported hardware', async () => {
-  const stop = Object.assign(new Error('stop'), { code: 'STOP' });
-  await assert.rejects(startLocalPlay({ env: {},
-    readGit: async () => git,
-    loadLlmSettings: async () => null,
-    isPortAvailable: async () => true,
-    provisionRuntime: async ({ startLlm }) => {
-      assert.equal(startLlm, true); throw stop;
-  } }), stop);
-});
-
-test('an explicit external acceptance provider skips the owned Gemma process', async () => {
-  const stop = Object.assign(new Error('stop'), { code: 'STOP' });
-  await assert.rejects(startLocalPlay({ env: {}, startManagedLlm: false,
-    readGit: async () => git,
-    loadLlmSettings: async () => null,
-    isPortAvailable: async () => true,
-    provisionRuntime: async ({ startLlm }) => {
-      assert.equal(startLlm, false); throw stop;
-  } }), stop);
-});
-
-test('saved custom provider skips managed Gemma before provisioning', async () => {
+test('missing provider settings never request gameplay-model provisioning', async () => {
   const stop = Object.assign(new Error('stop'), { code: 'STOP' });
   await assert.rejects(startLocalPlay({ env: {},
     readGit: async () => git,
     isPortAvailable: async () => true,
-    loadLlmSettings: async () => ({ settings: { mode: 'custom' } }),
-    provisionRuntime: async ({ startLlm }) => {
-      assert.equal(startLlm, false); throw stop;
+    provisionRuntime: async (options) => {
+      assert.equal('startLlm' in options, false); throw stop;
+  } }), stop);
+});
+
+test('launcher has no managed gameplay-model switch', async () => {
+  const stop = Object.assign(new Error('stop'), { code: 'STOP' });
+  await assert.rejects(startLocalPlay({ env: {},
+    readGit: async () => git,
+    isPortAvailable: async () => true,
+    provisionRuntime: async (options) => {
+      assert.equal('startLlm' in options, false); throw stop;
+  } }), stop);
+});
+
+test('saved exact custom provider starts without managed gameplay artifacts', async () => {
+  const stop = Object.assign(new Error('stop'), { code: 'STOP' });
+  await assert.rejects(startLocalPlay({ env: {},
+    readGit: async () => git,
+    isPortAvailable: async () => true,
+    provisionRuntime: async (options) => {
+      assert.equal('startLlm' in options, false); throw stop;
+    } }), stop);
+});
+
+test('legacy local provider settings never restore managed gameplay artifacts', async () => {
+  const stop = Object.assign(new Error('stop'), { code: 'STOP' });
+  await assert.rejects(startLocalPlay({ env: {}, readGit: async () => git,
+    isPortAvailable: async () => true,
+    provisionRuntime: async (options) => {
+      assert.equal('startLlm' in options, false); throw stop;
     } }), stop);
 });
 

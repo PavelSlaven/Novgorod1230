@@ -2,13 +2,11 @@ import { serverError } from '../errors.js';
 import { readFile } from 'node:fs/promises';
 import { createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
 const QUALIFICATION_VERSION = 71;
-export const LOCAL_LLM_PRESET = Object.freeze({
-  base_url: 'http://127.0.0.1:8000/v1',
-  model: 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced'
-});
+export const DEFAULT_GAMEPLAY_MODEL =
+  'qwen3.8-27b-uncensored-w4a16-tp2';
 export function createLlmSettingsOwner({ qualifyCustom = null,
   probeCustom = null, now = Date.now, initialRecord = null,
-  persistSettings = null, runtimeStatus = null } = {}) {
+  persistSettings = null } = {}) {
   const restored = initialRecord == null
     ? { active: defaultSnapshot(), identity: null }
     : normalizeStoredRecord(initialRecord);
@@ -18,7 +16,7 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
   let generation = 0;
   let commitQueue = Promise.resolve();
   return Object.freeze({
-    read() { return publicSnapshot(active, runtimeStatus); },
+    read() { return publicSnapshot(active); },
     providerSnapshot() { return active; },
     ordinaryMaterializationIdentity() { return qualifiedO1Identity; },
     requiresRequalification() { return requalificationRequired; },
@@ -27,7 +25,7 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
       const applyingGeneration = ++generation;
       return commit(async () => {
         if (applyingGeneration !== generation) stale();
-        const qualified = next.mode !== 'default'
+        const qualified = next.mode === 'custom'
           ? await qualify(next, qualifyCustom) : null;
         if (applyingGeneration !== generation) stale();
         await persistSettings?.(storedRecord(next, qualified));
@@ -35,7 +33,7 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
         active = next;
         qualifiedO1Identity = qualified;
         requalificationRequired = false;
-        return publicSnapshot(active, runtimeStatus);
+        return publicSnapshot(active);
       });
     },
     async probe(input) {
@@ -69,8 +67,8 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
       'LLM settings apply was superseded.', { status: 409 });
   }
 }
-export async function applyInitialLocalSettings(owner, storedRecord) {
-  if (storedRecord == null) await owner.apply({ mode: 'local' });
+export async function applyInitialLlmSettings(owner, storedRecord) {
+  if (storedRecord?.settings?.mode === 'local') await owner.reset();
   else if (owner.requiresRequalification()) await owner.apply(storedRecord.settings);
 }
 export function createProductionLlmQualifier({ qualifyOrdinary, roleRunner } = {}) {
@@ -186,38 +184,39 @@ function normalizeSettings(input, active) {
     assertFields(input, ['mode']);
     return defaultSnapshot();
   }
-  if (input.mode === 'local' || input.mode === 'custom') {
+  if (input.mode === 'local') {
+    invalid('LLM_SETTINGS_LOCAL_PROVIDER_RETIRED',
+      'Managed local Gemma is retired. Configure the Qwen vLLM endpoint.');
+  }
+  if (input.mode === 'custom') {
     return normalizeProvider(input, active);
   }
-  invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be default, local, or custom.');
+  invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be default or custom.');
 }
 function normalizeProvider(input, active = null) {
   if (!plain(input)) invalid('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.');
   assertFields(input, ['mode', 'compatibility', 'base_url', 'model', 'api_key']);
-  if (input.mode !== 'local' && input.mode !== 'custom') {
-    invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be local or custom.');
+  if (input.mode !== 'custom') {
+    invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be custom.');
   }
   if (input.compatibility != null && input.compatibility !== 'openai_compatible') invalid('LLM_SETTINGS_COMPATIBILITY_INVALID', 'compatibility must be openai_compatible.');
-  const baseUrl = normalizeUrl(input.base_url
-    || (input.mode === 'local' ? LOCAL_LLM_PRESET.base_url : null));
-  const model = requiredText(input.model
-    || (input.mode === 'local' ? LOCAL_LLM_PRESET.model : null),
+  const baseUrl = normalizeUrl(input.base_url);
+  const model = requiredText(input.model,
   'LLM_SETTINGS_MODEL_REQUIRED', 'model is required.');
   const apiKey = optionalText(input.api_key, 'LLM_SETTINGS_API_KEY_INVALID', 'api_key must be a string.')
     ?? (active?.mode !== 'default' && active?.baseUrl === baseUrl ? active.apiKey : null);
   return Object.freeze({ mode: input.mode, compatibility: 'openai_compatible',
     baseUrl, model, apiKey });
 }
-function defaultSnapshot() { return Object.freeze({ mode: 'local',
-  compatibility: 'openai_compatible', baseUrl: LOCAL_LLM_PRESET.base_url,
-  model: LOCAL_LLM_PRESET.model, apiKey: null }); }
-function publicSnapshot(snapshot, runtimeStatus) {
+function defaultSnapshot() { return Object.freeze({ mode: 'unconfigured',
+  compatibility: 'openai_compatible', baseUrl: null,
+  model: DEFAULT_GAMEPLAY_MODEL, apiKey: null }); }
+function publicSnapshot(snapshot) {
   return Object.freeze({
     mode: snapshot.mode, compatibility: snapshot.compatibility,
     base_url: snapshot.baseUrl, model: snapshot.model,
     api_key_present: snapshot.apiKey != null,
-    local_preset: LOCAL_LLM_PRESET,
-    ...(runtimeStatus ? { local_runtime: runtimeStatus } : {})
+    default_model: DEFAULT_GAMEPLAY_MODEL
   });
 }
 function storedRecord(snapshot, identity) {
@@ -233,6 +232,10 @@ function normalizeStoredRecord(record) {
   if (!plain(record) || record.version !== 2 || !plain(record.settings)) {
     throw serverError('LLM_SETTINGS_FILE_INVALID',
       'Saved LLM settings are invalid.', { status: 500, public_exposure: 'internal' });
+  }
+  if (record.settings.mode === 'local') {
+    return { active: defaultSnapshot(), identity: null,
+      requalificationRequired: false };
   }
   const active = normalizeSettings(record.settings, null);
   const legacyDefault = record.settings.mode === 'default';

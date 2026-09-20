@@ -20,47 +20,47 @@
         "adult"
       ],
       "season_applicability": [
-        "spring_rasputitsa",
+        "spring",
         "summer",
         "autumn",
         "winter"
       ],
-      "required_slots": [
-        "base_garment",
-        "outer_garment"
+      "required_equipment_slot_category_refs": [
+        "garment.equipment_slot.base_garment",
+        "garment.equipment_slot.outer_garment"
       ],
       "property_profile_ref": "property_context_household_personal_v1",
       "property_rule_ref": "rule_property_context_household_personal_v1",
       "entries": [
         {
-          "equipment_slot": "base_garment",
+          "equipment_slot_category_ref": "garment.equipment_slot.base_garment",
           "item_template_ref": "item_tpl_nov_linen_shirt_v1",
           "source_profile_ref": "profile_household_personal_v3",
           "applicable_seasons": [
-            "spring_rasputitsa",
+            "spring",
             "summer",
             "autumn",
             "winter"
           ],
           "required_seasons": [
-            "spring_rasputitsa",
+            "spring",
             "summer",
             "autumn",
             "winter"
           ]
         },
         {
-          "equipment_slot": "outer_garment",
+          "equipment_slot_category_ref": "garment.equipment_slot.outer_garment",
           "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
           "source_profile_ref": "profile_household_personal_v3",
           "applicable_seasons": [
-            "spring_rasputitsa",
+            "spring",
             "summer",
             "autumn",
             "winter"
           ],
           "required_seasons": [
-            "spring_rasputitsa",
+            "spring",
             "autumn",
             "winter"
           ]

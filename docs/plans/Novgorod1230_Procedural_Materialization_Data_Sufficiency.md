@@ -36,9 +36,13 @@ authoring candidate and a separate independent-review request. It does not
 import or activate data and creates no item/container instance.
 
 - social/basic clothing is role/status/body/season scoped, not NPC- or
-  display-name scoped; current exact Stage 16 slots admit only linen
-  `base_garment` and wool `outer_garment` for the bounded adult-male commoner
-  profile;
+  display-name scoped. It requests exact
+  `garment.equipment_slot.base_garment` and
+  `garment.equipment_slot.outer_garment` bindings for linen shirt and wool
+  outerwear, respectively; current-v6 appearance carry-forward is
+  authoring-approved but contains no equipment-slot binding table, so the
+  clothing profile remains `EQUIPMENT_SLOT_BINDINGS_PENDING_APPROVAL` with no
+  normalized Stage 16 slot;
 - V5 footwear exists and is approved by the immutable all-120 promotion, but
   current Stage 16 has no active footwear slot, so footwear remains the typed
   `FOOTWEAR_SLOT_NOT_ACTIVE` gap instead of receiving an invented slot;
@@ -60,6 +64,9 @@ pending or source-mismatched role/occupation rows fail closed. Raw V5 rows stay
 `draft` in their immutable source bundle and are usable here only through the
 exact digest-bound `approve_all_120` promotion; candidate entries expose this
 as `approved_by_exact_promotion`, never as a rewritten source status.
+Season applicability is pinned to the approved Temporal v4 weather/calendar
+record and uses only `spring`, `summer`, `autumn`, `winter`; scenario schedule
+labels such as `spring_rasputitsa` do not become season vocabulary.
 
 ## Immutable v6 authoring overlay
 

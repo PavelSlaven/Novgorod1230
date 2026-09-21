@@ -650,4 +650,10 @@ test('v2 compiled catalog exposes gated allocation policy and rejects fake 22',
     assert.throws(() => loadApprovedProceduralCompiledCatalog({
       verifiedCatalog: fake, pin }),
     { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
+    const payloadTamper = structuredClone(catalog);
+    payloadTamper.records_by_table.procedural_scene_compiled_records[21]
+      .payload.policy.applicability.role_ref = 'nov_role_boatman';
+    assert.throws(() => loadApprovedProceduralCompiledCatalog({
+      verifiedCatalog: payloadTamper, pin }),
+    { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
   });

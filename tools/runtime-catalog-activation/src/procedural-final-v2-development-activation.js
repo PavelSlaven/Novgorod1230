@@ -9,14 +9,20 @@ import { RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST } from
 const V1 = Object.freeze({
   revision: 'procedural_scene_final_candidate_v1_001',
   catalog: '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c',
-  approval: '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c'
+  approval: '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c',
+  event: 'runtime_catalog_activation_94447901cebfed28716db756f089d0e4',
+  importAudit: 'd5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117',
+  activationAttestation:
+    'c81c4965fea835ed8f5769a0cb21fec3b4be50cbb9a87735808bf4020487f97a'
 });
 const V2 = Object.freeze({
   revision: 'procedural_scene_final_candidate_v2_001',
   catalog: '6fcf5c50d01bd56605a037de3d79cd1aa5e56a1c520db70bd0ab5b6ade6b1361',
   candidate: '65d973f8f06ab78a38b5bda7b24cf8661da1b8b9a581742c224cfa8b1c39bdc6',
   importApproval: '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772',
-  allocationApproval: '692960ad7561b60a0793f1f3fb097e757f8975aa91ec42251296edc6213b552a'
+  allocationApproval: '692960ad7561b60a0793f1f3fb097e757f8975aa91ec42251296edc6213b552a',
+  importId: 'procedural_final_v2_import_2917b993a9e9c63e1989725cee35e63b',
+  importAudit: '6ad18c6f40185fa540bf7e3ec3bbb5d5b96e95c370b5e70c657a0db73c29f3b2'
 });
 const USER_AUTHORIZATION = 'user_authorization_current_task';
 
@@ -66,8 +72,11 @@ export async function buildProceduralFinalV2DevelopmentActivation({ worldPool,
       WHERE catalog_scope='item_container_materialization_v2'
       ORDER BY event_sequence DESC LIMIT 1`
   )).rows[0];
-  if (predecessor?.catalog_revision_id !== V1.revision
-      || predecessor.catalog_digest !== V1.catalog) fail(
+  if (predecessor?.event_id !== V1.event
+      || predecessor.catalog_revision_id !== V1.revision
+      || predecessor.catalog_digest !== V1.catalog
+      || predecessor.import_audit_digest !== V1.importAudit
+      || predecessor.attestation_digest !== V1.activationAttestation) fail(
     'PROCEDURAL_FINAL_V2_PREDECESSOR_INVALID');
   const request = buildActivationRequest({ fields: {
     parent_revision_id: ledger.root.parent_revision_id,
@@ -142,7 +151,8 @@ function assertV2Inputs({ v1Pack, v2Pack, v2ApprovalAttestation, ledger,
       || ledger?.root?.target_revision_id !== V2.revision
       || ledger.root.target_catalog_digest !== V2.catalog
       || ledger.root.approval_attestation_digest !== V2.importApproval
-      || ledger.root.import_audit_digest == null) {
+      || ledger.root.import_id !== V2.importId
+      || ledger.root.import_audit_digest !== V2.importAudit) {
     fail('PROCEDURAL_FINAL_V2_DEVELOPMENT_ACTIVATION_INPUT_INVALID');
   }
 }

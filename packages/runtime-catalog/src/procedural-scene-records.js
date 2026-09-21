@@ -28,7 +28,8 @@ const V1_FINAL_COMPILED_RECORDS = Object.freeze([
 const V2_POLICY_RECORD = Object.freeze([
   'policy:functional-actor-allocation-v1', 'mapping',
   '206bfd1717325dad781cb9ff429f2bae09d39fb6fee63f3029da310ce864a00a',
-  '667d8400e0e02310ede7d97be624194467c95da748f6a7114b934ad6657e930f'
+  '667d8400e0e02310ede7d97be624194467c95da748f6a7114b934ad6657e930f',
+  '69c500769d76028d322bc5d5a68304e0749caacd24084f633ea42e3c8f8d8b32'
 ]);
 const V1_SOURCE_PACK_DIGEST =
   '4ddd8a0bd3770312808166599e8a57801939c7fc2b915c2fcc3c7db7030422af';
@@ -84,8 +85,10 @@ export function loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
   const records = verifiedCatalog.records_by_table
     ?.procedural_scene_compiled_records;
   const expected = new Map([...V1_FINAL_COMPILED_RECORDS,
-    ...(isV2 ? [V2_POLICY_RECORD] : [])].map(([id, kind, payload, source]) =>
-    [id, { kind, payload, source: source ?? V1_SOURCE_PACK_DIGEST }]));
+    ...(isV2 ? [V2_POLICY_RECORD] : [])].map(
+    ([id, kind, payload, source, canonicalPayload]) =>
+      [id, { kind, payload, source: source ?? V1_SOURCE_PACK_DIGEST,
+        canonicalPayload: canonicalPayload ?? payload }]));
   const seen = new Set();
   if (!Array.isArray(records) || records.length !== expected.size
       || records.some((record) => record.status !==
@@ -95,9 +98,8 @@ export function loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
           || seen.has(record.record_id)
           || record.source_pack_digest !== expected.get(record.record_id)?.source
           || record.payload_digest !== expected.get(record.record_id)?.payload
-          || (record.record_id !== V2_POLICY_RECORD[0]
-            && record.payload_digest !== createHash('sha256')
-              .update(canonicalStringify(record.payload)).digest('hex'))
+          || createHash('sha256').update(canonicalStringify(record.payload))
+            .digest('hex') !== expected.get(record.record_id)?.canonicalPayload
           || (seen.add(record.record_id), false))
       || seen.size !== expected.size
       || verifiedCatalog.import_audit?.approval_attestation_digest !== (isV2

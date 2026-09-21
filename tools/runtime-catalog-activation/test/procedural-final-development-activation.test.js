@@ -105,20 +105,24 @@ test('resealed production authorization tamper is rejected', async () => {
 
 test('V2 activation requires V1 predecessor and current user authorization',
   async () => {
-    const ledger = buildProceduralFinalV2ImportLedger({ baseline, v1Pack: pack,
-      v2Pack, attestation: v2Approval });
-    const predecessor = { event_id: 'v1-event', event_sequence: 2,
+    const ledger = v2Ledger();
+    const predecessor = { event_id:
+      'runtime_catalog_activation_94447901cebfed28716db756f089d0e4',
+      event_sequence: 2,
       catalog_revision_id: 'procedural_scene_final_candidate_v1_001',
       catalog_digest:
         '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c',
-      import_audit_digest: '1'.repeat(64), attestation_digest: '2'.repeat(64) };
+      import_audit_digest:
+        'd5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117',
+      attestation_digest:
+        'c81c4965fea835ed8f5769a0cb21fec3b4be50cbb9a87735808bf4020487f97a' };
     const input = { worldPool: { async query() { return { rows: [predecessor] }; } },
       partyPool: { async query() { return { rows: [{ party_count: 1,
         pinned_party_count: 1, missing_domain_pin_count: 0,
         inflight_count: 0 }] }; } }, v1Pack: pack, v2Pack,
       v2ApprovalAttestation: v2Approval, ledger, gitCommitSha: '8'.repeat(40) };
     const bundle = await buildProceduralFinalV2DevelopmentActivation(input);
-    assert.equal(bundle.request.expected_previous_event_id, 'v1-event');
+    assert.equal(bundle.request.expected_previous_event_id, predecessor.event_id);
     assert.equal(bundle.attestation.attested_by,
       'user_authorization_current_task');
     assert.equal(bundle.attestation.production_deploy_authorized, false);
@@ -132,17 +136,25 @@ test('V2 activation requires V1 predecessor and current user authorization',
       ...input, worldPool: { async query() { return { rows: [{
         ...predecessor, catalog_revision_id: 'wrong' }] }; } }
     }), { code: 'PROCEDURAL_FINAL_V2_PREDECESSOR_INVALID' });
+    await assert.rejects(() => buildProceduralFinalV2DevelopmentActivation({
+      ...input, ledger: { ...ledger, root: { ...ledger.root,
+        import_audit_digest: '0'.repeat(64) } }
+    }), { code: 'PROCEDURAL_FINAL_V2_DEVELOPMENT_ACTIVATION_INPUT_INVALID' });
   });
 
 test('V2 pin loader rejects resealed wrong predecessor and attestation',
   async () => {
-    const ledger = buildProceduralFinalV2ImportLedger({ baseline, v1Pack: pack,
-      v2Pack, attestation: v2Approval });
-    const predecessor = { event_id: 'v1-event', event_sequence: 2,
+    const ledger = v2Ledger();
+    const predecessor = { event_id:
+      'runtime_catalog_activation_94447901cebfed28716db756f089d0e4',
+      event_sequence: 2,
       catalog_revision_id: 'procedural_scene_final_candidate_v1_001',
       catalog_digest:
         '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c',
-      import_audit_digest: '1'.repeat(64), attestation_digest: '2'.repeat(64) };
+      import_audit_digest:
+        'd5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117',
+      attestation_digest:
+        'c81c4965fea835ed8f5769a0cb21fec3b4be50cbb9a87735808bf4020487f97a' };
     const bundle = await buildProceduralFinalV2DevelopmentActivation({
       worldPool: { async query() { return { rows: [predecessor] }; } },
       partyPool: { async query() { return { rows: [{ party_count: 0,
@@ -173,10 +185,23 @@ test('V2 pin loader rejects resealed wrong predecessor and attestation',
     const loader = (value) => loadActiveRuntimeCatalogPin({
       async query() { return { rows: [value] }; }
     }, 'item_container_materialization_v2');
-    assert.equal((await loader(row)).catalog_revision_id,
+    const pin = await loader(row);
+    assert.equal(pin.catalog_revision_id,
       v2Pack.target_revision_id);
+    assert.equal(pin.activation_scope, 'new_development_parties_only');
+    await assert.rejects(loader({ ...row, import_id: 'fake-import' }),
+    { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
+    await assert.rejects(loader({ ...row,
+      import_audit_digest: '0'.repeat(64) }),
+    { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
+    await assert.rejects(loader({ ...row,
+      expected_previous_event_id: 'fake-event' }),
+    { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
     await assert.rejects(loader({ ...row,
       predecessor_catalog_digest: '0'.repeat(64) }),
+    { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
+    await assert.rejects(loader({ ...row,
+      predecessor_activation_attestation_digest: '0'.repeat(64) }),
     { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
     await assert.rejects(loader({ ...row,
       attestation_digest: '0'.repeat(64) }),
@@ -216,4 +241,14 @@ test('active pin loader fails closed for missing or malformed activation',
         provenance: {} }] }; }
     }, 'item_container_materialization_v2'),
     { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
-  });
+});
+
+function v2Ledger() {
+  const ledger = structuredClone(buildProceduralFinalV2ImportLedger({ baseline,
+    v1Pack: pack, v2Pack, attestation: v2Approval }));
+  ledger.root.import_id =
+    'procedural_final_v2_import_2917b993a9e9c63e1989725cee35e63b';
+  ledger.root.import_audit_digest =
+    '6ad18c6f40185fa540bf7e3ec3bbb5d5b96e95c370b5e70c657a0db73c29f3b2';
+  return ledger;
+}

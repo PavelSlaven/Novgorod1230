@@ -8,8 +8,15 @@ const V2 = Object.freeze({
   candidate: '65d973f8f06ab78a38b5bda7b24cf8661da1b8b9a581742c224cfa8b1c39bdc6',
   importApproval: '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772',
   allocationApproval: '692960ad7561b60a0793f1f3fb097e757f8975aa91ec42251296edc6213b552a',
+  importId: 'procedural_final_v2_import_2917b993a9e9c63e1989725cee35e63b',
+  importAudit: '6ad18c6f40185fa540bf7e3ec3bbb5d5b96e95c370b5e70c657a0db73c29f3b2',
+  predecessorEvent: 'runtime_catalog_activation_94447901cebfed28716db756f089d0e4',
   predecessorRevision: 'procedural_scene_final_candidate_v1_001',
-  predecessorCatalog: '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c'
+  predecessorCatalog: '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c',
+  predecessorImportAudit:
+    'd5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117',
+  predecessorAttestation:
+    'c81c4965fea835ed8f5769a0cb21fec3b4be50cbb9a87735808bf4020487f97a'
 });
 
 export async function loadActiveRuntimeCatalogPin(
@@ -100,15 +107,23 @@ export async function loadActiveRuntimeCatalogPin(
       row.compatible_world_catalog_digest,
     compatible_world_pin_manifest_digest:
       row.compatible_world_pin_manifest_digest,
-    activation_scope: policy?.activation_scope ?? null
+    activation_scope: row.catalog_revision_id === V2.revision
+      ? 'new_development_parties_only'
+      : policy?.activation_scope ?? null
   });
 }
 
 function validV2Activation(row) {
   if (row.catalog_digest !== V2.catalog
+      || row.import_id !== V2.importId
+      || row.import_audit_digest !== V2.importAudit
       || row.expected_previous_event_id == null
+      || row.expected_previous_event_id !== V2.predecessorEvent
       || row.predecessor_revision_id !== V2.predecessorRevision
       || row.predecessor_catalog_digest !== V2.predecessorCatalog
+      || row.predecessor_import_audit_digest !== V2.predecessorImportAudit
+      || row.predecessor_activation_attestation_digest
+        !== V2.predecessorAttestation
       || Number(row.event_sequence) !== Number(row.predecessor_event_sequence) + 1) {
     return false;
   }

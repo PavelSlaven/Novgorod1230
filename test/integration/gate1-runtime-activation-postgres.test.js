@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -101,4 +102,69 @@ test('Gate1 registers already-imported rows and activates V5 exactly across rest
     const reloaded = await loadActiveRuntimeCatalogPin(pool,
       'item_container_materialization_v2');
     assert.deepEqual(reloaded, pin);
+
+    await pool.end();
+    pool = null;
+    const adminUrl = new URL(managed.worldUrl);
+    adminUrl.username = 'postgres';
+    adminUrl.pathname = '/postgres';
+    const admin = new pg.Pool({ connectionString: adminUrl.toString(), max: 1 });
+    for (const kind of ['request', 'predecessor', 'world_pin']) {
+      const database = `${settings.worldDatabase}_${kind}`;
+      await admin.query(`CREATE DATABASE ${database}
+        TEMPLATE ${settings.worldDatabase}`);
+      const driftUrl = new URL(managed.worldUrl);
+      driftUrl.pathname = `/${database}`;
+      const driftPool = new pg.Pool({ connectionString: driftUrl.toString(),
+        max: 4 });
+      try {
+        await insertActivationDrift(driftPool, kind);
+        await assert.rejects(() => activateGate1RuntimeCatalog({
+          worldPool: driftPool, partyPool: driftPool,
+          repositoryRoot: process.cwd(),
+          worldReleaseId: 'spatial-v3-production-v5'
+        }), { code: 'ACTIVATION_EVENT_COLLISION' });
+      } finally {
+        await driftPool.end();
+        await admin.query(`DROP DATABASE ${database}`);
+      }
+    }
+    await admin.end();
   });
+
+async function insertActivationDrift(pool, kind) {
+  const digest = (suffix) => createHash('sha256')
+    .update(`gate1-activation-${kind}-${suffix}`).digest('hex');
+  const requestDigest = digest('request');
+  const eventDigest = digest('event');
+  const eventId = `runtime_catalog_activation_${eventDigest.slice(0, 32)}`;
+  const worldPin = kind === 'world_pin'
+    ? {
+      revision: 'novgorod_spatial_v3_production_v6_candidate_001',
+      catalog: '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
+      manifest: '776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb'
+    } : null;
+  await pool.query(
+    `INSERT INTO world_base.runtime_catalog_activation_events
+      (event_id,event_sequence,event_type,catalog_scope,catalog_revision_id,
+       catalog_digest,import_id,import_audit_digest,record_registry_digest,
+       runtime_contract_digest,compatible_world_revision_id,
+       compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+       request_digest,attestation_digest,expected_previous_event_id,
+       runtime_release_id,operator_principal,event_digest)
+     SELECT $1,event_sequence+1,event_type,catalog_scope,catalog_revision_id,
+       catalog_digest,import_id,import_audit_digest,record_registry_digest,
+       runtime_contract_digest,COALESCE($4,compatible_world_revision_id),
+       COALESCE($5,compatible_world_catalog_digest),
+       COALESCE($6,compatible_world_pin_manifest_digest),$2,
+       attestation_digest,
+       CASE WHEN $7 THEN NULL ELSE event_id END,
+       runtime_release_id,operator_principal,$3
+     FROM world_base.runtime_catalog_activation_events
+     WHERE catalog_scope='item_container_materialization_v2'
+     ORDER BY event_sequence DESC LIMIT 1`,
+    [eventId, requestDigest, eventDigest, worldPin?.revision ?? null,
+      worldPin?.catalog ?? null, worldPin?.manifest ?? null,
+      kind === 'predecessor']
+  );
+}

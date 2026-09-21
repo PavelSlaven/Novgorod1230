@@ -546,18 +546,22 @@ export async function registerAlreadyImportedCatalogAndActivate({
       domainRevision.runtime_contract_digest);
 
     const latest = (await client.query(
-      `SELECT event_id,event_sequence,request_digest,catalog_revision_id,
-              catalog_digest,import_id,import_audit_digest,attestation_digest
+      `SELECT event_id,event_sequence,event_type,catalog_scope,
+              catalog_revision_id,catalog_digest,import_id,import_audit_digest,
+              record_registry_digest,runtime_contract_digest,
+              compatible_world_revision_id,compatible_world_catalog_digest,
+              compatible_world_pin_manifest_digest,request_digest,
+              attestation_digest,expected_previous_event_id,runtime_release_id,
+              operator_principal,event_digest
          FROM world_base.runtime_catalog_activation_events
         WHERE catalog_scope='item_container_materialization_v2'
         ORDER BY event_sequence DESC LIMIT 1`)).rows[0] ?? null;
-    if (latest && latest.catalog_revision_id === activationRequest.target_revision_id
+    const replayCandidate = latest
+        && latest.catalog_revision_id === activationRequest.target_revision_id
         && latest.catalog_digest === activationRequest.target_catalog_digest
         && latest.import_id === activationRequest.import_id
         && latest.import_audit_digest === activationRequest.import_audit_digest
-        && latest.attestation_digest === activationAttestation.attestation_digest) {
-      return Object.freeze({ status: 'already_active', event_id: latest.event_id });
-    }
+        && latest.attestation_digest === activationAttestation.attestation_digest;
     const counts = (await partyPool.query(
       `SELECT
         (SELECT count(*)::int FROM party_runtime.parties) AS party_count,
@@ -582,12 +586,32 @@ export async function registerAlreadyImportedCatalogAndActivate({
         'Party preflight changed after activation request.');
     }
     const principal = (await client.query('SELECT current_user AS principal')).rows[0].principal;
+    const predecessor = replayCandidate
+      ? activationRequest.expected_previous_event_id == null
+        ? null
+        : (await client.query(
+          `SELECT event_id,event_sequence
+             FROM world_base.runtime_catalog_activation_events WHERE event_id=$1`,
+          [activationRequest.expected_previous_event_id])).rows[0] ?? null
+      : latest;
     const event = buildActivationEventFromVerifiedAttestation({
       request: activationRequest,
       attestationDigest: activationAttestation.attestation_digest,
-      previousEvent: latest,
+      previousEvent: predecessor,
       operatorPrincipal: principal
     });
+    if (replayCandidate) {
+      const persisted = { ...latest, event_sequence: Number(latest.event_sequence) };
+      const expected = activationEventRow(event);
+      if (Object.entries(expected).some(([field, value]) =>
+        persisted[field] !== value)) {
+        fail('ACTIVATION_EVENT_COLLISION',
+          'Existing activation identity has a different deterministic event.', {
+            expected, actual: persisted
+          });
+      }
+      return Object.freeze({ status: 'already_active', event_id: event.event_id });
+    }
     await client.query(
       `INSERT INTO world_base.runtime_catalog_activation_events
         (event_id,event_sequence,event_type,catalog_scope,catalog_revision_id,
@@ -608,6 +632,31 @@ export async function registerAlreadyImportedCatalogAndActivate({
     return Object.freeze({ status: 'activated', event_id: event.event_id,
       event_sequence: event.event_sequence });
   });
+}
+
+function activationEventRow(event) {
+  return {
+    event_id: event.event_id,
+    event_sequence: event.event_sequence,
+    event_type: event.event_type,
+    catalog_scope: event.catalog_scope,
+    catalog_revision_id: event.catalog_revision_id,
+    catalog_digest: event.catalog_digest,
+    import_id: event.import_id,
+    import_audit_digest: event.import_audit_digest,
+    record_registry_digest: event.record_registry_digest,
+    runtime_contract_digest: event.runtime_contract_digest,
+    compatible_world_revision_id: event.compatible_world_revision_id,
+    compatible_world_catalog_digest: event.compatible_world_catalog_digest,
+    compatible_world_pin_manifest_digest:
+      event.compatible_world_pin_manifest_digest,
+    request_digest: event.request_digest,
+    attestation_digest: event.attestation_digest,
+    expected_previous_event_id: event.expected_previous_event_id,
+    runtime_release_id: event.runtime_release_id,
+    operator_principal: event.operator_principal,
+    event_digest: event.event_digest
+  };
 }
 
 async function applyMembershipRecord(client, record) {

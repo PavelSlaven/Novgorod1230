@@ -201,8 +201,16 @@ export async function activateGate1RuntimeCatalog({
     runtimeContractDigest: RUNTIME_CATALOG_CONTRACT_DIGEST
   });
   const latest = (await worldPool.query(
-    `SELECT event_id FROM world_base.runtime_catalog_activation_events
+    `SELECT event_id,expected_previous_event_id,catalog_revision_id,
+            catalog_digest,import_id,import_audit_digest,attestation_digest
+       FROM world_base.runtime_catalog_activation_events
       WHERE catalog_scope=$1 ORDER BY event_sequence DESC LIMIT 1`, [SCOPE])).rows[0];
+  const replayCandidate = latest
+    && latest.catalog_revision_id === target.id
+    && latest.catalog_digest === target.catalog_digest
+    && latest.import_id === importId
+    && latest.import_audit_digest === ledger.root.import_audit_digest
+    && latest.attestation_digest === attestation.attestation_digest;
   const activationRequest = buildActivationRequest({
     fields: {
       parent_revision_id: parent.id,
@@ -219,7 +227,8 @@ export async function activateGate1RuntimeCatalog({
       promotion_manifest_digest: result.promotion_manifest_digest,
       approval_request_digest: result.approval_request_digest,
       approval_attestation_digest: result.approval_attestation_digest,
-      expected_previous_event_id: latest?.event_id ?? null,
+      expected_previous_event_id: replayCandidate
+        ? latest.expected_previous_event_id : latest?.event_id ?? null,
       runtime_release_id: runtimeReleaseId
     },
     partyPreflight

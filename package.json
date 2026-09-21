@@ -76,7 +76,7 @@
     "test:narration-presentation": "node --test packages/narration/test/*.test.js packages/presentation/test/*.test.js test/modules/narration-presentation.test.js",
     "test:apps": "node --test apps/game-server/test/*.test.js apps/game-web/test/*.test.js",
     "test:tools": "node --test tools/*/test/*.test.js test/spatial-v3/p04-catalog-sync.test.js",
-    "test:integration": "node --test --test-concurrency=1 test/integration/*.test.js",
+    "test:integration": "node scripts/run-integration-tests.mjs",
     "test:acceptance": "node --test --test-concurrency=1 test/acceptance/*.test.js",
     "test:browser-e2e": "node --test test/e2e/*.test.js",
     "docs:generate": "node tools/docs-tools/src/cli.js generate --root .",

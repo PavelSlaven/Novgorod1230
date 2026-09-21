@@ -31,11 +31,17 @@ export async function createPostgresTestBackend(prefix) {
   }
   return {
     kind: 'external',
+    supportsServerRestart: false,
     worldDatabase,
     partyDatabase,
     worldUrl: databaseUrl(adminUrl, worldDatabase),
     partyUrl: databaseUrl(adminUrl, partyDatabase),
-    async restart() {},
+    async restart() {
+      throw Object.assign(new Error(
+        'External PostgreSQL test backend cannot restart its server'), {
+        code: 'POSTGRES_SERVER_RESTART_UNSUPPORTED'
+      });
+    },
     async close() {
       await admin.query(`DROP DATABASE IF EXISTS ${partyDatabase} WITH (FORCE)`);
       await admin.query(`DROP DATABASE IF EXISTS ${worldDatabase} WITH (FORCE)`);
@@ -53,6 +59,7 @@ async function createManagedBackend(prefix) {
   let managed = await ensureLocalPostgres({ dataRoot, settings });
   return {
     kind: 'managed',
+    supportsServerRestart: true,
     worldDatabase: settings.worldDatabase,
     partyDatabase: settings.partyDatabase,
     get worldUrl() { return managed.worldUrl; },

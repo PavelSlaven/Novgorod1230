@@ -18,7 +18,10 @@ import { runPartyRuntimeCatalogMigration,
 import { createPostgresTestBackend } from
   '../fixtures/postgres-test-backend.js';
 
-test('Gate1 registers already-imported rows and activates V5 exactly across restart',
+const activationLifecycle = process.platform === 'win32'
+  ? 'managed server restart' : 'external PostgreSQL reconnect';
+
+test(`Gate1 activation remains exact after ${activationLifecycle}`,
   async (t) => {
     const backend = await createPostgresTestBackend('pr17_gate1_activation');
     if (!backend) return t.skip('No supported PostgreSQL test backend');
@@ -84,7 +87,10 @@ test('Gate1 registers already-imported rows and activates V5 exactly across rest
 
     await pool.end();
     pool = null;
-    await backend.restart();
+    if (backend.supportsServerRestart) await backend.restart();
+    else await assert.rejects(() => backend.restart(), {
+      code: 'POSTGRES_SERVER_RESTART_UNSUPPORTED'
+    });
     pool = new pg.Pool({ connectionString: backend.worldUrl, max: 4 });
     const repeated = await activateGate1RuntimeCatalog({
       worldPool: pool, partyPool: pool, repositoryRoot: process.cwd(),

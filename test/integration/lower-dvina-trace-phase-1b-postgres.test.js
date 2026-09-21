@@ -215,7 +215,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     generate: generateProceduralSceneProfileCatalog,
     bindings: proceduralBindings, approvedRecordBundle: proceduralRecords
   });
-  assert.equal(proceduralSceneCatalog, null);
+  assert.equal(proceduralSceneCatalog.status, 'blocked_data_gap');
+  assert.equal(proceduralSceneCatalog.type, 'DATA_GAP');
+  assert.equal(proceduralSceneCatalog.code,
+    'PROCEDURAL_SCENE_PROFILE_DATA_GAP');
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }

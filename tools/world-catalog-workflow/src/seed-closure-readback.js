@@ -45,7 +45,11 @@ export function canonicalizeSeedPayload(table, payload) {
     return payload;
   }
   return { ...payload,
-    audit_notes: payload.audit_notes.replace(/\r\n?/gu, '\n') };
+    audit_notes: normalizeGate1GraphAuditNotes(payload.audit_notes) };
+}
+
+export function normalizeGate1GraphAuditNotes(value) {
+  return typeof value === 'string' ? value.replace(/\r\n?/gu, '\n') : value;
 }
 
 export function assertCanonicalSeedTableClosure(actual, expected) {

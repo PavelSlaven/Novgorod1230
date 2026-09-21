@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -8,6 +8,10 @@ import pg from 'pg';
 
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
+import { loadGate1SeedClosureArtifacts } from
+  '../../scripts/generate-gate1-seed-closure-request.mjs';
+import { digestValue } from
+  '../../tools/world-catalog-workflow/src/digest.js';
 
 test('Gate1 imports canonical owner closure and Stage3C without activation',
   async (t) => {
@@ -20,14 +24,42 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
     let pool;
     const resultPath = process.env.GATE1_RESULT_PATH
       ?? join(dataRoot, 'gate1-import-readback-result.json');
+    const seedAttestationPath = join(dataRoot,
+      'seed-closure-test-attestation.json');
     t.after(async () => {
       await pool?.end();
       await managed.close();
       await rm(dataRoot, { recursive: true, force: true });
     });
+    const seedClosure = await loadGate1SeedClosureArtifacts();
+    const seedAttestationCore = {
+      schema:
+        'rus.gate1_rus13_seed_closure_authoring_approval_attestation.v1',
+      status:
+        'approved_seed_derivation_and_transactional_full_closure_readback',
+      candidate_digest: seedClosure.candidate.candidate_digest,
+      request_digest: seedClosure.request.request_digest,
+      approved_scope: seedClosure.request.requested_scope,
+      authority: {
+        approval_attestation_present: true,
+        seed_derivation_authorized: true,
+        import_authorized: true,
+        transactional_import_readback_only: true,
+        exact_all_table_readback_required: true,
+        activation_authorized: false,
+        production_authorized: false,
+        existing_party_migration_authorized: false,
+        runtime_item_creation_authorized: false
+      }
+    };
+    await writeFile(seedAttestationPath, JSON.stringify({
+      ...seedAttestationCore,
+      attestation_digest: digestValue(seedAttestationCore)
+    }));
     const applied = spawnSync(process.execPath,
       ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle',
-        '--write-result', resultPath], {
+        '--write-result', resultPath, '--seed-closure-attestation',
+        seedAttestationPath], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
         env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
       });

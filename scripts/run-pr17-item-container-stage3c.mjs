@@ -12,6 +12,7 @@ import { enterG4WithMaterialization } from '@rus/turn';
 import { applyRevisionPromotionPlan, buildAllowedG5TemplateSet, buildApprovedItemCatalogSnapshot, digestValue } from '../tools/world-catalog-workflow/src/index.js';
 import { buildPr17Stage3CPromotionPlan } from '../tools/world-catalog-workflow/src/internal/pr17-stage3c.js';
 import { assertCanonicalSeedTableClosure,
+  normalizeGate1GraphAuditNotes,
   readCanonicalSeedTableClosure } from
   '../tools/world-catalog-workflow/src/seed-closure-readback.js';
 import { buildGate1OwnerDataArtifacts,
@@ -44,8 +45,9 @@ validateGate1SourceReconciliationAuthoringAttestation({
   ...reconciliationArtifacts, attestation: reconciliationAttestation
 });
 const seedClosureArtifacts = await loadGate1SeedClosureArtifacts();
-const seedClosureAttestationPath = resolve(gate1Root,
-  'seed-closure-v1/authoring-approval-attestation.json');
+const seedClosureAttestationPath = resolve(argument(
+  '--seed-closure-attestation', resolve(gate1Root,
+    'seed-closure-v1/authoring-approval-attestation.json')));
 if (!existsSync(seedClosureAttestationPath)) {
   throw new Error('GATE1_SEED_CLOSURE_ATTESTATION_REQUIRED');
 }
@@ -297,8 +299,11 @@ async function assertGate1SourceState(client, gate1Plan) {
     const { audit_notes: sourceAuditNotes, ...sourceColumns } = source;
     assertExactRecord(row, sourceColumns,
       'GATE1_CANONICAL_GRAPH_READBACK_MISMATCH');
-    if (row.audit_notes !== sourceAuditNotes
-        && !row.audit_notes?.startsWith(`${sourceAuditNotes}\r\nImporter preserved unmapped source fields: `)) {
+    const actualAuditNotes = normalizeGate1GraphAuditNotes(row.audit_notes);
+    const expectedAuditNotes = normalizeGate1GraphAuditNotes(sourceAuditNotes);
+    if (actualAuditNotes !== expectedAuditNotes
+        && !actualAuditNotes?.startsWith(
+          `${expectedAuditNotes}\nImporter preserved unmapped source fields: `)) {
       throw new Error(`GATE1_CANONICAL_GRAPH_AUDIT_NOTES_MISMATCH:${source.id}`);
     }
   }

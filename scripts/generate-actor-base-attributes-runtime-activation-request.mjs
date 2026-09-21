@@ -14,6 +14,8 @@ const artifactRoot = 'data/world-catalogs/novgorod/procedural-scene-v2/'
 const importRoot = `${artifactRoot}/runtime-import-v1`;
 const activationRoot = `${artifactRoot}/runtime-activation-v1`;
 const SUBJECT_COMMIT = '4dd9ce8f37a30383d9ebf0ac01f259f4711c419f';
+const REVIEWED_REQUEST_HEAD =
+  'be80cd6e8f3d559e7029784f2502d3e487ddf306';
 const RESULT_DIGEST =
   'a7b53cba14db670ad3b4b18e2944a64058cdab95458ee7a4848c85352b122f55';
 const paths = Object.freeze({
@@ -192,6 +194,71 @@ export function validatePendingActorBaseAttributesRuntimeActivationRequest(
   if (claimed !== canonicalDigest(payload)) {
     throw new Error(
       'ACTOR_BASE_ATTRIBUTES_RUNTIME_ACTIVATION_REQUEST_DIGEST_INVALID');
+  }
+  return true;
+}
+
+export function validateActorBaseAttributesRuntimeActivationAttestation({
+  request, attestation
+}) {
+  validatePendingActorBaseAttributesRuntimeActivationRequest(request);
+  const approvedBindings = {
+    completed_import_readback: request.completed_import_readback,
+    target_binding: request.target_binding
+  };
+  const authority = Object.freeze({
+    approval_attestation_present: true,
+    import_authorized: false,
+    runtime_authorized: true,
+    activation_authorized: true,
+    actor_base_attributes_runtime_selection_authorized: true,
+    new_development_party_activation_authorized: true,
+    production_authorized: false,
+    equipment_allocation_activation_authorized: false,
+    functional_allocation_runtime_selection_authorized: false,
+    runtime_item_creation_authorized: false,
+    existing_party_migration_authorized: false,
+    old_save_rematerialization_authorized: false,
+    world_schema_migration_authorized: false,
+    party_schema_migration_authorized: false
+  });
+  if (!exact(attestation, ['schema', 'version', 'status', 'decision',
+    'reviewed_repository_head', 'auditor_ref', 'independence_basis',
+    'reviewed_at', 'activation_request_ref', 'activation_request_digest',
+    'activation_scope', 'runtime_capability', 'approved_bindings',
+    'approved_permissions', 'authority', 'activation_executed',
+    'database_mutated', 'broader_m3_attested', 'attestation_digest'])
+      || attestation.schema !==
+        'rus.actor_base_attributes_runtime_activation_approval_attestation.v1'
+      || attestation.version !== 1
+      || attestation.status !==
+        'approved_new_development_parties_only_not_executed'
+      || attestation.decision !==
+        'approve_exact_actor_base_attributes_new_development_runtime_activation'
+      || attestation.reviewed_repository_head !== REVIEWED_REQUEST_HEAD
+      || attestation.auditor_ref !== '/root/m3_chain_auditor'
+      || typeof attestation.independence_basis !== 'string'
+      || attestation.independence_basis.length === 0
+      || attestation.reviewed_at !== '2026-09-22'
+      || attestation.activation_request_ref !== paths.output
+      || attestation.activation_request_digest !== request.request_digest
+      || attestation.activation_scope !== request.activation_scope
+      || attestation.runtime_capability !== request.runtime_capability
+      || canonicalDigest(attestation.approved_bindings) !==
+        canonicalDigest(approvedBindings)
+      || canonicalDigest(attestation.approved_permissions) !==
+        canonicalDigest(request.requested_permissions)
+      || canonicalDigest(attestation.authority) !== canonicalDigest(authority)
+      || attestation.activation_executed !== false
+      || attestation.database_mutated !== false
+      || attestation.broader_m3_attested !== false) {
+    throw new Error(
+      'ACTOR_BASE_ATTRIBUTES_RUNTIME_ACTIVATION_ATTESTATION_INVALID');
+  }
+  const { attestation_digest: claimed, ...payload } = attestation;
+  if (claimed !== canonicalDigest(payload)) {
+    throw new Error(
+      'ACTOR_BASE_ATTRIBUTES_RUNTIME_ACTIVATION_ATTESTATION_DIGEST_INVALID');
   }
   return true;
 }

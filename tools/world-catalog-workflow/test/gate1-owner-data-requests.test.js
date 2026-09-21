@@ -1,0 +1,83 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { readFile } from 'node:fs/promises';
+
+import { buildGate1OwnerDataArtifacts,
+  validatePendingGate1OwnerDataArtifacts } from
+  '../../../scripts/generate-gate1-owner-data-requests.mjs';
+
+const root = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
+
+test('Gate1 owner-data requests reproduce exact checked-in pending artifacts',
+  async () => {
+    const generated = await buildGate1OwnerDataArtifacts();
+    const checkedIn = {
+      parent: JSON.parse(await readFile(`${root}/parent-import-request.json`,
+        'utf8')),
+      activation: JSON.parse(await readFile(`${root}/activation-request.json`,
+        'utf8'))
+    };
+    assert.deepEqual(generated, checkedIn);
+    assert.equal(generated.parent.graph_node_transitions.length, 9);
+    assert.equal(new Set(generated.parent.graph_node_transitions
+      .map(({ graph_node_id }) => graph_node_id)).size, 9);
+    assert.deepEqual(generated.parent.exact_dependencies
+      .region_place_templates.map(({ source_row }) => source_row.id), [
+      'rpt_novgorod_administrative_court',
+      'rpt_novgorod_city_major_center',
+      'rpt_novgorod_market_place',
+      'rpt_novgorod_monastery',
+      'rpt_novgorod_posad_suburb',
+      'rpt_novgorod_river_landing'
+    ]);
+  });
+
+test('pending Gate1 requests grant no import, activation or runtime authority',
+  async () => {
+    const artifacts = await buildGate1OwnerDataArtifacts();
+    for (const artifact of Object.values(artifacts)) {
+      assert.equal(artifact.authority.approval_attestation_present, false);
+      assert.equal(artifact.authority.import_authorized, false);
+      assert.equal(artifact.authority.activation_authorized, false);
+      assert.equal(artifact.authority.production_authorized, false);
+      assert.equal(artifact.authority.existing_party_migration_authorized, false);
+      assert.equal(artifact.authority.runtime_item_creation_authorized, false);
+    }
+    assert.deepEqual(artifacts.activation.requested_permissions, {
+      import_approved_item_container_catalog: true,
+      activate_for_new_development_parties_only: true,
+      production_activation: false,
+      existing_party_migration: false,
+      old_save_rematerialization: false,
+      authoring_only_functional_allocation_runtime_selection: false,
+      runtime_item_creation: false
+    });
+    assert.deepEqual(artifacts.activation.compatible_worlds.map((world) =>
+      world.current_production_activation), [false, false]);
+    assert.equal(artifacts.parent.requested_authoring_promotions
+      .grants_runtime_activation, false);
+    assert.equal(artifacts.parent.requested_import.grants_runtime_activation,
+      false);
+    assert.equal(artifacts.activation.operational_request_schema,
+      'rus.runtime_catalog_activation_request.v2');
+    assert.equal(artifacts.activation.operational_request_status,
+      'blocked_until_approved_import_and_exact_readback');
+  });
+
+test('Gate1 validator rejects authority added to a pending request', async () => {
+  const artifacts = structuredClone(await buildGate1OwnerDataArtifacts());
+  artifacts.activation.authority.activation_authorized = true;
+  assert.throws(() => validatePendingGate1OwnerDataArtifacts(artifacts),
+    /GATE1_PENDING_ARTIFACT_AUTHORITY_FORBIDDEN/u);
+});
+
+test('Gate1 validator rejects runtime item creation and authoring allocation',
+  async () => {
+    for (const field of ['runtime_item_creation',
+      'authoring_only_functional_allocation_runtime_selection']) {
+      const artifacts = structuredClone(await buildGate1OwnerDataArtifacts());
+      artifacts.activation.requested_permissions[field] = true;
+      assert.throws(() => validatePendingGate1OwnerDataArtifacts(artifacts),
+        /GATE1_RUNTIME_SCOPE_FORBIDDEN/u);
+    }
+  });

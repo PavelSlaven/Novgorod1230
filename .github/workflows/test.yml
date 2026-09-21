@@ -94,13 +94,13 @@ jobs:
           npm run world-db:import:dry-run -- --report "$RUNNER_TEMP/world-base-import-dry-run.json"
           npm run world-db:fk-audit:staged -- --out-dir "$RUNNER_TEMP/world-base-fk-audit-staged"
       - name: Validate canonical world_base schema
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
         run: npm run world-db:schema-check && npm run world-db:schema-doc-check
       - name: Start PostgreSQL for full profile
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
         run: docker run --detach --name spatial-v3-ci-postgres --env POSTGRES_DB=postgres --env POSTGRES_PASSWORD=postgres --env POSTGRES_USER=postgres --publish 5432:5432 postgres:16
       - name: Execute world_base DDL in PostgreSQL
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
         run: |
           ready=false
           for attempt in {1..30}; do
@@ -173,7 +173,7 @@ jobs:
             MODULE_INDEX.md
             ${{ runner.temp }}/npm-test.log
       - name: Stop PostgreSQL
-        if: always() && steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: always() && steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
         run: docker rm --force spatial-v3-ci-postgres || true
 
   evidence-only:

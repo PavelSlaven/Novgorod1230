@@ -22,11 +22,6 @@ jobs:
       fail-fast: false
       matrix:
         suite: [fast, integration, acceptance, browser-architecture]
-    env:
-      PGHOST: localhost
-      PGPASSWORD: postgres
-      PGPORT: 5432
-      PGUSER: postgres
     steps:
       - name: Checkout clean clone
         uses: actions/checkout@v4
@@ -101,6 +96,11 @@ jobs:
         run: docker run --detach --name spatial-v3-ci-postgres --env POSTGRES_DB=postgres --env POSTGRES_PASSWORD=postgres --env POSTGRES_USER=postgres --publish 5432:5432 postgres:16
       - name: Execute world_base DDL in PostgreSQL
         if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'integration')
+        env:
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGPORT: 5432
+          PGUSER: postgres
         run: |
           ready=false
           for attempt in {1..30}; do
@@ -147,6 +147,11 @@ jobs:
 
       - name: Run full npm test merge gate (fast suites)
         if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        env:
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGPORT: 5432
+          PGUSER: postgres
         run: |
           set +e
           { npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:shadow && npm run test:cutover && npm run docs:check; } > "$RUNNER_TEMP/npm-test.log" 2>&1
@@ -155,6 +160,11 @@ jobs:
           exit "$status"
       - name: Run integration tests
         if: steps.profile.outputs.profile == 'full' && matrix.suite == 'integration'
+        env:
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGPORT: 5432
+          PGUSER: postgres
         run: npm run test:integration
       - name: Run acceptance tests
         if: steps.profile.outputs.profile == 'full' && matrix.suite == 'acceptance'

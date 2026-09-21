@@ -37,17 +37,26 @@ function pendingAllocation(policy, profile, actors) {
   if (policy?.family_candidate_ref !== profile.family_candidate_ref) return null;
   const applicable = actors.filter((actor) => actorMatchesPolicy(actor,
     policy.applicability));
-  if (applicable.length === 0) return null;
+  if (applicable.length === 0) return deepFreeze({
+    status: 'pending_p16_actor_activity_data_gap', policy_id: policy.policy_id,
+    actor_instance_id: null, policy: structuredClone(policy) });
   return deepFreeze({ status: 'pending_p16_inventory_validation',
     policy_id: policy.policy_id, actor_instance_id: applicable[0].instance_id,
-    allocations: structuredClone(policy.allocations) });
+    policy: structuredClone(policy) });
 }
 function actorMatchesPolicy(actor, applicability = {}) {
   const kind = actor.actor_kind ?? 'npc';
+  const activity = actor.machine_state?.current_activity;
   return (!applicability.actor_kinds || applicability.actor_kinds.includes(kind))
+    && (applicability.actor_presence == null
+      || applicability.actor_presence === 'present_committed_scene')
     && (applicability.role_ref == null || actor.role_ref?.id === applicability.role_ref)
     && (applicability.occupation_ref == null
-      || actor.occupation_ref?.id === applicability.occupation_ref);
+      || actor.occupation_ref?.id === applicability.occupation_ref)
+    && (applicability.activity_profile_ref == null
+      || activity?.activity_profile_ref === applicability.activity_profile_ref)
+    && (applicability.activity_category_ref == null
+      || activity?.activity_category_id === applicability.activity_category_ref);
 }
 function normalizeScene(scene) {
   if (!object(scene) || ![scene.scene_template_id, scene.g5_id,

@@ -42,10 +42,11 @@ export function compileProceduralSceneProfile({
     payload?.family_candidate_ref === familyCandidateRef);
   if (mappings.length === 0) gap('FUNCTION_LAYERS', profileRecord.record_id);
   const components = mappings.map(component).sort(byComponent);
-  const missing = [...new Set(mappings.filter(({ payload }) => payload.required === true)
+  const requiredLayers = [...new Set(mappings.filter(({ payload }) => payload.required === true)
     .map(({ payload }) => payload.layer))].filter((layer) =>
     !components.some((component) => component.layer === layer)).sort();
-  if (missing.length > 0) gap('FUNCTION_LAYERS', { family: profileRecord.payload.family, missing });
+  if (requiredLayers.length > 0) gap('FUNCTION_LAYERS', { family: profileRecord.payload.family, missing: requiredLayers });
+  const sourceGaps = structuredClone(profileRecord.payload.data_gap_codes ?? []);
   const artifact = {
     schema: 'rus.compiled_procedural_scene_profile.v1', version: 1,
     family: profileRecord.payload.family,
@@ -57,6 +58,15 @@ export function compileProceduralSceneProfile({
       .map(({ layer }) => layer))].sort(),
     components,
     regional_facets: regionalFacets(catalog.profiles),
+    allowed_semantics: structuredClone(profileRecord.payload.allowed_semantics ?? []),
+    requirements: structuredClone(profileRecord.payload.requirements ?? {}),
+    forbidden_implications: structuredClone(profileRecord.payload.forbidden_implications ?? []),
+    materialization_limits: structuredClone(profileRecord.payload.materialization_limits ?? []),
+    source_data_gap_codes: sourceGaps,
+    authoring_approval: structuredClone(profileRecord.payload.authoring_approval ?? null),
+    source_candidate_digest: profileRecord.payload.source_candidate_digest ?? null,
+    readiness: { required_layers_satisfied: true,
+      unresolved_source_gaps: sourceGaps },
     optional_selection_policy: 'source_weighted_candidates_only',
     optional_presence_policy: null,
     gameplay_materialization_llm_calls: 0

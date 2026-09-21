@@ -477,8 +477,16 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     choices,
     rng_draw_count: random.drawCount
   };
+  const v2Catalog = input.domain_catalog_pin?.catalog_revision_id
+    === 'procedural_scene_final_candidate_v2_001';
+  if (v2Catalog && (input.verified_procedural_compiled_catalog == null
+      || firstEntryPreparation == null
+      || input.verified_procedural_compiled_catalog.pin?.catalog_digest
+        !== input.domain_catalog_pin.catalog_digest)) {
+    fail('PROCEDURAL_SCENE_PACKAGE_REQUIRED',
+      'The activated V2 catalog requires exact procedural scene packages.');
+  }
   const proceduralScenePackages = input.verified_procedural_compiled_catalog == null
-    || firstEntryPreparation == null
     ? null : compileProceduralScenePartyPackages({
       party_id: input.party_id,
       run_id: runId,
@@ -488,6 +496,10 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         input.verified_procedural_compiled_catalog,
       ...proceduralSceneInputs(firstEntryPreparation)
     });
+  if (v2Catalog && proceduralScenePackages.packages.length === 0) {
+    fail('PROCEDURAL_SCENE_PACKAGE_REQUIRED',
+      'The activated V2 catalog produced no procedural scene packages.');
+  }
   const result = {
     version: 1,
     schema: 'rus.lower_dvina_trace_party_materialization_result.v1',

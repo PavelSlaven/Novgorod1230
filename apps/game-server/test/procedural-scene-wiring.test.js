@@ -6,6 +6,8 @@ import { loadLowerDvinaTraceMaterializationBundle } from
   '../src/internal/lower-dvina-trace-phase-1a.js';
 import { currentWorldBaseReferenceSnapshot, phase1AInstance } from
   './lower-dvina-trace-phase-2-fixture-support.js';
+import { lowerDvinaTracePhase1ADomainPin } from
+  '../../../test/fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 
 test('Lower Dvina materializes a fishing package before Stage 24', async () => {
   const [bundle, v1, v2] = await Promise.all([
@@ -13,7 +15,7 @@ test('Lower Dvina materializes a fishing package before Stage 24', async () => {
     readCandidate('final-candidate-pack-v1/candidate.json'),
     readCandidate('final-candidate-pack-v2/candidate.json')
   ]);
-  const pin = { schema: 'rus.runtime_catalog_pin.v2',
+  const pin = { ...lowerDvinaTracePhase1ADomainPin(bundle),
     catalog_revision_id: v2.target_revision_id,
     catalog_digest: v2.target_catalog_digest, import_audit_digest: 'a'.repeat(64),
     compatible_world_revision_id: bundle.location_topology_set.spatial_source_ref.world_revision_id,
@@ -32,13 +34,16 @@ test('Lower Dvina materializes a fishing package before Stage 24', async () => {
     }
   }});
   const result = phase1AInstance('procedural-scene-wiring', bundle,
-    currentWorldBaseReferenceSnapshot(), catalog);
+    currentWorldBaseReferenceSnapshot(), catalog, pin);
   const fishing = result.procedural_scene_packages.packages.find(({ family }) =>
     family === 'inland_fishing_worksite');
   assert.ok(fishing);
   assert.equal(fishing.allocation_policy?.status,
-    'pending_p16_inventory_validation');
+    'pending_p16_actor_activity_data_gap');
   assert.equal(fishing.profile.components.some(({ layer }) => layer === 'work_zone'), true);
+  assert.throws(() => phase1AInstance('procedural-scene-v2-missing', bundle,
+    currentWorldBaseReferenceSnapshot(), null, pin),
+  { code: 'PROCEDURAL_SCENE_PACKAGE_REQUIRED' });
 });
 
 async function readCandidate(relative) {

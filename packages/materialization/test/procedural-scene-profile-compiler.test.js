@@ -60,6 +60,8 @@ test('V2 compiler covers all families and preserves complete regional facets',
         scene: sceneFor(verified, family), world_pin: worldPin(verified) });
       assert.deepEqual(compiled.required_layers, layers);
       assert.deepEqual(compiled.components.map(({ layer }) => layer), layers);
+      assert.deepEqual(compiled.source_data_gap_codes,
+        compiled.readiness.unresolved_source_gaps);
       assert.ok(compiled.regional_facets.every(({ approved_members }) =>
         approved_members.every(({ universal, regional }) =>
           universal?.status === 'approved' && regional?.status === 'approved')));
@@ -101,10 +103,10 @@ test('packages are stable, policy stays pending P16, and V1/wrong/tampered input
     const drying = sceneFor(verified, 'drying_storage_workspace');
     const actors = [{ instance_id: 'npc:z', g5_node_id: fishing.g5_node_id,
       role_ref: { id: 'nov_role_fisher' }, occupation_ref: { id: 'nov_occ_fisher' },
-      machine_state: { current_activity: { activity_ref: 'activity_assist_fishing_net_v1' } } },
+      machine_state: { current_activity: { activity_profile_ref: 'activity_assist_fishing_net_v1' } } },
     { instance_id: 'npc:a', g5_node_id: fishing.g5_node_id,
       role_ref: { id: 'nov_role_fisher' }, occupation_ref: { id: 'nov_occ_fisher' },
-      machine_state: { current_activity: { activity_ref: 'activity_assist_fishing_net_v1' } } }];
+      machine_state: { current_activity: { activity_profile_ref: 'activity_assist_fishing_net_v1' } } }];
     const input = { party_id: 'party:test', run_id: 'run:test', world_pin: worldPin(verified),
       verified_procedural_compiled_catalog: verified, actors };
     const forward = compileProceduralScenePartyPackages({ ...input, scenes: [fishing, drying] });
@@ -113,6 +115,13 @@ test('packages are stable, policy stays pending P16, and V1/wrong/tampered input
     const packageFishing = forward.packages.find(({ family }) => family === 'inland_fishing_worksite');
     assert.equal(packageFishing.allocation_policy.status, 'pending_p16_inventory_validation');
     assert.equal(packageFishing.allocation_policy.actor_instance_id, 'npc:a');
+    assert.equal(packageFishing.allocation_policy.policy.property_basis.owner_ref,
+      'selected_actor_instance');
+    const wrongActivity = compileProceduralScenePartyPackages({ ...input,
+      actors: [{ ...actors[0], machine_state: { current_activity: {} } }],
+      scenes: [fishing] });
+    assert.equal(wrongActivity.packages[0].allocation_policy.status,
+      'pending_p16_actor_activity_data_gap');
     assert.throws(() => compileProceduralSceneProfile({
       verified_procedural_compiled_catalog: verified,
       scene: { ...fishing, g5_id: 'wrong:g5' }, world_pin: worldPin(verified) }),

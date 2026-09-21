@@ -53,8 +53,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
       const authoredProfile = await authoredStartResolver?.(
         request.scenario_id
       ) ?? null;
-      const catalogLoader = authoredProfile == null ? null
-        : runtimeCatalogLoader ?? createRuntimeCatalogLoader({
+      const catalogLoader = runtimeCatalogLoader ?? createRuntimeCatalogLoader({
           worldBaseReader: createPostgresWorldBaseReader({ pool: worldPool }),
           supportedRuntimeContractDigests: [
             runtimeCatalogPin.runtime_contract_digest
@@ -68,8 +67,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             worldPool,
             request.world_compatibility
           ),
-          catalogLoader == null ? null
-            : catalogLoader.loadApprovedItemCatalog({ pin: runtimeCatalogPin })
+          catalogLoader.loadApprovedItemCatalog({ pin: runtimeCatalogPin })
         ]);
       const verifiedProceduralCatalog = domainCatalog != null
         && runtimeCatalogPin.catalog_revision_id

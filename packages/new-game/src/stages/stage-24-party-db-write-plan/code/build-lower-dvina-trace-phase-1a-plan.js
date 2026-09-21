@@ -48,7 +48,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertPartyRuntimeCatalogPins(party_creation_context);
   assertMaterializationRuntimeCatalogPins({ trace: result.trace, pins, domainPin });
   const proceduralScenePackages = validatedProceduralPackages(result.trace,
-    result.procedural_scene_packages);
+    result.procedural_scene_packages, domainPin);
   const runRecord = {
     party_id: partyId,
     run_id: runId,
@@ -455,9 +455,16 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   return plan;
 }
 
-function validatedProceduralPackages(trace, packages) {
-  if (packages == null) return null;
-  if (trace.catalog_digest !== '6fcf5c50d01bd56605a037de3d79cd1aa5e56a1c520db70bd0ab5b6ade6b1361'
+function validatedProceduralPackages(trace, packages, pin) {
+  const v2 = pin?.catalog_revision_id === 'procedural_scene_final_candidate_v2_001';
+  if (packages == null) {
+    if (!v2) return null;
+    const error = new Error('PROCEDURAL_SCENE_PACKAGES_REQUIRED');
+    error.code = 'PROCEDURAL_SCENE_PACKAGES_REQUIRED';
+    throw error;
+  }
+  if ((!v2 && packages != null)
+      || trace.catalog_digest !== pin?.catalog_digest
       || packages.schema !== 'rus.procedural_scene_party_packages.v1'
       || !Array.isArray(packages.packages) || packages.packages.length === 0
       || packages.pin?.catalog_digest !== trace.catalog_digest

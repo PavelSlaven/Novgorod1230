@@ -1,5 +1,6 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
-import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
+import { computeMaterializationEnvelopeDigest,
+  computeStage24ArtifactDigest } from '@rus/contracts';
 import { normalizedContainer } from
   './lower-dvina-trace-phase-1a-read-assets.js';
 import { buildActualPersistedProjection } from
@@ -301,7 +302,17 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       const source = state?.materialization_trace?.procedural_scene_packages;
       if (source == null) return Object.freeze([]);
       if (source.schema !== 'rus.procedural_scene_party_packages.v1'
-          || !Array.isArray(source.packages)) {
+          || !Array.isArray(source.packages)
+          || source.pin?.catalog_revision_id
+            !== 'procedural_scene_final_candidate_v2_001'
+          || source.pin?.catalog_digest !== state.materialization_trace.catalog_digest
+          || source.digest !== computeStage24ArtifactDigest(source.packages)
+          || source.packages.length === 0
+          || source.packages.some((entry) => entry.party_id !== partyId
+            || entry.run_id !== state.materialization_trace.run_id
+            || entry.pin?.catalog_digest !== source.pin.catalog_digest
+            || entry.scene_package_digest !== computeStage24ArtifactDigest({
+              ...entry, scene_package_digest: undefined }))) {
         throw Object.assign(new Error('PROCEDURAL_SCENE_PACKAGES_TAMPERED'), {
           code: 'PROCEDURAL_SCENE_PACKAGES_TAMPERED' });
       }
@@ -311,9 +322,11 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         g5_node_id: g5, g6_instance_id: g6, position_id: position,
         environment_facets: profile?.components?.filter((entry) =>
           ['surface', 'relief', 'vegetation', 'environment', 'water',
-            'place_function', 'work_zone'].includes(entry.layer)),
+            'place_function', 'work_zone'].includes(entry.layer))
+          .map(playerSafeComponent),
         functional_groups: profile?.components?.filter((entry) =>
-          ['tool', 'storage', 'work_material'].includes(entry.layer)),
+          ['tool', 'storage', 'work_material'].includes(entry.layer))
+          .map(playerSafeComponent),
         allocation_status: allocation?.status ?? null })));
     },
 
@@ -321,6 +334,10 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       return one('SELECT idempotency_key,request_id,payload_hash,physical_plan_digest,status,committed_result FROM party_runtime.commit_idempotency WHERE idempotency_key=$1', [idempotencyKey]);
     }
   });
+}
+
+function playerSafeComponent({ layer, required }) {
+  return { layer, required: required === true };
 }
 
 function assertRoundTrip({

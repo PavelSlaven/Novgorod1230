@@ -21,7 +21,8 @@ import {
   projectNameProfileSnapshot
 } from './lower-dvina-trace-persisted-projection.js';
 import { assertRevision19CharacterState } from './lower-dvina-trace-revision19-write-boundary.js';
-import { approvedNpcBodyRows, approvedNpcConditionRows } from './actor-write-boundary.js';
+import { approvedNpcBodyRows, approvedNpcConditionRows,
+  assertNewActorBaseAttributes } from './actor-write-boundary.js';
 import { addBatch, validatedProceduralPackages } from './write-plan-batches.js';
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertInput(input);
@@ -38,6 +39,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const runId = result.run_id;
   const { preparedScenes, preparedNpcs, preparedContainers } = phase3PreparedInputs(result);
   const identityNpcs = preparedNpcs;
+  identityNpcs.forEach((npc) => assertNewActorBaseAttributes(npc.base_attributes,
+    `npc:${npc.instance_id}.base_attributes`, npc.attribute_generation_gate === 'active'));
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,

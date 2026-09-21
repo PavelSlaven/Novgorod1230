@@ -361,6 +361,7 @@ export {
 export {
   ACTOR_BASE_ATTRIBUTE_KEYS,
   materializeActorBaseAttributes,
+  validateActorBaseAttributesCandidate,
   validateActorBaseAttributes
 } from './actor-base-attributes.js';
 

@@ -29,13 +29,13 @@
       "document_id": "character-parameters",
       "canonical_path": "corpus/DOCUMENTS/character_parameters.txt",
       "file_name": "character_parameters.txt",
-      "sha256": "5350e2f908558e89ee510aa55473d8912b7907cf92a56728cd457b04eadd1e6c",
-      "bytes": 23130,
+      "sha256": "cf8bc8f515e6c6758886e1532ae60a8dccf01f3804f52728cf3a89f609e728c8",
+      "bytes": 23632,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_parameters.txt",
       "provenance_mode": "canonicalized_from_legacy",
-      "source_legacy_sha256": "7a84abd27da7898c20abf8e493342fb0a6c5dca1852098063e8ffaffa9a29b30",
-      "source_legacy_bytes": 21167
+      "source_legacy_sha256": "6d00bddbf69a619d237eda400496e0f74ab85aabaf97d7196299b57cec838238",
+      "source_legacy_bytes": 21668
     },
     {
       "document_id": "code-critic-invocation-rule",
@@ -251,13 +251,13 @@
       "document_id": "npc-generation-profiles",
       "canonical_path": "corpus/DOCUMENTS/npc_generation_profiles.txt",
       "file_name": "npc_generation_profiles.txt",
-      "sha256": "cb507321db132d736f307083fb49f08309e5a0eb006c75e0757d3e103628f21e",
-      "bytes": 27557,
+      "sha256": "f311cd043171fdb8589a910d56a90c6aade2733963431c36289d19fd02e05207",
+      "bytes": 27443,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_generation_profiles.txt",
       "provenance_mode": "canonicalized_from_legacy",
-      "source_legacy_sha256": "ca906167838b4faa6b3c27dc43f7a22c7ad5c04df07c5518403fcf9f572dbde2",
-      "source_legacy_bytes": 21177
+      "source_legacy_sha256": "62bc7165c66336fd952c89c1b4129f9078e236a94a65707870044ec664160cde",
+      "source_legacy_bytes": 20828
     },
     {
       "document_id": "npc-inventory-item-marks",
@@ -380,8 +380,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-        "sha256": "fbc521452f83b6779602f0fc58352ec659834de47ef4d3cba80897624f75befb",
-        "bytes": 118926,
+      "sha256": "fbc521452f83b6779602f0fc58352ec659834de47ef4d3cba80897624f75befb",
+      "bytes": 118926,
       "status": "active",
       "provenance_mode": "native"
     },

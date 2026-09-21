@@ -41,7 +41,14 @@ const procedural = { schema: 'rus.approved_procedural_npc_result.v1',
       values: { strength: 13, dexterity: 12, endurance: 11, reason: 10,
         attention: 9, influence: 8 }, profile_ref: { id: 'ordinary', version: 1,
         digest: 'a'.repeat(64) }, generation: { algorithm_version:
-        'actor_base_attributes_v1', rng_version: 'pcg32-v1', seed_basis: {} } } },
+        'actor_base_attributes_v1', rng_version: 'mulberry32_v1', seed_basis: {},
+        seed_digest: 'b'.repeat(64), occupation_archetype_id: 'fishing_water',
+        priority_mapping_id: 'fishing', choices: [] }, trace: { attribute_values:
+        { strength: 13, dexterity: 12, endurance: 11, reason: 10,
+          attention: 9, influence: 8 }, profile_ref: { id: 'ordinary', version: 1,
+          digest: 'a'.repeat(64) }, algorithm_version: 'actor_base_attributes_v1',
+        rng_version: 'mulberry32_v1', seed_basis: {}, seed_digest: 'b'.repeat(64),
+        choices: [] } } },
   choices: [], environment: { schema: 'rus.approved_initial_environment.v1' },
   initial_equipment_candidates: [candidate] };
 

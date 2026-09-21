@@ -14,7 +14,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
         binding.actor_profile_rule_ref, binding.demographic_profile_ref,
         binding.appearance_profile_ref, binding.anchor_id, binding.g5_node_id,
         binding.location_profile_ref, binding.zone_ref,
-        binding.activity_record_ref].every(text)
+        binding.activity_record_ref, binding.world_revision_id].every(text)
       || !/^[a-f0-9]{64}$/.test(String(
         binding.profile_candidate_set_digest ?? ''))
       || !/^[a-f0-9]{64}$/.test(String(binding.profile_record_digest ?? ''))
@@ -40,12 +40,12 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     random, choice_key_prefix: `npc:${binding.actor_slot_ref}`,
     rule_id: binding.actor_profile_rule_ref });
   const attributes = materializeActorBaseAttributes({
-    profile: binding.actor_base_attributes_profile,
+    approved_bundle: binding.actor_base_attributes_bundle,
     occupation_archetype_id: occupation.occupation_archetype_id,
-    random, choice_key_prefix: `npc:${binding.actor_slot_ref}`,
-    seed_basis: { party_id: partyId, run_id: runId,
-      actor_slot_ref: binding.actor_slot_ref,
-      world_revision_id: environment.world_revision_id ?? null }
+    actor_slot_ref: binding.actor_slot_ref,
+    seed_basis: { world_revision_id: binding.world_revision_id,
+      world_catalog_digest: binding.world_catalog_digest ?? null,
+      materialization_seed: `${partyId}:${runId}` }
   });
   const activity = exact(bundle.temporal_records, 'record_id',
     binding.activity_record_ref);

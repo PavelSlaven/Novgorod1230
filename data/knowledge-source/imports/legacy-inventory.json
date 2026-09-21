@@ -19,8 +19,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_parameters.txt",
       "relative_path": "corpus/DOCUMENTS/character_parameters.txt",
-      "bytes": 21167,
-      "sha256": "7a84abd27da7898c20abf8e493342fb0a6c5dca1852098063e8ffaffa9a29b30",
+      "bytes": 21668,
+      "sha256": "6d00bddbf69a619d237eda400496e0f74ab85aabaf97d7196299b57cec838238",
       "classification": "canonical_source"
     },
     {
@@ -89,8 +89,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_generation_profiles.txt",
       "relative_path": "corpus/DOCUMENTS/npc_generation_profiles.txt",
-      "bytes": 21177,
-      "sha256": "ca906167838b4faa6b3c27dc43f7a22c7ad5c04df07c5518403fcf9f572dbde2",
+      "bytes": 20828,
+      "sha256": "62bc7165c66336fd952c89c1b4129f9078e236a94a65707870044ec664160cde",
       "classification": "canonical_source"
     },
     {

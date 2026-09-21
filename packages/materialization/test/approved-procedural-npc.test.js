@@ -22,7 +22,7 @@ const role = { role_id: 'role', role_title: 'рыбак', region_id: 'novgorod',
   social_position_archetype_id: 'social-a', status: 'approved',
   attitude_to_strangers: 'осторожен' };
 const occupation = { occupation_id: 'occupation', region_id: 'novgorod',
-  occupation_archetype_id: 'occupation-a', status: 'approved',
+  occupation_archetype_id: 'fishing_water', status: 'approved',
   allowed_social_role_ids: 'role', daily_schedule_summer: 'approved schedule',
   typical_property: 'property', typical_tools: 'tools',
   typical_clothing: 'clothing', typical_containers: 'containers',
@@ -42,10 +42,10 @@ const bodyTime = { record_id: 'body-time', record_kind: 'body_effect_profile',
 const bundle = { schema: 'rus.procedural_actor_temporal_bundle.v1',
   roles: [role], occupations: [occupation],
   role_archetypes: [{ id: 'role-a', status: 'approved' }],
-  occupation_archetypes: [{ id: 'occupation-a', status: 'approved' }],
+  occupation_archetypes: [{ id: 'fishing_water', status: 'approved' }],
   legal_status_archetypes: [{ id: 'legal-a', status: 'approved' }],
   social_position_archetypes: [{ id: 'social-a', status: 'approved' }],
-  occupation_skill_defaults: [{ occupation_archetype_id: 'occupation-a',
+  occupation_skill_defaults: [{ occupation_archetype_id: 'fishing_water',
     skill_id: 'fishing', value: 2, status: 'approved' }],
   actor_profiles: actorProfiles, temporal_records: [activity, bodyTime] };
 const environment = { schema: 'rus.approved_initial_environment.v1',
@@ -57,13 +57,26 @@ const body = { status: 'approved', profile_id: 'ordinary-adult',
   values: { health: 100, energy: 80, satiety: 70 },
   condition_bindings: [] };
 body.record_digest = canonicalDigest(body);
+const archetypes = ['agriculture', 'animal_husbandry', 'craft_production',
+  'domestic_service', 'fishing_water', 'forest_hunting', 'illicit_marginal',
+  'military_security', 'religious_literate', 'trade_exchange',
+  'transport_guiding'];
 const actorBaseAttributesProfile = { schema: 'rus.actor_base_attributes_profile.v1',
   version: 1, profile_id: 'ordinary-worker-v1',
-  algorithm_version: 'actor_base_attributes_v1', rng_version: 'pcg32-v1',
-  ordinary_array: [13, 12, 11, 10, 9, 8], occupation_archetype_priorities: [{
-    mapping_id: 'occupation-a:ordinary', occupation_archetype_id: 'occupation-a',
-    priority: ['strength', 'endurance', 'dexterity', 'attention', 'reason',
-      'influence'] }] };
+  algorithm_version: 'actor_base_attributes_v1', rng_version: 'mulberry32_v1',
+  ordinary_array: [13, 12, 11, 10, 9, 8], occupation_archetype_priorities:
+    archetypes.map((occupation_archetype_id) => ({
+      mapping_id: `${occupation_archetype_id}:ordinary`, occupation_archetype_id,
+      priority_tiers: [['strength'], ['endurance'], ['dexterity'], ['attention'],
+        ['reason'], ['influence']] })) };
+const actorBaseAttributesBundle = { schema: 'rus.approved_actor_base_attributes_bundle.v1',
+  runtime_authorized: true, candidate: { schema:
+    'rus.actor_base_attributes_candidate.v1', status: 'approved',
+    runtime_authorized: true, candidate_digest: 'c'.repeat(64),
+    profile: actorBaseAttributesProfile }, attestation: { schema:
+    'rus.actor_base_attributes_attestation.v1', runtime_authorized: true,
+    candidate_digest: 'c'.repeat(64), profile_digest:
+    canonicalDigest(actorBaseAttributesProfile) } };
 const binding = { schema: 'rus.approved_procedural_npc_binding.v1',
   status: 'approved', actor_slot_ref: 'worker:1', role_ref: 'role',
   occupation_ref: 'occupation', profile_level: 'background',
@@ -75,7 +88,7 @@ const binding = { schema: 'rus.approved_procedural_npc_binding.v1',
     value: 'чинит сети' }, body_profile: body,
   profile_candidate_set_digest: 'a'.repeat(64),
   profile_record_digest: 'b'.repeat(64),
-  actor_base_attributes_profile: actorBaseAttributesProfile,
+  world_revision_id: 'world', actor_base_attributes_bundle: actorBaseAttributesBundle,
   initial_equipment_candidates: [] };
 
 test('approved procedural NPC is deterministic, complete and unnamed', () => {

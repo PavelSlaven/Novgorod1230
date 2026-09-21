@@ -553,7 +553,7 @@ async function assertExactMigrationTargets({ worldPool, partyPool, release }) {
       [worldMigration.migration_id]
     )
   ]);
-  if (world !== release.worldSchemaFingerprint
+  if (world !== worldMigration.target_schema_fingerprint
       || party !== PARTY_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint
       || ledger.rows.length !== 1
       || !['migration_id', 'migration_digest', 'source_schema_fingerprint',

@@ -141,6 +141,10 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     runPartyRuntimeCatalogMigration(pool)
   ]);
   assert.deepEqual(repeated.map(({ status }) => status), ['already_applied', 'already_applied']);
+  assert.equal(repeated[0].migration_digest,
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_digest);
+  assert.equal(repeated[0].target_schema_fingerprint,
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint);
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(
       new URL(`../../schemas/party-db/${file}`, import.meta.url),

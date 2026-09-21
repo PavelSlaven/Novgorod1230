@@ -21,6 +21,10 @@ import { buildPartyCatalogPinRecord } from
   '../../../packages/new-game/src/stages/stage-24-party-db-write-plan/code/runtime-catalog-pins.js';
 import { loadActiveRuntimeCatalogPin } from
   '../../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
+import { WORLD_RUNTIME_CATALOG_MIGRATION,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3 } from '../src/forward-migrations.js';
+import { resolveProceduralFinalActivationChain } from
+  '../src/procedural-final-disposable-bootstrap.js';
 
 const pack = JSON.parse(await readFile(new URL(
   '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
@@ -35,6 +39,27 @@ const [v2Pack, v2Approval] = await Promise.all([
 ].map((path) => readFile(new URL(
   `../../../data/world-catalogs/novgorod/procedural-scene-v2/${path}`,
   import.meta.url), 'utf8').then(JSON.parse)));
+
+test('disposable bootstrap selects one exact activation chain per migration', () => {
+  const migrationResult = (migration) => ({
+    migration_id: migration.migration_id,
+    migration_digest: migration.migration_digest,
+    target_schema_fingerprint: migration.target_schema_fingerprint,
+    schema_fingerprint: migration.target_schema_fingerprint
+  });
+  const legacy = resolveProceduralFinalActivationChain(
+    migrationResult(WORLD_RUNTIME_CATALOG_MIGRATION));
+  const successor = resolveProceduralFinalActivationChain(
+    migrationResult(WORLD_RUNTIME_CATALOG_MIGRATION_V3));
+  assert.equal(legacy.kind, 'legacy');
+  assert.equal(legacy.release.releaseId, 'spatial-v3-production-v12');
+  assert.equal(successor.kind, 'current_schema_successor');
+  assert.equal(successor.release.releaseId, 'spatial-v3-development-v13');
+  assert.throws(() => resolveProceduralFinalActivationChain({
+    ...migrationResult(WORLD_RUNTIME_CATALOG_MIGRATION),
+    migration_digest: '0'.repeat(64)
+  }), { code: 'PROCEDURAL_FINAL_ACTIVATION_CHAIN_INVALID' });
+});
 
 test('development activation binds audited/imported identities and preserves old pin',
   async () => {

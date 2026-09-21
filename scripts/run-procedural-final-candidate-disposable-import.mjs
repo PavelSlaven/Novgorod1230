@@ -13,8 +13,7 @@ import {
   buildBaselineRegistrationId, buildBaselineRegistrationRequest,
   buildImportLedger, buildOperatorBaselineSnapshotManifest, digestEnvelope
 } from '../tools/runtime-catalog-activation/src/artifact-contracts.js';
-import { runPartyRuntimeCatalogMigration, runWorldRuntimeCatalogMigration,
-  WORLD_RUNTIME_CATALOG_MIGRATION } from
+import { runPartyRuntimeCatalogMigration, runWorldRuntimeCatalogMigration } from
   '../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { buildProceduralFinalCandidateImportLedger,
   buildProceduralFinalV2ImportLedger, importProceduralFinalCandidatePack,
@@ -39,13 +38,19 @@ import { buildLowerDvinaBoundaryV1ImportSql } from
   '../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildCharacterAppearanceV1ImportSql } from
   '../tools/spatial-v3/character-appearance-v1-importer.mjs';
-import { buildSpatialV3DevelopmentV13ActivationBundle,
-  applySpatialV3DevelopmentV13ActivationBundle } from
-  '../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
-import { buildProceduralFinalCurrentSchemaV1DevelopmentActivation,
+import { buildFirstPlayableV2ActivationBundle,
+  applyFirstPlayableV2ActivationBundle } from
+  '../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
+import { resolveProceduralFinalActivationChain } from
+  '../tools/runtime-catalog-activation/src/procedural-final-disposable-bootstrap.js';
+import { buildProceduralFinalDevelopmentActivation,
+  applyProceduralFinalDevelopmentActivation,
+  buildProceduralFinalCurrentSchemaV1DevelopmentActivation,
   applyProceduralFinalCurrentSchemaV1DevelopmentActivation } from
   '../tools/runtime-catalog-activation/src/procedural-final-development-activation.js';
-import { buildProceduralFinalCurrentSchemaV2DevelopmentActivation,
+import { buildProceduralFinalV2DevelopmentActivation,
+  applyProceduralFinalV2DevelopmentActivation,
+  buildProceduralFinalCurrentSchemaV2DevelopmentActivation,
   applyProceduralFinalCurrentSchemaV2DevelopmentActivation } from
   '../tools/runtime-catalog-activation/src/procedural-final-v2-development-activation.js';
 import { loadActiveRuntimeCatalogPin } from
@@ -105,16 +110,17 @@ try {
   await pool.query(await buildCharacterAppearanceV1ImportSql({ root }));
   await seedSpatialV5Revision(pool, root);
   await pool.query(await buildS1AuthoringV6ImportSql({ root }));
-  await runWorldRuntimeCatalogMigration(pool);
+  const worldMigration = await runWorldRuntimeCatalogMigration(pool);
+  const chain = resolveProceduralFinalActivationChain(worldMigration);
   await runPartyRuntimeCatalogMigration(partyPool);
 
-  const developmentBundle = await buildSpatialV3DevelopmentV13ActivationBundle({
+  const developmentBundle = await buildFirstPlayableV2ActivationBundle({
     worldPool: pool, partyPool, repositoryRoot: root,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
-    authorizationRef: 'disposable development fixture activation'
+    authorizationRef: chain.initialAuthorizationRef, release: chain.release
   });
-  const developmentActivation = await applySpatialV3DevelopmentV13ActivationBundle({
-    worldPool: pool, partyPool, bundle: developmentBundle });
+  const developmentActivation = await applyFirstPlayableV2ActivationBundle({
+    worldPool: pool, partyPool, bundle: developmentBundle, release: chain.release });
   const developmentPin = await loadActiveRuntimeCatalogPin(pool,
     'item_container_materialization_v2');
   await seedPartyWithPin(partyPool, 'party-development-fixture', developmentPin);
@@ -127,7 +133,7 @@ try {
       .map(normalizeRow);
   delete rowsByTable.world_revisions;
   const baselineManifest = buildOperatorBaselineSnapshotManifest({
-    schemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+    schemaFingerprint: chain.migration.target_schema_fingerprint,
     registry, rowsByTable
   });
   const compatibilityManifest = pack.compatibility_manifest;
@@ -183,25 +189,43 @@ try {
   const v2Imported = await importProceduralFinalV2Pack({ pool, baseline,
     v1Pack: pack, v2Pack, attestation: v2Attestation,
     runtimeContractDigest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST });
-  const activationBundle = await buildProceduralFinalCurrentSchemaV1DevelopmentActivation({
+  const activationBundle = await (chain.kind === 'legacy'
+    ? buildProceduralFinalDevelopmentActivation({
+      worldPool: pool, partyPool, pack, ledger: imported.ledger,
+      gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
+      authorizationRef: chain.v1AuthorizationRef
+    })
+    : buildProceduralFinalCurrentSchemaV1DevelopmentActivation({
     worldPool: pool, partyPool, pack, ledger: imported.ledger,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
-  });
-  const activation = await applyProceduralFinalCurrentSchemaV1DevelopmentActivation({
-    worldPool: pool, partyPool, bundle: activationBundle });
+  }));
+  const activation = await (chain.kind === 'legacy'
+    ? applyProceduralFinalDevelopmentActivation({ worldPool: pool, partyPool,
+      bundle: activationBundle })
+    : applyProceduralFinalCurrentSchemaV1DevelopmentActivation({
+      worldPool: pool, partyPool, bundle: activationBundle }));
   const activePin = await loadActiveRuntimeCatalogPin(pool,
     'item_container_materialization_v2');
   await seedPartyWithPin(partyPool, 'party-v1-development', activePin);
   const existingPartyPins = (await partyPool.query(
     `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
        FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;
-  const v2ActivationBundle = await buildProceduralFinalCurrentSchemaV2DevelopmentActivation({
+  const v2ActivationBundle = await (chain.kind === 'legacy'
+    ? buildProceduralFinalV2DevelopmentActivation({
+      worldPool: pool, partyPool, v1Pack: pack, v2Pack,
+      v2ApprovalAttestation: v2Attestation, ledger: v2Imported.ledger,
+      gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0'
+    })
+    : buildProceduralFinalCurrentSchemaV2DevelopmentActivation({
     worldPool: pool, partyPool, v1Pack: pack, v2Pack,
     v2ApprovalAttestation: v2Attestation, ledger: v2Imported.ledger,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0'
-  });
-  const v2Activation = await applyProceduralFinalCurrentSchemaV2DevelopmentActivation({
-    worldPool: pool, partyPool, bundle: v2ActivationBundle });
+  }));
+  const v2Activation = await (chain.kind === 'legacy'
+    ? applyProceduralFinalV2DevelopmentActivation({ worldPool: pool, partyPool,
+      bundle: v2ActivationBundle })
+    : applyProceduralFinalCurrentSchemaV2DevelopmentActivation({
+      worldPool: pool, partyPool, bundle: v2ActivationBundle }));
   const unchangedPartyPins = (await partyPool.query(
     `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
        FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;

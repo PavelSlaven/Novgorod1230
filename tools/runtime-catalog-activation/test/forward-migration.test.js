@@ -163,6 +163,9 @@ test('forward migration applies DDL and ledger row in one transaction with exact
   });
 
   assert.equal(result.status, 'applied');
+  assert.equal(result.migration_digest, migration.migration_digest);
+  assert.equal(result.target_schema_fingerprint,
+    migration.target_schema_fingerprint);
   assert.equal(calls[0].sql, 'BEGIN');
   assert.ok(calls.some(({ sql }) => sql === migration.sql));
   assert.ok(calls.some(({ sql }) => sql.includes('INSERT INTO world_base.schema_migrations')));

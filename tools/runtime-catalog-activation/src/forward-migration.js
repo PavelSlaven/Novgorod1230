@@ -130,8 +130,11 @@ export async function runForwardMigration({
       return Object.freeze({
         status: state.status,
         migration_id: migration.migration_id,
+        migration_digest: migration.migration_digest,
         schema_name: migration.schema_name,
-        schema_fingerprint: actualSchemaFingerprint
+        schema_fingerprint: actualSchemaFingerprint,
+        source_schema_fingerprint: migration.source_schema_fingerprint,
+        target_schema_fingerprint: migration.target_schema_fingerprint
       });
     }
 
@@ -150,7 +153,9 @@ export async function runForwardMigration({
       migration_id: migration.migration_id,
       migration_digest: migration.migration_digest,
       schema_name: migration.schema_name,
-      schema_fingerprint: targetFingerprint
+      schema_fingerprint: targetFingerprint,
+      source_schema_fingerprint: migration.source_schema_fingerprint,
+      target_schema_fingerprint: migration.target_schema_fingerprint
     });
   } catch (error) {
     await client.query('ROLLBACK').catch(() => {});

@@ -355,15 +355,15 @@ async function capturedTraceRuntime(spatialSemanticProfile = null) {
   const release = {
     release_id: 'spatial-v3-production-v10',
     runtime_catalog_scope: 'item_container_materialization_v2',
-    runtime_catalog_contract_digest: 'runtime-digest',
-    world_revision_id: 'world-revision', world_catalog_digest: 'world-digest',
-    compatible_world_pin_manifest_digest: 'manifest-digest'
+    runtime_catalog_contract_digest: '1'.repeat(64),
+    world_revision_id: 'world-revision', world_catalog_digest: '2'.repeat(64),
+    compatible_world_pin_manifest_digest: '3'.repeat(64)
   };
   const worldPool = { query: async () => ({ rows: [{
     event_id: 'event', catalog_scope: release.runtime_catalog_scope,
-    catalog_revision_id: 'revision', catalog_digest: 'catalog-digest',
-    import_id: 'import', import_audit_digest: 'import-digest',
-    record_registry_digest: 'registry-digest',
+    catalog_revision_id: 'revision', catalog_digest: '4'.repeat(64),
+    import_id: 'import', import_audit_digest: '5'.repeat(64),
+    record_registry_digest: '6'.repeat(64),
     runtime_contract_digest: release.runtime_catalog_contract_digest,
     compatible_world_revision_id: release.world_revision_id,
     compatible_world_catalog_digest: release.world_catalog_digest,

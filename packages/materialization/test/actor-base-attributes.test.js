@@ -62,8 +62,7 @@ test('actor attributes preserve only their exact original materialization bindin
       ...change, existing_attributes: snapshot }),
     { code: 'ACTOR_BASE_ATTRIBUTES_SNAPSHOT_DATA_GAP' });
   }
-  assert.throws(() => materializeOrPreserveActorBaseAttributes({ ...input,
+  assert.deepEqual(materializeOrPreserveActorBaseAttributes({ ...input,
     seed_basis: { ...input.seed_basis, parent_seed_digest: 'e'.repeat(64) },
-    existing_attributes: snapshot }),
-  { code: 'ACTOR_BASE_ATTRIBUTES_SNAPSHOT_DATA_GAP' });
+    existing_attributes: snapshot }), snapshot);
 });

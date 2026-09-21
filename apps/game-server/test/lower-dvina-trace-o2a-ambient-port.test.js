@@ -303,20 +303,20 @@ async function capturedTraceRuntime(ordinaryMaterializationProfile,
   const release = {
     release_id: 'test-release',
     runtime_catalog_scope: 'item_container_materialization_v2',
-    runtime_catalog_contract_digest: 'runtime-digest',
+    runtime_catalog_contract_digest: '1'.repeat(64),
     world_revision_id: 'world-revision',
-    world_catalog_digest: 'world-digest',
-    compatible_world_pin_manifest_digest: 'manifest-digest'
+    world_catalog_digest: '2'.repeat(64),
+    compatible_world_pin_manifest_digest: '3'.repeat(64)
   };
   const worldPool = { query: async () => ({ rows: [{
     event_id: 'event', catalog_scope: 'item_container_materialization_v2',
-    catalog_revision_id: 'revision', catalog_digest: 'catalog-digest',
-    import_id: 'import', import_audit_digest: 'import-digest',
-    record_registry_digest: 'registry-digest',
-    runtime_contract_digest: 'runtime-digest',
+    catalog_revision_id: 'revision', catalog_digest: '4'.repeat(64),
+    import_id: 'import', import_audit_digest: '5'.repeat(64),
+    record_registry_digest: '6'.repeat(64),
+    runtime_contract_digest: release.runtime_catalog_contract_digest,
     compatible_world_revision_id: 'world-revision',
-    compatible_world_catalog_digest: 'world-digest',
-    compatible_world_pin_manifest_digest: 'manifest-digest'
+    compatible_world_catalog_digest: release.world_catalog_digest,
+    compatible_world_pin_manifest_digest: release.compatible_world_pin_manifest_digest
   }] }) };
   const partyPool = {
     query: async () => ({ rows: [] }),

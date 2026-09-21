@@ -4,7 +4,7 @@
   "status": "approval_requested",
   "candidate_ref": "actor-base-attributes-v1/candidate.json",
   "subject_commit": "6428097ed150cb6c6e66248669a53d3803d4213e",
-  "candidate_digest": "27785e38dd615a0b580cbb5ad88874279e96617814997cc56ea6f845872c90b0",
+  "candidate_digest": "7c0916640715c9c48bd023676b3268deccdc0c83a66c980835ae25173f04d309",
   "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
   "decision": "pending",
   "scope": "ordinary NPC actor_base_attributes_v1 only",
@@ -12,5 +12,5 @@
   "requested_equipment_allocation_activation": false,
   "requested_import": false,
   "requested_activation": false,
-  "request_digest": "56e8d8f5c7245772fe8f73b0fd270b24fbf0012de6a59781692a1c81221c76b0"
+  "request_digest": "fc362bb73f60ad87595d0ca51a2080bff7c970907fa8f2ca5f94e5acae155c89"
 }

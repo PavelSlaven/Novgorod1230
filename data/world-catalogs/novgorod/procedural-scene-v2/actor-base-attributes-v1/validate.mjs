@@ -47,6 +47,7 @@ const archetypeId = columns.indexOf('occupation_archetype_id');
 const actual = new Map();
 for (const line of lines) {
   const row = line.split('\t');
+  if (row[columns.indexOf('status')] !== 'approved') continue;
   const values = actual.get(row[archetypeId]) ?? [];
   values.push(row[occupationId]);
   actual.set(row[archetypeId], values);

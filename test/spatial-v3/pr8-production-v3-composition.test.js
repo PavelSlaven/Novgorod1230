@@ -142,7 +142,9 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
   const catalog = await bindings.targetCompositionPorts.releaseVerticalSliceExecutor.listScenarios();
   assert.equal(catalog.scenarios[0].scenario_id, 'lower_dvina_trace_v1');
   assert.equal(catalog.scenarios[0].available, true);
-  assert.deepEqual(bindings.runtimeCatalogPin, TEST_RUNTIME_CATALOG_PIN);
+  assert.deepEqual(bindings.runtimeCatalogPin, {
+    ...TEST_RUNTIME_CATALOG_PIN, activation_scope: null
+  });
   assert.equal(bindings.runtimeCatalogPin.compatible_world_revision_id,
     'novgorod_spatial_v3_production_v6_candidate_001');
   assert.equal(bindings.runtimeCatalogPin.compatible_world_catalog_digest,
@@ -727,7 +729,7 @@ test('restart extends the exact immutable catalog ledger through migration 032',
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 21);
+  assert.equal(result.newly_applied, 23);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),

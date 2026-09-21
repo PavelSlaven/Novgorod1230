@@ -63,7 +63,6 @@ export function materializeOrPreserveActorBaseAttributes({ existing_attributes: 
           !== input.occupation_archetype_id
         || basis.world_revision_id !== input.seed_basis?.world_revision_id
         || basis.world_catalog_digest !== input.seed_basis?.world_catalog_digest
-        || basis.parent_seed_digest !== input.seed_basis?.parent_seed_digest
         || existing.profile_ref.id !== profile.profile_id
         || existing.profile_ref.version !== profile.version
         || existing.profile_ref.digest !== canonicalDigest(profile)

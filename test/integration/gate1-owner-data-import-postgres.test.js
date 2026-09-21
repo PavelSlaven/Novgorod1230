@@ -6,30 +6,30 @@ import { join } from 'node:path';
 import test from 'node:test';
 import pg from 'pg';
 
-import { ensureLocalPostgres, LOCAL_POSTGRES } from
-  '../../tools/local-play/local-postgres.js';
+import { createPostgresTestBackend } from
+  '../fixtures/postgres-test-backend.js';
 
 test('Gate1 imports canonical owner closure and Stage3C without activation',
   async (t) => {
     const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-gate1-postgres-'));
-    const settings = { ...LOCAL_POSTGRES,
-      worldDatabase: `pr17_gate1_world_${process.pid}`,
-      partyDatabase: `pr17_gate1_party_${process.pid}`,
-      worldUser: 'postgres', partyUser: 'postgres' };
-    let managed = await ensureLocalPostgres({ dataRoot, settings });
+    const backend = await createPostgresTestBackend('pr17_gate1');
+    if (!backend) {
+      await rm(dataRoot, { recursive: true, force: true });
+      return t.skip('No supported PostgreSQL test backend');
+    }
     let pool;
     const resultPath = process.env.GATE1_RESULT_PATH
       ?? join(dataRoot, 'gate1-import-readback-result.json');
     t.after(async () => {
       await pool?.end();
-      await managed.close();
+      await backend.close();
       await rm(dataRoot, { recursive: true, force: true });
     });
     const applied = spawnSync(process.execPath,
       ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle',
         '--write-result', resultPath], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
-        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
+        env: { ...process.env, PR17_TEST_DATABASE_URL: backend.worldUrl }
       });
     assert.equal(applied.status, 0, applied.stderr);
     const result = JSON.parse(applied.stdout);
@@ -65,7 +65,7 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
     assert.deepEqual(result.first_state.gate1_owner_readback,
       result.repeated_state.gate1_owner_readback);
 
-    const worldSchemaPool = new pg.Pool({ connectionString: managed.worldUrl,
+    const worldSchemaPool = new pg.Pool({ connectionString: backend.worldUrl,
       max: 1 });
     try {
       await worldSchemaPool.query(await readFile(new URL(
@@ -74,7 +74,7 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
     } finally {
       await worldSchemaPool.end();
     }
-    const partyPool = new pg.Pool({ connectionString: managed.partyUrl,
+    const partyPool = new pg.Pool({ connectionString: backend.partyUrl,
       max: 1 });
     try {
       await partyPool.query(await readFile(new URL(
@@ -86,9 +86,8 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
     } finally {
       await partyPool.end();
     }
-    await managed.close();
-    managed = await ensureLocalPostgres({ dataRoot, settings });
-    pool = new pg.Pool({ connectionString: managed.worldUrl, max: 2 });
+    await backend.restart();
+    pool = new pg.Pool({ connectionString: backend.worldUrl, max: 2 });
     const restartedTarget = (await pool.query(`SELECT id,catalog_digest,status
       FROM world_base.world_revisions WHERE id=$1`,
     [result.target_revision_id])).rows[0];

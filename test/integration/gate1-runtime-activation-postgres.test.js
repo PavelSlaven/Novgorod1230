@@ -1,9 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
 
@@ -17,31 +15,26 @@ import { activateGate1RuntimeCatalog } from
 import { runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
-import { ensureLocalPostgres, LOCAL_POSTGRES } from
-  '../../tools/local-play/local-postgres.js';
+import { createPostgresTestBackend } from
+  '../fixtures/postgres-test-backend.js';
 
 test('Gate1 registers already-imported rows and activates V5 exactly across restart',
   async (t) => {
-    const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-gate1-activation-'));
-    const settings = { ...LOCAL_POSTGRES,
-      worldDatabase: `pr17_gate1_activation_${process.pid}`,
-      partyDatabase: `pr17_gate1_activation_party_${process.pid}`,
-      worldUser: 'postgres', partyUser: 'postgres' };
-    let managed = await ensureLocalPostgres({ dataRoot, settings });
+    const backend = await createPostgresTestBackend('pr17_gate1_activation');
+    if (!backend) return t.skip('No supported PostgreSQL test backend');
     let pool;
     t.after(async () => {
       await pool?.end();
-      await managed.close();
-      await rm(dataRoot, { recursive: true, force: true });
+      await backend.close();
     });
     const imported = spawnSync(process.execPath,
       ['scripts/run-pr17-item-container-stage3c.mjs', '--mode',
         'fixture-bootstrap'], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
-        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
+        env: { ...process.env, PR17_TEST_DATABASE_URL: backend.worldUrl }
       });
     assert.equal(imported.status, 0, imported.stderr);
-    pool = new pg.Pool({ connectionString: managed.worldUrl, max: 4 });
+    pool = new pg.Pool({ connectionString: backend.worldUrl, max: 4 });
     const partyFiles = (await readdir('schemas/party-db'))
       .filter((file) => /^\d+.*\.sql$/u.test(file)).sort();
     const migrationIndex = partyFiles.findIndex((file) => file.startsWith('012_'));
@@ -76,7 +69,7 @@ test('Gate1 registers already-imported rows and activates V5 exactly across rest
       '1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5');
     assert.ok(Object.values(catalog.records_by_table).flat().length > 0);
 
-    const managedPartyPool = new pg.Pool({ connectionString: managed.partyUrl,
+    const managedPartyPool = new pg.Pool({ connectionString: backend.partyUrl,
       max: 1 });
     for (const file of partyFiles.slice(0, migrationIndex)) {
       await managedPartyPool.query(await readFile(`schemas/party-db/${file}`,
@@ -91,9 +84,8 @@ test('Gate1 registers already-imported rows and activates V5 exactly across rest
 
     await pool.end();
     pool = null;
-    await managed.close();
-    managed = await ensureLocalPostgres({ dataRoot, settings });
-    pool = new pg.Pool({ connectionString: managed.worldUrl, max: 4 });
+    await backend.restart();
+    pool = new pg.Pool({ connectionString: backend.worldUrl, max: 4 });
     const repeated = await activateGate1RuntimeCatalog({
       worldPool: pool, partyPool: pool, repositoryRoot: process.cwd(),
       worldReleaseId: 'spatial-v3-production-v5'
@@ -105,15 +97,14 @@ test('Gate1 registers already-imported rows and activates V5 exactly across rest
 
     await pool.end();
     pool = null;
-    const adminUrl = new URL(managed.worldUrl);
-    adminUrl.username = 'postgres';
+    const adminUrl = new URL(backend.worldUrl);
     adminUrl.pathname = '/postgres';
     const admin = new pg.Pool({ connectionString: adminUrl.toString(), max: 1 });
     for (const kind of ['request', 'predecessor', 'world_pin']) {
-      const database = `${settings.worldDatabase}_${kind}`;
+      const database = `${backend.worldDatabase}_${kind}`;
       await admin.query(`CREATE DATABASE ${database}
-        TEMPLATE ${settings.worldDatabase}`);
-      const driftUrl = new URL(managed.worldUrl);
+        TEMPLATE ${backend.worldDatabase}`);
+      const driftUrl = new URL(backend.worldUrl);
       driftUrl.pathname = `/${database}`;
       const driftPool = new pg.Pool({ connectionString: driftUrl.toString(),
         max: 4 });

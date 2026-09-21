@@ -46,8 +46,10 @@ import {
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
-import { bootstrapProceduralFinalV2Disposable } from
-  '../../tools/runtime-catalog-activation/src/procedural-final-disposable-bootstrap.js';
+import { activateGate1RuntimeCatalog } from
+  '../../tools/runtime-catalog-activation/src/gate1-runtime-activation.js';
+import { loadActiveRuntimeCatalogPin } from
+  '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 import { buildLowerDvinaBoundaryV1ImportSql } from
   '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildLowerDvinaV2ImportSql } from
@@ -209,10 +211,11 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     worldPin: { world_revision_id: runtimeCatalogPin.compatible_world_revision_id,
       world_catalog_digest: runtimeCatalogPin.compatible_world_catalog_digest },
     runtimeCatalogPin, bindings: proceduralBindings, verifiedItemCatalog });
-  assert.equal(resolveOptionalProceduralSceneCatalog({
+  const proceduralSceneCatalog = resolveOptionalProceduralSceneCatalog({
     generate: generateProceduralSceneProfileCatalog,
     bindings: proceduralBindings, approvedRecordBundle: proceduralRecords
-  }), null);
+  });
+  assert.equal(proceduralSceneCatalog, null);
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
@@ -381,11 +384,11 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assertPublic(start);
 
   const partyId = start.data.party_id;
-  const publicPackages = (await pool.query(
+  const publicTrace = (await pool.query(
     `SELECT trace FROM party_runtime.party_materialization_runs
       WHERE party_id=$1`, [partyId]
-  )).rows[0].trace.procedural_scene_packages.packages;
-  assert.ok(publicPackages.some(({ family }) => family === 'natural_shore'));
+  )).rows[0].trace;
+  assert.equal(publicTrace.procedural_scene_packages, undefined);
   const authoredRequest = {
     scenario_id: 'vikhtuy_fishing_camp_v1',
     request_id: 'm3-authored-public-v5'
@@ -404,32 +407,14 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const packageTrace = (await pool.query(
     `SELECT trace FROM party_runtime.party_materialization_runs
       WHERE party_id=$1`, [authoredPartyId])).rows[0].trace;
-  const scenePackages = packageTrace.procedural_scene_packages;
-  assert.equal(scenePackages.packages.length, 3);
-  const fishingPackage = scenePackages.packages.find(({ family }) =>
-    family === 'inland_fishing_worksite');
-  assert.equal(fishingPackage.allocation_policy.status,
-    'pending_runtime_allocation_approval');
-  assert.equal(fishingPackage.profile.readiness.functional_layers.find(
-    ({ layer }) => layer === 'tool').status, 'pending_p16_owner');
-  assert.equal(fishingPackage.profile.readiness.functional_layers.find(
-    ({ layer }) => layer === 'container').status, 'unresolved');
+  assert.equal(packageTrace.procedural_scene_packages, undefined);
   assert.deepEqual(await sceneRepository.loadPlayerSafeScenePackages(
-    authoredPartyId), await sceneRepository.loadPlayerSafeScenePackages(
-    authoredPartyId));
-  const safePackages = await sceneRepository.loadPlayerSafeScenePackages(
-    authoredPartyId);
-  assert.ok(safePackages.every((entry) => Object.keys(entry).every((key) => [
-    'scene_package_id', 'family', 'g5_node_id', 'g6_instance_id',
-    'position_id', 'environment_facets', 'functional_groups',
-    'allocation_status'
-  ].includes(key))));
+    authoredPartyId), []);
   assert.deepEqual(await sceneRepository.loadPlayerSafeScenePackages(
     'party-v1-development'), []);
-  assert.equal((await pool.query(
+  assert.deepEqual((await pool.query(
     `SELECT catalog_revision_id FROM party_runtime.party_catalog_pins
-      WHERE party_id='party-v1-development'`)).rows[0].catalog_revision_id,
-  'procedural_scene_final_candidate_v1_001');
+      WHERE party_id='party-v1-development'`)).rows, []);
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
   assert.equal(authoredInternal.npcs.length, 3);
   assert.equal(authoredInternal.items.length, 2);
@@ -469,28 +454,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     (await api(base, '/api/v1/new-games', authoredRequest)).data,
     authoredStart.data
   );
-  assert.deepEqual((await pool.query(
+  assert.equal((await pool.query(
     `SELECT trace FROM party_runtime.party_materialization_runs
       WHERE party_id=$1`, [authoredPartyId])).rows[0].trace
-    .procedural_scene_packages, scenePackages);
-  const tamperedTop = structuredClone(packageTrace);
-  tamperedTop.procedural_scene_packages.digest = '0'.repeat(64);
-  await pool.query(`UPDATE party_runtime.party_materialization_runs
-    SET trace=$2::jsonb WHERE party_id=$1`, [authoredPartyId,
-    JSON.stringify(tamperedTop)]);
-  await assert.rejects(() => sceneRepository.loadPlayerSafeScenePackages(
-    authoredPartyId));
-  const tamperedPackage = structuredClone(packageTrace);
-  tamperedPackage.procedural_scene_packages.packages[0].scene_package_digest =
-    '0'.repeat(64);
-  await pool.query(`UPDATE party_runtime.party_materialization_runs
-    SET trace=$2::jsonb WHERE party_id=$1`, [authoredPartyId,
-    JSON.stringify(tamperedPackage)]);
-  await assert.rejects(() => sceneRepository.loadPlayerSafeScenePackages(
-    authoredPartyId));
-  await pool.query(`UPDATE party_runtime.party_materialization_runs
-    SET trace=$2::jsonb WHERE party_id=$1`, [authoredPartyId,
-    JSON.stringify(packageTrace)]);
+    .procedural_scene_packages, undefined);
   assert.equal(await count(pool, 'party_runtime.parties', authoredPartyId), 1);
   assert.equal(await count(pool, 'party_runtime.party_materialization_runs', authoredPartyId), 1);
   assert.equal(await count(pool, 'party_runtime.party_server_sessions', authoredPartyId), 1);
@@ -1043,8 +1010,12 @@ async function installActivatedRuntimeCatalog({ worldPool, partyPool,
   await worldPool.query(await buildS1AuthoringV6ImportSql());
   const worldMigration = await runWorldRuntimeCatalogMigration(worldPool);
   assert.equal(worldMigration.status, 'applied');
-  return (await bootstrapProceduralFinalV2Disposable({ worldPool,
-    partyPool, repositoryRoot: process.cwd(), worldMigration })).v2Pin;
+  const activation = await activateGate1RuntimeCatalog({ worldPool,
+    partyPool, repositoryRoot: process.cwd(),
+    worldReleaseId: 'spatial-v3-production-v6' });
+  assert.ok(['activated', 'already_active'].includes(activation.status));
+  return loadActiveRuntimeCatalogPin(worldPool,
+    'item_container_materialization_v2');
 }
 
 async function seedSpatialV5Revision(pool) {

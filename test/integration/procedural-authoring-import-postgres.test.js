@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
@@ -22,34 +21,20 @@ import { RECORD_ADAPTERS } from
   '../../tools/runtime-catalog-activation/src/record-adapters.generated.js';
 import { RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST } from
   '../../packages/runtime-catalog/src/runtime-contract.js';
-
-const docker = (args, options = {}) => spawnSync('docker', args, {
-  encoding: 'utf8', timeout: options.timeout ?? 90_000, input: options.input
-});
+import { createPostgresTestBackend } from
+  '../fixtures/postgres-test-backend.js';
 
 test('combined procedural authoring pack imports only into disposable DB',
   async (t) => {
-    if (docker(['version']).status !== 0) {
-      t.skip('Docker is required for disposable PostgreSQL import');
-      return;
-    }
-    const suffix = randomUUID().slice(0, 12);
-    const container = `procedural-authoring-${suffix}`;
+    const backend = await createPostgresTestBackend(
+      'pr17_procedural_authoring');
+    if (!backend) return t.skip('No supported PostgreSQL test backend');
     let pool;
     t.after(async () => {
       await pool?.end();
-      docker(['rm', '-f', container]);
+      await backend.close();
     });
-    assert.equal(docker(['run', '-d', '--name', container,
-      '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only',
-      '-e', 'POSTGRES_USER=world_operator',
-      '-e', 'POSTGRES_DB=pr17_procedural_authoring',
-      'postgres:16-alpine']).status, 0);
-    await waitForPostgres(container);
-    const port = Number(docker(['port', container, '5432']).stdout
-      .match(/:(\d+)\s*$/u)?.[1]);
-    const url = `postgresql://world_operator:local_only@127.0.0.1:${port}`
-      + '/pr17_procedural_authoring';
+    const url = backend.worldUrl;
     const promoted = spawnSync(process.execPath,
       ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle'], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 180_000,
@@ -59,13 +44,17 @@ test('combined procedural authoring pack imports only into disposable DB',
     pool = new pg.Pool({ connectionString: url, max: 2 });
     for (const file of ['18.sql', '19.sql', '20.sql', '21.sql'])
       await pool.query(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
-    await pool.query(
-      `INSERT INTO world_base.world_revisions
-         (id,title,catalog_digest,status)
-       VALUES ($1,'Spatial v6 compatibility pin',$2,'approved')`,
-      ['novgorod_spatial_v3_production_v6_candidate_001',
-        '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad']
-    );
+    const expectedV6 = JSON.parse(await readFile(
+      'data/world-catalogs/novgorod/spatial-v3/candidates/'
+        + 'spatial-v3-production-v6/datasets/world_revisions.json', 'utf8'))
+      .find(({ id }) => id ===
+        'novgorod_spatial_v3_production_v6_candidate_001');
+    const actualV6 = (await pool.query(`SELECT id,parent_revision_id,title,
+      to_char(effective_from,'YYYY-MM-DD') AS effective_from,
+      to_char(effective_to,'YYYY-MM-DD') AS effective_to,
+      catalog_digest,status
+      FROM world_base.world_revisions WHERE id=$1`, [expectedV6.id])).rows;
+    assert.deepEqual(actualV6, [expectedV6]);
     await runWorldRuntimeCatalogMigration(pool);
 
     const rowsByTable = {};
@@ -151,13 +140,4 @@ function normalizeRow(row) {
 }
 function seal(payload) {
   return { ...payload, attestation_digest: digestEnvelope(payload) };
-}
-async function waitForPostgres(name) {
-  for (let attempt = 0; attempt < 50; attempt += 1) {
-    await new Promise((resolve) => setTimeout(resolve, 250));
-    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1',
-      '-U', 'world_operator', '-d', 'pr17_procedural_authoring']).status === 0)
-      return;
-  }
-  assert.fail(`${name} did not become ready`);
 }

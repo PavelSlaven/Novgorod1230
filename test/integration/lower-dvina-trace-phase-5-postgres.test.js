@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
@@ -19,19 +18,22 @@ import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
-
-const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
+import { createPostgresTestBackend } from
+  '../fixtures/postgres-test-backend.js';
 
 test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback and authoritative readback', async (t) => {
-  if (docker(['version']).status !== 0) return t.skip('Docker is required for isolated Phase 5 PostgreSQL integration');
-  const name = `lower-dvina-phase-5-${process.pid}`;
+  const backend = await createPostgresTestBackend('pr17_phase5');
+  if (!backend) return t.skip('No supported PostgreSQL test backend');
   let pool;
-  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
-  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase5', '-e', 'POSTGRES_DB=pr17_phase5', 'postgres:16-alpine']);
-  assert.equal(started.status, 0, started.stderr);
-  await waitForPostgres(name);
-  const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
-  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase5', password: 'local_only', database: 'pr17_phase5', max: 8 });
+  t.after(async () => {
+    if (pool) await pool.end();
+    await backend.close();
+  });
+  const databaseUrl = new URL(backend.worldUrl);
+  pool = new pg.Pool({ host: databaseUrl.hostname,
+    port: Number(databaseUrl.port), user: decodeURIComponent(databaseUrl.username),
+    password: decodeURIComponent(databaseUrl.password),
+    database: databaseUrl.pathname.slice(1), max: 8 });
   await installSchemas(pool);
   const { runtimeCatalogPin } = await installLowerDvinaTraceV5World(pool);
   const pins = await runtimePins(runtimeCatalogPin);
@@ -467,17 +469,3 @@ async function resolveTreatmentBoundary(pool, partyId) {
 }
 function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['visible_context'] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
 async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
-async function waitForPostgres(name) {
-  for (let i = 0; i < 30; i += 1) {
-    const ready = docker(['exec', name, 'pg_isready', '-h', '127.0.0.1']).status === 0;
-    const acceptsQueries = ready && docker([
-      'exec', name, 'psql', '-U', 'phase5', '-d', 'phase5', '-c', 'SELECT 1'
-    ]).status === 0;
-    if (acceptsQueries) {
-      await new Promise((resolve) => setTimeout(resolve, 750));
-      return;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
-  throw new Error('PostgreSQL did not become ready');
-}

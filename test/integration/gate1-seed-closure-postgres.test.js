@@ -6,8 +6,8 @@ import { join } from 'node:path';
 import test from 'node:test';
 import pg from 'pg';
 
-import { ensureLocalPostgres, LOCAL_POSTGRES } from
-  '../../tools/local-play/local-postgres.js';
+import { createPostgresTestBackend } from
+  '../fixtures/postgres-test-backend.js';
 import { deriveGate1SeedPersistedClosure } from
   '../../scripts/generate-gate1-seed-persisted-closure.mjs';
 import { buildGate1SeedClosureArtifacts } from
@@ -24,15 +24,15 @@ const seedPath = 'tools/rus13-world-base-importer/'
 test('Gate1 closure accepts graph-node newline normalization but rejects content mutation',
   async (t) => {
     const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-seed-closure-'));
-    const managed = await ensureLocalPostgres({ dataRoot,
-      settings: { ...LOCAL_POSTGRES,
-        worldDatabase: `pr17_seed_closure_${process.pid}`,
-        partyDatabase: `pr17_seed_party_${process.pid}`,
-        worldUser: 'postgres', partyUser: 'postgres' } });
-    const pool = new pg.Pool({ connectionString: managed.worldUrl, max: 1 });
+    const backend = await createPostgresTestBackend('pr17_seed_closure');
+    if (!backend) {
+      await rm(dataRoot, { recursive: true, force: true });
+      return t.skip('No supported PostgreSQL test backend');
+    }
+    const pool = new pg.Pool({ connectionString: backend.worldUrl, max: 1 });
     t.after(async () => {
       await pool.end();
-      await managed.close();
+      await backend.close();
       await rm(dataRoot, { recursive: true, force: true });
     });
 

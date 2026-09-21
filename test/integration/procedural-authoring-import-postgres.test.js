@@ -42,7 +42,7 @@ test('combined procedural authoring pack imports only into disposable DB',
       });
     assert.equal(promoted.status, 0, promoted.stderr);
     pool = new pg.Pool({ connectionString: url, max: 2 });
-    for (const file of ['18.sql', '19.sql', '20.sql', '21.sql'])
+    for (const file of ['18.sql', '19.sql', '20.sql'])
       await pool.query(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
     const expectedV6 = JSON.parse(await readFile(
       'data/world-catalogs/novgorod/spatial-v3/candidates/'
@@ -56,6 +56,7 @@ test('combined procedural authoring pack imports only into disposable DB',
       FROM world_base.world_revisions WHERE id=$1`, [expectedV6.id])).rows;
     assert.deepEqual(actualV6, [expectedV6]);
     await runWorldRuntimeCatalogMigration(pool);
+    await pool.query(await readFile('infra/world-base/schema/21.sql', 'utf8'));
 
     const rowsByTable = {};
     for (const entry of registry.entries) rowsByTable[entry.table_name] =

@@ -252,6 +252,14 @@ export async function readPostgresSchemaFingerprint(client, schemaName) {
          ) AS definition
        FROM pg_catalog.pg_roles r
        WHERE r.rolname = ANY($2::text[])
+         AND EXISTS (
+           SELECT 1
+           FROM pg_catalog.pg_namespace local_namespace
+           CROSS JOIN LATERAL
+             pg_catalog.aclexplode(local_namespace.nspacl) local_acl
+           WHERE local_namespace.nspname = $1
+             AND local_acl.grantee = r.oid
+         )
        UNION ALL
        SELECT
          'schema_acl',

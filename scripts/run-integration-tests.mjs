@@ -11,17 +11,25 @@ const clusterRoleSerial = new Set([
   'gate1-seed-closure-postgres.test.js',
   'procedural-authoring-import-postgres.test.js'
 ]);
+const heavySerial = new Set([
+  'first-playable-v2-activation-postgres.test.js',
+  'lower-dvina-trace-phase-1b-postgres.test.js'
+]);
 const files = (await readdir(directory))
   .filter((file) => file.endsWith('.test.js'))
   .filter((file) => process.platform === 'win32' || !windowsOnly.has(file))
   .sort();
 const serialFiles = files.filter((file) => clusterRoleSerial.has(file));
-const parallelFiles = files.filter((file) => !clusterRoleSerial.has(file));
+const heavyFiles = files.filter((file) => heavySerial.has(file));
+const parallelFiles = files.filter(
+  (file) => !clusterRoleSerial.has(file) && !heavySerial.has(file)
+);
 const parallelism = Math.max(1, Math.min(4, availableParallelism()));
 
 const serial = run(serialFiles, 1);
+const heavy = run(heavyFiles, 1);
 const parallel = run(parallelFiles, parallelism);
-process.exit(serial === 0 && parallel === 0 ? 0 : 1);
+process.exit(serial === 0 && heavy === 0 && parallel === 0 ? 0 : 1);
 
 function run(selected, concurrency) {
   if (selected.length === 0) return 0;

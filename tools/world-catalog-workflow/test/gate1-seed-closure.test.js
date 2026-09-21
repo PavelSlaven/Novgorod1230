@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 
 import { loadGate1SeedClosureArtifacts,
+  validateGate1SeedClosureAttestation,
   validatePendingGate1SeedClosure } from
   '../../../scripts/generate-gate1-seed-closure-request.mjs';
 
@@ -46,14 +47,35 @@ test('pending seed closure grants no import or runtime authority', async () => {
     /GATE1_SEED_CLOSURE_AUTHORITY_FORBIDDEN/u);
 });
 
-test('Stage3C executor fails closed before seed closure attestation', () => {
-  const result = spawnSync(process.execPath,
-    ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'dry-run'], {
-      cwd: process.cwd(), encoding: 'utf8', timeout: 30_000
-    });
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /GATE1_SEED_CLOSURE_ATTESTATION_REQUIRED/u);
-});
+test('seed closure attestation approves exact import/readback only',
+  async () => {
+    const artifacts = await loadGate1SeedClosureArtifacts();
+    const attestation = JSON.parse(await readFile(
+      `${root}/authoring-approval-attestation.json`, 'utf8'));
+    assert.equal(validateGate1SeedClosureAttestation({
+      ...artifacts, attestation
+    }), true);
+    for (const field of ['activation_authorized', 'production_authorized',
+      'existing_party_migration_authorized',
+      'old_save_rematerialization_authorized',
+      'authoring_only_functional_allocation_runtime_selection',
+      'runtime_item_creation_authorized']) {
+      assert.equal(attestation.authority[field], false);
+      const widened = structuredClone(attestation);
+      widened.authority[field] = true;
+      assert.throws(() => validateGate1SeedClosureAttestation({
+        ...artifacts, attestation: widened
+      }), /GATE1_SEED_CLOSURE_ATTESTATION_INVALID/u);
+    }
+    assert.throws(() => validateGate1SeedClosureAttestation({
+      ...artifacts, attestation: null
+    }), /GATE1_SEED_CLOSURE_ATTESTATION_INVALID/u);
+    const tampered = structuredClone(attestation);
+    tampered.approved_scope.table_closure_digest = '0'.repeat(64);
+    assert.throws(() => validateGate1SeedClosureAttestation({
+      ...artifacts, attestation: tampered
+    }), /GATE1_SEED_CLOSURE_ATTESTATION_INVALID/u);
+  });
 
 test('Stage3C rejects seed attestation path override', () => {
   const result = spawnSync(process.execPath,
@@ -66,7 +88,7 @@ test('Stage3C rejects seed attestation path override', () => {
     /PR17_STAGE3C_ARGUMENT_FORBIDDEN:--seed-closure-attestation/u);
 });
 
-test('local-play ignores lifecycle test data root for seed attestation',
+test('dry-run ignores lifecycle test data root for seed attestation',
   async (t) => {
     const dataRoot = await mkdtemp(join(tmpdir(), 'gate1-local-play-root-'));
     t.after(() => rm(dataRoot, { recursive: true, force: true }));
@@ -76,10 +98,10 @@ test('local-play ignores lifecycle test data root for seed attestation',
     await mkdir(dirname(redirected), { recursive: true });
     await writeFile(redirected, '{}');
     const result = spawnSync(process.execPath,
-      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play'], {
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'dry-run'], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 30_000,
         env: { ...process.env, PR17_TEST_DATA_ROOT: dataRoot }
       });
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /GATE1_SEED_CLOSURE_ATTESTATION_REQUIRED/u);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(JSON.parse(result.stdout).pass, true);
   });

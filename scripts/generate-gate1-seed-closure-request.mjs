@@ -199,6 +199,9 @@ export function validateGate1SeedClosureAttestation({ candidate, request,
       || authority.activation_authorized !== false
       || authority.production_authorized !== false
       || authority.existing_party_migration_authorized !== false
+      || authority.old_save_rematerialization_authorized !== false
+      || authority.authoring_only_functional_allocation_runtime_selection
+        !== false
       || authority.runtime_item_creation_authorized !== false) {
     throw new Error('GATE1_SEED_CLOSURE_ATTESTATION_INVALID');
   }

@@ -21,7 +21,7 @@ const closureRoot = 'data/world-catalogs/novgorod/runtime-catalog/'
 const seedPath = 'tools/rus13-world-base-importer/'
   + 'world_base_importer_v1/world_base_seed_v1.sql.gz';
 
-test('Gate1 exact persisted seed closure rejects same-count payload tamper',
+test('Gate1 closure accepts graph-node newline normalization but rejects content mutation',
   async (t) => {
     const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-seed-closure-'));
     const managed = await ensureLocalPostgres({ dataRoot,
@@ -63,20 +63,39 @@ test('Gate1 exact persisted seed closure rejects same-count payload tamper',
       await pool.query(seedSql.slice(seedSql.indexOf(startMarker)
         + startMarker.length, seedSql.lastIndexOf('COMMIT;')));
       const beforeCount = Number((await pool.query(`SELECT count(*) AS count
-        FROM world_base.source_records`)).rows[0].count);
-      const updated = await pool.query(`UPDATE world_base.source_records
-        SET confidence='high'
-        WHERE id='src_novgorod_agriculture' AND confidence='medium'`);
+        FROM world_base.graph_nodes`)).rows[0].count);
+      const crlfSource = await pool.query(`UPDATE world_base.graph_nodes
+        SET audit_notes=replace(audit_notes, E'\\n', E'\\r\\n')
+        WHERE position(E'\\n' in audit_notes) > 0`);
+      assert.ok(crlfSource.rowCount > 0);
+      const crlfReadback = await readCanonicalSeedTableClosure(pool,
+        checked.candidate.derived_outputs.table_closure.map(({ table }) =>
+          table));
+      assert.equal(assertCanonicalSeedTableClosure(crlfReadback,
+        checked.candidate.derived_outputs.table_closure), true);
+      const normalized = await pool.query(`UPDATE world_base.graph_nodes
+        SET audit_notes=replace(audit_notes, E'\\r\\n', E'\\n')
+        WHERE position(E'\\r\\n' in audit_notes) > 0`);
+      assert.equal(normalized.rowCount, crlfSource.rowCount);
+      const newlineOnly = await readCanonicalSeedTableClosure(pool,
+        checked.candidate.derived_outputs.table_closure.map(({ table }) =>
+          table));
+      assert.equal(assertCanonicalSeedTableClosure(newlineOnly,
+        checked.candidate.derived_outputs.table_closure), true);
+      const updated = await pool.query(`UPDATE world_base.graph_nodes
+        SET audit_notes=audit_notes || ' content mutation'
+        WHERE id=(SELECT id FROM world_base.graph_nodes
+          WHERE audit_notes IS NOT NULL ORDER BY id LIMIT 1)`);
       assert.equal(updated.rowCount, 1);
       const afterCount = Number((await pool.query(`SELECT count(*) AS count
-        FROM world_base.source_records`)).rows[0].count);
+        FROM world_base.graph_nodes`)).rows[0].count);
       assert.equal(afterCount, beforeCount);
       const tampered = await readCanonicalSeedTableClosure(pool,
         checked.candidate.derived_outputs.table_closure.map(({ table }) =>
           table));
       assert.throws(() => assertCanonicalSeedTableClosure(tampered,
         checked.candidate.derived_outputs.table_closure),
-      /GATE1_SEED_TABLE_PAYLOAD_MISMATCH:source_records/u);
+      /GATE1_SEED_TABLE_PAYLOAD_MISMATCH:graph_nodes/u);
     } finally {
       await pool.query('ROLLBACK');
     }

@@ -31,13 +31,21 @@ export async function readCanonicalSeedTableClosure(client, tableNames) {
     const records = (await client.query(`SELECT ${projection} AS payload
       FROM world_base.${quoteIdentifier(table)} AS record
       ORDER BY ${primaryKey.map(quoteIdentifier).join(',')}`, excluded)).rows
-      .map(({ payload }) => payload);
+      .map(({ payload }) => canonicalizeSeedPayload(table, payload));
     closure.push(Object.freeze({ table, row_count: records.length,
       payload_sha256: digestValue(records),
       order_columns: Object.freeze(primaryKey),
       excluded_mutable_columns: Object.freeze(excluded) }));
   }
   return Object.freeze(closure);
+}
+
+export function canonicalizeSeedPayload(table, payload) {
+  if (table !== 'graph_nodes' || typeof payload.audit_notes !== 'string') {
+    return payload;
+  }
+  return { ...payload,
+    audit_notes: payload.audit_notes.replace(/\r\n?/gu, '\n') };
 }
 
 export function assertCanonicalSeedTableClosure(actual, expected) {

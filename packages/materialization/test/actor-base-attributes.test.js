@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalCandidateDigest, canonicalDigest, canonicalRequestDigest,
-  materializeActorBaseAttributes } from '../src/index.js';
+  materializeActorBaseAttributes, materializeOrPreserveActorBaseAttributes } from '../src/index.js';
 
 const profile = { schema: 'rus.actor_base_attributes_profile.v1', version: 1,
   profile_id: 'ordinary-v1', algorithm_version: 'actor_base_attributes_v1',
@@ -13,13 +13,17 @@ const profile = { schema: 'rus.actor_base_attributes_profile.v1', version: 1,
     mapping_id: occupation_archetype_id, occupation_archetype_id,
     priority_tiers: [['strength'], ['dexterity'], ['endurance'], ['reason'],
       ['attention'], ['influence']] })) };
-const candidate = { schema:
-    'rus.actor_base_attributes_candidate.v1', status: 'approved',
-    runtime_authorized: true, profile, profile_digest: canonicalDigest(profile) };
+const candidate = { schema: 'rus.actor_base_attributes_candidate.v1', version: 1,
+  status: 'approved', runtime_authorized: true, import_authorized: true,
+  activation_authorized: true, subject_commit: 'commit', profile,
+  profile_digest: canonicalDigest(profile), source_provenance: {} };
 candidate.candidate_digest = canonicalCandidateDigest(candidate);
-const request = { schema: 'rus.actor_base_attributes_approval_request.v1',
-  decision: 'approved', runtime_authorized: true, import_authorized: true,
-  activation_authorized: true };
+const request = { schema: 'rus.actor_base_attributes_approval_request.v1', version: 1,
+  status: 'approved', candidate_ref: 'candidate.json', subject_commit: 'commit',
+  candidate_digest: candidate.candidate_digest, profile_digest: candidate.profile_digest,
+  decision: 'approved', scope: 'test', requested_runtime_activation: true,
+  requested_equipment_allocation_activation: true, requested_import: true,
+  requested_activation: true };
 request.request_digest = canonicalRequestDigest(request);
 const bundle = { schema: 'rus.approved_actor_base_attributes_bundle.v1',
   runtime_authorized: true, candidate, approval_request: request,
@@ -41,4 +45,25 @@ test('actor base attributes are pinned, complete and deterministic', () => {
     approved_bundle: { ...bundle, candidate: { ...bundle.candidate,
       profile: { ...profile, occupation_archetype_priorities: [] } } } }),
   { code: 'ACTOR_BASE_ATTRIBUTES_BUNDLE_DATA_GAP' });
+});
+
+test('actor attributes preserve only their exact original materialization binding', () => {
+  const input = { approved_bundle: bundle, occupation_archetype_id: 'fishing_water',
+    actor_slot_ref: 'actor-A', seed_basis: { world_revision_id: 'world',
+      world_catalog_digest: 'b'.repeat(64), parent_seed_digest: 'c'.repeat(64) } };
+  const snapshot = materializeActorBaseAttributes(input);
+  assert.deepEqual(materializeOrPreserveActorBaseAttributes({ ...input,
+    existing_attributes: snapshot }), snapshot);
+  for (const change of [{ actor_slot_ref: 'actor-B' },
+    { occupation_archetype_id: 'trade_exchange' },
+    { seed_basis: { ...input.seed_basis, world_revision_id: 'other' } },
+    { seed_basis: { ...input.seed_basis, world_catalog_digest: 'd'.repeat(64) } }]) {
+    assert.throws(() => materializeOrPreserveActorBaseAttributes({ ...input,
+      ...change, existing_attributes: snapshot }),
+    { code: 'ACTOR_BASE_ATTRIBUTES_SNAPSHOT_DATA_GAP' });
+  }
+  assert.throws(() => materializeOrPreserveActorBaseAttributes({ ...input,
+    seed_basis: { ...input.seed_basis, parent_seed_digest: 'e'.repeat(64) },
+    existing_attributes: snapshot }),
+  { code: 'ACTOR_BASE_ATTRIBUTES_SNAPSHOT_DATA_GAP' });
 });

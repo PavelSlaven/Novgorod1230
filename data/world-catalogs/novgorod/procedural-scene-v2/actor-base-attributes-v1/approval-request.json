@@ -3,11 +3,14 @@
   "version": 1,
   "status": "approval_requested",
   "candidate_ref": "actor-base-attributes-v1/candidate.json",
-  "subject_commit": "TBD",
+  "subject_commit": "6428097ed150cb6c6e66248669a53d3803d4213e",
+  "candidate_digest": "27785e38dd615a0b580cbb5ad88874279e96617814997cc56ea6f845872c90b0",
+  "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
   "decision": "pending",
   "scope": "ordinary NPC actor_base_attributes_v1 only",
   "requested_runtime_activation": false,
   "requested_equipment_allocation_activation": false,
   "requested_import": false,
-  "requested_activation": false
+  "requested_activation": false,
+  "request_digest": "56e8d8f5c7245772fe8f73b0fd270b24fbf0012de6a59781692a1c81221c76b0"
 }

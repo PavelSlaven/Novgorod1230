@@ -70,13 +70,17 @@ const actorBaseAttributesProfile = { schema: 'rus.actor_base_attributes_profile.
       priority_tiers: [['strength'], ['endurance'], ['dexterity'], ['attention'],
         ['reason'], ['influence']] })) };
 const attributesCandidate = { schema:
-    'rus.actor_base_attributes_candidate.v1', status: 'approved',
-    runtime_authorized: true, profile: actorBaseAttributesProfile,
-    profile_digest: canonicalDigest(actorBaseAttributesProfile) };
+    'rus.actor_base_attributes_candidate.v1', version: 1, status: 'approved',
+    runtime_authorized: true, import_authorized: true, activation_authorized: true,
+    subject_commit: 'commit', profile: actorBaseAttributesProfile,
+    profile_digest: canonicalDigest(actorBaseAttributesProfile), source_provenance: {} };
 attributesCandidate.candidate_digest = canonicalCandidateDigest(attributesCandidate);
 const attributesRequest = { schema: 'rus.actor_base_attributes_approval_request.v1',
-  decision: 'approved', runtime_authorized: true, import_authorized: true,
-  activation_authorized: true };
+  version: 1, status: 'approved', candidate_ref: 'candidate.json',
+  subject_commit: 'commit', candidate_digest: attributesCandidate.candidate_digest,
+  profile_digest: attributesCandidate.profile_digest, decision: 'approved', scope: 'test',
+  requested_runtime_activation: true, requested_equipment_allocation_activation: true,
+  requested_import: true, requested_activation: true };
 attributesRequest.request_digest = canonicalRequestDigest(attributesRequest);
 const actorBaseAttributesBundle = { schema: 'rus.approved_actor_base_attributes_bundle.v1',
   runtime_authorized: true, candidate: attributesCandidate,

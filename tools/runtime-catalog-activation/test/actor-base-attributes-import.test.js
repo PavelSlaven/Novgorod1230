@@ -43,6 +43,9 @@ test('tracked actor base-attribute readback binds exact approved import',
         + 'import-readback-result.json', 'utf8'));
     assert.equal(validateActorBaseAttributesImportResult({ result,
       ...approval }), true);
+    assert.equal(result.equipment_allocation_activation_authorized, false);
+    assert.equal(result.world_schema_migration_authorized, false);
+    assert.equal(result.party_schema_migration_authorized, false);
     assert.throws(() => validateActorBaseAttributesImportResult({
       result: { ...result, activation_authorized: true }, ...approval
     }), { code: 'ACTOR_BASE_ATTRIBUTES_IMPORT_RESULT_INVALID' });

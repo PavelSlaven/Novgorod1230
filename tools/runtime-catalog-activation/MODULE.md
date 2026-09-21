@@ -46,7 +46,13 @@ attestation конкретного запуска: перед operator apply bac
 `importApprovedActorBaseAttributes` применяет только exact approved owner row и
 immutable import ledger одной транзакцией. `readActorBaseAttributesImport` и
 `validateActorBaseAttributesImportResult` проверяют exact membership/readback;
-actor activation event при этом обязан отсутствовать.
+actor activation event при этом обязан отсутствовать. Result явно сохраняет
+отказы import-attestation для equipment allocation и world/party migration;
+это readback authority, а не новая permission.
+
+Parent pin проверяется через exact append-only Gate1 domain registration: его
+V6 world-manifest SHA отличается от actor compatibility-envelope digest.
+Actor target сохраняет последний в собственной domain revision.
 
 ## Допустимые зависимости
 

@@ -9,6 +9,8 @@ import { validateActorBaseAttributesImportApproval } from
 import { buildImportLedger, digestEnvelope } from './artifact-contracts.js';
 import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION } from
   './forward-migrations.js';
+import { SPATIAL_V3_PRODUCTION_V12_RELEASE } from
+  './spatial-v3-production-v12-activation.js';
 
 const IMPORT_LOCK = '742019261002';
 const IMPORT_ID_PREFIX = 'actor_base_attributes_import_';
@@ -16,6 +18,7 @@ const IMPORT_ID_PREFIX = 'actor_base_attributes_import_';
 export function buildActorBaseAttributesImportLedger({ request,
   attestation }) {
   validateActorBaseAttributesImportApproval({ request, attestation });
+  assertCompatibleWorldContract(request);
   const entry = ACTOR_BASE_ATTRIBUTES_OWNER_REGISTRY.entries[0];
   const owner = request.owner_rows[0];
   const projection = projectCanonicalRecord({
@@ -140,13 +143,20 @@ export async function readActorBaseAttributesImport(client, { request,
   if (ledger != null && canonicalStringify(ledger)
       !== canonicalStringify(approvedLedger)) readbackFail();
   ledger = approvedLedger;
+  const parentRegistrationId = await readParentRegistrationId(client,
+    request);
   const domainRows = (await client.query(
-    `SELECT catalog_revision_id,catalog_scope,target_catalog_digest,
+    `SELECT catalog_revision_id,catalog_scope,parent_registration_id,
+            target_catalog_digest,
             compatible_world_revision_id,compatible_world_catalog_digest,
             compatible_world_pin_manifest_digest,record_registry_digest,
             runtime_contract_digest,status
-       FROM world_base.domain_catalog_revisions
+      FROM world_base.domain_catalog_revisions
       WHERE catalog_revision_id=$1`, [request.target_revision_id])).rows;
+  const revisionRows = (await client.query(
+    `SELECT id,parent_revision_id,title,catalog_digest,status
+       FROM world_base.world_revisions WHERE id=$1`,
+    [request.target_revision_id])).rows;
   const importRows = (await client.query(
     `SELECT import_id,catalog_scope,parent_revision_id,parent_catalog_digest,
             parent_snapshot_manifest_digest,compatible_world_revision_id,
@@ -181,15 +191,24 @@ export async function readActorBaseAttributesImport(client, { request,
     `SELECT count(*) AS count
        FROM world_base.runtime_catalog_activation_events
       WHERE catalog_scope=$1`, [request.catalog_scope])).rows[0].count);
-  if (domainRows.length !== 1 || importRows.length !== 1
+  if (domainRows.length !== 1 || revisionRows.length !== 1
+      || importRows.length !== 1
       || ownerRows.length !== 1 || activationCount !== 0) readbackFail();
   const domain = domainRows[0];
   const { approval_status: approvalStatus, ...importRoot } = importRows[0];
   const owner = request.owner_rows[0].row;
   if (approvalStatus !== 'approved'
+      || canonicalStringify(revisionRows[0]) !== canonicalStringify({
+        id: request.target_revision_id,
+        parent_revision_id: request.parent_catalog.catalog_revision_id,
+        title: 'Actor base attributes v1',
+        catalog_digest: request.target_catalog_digest,
+        status: 'approved'
+      })
       || canonicalStringify(domain) !== canonicalStringify({
         catalog_revision_id: request.target_revision_id,
         catalog_scope: request.catalog_scope,
+        parent_registration_id: parentRegistrationId,
         target_catalog_digest: request.target_catalog_digest,
         compatible_world_revision_id:
           request.compatible_world.compatible_world_revision_id,
@@ -259,10 +278,13 @@ function readbackPayload({ request, attestation, ledger }) {
     runtime_authorized: false,
     activation_authorized: false,
     production_authorized: false,
+    equipment_allocation_activation_authorized: false,
     functional_allocation_runtime_selection_authorized: false,
     runtime_item_creation_authorized: false,
     existing_party_migration_authorized: false,
-    old_save_rematerialization_authorized: false
+    old_save_rematerialization_authorized: false,
+    world_schema_migration_authorized: false,
+    party_schema_migration_authorized: false
   };
 }
 
@@ -304,6 +326,8 @@ async function readParentRegistrationId(client, request) {
         request.compatible_world.compatible_world_revision_id
       || row.compatible_world_catalog_digest !==
         request.compatible_world.compatible_world_catalog_digest
+      || row.compatible_world_pin_manifest_digest !==
+        SPATIAL_V3_PRODUCTION_V12_RELEASE.worldManifestSha256
       || row.status !== 'approved') {
     fail('ACTOR_BASE_ATTRIBUTES_IMPORT_PARENT_MISMATCH',
       'Exact approved parent catalog is unavailable.', {
@@ -312,7 +336,47 @@ async function readParentRegistrationId(client, request) {
         expected_compatible_world: request.compatible_world
       });
   }
+  const registrations = (await client.query(
+    `SELECT registration_id,compatible_world_revision_id,
+            compatible_world_catalog_digest,
+            compatible_world_pin_manifest_digest
+       FROM world_base.catalog_baseline_registrations
+      WHERE registration_id=$1`, [row.parent_registration_id])).rows;
+  if (registrations.length !== 1
+      || canonicalStringify(registrations[0]) !== canonicalStringify({
+        registration_id: row.parent_registration_id,
+        compatible_world_revision_id:
+          request.compatible_world.compatible_world_revision_id,
+        compatible_world_catalog_digest:
+          request.compatible_world.compatible_world_catalog_digest,
+        compatible_world_pin_manifest_digest:
+          SPATIAL_V3_PRODUCTION_V12_RELEASE.worldManifestSha256
+      })) {
+    fail('ACTOR_BASE_ATTRIBUTES_IMPORT_PARENT_REGISTRATION_MISMATCH',
+      'Exact approved parent registration is unavailable.');
+  }
   return row.parent_registration_id;
+}
+
+function assertCompatibleWorldContract(request) {
+  const release = SPATIAL_V3_PRODUCTION_V12_RELEASE;
+  const runtimeConfigurationDigest = digestEnvelope({
+    schema: 'rus.actor_base_attributes_runtime_world_configuration.v1',
+    release_id: release.releaseId,
+    world_revision_id: release.worldRevision,
+    world_catalog_digest: release.worldCatalogDigest,
+    world_manifest_sha256: release.worldManifestSha256,
+    runtime_contract_digest: ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT_DIGEST
+  });
+  if (request.compatible_world.compatible_world_revision_id !==
+        release.worldRevision
+      || request.compatible_world.compatible_world_catalog_digest !==
+        release.worldCatalogDigest
+      || request.compatible_world.source_runtime_configuration_digest !==
+        runtimeConfigurationDigest) {
+    fail('ACTOR_BASE_ATTRIBUTES_IMPORT_COMPATIBILITY_MISMATCH',
+      'Approved actor compatibility does not bind canonical V12 world.');
+  }
 }
 
 async function insertLedger(client, ledger) {

@@ -16,6 +16,8 @@ import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
   runPartyRuntimeCatalogMigration
 } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { SPATIAL_V3_PRODUCTION_V12_RELEASE } from
+  '../../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
 import { createPostgresTestBackend } from
   '../fixtures/postgres-test-backend.js';
 import { installLowerDvinaTraceV6World } from
@@ -68,9 +70,73 @@ test('actor attributes import is exact, idempotent, least-privilege and inactive
     await assert.rejects(() => importApprovedActorBaseAttributes({
       pool: importer, ...rejected
     }), /ACTOR_BASE_ATTRIBUTES_IMPORT_APPROVAL_INVALID/u);
-    assert.equal(Number((await admin.query(`SELECT count(*) AS count
-      FROM world_base.world_revisions WHERE id=$1`,
-    [approval.request.target_revision_id])).rows[0].count), 0);
+    const assertNoActorWrites = async () => {
+      const counts = (await admin.query(`SELECT
+        (SELECT count(*) FROM world_base.world_revisions WHERE id=$1)
+          AS revisions,
+        (SELECT count(*) FROM world_base.actor_base_attribute_profiles
+          WHERE catalog_revision_id=$1) AS profiles,
+        (SELECT count(*) FROM world_base.catalog_imports
+          WHERE catalog_scope=$2) AS imports,
+        (SELECT count(*) FROM world_base.runtime_catalog_activation_events
+          WHERE catalog_scope=$2) AS activations`,
+      [approval.request.target_revision_id,
+        approval.request.catalog_scope])).rows[0];
+      assert.deepEqual(Object.fromEntries(Object.entries(counts).map(
+        ([key, value]) => [key, Number(value)])), {
+        revisions: 0, profiles: 0, imports: 0, activations: 0
+      });
+    };
+    await assertNoActorWrites();
+
+    const parentDomain = (await admin.query(
+      `SELECT parent_registration_id,compatible_world_pin_manifest_digest
+         FROM world_base.domain_catalog_revisions
+        WHERE catalog_revision_id=$1 AND catalog_scope=$2`,
+      [approval.request.parent_catalog.catalog_revision_id,
+        approval.request.parent_catalog.catalog_scope])).rows[0];
+    assert.equal(parentDomain.compatible_world_pin_manifest_digest,
+      SPATIAL_V3_PRODUCTION_V12_RELEASE.worldManifestSha256);
+    assert.notEqual(parentDomain.compatible_world_pin_manifest_digest,
+      approval.request.compatible_world.compatible_world_pin_manifest_digest);
+    await admin.query(`ALTER TABLE world_base.domain_catalog_revisions
+      DISABLE TRIGGER domain_catalog_revisions_append_only`);
+    await admin.query(`ALTER TABLE world_base.catalog_baseline_registrations
+      DISABLE TRIGGER catalog_baseline_registrations_append_only`);
+    await admin.query(`UPDATE world_base.domain_catalog_revisions
+      SET compatible_world_pin_manifest_digest=$1
+      WHERE catalog_revision_id=$2`, ['0'.repeat(64),
+      approval.request.parent_catalog.catalog_revision_id]);
+    await admin.query(`UPDATE world_base.catalog_baseline_registrations
+      SET compatible_world_pin_manifest_digest=$1
+      WHERE registration_id=$2`, ['0'.repeat(64),
+      parentDomain.parent_registration_id]);
+    await admin.query(`ALTER TABLE world_base.domain_catalog_revisions
+      ENABLE TRIGGER domain_catalog_revisions_append_only`);
+    await admin.query(`ALTER TABLE world_base.catalog_baseline_registrations
+      ENABLE TRIGGER catalog_baseline_registrations_append_only`);
+    await assert.rejects(() => importApprovedActorBaseAttributes({
+      pool: importer, ...approval
+    }), { code: 'ACTOR_BASE_ATTRIBUTES_IMPORT_PARENT_MISMATCH' });
+    await assertNoActorWrites();
+    await admin.query(`ALTER TABLE world_base.domain_catalog_revisions
+      DISABLE TRIGGER domain_catalog_revisions_append_only`);
+    await admin.query(`ALTER TABLE world_base.catalog_baseline_registrations
+      DISABLE TRIGGER catalog_baseline_registrations_append_only`);
+    await admin.query(`UPDATE world_base.domain_catalog_revisions
+      SET compatible_world_pin_manifest_digest=$1
+      WHERE catalog_revision_id=$2`,
+    [parentDomain.compatible_world_pin_manifest_digest,
+      approval.request.parent_catalog.catalog_revision_id]);
+    await admin.query(`UPDATE world_base.catalog_baseline_registrations
+      SET compatible_world_pin_manifest_digest=$1
+      WHERE registration_id=$2`,
+    [parentDomain.compatible_world_pin_manifest_digest,
+      parentDomain.parent_registration_id]);
+    await admin.query(`ALTER TABLE world_base.domain_catalog_revisions
+      ENABLE TRIGGER domain_catalog_revisions_append_only`);
+    await admin.query(`ALTER TABLE world_base.catalog_baseline_registrations
+      ENABLE TRIGGER catalog_baseline_registrations_append_only`);
 
     const first = await runActorBaseAttributesImport({
       databaseUrl: roleUrl.toString(),
@@ -89,6 +155,15 @@ test('actor attributes import is exact, idempotent, least-privilege and inactive
 
     const client = await admin.connect();
     try {
+      await client.query('BEGIN');
+      await client.query(`UPDATE world_base.world_revisions
+        SET title='drifted actor profile' WHERE id=$1`,
+      [approval.request.target_revision_id]);
+      await assert.rejects(() => readActorBaseAttributesImport(client,
+        approval), {
+        code: 'ACTOR_BASE_ATTRIBUTES_IMPORT_READBACK_MISMATCH'
+      });
+      await client.query('ROLLBACK');
       await client.query('BEGIN');
       await client.query(`ALTER TABLE world_base.catalog_imports
         DISABLE TRIGGER catalog_imports_append_only`);

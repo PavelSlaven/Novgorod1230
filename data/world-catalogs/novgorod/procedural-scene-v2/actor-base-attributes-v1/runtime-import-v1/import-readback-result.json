@@ -18,9 +18,12 @@
   "runtime_authorized": false,
   "activation_authorized": false,
   "production_authorized": false,
+  "equipment_allocation_activation_authorized": false,
   "functional_allocation_runtime_selection_authorized": false,
   "runtime_item_creation_authorized": false,
   "existing_party_migration_authorized": false,
   "old_save_rematerialization_authorized": false,
-  "result_digest": "4154434887e796279fec3f79911d19ccaabf782a027089f74a7bb7fdf384a5b2"
+  "world_schema_migration_authorized": false,
+  "party_schema_migration_authorized": false,
+  "result_digest": "a7b53cba14db670ad3b4b18e2944a64058cdab95458ee7a4848c85352b122f55"
 }

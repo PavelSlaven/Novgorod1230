@@ -10,10 +10,10 @@
   "migrations": [
     {
       "migration_id": "world_legacy_062_to_canonical_v1",
-      "migration_digest": "52adb2e1e16fd4a2f7f4f4858b749121512714515a2a3059290d5ef54d595f11",
+      "migration_digest": "00b2117919c568b61e174dd96241c25a912df2497bd42ea388be20122b7ac717",
       "schema_name": "world_base",
       "source_schema_fingerprint": "869021eded07633eec27048a102600385248e5a8e5f8dd499943d404e17fad8f",
-      "target_schema_fingerprint": "9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080",
+      "target_schema_fingerprint": "420103523402f005fe58ecbdbc6f50ec7f939221eb2b01ae9dbad9f34743282d",
       "sql_paths": [
         "infra/world-base/schema/09.sql..20.sql",
         "tools/runtime-catalog-activation/migrations/world/000_legacy_world_bridge_finalize.sql"
@@ -21,10 +21,10 @@
     },
     {
       "migration_id": "world_runtime_catalog_activation_v2",
-      "migration_digest": "cd21d8ee21116649386b7ddf00eacd7c27f8f12758ee3e04825cd11d31aae3e5",
+      "migration_digest": "61d5e9563f09a25bc058026ae4f6d030891771a42f0eadae237fe2176bf01263",
       "schema_name": "world_base",
-      "source_schema_fingerprint": "9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080",
-      "target_schema_fingerprint": "9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6",
+      "source_schema_fingerprint": "420103523402f005fe58ecbdbc6f50ec7f939221eb2b01ae9dbad9f34743282d",
+      "target_schema_fingerprint": "150bbcddc46d37273b83cc0bf1ffe16f640c2640766b0b3101af41dcf48cc8ea",
       "sql_path": "tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql"
     },
     {

@@ -2,7 +2,6 @@ import {
   applyFirstPlayableV2ActivationBundle,
   buildFirstPlayableV2ActivationBundle
 } from './first-playable-v2-activation.js';
-import { WORLD_RUNTIME_CATALOG_MIGRATION } from './forward-migrations.js';
 
 export const LOWER_DVINA_BOUNDARY_V3_RELEASE = Object.freeze({
   releaseId: 'spatial-v3-production-v3',
@@ -15,7 +14,7 @@ export const LOWER_DVINA_BOUNDARY_V3_RELEASE = Object.freeze({
   worldManifestSha256:
     '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea',
   worldSchemaFingerprint:
-    WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+    'e977fdd2e6a7f06fd801b32b23965f35106d057c63989200546f179c6193091d',
   candidateDirectory: 'spatial-v3-production-v3',
   bindingsFile: 'spatial-v3-production-v3-bindings.js',
   bundleSchema: 'rus.lower_dvina_boundary_v3_activation_bundle.v1',

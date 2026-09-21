@@ -29,15 +29,15 @@ export const WORLD_LEGACY_SCHEMA_BRIDGE = createForwardMigration({
   migrationId: 'world_legacy_062_to_canonical_v1',
   schemaName: 'world_base',
   sourceSchemaFingerprint: '869021eded07633eec27048a102600385248e5a8e5f8dd499943d404e17fad8f',
-  targetSchemaFingerprint: '9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080',
+  targetSchemaFingerprint: '420103523402f005fe58ecbdbc6f50ec7f939221eb2b01ae9dbad9f34743282d',
   sql: LEGACY_WORLD_BRIDGE_SQL
 });
 
 export const WORLD_RUNTIME_CATALOG_MIGRATION = createForwardMigration({
   migrationId: 'world_runtime_catalog_activation_v2',
   schemaName: 'world_base',
-  sourceSchemaFingerprint: '9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080',
-  targetSchemaFingerprint: '9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6',
+  sourceSchemaFingerprint: '420103523402f005fe58ecbdbc6f50ec7f939221eb2b01ae9dbad9f34743282d',
+  targetSchemaFingerprint: '150bbcddc46d37273b83cc0bf1ffe16f640c2640766b0b3101af41dcf48cc8ea',
   sql: WORLD_SQL
 });
 

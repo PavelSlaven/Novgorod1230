@@ -18,7 +18,7 @@ test('v12 activation registry pins runtime catalog to v6 world manifest', () => 
     worldManifestSha256:
       '776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb',
     worldSchemaFingerprint:
-      'd5bb566dd7d22d34d06fcff0c3db961294c619753ce93557c4e91adae6375541',
+      '150bbcddc46d37273b83cc0bf1ffe16f640c2640766b0b3101af41dcf48cc8ea',
     candidateDirectory: 'spatial-v3-production-v6',
     bindingsFile: 'spatial-v3-production-v12-bindings.js',
     bundleSchema: 'rus.spatial_v3_production_v12_activation_bundle.v1',

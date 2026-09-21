@@ -46,7 +46,10 @@ export function compileProceduralSceneProfile({
     .map(({ payload }) => payload.layer))].filter((layer) =>
     !components.some((component) => component.layer === layer)).sort();
   if (requiredLayers.length > 0) gap('FUNCTION_LAYERS', { family: profileRecord.payload.family, missing: requiredLayers });
-  const sourceGaps = structuredClone(profileRecord.payload.data_gap_codes ?? []);
+  const historicalSourceGaps = structuredClone(profileRecord.payload.data_gap_codes ?? []);
+  const readiness = reconcileReadiness({ profileRecord, mappings,
+    allocationPolicy: catalog.allocation_policy?.payload?.policy,
+    familyCandidateRef, historicalSourceGaps });
   const artifact = {
     schema: 'rus.compiled_procedural_scene_profile.v1', version: 1,
     family: profileRecord.payload.family,
@@ -62,11 +65,10 @@ export function compileProceduralSceneProfile({
     requirements: structuredClone(profileRecord.payload.requirements ?? {}),
     forbidden_implications: structuredClone(profileRecord.payload.forbidden_implications ?? []),
     materialization_limits: structuredClone(profileRecord.payload.materialization_limits ?? []),
-    source_data_gap_codes: sourceGaps,
+    historical_source_data_gap_codes: historicalSourceGaps,
     authoring_approval: structuredClone(profileRecord.payload.authoring_approval ?? null),
     source_candidate_digest: profileRecord.payload.source_candidate_digest ?? null,
-    readiness: { required_layers_satisfied: true,
-      unresolved_source_gaps: sourceGaps },
+    readiness,
     optional_selection_policy: 'source_weighted_candidates_only',
     optional_presence_policy: null,
     gameplay_materialization_llm_calls: 0
@@ -113,6 +115,34 @@ function regionalFacets(profiles) {
         : structuredClone(payload.approved_members)
     }))
     .sort((a, b) => a.profile_ref.localeCompare(b.profile_ref));
+}
+function reconcileReadiness({ profileRecord, mappings, allocationPolicy,
+  familyCandidateRef, historicalSourceGaps }) {
+  const expected = new Map();
+  for (const code of historicalSourceGaps) {
+    const layer = functionalLayerFromGap(code);
+    if (layer) expected.set(layer, { source_gap_code: code });
+  }
+  for (const { payload } of mappings) expected.set(payload.layer,
+    { mapping_required: payload.required === true });
+  if (allocationPolicy?.family_candidate_ref === familyCandidateRef) {
+    for (const allocation of allocationPolicy.allocations ?? []) {
+      if (text(allocation?.layer)) expected.set(allocation.layer,
+        { allocation_contract: true });
+    }
+  }
+  const mapped = new Set(mappings.map(({ payload }) => payload.layer));
+  const layers = [...expected].map(([layer, basis]) => ({ layer,
+    status: mapped.has(layer) ? 'resolved' : layer === 'container'
+      ? 'unresolved' : 'unresolved', ...basis })).sort((a, b) =>
+    a.layer.localeCompare(b.layer));
+  return { required_layers_satisfied: true, functional_layers: layers,
+    unresolved_current_gaps: layers.filter(({ status }) => status !== 'resolved')
+      .map(({ source_gap_code, layer }) => source_gap_code ?? `MAPPING:${layer}`) };
+}
+function functionalLayerFromGap(code) {
+  const match = /^FUNCTIONAL_([A-Z_]+)_MAPPING_MISSING$/u.exec(code ?? '');
+  return match == null ? null : match[1].toLowerCase();
 }
 function gap(kind, details) {
   throw new MaterializationError('PROCEDURAL_SCENE_PROFILE_DATA_GAP',

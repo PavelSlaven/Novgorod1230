@@ -60,8 +60,8 @@ test('V2 compiler covers all families and preserves complete regional facets',
         scene: sceneFor(verified, family), world_pin: worldPin(verified) });
       assert.deepEqual(compiled.required_layers, layers);
       assert.deepEqual(compiled.components.map(({ layer }) => layer), layers);
-      assert.deepEqual(compiled.source_data_gap_codes,
-        compiled.readiness.unresolved_source_gaps);
+      assert.ok(compiled.historical_source_data_gap_codes.length
+        >= compiled.readiness.unresolved_current_gaps.length);
       assert.ok(compiled.regional_facets.every(({ approved_members }) =>
         approved_members.every(({ universal, regional }) =>
           universal?.status === 'approved' && regional?.status === 'approved')));
@@ -122,6 +122,8 @@ test('packages are stable, policy stays pending P16, and V1/wrong/tampered input
       scenes: [fishing] });
     assert.equal(wrongActivity.packages[0].allocation_policy.status,
       'pending_p16_actor_activity_data_gap');
+    assert.equal(packageFishing.profile.readiness.functional_layers.find(
+      ({ layer }) => layer === 'container').status, 'unresolved');
     assert.throws(() => compileProceduralSceneProfile({
       verified_procedural_compiled_catalog: verified,
       scene: { ...fishing, g5_id: 'wrong:g5' }, world_pin: worldPin(verified) }),

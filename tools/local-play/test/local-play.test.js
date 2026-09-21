@@ -119,6 +119,7 @@ test('local play provisions Giga only and owns shutdown', async () => {
   const runtime = { ...managed, close: async () => closed.push('runtime') };
   const postgres = { worldUrl: 'world', partyUrl: 'party', state: 'existing',
     close: async () => closed.push('postgres') };
+  const logs = [];
   const result = await startLocalPlay({ env: {},
     readGit: async () => git,
     provisionRuntime: async (options) => {
@@ -132,7 +133,13 @@ test('local play provisions Giga only and owns shutdown', async () => {
         : url.endsWith('/llm-settings') ? { mode: 'unconfigured' } : {
         scenarios: [{ scenario_id: 'lower_dvina_trace_v1', available: true }]
       });
-    }, log: () => {} });
+    }, log: (message) => logs.push(message) });
+  assert.equal(result.runtimeCapabilities.capabilities.m2_runtime.status,
+    'available');
+  assert.equal(result.runtimeCapabilities.capabilities
+    .m3_procedural_equipment.status, 'blocked_data_gap');
+  assert.ok(logs.some((message) => message.includes(
+    'm3_procedural_equipment=blocked_data_gap')));
   await result.close();
   assert.deepEqual(closed.sort(), ['postgres', 'runtime']);
 });

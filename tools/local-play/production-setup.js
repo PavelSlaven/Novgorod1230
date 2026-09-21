@@ -28,17 +28,14 @@ import { buildCharacterAppearanceV1ImportSql } from
   '../spatial-v3/character-appearance-v1-importer.mjs';
 import { buildS1AuthoringV6ImportSql } from
   '../spatial-v3/s1-authoring-v5-importer.mjs';
-
-export const PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED =
-  'PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED';
+import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from './runtime-capabilities.js';
 
 export async function installActivatedRuntimeCatalog({
   worldPool,
   partyPool,
   worldUrl,
   repositoryRoot,
-  authorizationRef = 'Local play current production setup',
-  expectedCapabilityGap = null
+  authorizationRef = 'Local play current production setup'
 }) {
   if (!worldPool?.query || !partyPool?.query) {
     throw new TypeError('worldPool and partyPool must provide query().');
@@ -134,25 +131,13 @@ export async function installActivatedRuntimeCatalog({
     partyPool,
     bundle: v12Bundle
   });
-  const proceduralFinal = Object.freeze({
-    status: 'data_gap',
-    code: PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED,
-    source_record_ids: Object.freeze([
-      'src_novgorod_agriculture',
-      'src_novgorod_promysly'
-    ])
-  });
-  if (expectedCapabilityGap !== proceduralFinal.code) {
-    throw Object.assign(new Error(
-      'Procedural final catalog requires approved source reconciliation.'
-    ), { code: proceduralFinal.code, details: proceduralFinal });
-  }
   return Object.freeze({
+    schema: 'rus.local_play_production_setup_result.v1',
     pinManifestDigest:
       v12Bundle.compatibility_manifest.compatible_world_pin_manifest_digest,
     v2Bundle,
     v3Bundle,
     v12Bundle,
-    proceduralFinal
+    runtimeCapabilities: LOCAL_PLAY_RUNTIME_CAPABILITIES_V1
   });
 }

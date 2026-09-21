@@ -8,11 +8,10 @@ test('production setup always runs Stage 3c in local-play mode', async () => {
   assert.doesNotMatch(source, /stage3cModeForWorldUrl/u);
 });
 
-test('local bootstrap cuts over only new development parties', async () => {
+test('local bootstrap reports the M3 gap without manufacturing authority', async () => {
   const source = await readFile(new URL('../production-setup.js', import.meta.url),
     'utf8');
-  assert.match(source, /PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED/u);
-  assert.match(source, /expectedCapabilityGap !== proceduralFinal\.code/u);
+  assert.match(source, /LOCAL_PLAY_RUNTIME_CAPABILITIES_V1/u);
   assert.doesNotMatch(source, /installProceduralFinalDevelopmentCatalog/u);
   assert.doesNotMatch(source, /migrateExisting|rematerializeExisting/u);
 });

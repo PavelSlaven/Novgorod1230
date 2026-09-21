@@ -17,6 +17,7 @@ import {
 } from './local-postgres.js';
 import { provisionManagedRuntime } from './managed-runtime.js';
 import { installActivatedRuntimeCatalog } from './production-setup.js';
+import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from './runtime-capabilities.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const RELEASE_ID = 'spatial-v3-production-v16';
@@ -133,16 +134,25 @@ export async function startLocalPlay({
   const worldPool = createPool({ connectionString: postgres.worldUrl, max: 1 });
   const partyPool = createPool({ connectionString: postgres.partyUrl, max: 1 });
   let pin;
+  let runtimeCapabilities = LOCAL_PLAY_RUNTIME_CAPABILITIES_V1;
   try {
     try {
-      if (postgres.state === 'fresh') await setupProduction({ worldPool,
-        partyPool, worldUrl: postgres.worldUrl, repositoryRoot: ROOT });
+      if (postgres.state === 'fresh') {
+        const setup = await setupProduction({ worldPool, partyPool,
+          worldUrl: postgres.worldUrl, repositoryRoot: ROOT });
+        runtimeCapabilities = setup.runtimeCapabilities;
+      }
       pin = await loadPin(worldPool,
         SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_scope);
     } finally { await Promise.all([worldPool.end(), partyPool.end()]); }
   } catch (error) {
     await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     throw error;
+  }
+  if (runtimeCapabilities?.schema !== LOCAL_PLAY_RUNTIME_CAPABILITIES_V1.schema) {
+    await Promise.allSettled([managedRuntime.close(), postgres.close()]);
+    throw localPlayError('LOCAL_PLAY_CAPABILITY_CONTRACT_INVALID',
+      'Production setup returned an invalid runtime capability contract.');
   }
   const pinManifestDigest = pin?.compatible_world_pin_manifest_digest;
   if (!/^[a-f0-9]{64}$/u.test(String(pinManifestDigest ?? ''))) {
@@ -168,8 +178,13 @@ export async function startLocalPlay({
     throw error;
   }
   log(`Local game ready: ${baseUrl}`);
+  log(`Runtime capabilities: m2_runtime=${runtimeCapabilities.capabilities
+    .m2_runtime.status}; m3_procedural_equipment=${runtimeCapabilities
+    .capabilities.m3_procedural_equipment.status} (${runtimeCapabilities
+    .capabilities.m3_procedural_equipment.code})`);
   let closed = false;
   return Object.freeze({ child, url: baseUrl, postgres, managedRuntime,
+    runtimeCapabilities,
     async close(signal = 'SIGTERM') {
       if (closed) return; closed = true;
       if (child.exitCode == null) child.kill(signal);

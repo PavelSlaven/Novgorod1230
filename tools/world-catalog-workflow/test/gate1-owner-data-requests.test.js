@@ -6,6 +6,9 @@ import { buildGate1OwnerDataArtifacts,
   validateGate1OwnerDataAuthoringAttestation,
   validatePendingGate1OwnerDataArtifacts } from
   '../../../scripts/generate-gate1-owner-data-requests.mjs';
+import { buildGate1SourceReconciliationArtifacts,
+  validatePendingGate1SourceReconciliation } from
+  '../../../scripts/generate-gate1-source-reconciliation-request.mjs';
 
 const root = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
 
@@ -104,4 +107,51 @@ test('authoring attestation approves only exact transactional import/readback',
     assert.throws(() => validateGate1OwnerDataAuthoringAttestation({
       ...artifacts, attestation: widened
     }), /GATE1_AUTHORING_ATTESTATION_INVALID/u);
+  });
+
+test('Gate1 source reconciliation reproduces append-only pending artifacts',
+  async () => {
+    const generated = await buildGate1SourceReconciliationArtifacts();
+    const reconciliationRoot = `${root}/source-record-reconciliation-v1`;
+    const checkedIn = {
+      embeddedRows: JSON.parse(await readFile(
+        `${reconciliationRoot}/source-records-embedded.json`, 'utf8')),
+      candidate: JSON.parse(await readFile(
+        `${reconciliationRoot}/candidate.json`, 'utf8')),
+      request: JSON.parse(await readFile(
+        `${reconciliationRoot}/request.json`, 'utf8'))
+    };
+    assert.deepEqual(generated, checkedIn);
+    assert.deepEqual(generated.candidate.collisions.map(({ id,
+      canonical_parent_row: row, requested_transition: transition }) => ({
+      id, source_type: row.source_type, source_status: row.status,
+      requested_status: transition.to_status
+    })), [{
+      id: 'src_novgorod_agriculture', source_type: 'web',
+      source_status: 'usable_with_caution', requested_status: 'approved'
+    }, {
+      id: 'src_novgorod_promysly', source_type: 'web',
+      source_status: 'usable_with_caution', requested_status: 'approved'
+    }]);
+    assert.equal(generated.embeddedRows.length, 17);
+    assert.equal(generated.candidate.amended_stage3c_manifest.datasets
+      .find(({ table }) => table === 'source_records').record_count, 17);
+  });
+
+test('pending source reconciliation grants no import or runtime authority',
+  async () => {
+    const artifacts = await buildGate1SourceReconciliationArtifacts();
+    assert.equal(validatePendingGate1SourceReconciliation(artifacts), true);
+    for (const artifact of [artifacts.candidate, artifacts.request]) {
+      assert.deepEqual(Object.values(artifact.authority),
+        Object.values(artifact.authority).map(() => false));
+    }
+    assert.equal(artifacts.request.requested_import_effect
+      .original_stage3c_attestation_does_not_authorize_amendment, true);
+    assert.equal(artifacts.request.requested_import_effect
+      .grants_runtime_activation, false);
+    const widened = structuredClone(artifacts);
+    widened.request.authority.import_authorized = true;
+    assert.throws(() => validatePendingGate1SourceReconciliation(widened),
+      /GATE1_SOURCE_RECONCILIATION_AUTHORITY_FORBIDDEN/u);
   });

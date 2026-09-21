@@ -30,7 +30,11 @@ const candidateRoot = resolve(root, 'data/knowledge-source/imports/item-containe
 const evidenceRoot = resolve(root, 'docs/implementation/item-container-120-approval-audit/evidence');
 const gate1Root = resolve(root,
   'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1');
+const seedClosureAttestationRelative =
+  'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/'
+  + 'seed-closure-v1/authoring-approval-attestation.json';
 const gate1Cache = { seedSql: null };
+assertAllowedArguments();
 const mode = argument('--mode', 'dry-run');
 const attestationPath = resolve(argument('--attestation', resolve(evidenceRoot, 'FINAL_APPROVAL_ATTESTATION.json')));
 const gate1Artifacts = await buildGate1OwnerDataArtifacts();
@@ -45,9 +49,10 @@ validateGate1SourceReconciliationAuthoringAttestation({
   ...reconciliationArtifacts, attestation: reconciliationAttestation
 });
 const seedClosureArtifacts = await loadGate1SeedClosureArtifacts();
-const seedClosureAttestationPath = resolve(argument(
-  '--seed-closure-attestation', resolve(gate1Root,
-    'seed-closure-v1/authoring-approval-attestation.json')));
+const seedClosureAttestationPath = mode === 'lifecycle'
+    && process.env.PR17_TEST_DATA_ROOT
+  ? resolve(process.env.PR17_TEST_DATA_ROOT, seedClosureAttestationRelative)
+  : resolve(root, seedClosureAttestationRelative);
 if (!existsSync(seedClosureAttestationPath)) {
   throw new Error('GATE1_SEED_CLOSURE_ATTESTATION_REQUIRED');
 }
@@ -769,5 +774,14 @@ function importReadbackEvidence(result) {
   });
 }
 function argument(name, fallback) { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : fallback; }
+function assertAllowedArguments() {
+  const allowed = new Set(['--mode', '--attestation', '--write-result']);
+  for (let index = 2; index < process.argv.length; index += 2) {
+    const name = process.argv[index];
+    if (!allowed.has(name) || process.argv[index + 1] === undefined) {
+      throw new Error(`PR17_STAGE3C_ARGUMENT_FORBIDDEN:${name}`);
+    }
+  }
+}
 function quoteIdentifier(value) { if (!/^[a-z_][a-z0-9_]*$/u.test(value)) throw new Error(`PR17_SQL_IDENTIFIER_INVALID:${value}`); return `"${value}"`; }
 function readJson(path) { return JSON.parse(readFileSync(path, 'utf8')); }

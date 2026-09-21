@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
 import test from 'node:test';
 
 import { loadGate1SeedClosureArtifacts,
@@ -52,3 +54,32 @@ test('Stage3C executor fails closed before seed closure attestation', () => {
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /GATE1_SEED_CLOSURE_ATTESTATION_REQUIRED/u);
 });
+
+test('Stage3C rejects seed attestation path override', () => {
+  const result = spawnSync(process.execPath,
+    ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'dry-run',
+      '--seed-closure-attestation', 'forbidden.json'], {
+      cwd: process.cwd(), encoding: 'utf8', timeout: 30_000
+    });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr,
+    /PR17_STAGE3C_ARGUMENT_FORBIDDEN:--seed-closure-attestation/u);
+});
+
+test('local-play ignores lifecycle test data root for seed attestation',
+  async (t) => {
+    const dataRoot = await mkdtemp(join(tmpdir(), 'gate1-local-play-root-'));
+    t.after(() => rm(dataRoot, { recursive: true, force: true }));
+    const redirected = join(dataRoot,
+      'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/'
+      + 'seed-closure-v1/authoring-approval-attestation.json');
+    await mkdir(dirname(redirected), { recursive: true });
+    await writeFile(redirected, '{}');
+    const result = spawnSync(process.execPath,
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play'], {
+        cwd: process.cwd(), encoding: 'utf8', timeout: 30_000,
+        env: { ...process.env, PR17_TEST_DATA_ROOT: dataRoot }
+      });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /GATE1_SEED_CLOSURE_ATTESTATION_REQUIRED/u);
+  });

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import test from 'node:test';
 import pg from 'pg';
 
@@ -25,7 +25,8 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
     const resultPath = process.env.GATE1_RESULT_PATH
       ?? join(dataRoot, 'gate1-import-readback-result.json');
     const seedAttestationPath = join(dataRoot,
-      'seed-closure-test-attestation.json');
+      'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/'
+      + 'seed-closure-v1/authoring-approval-attestation.json');
     t.after(async () => {
       await pool?.end();
       await managed.close();
@@ -52,16 +53,17 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
         runtime_item_creation_authorized: false
       }
     };
+    await mkdir(dirname(seedAttestationPath), { recursive: true });
     await writeFile(seedAttestationPath, JSON.stringify({
       ...seedAttestationCore,
       attestation_digest: digestValue(seedAttestationCore)
     }));
     const applied = spawnSync(process.execPath,
       ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle',
-        '--write-result', resultPath, '--seed-closure-attestation',
-        seedAttestationPath], {
+        '--write-result', resultPath], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
-        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
+        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl,
+          PR17_TEST_DATA_ROOT: dataRoot }
       });
     assert.equal(applied.status, 0, applied.stderr);
     const result = JSON.parse(applied.stdout);

@@ -10,7 +10,7 @@ import {
   readWorldBaseReferenceSnapshot
 } from './lower-dvina-trace-phase-1b-snapshots.js';
 import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
-import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
+import { createRuntimeCatalogLoader, loadApprovedProceduralCompiledCatalog } from '@rus/runtime-catalog';
 import { createPostgresWorldBaseReader } from './world-base.js';
 export {
   readPartyDatabaseSchemaSnapshot,
@@ -71,6 +71,13 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
           catalogLoader == null ? null
             : catalogLoader.loadApprovedItemCatalog({ pin: runtimeCatalogPin })
         ]);
+      const verifiedProceduralCatalog = domainCatalog != null
+        && runtimeCatalogPin.catalog_revision_id
+          === 'procedural_scene_final_candidate_v2_001'
+        ? loadApprovedProceduralCompiledCatalog({
+          verifiedCatalog: domainCatalog, pin: runtimeCatalogPin
+        })
+        : null;
       return materializeLowerDvinaTraceParty({
         request,
         domainCatalogPinLoader: async (identity) => {
@@ -89,6 +96,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         partyDatabaseSchema,
         worldBaseReferenceSnapshot,
         domainCatalog,
+        verified_procedural_compiled_catalog: verifiedProceduralCatalog,
         repository,
         stage25Ports,
         worldKnowledge,

@@ -1,6 +1,7 @@
 import {
   assertCompatibleWorldPin,
   createRuntimeCatalogLoader,
+  loadApprovedProceduralCompiledCatalog,
   selectApplicableItemCatalog
 } from '@rus/runtime-catalog';
 import { loadCommonCatalogLookupRecords } from '@rus/runtime-catalog/common-lookups';
@@ -173,6 +174,12 @@ async function buildContext({
       effectiveDate
     })
     : null;
+  // V2 is the only activated catalog that admits procedural first-scene data.
+  // Older party pins stay readable but never gain a new scene package.
+  const proceduralCatalog = pin.catalog_revision_id
+      === 'procedural_scene_final_candidate_v2_001'
+    ? loadApprovedProceduralCompiledCatalog({ verifiedCatalog, pin })
+    : null;
   return deepFreeze({
     schema: 'rus.runtime_catalog_context.v2',
     source,
@@ -184,6 +191,7 @@ async function buildContext({
     },
     actor_profile_catalog: actorProfileCatalog,
     verified_catalog: verifiedCatalog,
+    verified_procedural_compiled_catalog: proceduralCatalog,
     applicable_catalog: applicableCatalog
   });
 }

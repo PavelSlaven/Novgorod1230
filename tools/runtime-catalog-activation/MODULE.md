@@ -18,9 +18,9 @@ import/readback и append-only domain catalog activation.
 - deterministic baseline registration ID и strict attestation bindings;
 - generated static readers/writers для 41 registry tables, включая immutable
   procedural-scene compiled records.
-- append-only `actor_base_attributes_v1` owner migration и party pin scope;
-  import request остаётся pending до отдельной independent attestation, а
-  runtime activation является отдельным последующим решением.
+- append-only `actor_base_attributes_v1` owner migration, exact import/readback
+  adapter и party pin scope; import-only approval не активирует runtime, а
+  runtime activation остаётся отдельным последующим решением.
 
 ## Не делает
 
@@ -42,6 +42,11 @@ Forward-migration contracts находятся в
 Поле `operator_backup_verified` в статическом контракте не является
 attestation конкретного запуска: перед operator apply backup проверяется
 внешним deployment/operator gate.
+
+`importApprovedActorBaseAttributes` применяет только exact approved owner row и
+immutable import ledger одной транзакцией. `readActorBaseAttributesImport` и
+`validateActorBaseAttributesImportResult` проверяют exact membership/readback;
+actor activation event при этом обязан отсутствовать.
 
 ## Допустимые зависимости
 

@@ -688,7 +688,7 @@
         "new-development-party-only final-candidate cutover preserving every existing",
         "deterministic baseline registration ID и strict attestation bindings",
         "generated static readers/writers для 41 registry tables, включая immutable",
-        "append-only `actor_base_attributes_v1` owner migration и party pin scope"
+        "append-only `actor_base_attributes_v1` owner migration, exact import/readback"
       ],
       "path": "tools/runtime-catalog-activation",
       "public_entry": "package exports",

@@ -10,6 +10,7 @@
     "./artifact-contracts": "./src/artifact-contracts.js",
     "./semantic-equivalence": "./src/semantic-equivalence.js",
     "./operator-executors": "./src/operator-executors.js",
+    "./actor-base-attributes-import": "./src/actor-base-attributes-import.js",
     "./procedural-v6-import": "./src/procedural-v6-import.js"
   },
   "dependencies": {

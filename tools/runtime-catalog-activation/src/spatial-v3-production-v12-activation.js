@@ -62,13 +62,13 @@ export function applySpatialV3ProductionV12ActivationBundle(options) {
 export function buildSpatialV3DevelopmentV13ActivationBundle(options) {
   return buildFirstPlayableV2ActivationBundle({
     ...options,
-    release: SPATIAL_V3_DEVELOPMENT_V13_RELEASE
+    release: options.release ?? SPATIAL_V3_DEVELOPMENT_V13_RELEASE
   });
 }
 
 export function applySpatialV3DevelopmentV13ActivationBundle(options) {
   return applyFirstPlayableV2ActivationBundle({
     ...options,
-    release: SPATIAL_V3_DEVELOPMENT_V13_RELEASE
+    release: options.release ?? SPATIAL_V3_DEVELOPMENT_V13_RELEASE
   });
 }

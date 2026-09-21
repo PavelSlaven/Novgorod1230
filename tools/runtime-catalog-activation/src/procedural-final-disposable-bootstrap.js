@@ -5,13 +5,15 @@ import registry from '../../../data/runtime-catalog/item-container-record-regist
 import { generateProceduralFinalCandidatePack } from '../../../scripts/generate-procedural-final-candidate-pack.mjs';
 import { buildBaselineRegistrationId, buildBaselineRegistrationRequest,
   buildOperatorBaselineSnapshotManifest, digestEnvelope } from './artifact-contracts.js';
-import { WORLD_RUNTIME_CATALOG_MIGRATION_V3 } from './forward-migrations.js';
+import { WORLD_RUNTIME_CATALOG_MIGRATION,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3 } from './forward-migrations.js';
 import { importProceduralFinalCandidatePack, importProceduralFinalV2Pack } from './procedural-v6-import.js';
 import { registerCatalogBaseline } from './operator-executors.js';
 import { RECORD_ADAPTERS } from './record-adapters.generated.js';
 import { RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST } from '@rus/runtime-catalog/runtime-contract';
 import { buildSpatialV3DevelopmentV13ActivationBundle,
-  applySpatialV3DevelopmentV13ActivationBundle } from './spatial-v3-production-v12-activation.js';
+  applySpatialV3DevelopmentV13ActivationBundle,
+  SPATIAL_V3_DEVELOPMENT_V13_RELEASE } from './spatial-v3-production-v12-activation.js';
 import { buildProceduralFinalCurrentSchemaV1DevelopmentActivation,
   applyProceduralFinalCurrentSchemaV1DevelopmentActivation } from './procedural-final-development-activation.js';
 import { buildProceduralFinalCurrentSchemaV2DevelopmentActivation,
@@ -22,13 +24,19 @@ const SHA = '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0';
 
 /** Current-schema disposable dev chain; historical V12 remains immutable. */
 export async function bootstrapProceduralFinalV2Disposable({ worldPool,
-  partyPool, repositoryRoot }) {
+  partyPool, repositoryRoot, worldMigration = WORLD_RUNTIME_CATALOG_MIGRATION_V3 }) {
+  const release = worldMigration.migration_id
+    === WORLD_RUNTIME_CATALOG_MIGRATION.migration_id
+    ? Object.freeze({ ...SPATIAL_V3_DEVELOPMENT_V13_RELEASE,
+      worldSchemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+      worldSchemaMigration: WORLD_RUNTIME_CATALOG_MIGRATION })
+    : SPATIAL_V3_DEVELOPMENT_V13_RELEASE;
   const root = resolve(repositoryRoot);
   const developmentBundle = await buildSpatialV3DevelopmentV13ActivationBundle({
     worldPool, partyPool, repositoryRoot: root, gitCommitSha: SHA,
-    authorizationRef: 'disposable development fixture activation' });
+    authorizationRef: 'disposable development fixture activation', release });
   const developmentActivation = await applySpatialV3DevelopmentV13ActivationBundle({
-    worldPool, partyPool, bundle: developmentBundle });
+    worldPool, partyPool, bundle: developmentBundle, release });
   const developmentPin = await loadActiveRuntimeCatalogPin(worldPool,
     'item_container_materialization_v2');
   await seedPartyWithPin(partyPool, 'party-development-fixture', developmentPin);

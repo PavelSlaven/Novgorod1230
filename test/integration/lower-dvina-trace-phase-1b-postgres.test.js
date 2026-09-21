@@ -1041,9 +1041,10 @@ async function installActivatedRuntimeCatalog({ worldPool, partyPool,
   await worldPool.query(await buildCharacterAppearanceV1ImportSql());
   await seedSpatialV5Revision(worldPool);
   await worldPool.query(await buildS1AuthoringV6ImportSql());
-  assert.equal((await runWorldRuntimeCatalogMigration(worldPool)).status, 'applied');
+  const worldMigration = await runWorldRuntimeCatalogMigration(worldPool);
+  assert.equal(worldMigration.status, 'applied');
   return (await bootstrapProceduralFinalV2Disposable({ worldPool,
-    partyPool, repositoryRoot: process.cwd() })).v2Pin;
+    partyPool, repositoryRoot: process.cwd(), worldMigration })).v2Pin;
 }
 
 async function seedSpatialV5Revision(pool) {

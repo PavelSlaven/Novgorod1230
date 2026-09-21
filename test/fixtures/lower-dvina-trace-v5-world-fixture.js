@@ -161,9 +161,21 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
 
 async function insert(pool, table, row) {
   const columns = Object.keys(row);
-  await pool.query(`INSERT INTO world_base.${table} (${columns.join(',')})
-    VALUES(${columns.map((_, index) => `$${index + 1}`).join(',')})`,
-  columns.map((column) => row[column]));
+  const inserted = await pool.query(
+    `INSERT INTO world_base.${table} (${columns.join(',')})
+       VALUES(${columns.map((_, index) => `$${index + 1}`).join(',')})
+       ON CONFLICT DO NOTHING`,
+    columns.map((column) => row[column])
+  );
+  if (inserted.rowCount === 1) return;
+  const existing = (await pool.query(
+    `SELECT to_jsonb(row) AS value FROM world_base.${table} AS row
+      WHERE id=$1`, [row.id]
+  )).rows;
+  if (existing.length !== 1 || columns.some((column) =>
+    JSON.stringify(existing[0].value[column]) !== JSON.stringify(row[column]))) {
+    throw new Error(`Canonical ${table} row conflicts: ${row.id}`);
+  }
 }
 
 async function ensureRuntimeCatalogSchema(pool) {

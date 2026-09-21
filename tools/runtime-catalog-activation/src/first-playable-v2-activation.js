@@ -33,7 +33,8 @@ import { compileOverlaySemanticPayload } from './overlay-compiler.js';
 import { readPostgresSchemaFingerprint } from './forward-migration.js';
 import {
   PARTY_RUNTIME_CATALOG_MIGRATION,
-  WORLD_RUNTIME_CATALOG_MIGRATION
+  WORLD_RUNTIME_CATALOG_MIGRATION,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3
 } from './forward-migrations.js';
 import { RECORD_ADAPTERS } from './record-adapters.generated.js';
 
@@ -59,6 +60,15 @@ const FIRST_PLAYABLE_V2_RELEASE = Object.freeze({
   baselineTitle: 'Lower Dvina runtime catalog baseline v2',
   activationBasis:
     'mandatory production activation for first launch; no existing parties'
+});
+
+export const FIRST_PLAYABLE_V3_RELEASE = Object.freeze({
+  ...FIRST_PLAYABLE_V2_RELEASE,
+  releaseId: 'spatial-v3-first-playable-v3',
+  worldSchemaFingerprint:
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
+  worldSchemaMigrationDigest:
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_digest
 });
 
 /**
@@ -310,8 +320,8 @@ export async function buildFirstPlayableV2ActivationBundle({
         promotionManifest.promotion_manifest_digest,
       approval_request_digest: approvalRequest.approval_request_digest,
       approval_attestation_digest: overlayAttestation.attestation_digest,
-      schema_migration_digest:
-        WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
+      schema_migration_digest: release.worldSchemaMigrationDigest
+        ?? WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
     },
     tables,
     records,

@@ -11,7 +11,8 @@ import {
 } from '@rus/runtime-catalog/runtime-contract';
 import {
   applyFirstPlayableV2ActivationBundle,
-  buildFirstPlayableV2ActivationBundle
+  buildFirstPlayableV2ActivationBundle,
+  FIRST_PLAYABLE_V3_RELEASE
 } from '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
 import {
   applyLowerDvinaBoundaryV3ActivationBundle,
@@ -123,7 +124,8 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
     partyPool,
     repositoryRoot: process.cwd(),
     gitCommitSha: 'd4be6a6014b80ceae937b3900dad6cbe7c1e787d',
-    authorizationRef: 'first-playable PostgreSQL integration test'
+    authorizationRef: 'first-playable PostgreSQL integration test',
+    release: FIRST_PLAYABLE_V3_RELEASE
   });
   assert.equal(bundle.equivalence_report.insert_count, 0);
   assert.ok(bundle.equivalence_report.assert_existing_count > 0);
@@ -131,7 +133,8 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
   const applied = await applyFirstPlayableV2ActivationBundle({
     worldPool,
     partyPool,
-    bundle
+    bundle,
+    release: FIRST_PLAYABLE_V3_RELEASE
   });
   assert.equal(applied.baseline.status, 'registered');
   assert.equal(applied.imported.status, 'applied');
@@ -139,7 +142,8 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
   const repeated = await applyFirstPlayableV2ActivationBundle({
     worldPool,
     partyPool,
-    bundle
+    bundle,
+    release: FIRST_PLAYABLE_V3_RELEASE
   });
   assert.equal(repeated.baseline.status, 'already_registered');
   assert.equal(repeated.imported.status, 'already_applied');

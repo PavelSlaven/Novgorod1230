@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createSpatialV3WorldBaseReader } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
+import { runWorldRuntimeCatalogMigration } from
+  '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 
 const root = 'data/world-catalogs/novgorod/spatial-v3/candidates';
 const v5Path = `${root}/spatial-v3-production-v5`;
@@ -90,6 +92,7 @@ const pick = (row, columns) => Object.fromEntries(
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
 
 async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: paths }) {
+  await ensureRuntimeCatalogSchema(pool);
   const manifest = await readJson(`${path}/manifest.json`);
   assert.deepEqual({ revision: manifest.world_revision_id,
     digest: manifest.catalog_digest }, {
@@ -205,6 +208,22 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
       visibility_links: rows('spatial_v3_visibility_link_templates')
     });
   }
+}
+
+async function ensureRuntimeCatalogSchema(pool) {
+  const present = (await pool.query(
+    "SELECT to_regclass('world_base.domain_catalog_revisions') IS NOT NULL AS present"
+  )).rows[0]?.present === true;
+  if (!present) {
+    for (let part = 1; part <= 20; part += 1) {
+      await pool.query(await readFile(
+        `infra/world-base/schema/${String(part).padStart(2, '0')}.sql`,
+        'utf8'
+      ));
+    }
+    await pool.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
+  }
+  await runWorldRuntimeCatalogMigration(pool);
 }
 
 export async function installLowerDvinaTraceV5World(pool) {

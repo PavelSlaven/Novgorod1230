@@ -14,15 +14,15 @@ export function materializeActorBaseAttributes({ approved_bundle: bundle,
   seed_basis: suppliedSeed } = {}) {
   const profile = profileFromApprovedBundle(bundle);
   if (!text(occupation) || !text(actorSlot) || !plain(suppliedSeed)
-      || !text(suppliedSeed.world_revision_id)
-      || !text(suppliedSeed.materialization_seed)) gap('SEED_BASIS');
+      || !text(suppliedSeed.world_revision_id) || !digest(suppliedSeed.world_catalog_digest)
+      || !digest(suppliedSeed.parent_seed_digest)) gap('SEED_BASIS');
   const mapping = profile.occupation_archetype_priorities.find((entry) =>
     entry.occupation_archetype_id === occupation);
   if (mapping == null) gap('ARCHETYPE_MAPPING');
   const profileDigest = canonicalDigest(profile);
   const seed_basis = { world_revision_id: suppliedSeed.world_revision_id,
-    world_catalog_digest: suppliedSeed.world_catalog_digest ?? null,
-    materialization_seed: suppliedSeed.materialization_seed,
+    world_catalog_digest: suppliedSeed.world_catalog_digest,
+    parent_seed_digest: suppliedSeed.parent_seed_digest,
     actor_slot_ref: actorSlot, profile_digest: profileDigest };
   const seed = deriveSeed({ domain: 'actor_base_attributes_v1', ...seed_basis });
   const random = createRandomSource({ seed: seed.uint32, version: RNG_VERSION });
@@ -73,18 +73,36 @@ export function validateActorBaseAttributes(value) {
 }
 
 export function profileFromApprovedBundle(bundle) {
-  const candidate = bundle?.candidate, attestation = bundle?.attestation;
+  const candidate = bundle?.candidate, request = bundle?.approval_request,
+    attestation = bundle?.attestation;
   const profile = candidate?.profile;
   if (bundle?.schema !== 'rus.approved_actor_base_attributes_bundle.v1'
       || bundle.runtime_authorized !== true
       || candidate?.schema !== 'rus.actor_base_attributes_candidate.v1'
       || candidate.status !== 'approved' || candidate.runtime_authorized !== true
-      || !digest(candidate.candidate_digest)
+      || candidate.candidate_digest !== canonicalCandidateDigest(candidate)
+      || candidate.profile_digest !== canonicalDigest(profile)
+      || request?.schema !== 'rus.actor_base_attributes_approval_request.v1'
+      || request.decision !== 'approved' || request.runtime_authorized !== true
+      || request.import_authorized !== true || request.activation_authorized !== true
+      || request.request_digest !== canonicalRequestDigest(request)
       || attestation?.schema !== 'rus.actor_base_attributes_attestation.v1'
-      || attestation.runtime_authorized !== true
+      || attestation.runtime_authorized !== true || attestation.request_digest !== request.request_digest
       || attestation.candidate_digest !== candidate.candidate_digest
       || attestation.profile_digest !== canonicalDigest(profile)) gap('BUNDLE');
   return validateProfile(profile);
+}
+
+export function canonicalCandidateDigest(candidate) {
+  const value = structuredClone(candidate ?? {});
+  delete value.candidate_digest;
+  delete value.profile_digest;
+  return canonicalDigest(value);
+}
+export function canonicalRequestDigest(request) {
+  const value = structuredClone(request ?? {});
+  delete value.request_digest;
+  return canonicalDigest(value);
 }
 
 export function validateActorBaseAttributesCandidate(candidate) {

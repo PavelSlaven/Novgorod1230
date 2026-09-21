@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { canonicalDigest, materializeActorBaseAttributes } from '../src/index.js';
+import { canonicalCandidateDigest, canonicalDigest, canonicalRequestDigest,
+  materializeActorBaseAttributes } from '../src/index.js';
 
 const profile = { schema: 'rus.actor_base_attributes_profile.v1', version: 1,
   profile_id: 'ordinary-v1', algorithm_version: 'actor_base_attributes_v1',
@@ -12,18 +13,25 @@ const profile = { schema: 'rus.actor_base_attributes_profile.v1', version: 1,
     mapping_id: occupation_archetype_id, occupation_archetype_id,
     priority_tiers: [['strength'], ['dexterity'], ['endurance'], ['reason'],
       ['attention'], ['influence']] })) };
-const bundle = { schema: 'rus.approved_actor_base_attributes_bundle.v1',
-  runtime_authorized: true, candidate: { schema:
+const candidate = { schema:
     'rus.actor_base_attributes_candidate.v1', status: 'approved',
-    runtime_authorized: true, candidate_digest: 'a'.repeat(64), profile },
+    runtime_authorized: true, profile, profile_digest: canonicalDigest(profile) };
+candidate.candidate_digest = canonicalCandidateDigest(candidate);
+const request = { schema: 'rus.actor_base_attributes_approval_request.v1',
+  decision: 'approved', runtime_authorized: true, import_authorized: true,
+  activation_authorized: true };
+request.request_digest = canonicalRequestDigest(request);
+const bundle = { schema: 'rus.approved_actor_base_attributes_bundle.v1',
+  runtime_authorized: true, candidate, approval_request: request,
   attestation: { schema: 'rus.actor_base_attributes_attestation.v1',
-    runtime_authorized: true, candidate_digest: 'a'.repeat(64),
+    runtime_authorized: true, candidate_digest: candidate.candidate_digest,
+    request_digest: request.request_digest,
     profile_digest: canonicalDigest(profile) } };
 
 test('actor base attributes are pinned, complete and deterministic', () => {
   const input = { approved_bundle: bundle, occupation_archetype_id: 'fishing_water',
     actor_slot_ref: 'worker:0', seed_basis: { world_revision_id: 'world',
-      materialization_seed: 'seed' } };
+      world_catalog_digest: 'b'.repeat(64), parent_seed_digest: 'c'.repeat(64) } };
   const left = materializeActorBaseAttributes(input);
   const right = materializeActorBaseAttributes(input);
   assert.deepEqual(left, right);

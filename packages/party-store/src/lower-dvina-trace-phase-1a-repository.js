@@ -213,6 +213,11 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         }
       }));
       const normalizedContainers = containers.map(normalizedContainer);
+      const hydratedNpcs = (payload.immediate.npcs ?? []).map((npc) => {
+        const row = npcs.find(({ npc_id: id }) => id === npc.instance_id);
+        return { ...structuredClone(npc), base_attributes:
+          structuredClone(row?.attribute_profile_snapshot ?? null) };
+      });
       const normalizedObligations = obligations.map((obligation) => {
         const sealed = (payload.immediate.promise_instances ?? []).find(
           ({ instance_id: id }) => id === obligation.obligation_id
@@ -257,7 +262,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
             spatial_v3: payload.first_entry_spatial_v3
           }
         }),
-        npcs: payload.immediate.npcs ?? [],
+        npcs: hydratedNpcs,
         timestamp: { whole_minutes: clock.whole_minutes, subminute_numerator: clock.subminute_numerator, subminute_denominator: clock.subminute_denominator },
         environment_snapshot: payload.immediate.environment_snapshot,
         hidden_truth: payload.hidden_truth,

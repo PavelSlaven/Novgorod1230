@@ -14,7 +14,8 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
         binding.actor_profile_rule_ref, binding.demographic_profile_ref,
         binding.appearance_profile_ref, binding.anchor_id, binding.g5_node_id,
         binding.location_profile_ref, binding.zone_ref,
-        binding.activity_record_ref, binding.world_revision_id].every(text)
+        binding.activity_record_ref, binding.world_revision_id,
+        binding.world_catalog_digest, binding.parent_seed_digest].every(text)
       || !/^[a-f0-9]{64}$/.test(String(
         binding.profile_candidate_set_digest ?? ''))
       || !/^[a-f0-9]{64}$/.test(String(binding.profile_record_digest ?? ''))
@@ -44,8 +45,8 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     occupation_archetype_id: occupation.occupation_archetype_id,
     actor_slot_ref: binding.actor_slot_ref,
     seed_basis: { world_revision_id: binding.world_revision_id,
-      world_catalog_digest: binding.world_catalog_digest ?? null,
-      materialization_seed: `${partyId}:${runId}` }
+      world_catalog_digest: binding.world_catalog_digest,
+      parent_seed_digest: binding.parent_seed_digest }
   });
   const activity = exact(bundle.temporal_records, 'record_id',
     binding.activity_record_ref);

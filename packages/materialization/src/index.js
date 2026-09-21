@@ -360,6 +360,8 @@ export {
 } from './approved-actor-equipment.js';
 export {
   ACTOR_BASE_ATTRIBUTE_KEYS,
+  canonicalCandidateDigest,
+  canonicalRequestDigest,
   materializeActorBaseAttributes,
   validateActorBaseAttributesCandidate,
   validateActorBaseAttributes

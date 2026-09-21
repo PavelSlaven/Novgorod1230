@@ -466,6 +466,44 @@ export function buildActivationEvent({
   });
 }
 
+export function buildActivationEventFromVerifiedAttestation({
+  request,
+  attestationDigest,
+  previousEvent,
+  operatorPrincipal
+}) {
+  const expectedPrevious = previousEvent?.event_id ?? null;
+  if ((request.expected_previous_event_id ?? null) !== expectedPrevious) {
+    fail('ACTIVATION_PREVIOUS_EVENT_STALE', 'Activation compare-and-swap predecessor is stale.');
+  }
+  const eventEnvelope = {
+    schema: 'rus.runtime_catalog_activation_event.v2',
+    event_sequence: Number(previousEvent?.event_sequence ?? 0) + 1,
+    event_type: 'activate',
+    catalog_scope: request.catalog_scope,
+    catalog_revision_id: request.target_revision_id,
+    catalog_digest: request.target_catalog_digest,
+    import_id: request.import_id,
+    import_audit_digest: request.import_audit_digest,
+    record_registry_digest: request.record_registry_digest,
+    runtime_contract_digest: request.runtime_contract_digest,
+    compatible_world_revision_id: request.compatible_world_revision_id,
+    compatible_world_catalog_digest: request.compatible_world_catalog_digest,
+    compatible_world_pin_manifest_digest: request.compatible_world_pin_manifest_digest,
+    request_digest: request.activation_request_digest,
+    attestation_digest: requireDigest(attestationDigest, 'attestationDigest'),
+    expected_previous_event_id: expectedPrevious,
+    runtime_release_id: request.runtime_release_id,
+    operator_principal: requiredText(operatorPrincipal, 'operatorPrincipal')
+  };
+  const eventDigest = digest(eventEnvelope);
+  return deepFreeze({
+    ...eventEnvelope,
+    event_id: `runtime_catalog_activation_${eventDigest.slice(0, 32)}`,
+    event_digest: eventDigest
+  });
+}
+
 export function digestEnvelope(payload) {
   return digest(payload);
 }

@@ -1,9 +1,17 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { createSpatialV3WorldBaseReader } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { runWorldRuntimeCatalogMigration } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { activateGate1RuntimeCatalog } from
+  '../../tools/runtime-catalog-activation/src/gate1-runtime-activation.js';
+import { loadActiveRuntimeCatalogPin } from
+  '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
+import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
+import { RUNTIME_CATALOG_CONTRACT_DIGEST } from
+  '@rus/runtime-catalog/runtime-contract';
 
 const root = 'data/world-catalogs/novgorod/spatial-v3/candidates';
 const v5Path = `${root}/spatial-v3-production-v5`;
@@ -107,7 +115,7 @@ const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
 async function installLowerDvinaTraceWorld(pool, {
   path, world, lineagePaths: paths, categoryPathCount
 }) {
-  await ensureRuntimeCatalogSchema(pool);
+  await ensureRuntimeCatalogSchema(pool, world);
   const manifest = await readJson(`${path}/manifest.json`);
   assert.deepEqual({ revision: manifest.world_revision_id,
     digest: manifest.catalog_digest }, {
@@ -192,6 +200,13 @@ async function installLowerDvinaTraceWorld(pool, {
       visibility_links: rows('spatial_v3_visibility_link_templates')
     });
   }
+  const runtimeCatalogPin = await loadActiveRuntimeCatalogPin(pool,
+    'item_container_materialization_v2');
+  const verifiedItemCatalog = await createRuntimeCatalogLoader({
+    worldBaseReader: { read: (sql, parameters) => pool.query(sql, parameters) },
+    supportedRuntimeContractDigests: [RUNTIME_CATALOG_CONTRACT_DIGEST]
+  }).loadApprovedItemCatalog({ pin: runtimeCatalogPin });
+  return Object.freeze({ runtimeCatalogPin, verifiedItemCatalog });
 }
 
 async function insert(pool, table, row) {
@@ -217,7 +232,7 @@ async function insert(pool, table, row) {
   }
 }
 
-async function ensureRuntimeCatalogSchema(pool) {
+async function ensureRuntimeCatalogSchema(pool, world) {
   const pending = runtimeCatalogBootstraps.get(pool);
   if (pending) return pending;
   const bootstrap = (async () => {
@@ -226,15 +241,39 @@ async function ensureRuntimeCatalogSchema(pool) {
       to_regclass('world_base.spatial_v3_world_revisions') IS NOT NULL AS spatial`
     )).rows[0];
     if (!state.catalog && !state.spatial) {
-      for (let part = 1; part <= 20; part += 1) {
+      const options = pool.options;
+      const url = new URL('postgresql://localhost');
+      url.hostname = options.host;
+      url.port = String(options.port);
+      url.username = options.user;
+      url.password = options.password;
+      url.pathname = `/${options.database}`;
+      const imported = spawnSync(process.execPath,
+        ['scripts/run-pr17-item-container-stage3c.mjs', '--mode',
+          'fixture-bootstrap'], {
+          cwd: process.cwd(),
+          env: { ...process.env, PR17_TEST_DATABASE_URL: url.toString() },
+          encoding: 'utf8',
+          timeout: 180_000
+        });
+      if (imported.status !== 0) {
+        throw new Error(`Canonical Gate1 bootstrap failed: ${imported.stderr}`);
+      }
+      for (let part = 18; part <= 20; part += 1) {
         await pool.query(await readFile(
           `infra/world-base/schema/${String(part).padStart(2, '0')}.sql`,
           'utf8'
         ));
       }
-      await pool.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
     }
     await runWorldRuntimeCatalogMigration(pool);
+    await activateGate1RuntimeCatalog({
+      worldPool: pool,
+      partyPool: pool,
+      repositoryRoot: process.cwd(),
+      worldReleaseId: world === lowerDvinaTraceV6World
+        ? 'spatial-v3-production-v6' : 'spatial-v3-production-v5'
+    });
   })();
   runtimeCatalogBootstraps.set(pool, bootstrap);
   try {

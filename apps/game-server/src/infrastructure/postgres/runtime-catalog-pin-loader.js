@@ -78,7 +78,20 @@ export async function loadActiveRuntimeCatalogPin(
     throw serverError('RUNTIME_CATALOG_ACTIVE_PIN_INVALID',
       'Latest runtime-catalog activation has an invalid exact pin.');
   }
-  const policy = row.provenance?.development_activation_policy ?? null;
+  const policy = row.provenance?.development_activation_policy
+    ?? row.provenance?.gate1_already_imported_registration ?? null;
+  if (policy?.schema === 'rus.gate1_already_imported_registration.v1'
+      && (policy.activation_scope !== 'new_development_parties_only'
+        || policy.production_deploy_authorized !== false
+        || policy.existing_party_migration_authorized !== false
+        || policy.old_save_rematerialization_authorized !== false
+        || policy.authoring_only_functional_allocation_runtime_selection !== false
+        || policy.runtime_item_creation_authorized !== false
+        || policy.import_authorized !== false
+        || policy.zero_gameplay_row_writes !== true)) {
+    throw serverError('RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID',
+      'Gate1 activation exceeds exact development-only authority.');
+  }
   if (row.catalog_revision_id === 'procedural_scene_final_candidate_v1_001'
       && (policy?.schema !==
           'rus.procedural_final_development_activation_policy.v1'

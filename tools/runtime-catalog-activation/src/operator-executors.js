@@ -11,6 +11,7 @@ import {
 import {
   buildBaselineRegistrationId,
   buildActivationEvent,
+  buildActivationEventFromVerifiedAttestation,
   buildDevelopmentPartyPreflight,
   buildOperatorBaselineSnapshotManifest,
   buildPartyPreflight,
@@ -425,6 +426,190 @@ export async function activateApprovedCatalog({
   });
 }
 
+export async function registerAlreadyImportedCatalogAndActivate({
+  worldPool,
+  partyPool,
+  ledger,
+  domainRevision,
+  baselineRegistration,
+  activationRequest,
+  activationAttestation,
+  activationAmendmentRequest,
+  registrationProvenance
+}) {
+  verifyDecisionAttestation({
+    attestation: activationAttestation,
+    expectedSchema: 'rus.gate1_v5_v6_runtime_activation_approval_attestation.v1',
+    requestDigestField: 'activation_amendment_request_digest',
+    expectedRequestDigest: activationAmendmentRequest.request_digest,
+    expectedDecision: 'approve_exact_new_development_runtime_activation',
+    expectedBindings: { approved_bindings: {
+      predecessor_request_digest:
+        activationAmendmentRequest.predecessor.request_digest,
+      import_readback: activationAmendmentRequest.completed_import_readback,
+      reconciled_stage3c: activationAmendmentRequest.reconciled_stage3c,
+      target_catalog: activationAmendmentRequest.target_catalog,
+      approval_chain: activationAmendmentRequest.approval_chain,
+      compatible_world_pins: activationAmendmentRequest.compatible_world_pins,
+      world_revisions_digest: activationAmendmentRequest.world_revisions_digest
+    } }
+  });
+  if (activationAttestation.activation_scope !== 'new_development_parties_only'
+      || activationAttestation.authority?.activation_authorized !== true
+      || activationAttestation.authority?.new_development_party_activation_authorized !== true
+      || ['import_authorized', 'production_authorized',
+        'existing_party_migration_authorized',
+        'old_save_rematerialization_authorized',
+        'authoring_only_functional_allocation_runtime_selection',
+        'runtime_item_creation_authorized'].some((field) =>
+        activationAttestation.authority?.[field] !== false)) {
+    fail('ACTIVATION_ATTESTATION_SCOPE_INVALID',
+      'Gate1 approval does not authorize this exact development activation.');
+  }
+  return transaction(worldPool, async (client) => {
+    await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [IMPORT_LOCK]);
+    await client.query('SELECT pg_advisory_xact_lock($1::bigint)',
+      [RUNTIME_CATALOG_ACTIVATION_LOCK_KEY]);
+    for (const record of orderedRecords(ledger)) await assertCanonicalRecord(client, record);
+    for (const assertion of ledger.dependency_assertions) {
+      await assertCanonicalRecord(client, {
+        table_name: assertion.target_table,
+        canonical_payload: assertion.expected_base_canonical_payload,
+        record_digest: assertion.expected_base_record_digest
+      });
+    }
+    const target = (await client.query(
+      `SELECT id,parent_revision_id,catalog_digest,status
+         FROM world_base.world_revisions WHERE id=$1`,
+      [ledger.root.target_revision_id])).rows[0];
+    assertExact(target, {
+      id: ledger.root.target_revision_id,
+      parent_revision_id: ledger.root.parent_revision_id,
+      catalog_digest: ledger.root.target_catalog_digest,
+      status: 'approved'
+    }, 'CATALOG_IMPORT_ALREADY_IMPORTED_TARGET_MISMATCH');
+
+    const existingBaseline = (await client.query(
+      `SELECT registration_id,parent_revision_id,parent_catalog_digest,
+              parent_snapshot_manifest_digest,schema_fingerprint,
+              record_registry_digest,compatible_world_revision_id,
+              compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+              registration_request_digest,registration_attestation_digest
+         FROM world_base.catalog_baseline_registrations
+        WHERE parent_revision_id=$1`, [ledger.root.parent_revision_id])).rows[0];
+    if (existingBaseline) {
+      assertExact(existingBaseline, baselineRegistration,
+        'BASELINE_REGISTRATION_CONFLICT');
+    } else {
+      await client.query(
+        `INSERT INTO world_base.catalog_baseline_registrations
+          (registration_id,parent_revision_id,parent_catalog_digest,
+           parent_snapshot_manifest_digest,schema_fingerprint,
+           record_registry_digest,compatible_world_revision_id,
+           compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+           registration_request_digest,registration_attestation_digest,
+           registered_by)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,current_user)`,
+        Object.values(baselineRegistration));
+    }
+
+    const existingRevision = (await client.query(
+      `SELECT catalog_revision_id,catalog_scope,parent_registration_id,
+              target_catalog_digest,compatible_world_revision_id,
+              compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+              record_registry_digest,runtime_contract_digest,status
+         FROM world_base.domain_catalog_revisions WHERE catalog_revision_id=$1`,
+      [ledger.root.target_revision_id])).rows[0];
+    if (existingRevision) {
+      assertExact(existingRevision, domainRevision, 'CATALOG_IMPORT_CONFLICT');
+    } else {
+      await client.query(
+        `INSERT INTO world_base.domain_catalog_revisions
+          (catalog_revision_id,catalog_scope,parent_registration_id,
+           target_catalog_digest,compatible_world_revision_id,
+           compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+           record_registry_digest,runtime_contract_digest,status)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+        Object.values(domainRevision));
+    }
+
+    const existingImport = (await client.query(
+      'SELECT import_audit_digest FROM world_base.catalog_imports WHERE id=$1',
+      [ledger.root.import_id])).rows[0];
+    if (existingImport) {
+      assertExact(existingImport, { import_audit_digest: ledger.root.import_audit_digest },
+        'CATALOG_IMPORT_CONFLICT');
+    } else {
+      await insertImportLedger(client, ledger, registrationProvenance);
+    }
+    await verifyImportedCatalog(client, ledger.root,
+      domainRevision.runtime_contract_digest);
+
+    const latest = (await client.query(
+      `SELECT event_id,event_sequence,request_digest,catalog_revision_id,
+              catalog_digest,import_id,import_audit_digest,attestation_digest
+         FROM world_base.runtime_catalog_activation_events
+        WHERE catalog_scope='item_container_materialization_v2'
+        ORDER BY event_sequence DESC LIMIT 1`)).rows[0] ?? null;
+    if (latest && latest.catalog_revision_id === activationRequest.target_revision_id
+        && latest.catalog_digest === activationRequest.target_catalog_digest
+        && latest.import_id === activationRequest.import_id
+        && latest.import_audit_digest === activationRequest.import_audit_digest
+        && latest.attestation_digest === activationAttestation.attestation_digest) {
+      return Object.freeze({ status: 'already_active', event_id: latest.event_id });
+    }
+    const counts = (await partyPool.query(
+      `SELECT
+        (SELECT count(*)::int FROM party_runtime.parties) AS party_count,
+        (SELECT count(DISTINCT party_id)::int FROM party_runtime.party_catalog_pins
+          WHERE catalog_scope='item_container_materialization_v2') AS pinned_party_count,
+        (SELECT count(*)::int FROM party_runtime.parties p
+          LEFT JOIN party_runtime.party_catalog_pins c ON c.party_id=p.party_id
+           AND c.catalog_scope='item_container_materialization_v2'
+          WHERE c.party_id IS NULL) AS missing_domain_pin_count,
+        (SELECT count(*)::int FROM party_runtime.commit_idempotency
+          WHERE status IN ('reserved','transaction_committed')) AS inflight_count`)).rows[0];
+    const preflight = buildDevelopmentPartyPreflight({
+      partyCount: Number(counts.party_count),
+      pinnedPartyCount: Number(counts.pinned_party_count),
+      missingDomainPinCount: Number(counts.missing_domain_pin_count),
+      inflightStage24Stage25Count: Number(counts.inflight_count),
+      runtimeReleaseId: activationRequest.runtime_release_id,
+      runtimeContractDigest: activationRequest.runtime_contract_digest
+    });
+    if (preflight.party_preflight_digest !== activationRequest.party_preflight_digest) {
+      fail('ACTIVATION_PARTY_PREFLIGHT_STALE',
+        'Party preflight changed after activation request.');
+    }
+    const principal = (await client.query('SELECT current_user AS principal')).rows[0].principal;
+    const event = buildActivationEventFromVerifiedAttestation({
+      request: activationRequest,
+      attestationDigest: activationAttestation.attestation_digest,
+      previousEvent: latest,
+      operatorPrincipal: principal
+    });
+    await client.query(
+      `INSERT INTO world_base.runtime_catalog_activation_events
+        (event_id,event_sequence,event_type,catalog_scope,catalog_revision_id,
+         catalog_digest,import_id,import_audit_digest,record_registry_digest,
+         runtime_contract_digest,compatible_world_revision_id,
+         compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+         request_digest,attestation_digest,expected_previous_event_id,
+         runtime_release_id,operator_principal,event_digest)
+       VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)`,
+      [event.event_id,event.event_sequence,event.event_type,event.catalog_scope,
+        event.catalog_revision_id,event.catalog_digest,event.import_id,
+        event.import_audit_digest,event.record_registry_digest,
+        event.runtime_contract_digest,event.compatible_world_revision_id,
+        event.compatible_world_catalog_digest,
+        event.compatible_world_pin_manifest_digest,event.request_digest,
+        event.attestation_digest,event.expected_previous_event_id,
+        event.runtime_release_id,event.operator_principal,event.event_digest]);
+    return Object.freeze({ status: 'activated', event_id: event.event_id,
+      event_sequence: event.event_sequence });
+  });
+}
+
 async function applyMembershipRecord(client, record) {
   const adapter = RECORD_ADAPTERS[record.table_name];
   if (!adapter) fail('CATALOG_IMPORT_TABLE_UNKNOWN', 'No compiled adapter for import table.');
@@ -466,7 +651,7 @@ async function assertCanonicalRecord(client, record) {
   }
 }
 
-async function insertImportLedger(client, ledger) {
+async function insertImportLedger(client, ledger, registrationProvenance = {}) {
   const root = ledger.root;
   await client.query(
     `INSERT INTO world_base.catalog_imports
@@ -485,6 +670,7 @@ async function insertImportLedger(client, ledger) {
     [
       root.import_id, root.target_revision_id, root.promotion_manifest_digest,
       JSON.stringify({ approval_request_digest: root.approval_request_digest,
+        ...registrationProvenance,
         ...(root.development_activation_policy == null ? {} : {
           development_activation_policy:
             root.development_activation_policy }) }),

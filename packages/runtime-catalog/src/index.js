@@ -348,6 +348,8 @@ async function loadApprovedItemCatalog({
   );
   const developmentPolicy = importRoot.provenance
     ?.development_activation_policy;
+  const alreadyImportedRegistration = importRoot.provenance
+    ?.gate1_already_imported_registration;
   delete importRoot.provenance;
   if (developmentPolicy?.schema ===
       'rus.procedural_final_development_activation_policy.v1')
@@ -463,7 +465,23 @@ async function loadApprovedItemCatalog({
         '6fcf5c50d01bd56605a037de3d79cd1aa5e56a1c520db70bd0ab5b6ade6b1361'
       && importRoot.approval_attestation_digest ===
         '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772';
-    if (!finalV2 && computeTargetCatalogDigest(targetPayload) !== pin.catalog_digest) {
+    const reconstructedDigest = computeTargetCatalogDigest(targetPayload);
+    const gate1Registered = alreadyImportedRegistration?.schema ===
+        'rus.gate1_already_imported_registration.v1'
+      && alreadyImportedRegistration.stage3c_catalog_digest === pin.catalog_digest
+      && alreadyImportedRegistration.runtime_projection_digest === reconstructedDigest
+      && alreadyImportedRegistration.zero_gameplay_row_writes === true
+      && alreadyImportedRegistration.import_authorized === false
+      && alreadyImportedRegistration.activation_scope ===
+        'new_development_parties_only'
+      && alreadyImportedRegistration.production_deploy_authorized === false
+      && alreadyImportedRegistration.existing_party_migration_authorized === false
+      && alreadyImportedRegistration.old_save_rematerialization_authorized === false
+      && alreadyImportedRegistration
+        .authoring_only_functional_allocation_runtime_selection === false
+      && alreadyImportedRegistration.runtime_item_creation_authorized === false;
+    if (!finalV2 && !gate1Registered
+        && reconstructedDigest !== pin.catalog_digest) {
       fail(
         'RUNTIME_CATALOG_DIGEST_MISMATCH',
         'Reconstructed target catalog digest does not match the pin.'

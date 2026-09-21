@@ -12,8 +12,6 @@ import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-s
 import { createLowerDvinaTracePhase2DurableNarrator } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { firstPlayableCommitRecheck } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
-import { loadLowerDvinaTraceMaterializationBundle } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
-import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { createM2ConversationModels } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
 import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
@@ -29,13 +27,14 @@ test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback a
   const name = `lower-dvina-phase-5-${process.pid}`;
   let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
-  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase5', '-e', 'POSTGRES_DB=phase5', 'postgres:16-alpine']);
+  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase5', '-e', 'POSTGRES_DB=pr17_phase5', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   await waitForPostgres(name);
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
-  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase5', password: 'local_only', database: 'phase5', max: 8 });
-  await installSchemas(pool); await installLowerDvinaTraceV5World(pool);
-  const pins = await runtimePins();
+  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase5', password: 'local_only', database: 'pr17_phase5', max: 8 });
+  await installSchemas(pool);
+  const { runtimeCatalogPin } = await installLowerDvinaTraceV5World(pool);
+  const pins = await runtimePins(runtimeCatalogPin);
 
   const counters = { rng: 0, now: 0 };
   const runtime = buildRuntime({ pool, ...pins, counters, randomValue: 0.99 });
@@ -96,10 +95,7 @@ test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback a
   assert.equal((await bandage(pool, rollbackParty.party_id)).condition_state, 'clean_serviceable');
 });
 
-async function runtimePins() {
-  const bundle = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 11 });
-  const source = lowerDvinaTracePhase1ADomainPin(bundle);
-  const runtimeCatalogPin = Object.freeze({ ...source, compatible_world_revision_id: world.revision, compatible_world_catalog_digest: world.digest, compatible_world_pin_manifest_digest: world.manifest });
+async function runtimePins(runtimeCatalogPin) {
   return { runtimeCatalogPin, release: Object.freeze({ release_id: 'phase-5-postgres-release', world_revision_id: world.revision, world_catalog_digest: world.digest, compatible_world_pin_manifest_digest: world.manifest }) };
 }
 

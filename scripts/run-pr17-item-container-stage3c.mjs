@@ -69,7 +69,8 @@ if (plan.status !== 'ready') throw new Error(`PR17_STAGE3C_PLAN_BLOCKED:${plan.e
 
 if (mode === 'dry-run') {
   process.stdout.write(`${JSON.stringify(summary({ mode, plan, applied: false }), null, 2)}\n`);
-} else if (mode === 'lifecycle' || mode === 'local-play') {
+} else if (mode === 'lifecycle' || mode === 'local-play'
+    || mode === 'fixture-bootstrap') {
   const databaseUrl = process.env.PR17_TEST_DATABASE_URL;
   if (!databaseUrl) throw new Error('PR17_TEST_DATABASE_URL_REQUIRED');
   const pool = new pg.Pool({ connectionString: databaseUrl, max: 1 });
@@ -77,23 +78,33 @@ if (mode === 'dry-run') {
   try {
     const database = await assertDatabaseForMode(client, mode);
     await initializeSchema(client);
-    const rollback = await verifyRollback(plan, client, gate1);
-    const first = await applyRevisionPromotionPlan({ plan,
-      adapter: createPostgresAdapter(client, gate1) });
-    const firstState = await verifyPromotionState(client, plan, input, gate1);
-    const runtimeE2e = await verifyPromotedRuntime(client, plan);
-    await initializeSchema(client);
-    const repeated = await applyRevisionPromotionPlan({ plan,
-      adapter: createPostgresAdapter(client, gate1) });
-    const repeatedState = await verifyPromotionState(client, plan, input, gate1);
-    const result = { ...summary({ mode, plan, applied: first.applied }),
-      database, rollback, repeat_clean_apply: repeated.applied,
-      first_state: firstState, runtime_e2e: runtimeE2e,
-      repeated_state: repeatedState };
-    const resultPath = argument('--write-result', null);
-    if (resultPath) writeFileSync(resolve(resultPath),
-      `${JSON.stringify(importReadbackEvidence(result), null, 2)}\n`);
-    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    if (mode === 'fixture-bootstrap') {
+      const first = await applyRevisionPromotionPlan({ plan,
+        adapter: createPostgresAdapter(client, gate1) });
+      const firstState = await verifyPromotionState(client, plan, input, gate1);
+      process.stdout.write(`${JSON.stringify({
+        ...summary({ mode, plan, applied: first.applied }),
+        first_state: firstState
+      }, null, 2)}\n`);
+    } else {
+      const rollback = await verifyRollback(plan, client, gate1);
+      const first = await applyRevisionPromotionPlan({ plan,
+        adapter: createPostgresAdapter(client, gate1) });
+      const firstState = await verifyPromotionState(client, plan, input, gate1);
+      const runtimeE2e = await verifyPromotedRuntime(client, plan);
+      await initializeSchema(client);
+      const repeated = await applyRevisionPromotionPlan({ plan,
+        adapter: createPostgresAdapter(client, gate1) });
+      const repeatedState = await verifyPromotionState(client, plan, input, gate1);
+      const result = { ...summary({ mode, plan, applied: first.applied }),
+        database, rollback, repeat_clean_apply: repeated.applied,
+        first_state: firstState, runtime_e2e: runtimeE2e,
+        repeated_state: repeatedState };
+      const resultPath = argument('--write-result', null);
+      if (resultPath) writeFileSync(resolve(resultPath),
+        `${JSON.stringify(importReadbackEvidence(result), null, 2)}\n`);
+      process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    }
   } finally {
     client.release();
     await pool.end();

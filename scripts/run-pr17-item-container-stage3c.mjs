@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { gunzipSync } from 'node:zlib';
 import pg from 'pg';
@@ -17,6 +17,9 @@ import { buildGate1OwnerDataArtifacts,
 import { buildGate1SourceReconciliationArtifacts,
   validateGate1SourceReconciliationAuthoringAttestation } from
   './generate-gate1-source-reconciliation-request.mjs';
+import { buildGate1SeedClosureArtifacts,
+  validateGate1SeedClosureAttestation } from
+  './generate-gate1-seed-closure-request.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const candidateRoot = resolve(root, 'data/knowledge-source/imports/item-container-120-v5/candidate');
@@ -37,9 +40,19 @@ const reconciliationAttestation = readJson(resolve(gate1Root,
 validateGate1SourceReconciliationAuthoringAttestation({
   ...reconciliationArtifacts, attestation: reconciliationAttestation
 });
+const seedClosureArtifacts = await buildGate1SeedClosureArtifacts();
+const seedClosureAttestationPath = resolve(gate1Root,
+  'seed-closure-v1/authoring-approval-attestation.json');
+if (!existsSync(seedClosureAttestationPath)) {
+  throw new Error('GATE1_SEED_CLOSURE_ATTESTATION_REQUIRED');
+}
+const seedClosureAttestation = readJson(seedClosureAttestationPath);
+validateGate1SeedClosureAttestation({ ...seedClosureArtifacts,
+  attestation: seedClosureAttestation });
 const gate1 = buildGate1ImportPlan({ ...gate1Artifacts,
   attestation: gate1Attestation, reconciliation: reconciliationArtifacts,
-  reconciliationAttestation });
+  reconciliationAttestation, seedClosure: seedClosureArtifacts,
+  seedClosureAttestation });
 const input = loadPromotionInput(attestationPath, gate1);
 const plan = buildPr17Stage3CPromotionPlan(input);
 if (plan.status !== 'ready') throw new Error(`PR17_STAGE3C_PLAN_BLOCKED:${plan.errors.map((error) => error.code).join(',')}`);
@@ -133,7 +146,8 @@ async function initializeSchema(client) {
 }
 
 function buildGate1ImportPlan({ parent, activation, attestation,
-  reconciliation, reconciliationAttestation }) {
+  reconciliation, reconciliationAttestation, seedClosure,
+  seedClosureAttestation }) {
   const revisionRows = parent.proposed_world_base_rows.map(({ source, ...row }) =>
     ({ ...row }));
   const research = revisionRows.find(({ id }) =>
@@ -155,6 +169,8 @@ function buildGate1ImportPlan({ parent, activation, attestation,
     source_seed_digest: createHash('sha256').update(readFileSync(resolve(root,
       'tools/rus13-world-base-importer/world_base_importer_v1/'
         + 'world_base_seed_v1.sql.gz'))).digest('hex'),
+    seed_closure: seedClosure.candidate.derived_outputs,
+    seed_closure_attestation_digest: seedClosureAttestation.attestation_digest,
     promotions: parent.requested_authoring_promotions,
     exact_dependencies: parent.exact_dependencies,
     graph_node_transitions: parent.graph_node_transitions,
@@ -183,6 +199,7 @@ function loadGate1SeedSql() {
 async function importGate1OwnerData(client, gate1Plan) {
   await client.query('SET CONSTRAINTS ALL DEFERRED');
   await client.query(loadGate1SeedSql());
+  await assertGate1SeedClosure(client, gate1Plan.seed_closure);
   for (const row of gate1Plan.world_revisions) {
     const columns = Object.keys(row);
     await client.query(`INSERT INTO world_base.world_revisions
@@ -209,6 +226,22 @@ async function importGate1OwnerData(client, gate1Plan) {
     if (updated.rowCount !== 1) {
       throw new Error(`GATE1_SOURCE_RECONCILIATION_PRECONDITION_FAILED:${transition.id}`);
     }
+  }
+}
+
+async function assertGate1SeedClosure(client, closure) {
+  let total = 0;
+  for (const expected of closure.table_closure) {
+    const count = (await client.query(`SELECT count(*)::int AS count
+      FROM world_base.${quoteIdentifier(expected.table)}`)).rows[0].count;
+    if (count !== expected.row_count) {
+      throw new Error(`GATE1_SEED_TABLE_READBACK_MISMATCH:${expected.table}`);
+    }
+    total += count;
+  }
+  if (closure.table_count !== closure.table_closure.length
+      || total !== closure.total_row_count) {
+    throw new Error('GATE1_SEED_FULL_CLOSURE_READBACK_MISMATCH');
   }
 }
 
@@ -447,6 +480,12 @@ async function verifyGate1OwnerReadback(client, gate1Plan) {
     authoring_attestation_digest: gate1Plan.attestation_digest,
     source_archive_digest: gate1Plan.source_archive_digest,
     source_seed_digest: gate1Plan.source_seed_digest,
+    seed_table_count: gate1Plan.seed_closure.table_count,
+    seed_row_count: gate1Plan.seed_closure.total_row_count,
+    seed_table_closure_digest:
+      gate1Plan.seed_closure.table_closure_digest,
+    seed_closure_attestation_digest:
+      gate1Plan.seed_closure_attestation_digest,
     table_counts: Object.freeze(counts),
     world_revision_count: worlds.length,
     world_revisions_digest: digestValue(worlds),

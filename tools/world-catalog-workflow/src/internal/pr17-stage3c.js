@@ -75,9 +75,9 @@ export function buildPr17Stage3CPromotionPlan({ approval_request: approvalReques
     ...input,
     required_template_ids: templateIds,
     editorial_readiness_report: readiness,
-    approval_attestation: amended
-      ? { ...attestation, candidate_digest: manifest.candidate_digest }
-      : attestation,
+    approval_attestation: attestation,
+    approval_amendment_attestation: amendment,
+    approval_request_digest: expected.request.request_digest,
     candidate_digest: manifest.candidate_digest,
     target_revision: targetRevision,
     graph_node_status_transitions: compilation.graph_node_status_transitions

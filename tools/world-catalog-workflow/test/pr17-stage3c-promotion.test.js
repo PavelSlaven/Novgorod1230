@@ -65,6 +65,8 @@ test('PR17 Stage 3C approval is bound to the exact candidate digest', () => {
 });
 
 test('PR17 Stage 3C accepts exact independently approved source reconciliation only', () => {
+  const originalBefore = structuredClone(approval);
+  const amendmentBefore = structuredClone(reconciliationAttestation);
   const reconciledRecords = { ...sourceRecords,
     source_records: reconciledSourceRecords };
   const reconciledIds = { ...approvedIds,
@@ -88,6 +90,11 @@ test('PR17 Stage 3C accepts exact independently approved source reconciliation o
   assert.equal(plan.candidate_digest,
     reconciliationCandidate.amended_stage3c_manifest.candidate_digest);
   assert.equal(plan.records_by_table.source_records.length, 17);
+  assert.deepEqual(approval, originalBefore);
+  assert.deepEqual(reconciliationAttestation, amendmentBefore);
+  assert.equal(plan.approval_attestation_digest, digestValue(approval));
+  assert.equal(plan.approval_amendment_attestation_digest,
+    digestValue(reconciliationAttestation));
   const tampered = buildPlan({ ...input,
     approval_amendment_attestation: { ...reconciliationAttestation,
       amended_stage3c_candidate_digest: '0'.repeat(64) } });

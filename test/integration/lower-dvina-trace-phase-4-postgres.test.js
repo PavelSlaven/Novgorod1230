@@ -44,6 +44,9 @@ import {
   loadLowerDvinaTraceMaterializationBundle
 } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
 import {
+  lowerDvinaTracePhase1ADomainPin
+} from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
+import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import {
@@ -70,7 +73,7 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   const started = docker([
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase4',
-    '-e', 'POSTGRES_DB=pr17_phase4', 'postgres:16-alpine'
+    '-e', 'POSTGRES_DB=phase4', 'postgres:16-alpine'
   ]);
   assert.equal(started.status, 0, started.stderr);
   await waitForPostgres(name);
@@ -78,18 +81,24 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   const port = Number(docker(['port', name, '5432']).stdout
     .match(/:(\d+)\s*$/u)?.[1]);
   pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase4',
-    password: 'local_only', database: 'pr17_phase4', max: 8 });
-  const runtimeCatalogPin = await installSchemas(pool,
-    () => installLowerDvinaTraceV5World(pool));
+    password: 'local_only', database: 'phase4', max: 8 });
+  await installSchemas(pool);
+  await installLowerDvinaTraceV5World(pool);
   const bundle = await loadLowerDvinaTraceMaterializationBundle({
     scenarioDefinitionRevision: 10
+  });
+  const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
+  const runtimeCatalogPin = Object.freeze({
+    ...sourcePin,
+    compatible_world_revision_id: world.revision,
+    compatible_world_catalog_digest: world.digest,
+    compatible_world_pin_manifest_digest: world.manifest
   });
   const release = Object.freeze({
     release_id: 'phase-4-postgres-release',
     world_revision_id: world.revision,
     world_catalog_digest: world.digest,
-    compatible_world_pin_manifest_digest:
-      runtimeCatalogPin.compatible_world_pin_manifest_digest
+    compatible_world_pin_manifest_digest: world.manifest
   });
 
   const runtime = buildRuntime({ pool, release, runtimeCatalogPin });
@@ -1136,7 +1145,7 @@ async function assertRollbackRows(pool, partyId) {
   assert.deepEqual(rows[4].rows, [{ current_state: 'not_offered' }]);
 }
 
-async function installSchemas(pool, installRuntimeCatalog) {
+async function installSchemas(pool) {
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
   const catalogMigrationIndex = partyFiles.findIndex((file) =>
@@ -1147,11 +1156,9 @@ async function installSchemas(pool, installRuntimeCatalog) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied');
-  const runtimeCatalogPin = await installRuntimeCatalog();
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
-  return runtimeCatalogPin;
 }
 
 

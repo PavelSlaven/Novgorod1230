@@ -26,6 +26,8 @@ import { loadLowerDvinaTraceMaterializationBundle } from
   '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
 import { npcSpeechPlan, playerPlan } from
   '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
+import { lowerDvinaTracePhase1ADomainPin } from
+  '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
@@ -50,7 +52,7 @@ test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically'
     const started = docker([
       'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase9',
-      '-e', 'POSTGRES_DB=pr17_phase9', 'postgres:16-alpine'
+      '-e', 'POSTGRES_DB=phase9', 'postgres:16-alpine'
     ]);
     assert.equal(started.status, 0, started.stderr);
     await waitForPostgres(name);
@@ -58,17 +60,21 @@ test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically'
     const port = Number(docker(['port', name, '5432']).stdout
       .match(/:(\d+)\s*$/u)?.[1]);
     pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase9',
-      password: 'local_only', database: 'pr17_phase9', max: 8 });
-    const runtimeCatalogPin = await installSchemas(pool,
-      () => installLowerDvinaTraceV5World(pool));
+      password: 'local_only', database: 'phase9', max: 8 });
+    await installSchemas(pool);
+    await installLowerDvinaTraceV5World(pool);
     const bundle = await loadLowerDvinaTraceMaterializationBundle({
       scenarioDefinitionRevision: 24
     });
     assert.equal(bundle.definition_revision, 24);
+    const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
+    const runtimeCatalogPin = Object.freeze({ ...sourcePin,
+      compatible_world_revision_id: world.revision,
+      compatible_world_catalog_digest: world.digest,
+      compatible_world_pin_manifest_digest: world.manifest });
     const release = Object.freeze({ release_id: 'phase-9-postgres-release',
       world_revision_id: world.revision, world_catalog_digest: world.digest,
-      compatible_world_pin_manifest_digest:
-        runtimeCatalogPin.compatible_world_pin_manifest_digest });
+      compatible_world_pin_manifest_digest: world.manifest });
     const ids = {};
     const factory = () => buildRuntime({ pool, release, runtimeCatalogPin,
       ids });
@@ -448,7 +454,7 @@ async function latestSnapshot(pool, partyId) {
       WHERE party_id=$1 ORDER BY state_version DESC LIMIT 1`,
     [partyId])).rows[0].state_payload;
 }
-async function installSchemas(pool, installRuntimeCatalog) {
+async function installSchemas(pool) {
   const files = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
   const catalogIndex = files.findIndex((file) => file.startsWith('012_'));
@@ -457,11 +463,9 @@ async function installSchemas(pool, installRuntimeCatalog) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied');
-  const runtimeCatalogPin = await installRuntimeCatalog();
   for (const file of files.slice(catalogIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
-  return runtimeCatalogPin;
 }
 async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 30; attempt += 1) {

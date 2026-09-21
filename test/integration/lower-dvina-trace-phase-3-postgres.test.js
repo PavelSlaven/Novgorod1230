@@ -43,6 +43,9 @@ import {
   loadLowerDvinaTraceMaterializationBundle
 } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
 import {
+  lowerDvinaTracePhase1ADomainPin
+} from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
+import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST } from
@@ -69,7 +72,7 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=phase3',
-    '-e', 'POSTGRES_DB=pr17_phase3',
+    '-e', 'POSTGRES_DB=phase3',
     'postgres:16-alpine'
   ]);
   assert.equal(started.status, 0, started.stderr);
@@ -83,13 +86,21 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     port,
     user: 'phase3',
     password: 'local_only',
-    database: 'pr17_phase3',
+    database: 'phase3',
     max: 8
   });
-  const runtimeCatalogPin = await installSchemas(pool,
-    () => installLowerDvinaTraceV6World(pool));
+  await installSchemas(pool);
+  await installLowerDvinaTraceV6World(pool);
   const bundle = await loadLowerDvinaTraceMaterializationBundle({
     scenarioDefinitionRevision: 26
+  });
+  const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
+  const runtimeCatalogPin = Object.freeze({
+    ...sourcePin,
+    compatible_world_revision_id: world.revision,
+    compatible_world_catalog_digest: world.digest,
+    compatible_world_pin_manifest_digest:
+      world.manifest
   });
   const release = Object.freeze({
     release_id: 'phase-3-postgres-release',
@@ -1036,7 +1047,7 @@ async function narrationStatus(pool, partyId) {
   )).rows[0]?.status;
 }
 
-async function installSchemas(pool, installRuntimeCatalog) {
+async function installSchemas(pool) {
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
@@ -1051,11 +1062,9 @@ async function installSchemas(pool, installRuntimeCatalog) {
     (await runPartyRuntimeCatalogMigration(pool)).status,
     'applied'
   );
-  const runtimeCatalogPin = await installRuntimeCatalog();
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
-  return runtimeCatalogPin;
 }
 
 

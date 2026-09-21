@@ -1,15 +1,9 @@
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { createSpatialV3WorldBaseReader } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { runWorldRuntimeCatalogMigration } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
-import { buildFirstPlayableV2ActivationBundle,
-  applyFirstPlayableV2ActivationBundle } from
-  '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
-import { loadActiveRuntimeCatalogPin } from
-  '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 
 const root = 'data/world-catalogs/novgorod/spatial-v3/candidates';
 const v5Path = `${root}/spatial-v3-production-v5`;
@@ -21,8 +15,6 @@ const lineagePaths = [
 ];
 const sourceRecordPaths = [2, 3, 4, 5, 6].map((version) =>
   `${root}/spatial-v3-production-v${version}/datasets/source_records.json`);
-const worldRevisionPaths = [2, 3, 4, 5, 6].map((version) =>
-  `${root}/spatial-v3-production-v${version}/datasets/world_revisions.json`);
 const categoryPaths = [2, 3, 4, 5, 6].map((version) =>
   `${root}/spatial-v3-production-v${version}/datasets/universal_categories.json`);
 const regionalBasisPath =
@@ -115,7 +107,7 @@ const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
 async function installLowerDvinaTraceWorld(pool, {
   path, world, lineagePaths: paths, categoryPathCount
 }) {
-  await ensureApprovedCatalogBase(pool);
+  await ensureRuntimeCatalogSchema(pool);
   const manifest = await readJson(`${path}/manifest.json`);
   assert.deepEqual({ revision: manifest.world_revision_id,
     digest: manifest.catalog_digest }, {
@@ -125,11 +117,10 @@ async function installLowerDvinaTraceWorld(pool, {
   const datasets = Object.fromEntries(await Promise.all(manifest.datasets.map(
     async ({ table, file }) => [table, await readJson(`${path}/${file}`)]
   )));
-  const [lineage, sourceRecordSets, worldRevisionSets, categorySets, regionalBases,
+  const [lineage, sourceRecordSets, categorySets, regionalBases,
     regionalBasisAuthoring, selectionRules, applicabilityRules] = await Promise.all([
     Promise.all(paths.map(readJson)),
     Promise.all(sourceRecordPaths.map(readJson)),
-    Promise.all(worldRevisionPaths.slice(0, categoryPathCount).map(readJson)),
     Promise.all(categoryPaths.slice(0, categoryPathCount).map(readJson)),
     readJson(regionalBasisPath),
     readJson(regionalBasisAuthoringPath),
@@ -143,8 +134,6 @@ async function installLowerDvinaTraceWorld(pool, {
     await client.query('BEGIN');
     for (const record of sourceRecords) await insert(client,
       'source_records', record);
-    for (const revision of worldRevisionSets.flat()) await insert(client,
-      'world_revisions', revision);
     for (const revision of [...lineage.flat(),
       ...datasets.spatial_v3_world_revisions]) await insert(client,
       'spatial_v3_world_revisions', revision);
@@ -181,9 +170,6 @@ async function installLowerDvinaTraceWorld(pool, {
   } finally {
     client.release();
   }
-  const runtimeCatalogPin = await installActivatedRuntimeCatalog({
-    pool, path, world, manifest
-  });
   const reader = createSpatialV3WorldBaseReader({ query: (sql, params) => pool.query(sql, params) });
   for (const scene of datasets.spatial_v3_scene_templates) {
     const closure = await reader.readPinnedSceneTemplateClosure({ id: scene.id,
@@ -206,7 +192,6 @@ async function installLowerDvinaTraceWorld(pool, {
       visibility_links: rows('spatial_v3_visibility_link_templates')
     });
   }
-  return runtimeCatalogPin;
 }
 
 async function insert(pool, table, row) {
@@ -232,23 +217,24 @@ async function insert(pool, table, row) {
   }
 }
 
-async function ensureApprovedCatalogBase(pool) {
+async function ensureRuntimeCatalogSchema(pool) {
   const pending = runtimeCatalogBootstraps.get(pool);
   if (pending) return pending;
   const bootstrap = (async () => {
-    const promoted = spawnSync(process.execPath,
-      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle'], {
-        cwd: process.cwd(), encoding: 'utf8', timeout: 180_000,
-        env: { ...process.env, PR17_TEST_DATABASE_URL: poolConnectionUrl(pool) }
-      });
-    assert.equal(promoted.status, 0, promoted.stderr);
-    assert.equal(JSON.parse(promoted.stdout).pass, true);
-    for (let part = 18; part <= 20; part += 1) {
-      await pool.query(await readFile(
-        `infra/world-base/schema/${String(part).padStart(2, '0')}.sql`, 'utf8'
-      ));
+    const state = (await pool.query(`SELECT
+      to_regclass('world_base.domain_catalog_revisions') IS NOT NULL AS catalog,
+      to_regclass('world_base.spatial_v3_world_revisions') IS NOT NULL AS spatial`
+    )).rows[0];
+    if (!state.catalog && !state.spatial) {
+      for (let part = 1; part <= 20; part += 1) {
+        await pool.query(await readFile(
+          `infra/world-base/schema/${String(part).padStart(2, '0')}.sql`,
+          'utf8'
+        ));
+      }
+      await pool.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
     }
-    await pool.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
+    await runWorldRuntimeCatalogMigration(pool);
   })();
   runtimeCatalogBootstraps.set(pool, bootstrap);
   try {
@@ -257,56 +243,6 @@ async function ensureApprovedCatalogBase(pool) {
     runtimeCatalogBootstraps.delete(pool);
     throw error;
   }
-}
-
-async function installActivatedRuntimeCatalog({ pool, path, world, manifest }) {
-  const worldMigration = await runWorldRuntimeCatalogMigration(pool);
-  const releaseId = manifest.release_id;
-  const release = Object.freeze({
-    releaseId,
-    baselineRevision: `${releaseId}-runtime-catalog-baseline-001`,
-    domainRevision: `${releaseId}-runtime-catalog-001`,
-    worldRevision: world.revision,
-    worldCatalogDigest: world.digest,
-    worldSchemaFingerprint: worldMigration.target_schema_fingerprint,
-    worldSchemaMigration: worldMigration,
-    candidateDirectory: path.split('/').at(-1),
-    bindingsFile: `${releaseId}-bindings.js`,
-    bundleSchema: 'rus.lower_dvina_trace_fixture_activation_bundle.v1',
-    bundleIdentitySchema:
-      'rus.lower_dvina_trace_fixture_activation_bundle_identity.v1',
-    resultSchema: 'rus.lower_dvina_trace_fixture_activation_result.v1',
-    baselineTitle: `Lower Dvina ${releaseId} runtime catalog baseline`,
-    activationBasis: 'isolated PostgreSQL gameplay integration fixture'
-  });
-  const head = spawnSync('git', ['rev-parse', 'HEAD'], {
-    cwd: process.cwd(), encoding: 'utf8'
-  });
-  assert.equal(head.status, 0, head.stderr);
-  const bundle = await buildFirstPlayableV2ActivationBundle({
-    worldPool: pool, partyPool: pool, repositoryRoot: process.cwd(),
-    gitCommitSha: head.stdout.trim(),
-    authorizationRef: 'approved isolated PostgreSQL gameplay integration',
-    release
-  });
-  const applied = await applyFirstPlayableV2ActivationBundle({
-    worldPool: pool, partyPool: pool, bundle, release
-  });
-  assert.equal(applied.imported.status, 'applied');
-  assert.equal(applied.activated.status, 'activated');
-  return loadActiveRuntimeCatalogPin(pool, 'item_container_materialization_v2');
-}
-
-function poolConnectionUrl(pool) {
-  if (pool.options.connectionString) return pool.options.connectionString;
-  const { host, port, user, password, database } = pool.options;
-  const url = new URL('postgresql://localhost');
-  url.hostname = host;
-  url.port = String(port);
-  url.username = user;
-  url.password = password;
-  url.pathname = `/${database}`;
-  return url.href;
 }
 
 export async function installLowerDvinaTraceV5World(pool) {

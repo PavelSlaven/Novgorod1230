@@ -24,13 +24,29 @@ export function compileProceduralScenePartyPackages({ party_id: partyId,
     const payload = { scene_package_id, party_id: partyId, run_id: runId,
       family: profile.family, g5_node_id: scene.g5_node_id,
       g6_instance_id: scene.g6_instance_id, position_id: scene.position_id,
-      profile: structuredClone(profile), actors: sceneActors,
+      profile: allocationReadiness(profile, allocation), actors: sceneActors,
       allocation_policy: allocation, pin: structuredClone(catalog.pin) };
-    return { ...payload, scene_package_digest: canonicalDigest(payload) };
+    return { ...payload, scene_package_digest: stage24Digest(payload) };
   });
   return deepFreeze({ schema: 'rus.procedural_scene_party_packages.v1', version: 1,
     pin: structuredClone(catalog.pin), packages,
-    digest: canonicalDigest(packages) });
+    digest: stage24Digest(packages) });
+}
+function stage24Digest(value) { return `sha256:${canonicalDigest(value)}`; }
+function allocationReadiness(profile, allocation) {
+  if (allocation == null) return structuredClone(profile);
+  const status = allocation.status === 'pending_p16_actor_activity_data_gap'
+    ? 'pending_actor_activity' : 'pending_p16_owner';
+  const functional_layers = profile.readiness.functional_layers.map((layer) =>
+    layer.allocation_contract ? { ...layer, status } : layer);
+  return { ...structuredClone(profile), readiness: {
+    ...structuredClone(profile.readiness), functional_layers,
+    required_layers_satisfied: profile.readiness.required_layers_satisfied,
+    unresolved_current_gaps: functional_layers.filter(({ status: value }) => ![
+      'mapped', 'not_applicable_active_process_only'
+    ].includes(value)).map(({ source_gap_code, layer }) =>
+      source_gap_code ?? `MAPPING:${layer}`)
+  } };
 }
 
 function pendingAllocation(policy, profile, actors) {

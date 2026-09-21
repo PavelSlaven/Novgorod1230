@@ -123,8 +123,10 @@ function reconcileReadiness({ profileRecord, mappings, allocationPolicy,
     const layer = functionalLayerFromGap(code);
     if (layer) expected.set(layer, { source_gap_code: code });
   }
-  for (const { payload } of mappings) expected.set(payload.layer,
-    { mapping_required: payload.required === true });
+  for (const { payload } of mappings) {
+    if (payload.layer !== 'natural_layers') expected.set(payload.layer,
+      { ...expected.get(payload.layer), mapping_required: payload.required === true });
+  }
   if (allocationPolicy?.family_candidate_ref === familyCandidateRef) {
     for (const allocation of allocationPolicy.allocations ?? []) {
       if (text(allocation?.layer)) expected.set(allocation.layer,
@@ -132,12 +134,22 @@ function reconcileReadiness({ profileRecord, mappings, allocationPolicy,
     }
   }
   const mapped = new Set(mappings.map(({ payload }) => payload.layer));
+  const activeProcessOnly = mappings.length > 0
+    && mappings.every(({ payload }) => payload.variant_id === 'dormant');
   const layers = [...expected].map(([layer, basis]) => ({ layer,
-    status: mapped.has(layer) ? 'resolved' : layer === 'container'
-      ? 'unresolved' : 'unresolved', ...basis })).sort((a, b) =>
+    status: mapped.has(layer) ? (basis.allocation_contract
+      ? 'pending_p16_owner' : 'mapped')
+      : activeProcessOnly && layer !== 'container'
+        ? 'not_applicable_active_process_only' : 'unresolved', ...basis })).sort((a, b) =>
     a.layer.localeCompare(b.layer));
-  return { required_layers_satisfied: true, functional_layers: layers,
-    unresolved_current_gaps: layers.filter(({ status }) => status !== 'resolved')
+  const required = layers.filter(({ source_gap_code }) => source_gap_code != null);
+  return { required_layers_mapped: required.every(({ layer }) => mapped.has(layer)),
+    required_layers_satisfied: required.every(({ status }) =>
+      ['mapped', 'not_applicable_active_process_only'].includes(status)),
+    functional_layers: layers,
+    unresolved_current_gaps: layers.filter(({ status }) => ![
+      'mapped', 'not_applicable_active_process_only'
+    ].includes(status))
       .map(({ source_gap_code, layer }) => source_gap_code ?? `MAPPING:${layer}`) };
 }
 function functionalLayerFromGap(code) {

@@ -7,6 +7,8 @@ import { materializeS1OpenOneSpaceTopology } from
   './spatial-v3-s1-first-entry.js';
 import { compileApprovedNpcRuntimeBasis } from
   './approved-npc-runtime-basis.js';
+import { compileProceduralScenePartyPackages } from
+  './procedural-scene-party-packages.js';
 
 export function materializeAuthoredStartPartyInstance(input) {
   const profile = input?.scenario_bundle;
@@ -158,6 +160,14 @@ export function materializeAuthoredStartPartyInstance(input) {
   immediate.player.dossier.opening_context = authoredOpeningContext({
     profile, startAnchorId, otherScenes, initialSpatialV3
   });
+  const proceduralScenePackages = input.verified_procedural_compiled_catalog == null
+    ? null : compileProceduralScenePartyPackages({
+      party_id: input.party_id, run_id: runId,
+      world_pin: { world_revision_id: input.world_revision_id,
+        world_catalog_digest: input.world_catalog_digest },
+      verified_procedural_compiled_catalog: input.verified_procedural_compiled_catalog,
+      ...proceduralSceneInputs(immediate, initialSpatialV3)
+    });
   const hiddenTruth = { kind: 'none', digest: canonicalDigest({ kind: 'none' }) };
   const trace = {
     run_id: runId,
@@ -186,6 +196,8 @@ export function materializeAuthoredStartPartyInstance(input) {
     request_identity: identity,
     immediate,
     initial_spatial_v3: initialSpatialV3,
+    ...(proceduralScenePackages == null ? {} : {
+      procedural_scene_packages: proceduralScenePackages }),
     hidden_truth: hiddenTruth,
     sealed_selections: [],
     policy_profile_pins: [],
@@ -229,6 +241,29 @@ function authoredInitialSpatialV3({ admission, ordinaryProfiles, party_id,
       revision: ordinaryProfiles.s1.profile.revision },
     s1_topology: s1?.topology ?? null,
     s1_physical_writes: s1?.rows ?? []
+  };
+}
+
+function proceduralSceneInputs(immediate, initialSpatialV3) {
+  const scenes = [immediate.spatial, ...(immediate.prepared_scenes ?? [])];
+  const nodesByAnchor = new Map(scenes.map(({ node, anchor }) =>
+    [anchor.instance_id, node.instance_id]));
+  return {
+    scenes: [...scenes.map(({ node, anchor }) => ({
+      scene_template_id: node.template_id,
+      g5_id: node.state.canonical_g5_ref.id,
+      g5_node_id: node.instance_id,
+      g6_instance_id: `g6:${anchor.instance_id}`,
+      position_id: `position:${anchor.instance_id}`
+    })), ...(initialSpatialV3.s1_topology == null ? [] : [{
+      scene_template_id: initialSpatialV3.scene_template_ref.entity_ref.entity_id,
+      g5_id: initialSpatialV3.canonical_g5_ref.entity_id,
+      g5_node_id: initialSpatialV3.node_id,
+      g6_instance_id: initialSpatialV3.s1_topology.g6_instance_ref,
+      position_id: initialSpatialV3.s1_topology.position_ref
+    }])],
+    actors: immediate.npcs.map((npc) => ({ ...npc,
+      g5_node_id: nodesByAnchor.get(npc.anchor_id), actor_kind: 'npc' }))
   };
 }
 

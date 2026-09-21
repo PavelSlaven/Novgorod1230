@@ -55,16 +55,21 @@ test('V2 compiler covers all families and preserves complete regional facets',
       ['drying_storage_workspace', ['storage', 'work_zone']]
     ]);
     for (const [family, layers] of expected) {
-      const compiled = compileProceduralSceneProfile({
-        verified_procedural_compiled_catalog: verified,
-        scene: sceneFor(verified, family), world_pin: worldPin(verified) });
+    const compiled = compileProceduralSceneProfile({
+      verified_procedural_compiled_catalog: verified,
+      scene: sceneFor(verified, family), world_pin: worldPin(verified) });
       assert.deepEqual(compiled.required_layers, layers);
       assert.deepEqual(compiled.components.map(({ layer }) => layer), layers);
-      assert.ok(compiled.historical_source_data_gap_codes.length
-        >= compiled.readiness.unresolved_current_gaps.length);
+      assert.ok(compiled.historical_source_data_gap_codes.length === 0
+        || compiled.readiness.unresolved_current_gaps.length > 0);
       assert.ok(compiled.regional_facets.every(({ approved_members }) =>
         approved_members.every(({ universal, regional }) =>
           universal?.status === 'approved' && regional?.status === 'approved')));
+      if (family === 'natural_shore') {
+        assert.deepEqual(compiled.readiness.functional_layers, []);
+        assert.equal(compiled.readiness.required_layers_mapped, true);
+        assert.equal(compiled.readiness.required_layers_satisfied, true);
+      }
     }
   });
 
@@ -122,8 +127,23 @@ test('packages are stable, policy stays pending P16, and V1/wrong/tampered input
       scenes: [fishing] });
     assert.equal(wrongActivity.packages[0].allocation_policy.status,
       'pending_p16_actor_activity_data_gap');
+    assert.equal(wrongActivity.packages[0].profile.readiness.functional_layers.find(
+      ({ layer }) => layer === 'tool').status, 'pending_actor_activity');
+    assert.equal(packageFishing.profile.readiness.functional_layers.find(
+      ({ layer }) => layer === 'tool').status, 'pending_p16_owner');
+    assert.equal(packageFishing.profile.readiness.functional_layers.find(
+      ({ layer }) => layer === 'work_material').status, 'pending_p16_owner');
+    for (const layer of ['storage', 'work_zone']) assert.equal(
+      packageFishing.profile.readiness.functional_layers.find((entry) =>
+        entry.layer === layer).status, 'mapped');
     assert.equal(packageFishing.profile.readiness.functional_layers.find(
       ({ layer }) => layer === 'container').status, 'unresolved');
+    assert.equal(packageFishing.profile.readiness.required_layers_mapped, false);
+    assert.equal(packageFishing.profile.readiness.required_layers_satisfied, false);
+    const dryingProfile = forward.packages.find(({ family }) =>
+      family === 'drying_storage_workspace').profile;
+    assert.equal(dryingProfile.readiness.functional_layers.find(({ layer }) =>
+      layer === 'tool').status, 'not_applicable_active_process_only');
     assert.throws(() => compileProceduralSceneProfile({
       verified_procedural_compiled_catalog: verified,
       scene: { ...fishing, g5_id: 'wrong:g5' }, world_pin: worldPin(verified) }),

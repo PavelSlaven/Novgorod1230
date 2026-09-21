@@ -168,7 +168,8 @@ export function assertDevelopmentActivationBoundary(bundle) {
 }
 
 export async function installProceduralFinalDevelopmentCatalog({ worldPool,
-  partyPool, repositoryRoot, gitCommitSha, authorizationRef }) {
+  partyPool, repositoryRoot, gitCommitSha, authorizationRef,
+  parentRevisionId = 'procedural_final_development_baseline_001' }) {
   const root = resolve(repositoryRoot);
   const pack = JSON.parse(await readFile(resolve(root,
     'data/world-catalogs/novgorod/procedural-scene-v2/'
@@ -183,7 +184,7 @@ export async function installProceduralFinalDevelopmentCatalog({ worldPool,
     registry, rowsByTable
   });
   const request = buildBaselineRegistrationRequest({
-    parentRevisionId: 'procedural_final_development_baseline_001',
+    parentRevisionId,
     parentCatalogDigest: baselineManifest.records_aggregate_digest,
     baselineManifest, compatibleWorldTuple: pack.compatibility_manifest
   });
@@ -220,5 +221,5 @@ export async function installProceduralFinalDevelopmentCatalog({ worldPool,
     partyPool, pack, ledger: imported.ledger, gitCommitSha, authorizationRef });
   const activated = await applyProceduralFinalDevelopmentActivation({
     worldPool, partyPool, bundle });
-  return Object.freeze({ pack, imported, bundle, activated });
+  return Object.freeze({ pack, baseline, imported, bundle, activated });
 }

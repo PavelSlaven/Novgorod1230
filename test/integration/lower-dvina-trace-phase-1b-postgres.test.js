@@ -40,25 +40,14 @@ import {
 import {
   createFirstPlayablePartyRepository
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/repository.js';
-import {
-  loadActiveRuntimeCatalogPin
-} from '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
+import { createLowerDvinaTracePhase1ARepository } from
+  '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import {
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
-import {
-  applyFirstPlayableV2ActivationBundle,
-  buildFirstPlayableV2ActivationBundle
-} from '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
-import {
-  applyLowerDvinaBoundaryV3ActivationBundle,
-  buildLowerDvinaBoundaryV3ActivationBundle
-} from '../../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
-import {
-  applySpatialV3ProductionV12ActivationBundle,
-  buildSpatialV3ProductionV12ActivationBundle
-} from '../../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
+import { bootstrapProceduralFinalV2Disposable } from
+  '../../tools/runtime-catalog-activation/src/procedural-final-disposable-bootstrap.js';
 import { buildLowerDvinaBoundaryV1ImportSql } from
   '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildLowerDvinaV2ImportSql } from
@@ -144,17 +133,20 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const dockerReady = docker(['version']).status === 0;
   const name = `lower-dvina-phase-1b-${process.pid}`;
   let pool;
+  let worldPool;
   let server;
   let managed;
   let managedRoot;
   t.after(async () => {
     if (server) await new Promise((resolve) => server.close(resolve));
     if (pool) await pool.end();
+    if (worldPool) await worldPool.end();
     if (managed) await managed.close();
     if (managedRoot) await rm(managedRoot, { recursive: true, force: true });
     if (dockerReady) docker(['rm', '-f', name]);
   });
   let databaseUrl;
+  let worldDatabaseUrl;
   if (dockerReady) {
     const started = docker([
       'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
@@ -170,18 +162,22 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
     );
     databaseUrl = `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b`;
+    worldDatabaseUrl = `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b_world`;
   } else {
     managedRoot = await mkdtemp(join(tmpdir(), 'novgorod-m2a-postgres-'));
     managed = await ensureLocalPostgres({ dataRoot: managedRoot,
       settings: { ...LOCAL_POSTGRES,
         worldDatabase: `pr17_m2a_world_${process.pid}`,
         partyDatabase: `pr17_m2a_party_${process.pid}`,
-        worldUser: `m2a_world_${process.pid}`,
-        partyUser: `m2a_party_${process.pid}` } });
+        worldUser: 'postgres', partyUser: 'postgres' } });
     databaseUrl = managed.partyUrl;
+    worldDatabaseUrl = managed.worldUrl;
   }
   pool = new pg.Pool({ connectionString: databaseUrl, max: 8 });
   await pool.query('SELECT 1');
+  if (dockerReady) await pool.query('CREATE DATABASE pr17_phase1b_world');
+  worldPool = new pg.Pool({ connectionString: worldDatabaseUrl, max: 8 });
+  await worldPool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
   const catalogMigrationIndex = partyFiles.findIndex((file) =>
@@ -196,19 +192,20 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     'applied'
   );
   const runtimeCatalogPin = await installActivatedRuntimeCatalog({
-    pool,
-    databaseUrl
+    worldPool,
+    partyPool: pool,
+    worldDatabaseUrl
   });
   const proceduralBindings = JSON.parse(await readFile(
     'data/world-catalogs/novgorod/procedural-scene-v1/authoring-bindings.json',
     'utf8'));
   const catalogLoader = createRuntimeCatalogLoader({ worldBaseReader: {
-    read: (sql, parameters) => pool.query(sql, parameters)
+    read: (sql, parameters) => worldPool.query(sql, parameters)
   }, supportedRuntimeContractDigests: [runtimeCatalogPin.runtime_contract_digest] });
   const verifiedItemCatalog = await catalogLoader.loadApprovedItemCatalog({
     pin: runtimeCatalogPin });
   const proceduralRecords = await loadApprovedProceduralSceneRecordBundle({
-    worldBaseReader: { read: (sql, parameters) => pool.query(sql, parameters) },
+    worldBaseReader: { read: (sql, parameters) => worldPool.query(sql, parameters) },
     worldPin: { world_revision_id: runtimeCatalogPin.compatible_world_revision_id,
       world_catalog_digest: runtimeCatalogPin.compatible_world_catalog_digest },
     runtimeCatalogPin, bindings: proceduralBindings, verifiedItemCatalog });
@@ -291,7 +288,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   } = {}) => {
     const adapter = createLowerDvinaTracePhase1BProductionAdapter({
       partyPool: pool,
-      worldPool: pool,
+      worldPool,
       release,
       runtimeCatalogPin,
       initialOrdinaryProvisioner,
@@ -384,6 +381,11 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assertPublic(start);
 
   const partyId = start.data.party_id;
+  const publicPackages = (await pool.query(
+    `SELECT trace FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [partyId]
+  )).rows[0].trace.procedural_scene_packages.packages;
+  assert.ok(publicPackages.some(({ family }) => family === 'natural_shore'));
   const authoredRequest = {
     scenario_id: 'vikhtuy_fishing_camp_v1',
     request_id: 'm3-authored-public-v5'
@@ -396,6 +398,38 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.doesNotMatch(authoredStart.data.screen.main_prose, /Мст/u);
   assert.equal(authoredStart.data.screen.panels.character.data.name, 'Любава');
   const authoredPartyId = authoredStart.data.party_id;
+  const sceneRepository = createLowerDvinaTracePhase1ARepository({
+    query: pool.query.bind(pool)
+  });
+  const packageTrace = (await pool.query(
+    `SELECT trace FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [authoredPartyId])).rows[0].trace;
+  const scenePackages = packageTrace.procedural_scene_packages;
+  assert.equal(scenePackages.packages.length, 3);
+  const fishingPackage = scenePackages.packages.find(({ family }) =>
+    family === 'inland_fishing_worksite');
+  assert.equal(fishingPackage.allocation_policy.status,
+    'pending_p16_actor_activity_data_gap');
+  assert.equal(fishingPackage.profile.readiness.functional_layers.find(
+    ({ layer }) => layer === 'tool').status, 'pending_actor_activity');
+  assert.equal(fishingPackage.profile.readiness.functional_layers.find(
+    ({ layer }) => layer === 'container').status, 'unresolved');
+  assert.deepEqual(await sceneRepository.loadPlayerSafeScenePackages(
+    authoredPartyId), await sceneRepository.loadPlayerSafeScenePackages(
+    authoredPartyId));
+  const safePackages = await sceneRepository.loadPlayerSafeScenePackages(
+    authoredPartyId);
+  assert.ok(safePackages.every((entry) => Object.keys(entry).every((key) => [
+    'scene_package_id', 'family', 'g5_node_id', 'g6_instance_id',
+    'position_id', 'environment_facets', 'functional_groups',
+    'allocation_status'
+  ].includes(key))));
+  assert.deepEqual(await sceneRepository.loadPlayerSafeScenePackages(
+    'party-v1-development'), []);
+  assert.equal((await pool.query(
+    `SELECT catalog_revision_id FROM party_runtime.party_catalog_pins
+      WHERE party_id='party-v1-development'`)).rows[0].catalog_revision_id,
+  'procedural_scene_final_candidate_v1_001');
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
   assert.equal(authoredInternal.npcs.length, 3);
   assert.equal(authoredInternal.items.length, 2);
@@ -435,6 +469,28 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     (await api(base, '/api/v1/new-games', authoredRequest)).data,
     authoredStart.data
   );
+  assert.deepEqual((await pool.query(
+    `SELECT trace FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [authoredPartyId])).rows[0].trace
+    .procedural_scene_packages, scenePackages);
+  const tamperedTop = structuredClone(packageTrace);
+  tamperedTop.procedural_scene_packages.digest = '0'.repeat(64);
+  await pool.query(`UPDATE party_runtime.party_materialization_runs
+    SET trace=$2::jsonb WHERE party_id=$1`, [authoredPartyId,
+    JSON.stringify(tamperedTop)]);
+  await assert.rejects(() => sceneRepository.loadPlayerSafeScenePackages(
+    authoredPartyId));
+  const tamperedPackage = structuredClone(packageTrace);
+  tamperedPackage.procedural_scene_packages.packages[0].scene_package_digest =
+    '0'.repeat(64);
+  await pool.query(`UPDATE party_runtime.party_materialization_runs
+    SET trace=$2::jsonb WHERE party_id=$1`, [authoredPartyId,
+    JSON.stringify(tamperedPackage)]);
+  await assert.rejects(() => sceneRepository.loadPlayerSafeScenePackages(
+    authoredPartyId));
+  await pool.query(`UPDATE party_runtime.party_materialization_runs
+    SET trace=$2::jsonb WHERE party_id=$1`, [authoredPartyId,
+    JSON.stringify(packageTrace)]);
   assert.equal(await count(pool, 'party_runtime.parties', authoredPartyId), 1);
   assert.equal(await count(pool, 'party_runtime.party_materialization_runs', authoredPartyId), 1);
   assert.equal(await count(pool, 'party_runtime.party_server_sessions', authoredPartyId), 1);
@@ -963,7 +1019,8 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
 
 });
 
-async function installActivatedRuntimeCatalog({ pool, databaseUrl }) {
+async function installActivatedRuntimeCatalog({ worldPool, partyPool,
+  worldDatabaseUrl }) {
   const lifecycle = spawnSync(
     process.execPath,
     ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle'],
@@ -971,47 +1028,39 @@ async function installActivatedRuntimeCatalog({ pool, databaseUrl }) {
       cwd: process.cwd(),
       encoding: 'utf8',
       timeout: 180_000,
-      env: { ...process.env, PR17_TEST_DATABASE_URL: databaseUrl }
+      env: { ...process.env, PR17_TEST_DATABASE_URL: worldDatabaseUrl }
     }
   );
   assert.equal(lifecycle.status, 0, lifecycle.stderr);
   assert.equal(JSON.parse(lifecycle.stdout).pass, true);
-  for (const file of ['18.sql', '19.sql', '20.sql']) {
-    await pool.query(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
+  for (const file of ['18.sql', '19.sql', '20.sql', '21.sql']) {
+    await worldPool.query(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
   }
-  await pool.query(await buildLowerDvinaV2ImportSql());
-  assert.equal((await runWorldRuntimeCatalogMigration(pool)).status, 'applied');
-  const commitSha = spawnSync('git', ['rev-parse', 'HEAD'], {
-    encoding: 'utf8'
-  }).stdout.trim();
-  assert.match(commitSha, /^[a-f0-9]{40}$/u);
-  const activation = async (build, apply) => {
-    const bundle = await build({
-      worldPool: pool,
-      partyPool: pool,
-      repositoryRoot: process.cwd(),
-      gitCommitSha: commitSha,
-      authorizationRef: 'Phase 1B PostgreSQL integration test'
-    });
-    await apply({ worldPool: pool, partyPool: pool, bundle });
-  };
-  await activation(
-    buildFirstPlayableV2ActivationBundle,
-    applyFirstPlayableV2ActivationBundle
-  );
-  await pool.query(await buildLowerDvinaBoundaryV1ImportSql());
-  await activation(
-    buildLowerDvinaBoundaryV3ActivationBundle,
-    applyLowerDvinaBoundaryV3ActivationBundle
-  );
-  await pool.query(await readFile('infra/world-base/schema/21.sql', 'utf8'));
-  await pool.query(await buildCharacterAppearanceV1ImportSql());
-  await pool.query(await buildS1AuthoringV6ImportSql());
-  await activation(
-    buildSpatialV3ProductionV12ActivationBundle,
-    applySpatialV3ProductionV12ActivationBundle
-  );
-  return loadActiveRuntimeCatalogPin(pool, 'item_container_materialization_v2');
+  await worldPool.query(await buildLowerDvinaV2ImportSql());
+  await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql());
+  await worldPool.query(await buildCharacterAppearanceV1ImportSql());
+  await seedSpatialV5Revision(worldPool);
+  await worldPool.query(await buildS1AuthoringV6ImportSql());
+  assert.equal((await runWorldRuntimeCatalogMigration(worldPool)).status, 'applied');
+  return (await bootstrapProceduralFinalV2Disposable({ worldPool,
+    partyPool, repositoryRoot: process.cwd() })).v2Pin;
+}
+
+async function seedSpatialV5Revision(pool) {
+  const root = 'data/world-catalogs/novgorod/spatial-v3/candidates/'
+    + 'spatial-v3-production-v5/datasets';
+  for (const [table, file] of [
+    ['source_records', 'source_records.json'],
+    ['world_revisions', 'world_revisions.json'],
+    ['spatial_v3_world_revisions', 'spatial_v3_world_revisions.json']
+  ]) {
+    for (const row of JSON.parse(await readFile(`${root}/${file}`, 'utf8'))) {
+      const columns = Object.keys(row);
+      await pool.query(`INSERT INTO world_base.${table} (${columns.join(',')})
+        VALUES (${columns.map((_, index) => `$${index + 1}`).join(',')})
+        ON CONFLICT DO NOTHING`, columns.map((column) => row[column]));
+    }
+  }
 }
 
 async function api(base, path, body = null) {

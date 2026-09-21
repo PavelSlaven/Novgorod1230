@@ -376,11 +376,18 @@ function assertRoundTrip({
     ...(payload.first_entry_preparation == null ? {} : {
       first_entry_preparation: payload.first_entry_preparation
     }),
+    ...(run?.trace?.procedural_scene_packages == null ? {} : {
+      procedural_scene_packages: run.trace.procedural_scene_packages
+    }),
     hidden_truth: payload.hidden_truth,
     sealed_selections: payload.sealed_selections,
     policy_profile_pins: payload.policy_profile_pins,
     validation_report: run?.validation_report?.materialization,
-    trace: run?.trace
+    trace: run?.trace == null ? run?.trace : (() => {
+      const trace = structuredClone(run.trace);
+      delete trace.procedural_scene_packages;
+      return trace;
+    })()
   } : null;
   if (!payload || !['rus.lower_dvina_trace_initial_party_snapshot.v2',
     'rus.authored_start_initial_party_snapshot.v1',
@@ -423,7 +430,8 @@ function assertRoundTrip({
     || npcs.some((value) => !expectedNpcIds.has(value.npc_id))
     || conditions.some((value) => value.status !== 'active'
       || !expectedConditions.some((expected) => expected.state === value.condition_profile_ref?.state))
-    || sha256(run.trace) !== sha256(payload.materialization_trace)
+    || sha256(originalMaterializationTrace(run.trace))
+      !== sha256(payload.materialization_trace)
     || JSON.stringify(run.trace?.policy_profile_pins) !== JSON.stringify(payload.policy_profile_pins)) {
     const error = new Error('Committed Lower Dvina trace normalized rows do not match the sealed snapshot.');
     error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
@@ -463,4 +471,10 @@ function assertRoundTrip({
     error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
     throw error;
   }
+}
+
+function originalMaterializationTrace(trace) {
+  const original = structuredClone(trace);
+  delete original.procedural_scene_packages;
+  return original;
 }

@@ -5,7 +5,7 @@
   "subject_commit": "725c45e52e3bd645339e6677baf0bfeed5ff3149",
   "catalog_scope": "actor_base_attributes_v1",
   "target_revision_id": "actor_base_attributes_runtime_profile_v1_001",
-  "target_catalog_digest": "57aee422f0ad9934eb524d0f566244b0e030d514d7cf9f2fa4c86911dcd6affb",
+  "target_catalog_digest": "8c10492236dfcc5e1c00f44960a76f7811b9b4e4d8c62e6698a3f12502dd25b8",
   "parent_catalog": {
     "catalog_scope": "item_container_materialization_v2",
     "catalog_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
@@ -28,7 +28,7 @@
     "validation_contract_version": "base_world_compatibility_v2",
     "compatible_world_pin_manifest_digest": "a5bb6d732ea34fb6c37b3889398b362cc8ed18ce73f9fb387ea9d9d657cb5ddd"
   },
-  "record_registry_digest": "9112688326f115068a0e66facd065f24d77c2033634b50cb6b41962fd9bd640e",
+  "record_registry_digest": "6815792a38bf8e0a10f405941bd7116b597805ef68ce8f0a5c4b9c95123e2e64",
   "runtime_contract_digest": "2151d75852f23b3b70b0c1f0cafec50bad98de5759c580e00e4eead5a06512c0",
   "authoring_approval": {
     "candidate_ref": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/candidate.json",
@@ -337,15 +337,15 @@
     "world_revision": {
       "id": "actor_base_attributes_runtime_profile_v1_001",
       "parent_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
-      "catalog_digest": "57aee422f0ad9934eb524d0f566244b0e030d514d7cf9f2fa4c86911dcd6affb",
+      "catalog_digest": "8c10492236dfcc5e1c00f44960a76f7811b9b4e4d8c62e6698a3f12502dd25b8",
       "status": "approved"
     },
     "domain_catalog_revision": {
       "catalog_revision_id": "actor_base_attributes_runtime_profile_v1_001",
       "catalog_scope": "actor_base_attributes_v1",
       "parent_registration_id_source": "exact_parent_domain_catalog_revision",
-      "target_catalog_digest": "57aee422f0ad9934eb524d0f566244b0e030d514d7cf9f2fa4c86911dcd6affb",
-      "record_registry_digest": "9112688326f115068a0e66facd065f24d77c2033634b50cb6b41962fd9bd640e",
+      "target_catalog_digest": "8c10492236dfcc5e1c00f44960a76f7811b9b4e4d8c62e6698a3f12502dd25b8",
+      "record_registry_digest": "6815792a38bf8e0a10f405941bd7116b597805ef68ce8f0a5c4b9c95123e2e64",
       "runtime_contract_digest": "2151d75852f23b3b70b0c1f0cafec50bad98de5759c580e00e4eead5a06512c0",
       "status": "approved"
     },
@@ -374,5 +374,5 @@
     "old_save_rematerialization_authorized": false
   },
   "independent_import_attestation": null,
-  "request_digest": "4b020a0178fdfb9113c73b1396c4989b19f78fef9e2561c07da4e08655202557"
+  "request_digest": "aa7c7ede56c1fd4a9e86533184e5bb2e40906dd8df5966a819065b447b7f4c82"
 }

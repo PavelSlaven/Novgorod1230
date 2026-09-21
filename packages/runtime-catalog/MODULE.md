@@ -36,6 +36,8 @@ item/container runtime catalog и exact world-pinned actor component profiles.
   final-candidate compiled profiles/mappings/categories and fails closed for
   another or missing pin;
 - `assertCompatibleWorldPin({ domainPin, worldPin })`;
+- `verifyCatalogImportLedger(...)` replays shared canonical record projection,
+  exact table/record root digests and the immutable import audit root;
 - `selectApplicableItemCatalog({ verifiedCatalog, regionId, effectiveDate })`.
 - `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.
 - `RUNTIME_CATALOG_CONTRACT` и `RUNTIME_CATALOG_CONTRACT_DIGEST` из
@@ -53,6 +55,9 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 `loadApprovedActorProfileCatalog` отдельно проверяет exact approved world pin
 и читает только применимые normalized demographic/appearance entries и их
 approved category options; item catalog не является источником actor profiles.
+Actor base-attribute runtime loader дополнительно принимает owner row только
+из exact membership активного `import_id`; поздняя строка под тем же revision,
+tuple drift или изменение import ledger завершаются typed failure.
 
 Materialization trace хранит `catalog_digest` exact domain pin. Digest
 применимой immutable projection хранится отдельно как `catalog_bundle_digest`;

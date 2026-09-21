@@ -63,13 +63,26 @@ export const ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT_DIGEST =
     .digest('hex');
 
 export const ACTOR_BASE_ATTRIBUTES_OWNER_REGISTRY = deepFreeze({
-  schema: 'rus.actor_base_attributes_owner_registry.v1',
+  schema: 'rus.catalog_record_registry.v1',
+  catalog_scope: 'actor_base_attributes_v1',
   entries: [{
     table_name: 'actor_base_attribute_profiles',
+    operation_domain: 'catalog_membership',
     dependency_order: 1,
     primary_key_fields: ['catalog_revision_id', 'profile_id'],
-    canonical_fields: ['catalog_revision_id', 'profile_id', 'profile_digest',
-      'profile_payload', 'status']
+    canonical_columns: ['catalog_revision_id', 'profile_id', 'profile_digest',
+      'profile_payload', 'status'],
+    excluded_operational_columns: ['imported_at'],
+    column_normalizers: {
+      catalog_revision_id: 'text_nfc',
+      profile_id: 'text_nfc',
+      profile_digest: 'text_nfc',
+      profile_payload: 'jsonb',
+      status: 'text_nfc'
+    },
+    canonical_row_schema_version: 'rus.catalog_record_projection.v2',
+    reader_adapter_id: 'actor-base-attribute-profiles-reader-v1',
+    writer_adapter_id: 'actor-base-attribute-profiles-writer-v1'
   }]
 });
 

@@ -27,14 +27,46 @@ import {
   RuntimeCatalogError
 } from './shared.js';
 
-export { canonicalStringify, loadApprovedActorProfileCatalog,
-  RuntimeCatalogError };
+export { canonicalStringify, computeCanonicalRecordDigest,
+  computeImportAuditDigest, computeRecordsDigest, computeTablePayloadDigest,
+  computeTablesDigest, loadApprovedActorProfileCatalog,
+  projectCanonicalRecord, RuntimeCatalogError };
 export { loadApprovedProceduralActorTemporalBundle,
   loadApprovedProceduralCompiledCatalog,
   loadApprovedProceduralSceneRecordBundle } from
   './procedural-scene-records.js';
 
 export const RUNTIME_CATALOG_SCOPE = 'item_container_materialization_v2';
+
+export function verifyCatalogImportLedger({
+  registry,
+  importRoot,
+  tables,
+  records
+}) {
+  if (computeRecordRegistryDigest(registry)
+      !== importRoot?.record_registry_digest) {
+    fail('RUNTIME_CATALOG_IMPORT_AUDIT_INVALID',
+      'The runtime record registry does not match the pinned import.');
+  }
+  const recordsByTable = validateMembership({
+    importId: importRoot.import_id,
+    registry,
+    tables,
+    records
+  });
+  if (computeTablesDigest(tables) !== importRoot.tables_digest
+      || computeRecordsDigest(records) !== importRoot.records_digest) {
+    fail('RUNTIME_CATALOG_MEMBERSHIP_INVALID',
+      'Import membership root digests do not match exact records.');
+  }
+  if (computeImportAuditDigest(importRoot)
+      !== importRoot.import_audit_digest) {
+    fail('RUNTIME_CATALOG_IMPORT_AUDIT_INVALID',
+      'Import audit digest does not match the pinned root.');
+  }
+  return deepFreeze(recordsByTable);
+}
 
 const GRAPH_NODE_CANONICAL_READ_SQL = `SELECT
   id,
@@ -574,9 +606,14 @@ function validateImportRootAgainstPin(root, pin) {
   );
 }
 
-function validateMembership({ importId, tables, records }) {
+function validateMembership({
+  importId,
+  registry = recordRegistry,
+  tables,
+  records
+}) {
   const entryByTable = new Map(
-    recordRegistry.entries.map((entry) => [entry.table_name, entry])
+    registry.entries.map((entry) => [entry.table_name, entry])
   );
   const tableByName = new Map();
   for (const table of tables) {

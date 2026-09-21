@@ -47,6 +47,8 @@ import {
   selectLocations,
   selectParticipants
 } from './lower-dvina-trace-selection.js';
+import { compileProceduralScenePartyPackages } from
+  './procedural-scene-party-packages.js';
 
 export {
   assertLowerDvinaTraceSelectionClosure,
@@ -475,6 +477,17 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     choices,
     rng_draw_count: random.drawCount
   };
+  const proceduralScenePackages = input.verified_procedural_compiled_catalog == null
+    || firstEntryPreparation == null
+    ? null : compileProceduralScenePartyPackages({
+      party_id: input.party_id,
+      run_id: runId,
+      world_pin: { world_revision_id: input.world_revision_id,
+        world_catalog_digest: input.world_catalog_digest },
+      verified_procedural_compiled_catalog:
+        input.verified_procedural_compiled_catalog,
+      ...proceduralSceneInputs(firstEntryPreparation)
+    });
   const result = {
     version: 1,
     schema: 'rus.lower_dvina_trace_party_materialization_result.v1',
@@ -484,6 +497,8 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     request_identity: lowerDvinaTraceRequestIdentity(input),
     immediate,
     ...(firstEntryPreparation ? { first_entry_preparation: firstEntryPreparation } : {}),
+    ...(proceduralScenePackages == null ? {} : {
+      procedural_scene_packages: proceduralScenePackages }),
     hidden_truth: hiddenTruth,
     ...(revision19EquipmentHandoff ? {
       initial_actor_equipment_handoff: revision19EquipmentHandoff
@@ -495,4 +510,20 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   };
   trace.result_digest = computeMaterializationEnvelopeDigest(result);
   return deepFreeze(result);
+}
+
+function proceduralSceneInputs(preparation) {
+  const members = preparation?.members ?? (preparation == null ? [] : [preparation]);
+  const scenes = members.map((member) => ({
+    scene_template_id: member?.base_static_templates?.destination
+      ?.scene_template_ref?.entity_ref?.entity_id,
+    g5_id: member?.canonical_g5_refs?.destination?.entity_id,
+    g5_node_id: member?.scene?.node?.instance_id,
+    g6_instance_id: member?.s1_topology?.g6_instance_ref,
+    position_id: member?.s1_topology?.position_ref
+  }));
+  const actors = members.flatMap((member) => (member?.npcs ?? []).map((npc) => ({
+    ...npc, g5_node_id: member.scene?.node?.instance_id, actor_kind: 'npc'
+  })));
+  return { scenes, actors };
 }

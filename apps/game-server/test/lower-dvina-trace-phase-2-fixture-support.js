@@ -7,7 +7,7 @@ import { lowerDvinaTraceCanonicalG5SceneBindings } from
   '../../../test/fixtures/lower-dvina-trace-v5-world-fixture.js';
 
 export function phase1AInstance(partyId, scenarioBundle,
-  worldBaseReferenceSnapshot = undefined) {
+  worldBaseReferenceSnapshot = undefined, verifiedProceduralCompiledCatalog = null) {
   return materializeInitialActorEquipment(
     materializeLowerDvinaTracePartyInstance({
       party_id: partyId,
@@ -26,6 +26,8 @@ export function phase1AInstance(partyId, scenarioBundle,
       existing_party_state: { baseline_exists: false },
       scenario_bundle: scenarioBundle,
       world_base_reference_snapshot: worldBaseReferenceSnapshot,
+      ...(verifiedProceduralCompiledCatalog == null ? {} : {
+        verified_procedural_compiled_catalog: verifiedProceduralCompiledCatalog }),
       resolve_timestamp: resolveLowerDvinaTraceStartTimestamp,
     }),
   );

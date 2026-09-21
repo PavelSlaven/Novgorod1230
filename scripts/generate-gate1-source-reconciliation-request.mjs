@@ -224,6 +224,68 @@ export function validatePendingGate1SourceReconciliation({ embeddedRows,
   return true;
 }
 
+export function validateGate1SourceReconciliationAuthoringAttestation({
+  embeddedRows, candidate, request, attestation
+}) {
+  validatePendingGate1SourceReconciliation({ embeddedRows, candidate,
+    request });
+  const bindingTables = new Set(['container_template_source_bindings',
+    'item_template_source_bindings', 'record_sources']);
+  const expectedScope = {
+    embedded_source_records: {
+      record_count: embeddedRows.length,
+      payload_digest: digestValue(embeddedRows)
+    },
+    canonical_parent_source_rows: candidate.collisions.map(({ id,
+      canonical_parent_row: row, requested_transition: transition }) => ({
+      id, payload_digest: digestValue(row),
+      from_status: transition.from_status, to_status: transition.to_status
+    })),
+    unchanged_binding_datasets: candidate.amended_stage3c_manifest.datasets
+      .filter(({ table }) => bindingTables.has(table))
+      .map(({ table, record_count, sha256 }) => ({ table, record_count,
+        sha256 })),
+    requested_import_effect: request.requested_import_effect
+  };
+  const authority = attestation.authority ?? {};
+  if (attestation.schema !==
+      'rus.gate1_stage3c_source_reconciliation_authoring_approval_attestation.v1'
+      || attestation.status !==
+        'approved_authoring_and_transactional_import_readback'
+      || attestation.reconciliation_candidate_digest !==
+        candidate.candidate_digest
+      || attestation.reconciliation_request_digest !== request.request_digest
+      || attestation.amended_stage3c_candidate_digest !==
+        candidate.amended_stage3c_manifest.candidate_digest
+      || attestation.amended_stage3c_approval_request_digest !==
+        candidate.amended_stage3c_approval_request.request_digest
+      || attestation.original_stage3c_candidate_digest !==
+        candidate.original_stage3c_binding.candidate_digest
+      || attestation.original_stage3c_attestation_transfer_authorized !== false
+      || canonicalDigest(attestation.approved_scope) !==
+        canonicalDigest(expectedScope)
+      || authority.approval_attestation_present !== true
+      || authority.authoring_reconciliation_authorized !== true
+      || authority.source_status_promotion_authorized !== true
+      || authority.import_authorized !== true
+      || authority.transactional_import_readback_only !== true
+      || authority.exact_readback_required !== true
+      || authority.activation_authorized !== false
+      || authority.production_authorized !== false
+      || authority.existing_party_migration_authorized !== false
+      || authority.old_save_rematerialization_authorized !== false
+      || authority.authoring_only_functional_allocation_runtime_selection !==
+        false
+      || authority.runtime_item_creation_authorized !== false) {
+    throw new Error('GATE1_SOURCE_RECONCILIATION_ATTESTATION_INVALID');
+  }
+  const { attestation_digest: claimed, ...core } = attestation;
+  if (claimed !== canonicalDigest(core)) {
+    throw new Error('GATE1_SOURCE_RECONCILIATION_ATTESTATION_DIGEST_INVALID');
+  }
+  return true;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const artifacts = await buildGate1SourceReconciliationArtifacts();
   if (process.argv.includes('--write')) {

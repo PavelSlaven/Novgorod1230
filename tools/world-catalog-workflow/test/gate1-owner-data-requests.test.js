@@ -7,6 +7,7 @@ import { buildGate1OwnerDataArtifacts,
   validatePendingGate1OwnerDataArtifacts } from
   '../../../scripts/generate-gate1-owner-data-requests.mjs';
 import { buildGate1SourceReconciliationArtifacts,
+  validateGate1SourceReconciliationAuthoringAttestation,
   validatePendingGate1SourceReconciliation } from
   '../../../scripts/generate-gate1-source-reconciliation-request.mjs';
 
@@ -154,4 +155,31 @@ test('pending source reconciliation grants no import or runtime authority',
     widened.request.authority.import_authorized = true;
     assert.throws(() => validatePendingGate1SourceReconciliation(widened),
       /GATE1_SOURCE_RECONCILIATION_AUTHORITY_FORBIDDEN/u);
+  });
+
+test('source reconciliation attestation approves import/readback only',
+  async () => {
+    const artifacts = await buildGate1SourceReconciliationArtifacts();
+    const attestation = JSON.parse(await readFile(`${root}/`
+      + 'source-record-reconciliation-v1/authoring-approval-attestation.json',
+    'utf8'));
+    assert.equal(validateGate1SourceReconciliationAuthoringAttestation({
+      ...artifacts, attestation
+    }), true);
+    assert.equal(attestation.original_stage3c_attestation_transfer_authorized,
+      false);
+    for (const field of ['activation_authorized', 'production_authorized',
+      'existing_party_migration_authorized',
+      'old_save_rematerialization_authorized',
+      'authoring_only_functional_allocation_runtime_selection',
+      'runtime_item_creation_authorized']) {
+      assert.equal(attestation.authority[field], false);
+    }
+    const widened = structuredClone(attestation);
+    widened.authority
+      .authoring_only_functional_allocation_runtime_selection = true;
+    assert.throws(() =>
+      validateGate1SourceReconciliationAuthoringAttestation({
+        ...artifacts, attestation: widened
+      }), /GATE1_SOURCE_RECONCILIATION_ATTESTATION_INVALID/u);
   });

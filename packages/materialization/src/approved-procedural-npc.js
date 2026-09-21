@@ -41,7 +41,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     random, choice_key_prefix: `npc:${binding.actor_slot_ref}`,
     rule_id: binding.actor_profile_rule_ref });
   const attributes = materializeActorBaseAttributes({
-    approved_bundle: binding.actor_base_attributes_bundle,
+    runtime_profile: binding.actor_base_attributes_runtime_profile,
     occupation_archetype_id: occupation.occupation_archetype_id,
     actor_slot_ref: binding.actor_slot_ref,
     seed_basis: { world_revision_id: binding.world_revision_id,

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { canonicalCandidateDigest, canonicalDigest, canonicalRequestDigest, createRandomSource,
+import { canonicalDigest, createRandomSource,
   materializeApprovedProceduralNpc } from '../src/index.js';
 
 const facets = ['sex_category','age_category','build','skin_tone','face_shape',
@@ -69,26 +69,16 @@ const actorBaseAttributesProfile = { schema: 'rus.actor_base_attributes_profile.
       mapping_id: `${occupation_archetype_id}:ordinary`, occupation_archetype_id,
       priority_tiers: [['strength'], ['endurance'], ['dexterity'], ['attention'],
         ['reason'], ['influence']] })) };
-const attributesCandidate = { schema:
-    'rus.actor_base_attributes_candidate.v1', version: 1, status: 'approved',
-    runtime_authorized: true, import_authorized: true, activation_authorized: true,
-    subject_commit: 'commit', profile: actorBaseAttributesProfile,
-    profile_digest: canonicalDigest(actorBaseAttributesProfile), source_provenance: {} };
-attributesCandidate.candidate_digest = canonicalCandidateDigest(attributesCandidate);
-const attributesRequest = { schema: 'rus.actor_base_attributes_approval_request.v1',
-  version: 1, status: 'approved', candidate_ref: 'candidate.json',
-  subject_commit: 'commit', candidate_digest: attributesCandidate.candidate_digest,
-  profile_digest: attributesCandidate.profile_digest, decision: 'approved', scope: 'test',
-  requested_runtime_activation: true, requested_equipment_allocation_activation: true,
-  requested_import: true, requested_activation: true };
-attributesRequest.request_digest = canonicalRequestDigest(attributesRequest);
-const actorBaseAttributesBundle = { schema: 'rus.approved_actor_base_attributes_bundle.v1',
-  runtime_authorized: true, candidate: attributesCandidate,
-  approval_request: attributesRequest, attestation: { schema:
-    'rus.actor_base_attributes_attestation.v1', runtime_authorized: true,
-    candidate_digest: attributesCandidate.candidate_digest,
-    request_digest: attributesRequest.request_digest, profile_digest:
-    canonicalDigest(actorBaseAttributesProfile) } };
+const actorBaseAttributesRuntimeProfile = { schema:
+  'rus.actor_base_attributes_runtime_profile.v1',
+  catalog_scope: 'actor_base_attributes_v1', catalog_revision_id: 'attributes-v1',
+  catalog_digest: '1'.repeat(64), activation_event_id: 'activation-v1',
+  import_id: 'import-v1', import_audit_digest: '2'.repeat(64),
+  record_registry_digest: '4'.repeat(64),
+  runtime_contract_digest: '3'.repeat(64),
+  profile_id: actorBaseAttributesProfile.profile_id,
+  profile_digest: canonicalDigest(actorBaseAttributesProfile),
+  profile: actorBaseAttributesProfile };
 const binding = { schema: 'rus.approved_procedural_npc_binding.v1',
   status: 'approved', actor_slot_ref: 'worker:1', role_ref: 'role',
   occupation_ref: 'occupation', profile_level: 'background',
@@ -101,7 +91,8 @@ const binding = { schema: 'rus.approved_procedural_npc_binding.v1',
   profile_candidate_set_digest: 'a'.repeat(64),
   profile_record_digest: 'b'.repeat(64),
   world_revision_id: 'world', world_catalog_digest: 'd'.repeat(64),
-  parent_seed_digest: 'e'.repeat(64), actor_base_attributes_bundle: actorBaseAttributesBundle,
+  parent_seed_digest: 'e'.repeat(64),
+  actor_base_attributes_runtime_profile: actorBaseAttributesRuntimeProfile,
   initial_equipment_candidates: [] };
 
 test('approved procedural NPC is deterministic, complete and unnamed', () => {

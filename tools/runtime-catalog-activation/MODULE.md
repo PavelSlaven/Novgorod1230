@@ -18,6 +18,9 @@ import/readback и append-only domain catalog activation.
 - deterministic baseline registration ID и strict attestation bindings;
 - generated static readers/writers для 41 registry tables, включая immutable
   procedural-scene compiled records.
+- append-only `actor_base_attributes_v1` owner migration и party pin scope;
+  import request остаётся pending до отдельной independent attestation, а
+  runtime activation является отдельным последующим решением.
 
 ## Не делает
 

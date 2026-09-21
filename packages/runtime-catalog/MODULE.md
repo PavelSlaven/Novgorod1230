@@ -40,6 +40,8 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.
 - `RUNTIME_CATALOG_CONTRACT` и `RUNTIME_CATALOG_CONTRACT_DIGEST` из
   `@rus/runtime-catalog/runtime-contract`.
+- `ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT` и exact digest из того же subpath;
+  контракт отделён от item/container scope и не включает equipment allocation.
 
 ## Контракты
 

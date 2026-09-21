@@ -10,6 +10,9 @@
 - выбором из approved candidates и materialization trace;
 - детерминированным completion `actor_base_appearance_v1` из approved
   demographic/appearance profile entries;
+- детерминированной материализацией `actor_base_attributes_v1` только из
+  verified active runtime-profile record; authoring candidate или equipment
+  allocation policy не являются runtime authority;
 - проекцией G5 из approved profile/layout/slot rules и NPC/items из нормализованных eligible candidates;
 - code-only item placement primitive, который Stage 16 использует для
   equipment candidate → NPC/player instance resolution;
@@ -59,6 +62,14 @@ catalog. The persisted inventory snapshot copies its exact packing slot cost,
 bundle size and size-band ref; missing or ambiguous bindings fail before plan.
 
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
+
+`profileFromVerifiedRuntimeRecord`, `materializeActorBaseAttributes` и
+`materializeOrPreserveActorBaseAttributes` принимают exact
+`rus.actor_base_attributes_runtime_profile.v1`: active catalog revision,
+activation event, approved import/readback и profile membership. Отсутствующая
+active membership остаётся typed
+`ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_DATA_GAP`; default `strength` и чтение
+authoring-only candidate запрещены.
 
 `compileProceduralSceneProfile` is an authoring/readiness compiler over exact
 approved landscape, water, land-use, place-function, item and actor owner rows.

@@ -4,8 +4,7 @@ import { runStage13G5MaterializationBlock } from '@rus/new-game/stages/stage-13/
 import { runStage15NpcPlacementBlock } from '@rus/new-game/stages/stage-15/compat';
 import { runStage16ItemPlacementBlock } from '@rus/new-game/stages/stage-16/compat';
 import { makeStage13Input, makeStage15Audit, makeStage15Input, makeStage16Audit, makeStage16Input } from '../fixtures/stage13-16-fixtures.mjs';
-import { canonicalCandidateDigest, canonicalDigest, canonicalRequestDigest,
-  materializeNpcPlacement } from '@rus/materialization';
+import { canonicalDigest, materializeNpcPlacement } from '@rus/materialization';
 
 test('Stages 13, 15 and 16 use the built-in code materializers in one deterministic run', async () => {
   const stage13 = await runStage13G5MaterializationBlock({ input: makeStage13Input() });
@@ -81,7 +80,8 @@ test('code materializes concrete NPC and item instances only from approved norma
   const stage15Input = makeStage15Input();
   stage15Input.g5_scene_graph = stage13.output;
   stage15Input.npc_candidate_set.world_catalog_digest = 'a'.repeat(64);
-  stage15Input.npc_candidate_set.actor_base_attributes_bundle = actorAttributesBundle();
+  stage15Input.npc_candidate_set.actor_base_attributes_runtime_profile =
+    actorAttributesRuntimeProfile();
   stage15Input.npc_candidate_set.npc_candidates = [{
     npc_candidate_id: 'npc-candidate-1', status: 'approved', world_revision_id:'revision-1',region_id:'region-1',valid_from_year:1200,valid_to_year:1300,allowed_seasons:['spring'],required: true, slot_rule_id:'npc-slot-1', npc_profile_set_id:'npc-profile-set-1', profile_level:'background',social_role_id:'role-1',npc_archetype_id:'archetype-1',occupation_archetype_id:'fishing_water',allowed_profile_levels:['background'],
     placement:{g5_anchor_id:anchor.anchor_id,g5_minilocation_id:anchor.minilocation_id,parent_g4_node_id:'g4',presence_reason:'Approved place-function rule.'},
@@ -120,7 +120,8 @@ test('common Stage 15 NPC path pins attributes for every level and preserves pro
   const input = makeStage15Input();
   input.g5_scene_graph = stage13.output;
   input.npc_candidate_set.world_catalog_digest = 'a'.repeat(64);
-  input.npc_candidate_set.actor_base_attributes_bundle = actorAttributesBundle();
+  input.npc_candidate_set.actor_base_attributes_runtime_profile =
+    actorAttributesRuntimeProfile();
   const anchor = stage13.output.g5_anchors[0];
   const candidate = (profile_level) => ({
     npc_candidate_id: `npc-${profile_level}`, status: 'approved', required: true,
@@ -232,7 +233,7 @@ test('incomplete legacy Stage 7/8 candidates hard-block instead of receiving inv
   await assert.rejects(() => runStage16ItemPlacementBlock({ input: stage16Input, audit: async () => makeStage16Audit() }), (error) => error.code === 'PLACEMENT_RULE_CANDIDATES_EMPTY');
 });
 
-function actorAttributesBundle() {
+function actorAttributesRuntimeProfile() {
   const archetypes = ['agriculture', 'animal_husbandry', 'craft_production',
     'domestic_service', 'fishing_water', 'forest_hunting', 'illicit_marginal',
     'military_security', 'religious_literate', 'trade_exchange',
@@ -244,22 +245,12 @@ function actorAttributesBundle() {
       mapping_id: occupation_archetype_id, occupation_archetype_id,
       priority_tiers: [['strength'], ['dexterity'], ['endurance'], ['reason'],
         ['attention'], ['influence']] })) };
-  const candidate = { schema: 'rus.actor_base_attributes_candidate.v1', version: 1,
-    status: 'approved', runtime_authorized: true, import_authorized: true,
-    activation_authorized: true, subject_commit: 'commit', profile,
-    profile_digest: canonicalDigest(profile), source_provenance: {} };
-  candidate.candidate_digest = canonicalCandidateDigest(candidate);
-  const approval_request = { schema: 'rus.actor_base_attributes_approval_request.v1',
-    version: 1, status: 'approved', candidate_ref: 'candidate.json',
-    subject_commit: 'commit', candidate_digest: candidate.candidate_digest,
-    profile_digest: candidate.profile_digest, decision: 'approved', scope: 'test',
-    requested_runtime_activation: true, requested_equipment_allocation_activation: true,
-    requested_import: true, requested_activation: true };
-  approval_request.request_digest = canonicalRequestDigest(approval_request);
-  return { schema: 'rus.approved_actor_base_attributes_bundle.v1',
-    runtime_authorized: true, candidate, approval_request, attestation: {
-      schema: 'rus.actor_base_attributes_attestation.v1', runtime_authorized: true,
-      candidate_digest: candidate.candidate_digest,
-      request_digest: approval_request.request_digest,
-      profile_digest: canonicalDigest(profile) } };
+  return { schema: 'rus.actor_base_attributes_runtime_profile.v1',
+    catalog_scope: 'actor_base_attributes_v1',
+    catalog_revision_id: 'attributes-v1', catalog_digest: 'a'.repeat(64),
+    activation_event_id: 'activation-v1', import_id: 'import-v1',
+    import_audit_digest: 'b'.repeat(64),
+    record_registry_digest: 'd'.repeat(64),
+    runtime_contract_digest: 'c'.repeat(64), profile_id: profile.profile_id,
+    profile_digest: canonicalDigest(profile), profile };
 }

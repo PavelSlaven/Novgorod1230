@@ -364,6 +364,7 @@ export {
   canonicalRequestDigest,
   materializeActorBaseAttributes,
   materializeOrPreserveActorBaseAttributes,
+  profileFromVerifiedRuntimeRecord,
   validateActorBaseAttributesCandidate,
   validateActorBaseAttributes
 } from './actor-base-attributes.js';

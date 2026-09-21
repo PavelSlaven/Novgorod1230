@@ -9,6 +9,8 @@ import {
   runForwardMigration
 } from '../src/forward-migration.js';
 import {
+  ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION,
+  ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
   PARTY_RUNTIME_CATALOG_MIGRATION,
   buildWorldRuntimeCatalogMigrationPreflight,
   WORLD_LEGACY_SCHEMA_BRIDGE,
@@ -35,7 +37,9 @@ test('published migration contracts exactly match executable security-aware migr
     WORLD_RUNTIME_CATALOG_MIGRATION,
     WORLD_LEGACY_SCHEMA_BRIDGE_V2,
     WORLD_RUNTIME_CATALOG_MIGRATION_V3,
-    PARTY_RUNTIME_CATALOG_MIGRATION
+    PARTY_RUNTIME_CATALOG_MIGRATION,
+    ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+    ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION
   ].map((entry) => [entry.migration_id, entry]));
   for (const published of migrationContracts.migrations) {
     const executable = executableById.get(published.migration_id);

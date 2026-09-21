@@ -9,10 +9,10 @@ export const ORDINARY_OCCUPATION_ARCHETYPES = Object.freeze(['agriculture',
   'forest_hunting', 'illicit_marginal', 'military_security', 'religious_literate',
   'trade_exchange', 'transport_guiding']);
 
-export function materializeActorBaseAttributes({ approved_bundle: bundle,
+export function materializeActorBaseAttributes({ runtime_profile: runtimeProfile,
   occupation_archetype_id: occupation, actor_slot_ref: actorSlot,
   seed_basis: suppliedSeed } = {}) {
-  const profile = profileFromApprovedBundle(bundle);
+  const profile = profileFromVerifiedRuntimeRecord(runtimeProfile);
   if (!text(occupation) || !text(actorSlot) || !plain(suppliedSeed)
       || !text(suppliedSeed.world_revision_id) || !digest(suppliedSeed.world_catalog_digest)
       || !digest(suppliedSeed.parent_seed_digest)) gap('SEED_BASIS');
@@ -56,7 +56,7 @@ export function materializeOrPreserveActorBaseAttributes({ existing_attributes: 
   ...input } = {}) {
   if (existing != null) {
     if (!validateActorBaseAttributes(existing)) gap('SNAPSHOT');
-    const profile = profileFromApprovedBundle(input.approved_bundle);
+    const profile = profileFromVerifiedRuntimeRecord(input.runtime_profile);
     const basis = existing.generation.seed_basis;
     if (basis.actor_slot_ref !== input.actor_slot_ref
         || existing.generation.occupation_archetype_id
@@ -95,44 +95,26 @@ export function validateActorBaseAttributes(value) {
     && same(value.trace?.choices, generation.choices);
 }
 
-export function profileFromApprovedBundle(bundle) {
-  const candidate = bundle?.candidate, request = bundle?.approval_request,
-    attestation = bundle?.attestation;
-  const profile = candidate?.profile;
-  if (!exact(bundle, ['schema','runtime_authorized','candidate','approval_request',
-    'attestation'])
-      || bundle.schema !== 'rus.approved_actor_base_attributes_bundle.v1'
-      || bundle.runtime_authorized !== true
-      || !exact(candidate, ['schema','version','status','runtime_authorized',
-        'import_authorized','activation_authorized','subject_commit','profile',
-        'profile_digest','candidate_digest','source_provenance'])
-      || candidate.schema !== 'rus.actor_base_attributes_candidate.v1'
-      || candidate.version !== 1
-      || candidate.status !== 'approved' || candidate.runtime_authorized !== true
-      || candidate.import_authorized !== true || candidate.activation_authorized !== true
-      || !text(candidate.subject_commit)
-      || candidate.candidate_digest !== canonicalCandidateDigest(candidate)
-      || candidate.profile_digest !== canonicalDigest(profile)
-      || !exact(request, ['schema','version','status','candidate_ref','subject_commit',
-        'candidate_digest','profile_digest','decision','scope',
-        'requested_runtime_activation','requested_equipment_allocation_activation',
-        'requested_import','requested_activation','request_digest'])
-      || request.schema !== 'rus.actor_base_attributes_approval_request.v1'
-      || request.version !== 1 || request.status !== 'approved'
-      || request.decision !== 'approved'
-      || request.requested_runtime_activation !== true
-      || request.requested_equipment_allocation_activation !== true
-      || request.requested_import !== true || request.requested_activation !== true
-      || request.subject_commit !== candidate.subject_commit
-      || request.candidate_digest !== candidate.candidate_digest
-      || request.profile_digest !== candidate.profile_digest
-      || request.request_digest !== canonicalRequestDigest(request)
-      || !exact(attestation, ['schema','runtime_authorized','request_digest',
-        'candidate_digest','profile_digest'])
-      || attestation.schema !== 'rus.actor_base_attributes_attestation.v1'
-      || attestation.runtime_authorized !== true || attestation.request_digest !== request.request_digest
-      || attestation.candidate_digest !== candidate.candidate_digest
-      || attestation.profile_digest !== canonicalDigest(profile)) gap('BUNDLE');
+export function profileFromVerifiedRuntimeRecord(runtimeProfile) {
+  const profile = runtimeProfile?.profile;
+  if (!exact(runtimeProfile, ['schema','catalog_scope','catalog_revision_id',
+    'catalog_digest','activation_event_id','import_id','import_audit_digest',
+    'record_registry_digest','runtime_contract_digest','profile_id',
+    'profile_digest','profile'])
+      || runtimeProfile.schema !==
+        'rus.actor_base_attributes_runtime_profile.v1'
+      || runtimeProfile.catalog_scope !== 'actor_base_attributes_v1'
+      || !text(runtimeProfile.catalog_revision_id)
+      || !digest(runtimeProfile.catalog_digest)
+      || !text(runtimeProfile.activation_event_id)
+      || !text(runtimeProfile.import_id)
+      || !digest(runtimeProfile.import_audit_digest)
+      || !digest(runtimeProfile.record_registry_digest)
+      || !digest(runtimeProfile.runtime_contract_digest)
+      || runtimeProfile.profile_id !== profile?.profile_id
+      || runtimeProfile.profile_digest !== canonicalDigest(profile)) {
+    gap('RUNTIME_PROFILE');
+  }
   return validateProfile(profile);
 }
 

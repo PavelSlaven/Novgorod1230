@@ -24,6 +24,14 @@ const PARTY_SQL = readFileSync(
   new URL('../migrations/party/001_runtime_catalog_pins.sql', import.meta.url),
   'utf8'
 );
+const ACTOR_BASE_ATTRIBUTES_WORLD_SQL = readFileSync(
+  new URL('../migrations/world/002_actor_base_attributes_owner.sql', import.meta.url),
+  'utf8'
+);
+const ACTOR_BASE_ATTRIBUTES_PARTY_SQL = readFileSync(
+  new URL('../migrations/party/002_actor_base_attributes_pins.sql', import.meta.url),
+  'utf8'
+);
 
 export const WORLD_LEGACY_SCHEMA_BRIDGE = createForwardMigration({
   migrationId: 'world_legacy_062_to_canonical_v1',
@@ -65,6 +73,26 @@ export const PARTY_RUNTIME_CATALOG_MIGRATION = createForwardMigration({
   sourceSchemaFingerprint: '16f99b12e58ce60f6c87e29e0824518987ddb66b9ee6c7d945daebc2b0957817',
   targetSchemaFingerprint: '47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165',
   sql: PARTY_SQL
+});
+
+export const ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION = createForwardMigration({
+  migrationId: 'world_actor_base_attributes_owner_v1',
+  schemaName: 'world_base',
+  sourceSchemaFingerprint:
+    '9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6',
+  targetSchemaFingerprint:
+    '18c437d4515ab951374cd5c8849c61d7188f4147ac128e0b81b050f1eb485927',
+  sql: ACTOR_BASE_ATTRIBUTES_WORLD_SQL
+});
+
+export const ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION = createForwardMigration({
+  migrationId: 'party_actor_base_attributes_pins_v1',
+  schemaName: 'party_runtime',
+  sourceSchemaFingerprint:
+    '47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165',
+  targetSchemaFingerprint:
+    '25a8012cb25446a30b8896c30c78ed161505ec75689dbc6914bed669bac71299',
+  sql: ACTOR_BASE_ATTRIBUTES_PARTY_SQL
 });
 
 export function buildWorldRuntimeCatalogMigrationPreflight({
@@ -159,4 +187,13 @@ export async function runWorldRuntimeCatalogMigration(pool) {
 
 export function runPartyRuntimeCatalogMigration(pool) {
   return runForwardMigration({ pool, migration: PARTY_RUNTIME_CATALOG_MIGRATION });
+}
+
+export async function runActorBaseAttributesOwnerMigrations({ worldPool,
+  partyPool }) {
+  const world = await runForwardMigration({ pool: worldPool,
+    migration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION });
+  const party = await runForwardMigration({ pool: partyPool,
+    migration: ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION });
+  return Object.freeze({ world, party });
 }

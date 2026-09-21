@@ -108,8 +108,8 @@ function materializeNpcBaseAttributes({ candidate, candidateSet, input, npcInsta
     ?? candidateSet?.actor_profile_snapshot?.source_catalog_digest;
   return materializeOrPreserveActorBaseAttributes({
     existing_attributes: candidate.base_attributes,
-    approved_bundle: candidate.actor_base_attributes_bundle
-      ?? candidateSet?.actor_base_attributes_bundle,
+    runtime_profile: candidate.actor_base_attributes_runtime_profile
+      ?? candidateSet?.actor_base_attributes_runtime_profile,
     occupation_archetype_id: candidate.occupation_archetype_id,
     actor_slot_ref: candidate.actor_slot_ref ?? candidate.slot_rule_id ?? npcInstanceId,
     seed_basis: { world_revision_id: worldRevision,

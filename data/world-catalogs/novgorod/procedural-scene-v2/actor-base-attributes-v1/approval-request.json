@@ -1,0 +1,8 @@
+{
+  "schema": "rus.actor_base_attributes_approval_request.v1",
+  "version": 1,
+  "status": "approval_requested",
+  "candidate_ref": "actor-base-attributes-v1/candidate.json",
+  "requested_runtime_activation": false,
+  "requested_equipment_allocation_activation": false
+}

@@ -126,8 +126,9 @@ test('packages are stable, policy stays pending P16, and V1/wrong/tampered input
     const reverse = compileProceduralScenePartyPackages({ ...input, scenes: [drying, fishing] });
     assert.deepEqual(forward, reverse);
     const packageFishing = forward.packages.find(({ family }) => family === 'inland_fishing_worksite');
-    assert.equal(packageFishing.allocation_policy.status, 'pending_p16_inventory_validation');
-    assert.equal(packageFishing.allocation_policy.actor_instance_id, 'npc:a');
+    assert.equal(packageFishing.allocation_policy.status,
+      'pending_runtime_allocation_approval');
+    assert.equal(packageFishing.allocation_policy.actor_instance_id, null);
     assert.equal(packageFishing.allocation_policy.policy.property_basis.owner_ref,
       'selected_actor_instance');
     assert.deepEqual(packageFishing.inventory_profiles.map(({ id }) => id), [
@@ -142,14 +143,14 @@ test('packages are stable, policy stays pending P16, and V1/wrong/tampered input
         }
       } }], scenes: [fishing] });
     assert.equal(genericRoutine.packages[0].allocation_policy.status,
-      'pending_p16_inventory_validation');
+      'pending_runtime_allocation_approval');
     const wrongActivity = compileProceduralScenePartyPackages({ ...input,
       actors: [{ ...actors[0], machine_state: { current_activity: {} } }],
       scenes: [fishing] });
     assert.equal(wrongActivity.packages[0].allocation_policy.status,
-      'pending_p16_actor_activity_data_gap');
+      'pending_runtime_allocation_approval');
     assert.equal(wrongActivity.packages[0].profile.readiness.functional_layers.find(
-      ({ layer }) => layer === 'tool').status, 'pending_actor_activity');
+      ({ layer }) => layer === 'tool').status, 'pending_p16_owner');
     assert.equal(packageFishing.profile.readiness.functional_layers.find(
       ({ layer }) => layer === 'tool').status, 'pending_p16_owner');
     assert.equal(packageFishing.profile.readiness.functional_layers.find(

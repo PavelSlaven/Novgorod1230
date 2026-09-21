@@ -23,7 +23,8 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       const player = await one(
         `SELECT pc.character_id,pc.profile,apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
                 apb.name_profile_snapshot,apb.language_profile_snapshot,apb.knowledge_profile_snapshot,
-                apb.profile_candidate_set_digest,apb.state_version AS profile_state_version,
+                apb.profile_candidate_set_digest,apb.attribute_profile_snapshot,
+                apb.state_version AS profile_state_version,
                 apb.created_change_set_id,apb.updated_change_set_id,
                 b.body_profile_ref,b.health,b.energy,b.satiety,b.state_version AS body_state_version,
                 b.updated_change_set_id AS body_updated_change_set_id
@@ -108,6 +109,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
                 apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
                 apb.name_profile_snapshot,apb.language_profile_snapshot,
                 apb.knowledge_profile_snapshot,apb.profile_candidate_set_digest,
+                apb.attribute_profile_snapshot,
                 apb.state_version,apb.created_change_set_id,apb.updated_change_set_id
            FROM party_runtime.party_npcs n
            JOIN party_runtime.party_actor_profile_bindings apb
@@ -272,11 +274,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
             && preparedSpatial.length === (payload.immediate.prepared_scenes ?? []).length,
           routes_match_plan: counts.edge_count === 0,
           npcs_match_plan: counts.npc_count === (payload.immediate.npcs ?? []).length,
-          items_match_plan: items.filter((item) => item.state?.causal_basis
-            !== 'procedural_actor_allocation_v1').length
-            === payload.immediate.items.length
-            && allocationRowsValid(items.filter((item) => item.state?.causal_basis
-              === 'procedural_actor_allocation_v1')),
+          items_match_plan: items.length === payload.immediate.items.length,
           containers_match_plan: counts.container_count === payload.immediate.containers.length,
           knowledge_hash_matches: counts.knowledge_count === 0, knowledge_counts_match: counts.knowledge_count === 0,
           single_current_knowledge_map: counts.knowledge_count === 0,
@@ -345,15 +343,8 @@ function playerSafeComponent({ layer, required }) {
   return { layer, required: required === true };
 }
 
-function allocationResolved(items, allocation) {
-  const actorId = allocation?.actor_instance_id;
-  const required = allocation?.policy?.allocations;
-  return typeof actorId === 'string' && Array.isArray(required)
-    && required.length > 0 && required.every(({ item_template_ref }) =>
-      items.some((item) => item.template_id === item_template_ref
-        && item.placement?.holder_npc_id === actorId
-        && item.ownership?.owner_npc_id === actorId
-        && item.ownership?.controller_npc_id === actorId));
+function allocationResolved(_items, allocation) {
+  return allocation?.status === 'materialized_stage16';
 }
 
 function assertRoundTrip({
@@ -405,10 +396,6 @@ function assertRoundTrip({
       return trace;
     })()
   } : null;
-  const baseItems = items.filter((item) => item.state?.causal_basis
-    !== 'procedural_actor_allocation_v1');
-  const allocatedItems = items.filter((item) => item.state?.causal_basis
-    === 'procedural_actor_allocation_v1');
   if (!payload || !['rus.lower_dvina_trace_initial_party_snapshot.v2',
     'rus.authored_start_initial_party_snapshot.v1',
     'rus.authored_start_initial_party_snapshot.v3'].includes(payload.schema)
@@ -421,7 +408,7 @@ function assertRoundTrip({
     || payload.materialization_trace.result_digest !== run.result_digest
     || computeMaterializationEnvelopeDigest(materializationEnvelope) !== run.result_digest
     || choices.length !== payload.materialization_trace.choices.length
-    || baseItems.length !== payload.immediate.items.length
+    || items.length !== payload.immediate.items.length
     || conditions.length !== expectedConditions.length
     || counts.node_count !== 1 + expectedPreparedScenes.length
     || counts.anchor_count !== 1 + expectedPreparedScenes.length
@@ -429,6 +416,9 @@ function assertRoundTrip({
     || counts.edge_count !== 0
     || counts.npc_count !== expectedNpcs.length
     || npcs.length !== expectedNpcs.length
+    || npcs.some((npc) => JSON.stringify(npc.attribute_profile_snapshot ?? null)
+      !== JSON.stringify(expectedNpcs.find(({ instance_id }) => instance_id
+        === npc.npc_id)?.base_attributes ?? null))
     || counts.profile_binding_count !== 1 + expectedNpcs.length
     || counts.container_count !== payload.immediate.containers.length
     || counts.obligation_count !== (payload.immediate.promise_instances ?? []).length
@@ -443,8 +433,7 @@ function assertRoundTrip({
     payload.immediate.containers.map((value) => value.instance_id)
   );
   const expectedNpcIds = new Set(expectedNpcs.map((value) => value.instance_id));
-  if (baseItems.some((value) => !expectedItemIds.has(value.item_id))
-    || !allocationRowsValid(allocatedItems)
+  if (items.some((value) => !expectedItemIds.has(value.item_id))
     || containers.some(
       (value) => !expectedContainerIds.has(value.container_id)
     )
@@ -472,7 +461,7 @@ function assertRoundTrip({
     npcs,
     npcSchedules,
     clock,
-    items: baseItems,
+    items,
     containers,
     obligations,
     conditions,
@@ -492,14 +481,6 @@ function assertRoundTrip({
     error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
     throw error;
   }
-}
-
-function allocationRowsValid(items) {
-  return items.every((value) => value.quantity === 1
-    && value.owner_npc_id && value.owner_npc_id === value.holder_npc_id
-    && value.controller_npc_id === value.holder_npc_id
-    && ['hands', 'external'].includes(value.physical_position)
-    && value.state?.allocation_evidence?.policy_id != null);
 }
 
 function originalMaterializationTrace(trace) {

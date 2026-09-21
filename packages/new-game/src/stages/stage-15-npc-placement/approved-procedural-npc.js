@@ -1,6 +1,7 @@
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
 import { deepFreeze } from '@rus/kernel';
 import { MaterializationError } from '@rus/materialization';
+import { validateActorBaseAttributes } from '@rus/materialization';
 
 export function attachApprovedProceduralNpc({ party_materialization: source,
   procedural_npc: materialized, equipment_catalog: catalog = null } = {}) {
@@ -16,11 +17,19 @@ export function attachApprovedProceduralNpc({ party_materialization: source,
     throw new MaterializationError('PROCEDURAL_NPC_STAGE15_DUPLICATE',
       'Procedural NPC stable identity is already present.');
   }
+  if (!validateActorBaseAttributes(materialized.npc.base_attributes)) {
+    throw new MaterializationError('PROCEDURAL_NPC_ATTRIBUTES_DATA_GAP',
+      'Stage 15 requires actor_base_attributes_v1 before equipment.');
+  }
   result.immediate.npcs.push(structuredClone(materialized.npc));
   const offset = result.trace.choices.length;
   result.trace.choices.push(...materialized.choices.map((choice, index) => ({
     ...structuredClone(choice), choice_ordinal: offset + index
   })));
+  result.trace.actor_base_attributes = [
+    ...(result.trace.actor_base_attributes ?? []),
+    structuredClone(materialized.attribute_trace)
+  ];
   if (result.immediate.environment_snapshot != null
       && JSON.stringify(result.immediate.environment_snapshot)
         !== JSON.stringify(materialized.environment)) {

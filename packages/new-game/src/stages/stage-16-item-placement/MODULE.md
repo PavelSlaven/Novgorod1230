@@ -19,6 +19,11 @@ The same handoff owns procedural NPC garments/tools; inactive or missing exact
 catalog rows are a typed data gap, and current activity cannot imply such an
 item.
 
+Procedural allocation policy remains inactive until independent runtime
+approval. When activated, this Stage 16 finalizer (never Stage 24) owns
+reuse-before-create and validates complete actor inventory through
+`@rus/items-property`, using persisted `actor_base_attributes_v1` strength.
+
 Before the draft can pass its code precheck, each selected container is checked with packing slots v1. Capacity is an internal packing measure, not mass, litres or character inventory slots. For every direct item line the module uses `ceil(quantity / packing_bundle_size) × packing_slot_cost`; a nested container uses its own external `packing_slot_cost`, while its contents remain separate for mass. Missing packing metadata or overflow is a hard block (`CONTAINER_CAPACITY_EXCEEDED`); no quantity reduction, additional container or fallback is permitted. The immutable trace is stored in the Stage 16 code-precheck evidence.
 
 When an explicit reviewed `inventory_foundation.required` candidate is supplied, the same precheck additionally validates normalized placement topology, mass, hands, access and container usage through `@rus/items-property`; a missing candidate is the hard gap `INITIAL_INVENTORY_PLACEMENT_DATA_GAP`. This optional gate does not invent player inventory or change the existing scene-item materialization route.

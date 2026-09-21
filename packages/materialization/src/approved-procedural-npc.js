@@ -1,6 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { materializeActorBaseAppearance } from './actor-base-appearance.js';
 import { compileApprovedNpcRuntimeBasis } from './approved-npc-runtime-basis.js';
+import { materializeActorBaseAttributes } from './actor-base-attributes.js';
 import { deterministicInstanceId, MaterializationError } from './core.js';
 
 export function materializeApprovedProceduralNpc({ party_id: partyId,
@@ -38,6 +39,14 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     approved_entries: actorAppearanceEntries(bundle.actor_profiles, binding),
     random, choice_key_prefix: `npc:${binding.actor_slot_ref}`,
     rule_id: binding.actor_profile_rule_ref });
+  const attributes = materializeActorBaseAttributes({
+    profile: binding.actor_base_attributes_profile,
+    occupation_archetype_id: occupation.occupation_archetype_id,
+    random, choice_key_prefix: `npc:${binding.actor_slot_ref}`,
+    seed_basis: { party_id: partyId, run_id: runId,
+      actor_slot_ref: binding.actor_slot_ref,
+      world_revision_id: environment.world_revision_id ?? null }
+  });
   const activity = exact(bundle.temporal_records, 'record_id',
     binding.activity_record_ref);
   if (activity.record_kind !== 'activity_profile') {
@@ -97,6 +106,10 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
       source: 'approved_occupations' },
     identity_state: identity,
     appearance_contract_version: 'actor_base_appearance_v1',
+    base_attributes: { contract_version: attributes.contract_version,
+      values: structuredClone(attributes.values),
+      profile_ref: structuredClone(attributes.profile_ref),
+      generation: structuredClone(attributes.generation) },
     machine_state: { status: 'active', materialization_depth: 'full',
       schedule_state: 'working', current_activity: {
         activity_ref: activity.payload.activity_profile_id,
@@ -128,6 +141,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
   return deepFreeze({ schema: 'rus.approved_procedural_npc_result.v1',
     version: 1, npc, choices: appearance.choices.map((choice) =>
       structuredClone(choice)),
+    attribute_trace: structuredClone(attributes.trace),
     environment: structuredClone(environment),
     actor_candidate_instance_map: [{ actor_candidate_id: binding.actor_slot_ref,
       actor_instance_id: npcId, actor_kind: 'npc' }],

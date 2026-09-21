@@ -411,7 +411,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const fishingPackage = scenePackages.packages.find(({ family }) =>
     family === 'inland_fishing_worksite');
   assert.equal(fishingPackage.allocation_policy.status,
-    'pending_p16_inventory_validation');
+    'pending_p16_independent_attestation');
   assert.equal(fishingPackage.profile.readiness.functional_layers.find(
     ({ layer }) => layer === 'tool').status, 'pending_p16_owner');
   assert.equal(fishingPackage.profile.readiness.functional_layers.find(
@@ -427,7 +427,8 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     'allocation_status'
   ].includes(key))));
   assert.equal(safePackages.find(({ family }) => family ===
-    'inland_fishing_worksite').allocation_status, 'resolved');
+    'inland_fishing_worksite').allocation_status,
+  'pending_p16_independent_attestation');
   const allocatedFishingItems = (await pool.query(
     `SELECT item.template_id,item.profile_id,item.quantity,item.state,
             placement.holder_npc_id,placement.physical_position,
@@ -440,20 +441,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       WHERE item.party_id=$1
         AND item.state->>'causal_basis'='procedural_actor_allocation_v1'
       ORDER BY item.template_id`, [authoredPartyId])).rows;
-  assert.deepEqual(allocatedFishingItems.map((item) => [item.template_id,
-    item.profile_id, Number(item.quantity)]), [
-    ['item_tpl_nov_fishing_line_v1',
-      'inventory_item_tpl_nov_fishing_line_v1', 1],
-    ['item_tpl_nov_fishing_net_v1',
-      'inventory_item_tpl_nov_fishing_net_v1', 1]
-  ]);
-  const fisherId = fishingPackage.allocation_policy.actor_instance_id;
-  assert.ok(allocatedFishingItems.every((item) =>
-    item.holder_npc_id === fisherId && item.owner_npc_id === fisherId
-      && item.controller_npc_id === fisherId
-      && ['hands', 'external'].includes(item.physical_position)
-      && item.state.allocation_evidence?.policy_id
-        === fishingPackage.allocation_policy.policy_id));
+  assert.deepEqual(allocatedFishingItems, []);
   assert.deepEqual(await sceneRepository.loadPlayerSafeScenePackages(
     'party-v1-development'), []);
   assert.equal((await pool.query(
@@ -462,7 +450,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   'procedural_scene_final_candidate_v1_001');
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
   assert.equal(authoredInternal.npcs.length, 3);
-  assert.equal(authoredInternal.items.length, 4);
+  assert.equal(authoredInternal.items.length, 2);
   assert.ok(authoredInternal.npcs.every((npc) =>
     npc.semantic_state.approved_runtime_basis.schedule.source_ref.endsWith(
       ':daily_schedule_summer')
@@ -485,7 +473,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.equal(nodesByParty.get(authoredPartyId).state.canonical_g5_ref.id,
     'trace_ld_v1_g5_fishing_camp');
   assert.deepEqual(authoredInternal.items.map(({ quantity }) => Number(quantity))
-    .sort((a, b) => a - b), [1, 1, 1, 1]);
+    .sort((a, b) => a - b), [1, 1]);
   const authoredMechanics = Object.fromEntries(authoredInternal.items.map(
     (item) => [item.template_id, item.state.inventory_profile_snapshot]));
   assert.deepEqual([
@@ -503,11 +491,35 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     `SELECT count(*)::int AS count FROM party_runtime.party_items
       WHERE party_id=$1
         AND state->>'causal_basis'='procedural_actor_allocation_v1'`,
-    [authoredPartyId])).rows[0].count, 2);
+    [authoredPartyId])).rows[0].count, 0);
   assert.deepEqual((await pool.query(
     `SELECT trace FROM party_runtime.party_materialization_runs
       WHERE party_id=$1`, [authoredPartyId])).rows[0].trace
     .procedural_scene_packages, scenePackages);
+  const allocationFixture = await installAllocationRepositoryFixture(pool,
+    authoredPartyId, packageTrace);
+  const allocatedRows = allocationFixture.items;
+  const attestedRepository = createLowerDvinaTracePhase1ARepository({
+    query: pool.query.bind(pool)
+  });
+  await attestedRepository.loadInternal(authoredPartyId);
+  const removedItemId = allocatedRows[0].item_id;
+  await assertRehydrateTamper(pool, async (transaction) => {
+    await transaction.query(`DELETE FROM party_runtime.party_item_placements
+      WHERE party_id=$1 AND item_id=$2`, [authoredPartyId, removedItemId]);
+    await transaction.query(`DELETE FROM party_runtime.party_ownership
+      WHERE party_id=$1 AND item_id=$2`, [authoredPartyId, removedItemId]);
+    await transaction.query(`DELETE FROM party_runtime.party_items
+      WHERE party_id=$1 AND item_id=$2`, [authoredPartyId, removedItemId]);
+  }, authoredPartyId);
+  await attestedRepository.loadInternal(authoredPartyId);
+  await assertRehydrateTamper(pool, (transaction) => transaction.query(
+    `UPDATE party_runtime.party_items
+        SET state=jsonb_set(state,'{allocation_evidence,policy_id}',
+          '"wrong-policy"'::jsonb)
+      WHERE party_id=$1 AND item_id=$2`, [authoredPartyId, removedItemId]
+  ), authoredPartyId);
+  await attestedRepository.loadInternal(authoredPartyId);
   const tamperedTop = structuredClone(packageTrace);
   tamperedTop.procedural_scene_packages.digest = '0'.repeat(64);
   await pool.query(`UPDATE party_runtime.party_materialization_runs
@@ -563,23 +575,6 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       WHERE party_id=$1
         AND state->>'causal_basis'='procedural_actor_allocation_v1'`,
     [partyId])).rows[0].count, 0);
-  const malformedRequestId = 'm3-p16-malformed-policy';
-  const malformedRuntime = makeRuntime(null, { runtimeCatalogLoader: {
-    async loadApprovedItemCatalog(input) {
-      const value = structuredClone(await catalogLoader.loadApprovedItemCatalog(input));
-      value.records_by_table.item_template_inventory_profiles.find((profile) =>
-        profile.id === 'inventory_item_tpl_nov_fishing_net_v1').mass_grams = 5001;
-      return value;
-    }
-  } }).runtime;
-  await assert.rejects(() => malformedRuntime.startNewGame({
-    scenario_id: 'vikhtuy_fishing_camp_v1', request_id: malformedRequestId
-  }), (error) => error?.message.includes(
-    'P16_ALLOCATION_INVENTORY_PROFILE_INVALID'));
-  const malformedPartyId = `party:${hashForTest(malformedRequestId).slice(0, 24)}`;
-  for (const table of ['parties', 'party_materialization_runs', 'party_items']) {
-    assert.equal(await count(pool, `party_runtime.${table}`, malformedPartyId), 0);
-  }
   const invalidCases = [
     ['g4', (profile) => { profile.geometry.start.g4_id = 'missing-g4'; }],
     ['node-template', (profile) => {
@@ -943,7 +938,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     `SELECT count(*)::int AS count FROM party_runtime.party_items
       WHERE party_id=$1
         AND state->>'causal_basis'='procedural_actor_allocation_v1'`,
-    [authoredPartyId])).rows[0].count, 2);
+    [authoredPartyId])).rows[0].count, 0);
   const repeatedAck =
     await restarted.runtime.acknowledgeOpening(partyId, {
       client_ack_id: 'phase-1b-ack'
@@ -1160,6 +1155,23 @@ async function count(pool, table, partyId) {
     `SELECT count(*)::int AS count FROM ${table} WHERE party_id=$1`,
     [partyId]
   )).rows[0].count;
+}
+
+async function assertRehydrateTamper(pool, mutate, partyId) {
+  const transaction = await pool.connect();
+  try {
+    await transaction.query('BEGIN');
+    await mutate(transaction);
+    const repository = createLowerDvinaTracePhase1ARepository({
+      query: transaction.query.bind(transaction)
+    });
+    await assert.rejects(() => repository.loadInternal(partyId), {
+      code: 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE'
+    });
+  } finally {
+    await transaction.query('ROLLBACK').catch(() => {});
+    transaction.release();
+  }
 }
 
 async function waitForPostgres(name) {

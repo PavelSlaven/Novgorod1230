@@ -36,7 +36,12 @@ const party = { version: 3, schema: 'test_party_materialization',
   hidden_truth: {}, sealed_selections: [], policy_profile_pins: [],
   validation_report: { pass: true }, trace: { choices: [], result_digest: 'old' } };
 const procedural = { schema: 'rus.approved_procedural_npc_result.v1',
-  npc: { instance_id: 'npc', participant_slot_ref: 'worker:1' },
+  npc: { instance_id: 'npc', participant_slot_ref: 'worker:1',
+    base_attributes: { contract_version: 'actor_base_attributes_v1',
+      values: { strength: 13, dexterity: 12, endurance: 11, reason: 10,
+        attention: 9, influence: 8 }, profile_ref: { id: 'ordinary', version: 1,
+        digest: 'a'.repeat(64) }, generation: { algorithm_version:
+        'actor_base_attributes_v1', rng_version: 'pcg32-v1', seed_basis: {} } } },
   choices: [], environment: { schema: 'rus.approved_initial_environment.v1' },
   initial_equipment_candidates: [candidate] };
 

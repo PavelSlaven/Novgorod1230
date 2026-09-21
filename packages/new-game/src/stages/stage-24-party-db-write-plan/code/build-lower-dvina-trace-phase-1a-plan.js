@@ -22,7 +22,6 @@ import {
 } from './lower-dvina-trace-persisted-projection.js';
 import { assertRevision19CharacterState } from './lower-dvina-trace-revision19-write-boundary.js';
 import { approvedNpcBodyRows, approvedNpcConditionRows } from './actor-write-boundary.js';
-import { resolveProceduralActorAllocations } from './procedural-actor-allocation.js';
 import { addBatch, validatedProceduralPackages } from './write-plan-batches.js';
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertInput(input);
@@ -51,10 +50,6 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertMaterializationRuntimeCatalogPins({ trace: result.trace, pins, domainPin });
   const proceduralScenePackages = validatedProceduralPackages(result.trace,
     result.procedural_scene_packages, domainPin);
-  const proceduralAllocations = resolveProceduralActorAllocations({
-    packages: proceduralScenePackages, result, partyId, runId });
-  const allocatedItems = proceduralAllocations.filter(({ reused }) => !reused)
-    .map(({ item }) => item);
   const runRecord = {
     party_id: partyId,
     run_id: runId,
@@ -84,7 +79,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
       ]),
       ...identityNpcs.map((npc) => ({ domain: 'npc', instance_id: npc.instance_id })),
       ...preparedContainers.map((container) => ({ domain: 'container', instance_id: container.instance_id })),
-      ...result.immediate.items.map((item) => ({ domain: 'item', instance_id: item.instance_id }))
+      ...result.immediate.items.map((item) =>
+        ({ domain: 'item', instance_id: item.instance_id }))
     ]
   };
   const choiceRecords = result.trace.choices.map((choice) => ({
@@ -245,6 +241,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     name_profile_snapshot: projectNameProfileSnapshot(player.dossier.identity),
     language_profile_snapshot: {},
     knowledge_profile_snapshot: player.dossier.knowledge,
+    attribute_profile_snapshot: null,
     profile_candidate_set_digest: result.trace.choices.find((choice) => choice.choice_key === 'player_profile').candidate_set_digest,
     state_version: 1,
     created_change_set_id: changeSetId,
@@ -259,6 +256,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
     language_profile_snapshot: {},
     knowledge_profile_snapshot: npc.knowledge_profile_snapshot,
+    attribute_profile_snapshot: structuredClone(npc.base_attributes ?? null),
     profile_candidate_set_digest: npc.profile_candidate_set_digest,
     state_version: 1,
     created_change_set_id: changeSetId,
@@ -293,7 +291,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     terminal_change_set_id: null
   })).concat(approvedNpcConditionRows(identityNpcs, partyId, changeSetId)),
   ['party_actor_body_states', 'party_v3_change_sets'], sourceTrace);
-  addBatch(batches, 'party_items', [...result.immediate.items, ...allocatedItems].map((item) => ({
+  addBatch(batches, 'party_items', result.immediate.items.map((item) => ({
     party_id: partyId,
     item_id: item.instance_id,
     run_id: runId,
@@ -305,7 +303,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     legal_status: item.legal_status,
     state: item.state
   })), ['party_materialization_runs'], sourceTrace);
-  addBatch(batches, 'party_item_placements', [...result.immediate.items, ...allocatedItems].map((item) => ({
+  addBatch(batches, 'party_item_placements', result.immediate.items.map((item) => ({
     party_id: partyId,
     item_id: item.instance_id,
     anchor_id: item.anchor_id ?? null,
@@ -317,7 +315,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   })), ['party_items', 'party_containers', 'party_player_characters',
     'party_npcs', 'party_g5_anchors'], sourceTrace);
   addBatch(batches, 'party_ownership', [
-    ...[...result.immediate.items, ...allocatedItems].map((item) => ({
+    ...result.immediate.items.map((item) => ({
       party_id: partyId,
       ownership_id: `ownership_${item.instance_id}`,
       item_id: item.instance_id,

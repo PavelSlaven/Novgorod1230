@@ -30,7 +30,15 @@ test('Lower Dvina materializes a fishing package before Stage 24', async () => {
         ...v1.candidate_rows_by_table.procedural_scene_compiled_records,
         v2.append_only_delta.record
       ].map((record) => ({ ...record, version: String(record.version) })),
-      universal_categories: []
+      universal_categories: [],
+      item_template_inventory_profiles: [
+        { id: 'inventory_item_tpl_nov_fishing_net_v1',
+          item_template_id: 'item_tpl_nov_fishing_net_v1', status: 'approved',
+          mass_grams: 5000, carry_form: 'regular', external_hand_cost: 2 },
+        { id: 'inventory_item_tpl_nov_fishing_line_v1',
+          item_template_id: 'item_tpl_nov_fishing_line_v1', status: 'approved',
+          mass_grams: 200, carry_form: 'regular', external_hand_cost: 0 }
+      ]
     }
   }});
   const result = phase1AInstance('procedural-scene-wiring', bundle,
@@ -39,7 +47,7 @@ test('Lower Dvina materializes a fishing package before Stage 24', async () => {
     family === 'inland_fishing_worksite');
   assert.ok(fishing);
   assert.equal(fishing.allocation_policy?.status,
-    'pending_p16_actor_activity_data_gap');
+    'pending_runtime_allocation_approval');
   assert.equal(fishing.profile.components.some(({ layer }) => layer === 'work_zone'), true);
   assert.throws(() => phase1AInstance('procedural-scene-v2-missing', bundle,
     currentWorldBaseReferenceSnapshot(), null, pin),

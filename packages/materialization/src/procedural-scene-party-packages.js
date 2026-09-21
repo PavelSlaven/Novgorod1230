@@ -17,7 +17,7 @@ export function compileProceduralScenePartyPackages({ party_id: partyId,
       && text(actor.instance_id)).map((actor) => structuredClone(actor))
       .sort((a, b) => a.instance_id.localeCompare(b.instance_id));
     const allocation = pendingAllocation(catalog.allocation_policy?.payload?.policy,
-      profile, sceneActors);
+      profile, sceneActors, catalog.runtime_item_creation_authorized === true);
     const scene_package_id = deterministicInstanceId(partyId, runId,
       'procedural_scene_package', scene.scene_template_id, scene.g5_id,
       scene.g6_instance_id, scene.position_id);
@@ -51,8 +51,11 @@ function allocationReadiness(profile, allocation) {
   } };
 }
 
-function pendingAllocation(policy, profile, actors) {
+function pendingAllocation(policy, profile, actors, runtimeAuthorized) {
   if (policy?.family_candidate_ref !== profile.family_candidate_ref) return null;
+  if (!runtimeAuthorized) return deepFreeze({
+    status: 'pending_runtime_allocation_approval', policy_id: policy.policy_id,
+    actor_instance_id: null, policy: structuredClone(policy) });
   const applicable = actors.filter((actor) => actorMatchesPolicy(actor,
     policy.applicability));
   if (applicable.length === 0) return deepFreeze({

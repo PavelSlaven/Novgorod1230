@@ -1,0 +1,27 @@
+{
+  "schema": "rus.actor_base_attributes_candidate.v1",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "runtime_authorized": false,
+  "profile": {
+    "schema": "rus.actor_base_attributes_profile.v1",
+    "version": 1,
+    "profile_id": "novgorod_ordinary_actor_base_attributes_v1",
+    "algorithm_version": "actor_base_attributes_v1",
+    "rng_version": "pcg32-v1",
+    "ordinary_array": [13, 12, 11, 10, 9, 8],
+    "occupation_archetype_priorities": [
+      {"mapping_id":"agriculture","occupation_archetype_id":"agriculture","priority":["endurance","strength","attention","dexterity","reason","influence"]},
+      {"mapping_id":"animal_husbandry","occupation_archetype_id":"animal_husbandry","priority":["endurance","attention","strength","influence","dexterity","reason"]},
+      {"mapping_id":"craft_production","occupation_archetype_id":"craft_production","priority":["dexterity","reason","attention","endurance","strength","influence"]},
+      {"mapping_id":"domestic_service","occupation_archetype_id":"domestic_service","priority":["attention","endurance","dexterity","influence","reason","strength"]},
+      {"mapping_id":"fishing_water","occupation_archetype_id":"fishing_water","priority":["strength","endurance","dexterity","attention","reason","influence"]},
+      {"mapping_id":"forest_hunting","occupation_archetype_id":"forest_hunting","priority":["attention","dexterity","endurance","strength","reason","influence"]},
+      {"mapping_id":"illicit_marginal","occupation_archetype_id":"illicit_marginal","priority":["dexterity","attention","influence","reason","endurance","strength"]},
+      {"mapping_id":"military_security","occupation_archetype_id":"military_security","priority":["strength","endurance","attention","dexterity","influence","reason"]},
+      {"mapping_id":"religious_literate","occupation_archetype_id":"religious_literate","priority":["reason","attention","influence","endurance","dexterity","strength"]},
+      {"mapping_id":"trade_exchange","occupation_archetype_id":"trade_exchange","priority":["influence","reason","attention","dexterity","endurance","strength"]},
+      {"mapping_id":"transport_guiding","occupation_archetype_id":"transport_guiding","priority":["endurance","attention","strength","dexterity","reason","influence"]}
+    ]
+  }
+}

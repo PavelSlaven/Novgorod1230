@@ -1,4 +1,5 @@
 import { validateActorBaseAppearance } from '@rus/actors';
+import { validateActorBaseAttributes } from '@rus/materialization';
 import { sha256 } from '@rus/kernel';
 
 export function approvedNpcBodyRows(npcs, partyId, changeSetId) {
@@ -53,6 +54,14 @@ export function assertNewActorAppearance(
   if (!validation.ok) {
     fail('WRITE_PLAN_ACTOR_APPEARANCE_INCOMPLETE',
       `${path} must contain a complete canonical actor appearance: ${validation.errors.join('; ')}`);
+  }
+}
+
+export function assertNewActorBaseAttributes(attributes, path, required = false) {
+  if (attributes == null && !required) return;
+  if (!validateActorBaseAttributes(attributes)) {
+    fail('WRITE_PLAN_ACTOR_ATTRIBUTES_INCOMPLETE',
+      `${path} must contain persisted actor_base_attributes_v1.`);
   }
 }
 

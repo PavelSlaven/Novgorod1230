@@ -57,6 +57,13 @@ const body = { status: 'approved', profile_id: 'ordinary-adult',
   values: { health: 100, energy: 80, satiety: 70 },
   condition_bindings: [] };
 body.record_digest = canonicalDigest(body);
+const actorBaseAttributesProfile = { schema: 'rus.actor_base_attributes_profile.v1',
+  version: 1, profile_id: 'ordinary-worker-v1',
+  algorithm_version: 'actor_base_attributes_v1', rng_version: 'pcg32-v1',
+  ordinary_array: [13, 12, 11, 10, 9, 8], occupation_archetype_priorities: [{
+    mapping_id: 'occupation-a:ordinary', occupation_archetype_id: 'occupation-a',
+    priority: ['strength', 'endurance', 'dexterity', 'attention', 'reason',
+      'influence'] }] };
 const binding = { schema: 'rus.approved_procedural_npc_binding.v1',
   status: 'approved', actor_slot_ref: 'worker:1', role_ref: 'role',
   occupation_ref: 'occupation', profile_level: 'background',
@@ -67,7 +74,9 @@ const binding = { schema: 'rus.approved_procedural_npc_binding.v1',
     source_ref: 'approved_occupations:occupation:daily_schedule_summer',
     value: 'чинит сети' }, body_profile: body,
   profile_candidate_set_digest: 'a'.repeat(64),
-  profile_record_digest: 'b'.repeat(64), initial_equipment_candidates: [] };
+  profile_record_digest: 'b'.repeat(64),
+  actor_base_attributes_profile: actorBaseAttributesProfile,
+  initial_equipment_candidates: [] };
 
 test('approved procedural NPC is deterministic, complete and unnamed', () => {
   const input = { party_id: 'party', run_id: 'run', binding,
@@ -82,6 +91,10 @@ test('approved procedural NPC is deterministic, complete and unnamed', () => {
   assert.equal(left.npc.skill_profile_snapshot.approved_defaults[0].skill_id,
     'fishing');
   assert.equal(left.npc.body.values.health, 100);
+  assert.deepEqual(Object.keys(left.npc.base_attributes.values).sort(),
+    ['attention', 'dexterity', 'endurance', 'influence', 'reason', 'strength']);
+  assert.deepEqual(Object.values(left.npc.base_attributes.values).sort((a, b) => b - a),
+    [13, 12, 11, 10, 9, 8]);
   assert.equal(left.npc.semantic_state.behavior_basis[0].value, 'осторожен');
   assert.equal(left.npc.machine_state.current_activity.summary, 'чинит сети');
   assert.equal(left.npc.schedule_records[0].time_band, 'daylight');

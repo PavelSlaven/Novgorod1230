@@ -358,6 +358,11 @@ export {
 export {
   materializeApprovedActorEquipment
 } from './approved-actor-equipment.js';
+export {
+  ACTOR_BASE_ATTRIBUTE_KEYS,
+  materializeActorBaseAttributes,
+  validateActorBaseAttributes
+} from './actor-base-attributes.js';
 
 function g5TemplateMatchesScope(template, scope = {}, selectedG4TypeId) {
   if (!selectedG4TypeId || template?.g4_type_id !== selectedG4TypeId || !scope.world_revision_id || !scope.region_id || !Number.isInteger(scope.year) || typeof scope.season !== 'string' || !scope.season) return false;

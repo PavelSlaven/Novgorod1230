@@ -2,14 +2,14 @@
   "schema": "rus.gate1_rus13_seed_closure_request.v1",
   "status": "pending_independent_authoring_approval",
   "decision_requested": "approve_exact_seed_derivation_and_transactional_full_closure_readback",
-  "candidate_digest": "d0bd8d777e6781ae6cf5227de2e37ec8bbd5538fd39c7e2ed8fca32a680fd19f",
+  "candidate_digest": "ac832b7130e54bfba67812adac490536b111694ced601c8c283cff1edd9b3ee0",
   "requested_scope": {
     "seed_gzip_sha256": "69833f0a829dd8623dcc128f07f31a6101d2fa502c3b0ba6a6ccd02d22b9e731",
     "seed_sql_sha256": "04d9362307049e9842f34a7c8cf610aa10b1f8c10976fb40ae6976091e68ae97",
     "report_sha256": "915db4168aca53cc55c96f585a1d444e74fedef5c1837776330e9ee5d0008f48",
     "total_row_count": 42577,
     "table_count": 30,
-    "table_closure_digest": "b208cda22003a5c5e488eac38bc10826a8df47537652b6e2982757d786ae8622",
+    "table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434",
     "exact_all_table_readback_required": true,
     "transactional_import_only": true,
     "grants_runtime_activation": false
@@ -23,5 +23,5 @@
     "existing_party_migration_authorized": false,
     "runtime_item_creation_authorized": false
   },
-  "request_digest": "a1f97293353e11d3a27a2565951635d1762b0b480847988668e39942a2fb4d13"
+  "request_digest": "bf7b0d56efb8bd887dc3ea0c5b3bf4885fcb3d2e850d142d261eb5eca8db6fd4"
 }

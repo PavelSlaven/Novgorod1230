@@ -41,250 +41,367 @@
       {
         "table": "class_role_rules",
         "row_count": 29,
-        "payload_sha256": "74f946ae02f78cbdb147614651e96abc7aa1dcb691e9c85b7e2ea97c8bc21d02",
-        "datasets": [
-          "class_role_rules_universal"
+        "payload_sha256": "8767df71300df4c8720d88105ce053b14f1bbcc1cb5722a7a33243e47afb57de",
+        "order_columns": [
+          "social_class_id",
+          "role_archetype_id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "dependency_archetypes",
         "row_count": 14,
-        "payload_sha256": "ea3de1383e51357844341a3c7876911233d207725ea5e6ef0d51f4d9b277af21",
-        "datasets": [
-          "dependency_archetypes_universal"
+        "payload_sha256": "d438a77bb0a32659e252a0faf298046f94f559a1b566918d377f4f7221819348",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "graph_edge_modifiers",
         "row_count": 49,
-        "payload_sha256": "718b651cfb665c350d08767750ecb0378a6f982317c908eebf107ca717b72c93",
-        "datasets": [
-          "graph_edge_modifiers"
+        "payload_sha256": "e0868e9d3fb418f02a54c415a00b2eca835ba9dd611f76bfd22358ab7de09cba",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "graph_edges",
         "row_count": 30248,
-        "payload_sha256": "23f9f1c4ff6410aad81b5ba550002f1e66eb22eb1e33e9198da29e111259fe5e",
-        "datasets": [
-          "graph_edges_novgorod_g1_g4"
+        "payload_sha256": "b68617d8c8129259cfad2181a6a97467904469d29f54e1c3585220d90024d958",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "graph_nodes",
         "row_count": 11359,
-        "payload_sha256": "c4622d0db2bd087cd90ba30a2e68c27cbd6c2bd4d27e16313bd48096179bc8c3",
-        "datasets": [
-          "graph_nodes_novgorod_g1",
-          "graph_nodes_novgorod_g2",
-          "graph_nodes_novgorod_g3",
-          "graph_nodes_novgorod_g4"
+        "payload_sha256": "cd6560d4603f8b049fe08a35a46bcd7177928c1afd7665479aa4703a431dbefb",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "graph_scale_rules",
         "row_count": 6,
-        "payload_sha256": "8a2e53dcaebabfd56ac555d354b3e0bcc0247f014c80eb4720fbc612098c4154",
-        "datasets": [
-          "graph_scale_rules"
+        "payload_sha256": "90db36fee64d1ef921857d8e41b4f19f8e0f939c5973b228e4213cb18b07fd6f",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "historical_anchors",
         "row_count": 28,
-        "payload_sha256": "4cef77eefa919cf10ca8b0fc69c7d9c2dd8a4974803d2c96c4779188cea8bf20",
-        "datasets": [
-          "historical_anchors_novgorod_g1"
+        "payload_sha256": "75c10392c46239f993830f1e52c5be660004de86e43d06cbd9d3440cbcb309e1",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "land_use_templates",
         "row_count": 45,
         "payload_sha256": "ba139f872a4a19a2303368f856fba42d543be35a4ed3f261a7f7fc8ae2ffecfb",
-        "datasets": [
-          "land_use_templates"
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "landscape_templates",
         "row_count": 70,
-        "payload_sha256": "a24c8cc6d7c7986b012435345e80a0e56611f06f2fd044f8e00477021e034c17",
-        "datasets": [
-          "landscape_templates"
+        "payload_sha256": "05fda9d867ae209e1f1c65051236e110c882905bcf419082c0dc0713c294bb82",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "legal_status_archetypes",
         "row_count": 8,
-        "payload_sha256": "69cbc0bed126fa92b9a085a59344ea7c735ab7ad56b0defc4c7db16e3403fdf7",
-        "datasets": [
-          "legal_status_archetypes_universal"
+        "payload_sha256": "dff3d36d022e35d0c03c32407078642f509b0b3b060620778c05ca2a448ad088",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "mobility_archetypes",
         "row_count": 8,
-        "payload_sha256": "7f3a76fefcc14c9cab7754cb98760635b66de348a4cc0ef8dccbff028faa7b44",
-        "datasets": [
-          "mobility_archetypes_universal"
+        "payload_sha256": "626e6bf02db77f3abba4c79cb33a991f8a1030b23ba79f0da52dd82746f60107",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "occupation_archetypes",
         "row_count": 15,
-        "payload_sha256": "7267bbd7fc8276f9a46d4d2a8f1f9f9812c09a51c52387790c307d9c13ef8b18",
-        "datasets": [
-          "occupation_archetypes_universal"
+        "payload_sha256": "8b83584d4aa80eed11891ebef98d49e6f1c3809d800e219daf7907c9fc2930eb",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "occupation_skill_defaults",
         "row_count": 15,
-        "payload_sha256": "041fb9652826d1ad810454b5fce1dc9307f7d108e2936377be6a137068449401",
-        "datasets": [
-          "occupation_skill_defaults_universal"
+        "payload_sha256": "867438a62939bb6703be64ab99b13455b2817c05cf80a19a266c53e6fcd4ac26",
+        "order_columns": [
+          "occupation_archetype_id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "place_templates",
         "row_count": 64,
         "payload_sha256": "e2c786804d8b998935d07e9716388e56ea913ff2af8338c9a6e30d2f47446e9e",
-        "datasets": [
-          "place_templates"
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "region_land_use_templates",
         "row_count": 31,
-        "payload_sha256": "69e19e141b65376c717aadaf0930fe1bca4457460ac7c3e322c0439cf7a815b5",
-        "datasets": [
-          "region_land_use_templates_novgorod"
+        "payload_sha256": "4b88b7685ae105196f0ed9f2c068f834f1e3e32d2f88824e2b03d7405101447d",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "region_landscape_templates",
         "row_count": 34,
-        "payload_sha256": "3f38b4b566006ee8f1ffcaf6bcb3e1e111ae38375a4b358e4a41db4891edc32d",
-        "datasets": [
-          "region_landscape_templates_novgorod"
+        "payload_sha256": "4c1c17ef1e336a3150132796a87b66c4f3c4e3855ba1dcfd45cbf871631ec603",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "region_neighbors",
         "row_count": 6,
         "payload_sha256": "ab61a1acc7bef702c1dc46e45c5a4115b625a60361cf8c5d881243d93b6cf2eb",
-        "datasets": [
-          "region_neighbors_novgorod_from_json"
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "region_occupations",
         "row_count": 68,
-        "payload_sha256": "6b5a543d526249e26fff96f8e7d02ccf55f79f121d7f7716fd79d58e8cf0a501",
-        "datasets": [
-          "region_occupations_novgorod"
+        "payload_sha256": "0acc38a3e0f6dcb4fd0af08412b9288813c5379701ad745ea7b225b9e431f3df",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "region_place_templates",
         "row_count": 39,
-        "payload_sha256": "23d1dcfe60ab2bd0b8fef45801f9709c173f6971954158e3e9dadc8504beae97",
-        "datasets": [
-          "region_place_templates_novgorod"
+        "payload_sha256": "e138993e2438d9ef707527df3b012a6aec0508a7ae6f7c946b073b9c141d3b9e",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "region_social_roles",
         "row_count": 71,
-        "payload_sha256": "e679756df3bf39c2bff89149f340bfc1b6c9db9ca9cf87560382f93de61f58a2",
-        "datasets": [
-          "region_social_roles_novgorod"
+        "payload_sha256": "2ab2adae32d54b12db94d59d895d80395195a21e84a2bdfc77097e3d9b2bdfaa",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "region_water_body_templates",
         "row_count": 24,
-        "payload_sha256": "9f717afe2172cc8da12bbff1791815010914ec00c0a9a591257ffc9ff4036b99",
-        "datasets": [
-          "region_water_body_templates_novgorod"
+        "payload_sha256": "dbd383f1f4103371d33c83a4b5c3453a029c2fe16ae16be108f5dc25da617bd0",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "regions",
         "row_count": 7,
-        "payload_sha256": "a2bd54c857ccfa1e81ea8377e01048f8d4c52f7dc1e93674c95854583bd31d7a",
-        "datasets": [
-          "regions_novgorod_from_profile",
-          "region_neighbors_novgorod_from_json_stubs"
+        "payload_sha256": "648eed7875c2624fed5c98fef217c8e87394d62ff242161e82251753b46ab8d6",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "role_occupation_rules",
         "row_count": 26,
-        "payload_sha256": "fe521b33660e5adcd2e9117633cb5a74d186092c86c5c922b171e65f2e17de3d",
-        "datasets": [
-          "role_occupation_rules_universal"
+        "payload_sha256": "abedce71f022475d7eb25f871d04e474859079ed4ad7d39a8907a314e066df3e",
+        "order_columns": [
+          "role_archetype_id",
+          "occupation_archetype_id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "route_templates",
         "row_count": 21,
-        "payload_sha256": "5f051f0324b497906dd4e47ded3e7974484dd859cfc922fe3e3a6aa94fa08849",
-        "datasets": [
-          "route_templates"
+        "payload_sha256": "7b9095f591c3ad565cca05657055d3273509763e4312fbf0aa780150dea26946",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "skill_catalog",
         "row_count": 12,
-        "payload_sha256": "4a7f3ee7c90f229a9e5ddfa92064a820235f7a5bf4acb36b373dca9eefcfef3a",
-        "datasets": [
-          "skill_catalog_universal"
+        "payload_sha256": "e07d67e2e2bfd25c29352e27c4668602b3da9e3339c4d5f650512b573fd94762",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "social_classes",
         "row_count": 10,
-        "payload_sha256": "d4386bc0a2ca745a7c207e267f0d1ce1b0d539b37cd583d235bce7cd1a0183d2",
-        "datasets": [
-          "social_classes_universal"
+        "payload_sha256": "ce765aae2231968b25647371938301ba7ebb5dfe570f3466223d946232c2bef4",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "social_position_archetypes",
         "row_count": 30,
-        "payload_sha256": "9a590377e819cd1d4e5d2906f26d15e8b2792072e3c50649ec1e78a383dcef80",
-        "datasets": [
-          "social_position_archetypes_universal"
+        "payload_sha256": "ff796286d1aa5e9bc55e1020fa3d28f14cd23242eb5bdf0bf808662cab2d22b3",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "social_role_archetypes",
         "row_count": 16,
-        "payload_sha256": "afd80474fd3f90f21589f49f595182b8845544bde4a14482900580220af3ec89",
-        "datasets": [
-          "social_role_archetypes_universal"
+        "payload_sha256": "9c28f6c63a1bd94a76480d44d7757e7efd624d95b75b92ef7bbb8095ba92ab96",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "source_records",
         "row_count": 183,
-        "payload_sha256": "b99c502a884f01fa10af3701af1f84972d2cf8d2717888a5d3f9681444459341",
-        "datasets": [
-          "source_records_unified",
-          "auto_unresolved_source_stubs"
+        "payload_sha256": "2e98d0585d3e0f59fc2040b8605d7aa34b11c03b167a8e7a92b3cbf72107ac4d",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       },
       {
         "table": "water_body_templates",
         "row_count": 41,
         "payload_sha256": "c59442b1df644366987b856cb9adec1f2baa88d53128d4f9ec01a9c5ba23c2e3",
-        "datasets": [
-          "water_body_templates"
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
         ]
       }
     ],
-    "table_closure_digest": "b208cda22003a5c5e488eac38bc10826a8df47537652b6e2982757d786ae8622"
+    "table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434"
   },
   "authority": {
     "approval_attestation_present": false,
@@ -295,5 +412,5 @@
     "existing_party_migration_authorized": false,
     "runtime_item_creation_authorized": false
   },
-  "candidate_digest": "d0bd8d777e6781ae6cf5227de2e37ec8bbd5538fd39c7e2ed8fca32a680fd19f"
+  "candidate_digest": "ac832b7130e54bfba67812adac490536b111694ced601c8c283cff1edd9b3ee0"
 }

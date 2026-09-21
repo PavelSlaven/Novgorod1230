@@ -11,13 +11,16 @@ import { retrieveApprovedItemProfileCandidates } from '@rus/new-game/stages/stag
 import { enterG4WithMaterialization } from '@rus/turn';
 import { applyRevisionPromotionPlan, buildAllowedG5TemplateSet, buildApprovedItemCatalogSnapshot, digestValue } from '../tools/world-catalog-workflow/src/index.js';
 import { buildPr17Stage3CPromotionPlan } from '../tools/world-catalog-workflow/src/internal/pr17-stage3c.js';
+import { assertCanonicalSeedTableClosure,
+  readCanonicalSeedTableClosure } from
+  '../tools/world-catalog-workflow/src/seed-closure-readback.js';
 import { buildGate1OwnerDataArtifacts,
   validateGate1OwnerDataAuthoringAttestation } from
   './generate-gate1-owner-data-requests.mjs';
 import { buildGate1SourceReconciliationArtifacts,
   validateGate1SourceReconciliationAuthoringAttestation } from
   './generate-gate1-source-reconciliation-request.mjs';
-import { buildGate1SeedClosureArtifacts,
+import { loadGate1SeedClosureArtifacts,
   validateGate1SeedClosureAttestation } from
   './generate-gate1-seed-closure-request.mjs';
 
@@ -40,7 +43,7 @@ const reconciliationAttestation = readJson(resolve(gate1Root,
 validateGate1SourceReconciliationAuthoringAttestation({
   ...reconciliationArtifacts, attestation: reconciliationAttestation
 });
-const seedClosureArtifacts = await buildGate1SeedClosureArtifacts();
+const seedClosureArtifacts = await loadGate1SeedClosureArtifacts();
 const seedClosureAttestationPath = resolve(gate1Root,
   'seed-closure-v1/authoring-approval-attestation.json');
 if (!existsSync(seedClosureAttestationPath)) {
@@ -230,16 +233,11 @@ async function importGate1OwnerData(client, gate1Plan) {
 }
 
 async function assertGate1SeedClosure(client, closure) {
-  let total = 0;
-  for (const expected of closure.table_closure) {
-    const count = (await client.query(`SELECT count(*)::int AS count
-      FROM world_base.${quoteIdentifier(expected.table)}`)).rows[0].count;
-    if (count !== expected.row_count) {
-      throw new Error(`GATE1_SEED_TABLE_READBACK_MISMATCH:${expected.table}`);
-    }
-    total += count;
-  }
-  if (closure.table_count !== closure.table_closure.length
+  const actual = await readCanonicalSeedTableClosure(client,
+    closure.table_closure.map(({ table }) => table));
+  assertCanonicalSeedTableClosure(actual, closure.table_closure);
+  const total = actual.reduce((sum, table) => sum + table.row_count, 0);
+  if (closure.table_count !== actual.length
       || total !== closure.total_row_count) {
     throw new Error('GATE1_SEED_FULL_CLOSURE_READBACK_MISMATCH');
   }

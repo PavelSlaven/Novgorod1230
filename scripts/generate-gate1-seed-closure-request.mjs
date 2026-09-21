@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,7 +41,7 @@ const noAuthority = () => Object.freeze({
   runtime_item_creation_authorized: false
 });
 
-export async function buildGate1SeedClosureArtifacts() {
+export async function buildGate1SeedClosureArtifacts({ tableClosure }) {
   const [ownerArtifacts, ownerAttestation, archiveManifest, report,
     archive, archiveManifestSource, importer, config, seed, reportSource] =
     await Promise.all([
@@ -66,15 +66,16 @@ export async function buildGate1SeedClosureArtifacts() {
   if (!sql.toString('utf8', 0, header.length).startsWith(header)) {
     throw new Error('GATE1_SEED_DERIVATION_NONDETERMINISTIC_HEADER');
   }
-  const tables = Object.entries(report.summary.tables)
-    .map(([table, value]) => Object.freeze({ table, row_count: value.rows,
-      payload_sha256: value.payload_sha256,
-      datasets: Object.freeze([...value.datasets]) }))
-    .sort((left, right) => left.table.localeCompare(right.table));
+  const tables = tableClosure;
+  const expectedTables = Object.keys(report.summary.tables).sort();
   const totalRows = tables.reduce((total, table) => total + table.row_count, 0);
   if (tables.length !== 30 || totalRows !== 42577
       || tables.some(({ payload_sha256: digest }) =>
-        !/^[a-f0-9]{64}$/u.test(digest))) {
+        !/^[a-f0-9]{64}$/u.test(digest))
+      || tables.some(({ table, row_count: rowCount }) =>
+        report.summary.tables[table]?.rows !== rowCount)
+      || canonicalDigest(tables.map(({ table }) => table).sort()) !==
+        canonicalDigest(expectedTables)) {
     throw new Error('GATE1_SEED_DERIVATION_CLOSURE_INVALID');
   }
   const candidateCore = {
@@ -124,6 +125,22 @@ export async function buildGate1SeedClosureArtifacts() {
   return artifacts;
 }
 
+export async function loadGate1SeedClosureArtifacts() {
+  const artifacts = {
+    candidate: await readJson(resolve(outputRoot, 'candidate.json')),
+    request: await readJson(resolve(outputRoot, 'request.json'))
+  };
+  validatePendingGate1SeedClosure(artifacts);
+  const [seed, report] = await Promise.all([
+    fileBinding(paths.seed), fileBinding(paths.report)
+  ]);
+  if (artifacts.candidate.derived_outputs.seed.sha256 !== seed.sha256
+      || artifacts.candidate.derived_outputs.report.sha256 !== report.sha256) {
+    throw new Error('GATE1_SEED_CLOSURE_SOURCE_BINDING_INVALID');
+  }
+  return Object.freeze(artifacts);
+}
+
 export function validatePendingGate1SeedClosure({ candidate, request }) {
   if (candidate.schema !== 'rus.gate1_rus13_seed_closure_candidate.v1'
       || request.schema !== 'rus.gate1_rus13_seed_closure_request.v1'
@@ -132,6 +149,15 @@ export function validatePendingGate1SeedClosure({ candidate, request }) {
       || candidate.derived_outputs.table_count !== 30
       || candidate.derived_outputs.total_row_count !== 42577
       || candidate.derived_outputs.table_closure.length !== 30
+      || canonicalDigest(candidate.derived_outputs.table_closure) !==
+        candidate.derived_outputs.table_closure_digest
+      || candidate.derived_outputs.table_closure.some((table, index, tables) =>
+        !Array.isArray(table.order_columns)
+        || table.order_columns.length === 0
+        || table.table !== [...tables].sort((left, right) =>
+          left.table.localeCompare(right.table))[index].table
+        || table.excluded_mutable_columns.some((column) =>
+          !['created_at', 'updated_at'].includes(column)))
       || request.candidate_digest !== candidate.candidate_digest
       || request.requested_scope.table_closure_digest !==
         candidate.derived_outputs.table_closure_digest
@@ -184,13 +210,5 @@ export function validateGate1SeedClosureAttestation({ candidate, request,
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const artifacts = await buildGate1SeedClosureArtifacts();
-  if (process.argv.includes('--write')) {
-    await mkdir(outputRoot, { recursive: true });
-    await Promise.all(Object.entries(artifacts).map(([name, value]) =>
-      writeFile(resolve(outputRoot, `${name}.json`),
-        `${JSON.stringify(value, null, 2)}\n`)));
-  } else {
-    process.stdout.write(`${JSON.stringify(artifacts, null, 2)}\n`);
-  }
+  throw new Error('GATE1_SEED_PERSISTED_CLOSURE_DATABASE_REQUIRED');
 }

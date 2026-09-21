@@ -3,16 +3,16 @@ import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-import { buildGate1SeedClosureArtifacts,
+import { loadGate1SeedClosureArtifacts,
   validatePendingGate1SeedClosure } from
   '../../../scripts/generate-gate1-seed-closure-request.mjs';
 
 const root = 'data/world-catalogs/novgorod/runtime-catalog/'
   + 'gate1-owner-data-v1/seed-closure-v1';
 
-test('Gate1 deterministic seed derivation reproduces full 30-table closure',
+test('Gate1 pending request validates exact full 30-table closure',
   async () => {
-    const generated = await buildGate1SeedClosureArtifacts();
+    const generated = await loadGate1SeedClosureArtifacts();
     const checkedIn = {
       candidate: JSON.parse(await readFile(`${root}/candidate.json`, 'utf8')),
       request: JSON.parse(await readFile(`${root}/request.json`, 'utf8'))
@@ -23,12 +23,16 @@ test('Gate1 deterministic seed derivation reproduces full 30-table closure',
     assert.equal(generated.candidate.derived_outputs.table_closure.length, 30);
     assert.ok(generated.candidate.derived_outputs.table_closure.every(
       ({ payload_sha256: digest }) => /^[a-f0-9]{64}$/u.test(digest)));
+    assert.ok(generated.candidate.derived_outputs.table_closure.every(
+      ({ order_columns: orderColumns, excluded_mutable_columns: excluded }) =>
+        orderColumns.length > 0 && excluded.every((column) =>
+          ['created_at', 'updated_at'].includes(column))));
     assert.equal(generated.candidate.derivation_inputs
       .deterministic_generated_at, '2026-07-06T00:00:00Z');
   });
 
 test('pending seed closure grants no import or runtime authority', async () => {
-  const artifacts = await buildGate1SeedClosureArtifacts();
+  const artifacts = await loadGate1SeedClosureArtifacts();
   assert.equal(validatePendingGate1SeedClosure(artifacts), true);
   for (const artifact of Object.values(artifacts)) {
     assert.deepEqual(Object.values(artifact.authority),

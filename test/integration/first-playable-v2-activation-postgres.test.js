@@ -15,8 +15,8 @@ import {
   FIRST_PLAYABLE_V3_RELEASE
 } from '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
 import {
-  applyLowerDvinaBoundaryV3ActivationBundle,
-  buildLowerDvinaBoundaryV3ActivationBundle
+  applyLowerDvinaBoundaryV3CurrentSchemaActivationBundle,
+  buildLowerDvinaBoundaryV3CurrentSchemaActivationBundle
 } from '../../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
 import {
   buildProductionCutoverPhaseEvent,
@@ -270,7 +270,7 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
     })
   })).status, 'recorded');
   await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql());
-  const v3Bundle = await buildLowerDvinaBoundaryV3ActivationBundle({
+  const v3Bundle = await buildLowerDvinaBoundaryV3CurrentSchemaActivationBundle({
     worldPool,
     partyPool,
     repositoryRoot: process.cwd(),
@@ -281,7 +281,7 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
     v3Bundle.activation_request.expected_previous_event_id,
     applied.activated.event_id
   );
-  const v3Applied = await applyLowerDvinaBoundaryV3ActivationBundle({
+  const v3Applied = await applyLowerDvinaBoundaryV3CurrentSchemaActivationBundle({
     worldPool,
     partyPool,
     bundle: v3Bundle

@@ -15,6 +15,8 @@ import { createGameHttpServer, listen } from
   '../../apps/game-server/src/http/server.js';
 import { installActivatedRuntimeCatalog } from
   '../../tools/local-play/production-setup.js';
+import { PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED } from
+  '../../tools/local-play/production-setup.js';
 import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
 import { createProductionLlmRoleRunner } from
@@ -57,8 +59,11 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       partyPool,
       worldUrl,
       repositoryRoot,
-      authorizationRef: 'Phase 11 isolated production acceptance'
+      authorizationRef: 'Phase 11 isolated production acceptance',
+      expectedCapabilityGap: PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED
     });
+    assert.equal(activation.proceduralFinal.code,
+      PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED);
     const env = {
       ...process.env,
       ...llm.env,

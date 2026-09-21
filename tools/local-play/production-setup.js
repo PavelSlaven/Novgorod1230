@@ -28,15 +28,17 @@ import { buildCharacterAppearanceV1ImportSql } from
   '../spatial-v3/character-appearance-v1-importer.mjs';
 import { buildS1AuthoringV6ImportSql } from
   '../spatial-v3/s1-authoring-v5-importer.mjs';
-import { installProceduralFinalDevelopmentCatalog } from
-  '../runtime-catalog-activation/src/procedural-final-development-activation.js';
+
+export const PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED =
+  'PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED';
 
 export async function installActivatedRuntimeCatalog({
   worldPool,
   partyPool,
   worldUrl,
   repositoryRoot,
-  authorizationRef = 'Local play current production setup'
+  authorizationRef = 'Local play current production setup',
+  expectedCapabilityGap = null
 }) {
   if (!worldPool?.query || !partyPool?.query) {
     throw new TypeError('worldPool and partyPool must provide query().');
@@ -67,13 +69,22 @@ export async function installActivatedRuntimeCatalog({
   if (lifecycleResult?.pass !== true) {
     throw new Error('Stage 3c lifecycle did not pass.');
   }
-  for (const file of ['18.sql', '19.sql', '20.sql']) {
+  for (const file of ['18.sql', '19.sql', '20.sql', '21.sql']) {
     await worldPool.query(await readFile(
       resolve(repositoryRoot, 'infra/world-base/schema', file),
       'utf8'
     ));
   }
   await worldPool.query(await buildLowerDvinaV2ImportSql({
+    root: repositoryRoot
+  }));
+  await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
+    root: repositoryRoot
+  }));
+  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
+    root: repositoryRoot
+  }));
+  await worldPool.query(await buildS1AuthoringV6ImportSql({
     root: repositoryRoot
   }));
   for (const migration of getSpatialV3TargetMigrationsBeforeCatalogMigration()) {
@@ -99,9 +110,6 @@ export async function installActivatedRuntimeCatalog({
     partyPool,
     bundle: v2Bundle
   });
-  await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
-    root: repositoryRoot
-  }));
   const v3Bundle = await buildLowerDvinaBoundaryV3ActivationBundle({
     worldPool,
     partyPool,
@@ -114,16 +122,6 @@ export async function installActivatedRuntimeCatalog({
     partyPool,
     bundle: v3Bundle
   });
-  await worldPool.query(await readFile(
-    resolve(repositoryRoot, 'infra/world-base/schema/21.sql'),
-    'utf8'
-  ));
-  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
-    root: repositoryRoot
-  }));
-  await worldPool.query(await buildS1AuthoringV6ImportSql({
-    root: repositoryRoot
-  }));
   const v12Bundle = await buildSpatialV3ProductionV12ActivationBundle({
     worldPool,
     partyPool,
@@ -136,11 +134,19 @@ export async function installActivatedRuntimeCatalog({
     partyPool,
     bundle: v12Bundle
   });
-  const proceduralFinal = await installProceduralFinalDevelopmentCatalog({
-    worldPool, partyPool, repositoryRoot, gitCommitSha: commitSha,
-    authorizationRef:
-      `${authorizationRef}:new-development-parties-only`
+  const proceduralFinal = Object.freeze({
+    status: 'data_gap',
+    code: PROCEDURAL_FINAL_SOURCE_RECONCILIATION_REQUIRED,
+    source_record_ids: Object.freeze([
+      'src_novgorod_agriculture',
+      'src_novgorod_promysly'
+    ])
   });
+  if (expectedCapabilityGap !== proceduralFinal.code) {
+    throw Object.assign(new Error(
+      'Procedural final catalog requires approved source reconciliation.'
+    ), { code: proceduralFinal.code, details: proceduralFinal });
+  }
   return Object.freeze({
     pinManifestDigest:
       v12Bundle.compatibility_manifest.compatible_world_pin_manifest_digest,

@@ -15,8 +15,7 @@ export const LOWER_DVINA_BOUNDARY_V3_RELEASE = Object.freeze({
   worldManifestSha256:
     '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea',
   worldSchemaFingerprint:
-    WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
-  worldSchemaMigration: WORLD_RUNTIME_CATALOG_MIGRATION_V3,
+    'e977fdd2e6a7f06fd801b32b23965f35106d057c63989200546f179c6193091d',
   candidateDirectory: 'spatial-v3-production-v3',
   bindingsFile: 'spatial-v3-production-v3-bindings.js',
   bundleSchema: 'rus.lower_dvina_boundary_v3_activation_bundle.v1',
@@ -26,6 +25,13 @@ export const LOWER_DVINA_BOUNDARY_V3_RELEASE = Object.freeze({
   baselineTitle: 'Lower Dvina boundary runtime catalog baseline v3',
   activationBasis:
     'APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1; user authorized deletion of the exact obsolete v2 party before first v3 launch'
+});
+
+export const LOWER_DVINA_BOUNDARY_V3_CURRENT_SCHEMA_RELEASE = Object.freeze({
+  ...LOWER_DVINA_BOUNDARY_V3_RELEASE,
+  worldSchemaFingerprint:
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
+  worldSchemaMigration: WORLD_RUNTIME_CATALOG_MIGRATION_V3
 });
 
 export function buildLowerDvinaBoundaryV3ActivationBundle(options) {
@@ -39,5 +45,19 @@ export function applyLowerDvinaBoundaryV3ActivationBundle(options) {
   return applyFirstPlayableV2ActivationBundle({
     ...options,
     release: LOWER_DVINA_BOUNDARY_V3_RELEASE
+  });
+}
+
+export function buildLowerDvinaBoundaryV3CurrentSchemaActivationBundle(options) {
+  return buildFirstPlayableV2ActivationBundle({
+    ...options,
+    release: LOWER_DVINA_BOUNDARY_V3_CURRENT_SCHEMA_RELEASE
+  });
+}
+
+export function applyLowerDvinaBoundaryV3CurrentSchemaActivationBundle(options) {
+  return applyFirstPlayableV2ActivationBundle({
+    ...options,
+    release: LOWER_DVINA_BOUNDARY_V3_CURRENT_SCHEMA_RELEASE
   });
 }

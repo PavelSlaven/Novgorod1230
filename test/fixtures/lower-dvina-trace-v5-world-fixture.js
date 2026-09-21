@@ -121,17 +121,7 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
     'spatial_v3_scene_materialization_candidates', 'spatial_v3_scene_templates',
     ...Object.keys(closureColumns), 'spatial_v3_scene_endpoint_slots']) {
     for (const row of datasets[table]) {
-      const available = table === 'spatial_v3_nodes'
-        ? ['id', 'version', 'world_revision_id', 'spatial_level',
-          'primary_class_id', 'status', 'canonical_digest']
-        : table === 'spatial_v3_scene_materialization_profiles'
-          ? ['id', 'version', 'world_revision_id', 'source_kind',
-            'source_entity_id', 'source_entity_version', 'status',
-            'canonical_digest']
-          : table === 'spatial_v3_scene_materialization_candidates'
-            ? ['profile_id', 'profile_version', 'scene_template_id',
-              'scene_template_version'] : Object.keys(row);
-      const columns = available.filter((column) => Object.hasOwn(row, column));
+      const columns = Object.keys(row);
       await pool.query(`INSERT INTO world_base.${table} (${columns.join(',')})
         VALUES(${columns.map((_, index) => `$${index + 1}`).join(',')})`,
       columns.map((column) => row[column]));

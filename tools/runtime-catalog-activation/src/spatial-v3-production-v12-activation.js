@@ -2,7 +2,7 @@ import {
   applyFirstPlayableV2ActivationBundle,
   buildFirstPlayableV2ActivationBundle
 } from './first-playable-v2-activation.js';
-import { WORLD_RUNTIME_CATALOG_MIGRATION } from './forward-migrations.js';
+import { WORLD_RUNTIME_CATALOG_MIGRATION_V3 } from './forward-migrations.js';
 
 export const SPATIAL_V3_PRODUCTION_V12_RELEASE = Object.freeze({
   releaseId: 'spatial-v3-production-v12',
@@ -34,7 +34,8 @@ export const SPATIAL_V3_DEVELOPMENT_V13_RELEASE = Object.freeze({
     'world_revision_novgorod_1230_runtime_catalog_baseline_v13_dev_001',
   domainRevision: 'runtime_catalog_lower_dvina_spatial_v3_v13_dev_001',
   worldSchemaFingerprint:
-    WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
+  worldSchemaMigration: WORLD_RUNTIME_CATALOG_MIGRATION_V3,
   bindingsFile: 'spatial-v3-production-v12-bindings.js',
   bundleSchema: 'rus.spatial_v3_development_v13_activation_bundle.v1',
   bundleIdentitySchema:

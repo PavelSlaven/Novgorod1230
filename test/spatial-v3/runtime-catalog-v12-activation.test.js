@@ -36,7 +36,7 @@ test('current disposable schema uses separately versioned development release', 
   assert.equal(SPATIAL_V3_DEVELOPMENT_V13_RELEASE.releaseId,
     'spatial-v3-development-v13');
   assert.equal(SPATIAL_V3_DEVELOPMENT_V13_RELEASE.worldSchemaFingerprint,
-    '150bbcddc46d37273b83cc0bf1ffe16f640c2640766b0b3101af41dcf48cc8ea');
+    '9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6');
   assert.notEqual(SPATIAL_V3_DEVELOPMENT_V13_RELEASE.releaseId,
     SPATIAL_V3_PRODUCTION_V12_RELEASE.releaseId);
 });

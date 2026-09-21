@@ -37,6 +37,7 @@ const closureColumns = Object.freeze({
 });
 const endpointColumns = ['slot_key', 'endpoint_role',
   'required_position_slot_key', 'required_position_instance_ordinal'];
+const runtimeCatalogBootstraps = new WeakMap();
 
 export const lowerDvinaTraceV5World = Object.freeze({
   revision: 'novgorod_spatial_v3_production_v5_candidate_001',
@@ -103,60 +104,6 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
     async ({ table, file }) => [table, await readJson(`${path}/${file}`)]
   )));
   const lineage = await Promise.all(paths.map(readJson));
-  await pool.query('CREATE SCHEMA IF NOT EXISTS world_base');
-  await pool.query(`CREATE TABLE world_base.spatial_v3_world_revisions (
-    id text PRIMARY KEY, parent_revision_id text REFERENCES
-      world_base.spatial_v3_world_revisions(id), catalog_digest text NOT NULL,
-    status text NOT NULL)`);
-  await pool.query(`CREATE TABLE world_base.spatial_v3_scene_templates (
-    id text NOT NULL, version integer NOT NULL, world_revision_id text NOT NULL,
-    regional_template_id text NOT NULL, regional_template_version integer NOT NULL,
-    status text NOT NULL, provenance_ref text NOT NULL, canonical_digest text NOT NULL,
-    PRIMARY KEY(id, version))`);
-  await pool.query(`CREATE TABLE world_base.spatial_v3_nodes (
-    id text NOT NULL, version integer NOT NULL, world_revision_id text NOT NULL,
-    spatial_level text NOT NULL, primary_class_id text NOT NULL, status text NOT NULL,
-    canonical_digest text NOT NULL, PRIMARY KEY(id, version))`);
-  await pool.query(`CREATE TABLE world_base.spatial_v3_node_parents (
-    child_id text NOT NULL, child_version integer NOT NULL, parent_id text NOT NULL,
-    parent_version integer NOT NULL, world_revision_id text NOT NULL)`);
-  await pool.query(`CREATE TABLE world_base.spatial_v3_scene_materialization_profiles (
-    id text NOT NULL, version integer NOT NULL, world_revision_id text NOT NULL,
-    source_kind text NOT NULL, source_entity_id text NOT NULL,
-    source_entity_version integer NOT NULL, status text NOT NULL,
-    canonical_digest text NOT NULL, PRIMARY KEY(id, version))`);
-  await pool.query(`CREATE TABLE world_base.spatial_v3_scene_materialization_candidates (
-    profile_id text NOT NULL, profile_version integer NOT NULL,
-    scene_template_id text NOT NULL, scene_template_version integer NOT NULL)`);
-  for (const [table, columns] of Object.entries(closureColumns)) {
-    await pool.query(`CREATE TABLE world_base.${table} (
-      scene_template_id text NOT NULL, scene_template_version integer NOT NULL,
-      ${columns.map((column) => `${column} text`).join(', ')},
-      instance_count text, enclosing_structure_slot_key text,
-      stable_asymmetry_evidence_ref text)`);
-  }
-  await pool.query(`CREATE TABLE world_base.spatial_v3_scene_endpoint_slots (
-    scene_template_id text NOT NULL, scene_template_version integer NOT NULL,
-    ${endpointColumns.map((column) => `${column} text`).join(', ')})`);
-  await pool.query(`ALTER TABLE world_base.spatial_v3_scene_position_templates
-    ALTER COLUMN capacity TYPE integer USING capacity::integer`);
-  for (const table of ['spatial_v3_scene_movement_edge_templates']) {
-    for (const column of ['transition_environment_profile_version',
-      'movement_orientation_profile_version', 'action_units',
-      'movement_method_cost_profile_version', 'base_minutes',
-      'dynamic_recheck_policy_version', 'capacity', 'portal_template_version',
-      'availability_condition_set_version']) {
-      await pool.query(`ALTER TABLE world_base.${table} ALTER COLUMN ${column}
-        TYPE integer USING NULLIF(${column}, '')::integer`);
-    }
-  }
-  for (const table of ['spatial_v3_visibility_link_templates']) {
-    for (const column of ['portal_template_version',
-      'condition_profile_version']) {
-      await pool.query(`ALTER TABLE world_base.${table} ALTER COLUMN ${column}
-        TYPE integer USING NULLIF(${column}, '')::integer`);
-    }
-  }
   await pool.query(`INSERT INTO world_base.spatial_v3_world_revisions
     (id,parent_revision_id,catalog_digest,status) VALUES($1,NULL,$2,'approved')`,
   ['novgorod_spatial_v3_target_contract_approval_001',
@@ -211,19 +158,31 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
 }
 
 async function ensureRuntimeCatalogSchema(pool) {
-  const present = (await pool.query(
-    "SELECT to_regclass('world_base.domain_catalog_revisions') IS NOT NULL AS present"
-  )).rows[0]?.present === true;
-  if (!present) {
-    for (let part = 1; part <= 20; part += 1) {
-      await pool.query(await readFile(
-        `infra/world-base/schema/${String(part).padStart(2, '0')}.sql`,
-        'utf8'
-      ));
+  const pending = runtimeCatalogBootstraps.get(pool);
+  if (pending) return pending;
+  const bootstrap = (async () => {
+    const state = (await pool.query(`SELECT
+      to_regclass('world_base.domain_catalog_revisions') IS NOT NULL AS catalog,
+      to_regclass('world_base.spatial_v3_world_revisions') IS NOT NULL AS spatial`
+    )).rows[0];
+    if (!state.catalog && !state.spatial) {
+      for (let part = 1; part <= 20; part += 1) {
+        await pool.query(await readFile(
+          `infra/world-base/schema/${String(part).padStart(2, '0')}.sql`,
+          'utf8'
+        ));
+      }
+      await pool.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
     }
-    await pool.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
+    await runWorldRuntimeCatalogMigration(pool);
+  })();
+  runtimeCatalogBootstraps.set(pool, bootstrap);
+  try {
+    return await bootstrap;
+  } catch (error) {
+    runtimeCatalogBootstraps.delete(pool);
+    throw error;
   }
-  await runWorldRuntimeCatalogMigration(pool);
 }
 
 export async function installLowerDvinaTraceV5World(pool) {

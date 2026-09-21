@@ -51,6 +51,7 @@ const FIRST_PLAYABLE_V2_RELEASE = Object.freeze({
     'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
   worldSchemaFingerprint:
     WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+  worldSchemaMigration: WORLD_RUNTIME_CATALOG_MIGRATION,
   candidateDirectory: 'spatial-v3-production-v2',
   bindingsFile: 'spatial-v3-production-v2-bindings.js',
   bundleSchema: 'rus.first_playable_v2_activation_bundle.v1',
@@ -67,8 +68,7 @@ export const FIRST_PLAYABLE_V3_RELEASE = Object.freeze({
   releaseId: 'spatial-v3-first-playable-v3',
   worldSchemaFingerprint:
     WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
-  worldSchemaMigrationDigest:
-    WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_digest
+  worldSchemaMigration: WORLD_RUNTIME_CATALOG_MIGRATION_V3
 });
 
 /**
@@ -320,8 +320,8 @@ export async function buildFirstPlayableV2ActivationBundle({
         promotionManifest.promotion_manifest_digest,
       approval_request_digest: approvalRequest.approval_request_digest,
       approval_attestation_digest: overlayAttestation.attestation_digest,
-      schema_migration_digest: release.worldSchemaMigrationDigest
-        ?? WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
+      schema_migration_digest: (release.worldSchemaMigration
+        ?? WORLD_RUNTIME_CATALOG_MIGRATION).migration_digest
     },
     tables,
     records,
@@ -541,12 +541,24 @@ async function readPromotedMembership({
 }
 
 async function assertExactMigrationTargets({ worldPool, partyPool, release }) {
-  const [world, party] = await Promise.all([
+  const worldMigration = release.worldSchemaMigration
+    ?? WORLD_RUNTIME_CATALOG_MIGRATION;
+  const [world, party, ledger] = await Promise.all([
     readPostgresSchemaFingerprint(worldPool, 'world_base'),
-    readPostgresSchemaFingerprint(partyPool, 'party_runtime')
+    readPostgresSchemaFingerprint(partyPool, 'party_runtime'),
+    worldPool.query(
+      `SELECT migration_id,migration_digest,source_schema_fingerprint,
+              target_schema_fingerprint
+         FROM world_base.schema_migrations WHERE migration_id=$1`,
+      [worldMigration.migration_id]
+    )
   ]);
   if (world !== release.worldSchemaFingerprint
-      || party !== PARTY_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint) {
+      || party !== PARTY_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint
+      || ledger.rows.length !== 1
+      || !['migration_id', 'migration_digest', 'source_schema_fingerprint',
+        'target_schema_fingerprint'].every((field) =>
+        ledger.rows[0][field] === worldMigration[field])) {
     fail(
       'FIRST_PLAYABLE_ACTIVATION_SCHEMA_MISMATCH',
       'Exact runtime-catalog forward migrations must be applied first.',

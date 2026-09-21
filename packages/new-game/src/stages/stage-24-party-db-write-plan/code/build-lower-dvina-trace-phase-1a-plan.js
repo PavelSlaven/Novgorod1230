@@ -47,6 +47,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   }];
   assertPartyRuntimeCatalogPins(party_creation_context);
   assertMaterializationRuntimeCatalogPins({ trace: result.trace, pins, domainPin });
+  const proceduralScenePackages = validatedProceduralPackages(result.trace,
+    result.procedural_scene_packages);
   const runRecord = {
     party_id: partyId,
     run_id: runId,
@@ -64,7 +66,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     idempotency_key: result.request_identity.idempotency_key,
     status: 'committed',
     validation_report: { materialization: result.validation_report, semantic: semantic_validation },
-    trace: result.trace,
+    trace: { ...result.trace, ...(proceduralScenePackages == null ? {} : {
+      procedural_scene_packages: proceduralScenePackages }) },
     created_refs: [
       { domain: 'player_character', instance_id: playerId },
       { domain: 'g5_node', instance_id: result.immediate.spatial.node.instance_id },
@@ -450,6 +453,24 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     self_audit: { pass: true, concerns: [], evidence: ['Phase 1A plan is code-owned, atomic, internal and contains no player-visible write.'] }
   };
   return plan;
+}
+
+function validatedProceduralPackages(trace, packages) {
+  if (packages == null) return null;
+  if (trace.catalog_digest !== '6fcf5c50d01bd56605a037de3d79cd1aa5e56a1c520db70bd0ab5b6ade6b1361'
+      || packages.schema !== 'rus.procedural_scene_party_packages.v1'
+      || !Array.isArray(packages.packages) || packages.packages.length === 0
+      || packages.pin?.catalog_digest !== trace.catalog_digest
+      || packages.digest !== computeStage24ArtifactDigest(packages.packages)
+      || packages.packages.some((entry) => entry.run_id !== trace.run_id
+        || entry.pin?.catalog_digest !== trace.catalog_digest
+        || entry.scene_package_digest !== computeStage24ArtifactDigest({
+          ...entry, scene_package_digest: undefined }))) {
+    const error = new Error('PROCEDURAL_SCENE_PACKAGES_INVALID');
+    error.code = 'PROCEDURAL_SCENE_PACKAGES_INVALID';
+    throw error;
+  }
+  return structuredClone(packages);
 }
 function addBatch(batches, table, records, dependencies, sourceTrace) {
   if (records.length === 0) return;

@@ -296,6 +296,27 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       });
     },
 
+    async loadPlayerSafeScenePackages(partyId) {
+      const state = await this.loadInternal(partyId);
+      const source = state?.materialization_trace?.procedural_scene_packages;
+      if (source == null) return Object.freeze([]);
+      if (source.schema !== 'rus.procedural_scene_party_packages.v1'
+          || !Array.isArray(source.packages)) {
+        throw Object.assign(new Error('PROCEDURAL_SCENE_PACKAGES_TAMPERED'), {
+          code: 'PROCEDURAL_SCENE_PACKAGES_TAMPERED' });
+      }
+      return deepFreeze(source.packages.map(({ scene_package_id: id, family,
+        g5_node_id: g5, g6_instance_id: g6, position_id: position, profile,
+        allocation_policy: allocation }) => ({ scene_package_id: id, family,
+        g5_node_id: g5, g6_instance_id: g6, position_id: position,
+        environment_facets: profile?.components?.filter((entry) =>
+          ['surface', 'relief', 'vegetation', 'environment', 'water',
+            'place_function', 'work_zone'].includes(entry.layer)),
+        functional_groups: profile?.components?.filter((entry) =>
+          ['tool', 'storage', 'work_material'].includes(entry.layer)),
+        allocation_status: allocation?.status ?? null })));
+    },
+
     async loadIdempotency(idempotencyKey) {
       return one('SELECT idempotency_key,request_id,payload_hash,physical_plan_digest,status,committed_result FROM party_runtime.commit_idempotency WHERE idempotency_key=$1', [idempotencyKey]);
     }

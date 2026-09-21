@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
+import { canonicalStringify } from '@rus/runtime-catalog';
 import { ACTOR_BASE_ATTRIBUTES_OWNER_REGISTRY_DIGEST,
   ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT_DIGEST } from
   '@rus/runtime-catalog/runtime-contract';

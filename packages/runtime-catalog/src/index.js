@@ -27,7 +27,8 @@ import {
   RuntimeCatalogError
 } from './shared.js';
 
-export { loadApprovedActorProfileCatalog, RuntimeCatalogError };
+export { canonicalStringify, loadApprovedActorProfileCatalog,
+  RuntimeCatalogError };
 export { loadApprovedProceduralActorTemporalBundle,
   loadApprovedProceduralCompiledCatalog,
   loadApprovedProceduralSceneRecordBundle } from

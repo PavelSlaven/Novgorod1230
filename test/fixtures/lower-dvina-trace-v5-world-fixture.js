@@ -15,6 +15,16 @@ const lineagePaths = [
 ];
 const sourceRecordPaths = [2, 3, 4, 5, 6].map((version) =>
   `${root}/spatial-v3-production-v${version}/datasets/source_records.json`);
+const categoryPaths = [2, 3, 4, 5, 6].map((version) =>
+  `${root}/spatial-v3-production-v${version}/datasets/universal_categories.json`);
+const regionalBasisPath =
+  `${root}/spatial-v3-production-v3/datasets/spatial_v3_regional_scene_template_bases.json`;
+const regionalBasisAuthoringPath =
+  `${root}/spatial-v3-production-v3/datasets/spatial_v3_authoring_versions.json`;
+const selectionRulePath =
+  `${root}/spatial-v3-production-v3/datasets/spatial_v3_scene_selection_rules.json`;
+const applicabilityRulePath =
+  `${root}/spatial-v3-production-v3/datasets/spatial_v3_scene_applicability_rules.json`;
 const closureColumns = Object.freeze({
   spatial_v3_g6_template_slots: ['scene_slot_key', 'physical_class_id',
     'primary_scene_role_id', 'vertical_context_id', 'overhead_cover_id',
@@ -94,7 +104,9 @@ const pick = (row, columns) => Object.fromEntries(
 );
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
 
-async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: paths }) {
+async function installLowerDvinaTraceWorld(pool, {
+  path, world, lineagePaths: paths, categoryPathCount
+}) {
   await ensureRuntimeCatalogSchema(pool);
   const manifest = await readJson(`${path}/manifest.json`);
   assert.deepEqual({ revision: manifest.world_revision_id,
@@ -105,27 +117,58 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
   const datasets = Object.fromEntries(await Promise.all(manifest.datasets.map(
     async ({ table, file }) => [table, await readJson(`${path}/${file}`)]
   )));
-  const [lineage, sourceRecordSets] = await Promise.all([
+  const [lineage, sourceRecordSets, categorySets, regionalBases,
+    regionalBasisAuthoring, selectionRules, applicabilityRules] = await Promise.all([
     Promise.all(paths.map(readJson)),
-    Promise.all(sourceRecordPaths.map(readJson))
+    Promise.all(sourceRecordPaths.map(readJson)),
+    Promise.all(categoryPaths.slice(0, categoryPathCount).map(readJson)),
+    readJson(regionalBasisPath),
+    readJson(regionalBasisAuthoringPath),
+    readJson(selectionRulePath),
+    readJson(applicabilityRulePath)
   ]);
   const sourceRecords = [...new Map(sourceRecordSets.flat()
     .map((record) => [record.id, record])).values()];
-  for (const record of sourceRecords) await insert(pool,
-    'source_records', record);
-  for (const revision of [...lineage.flat(),
-    ...datasets.spatial_v3_world_revisions]) await insert(pool,
-    'spatial_v3_world_revisions', revision);
-  for (const table of ['spatial_v3_nodes', 'spatial_v3_node_parents',
-    'spatial_v3_scene_materialization_profiles',
-    'spatial_v3_scene_materialization_candidates', 'spatial_v3_scene_templates',
-    ...Object.keys(closureColumns), 'spatial_v3_scene_endpoint_slots']) {
-    for (const row of datasets[table]) {
-      const columns = Object.keys(row);
-      await pool.query(`INSERT INTO world_base.${table} (${columns.join(',')})
-        VALUES(${columns.map((_, index) => `$${index + 1}`).join(',')})`,
-      columns.map((column) => row[column]));
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    for (const record of sourceRecords) await insert(client,
+      'source_records', record);
+    for (const revision of [...lineage.flat(),
+      ...datasets.spatial_v3_world_revisions]) await insert(client,
+      'spatial_v3_world_revisions', revision);
+    for (const category of categorySets.flat()) await insert(client,
+      'universal_categories', category);
+    for (const version of regionalBasisAuthoring.filter(({ entity_kind }) =>
+      ['regional_scene_template_basis', 'scene_selection_rule',
+        'scene_applicability_rule']
+        .includes(entity_kind))) await insert(client,
+      'spatial_v3_authoring_versions', version);
+    for (const basis of regionalBases) await insert(client,
+      'spatial_v3_regional_scene_template_bases', basis);
+    for (const rule of selectionRules) await insert(client,
+      'spatial_v3_scene_selection_rules', rule);
+    for (const rule of applicabilityRules) await insert(client,
+      'spatial_v3_scene_applicability_rules', rule);
+    for (const table of ['spatial_v3_authoring_versions', 'spatial_v3_nodes',
+      'spatial_v3_node_classes', 'spatial_v3_node_parents',
+      'spatial_v3_g1_grid_cells', 'spatial_v3_scene_templates',
+      'spatial_v3_scene_materialization_profiles',
+      'spatial_v3_scene_materialization_candidates',
+      ...Object.keys(closureColumns), 'spatial_v3_scene_endpoint_slots']) {
+      for (const row of datasets[table]) {
+        const columns = Object.keys(row);
+        await client.query(`INSERT INTO world_base.${table} (${columns.join(',')})
+          VALUES(${columns.map((_, index) => `$${index + 1}`).join(',')})`,
+        columns.map((column) => row[column]));
+      }
     }
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally {
+    client.release();
   }
   const reader = createSpatialV3WorldBaseReader({ query: (sql, params) => pool.query(sql, params) });
   for (const scene of datasets.spatial_v3_scene_templates) {
@@ -136,7 +179,9 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
       'world_revision_id', 'regional_template_id', 'regional_template_version',
       'status', 'canonical_digest']));
     const rows = (table) => datasets[table].filter(({ scene_template_id }) =>
-      scene_template_id === scene.id).map((row) => pick(row, closureColumns[table]));
+      scene_template_id === scene.id).map((row) => pick(row, closureColumns[table]))
+      .sort((left, right) => String(left[closureColumns[table][0]])
+        .localeCompare(String(right[closureColumns[table][0]])));
     assert.deepEqual({ g6_slots: closure.value.g6_slots,
       position_slots: closure.value.position_slots,
       movement_edges: closure.value.movement_edges,
@@ -158,9 +203,13 @@ async function insert(pool, table, row) {
     columns.map((column) => row[column])
   );
   if (inserted.rowCount === 1) return;
+  const keyColumns = table === 'spatial_v3_authoring_versions'
+    ? ['entity_kind', 'entity_id', 'version'] : ['id'];
   const existing = (await pool.query(
     `SELECT to_jsonb(row) AS value FROM world_base.${table} AS row
-      WHERE id=$1`, [row.id]
+      WHERE ${keyColumns.map((column, index) =>
+        `${column}=$${index + 1}`).join(' AND ')}`,
+    keyColumns.map((column) => row[column])
   )).rows;
   if (existing.length !== 1 || columns.some((column) =>
     JSON.stringify(existing[0].value[column]) !== JSON.stringify(row[column]))) {
@@ -200,7 +249,8 @@ export async function installLowerDvinaTraceV5World(pool) {
   return installLowerDvinaTraceWorld(pool, {
     path: v5Path,
     world: lowerDvinaTraceV5World,
-    lineagePaths
+    lineagePaths,
+    categoryPathCount: 4
   });
 }
 
@@ -208,6 +258,7 @@ export async function installLowerDvinaTraceV6World(pool) {
   return installLowerDvinaTraceWorld(pool, {
     path: v6Path,
     world: lowerDvinaTraceV6World,
-    lineagePaths
+    lineagePaths,
+    categoryPathCount: 5
   });
 }

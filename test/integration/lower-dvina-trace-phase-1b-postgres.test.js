@@ -151,7 +151,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     const started = docker([
       'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only',
-      '-e', 'POSTGRES_USER=phase1b',
+      '-e', 'POSTGRES_USER=postgres',
       '-e', 'POSTGRES_DB=pr17_phase1b',
       'postgres:16-alpine'
     ]);
@@ -161,8 +161,8 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     const port = Number(
       docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
     );
-    databaseUrl = `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b`;
-    worldDatabaseUrl = `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b_world`;
+    databaseUrl = `postgresql://postgres:local_only@127.0.0.1:${port}/pr17_phase1b`;
+    worldDatabaseUrl = `postgresql://postgres:local_only@127.0.0.1:${port}/pr17_phase1b_world`;
   } else {
     managedRoot = await mkdtemp(join(tmpdir(), 'novgorod-m2a-postgres-'));
     managed = await ensureLocalPostgres({ dataRoot: managedRoot,
@@ -1105,7 +1105,7 @@ async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 50; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 300));
     if (docker([
-      'exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'phase1b', '-d', 'pr17_phase1b'
+      'exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'postgres', '-d', 'pr17_phase1b'
     ]).status === 0) return;
   }
   assert.fail('PostgreSQL container did not become ready');

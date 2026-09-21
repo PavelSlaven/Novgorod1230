@@ -44,13 +44,28 @@ export function buildPr17Stage3CApprovalRequest({ candidate_manifest: manifest, 
   return freeze({ status: errors.length ? 'blocked' : 'ready_for_human_confirmation', errors, request });
 }
 
-export function buildPr17Stage3CPromotionPlan({ approval_request: approvalRequest, approval_attestation: attestation, candidate_manifest: manifest, editorial_readiness_report: readiness, g4_coverage_report: coverage, compilation_report: compilation, template_ids: templateIds = [], target_revision: targetRevision, ...input } = {}) {
+export function buildPr17Stage3CPromotionPlan({ approval_request: approvalRequest, approval_attestation: attestation, original_approval_request: originalApprovalRequest = null, approval_amendment_attestation: amendment = null, candidate_manifest: manifest, editorial_readiness_report: readiness, g4_coverage_report: coverage, compilation_report: compilation, template_ids: templateIds = [], target_revision: targetRevision, ...input } = {}) {
   const expected = buildPr17Stage3CApprovalRequest({ candidate_manifest: manifest, records_by_table: input.source_records_by_table, editorial_readiness_report: readiness, g4_coverage_report: coverage, compilation_report: compilation, template_ids: templateIds, target_revision: targetRevision });
   const errors = [...expected.errors];
   if (approvalRequest?.request_digest !== expected.request.request_digest || digestValue((({ request_digest, ...core }) => core)(approvalRequest ?? {})) !== approvalRequest?.request_digest) errors.push(problem('PR17_APPROVAL_REQUEST_DIGEST_MISMATCH', 'The approval request must match the exact verified candidate.'));
+  const amended = attestation?.candidate_digest !== manifest?.candidate_digest;
+  const approvalChainValid = amended
+    ? originalApprovalRequest?.request_digest === attestation?.request_digest
+      && originalApprovalRequest?.candidate_digest === attestation?.candidate_digest
+      && digestValue((({ request_digest, ...core }) => core)(originalApprovalRequest ?? {})) === originalApprovalRequest?.request_digest
+      && amendment?.schema === 'rus.gate1_stage3c_source_reconciliation_authoring_approval_attestation.v1'
+      && amendment?.status === 'approved_authoring_and_transactional_import_readback'
+      && amendment?.original_stage3c_candidate_digest === attestation?.candidate_digest
+      && amendment?.amended_stage3c_candidate_digest === manifest?.candidate_digest
+      && amendment?.amended_stage3c_approval_request_digest === expected.request.request_digest
+      && amendment?.original_stage3c_attestation_transfer_authorized === false
+      && amendment?.authority?.authoring_reconciliation_authorized === true
+      && amendment?.authority?.import_authorized === true
+      && amendment?.authority?.activation_authorized === false
+      && amendment?.authority?.runtime_item_creation_authorized === false
+    : attestation?.request_digest === expected.request.request_digest;
   if (attestation?.decision !== 'approve_all_120'
-    || attestation?.request_digest !== expected.request.request_digest
-    || attestation?.candidate_digest !== manifest?.candidate_digest
+    || !approvalChainValid
     || attestation?.readiness_report_digest !== readiness?.report_digest
     || attestation?.activation_authorized !== false
     || !attestation?.approved_by
@@ -60,12 +75,14 @@ export function buildPr17Stage3CPromotionPlan({ approval_request: approvalReques
     ...input,
     required_template_ids: templateIds,
     editorial_readiness_report: readiness,
-    approval_attestation: attestation,
+    approval_attestation: amended
+      ? { ...attestation, candidate_digest: manifest.candidate_digest }
+      : attestation,
     candidate_digest: manifest.candidate_digest,
     target_revision: targetRevision,
     graph_node_status_transitions: compilation.graph_node_status_transitions
   });
-  return freeze({ ...plan, approval_request_digest: expected.request.request_digest, approval_attestation_digest: digestValue(attestation), candidate_digest: manifest.candidate_digest });
+  return freeze({ ...plan, approval_request_digest: expected.request.request_digest, approval_attestation_digest: digestValue(attestation), approval_amendment_attestation_digest: amendment ? digestValue(amendment) : null, candidate_digest: manifest.candidate_digest });
 }
 
 function normalizeTransition(value) {

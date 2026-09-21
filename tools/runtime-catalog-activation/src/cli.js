@@ -18,6 +18,8 @@ import {
   buildWorldRuntimeCatalogMigrationPreflight,
   WORLD_LEGACY_SCHEMA_BRIDGE,
   WORLD_RUNTIME_CATALOG_MIGRATION,
+  WORLD_LEGACY_SCHEMA_BRIDGE_V2,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3,
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
 } from './forward-migrations.js';
@@ -165,9 +167,13 @@ async function migrationPreflight({ worldPool, partyPool }) {
   const world = requiredPool(worldPool, 'world');
   const worldFingerprint = await readPostgresSchemaFingerprint(world, 'world_base');
   const worldLedger = await readMigrationLedger(world, WORLD_RUNTIME_CATALOG_MIGRATION);
+  const worldSuccessorLedger = await readMigrationLedger(
+    world, WORLD_RUNTIME_CATALOG_MIGRATION_V3
+  );
   const worldPreflight = buildWorldRuntimeCatalogMigrationPreflight({
     actualSchemaFingerprint: worldFingerprint,
-    ledgerRow: worldLedger
+    ledgerRow: worldLedger,
+    successorLedgerRow: worldSuccessorLedger
   });
 
   const party = requiredPool(partyPool, 'party');
@@ -247,6 +253,8 @@ function assertExpectedRequestDigest(mode, input, expected) {
       migrations: [
         WORLD_LEGACY_SCHEMA_BRIDGE.migration_digest,
         WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest,
+        WORLD_LEGACY_SCHEMA_BRIDGE_V2.migration_digest,
+        WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_digest,
         PARTY_RUNTIME_CATALOG_MIGRATION.migration_digest
       ]
     })

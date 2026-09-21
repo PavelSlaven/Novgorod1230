@@ -41,6 +41,24 @@ export const WORLD_RUNTIME_CATALOG_MIGRATION = createForwardMigration({
   sql: WORLD_SQL
 });
 
+// Current SQL remains versioned separately; v1/v2 identity is reserved for
+// an already-recorded historical ledger row.
+export const WORLD_LEGACY_SCHEMA_BRIDGE_V2 = createForwardMigration({
+  migrationId: 'world_legacy_062_to_canonical_v2',
+  schemaName: 'world_base',
+  sourceSchemaFingerprint: '869021eded07633eec27048a102600385248e5a8e5f8dd499943d404e17fad8f',
+  targetSchemaFingerprint: '9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080',
+  sql: LEGACY_WORLD_BRIDGE_SQL
+});
+
+export const WORLD_RUNTIME_CATALOG_MIGRATION_V3 = createForwardMigration({
+  migrationId: 'world_runtime_catalog_activation_v3',
+  schemaName: 'world_base',
+  sourceSchemaFingerprint: '9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080',
+  targetSchemaFingerprint: '9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6',
+  sql: WORLD_SQL
+});
+
 export const PARTY_RUNTIME_CATALOG_MIGRATION = createForwardMigration({
   migrationId: 'party_runtime_catalog_pins_v2',
   schemaName: 'party_runtime',
@@ -51,23 +69,45 @@ export const PARTY_RUNTIME_CATALOG_MIGRATION = createForwardMigration({
 
 export function buildWorldRuntimeCatalogMigrationPreflight({
   actualSchemaFingerprint,
-  ledgerRow
+  ledgerRow,
+  successorLedgerRow = null
 }) {
-  const bridgeState = actualSchemaFingerprint === WORLD_LEGACY_SCHEMA_BRIDGE.source_schema_fingerprint
+  if (actualSchemaFingerprint
+      === WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint
+      && ledgerRow) {
+    const runtimeState = classifyForwardMigrationState({
+      migration: WORLD_RUNTIME_CATALOG_MIGRATION,
+      actualSchemaFingerprint,
+      ledgerRow
+    }).status;
+    return Object.freeze({
+      status: runtimeState === 'already_applied' ? 'ready' : 'blocked',
+      checks: Object.freeze([Object.freeze({
+        migration_id: WORLD_RUNTIME_CATALOG_MIGRATION.migration_id,
+        migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest,
+        actual_schema_fingerprint: actualSchemaFingerprint,
+        target_schema_fingerprint:
+          WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+        state: runtimeState
+      })])
+    });
+  }
+  const bridgeState = actualSchemaFingerprint === WORLD_LEGACY_SCHEMA_BRIDGE_V2.source_schema_fingerprint
     ? 'ready'
-    : actualSchemaFingerprint === WORLD_LEGACY_SCHEMA_BRIDGE.target_schema_fingerprint
-      || actualSchemaFingerprint === WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint
+    : actualSchemaFingerprint === WORLD_LEGACY_SCHEMA_BRIDGE_V2.target_schema_fingerprint
+      || actualSchemaFingerprint
+        === WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint
       ? 'already_applied'
       : 'MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN';
   let runtimeState;
-  if (actualSchemaFingerprint === WORLD_LEGACY_SCHEMA_BRIDGE.source_schema_fingerprint) {
+  if (actualSchemaFingerprint === WORLD_LEGACY_SCHEMA_BRIDGE_V2.source_schema_fingerprint) {
     runtimeState = 'ready_after_prerequisite';
   } else {
     try {
       runtimeState = classifyForwardMigrationState({
-        migration: WORLD_RUNTIME_CATALOG_MIGRATION,
+        migration: WORLD_RUNTIME_CATALOG_MIGRATION_V3,
         actualSchemaFingerprint,
-        ledgerRow
+        ledgerRow: successorLedgerRow
       }).status;
     } catch (error) {
       runtimeState = error.code;
@@ -75,17 +115,19 @@ export function buildWorldRuntimeCatalogMigrationPreflight({
   }
   const checks = [
     {
-      migration_id: WORLD_LEGACY_SCHEMA_BRIDGE.migration_id,
-      migration_digest: WORLD_LEGACY_SCHEMA_BRIDGE.migration_digest,
+      migration_id: WORLD_LEGACY_SCHEMA_BRIDGE_V2.migration_id,
+      migration_digest: WORLD_LEGACY_SCHEMA_BRIDGE_V2.migration_digest,
       actual_schema_fingerprint: actualSchemaFingerprint,
-      target_schema_fingerprint: WORLD_LEGACY_SCHEMA_BRIDGE.target_schema_fingerprint,
+      target_schema_fingerprint:
+        WORLD_LEGACY_SCHEMA_BRIDGE_V2.target_schema_fingerprint,
       state: bridgeState
     },
     {
-      migration_id: WORLD_RUNTIME_CATALOG_MIGRATION.migration_id,
-      migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest,
+      migration_id: WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_id,
+      migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_digest,
       actual_schema_fingerprint: actualSchemaFingerprint,
-      target_schema_fingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+      target_schema_fingerprint:
+        WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
       state: runtimeState
     }
   ];
@@ -99,11 +141,20 @@ export function buildWorldRuntimeCatalogMigrationPreflight({
 }
 
 export async function runWorldRuntimeCatalogMigration(pool) {
-  return runForwardMigration({
-    pool,
-    migration: WORLD_RUNTIME_CATALOG_MIGRATION,
-    sourceBridge: WORLD_LEGACY_SCHEMA_BRIDGE
-  });
+  try {
+    return await runForwardMigration({
+      pool,
+      migration: WORLD_RUNTIME_CATALOG_MIGRATION_V3,
+      sourceBridge: WORLD_LEGACY_SCHEMA_BRIDGE_V2
+    });
+  } catch (error) {
+    if (error?.code !== 'MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN') throw error;
+    return runForwardMigration({
+      pool,
+      migration: WORLD_RUNTIME_CATALOG_MIGRATION,
+      sourceBridge: WORLD_LEGACY_SCHEMA_BRIDGE
+    });
+  }
 }
 
 export function runPartyRuntimeCatalogMigration(pool) {

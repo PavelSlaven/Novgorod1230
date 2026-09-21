@@ -4,7 +4,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
 import {
-  WORLD_RUNTIME_CATALOG_MIGRATION,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3,
   runWorldRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import {
@@ -123,7 +123,7 @@ test('legacy world schema migrates forward without losing existing rows', async 
   assert.equal(applied.status, 'applied');
   assert.equal(
     applied.schema_fingerprint,
-    WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint
   );
   assert.deepEqual(
     (await pool.query(

@@ -28,6 +28,25 @@
       "sql_path": "tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql"
     },
     {
+      "migration_id": "world_legacy_062_to_canonical_v2",
+      "migration_digest": "667c61d1a81b138e47705f1ad605b20225630f3c847b6aa8e79f4307ce28d18d",
+      "schema_name": "world_base",
+      "source_schema_fingerprint": "869021eded07633eec27048a102600385248e5a8e5f8dd499943d404e17fad8f",
+      "target_schema_fingerprint": "9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080",
+      "sql_paths": [
+        "infra/world-base/schema/09.sql..20.sql",
+        "tools/runtime-catalog-activation/migrations/world/000_legacy_world_bridge_finalize.sql"
+      ]
+    },
+    {
+      "migration_id": "world_runtime_catalog_activation_v3",
+      "migration_digest": "27ba1022d58edad89f6caed270667b7b5b5a09f885747c6e23c8a35c987e3e99",
+      "schema_name": "world_base",
+      "source_schema_fingerprint": "9d1d4b187cd22049b60340f48c1cbcd4b6282f7cca0c08594d06c7ed0f067080",
+      "target_schema_fingerprint": "9894704328448268fe0ec4b3144fd1b2161d99ac86b5ea4d1f1b6227d71152c6",
+      "sql_path": "tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql"
+    },
+    {
       "migration_id": "party_runtime_catalog_pins_v2",
       "migration_digest": "9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d",
       "schema_name": "party_runtime",

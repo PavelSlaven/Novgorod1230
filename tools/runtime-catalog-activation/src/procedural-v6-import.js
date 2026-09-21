@@ -59,7 +59,8 @@ export async function importProceduralAuthoringPack({
     domainRevision: {
       parent_registration_id: baseline.registrationId,
       runtime_contract_digest: runtimeContractDigest,
-      title: 'Disposable procedural authoring import'
+      title: 'Disposable procedural authoring import',
+      readback_mode: 'authoring_only_no_runtime_projection'
     },
     approvalAttestation,
     approvalContract: {

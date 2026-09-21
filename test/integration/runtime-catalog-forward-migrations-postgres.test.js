@@ -13,7 +13,7 @@ import {
 } from '@rus/runtime-catalog/runtime-contract';
 import {
   PARTY_RUNTIME_CATALOG_MIGRATION,
-  WORLD_RUNTIME_CATALOG_MIGRATION,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3,
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
@@ -133,7 +133,7 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     runPartyRuntimeCatalogMigration(pool)
   ]);
   assert.deepEqual(applied.map(({ status }) => status), ['applied', 'applied']);
-  assert.equal(applied[0].schema_fingerprint, WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint);
+  assert.equal(applied[0].schema_fingerprint, WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint);
   assert.equal(applied[1].schema_fingerprint, PARTY_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint);
 
   const repeated = await Promise.all([
@@ -203,7 +203,7 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
       `UPDATE world_base.schema_migrations
        SET migration_digest = $1
        WHERE migration_id = $2`,
-      ['f'.repeat(64), WORLD_RUNTIME_CATALOG_MIGRATION.migration_id]
+      ['f'.repeat(64), WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_id]
     ),
     /append-only/u
   );
@@ -256,7 +256,7 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     "SELECT * FROM world_base.graph_nodes WHERE id LIKE 'g4-runtime-%' ORDER BY id"
   )).rows;
   const baselineManifest = buildOperatorBaselineSnapshotManifest({
-    schemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+    schemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
     registry,
     rowsByTable: { graph_nodes: graphRows }
   });
@@ -402,7 +402,7 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
       promotion_manifest_digest: '2'.repeat(64),
       approval_request_digest: approvalRequestDigest,
       approval_attestation_digest: overlayAttestation.attestation_digest,
-      schema_migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
+      schema_migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_digest
     },
     tables,
     records,

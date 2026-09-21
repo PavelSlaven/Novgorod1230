@@ -44,9 +44,6 @@ import { loadLowerDvinaTraceA1Profile } from
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
   '../../apps/game-server/src/runtime/releases/lower-dvina-trace-a1-production.js';
 import {
-  lowerDvinaTracePhase1ADomainPin
-} from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
-import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world,
@@ -72,7 +69,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=phase2',
-    '-e', 'POSTGRES_DB=phase2',
+    '-e', 'POSTGRES_DB=pr17_phase2',
     'postgres:16-alpine'
   ]);
   assert.equal(started.status, 0, started.stderr);
@@ -86,20 +83,12 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     port,
     user: 'phase2',
     password: 'local_only',
-    database: 'phase2',
+    database: 'pr17_phase2',
     max: 8
   });
-  await installSchemas(pool);
-  await installLowerDvinaTraceV5World(pool);
+  const runtimeCatalogPin = await installSchemas(pool,
+    () => installLowerDvinaTraceV5World(pool));
   const bundle = await loadLowerDvinaTraceMaterializationBundle();
-  const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
-  const runtimeCatalogPin = Object.freeze({
-    ...sourcePin,
-    compatible_world_revision_id: world.revision,
-    compatible_world_catalog_digest: world.digest,
-    compatible_world_pin_manifest_digest:
-      world.manifest
-  });
   const release = Object.freeze({
     release_id: 'phase-2-postgres-release',
     world_revision_id: world.revision,
@@ -590,7 +579,7 @@ test('active A1 partial authored result survives reload, retry and reuse',
     const started = docker([
       'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=a1',
-      '-e', 'POSTGRES_DB=a1', 'postgres:16-alpine'
+      '-e', 'POSTGRES_DB=pr17_a1', 'postgres:16-alpine'
     ]);
     assert.equal(started.status, 0, started.stderr);
     await waitForPostgres(name);
@@ -599,22 +588,17 @@ test('active A1 partial authored result survives reload, retry and reuse',
       docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
     );
     pool = new pg.Pool({ host: '127.0.0.1', port, user: 'a1',
-      password: 'local_only', database: 'a1', max: 8 });
-    await installSchemas(pool);
-    await installLowerDvinaTraceV6World(pool);
+      password: 'local_only', database: 'pr17_a1', max: 8 });
+    const runtimeCatalogPin = await installSchemas(pool,
+      () => installLowerDvinaTraceV6World(pool));
     const bundle = await loadLowerDvinaTraceMaterializationBundle({
       scenarioDefinitionRevision: 32
-    });
-    const runtimeCatalogPin = Object.freeze({
-      ...lowerDvinaTracePhase1ADomainPin(bundle),
-      compatible_world_revision_id: lowerDvinaTraceV6World.revision,
-      compatible_world_catalog_digest: lowerDvinaTraceV6World.digest,
-      compatible_world_pin_manifest_digest: lowerDvinaTraceV6World.manifest
     });
     const release = Object.freeze({ release_id: 'a1-postgres-release',
       world_revision_id: lowerDvinaTraceV6World.revision,
       world_catalog_digest: lowerDvinaTraceV6World.digest,
-      compatible_world_pin_manifest_digest: lowerDvinaTraceV6World.manifest });
+      compatible_world_pin_manifest_digest:
+        runtimeCatalogPin.compatible_world_pin_manifest_digest });
     await assertPartialAuthoredA1Persists({ pool, release, runtimeCatalogPin });
   });
 
@@ -1605,7 +1589,7 @@ async function assertScreenTamper(pool, runtime, partyId) {
   );
 }
 
-async function installSchemas(pool) {
+async function installSchemas(pool, installRuntimeCatalog) {
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
@@ -1620,9 +1604,11 @@ async function installSchemas(pool) {
     (await runPartyRuntimeCatalogMigration(pool)).status,
     'applied'
   );
+  const runtimeCatalogPin = await installRuntimeCatalog();
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
+  return runtimeCatalogPin;
 }
 
 

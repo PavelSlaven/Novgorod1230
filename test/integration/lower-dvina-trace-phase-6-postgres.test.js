@@ -15,7 +15,6 @@ import { createLowerDvinaTracePhase2DurableNarrator } from '../../apps/game-serv
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { firstPlayableCommitRecheck } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
 import { loadLowerDvinaTraceMaterializationBundle } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
-import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-effect-owner.js';
@@ -37,12 +36,13 @@ test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks
   const name = `lower-dvina-phase-6-${process.pid}`;
   let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
-  assert.equal(docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase6', '-e', 'POSTGRES_DB=phase6', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase6', '-e', 'POSTGRES_DB=pr17_phase6', 'postgres:16-alpine']).status, 0);
   await waitForPostgres(name, 'phase6');
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
-  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase6', password: 'local_only', database: 'phase6', max: 8 });
-  await installSchemas(pool); await installLowerDvinaTraceV5World(pool);
-  const pins = await runtimePins();
+  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase6', password: 'local_only', database: 'pr17_phase6', max: 8 });
+  const runtimeCatalogPin = await installSchemas(pool,
+    () => installLowerDvinaTraceV5World(pool));
+  const pins = await runtimePins(runtimeCatalogPin);
 
   const counters = { rng_factories: 0, rng_draws: 0, now: 0 };
   const runtime = buildRuntime({ pool, ...pins, counters });
@@ -102,11 +102,9 @@ test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks
   assert.equal(await phase6RouteExecutionCount(pool, rollbackParty.party_id), 0);
 });
 
-async function runtimePins() {
-  const bundle = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 12 });
-  const source = lowerDvinaTracePhase1ADomainPin(bundle);
-  const runtimeCatalogPin = Object.freeze({ ...source, compatible_world_revision_id: world.revision, compatible_world_catalog_digest: world.digest, compatible_world_pin_manifest_digest: world.manifest });
-  return { runtimeCatalogPin, release: Object.freeze({ release_id: 'phase-6-postgres-release', world_revision_id: world.revision, world_catalog_digest: world.digest, compatible_world_pin_manifest_digest: world.manifest }) };
+async function runtimePins(runtimeCatalogPin) {
+  await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 12 });
+  return { runtimeCatalogPin, release: Object.freeze({ release_id: 'phase-6-postgres-release', world_revision_id: world.revision, world_catalog_digest: world.digest, compatible_world_pin_manifest_digest: runtimeCatalogPin.compatible_world_pin_manifest_digest }) };
 }
 function buildRuntime({ pool, release, runtimeCatalogPin, counters = null,
   temporalBoundaryResolver = pauseOnlyTemporalBoundaryResolver }) {
@@ -656,5 +654,5 @@ async function boundaryStatus(pool, partyId) {
   )).rows[0]?.status;
 }
 function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['visible_context'] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
-async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
-async function waitForPostgres(name, user) { for (let i = 0; i < 30; i += 1) { if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1']).status === 0 && docker(['exec', name, 'psql', '-U', user, '-d', user, '-c', 'SELECT 1']).status === 0) { await new Promise((resolve) => setTimeout(resolve, 750)); return; } await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error('PostgreSQL did not become ready'); }
+async function installSchemas(pool, installRuntimeCatalog) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); const runtimeCatalogPin = await installRuntimeCatalog(); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); return runtimeCatalogPin; }
+async function waitForPostgres(name, user) { for (let i = 0; i < 30; i += 1) { if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1']).status === 0 && docker(['exec', name, 'psql', '-U', user, '-d', 'pr17_phase6', '-c', 'SELECT 1']).status === 0) { await new Promise((resolve) => setTimeout(resolve, 750)); return; } await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error('PostgreSQL did not become ready'); }

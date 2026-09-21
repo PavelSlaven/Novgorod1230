@@ -10,28 +10,28 @@ import { importProceduralFinalCandidatePack, importProceduralFinalV2Pack } from 
 import { registerCatalogBaseline } from './operator-executors.js';
 import { RECORD_ADAPTERS } from './record-adapters.generated.js';
 import { RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST } from '@rus/runtime-catalog/runtime-contract';
-import { buildSpatialV3ProductionV12ActivationBundle,
-  applySpatialV3ProductionV12ActivationBundle } from './spatial-v3-production-v12-activation.js';
-import { buildProceduralFinalDevelopmentActivation,
-  applyProceduralFinalDevelopmentActivation } from './procedural-final-development-activation.js';
-import { buildProceduralFinalV2DevelopmentActivation,
-  applyProceduralFinalV2DevelopmentActivation } from './procedural-final-v2-development-activation.js';
+import { buildSpatialV3DevelopmentV13ActivationBundle,
+  applySpatialV3DevelopmentV13ActivationBundle } from './spatial-v3-production-v12-activation.js';
+import { buildProceduralFinalCurrentSchemaV1DevelopmentActivation,
+  applyProceduralFinalCurrentSchemaV1DevelopmentActivation } from './procedural-final-development-activation.js';
+import { buildProceduralFinalCurrentSchemaV2DevelopmentActivation,
+  applyProceduralFinalCurrentSchemaV2DevelopmentActivation } from './procedural-final-v2-development-activation.js';
 import { loadActiveRuntimeCatalogPin } from '../../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 
 const SHA = '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0';
 
-/** Exact disposable V12→V1→V2 activation chain; caller owns schema/import setup. */
+/** Current-schema disposable dev chain; historical V12 remains immutable. */
 export async function bootstrapProceduralFinalV2Disposable({ worldPool,
   partyPool, repositoryRoot }) {
   const root = resolve(repositoryRoot);
-  const oldBundle = await buildSpatialV3ProductionV12ActivationBundle({
+  const developmentBundle = await buildSpatialV3DevelopmentV13ActivationBundle({
     worldPool, partyPool, repositoryRoot: root, gitCommitSha: SHA,
-    authorizationRef: 'disposable old-party fixture activation' });
-  const oldActivation = await applySpatialV3ProductionV12ActivationBundle({
-    worldPool, partyPool, bundle: oldBundle });
-  const oldPin = await loadActiveRuntimeCatalogPin(worldPool,
+    authorizationRef: 'disposable development fixture activation' });
+  const developmentActivation = await applySpatialV3DevelopmentV13ActivationBundle({
+    worldPool, partyPool, bundle: developmentBundle });
+  const developmentPin = await loadActiveRuntimeCatalogPin(worldPool,
     'item_container_materialization_v2');
-  await seedPartyWithPin(partyPool, 'party-old-fixture', oldPin);
+  await seedPartyWithPin(partyPool, 'party-development-fixture', developmentPin);
   const pack = await generateProceduralFinalCandidatePack(root);
   const rowsByTable = {};
   for (const entry of registry.entries) rowsByTable[entry.table_name] =
@@ -75,47 +75,25 @@ export async function bootstrapProceduralFinalV2Disposable({ worldPool,
   const v2Imported = await importProceduralFinalV2Pack({ pool: worldPool,
     baseline, v1Pack: pack, v2Pack, attestation: v2ApprovalAttestation,
     runtimeContractDigest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST });
-  const activationBundle = await buildProceduralFinalDevelopmentActivation({
+  const activationBundle = await buildProceduralFinalCurrentSchemaV1DevelopmentActivation({
     worldPool, partyPool, pack, ledger: imported.ledger, gitCommitSha: SHA,
-    authorizationRef: 'bounded development cutover task' });
-  const activation = await applyProceduralFinalDevelopmentActivation({ worldPool,
+  });
+  const activation = await applyProceduralFinalCurrentSchemaV1DevelopmentActivation({ worldPool,
     partyPool, bundle: activationBundle });
   const v1Pin = await loadActiveRuntimeCatalogPin(worldPool,
     'item_container_materialization_v2');
   await seedPartyWithPin(partyPool, 'party-v1-development', v1Pin);
-  const v1Event = (await worldPool.query(`SELECT event_id,import_id,
-    import_audit_digest,attestation_digest,request_digest,runtime_release_id,
-    expected_previous_event_id FROM world_base.runtime_catalog_activation_events
-    WHERE catalog_scope='item_container_materialization_v2'
-    ORDER BY event_sequence DESC LIMIT 1`)).rows[0];
-  const expectedV1 = {
-    event_id: 'runtime_catalog_activation_94447901cebfed28716db756f089d0e4',
-    import_id: 'procedural_final_import_0204d109cbe18d06aed0957be3c10d12',
-    import_audit_digest: 'd5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117',
-    attestation_digest: 'c81c4965fea835ed8f5769a0cb21fec3b4be50cbb9a87735808bf4020487f97a',
-    request_digest: 'ce54f3849dc5dd58a374b1972c3553791fd36a89472e4b31b8dd30643c0ceeb6',
-    runtime_release_id: '662d663a583f8bab6dab9aae4340ff72db835f3f817c7764af498605fe294f0e',
-    expected_previous_event_id: 'runtime_catalog_activation_369484deea6a4041fccb5a422737abf7'
-  };
-  if (JSON.stringify(v1Event) !== JSON.stringify(expectedV1)) {
-    throw Object.assign(new Error('DISPOSABLE_V1_PREDECESSOR_DIFFERENT'), {
-      code: 'DISPOSABLE_V1_PREDECESSOR_DIFFERENT', details: { v1Event,
-        expectedV1, baseline: {
-          manifest: baselineManifest.parent_snapshot_manifest_digest,
-          request: request.registration_request_digest,
-          id: baseline.registrationId }, oldActivation } });
-  }
   const pinsBeforeV2 = (await partyPool.query(`SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;
-  const v2Bundle = await buildProceduralFinalV2DevelopmentActivation({
+  const v2Bundle = await buildProceduralFinalCurrentSchemaV2DevelopmentActivation({
     worldPool, partyPool, v1Pack: pack, v2Pack, v2ApprovalAttestation,
     ledger: v2Imported.ledger, gitCommitSha: SHA });
-  const v2Activation = await applyProceduralFinalV2DevelopmentActivation({
+  const v2Activation = await applyProceduralFinalCurrentSchemaV2DevelopmentActivation({
     worldPool, partyPool, bundle: v2Bundle });
   const pinsAfterV2 = (await partyPool.query(`SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;
   if (JSON.stringify(pinsBeforeV2) !== JSON.stringify(pinsAfterV2))
     throw Object.assign(new Error('DISPOSABLE_V2_EXISTING_PARTY_PIN_MUTATION'),
       { code: 'DISPOSABLE_V2_EXISTING_PARTY_PIN_MUTATION' });
-  return Object.freeze({ oldActivation, oldPin, baseline, pack, imported,
+  return Object.freeze({ developmentActivation, developmentPin, baseline, pack, imported,
     activation, v1Pin, v2Pack, v2ApprovalAttestation, v2Imported,
     v2Activation, v2Pin: await loadActiveRuntimeCatalogPin(worldPool,
       'item_container_materialization_v2') });

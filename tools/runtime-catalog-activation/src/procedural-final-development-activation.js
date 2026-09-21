@@ -17,8 +17,11 @@ import {
 import { WORLD_RUNTIME_CATALOG_MIGRATION } from './forward-migrations.js';
 import { importProceduralFinalCandidatePack } from './procedural-v6-import.js';
 
+const CURRENT_SCHEMA_SUCCESSOR = 'procedural_final_current_schema_v1_successor';
+
 export async function buildProceduralFinalDevelopmentActivation({ worldPool,
-  partyPool, pack, ledger, gitCommitSha, authorizationRef }) {
+  partyPool, pack, ledger, gitCommitSha, authorizationRef,
+  currentSchemaSuccessor = false }) {
   if (pack?.independent_attestation?.authority
       ?.new_development_party_activation_authorized !== false
       || pack.target_revision_id !== ledger?.root?.target_revision_id
@@ -44,11 +47,15 @@ export async function buildProceduralFinalDevelopmentActivation({ worldPool,
   }
   const runtimeRelease = buildRuntimeReleaseIdentity({ gitCommitSha,
     buildReleaseManifestDigest: digestEnvelope({
-      schema: 'rus.procedural_final_development_release.v1',
+      schema: currentSchemaSuccessor
+        ? 'rus.procedural_final_current_schema_v1_development_release.v1'
+        : 'rus.procedural_final_development_release.v1',
       candidate_digest: pack.candidate_digest,
       import_audit_digest: ledger.root.import_audit_digest,
       activation_scope: 'new_development_parties_only',
-      production_deploy: false
+      production_deploy: false,
+      ...(currentSchemaSuccessor ? { activation_chain:
+        CURRENT_SCHEMA_SUCCESSOR } : {})
     }),
     supportedRuntimeContractDigests: [
       RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST]
@@ -121,19 +128,40 @@ export async function buildProceduralFinalDevelopmentActivation({ worldPool,
     existing_party_migration_authorized: false,
     old_save_rematerialization_authorized: false,
     production_deploy_authorized: false,
-    attested_by: authorizationRef
+    attested_by: authorizationRef,
+    ...(currentSchemaSuccessor ? { activation_chain:
+      CURRENT_SCHEMA_SUCCESSOR } : {})
   };
   return Object.freeze({ schema:
-    'rus.procedural_final_development_activation_bundle.v1',
+    currentSchemaSuccessor
+      ? 'rus.procedural_final_current_schema_v1_development_activation_bundle.v1'
+      : 'rus.procedural_final_development_activation_bundle.v1',
     activation_scope: 'new_development_parties_only', runtimeRelease,
     partyPreflight, request,
     attestation: Object.freeze({ ...attestationPayload,
       attestation_digest: digestEnvelope(attestationPayload) }) });
 }
 
+export function buildProceduralFinalCurrentSchemaV1DevelopmentActivation(options) {
+  return buildProceduralFinalDevelopmentActivation({
+    ...options,
+    authorizationRef: 'user_authorization_current_task',
+    currentSchemaSuccessor: true
+  });
+}
+
 export function applyProceduralFinalDevelopmentActivation({ worldPool,
   partyPool, bundle }) {
   assertDevelopmentActivationBoundary(bundle);
+  return activateApprovedCatalog({ worldPool, partyPool,
+    request: bundle.request, attestation: bundle.attestation,
+    activationScope: bundle.activation_scope });
+}
+
+export function applyProceduralFinalCurrentSchemaV1DevelopmentActivation({
+  worldPool, partyPool, bundle
+}) {
+  assertProceduralFinalCurrentSchemaV1DevelopmentActivationBoundary(bundle);
   return activateApprovedCatalog({ worldPool, partyPool,
     request: bundle.request, attestation: bundle.attestation,
     activationScope: bundle.activation_scope });
@@ -163,6 +191,18 @@ export function assertDevelopmentActivationBoundary(bundle) {
       || attestation.target_catalog_digest !== bundle.request.target_catalog_digest) {
     throw Object.assign(new Error('Exact development activation boundary is invalid.'),
       { code: 'PROCEDURAL_DEVELOPMENT_ACTIVATION_BOUNDARY_INVALID' });
+  }
+  return bundle;
+}
+
+export function assertProceduralFinalCurrentSchemaV1DevelopmentActivationBoundary(bundle) {
+  assertDevelopmentActivationBoundary(bundle);
+  if (bundle?.schema
+      !== 'rus.procedural_final_current_schema_v1_development_activation_bundle.v1'
+      || bundle.attestation?.activation_chain !== CURRENT_SCHEMA_SUCCESSOR
+      || bundle.attestation?.attested_by !== 'user_authorization_current_task') {
+    throw Object.assign(new Error('Current-schema successor activation is invalid.'),
+      { code: 'PROCEDURAL_CURRENT_SCHEMA_V1_ACTIVATION_BOUNDARY_INVALID' });
   }
   return bundle;
 }

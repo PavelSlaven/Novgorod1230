@@ -6,10 +6,15 @@ import { buildProceduralFinalCandidateImportLedger,
   '../src/procedural-v6-import.js';
 import { buildProceduralFinalDevelopmentActivation } from
   '../src/procedural-final-development-activation.js';
+import { buildProceduralFinalCurrentSchemaV1DevelopmentActivation } from
+  '../src/procedural-final-development-activation.js';
 import { assertDevelopmentActivationBoundary } from
   '../src/procedural-final-development-activation.js';
 import { buildProceduralFinalV2DevelopmentActivation,
   assertProceduralFinalV2DevelopmentActivationBoundary } from
+  '../src/procedural-final-v2-development-activation.js';
+import { buildProceduralFinalCurrentSchemaV2DevelopmentActivation,
+  assertProceduralFinalCurrentSchemaV2DevelopmentActivationBoundary } from
   '../src/procedural-final-v2-development-activation.js';
 import { digestEnvelope } from '../src/artifact-contracts.js';
 import { buildPartyCatalogPinRecord } from
@@ -242,6 +247,67 @@ test('active pin loader fails closed for missing or malformed activation',
     }, 'item_container_materialization_v2'),
     { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
 });
+
+test('current-schema V2 successor keeps legacy V2 and pins only new parties',
+  async () => {
+    const ledger = v2Ledger();
+    const partyPool = { async query() { return { rows: [{ party_count: 1,
+      pinned_party_count: 1, missing_domain_pin_count: 0,
+      inflight_count: 0 }] }; } };
+    const v1Ledger = structuredClone(buildProceduralFinalCandidateImportLedger({
+      baseline, pack }));
+    v1Ledger.root.import_id =
+      'procedural_final_import_0204d109cbe18d06aed0957be3c10d12';
+    v1Ledger.root.import_audit_digest =
+      'd5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117';
+    const v1 = await buildProceduralFinalCurrentSchemaV1DevelopmentActivation({
+      worldPool: { async query() { return { rows: [{ event_id: 'dev-v13' }] }; } },
+      partyPool, pack, ledger: v1Ledger, gitCommitSha: '8'.repeat(40)
+    });
+    const predecessor = { event_id: 'current-v1', event_sequence: 4,
+      catalog_revision_id: pack.target_revision_id,
+      catalog_digest: pack.target_catalog_digest,
+      import_audit_digest: v1Ledger.root.import_audit_digest,
+      attestation_digest: v1.attestation.attestation_digest,
+      request_digest: v1.request.activation_request_digest,
+      runtime_release_id: v1.runtimeRelease.runtime_release_id,
+      runtime_contract_digest: v1.request.runtime_contract_digest };
+    const bundle = await buildProceduralFinalCurrentSchemaV2DevelopmentActivation({
+      worldPool: { async query() { return { rows: [predecessor] }; } }, partyPool,
+      v1Pack: pack, v2Pack, v2ApprovalAttestation: v2Approval, ledger,
+      gitCommitSha: '8'.repeat(40) });
+    assertProceduralFinalCurrentSchemaV2DevelopmentActivationBoundary(bundle);
+    const row = { event_id: 'current-v2', event_sequence: 5,
+      catalog_scope: 'item_container_materialization_v2',
+      catalog_revision_id: v2Pack.target_revision_id,
+      catalog_digest: v2Pack.target_catalog_digest, import_id: ledger.root.import_id,
+      import_audit_digest: ledger.root.import_audit_digest,
+      record_registry_digest: ledger.root.record_registry_digest,
+      runtime_contract_digest: bundle.request.runtime_contract_digest,
+      compatible_world_revision_id: ledger.root.compatible_world_revision_id,
+      compatible_world_catalog_digest: ledger.root.compatible_world_catalog_digest,
+      compatible_world_pin_manifest_digest:
+        ledger.root.compatible_world_pin_manifest_digest,
+      request_digest: bundle.request.activation_request_digest,
+      attestation_digest: bundle.attestation.attestation_digest,
+      expected_previous_event_id: predecessor.event_id,
+      runtime_release_id: bundle.request.runtime_release_id, provenance: {},
+      predecessor_event_sequence: predecessor.event_sequence,
+      predecessor_revision_id: predecessor.catalog_revision_id,
+      predecessor_catalog_digest: predecessor.catalog_digest,
+      predecessor_import_audit_digest: predecessor.import_audit_digest,
+      predecessor_activation_attestation_digest: predecessor.attestation_digest,
+      predecessor_request_digest: predecessor.request_digest,
+      predecessor_runtime_release_id: predecessor.runtime_release_id,
+      predecessor_runtime_contract_digest: predecessor.runtime_contract_digest };
+    const loader = (value) => loadActiveRuntimeCatalogPin({
+      async query() { return { rows: [value] }; }
+    }, 'item_container_materialization_v2');
+    assert.equal((await loader(row)).activation_event_id, 'current-v2');
+    await assert.rejects(loader({ ...row,
+      predecessor_activation_attestation_digest: '0'.repeat(64) }),
+    { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
+  });
 
 function v2Ledger() {
   const ledger = structuredClone(buildProceduralFinalV2ImportLedger({ baseline,

@@ -25,19 +25,23 @@ const V2 = Object.freeze({
   importAudit: '6ad18c6f40185fa540bf7e3ec3bbb5d5b96e95c370b5e70c657a0db73c29f3b2'
 });
 const USER_AUTHORIZATION = 'user_authorization_current_task';
+const CURRENT_SCHEMA_SUCCESSOR = 'procedural_final_current_schema_v2_successor';
 
 export async function buildProceduralFinalV2DevelopmentActivation({ worldPool,
   partyPool, v1Pack, v2Pack, v2ApprovalAttestation, ledger, gitCommitSha,
-  authorizationRef = USER_AUTHORIZATION }) {
+  authorizationRef = USER_AUTHORIZATION, currentSchemaSuccessor = false }) {
   assertV2Inputs({ v1Pack, v2Pack, v2ApprovalAttestation, ledger,
     authorizationRef });
   const runtimeRelease = buildRuntimeReleaseIdentity({ gitCommitSha,
     buildReleaseManifestDigest: digestEnvelope({
-      schema: 'rus.procedural_final_v2_development_release.v1',
+      schema: currentSchemaSuccessor
+        ? 'rus.procedural_final_current_schema_v2_development_release.v1'
+        : 'rus.procedural_final_v2_development_release.v1',
       candidate_digest: V2.candidate,
       import_audit_digest: ledger.root.import_audit_digest,
       activation_scope: 'new_development_parties_only',
-      production_deploy: false
+      production_deploy: false,
+      ...(currentSchemaSuccessor ? { activation_chain: CURRENT_SCHEMA_SUCCESSOR } : {})
     }),
     supportedRuntimeContractDigests: [
       RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST]
@@ -67,16 +71,18 @@ export async function buildProceduralFinalV2DevelopmentActivation({ worldPool,
   });
   const predecessor = (await worldPool.query(
     `SELECT event_id,event_sequence,catalog_revision_id,catalog_digest,
-            import_audit_digest,attestation_digest
+            import_audit_digest,attestation_digest,request_digest,runtime_release_id
        FROM world_base.runtime_catalog_activation_events
       WHERE catalog_scope='item_container_materialization_v2'
       ORDER BY event_sequence DESC LIMIT 1`
   )).rows[0];
-  if (predecessor?.event_id !== V1.event
-      || predecessor.catalog_revision_id !== V1.revision
-      || predecessor.catalog_digest !== V1.catalog
-      || predecessor.import_audit_digest !== V1.importAudit
-      || predecessor.attestation_digest !== V1.activationAttestation) fail(
+  if (!(currentSchemaSuccessor
+    ? validCurrentSchemaV1Activation(predecessor)
+    : predecessor?.event_id === V1.event
+      && predecessor.catalog_revision_id === V1.revision
+      && predecessor.catalog_digest === V1.catalog
+      && predecessor.import_audit_digest === V1.importAudit
+      && predecessor.attestation_digest === V1.activationAttestation)) fail(
     'PROCEDURAL_FINAL_V2_PREDECESSOR_INVALID');
   const request = buildActivationRequest({ fields: {
     parent_revision_id: ledger.root.parent_revision_id,
@@ -98,19 +104,38 @@ export async function buildProceduralFinalV2DevelopmentActivation({ worldPool,
     expected_previous_event_id: predecessor.event_id,
     runtime_release_id: runtimeRelease.runtime_release_id
   }, partyPreflight });
-  const payload = activationAttestationPayload({ request, predecessor });
+  const payload = activationAttestationPayload({ request, predecessor,
+    currentSchemaSuccessor });
   const attestation = Object.freeze({ ...payload,
     attestation_digest: digestEnvelope(payload) });
   return Object.freeze({
-    schema: 'rus.procedural_final_v2_development_activation_bundle.v1',
+    schema: currentSchemaSuccessor
+      ? 'rus.procedural_final_current_schema_v2_development_activation_bundle.v1'
+      : 'rus.procedural_final_v2_development_activation_bundle.v1',
     activation_scope: 'new_development_parties_only', runtimeRelease,
     partyPreflight, request, attestation
+  });
+}
+
+export function buildProceduralFinalCurrentSchemaV2DevelopmentActivation(options) {
+  return buildProceduralFinalV2DevelopmentActivation({
+    ...options, authorizationRef: USER_AUTHORIZATION,
+    currentSchemaSuccessor: true
   });
 }
 
 export function applyProceduralFinalV2DevelopmentActivation({ worldPool,
   partyPool, bundle }) {
   assertProceduralFinalV2DevelopmentActivationBoundary(bundle);
+  return activateApprovedCatalog({ worldPool, partyPool,
+    request: bundle.request, attestation: bundle.attestation,
+    activationScope: bundle.activation_scope });
+}
+
+export function applyProceduralFinalCurrentSchemaV2DevelopmentActivation({
+  worldPool, partyPool, bundle
+}) {
+  assertProceduralFinalCurrentSchemaV2DevelopmentActivationBoundary(bundle);
   return activateApprovedCatalog({ worldPool, partyPool,
     request: bundle.request, attestation: bundle.attestation,
     activationScope: bundle.activation_scope });
@@ -129,8 +154,20 @@ export function assertProceduralFinalV2DevelopmentActivationBoundary(bundle) {
   if (bundle?.activation_scope !== 'new_development_parties_only'
       || claimed !== digestEnvelope(payload)
       || JSON.stringify(payload) !== JSON.stringify(
-        activationAttestationPayload({ request: bundle.request, predecessor }))) {
+        activationAttestationPayload({ request: bundle.request, predecessor,
+          currentSchemaSuccessor: bundle?.schema
+            === 'rus.procedural_final_current_schema_v2_development_activation_bundle.v1' }))) {
     fail('PROCEDURAL_FINAL_V2_DEVELOPMENT_ACTIVATION_BOUNDARY_INVALID');
+  }
+  return bundle;
+}
+
+export function assertProceduralFinalCurrentSchemaV2DevelopmentActivationBoundary(bundle) {
+  assertProceduralFinalV2DevelopmentActivationBoundary(bundle);
+  if (bundle?.schema
+      !== 'rus.procedural_final_current_schema_v2_development_activation_bundle.v1'
+      || bundle.attestation?.activation_chain !== CURRENT_SCHEMA_SUCCESSOR) {
+    fail('PROCEDURAL_CURRENT_SCHEMA_V2_ACTIVATION_BOUNDARY_INVALID');
   }
   return bundle;
 }
@@ -157,7 +194,8 @@ function assertV2Inputs({ v1Pack, v2Pack, v2ApprovalAttestation, ledger,
   }
 }
 
-function activationAttestationPayload({ request, predecessor }) {
+function activationAttestationPayload({ request, predecessor,
+  currentSchemaSuccessor = false }) {
   return {
     schema: 'rus.runtime_catalog_activation_attestation.v2',
     activation_request_digest: request?.activation_request_digest,
@@ -182,8 +220,45 @@ function activationAttestationPayload({ request, predecessor }) {
     old_save_rematerialization_authorized: false,
     production_deploy_authorized: false,
     runtime_item_creation_authorized: false,
-    attested_by: USER_AUTHORIZATION
+    attested_by: USER_AUTHORIZATION,
+    ...(currentSchemaSuccessor ? { activation_chain: CURRENT_SCHEMA_SUCCESSOR } : {})
   };
+}
+
+function validCurrentSchemaV1Activation(row) {
+  if (row?.catalog_revision_id !== V1.revision
+      || row.catalog_digest !== V1.catalog
+      || row.import_audit_digest !== V1.importAudit
+      || typeof row.event_id !== 'string' || typeof row.request_digest !== 'string'
+      || typeof row.runtime_release_id !== 'string') return false;
+  const payload = {
+    schema: 'rus.runtime_catalog_activation_attestation.v2',
+    activation_request_digest: row.request_digest,
+    catalog_scope: 'item_container_materialization_v2',
+    target_revision_id: row.catalog_revision_id,
+    target_catalog_digest: row.catalog_digest,
+    import_id: 'procedural_final_import_0204d109cbe18d06aed0957be3c10d12',
+    import_audit_digest: row.import_audit_digest,
+    runtime_contract_digest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST,
+    runtime_release_id: row.runtime_release_id,
+    decision: 'approve_activation',
+    activation_scope: 'new_development_parties_only',
+    audited_candidate_digest:
+      '12a160383a5aba4dfbda9aa5f6ef64273d712944322d9fb44f3a1eb1d45d5d67',
+    independent_import_approval_attestation_digest: V1.approval,
+    imported_candidate_digest:
+      '29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1',
+    source_pack_digest:
+      '4ddd8a0bd3770312808166599e8a57801939c7fc2b915c2fcc3c7db7030422af',
+    record_operations_digest:
+      'ceb7fc4bd4f9a54eb1b5d6ecc1db597db47b6548e383bd8a5dd828ee697921f2',
+    existing_party_migration_authorized: false,
+    old_save_rematerialization_authorized: false,
+    production_deploy_authorized: false,
+    attested_by: USER_AUTHORIZATION,
+    activation_chain: 'procedural_final_current_schema_v1_successor'
+  };
+  return row.attestation_digest === digestEnvelope(payload);
 }
 
 function fail(code) {

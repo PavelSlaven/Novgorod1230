@@ -39,20 +39,20 @@ import { buildLowerDvinaBoundaryV1ImportSql } from
   '../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildCharacterAppearanceV1ImportSql } from
   '../tools/spatial-v3/character-appearance-v1-importer.mjs';
-import { buildSpatialV3ProductionV12ActivationBundle,
-  applySpatialV3ProductionV12ActivationBundle } from
+import { buildSpatialV3DevelopmentV13ActivationBundle,
+  applySpatialV3DevelopmentV13ActivationBundle } from
   '../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
-import { buildProceduralFinalDevelopmentActivation,
-  applyProceduralFinalDevelopmentActivation } from
+import { buildProceduralFinalCurrentSchemaV1DevelopmentActivation,
+  applyProceduralFinalCurrentSchemaV1DevelopmentActivation } from
   '../tools/runtime-catalog-activation/src/procedural-final-development-activation.js';
-import { buildProceduralFinalV2DevelopmentActivation,
-  applyProceduralFinalV2DevelopmentActivation } from
+import { buildProceduralFinalCurrentSchemaV2DevelopmentActivation,
+  applyProceduralFinalCurrentSchemaV2DevelopmentActivation } from
   '../tools/runtime-catalog-activation/src/procedural-final-v2-development-activation.js';
 import { loadActiveRuntimeCatalogPin } from
   '../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 
 const OUTPUT = 'data/world-catalogs/novgorod/procedural-scene-v2/'
-  + 'final-candidate-pack-v2/disposable-import-result.json';
+  + 'final-candidate-pack-v2/current-schema-successor-disposable-import-result.json';
 
 if (!process.argv.includes('--execute')) {
   throw new Error('DISPOSABLE_IMPORT_EXPLICIT_EXECUTE_REQUIRED');
@@ -108,16 +108,16 @@ try {
   await runWorldRuntimeCatalogMigration(pool);
   await runPartyRuntimeCatalogMigration(partyPool);
 
-  const oldBundle = await buildSpatialV3ProductionV12ActivationBundle({
+  const developmentBundle = await buildSpatialV3DevelopmentV13ActivationBundle({
     worldPool: pool, partyPool, repositoryRoot: root,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
-    authorizationRef: 'disposable old-party fixture activation'
+    authorizationRef: 'disposable development fixture activation'
   });
-  const oldActivation = await applySpatialV3ProductionV12ActivationBundle({
-    worldPool: pool, partyPool, bundle: oldBundle });
-  const oldPin = await loadActiveRuntimeCatalogPin(pool,
+  const developmentActivation = await applySpatialV3DevelopmentV13ActivationBundle({
+    worldPool: pool, partyPool, bundle: developmentBundle });
+  const developmentPin = await loadActiveRuntimeCatalogPin(pool,
     'item_container_materialization_v2');
-  await seedPartyWithPin(partyPool, 'party-old-fixture', oldPin);
+  await seedPartyWithPin(partyPool, 'party-development-fixture', developmentPin);
 
   const pack = await generateProceduralFinalCandidatePack(root);
   const v5Readback = await verifyAssertExistingRows(pool, pack);
@@ -183,12 +183,11 @@ try {
   const v2Imported = await importProceduralFinalV2Pack({ pool, baseline,
     v1Pack: pack, v2Pack, attestation: v2Attestation,
     runtimeContractDigest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST });
-  const activationBundle = await buildProceduralFinalDevelopmentActivation({
+  const activationBundle = await buildProceduralFinalCurrentSchemaV1DevelopmentActivation({
     worldPool: pool, partyPool, pack, ledger: imported.ledger,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
-    authorizationRef: 'bounded development cutover task'
   });
-  const activation = await applyProceduralFinalDevelopmentActivation({
+  const activation = await applyProceduralFinalCurrentSchemaV1DevelopmentActivation({
     worldPool: pool, partyPool, bundle: activationBundle });
   const activePin = await loadActiveRuntimeCatalogPin(pool,
     'item_container_materialization_v2');
@@ -196,12 +195,12 @@ try {
   const existingPartyPins = (await partyPool.query(
     `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
        FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;
-  const v2ActivationBundle = await buildProceduralFinalV2DevelopmentActivation({
+  const v2ActivationBundle = await buildProceduralFinalCurrentSchemaV2DevelopmentActivation({
     worldPool: pool, partyPool, v1Pack: pack, v2Pack,
     v2ApprovalAttestation: v2Attestation, ledger: v2Imported.ledger,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0'
   });
-  const v2Activation = await applyProceduralFinalV2DevelopmentActivation({
+  const v2Activation = await applyProceduralFinalCurrentSchemaV2DevelopmentActivation({
     worldPool: pool, partyPool, bundle: v2ActivationBundle });
   const unchangedPartyPins = (await partyPool.query(
     `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
@@ -264,7 +263,7 @@ try {
       activation_scope: activationBundle.activation_scope,
       event_id: activation.event_id,
       event_sequence: activation.event_sequence,
-      previous_event_id: oldActivation.activated.event_id,
+      previous_event_id: developmentActivation.activated.event_id,
       activation_request_digest:
         activationBundle.request.activation_request_digest,
       activation_attestation_digest:
@@ -278,8 +277,8 @@ try {
       import_audit_digest: imported.ledger.root.import_audit_digest,
       active_revision_id: activePin.catalog_revision_id,
       active_catalog_digest: activePin.catalog_digest,
-      old_party_revision_id: partyPins.find(({ party_id: id }) =>
-        id === 'party-old-fixture').catalog_revision_id,
+      development_v13_party_revision_id: partyPins.find(({ party_id: id }) =>
+        id === 'party-development-fixture').catalog_revision_id,
       v1_party_revision_id: partyPins.find(({ party_id: id }) =>
         id === 'party-v1-development').catalog_revision_id,
       verified_compiled_profile_count: 13,
@@ -315,8 +314,8 @@ try {
       import_audit_digest: v2Imported.ledger.root.import_audit_digest,
       active_revision_id: v2Pin.catalog_revision_id,
       active_catalog_digest: v2Pin.catalog_digest,
-      old_v12_party_revision_id: partyPins.find(({ party_id: id }) =>
-        id === 'party-old-fixture').catalog_revision_id,
+      development_v13_party_revision_id: partyPins.find(({ party_id: id }) =>
+        id === 'party-development-fixture').catalog_revision_id,
       old_v1_party_revision_id: partyPins.find(({ party_id: id }) =>
         id === 'party-v1-development').catalog_revision_id,
       new_v2_party_revision_id: partyPins.find(({ party_id: id }) =>

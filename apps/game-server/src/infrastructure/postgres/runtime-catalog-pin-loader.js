@@ -35,7 +35,10 @@ export async function loadActiveRuntimeCatalogPin(
        p.catalog_revision_id AS predecessor_revision_id,
        p.catalog_digest AS predecessor_catalog_digest,
        p.import_audit_digest AS predecessor_import_audit_digest,
-       p.attestation_digest AS predecessor_activation_attestation_digest
+       p.attestation_digest AS predecessor_activation_attestation_digest,
+       p.request_digest AS predecessor_request_digest,
+       p.runtime_release_id AS predecessor_runtime_release_id,
+       p.runtime_contract_digest AS predecessor_runtime_contract_digest
      FROM world_base.runtime_catalog_activation_events e
      JOIN world_base.domain_catalog_revisions r
        ON r.catalog_revision_id=e.catalog_revision_id
@@ -88,7 +91,8 @@ export async function loadActiveRuntimeCatalogPin(
     throw serverError('RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID',
       'Final procedural activation lacks exact development-only metadata.');
   }
-  if (row.catalog_revision_id === V2.revision && !validV2Activation(row)) {
+  if (row.catalog_revision_id === V2.revision
+      && !validV2Activation(row) && !validCurrentSchemaV2Activation(row)) {
     throw serverError('RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID',
       'V2 activation lacks exact development-only attestation or predecessor.');
   }
@@ -127,7 +131,34 @@ function validV2Activation(row) {
       || Number(row.event_sequence) !== Number(row.predecessor_event_sequence) + 1) {
     return false;
   }
+  const payload = v2AttestationPayload(row);
+  return row.attestation_digest === createHash('sha256')
+    .update(canonicalStringify(payload)).digest('hex');
+}
+
+function validCurrentSchemaV2Activation(row) {
+  if (!validCurrentSchemaV1Activation({
+    event_id: row.expected_previous_event_id,
+    catalog_revision_id: row.predecessor_revision_id,
+    catalog_digest: row.predecessor_catalog_digest,
+    import_audit_digest: row.predecessor_import_audit_digest,
+    attestation_digest: row.predecessor_activation_attestation_digest,
+    request_digest: row.predecessor_request_digest,
+    runtime_release_id: row.predecessor_runtime_release_id,
+    runtime_contract_digest: row.predecessor_runtime_contract_digest
+  }) || Number(row.event_sequence) !== Number(row.predecessor_event_sequence) + 1) {
+    return false;
+  }
   const payload = {
+    ...v2AttestationPayload(row),
+    activation_chain: 'procedural_final_current_schema_v2_successor'
+  };
+  return row.attestation_digest === createHash('sha256')
+    .update(canonicalStringify(payload)).digest('hex');
+}
+
+function v2AttestationPayload(row) {
+  return {
     schema: 'rus.runtime_catalog_activation_attestation.v2',
     activation_request_digest: row.request_digest,
     catalog_scope: row.catalog_scope,
@@ -154,6 +185,44 @@ function validV2Activation(row) {
     runtime_item_creation_authorized: false,
     attested_by: 'user_authorization_current_task'
   };
+}
+
+function validCurrentSchemaV1Activation(row) {
+  if (row?.catalog_revision_id !== V2.predecessorRevision
+      || row.catalog_digest !== V2.predecessorCatalog
+      || row.import_audit_digest !== V2.predecessorImportAudit
+      || !text(row.event_id) || !text(row.request_digest)
+      || !text(row.runtime_release_id)) return false;
+  const payload = {
+    schema: 'rus.runtime_catalog_activation_attestation.v2',
+    activation_request_digest: row.request_digest,
+    catalog_scope: 'item_container_materialization_v2',
+    target_revision_id: row.catalog_revision_id,
+    target_catalog_digest: row.catalog_digest,
+    import_id: 'procedural_final_import_0204d109cbe18d06aed0957be3c10d12',
+    import_audit_digest: row.import_audit_digest,
+    runtime_contract_digest: row.runtime_contract_digest,
+    runtime_release_id: row.runtime_release_id,
+    decision: 'approve_activation',
+    activation_scope: 'new_development_parties_only',
+    audited_candidate_digest:
+      '12a160383a5aba4dfbda9aa5f6ef64273d712944322d9fb44f3a1eb1d45d5d67',
+    independent_import_approval_attestation_digest:
+      '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c',
+    imported_candidate_digest:
+      '29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1',
+    source_pack_digest:
+      '4ddd8a0bd3770312808166599e8a57801939c7fc2b915c2fcc3c7db7030422af',
+    record_operations_digest:
+      'ceb7fc4bd4f9a54eb1b5d6ecc1db597db47b6548e383bd8a5dd828ee697921f2',
+    existing_party_migration_authorized: false,
+    old_save_rematerialization_authorized: false,
+    production_deploy_authorized: false,
+    attested_by: 'user_authorization_current_task',
+    activation_chain: 'procedural_final_current_schema_v1_successor'
+  };
   return row.attestation_digest === createHash('sha256')
     .update(canonicalStringify(payload)).digest('hex');
 }
+
+function text(value) { return typeof value === 'string' && value.length > 0; }

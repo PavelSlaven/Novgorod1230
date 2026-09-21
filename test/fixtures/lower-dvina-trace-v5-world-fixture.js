@@ -9,10 +9,12 @@ const root = 'data/world-catalogs/novgorod/spatial-v3/candidates';
 const v5Path = `${root}/spatial-v3-production-v5`;
 const v6Path = `${root}/spatial-v3-production-v6`;
 const lineagePaths = [
-  `${root}/spatial-v3-production-v2/manifest.json`,
-  `${root}/spatial-v3-production-v3/manifest.json`,
-  `${root}/spatial-v3-production-v4/manifest.json`
+  `${root}/spatial-v3-production-v2/datasets/spatial_v3_world_revisions.json`,
+  `${root}/spatial-v3-production-v3/datasets/spatial_v3_world_revisions.json`,
+  `${root}/spatial-v3-production-v4/datasets/spatial_v3_world_revisions.json`
 ];
+const sourceRecordPaths = [2, 3, 4, 5, 6].map((version) =>
+  `${root}/spatial-v3-production-v${version}/datasets/source_records.json`);
 const closureColumns = Object.freeze({
   spatial_v3_g6_template_slots: ['scene_slot_key', 'physical_class_id',
     'primary_scene_role_id', 'vertical_context_id', 'overhead_cover_id',
@@ -103,17 +105,17 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
   const datasets = Object.fromEntries(await Promise.all(manifest.datasets.map(
     async ({ table, file }) => [table, await readJson(`${path}/${file}`)]
   )));
-  const lineage = await Promise.all(paths.map(readJson));
-  await pool.query(`INSERT INTO world_base.spatial_v3_world_revisions
-    (id,parent_revision_id,catalog_digest,status) VALUES($1,NULL,$2,'approved')`,
-  ['novgorod_spatial_v3_target_contract_approval_001',
-    '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e']);
-  for (const revision of [...lineage, ...datasets.spatial_v3_world_revisions]) {
-    await pool.query(`INSERT INTO world_base.spatial_v3_world_revisions
-      (id,parent_revision_id,catalog_digest,status) VALUES($1,$2,$3,$4)`,
-    [revision.id ?? revision.world_revision_id, revision.parent_revision_id, revision.catalog_digest,
-      revision.status]);
-  }
+  const [lineage, sourceRecordSets] = await Promise.all([
+    Promise.all(paths.map(readJson)),
+    Promise.all(sourceRecordPaths.map(readJson))
+  ]);
+  const sourceRecords = [...new Map(sourceRecordSets.flat()
+    .map((record) => [record.id, record])).values()];
+  for (const record of sourceRecords) await insert(pool,
+    'source_records', record);
+  for (const revision of [...lineage.flat(),
+    ...datasets.spatial_v3_world_revisions]) await insert(pool,
+    'spatial_v3_world_revisions', revision);
   for (const table of ['spatial_v3_nodes', 'spatial_v3_node_parents',
     'spatial_v3_scene_materialization_profiles',
     'spatial_v3_scene_materialization_candidates', 'spatial_v3_scene_templates',
@@ -155,6 +157,13 @@ async function installLowerDvinaTraceWorld(pool, { path, world, lineagePaths: pa
       visibility_links: rows('spatial_v3_visibility_link_templates')
     });
   }
+}
+
+async function insert(pool, table, row) {
+  const columns = Object.keys(row);
+  await pool.query(`INSERT INTO world_base.${table} (${columns.join(',')})
+    VALUES(${columns.map((_, index) => `$${index + 1}`).join(',')})`,
+  columns.map((column) => row[column]));
 }
 
 async function ensureRuntimeCatalogSchema(pool) {

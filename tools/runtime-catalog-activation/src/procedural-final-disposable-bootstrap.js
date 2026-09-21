@@ -5,7 +5,7 @@ import registry from '../../../data/runtime-catalog/item-container-record-regist
 import { generateProceduralFinalCandidatePack } from '../../../scripts/generate-procedural-final-candidate-pack.mjs';
 import { buildBaselineRegistrationId, buildBaselineRegistrationRequest,
   buildOperatorBaselineSnapshotManifest, digestEnvelope } from './artifact-contracts.js';
-import { WORLD_RUNTIME_CATALOG_MIGRATION } from './forward-migrations.js';
+import { WORLD_RUNTIME_CATALOG_MIGRATION_V3 } from './forward-migrations.js';
 import { importProceduralFinalCandidatePack, importProceduralFinalV2Pack } from './procedural-v6-import.js';
 import { registerCatalogBaseline } from './operator-executors.js';
 import { RECORD_ADAPTERS } from './record-adapters.generated.js';
@@ -39,7 +39,8 @@ export async function bootstrapProceduralFinalV2Disposable({ worldPool,
       .map(normalizeRow);
   delete rowsByTable.world_revisions;
   const baselineManifest = buildOperatorBaselineSnapshotManifest({
-    schemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+    schemaFingerprint:
+      WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
     registry, rowsByTable });
   const request = buildBaselineRegistrationRequest({
     parentRevisionId: 'procedural_final_disposable_baseline_001',

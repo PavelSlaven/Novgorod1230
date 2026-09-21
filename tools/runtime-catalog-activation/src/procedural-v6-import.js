@@ -426,10 +426,10 @@ export function buildProceduralFinalV2ImportLedger({ baseline, v1Pack, v2Pack,
     target_revision_id: v2Pack.target_revision_id,
     target_catalog_digest: v2Pack.target_catalog_digest,
     record_registry_digest: v1Pack.record_registry_digest,
-    promotion_manifest_digest: digestEnvelope(v2Pack.append_only_delta),
-    approval_request_digest: v2Pack.candidate_digest,
-    approval_attestation_digest: claimed,
-    schema_migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
+      promotion_manifest_digest: digestEnvelope(v2Pack.append_only_delta),
+      approval_request_digest: v2Pack.candidate_digest,
+      approval_attestation_digest: claimed,
+      schema_migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
   }, tables: operations.map(({ records: ignored, records_digest, ...table }) =>
     ({ ...table, payload_digest: records_digest })),
   records: operations.flatMap((operation) => operation.records.map((record) =>

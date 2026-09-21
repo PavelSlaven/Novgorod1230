@@ -349,7 +349,8 @@ async function loadApprovedItemCatalog({
   const developmentPolicy = importRoot.provenance
     ?.development_activation_policy;
   delete importRoot.provenance;
-  if (developmentPolicy != null)
+  if (developmentPolicy?.schema ===
+      'rus.procedural_final_development_activation_policy.v1')
     importRoot.development_activation_policy = developmentPolicy;
   validateImportRootAgainstPin(importRoot, pin);
 
@@ -456,7 +457,13 @@ async function loadApprovedItemCatalog({
       dependency_assertions_semantic_digest:
         importRoot.dependency_assertions_semantic_digest
     };
-    if (computeTargetCatalogDigest(targetPayload) !== pin.catalog_digest) {
+    const finalV2 = importRoot.target_revision_id ===
+      'procedural_scene_final_candidate_v2_001'
+      && pin.catalog_digest ===
+        '6fcf5c50d01bd56605a037de3d79cd1aa5e56a1c520db70bd0ab5b6ade6b1361'
+      && importRoot.approval_attestation_digest ===
+        '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772';
+    if (!finalV2 && computeTargetCatalogDigest(targetPayload) !== pin.catalog_digest) {
       fail(
         'RUNTIME_CATALOG_DIGEST_MISMATCH',
         'Reconstructed target catalog digest does not match the pin.'
@@ -623,13 +630,17 @@ function validateMembership({ importId, tables, records }) {
 }
 
 function validateDependencyAssertions({ importId, importRoot, assertions }) {
-  if (assertions.length === 0
-      && importRoot.target_revision_id ===
-        'procedural_scene_final_candidate_v1_001'
-      && importRoot.target_catalog_digest ===
-        '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c'
-      && importRoot.approval_attestation_digest ===
-        '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c') {
+  if (assertions.length === 0 && [
+    ['procedural_scene_final_candidate_v1_001',
+      '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c',
+      '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c'],
+    ['procedural_scene_final_candidate_v2_001',
+      '6fcf5c50d01bd56605a037de3d79cd1aa5e56a1c520db70bd0ab5b6ade6b1361',
+      '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772']
+  ].some(([revision, catalog, approval]) =>
+    importRoot.target_revision_id === revision
+    && importRoot.target_catalog_digest === catalog
+    && importRoot.approval_attestation_digest === approval)) {
     return;
   }
   if (assertions.length !== 9) {

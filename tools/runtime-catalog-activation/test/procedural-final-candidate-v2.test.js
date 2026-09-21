@@ -93,7 +93,9 @@ test('v2 evidence records measured catalog-import-record rollback cleanup',
       '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
         + 'final-candidate-pack-v2/disposable-import-result.json',
       import.meta.url), 'utf8'));
-    assert.equal(result.v2_import.rollback_probe, 'pass');
+  assert.equal(result.v2_import.rollback_probe, 'pass');
+  assert.equal(result.v2_import.import_audit_digest,
+    '6ad18c6f40185fa540bf7e3ec3bbb5d5b96e95c370b5e70c657a0db73c29f3b2');
     assert.equal(result.v2_import
       .catalog_import_records_zero_residual_after_probe, true);
   });

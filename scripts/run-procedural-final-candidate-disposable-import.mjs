@@ -45,13 +45,14 @@ import { buildSpatialV3ProductionV12ActivationBundle,
 import { buildProceduralFinalDevelopmentActivation,
   applyProceduralFinalDevelopmentActivation } from
   '../tools/runtime-catalog-activation/src/procedural-final-development-activation.js';
+import { buildProceduralFinalV2DevelopmentActivation,
+  applyProceduralFinalV2DevelopmentActivation } from
+  '../tools/runtime-catalog-activation/src/procedural-final-v2-development-activation.js';
 import { loadActiveRuntimeCatalogPin } from
   '../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 
-const v2Only = process.argv.includes('--v2-only');
-const OUTPUT = `data/world-catalogs/novgorod/procedural-scene-v2/`
-  + `${v2Only ? 'final-candidate-pack-v2' : 'final-candidate-pack-v1'}/`
-  + 'disposable-import-result.json';
+const OUTPUT = 'data/world-catalogs/novgorod/procedural-scene-v2/'
+  + 'final-candidate-pack-v2/disposable-import-result.json';
 
 if (!process.argv.includes('--execute')) {
   throw new Error('DISPOSABLE_IMPORT_EXPLICIT_EXECUTE_REQUIRED');
@@ -107,19 +108,16 @@ try {
   await runWorldRuntimeCatalogMigration(pool);
   await runPartyRuntimeCatalogMigration(partyPool);
 
-  let oldActivation = null;
-  if (!v2Only) {
-    const oldBundle = await buildSpatialV3ProductionV12ActivationBundle({
-      worldPool: pool, partyPool, repositoryRoot: root,
-      gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
-      authorizationRef: 'disposable old-party fixture activation'
-    });
-    oldActivation = await applySpatialV3ProductionV12ActivationBundle({
-      worldPool: pool, partyPool, bundle: oldBundle });
-    const oldPin = await loadActiveRuntimeCatalogPin(pool,
-      'item_container_materialization_v2');
-    await seedPartyWithPin(partyPool, 'party-old-fixture', oldPin);
-  }
+  const oldBundle = await buildSpatialV3ProductionV12ActivationBundle({
+    worldPool: pool, partyPool, repositoryRoot: root,
+    gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
+    authorizationRef: 'disposable old-party fixture activation'
+  });
+  const oldActivation = await applySpatialV3ProductionV12ActivationBundle({
+    worldPool: pool, partyPool, bundle: oldBundle });
+  const oldPin = await loadActiveRuntimeCatalogPin(pool,
+    'item_container_materialization_v2');
+  await seedPartyWithPin(partyPool, 'party-old-fixture', oldPin);
 
   const pack = await generateProceduralFinalCandidatePack(root);
   const v5Readback = await verifyAssertExistingRows(pool, pack);
@@ -185,30 +183,6 @@ try {
   const v2Imported = await importProceduralFinalV2Pack({ pool, baseline,
     v1Pack: pack, v2Pack, attestation: v2Attestation,
     runtimeContractDigest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST });
-  if (v2Only) {
-    result = {
-      schema: 'rus.procedural_final_candidate_v2_disposable_import_result.v1',
-      status: 'PASS', environment: 'fresh_disposable_embedded_postgresql',
-      database_name: database, credentials_persisted: false,
-      v5_prerequisite: { lifecycle_applied: promotion.applied === true,
-        rollback_probe: promotion.rollback, asserted_table_count: 39,
-        asserted_record_count: 3248 },
-      v1_prerequisite: { candidate_digest: pack.candidate_digest,
-        import_audit_digest: imported.ledger.root.import_audit_digest,
-        ledger_record_count: imported.readback.ledger_record_count,
-        compiled_record_count: imported.readback.compiled_record_count,
-        activation_event_count: 0 },
-      v2_import: { candidate_digest: v2Pack.candidate_digest,
-        approval_attestation_digest: v2Attestation.attestation_digest,
-        import_audit_digest: v2Imported.ledger.root.import_audit_digest,
-        ...v2Imported.readback, rollback_probe: v2Rollback.status,
-        catalog_import_records_zero_residual_after_probe:
-          v2Rollback.catalogImportRecordsZeroResidual,
-        activation_performed: false },
-      cleanup, production_mutated: false, runtime_activation_performed: false
-    };
-  }
-  if (!v2Only) {
   const activationBundle = await buildProceduralFinalDevelopmentActivation({
     worldPool: pool, partyPool, pack, ledger: imported.ledger,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
@@ -218,15 +192,33 @@ try {
     worldPool: pool, partyPool, bundle: activationBundle });
   const activePin = await loadActiveRuntimeCatalogPin(pool,
     'item_container_materialization_v2');
+  await seedPartyWithPin(partyPool, 'party-v1-development', activePin);
+  const existingPartyPins = (await partyPool.query(
+    `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
+       FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;
+  const v2ActivationBundle = await buildProceduralFinalV2DevelopmentActivation({
+    worldPool: pool, partyPool, v1Pack: pack, v2Pack,
+    v2ApprovalAttestation: v2Attestation, ledger: v2Imported.ledger,
+    gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0'
+  });
+  const v2Activation = await applyProceduralFinalV2DevelopmentActivation({
+    worldPool: pool, partyPool, bundle: v2ActivationBundle });
+  const unchangedPartyPins = (await partyPool.query(
+    `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
+       FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;
+  if (digestEnvelope(existingPartyPins) !== digestEnvelope(unchangedPartyPins))
+    throw new Error('DISPOSABLE_V2_EXISTING_PARTY_PIN_MUTATION');
+  const v2Pin = await loadActiveRuntimeCatalogPin(pool,
+    'item_container_materialization_v2');
   const runtimeLoader = createRuntimeCatalogLoader({ worldBaseReader: {
     read: (sql, parameters) => pool.query(sql, parameters)
   }, supportedRuntimeContractDigests: [
     RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST] });
   const verifiedCatalog = await runtimeLoader.loadApprovedItemCatalog({
-    pin: activePin });
+    pin: v2Pin });
   const compiledCatalog = loadApprovedProceduralCompiledCatalog({
-    verifiedCatalog, pin: activePin });
-  await seedPartyWithPin(partyPool, 'party-new-development', activePin);
+    verifiedCatalog, pin: v2Pin });
+  await seedPartyWithPin(partyPool, 'party-new-v2-development', v2Pin);
   const partyPins = (await partyPool.query(
     `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
        FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;
@@ -237,7 +229,7 @@ try {
       WHERE source_pack_digest=$1 ORDER BY record_id,version`,
     [pack.source_pack_digest])).rows.map(normalizeRow);
   result = {
-    schema: 'rus.procedural_final_candidate_disposable_import_result.v1',
+    schema: 'rus.procedural_final_candidate_v2_activation_result.v1',
     status: 'PASS',
     environment: 'fresh_disposable_embedded_postgresql',
     database_name: database,
@@ -253,7 +245,7 @@ try {
       asserted_record_count: v5Readback.record_count,
       records_digest: v5Readback.records_digest
     },
-    final_import: {
+    v1_prerequisite: {
       candidate_digest: pack.candidate_digest,
       independent_attestation_digest:
         pack.independent_attestation.attestation_digest,
@@ -264,10 +256,11 @@ try {
       ledger_record_count: imported.readback.ledger_record_count,
       compiled_record_count: imported.readback.compiled_record_count,
       compiled_rows_digest: digestEnvelope(compiledRows),
-      activation_event_count: imported.readback.activation_event_count,
+      activation_event_count_before_v1_activation:
+        imported.readback.activation_event_count,
       rollback_probe: rollbackProbe
     },
-    development_activation: {
+    v1_development_activation: {
       activation_scope: activationBundle.activation_scope,
       event_id: activation.event_id,
       event_sequence: activation.event_sequence,
@@ -287,29 +280,62 @@ try {
       active_catalog_digest: activePin.catalog_digest,
       old_party_revision_id: partyPins.find(({ party_id: id }) =>
         id === 'party-old-fixture').catalog_revision_id,
-      new_party_revision_id: partyPins.find(({ party_id: id }) =>
-        id === 'party-new-development').catalog_revision_id,
-      verified_compiled_profile_count: compiledCatalog.profiles.length,
-      verified_compiled_mapping_count: compiledCatalog.mappings.length,
+      v1_party_revision_id: partyPins.find(({ party_id: id }) =>
+        id === 'party-v1-development').catalog_revision_id,
+      verified_compiled_profile_count: 13,
+      verified_compiled_mapping_count: 7,
       existing_party_rows_updated: 0,
       production_deploy: false,
       old_save_migration: false,
       rematerialization: false
     },
-    v2_disposable_import: {
+    v2_import: {
       candidate_digest: v2Pack.candidate_digest,
       approval_attestation_digest: v2Attestation.attestation_digest,
       import_audit_digest: v2Imported.ledger.root.import_audit_digest,
       ...v2Imported.readback,
-      rollback_probe: v2Rollback,
-      activation_performed: false
+      rollback_probe: v2Rollback.status,
+      catalog_import_records_zero_residual_after_probe:
+        v2Rollback.catalogImportRecordsZeroResidual
+    },
+    v2_development_activation: {
+      activation_scope: v2ActivationBundle.activation_scope,
+      event_id: v2Activation.event_id,
+      event_sequence: v2Activation.event_sequence,
+      predecessor_event_id: activation.event_id,
+      predecessor_revision_id: pack.target_revision_id,
+      activation_request_digest:
+        v2ActivationBundle.request.activation_request_digest,
+      activation_attestation_digest:
+        v2ActivationBundle.attestation.attestation_digest,
+      v2_candidate_digest: v2Pack.candidate_digest,
+      v2_import_approval_attestation_digest: v2Attestation.attestation_digest,
+      actor_allocation_approval_attestation_digest:
+        v2Pack.allocation_source.approval_attestation_digest,
+      import_audit_digest: v2Imported.ledger.root.import_audit_digest,
+      active_revision_id: v2Pin.catalog_revision_id,
+      active_catalog_digest: v2Pin.catalog_digest,
+      old_v12_party_revision_id: partyPins.find(({ party_id: id }) =>
+        id === 'party-old-fixture').catalog_revision_id,
+      old_v1_party_revision_id: partyPins.find(({ party_id: id }) =>
+        id === 'party-v1-development').catalog_revision_id,
+      new_v2_party_revision_id: partyPins.find(({ party_id: id }) =>
+        id === 'party-new-v2-development').catalog_revision_id,
+      verified_compiled_record_count: compiledCatalog.profiles.length
+        + compiledCatalog.mappings.length
+        + Number(compiledCatalog.approval_metadata != null),
+      runtime_item_creation_authorized:
+        compiledCatalog.runtime_item_creation_authorized,
+      existing_party_rows_updated: 0,
+      production_deploy: false,
+      old_save_migration: false,
+      rematerialization: false
     },
     cleanup,
     production_mutated: false,
     development_runtime_activation_performed: true,
     production_runtime_activation_performed: false
   };
-  }
 } finally {
   await pool?.end();
   await partyPool?.end();

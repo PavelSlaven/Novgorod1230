@@ -19,8 +19,10 @@ export async function createPostgresTestBackend(prefix) {
   assertIdentifier(partyDatabase);
   const admin = new pg.Pool({ connectionString: adminUrl, max: 1 });
   try {
-    await admin.query(`CREATE DATABASE ${worldDatabase}`);
-    await admin.query(`CREATE DATABASE ${partyDatabase}`);
+    await admin.query(`CREATE DATABASE ${worldDatabase}
+      TEMPLATE template0 LC_COLLATE 'C' LC_CTYPE 'C'`);
+    await admin.query(`CREATE DATABASE ${partyDatabase}
+      TEMPLATE template0 LC_COLLATE 'C' LC_CTYPE 'C'`);
   } catch (error) {
     await admin.query(`DROP DATABASE IF EXISTS ${partyDatabase} WITH (FORCE)`)
       .catch(() => {});

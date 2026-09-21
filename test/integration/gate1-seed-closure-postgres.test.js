@@ -36,6 +36,10 @@ test('Gate1 closure accepts graph-node newline normalization but rejects content
       await rm(dataRoot, { recursive: true, force: true });
     });
 
+    const locale = await pool.query(`SELECT datcollate,datctype
+      FROM pg_database WHERE datname=current_database()`);
+    assert.deepEqual(locale.rows, [{ datcollate: 'C', datctype: 'C' }]);
+
     const derived = await deriveGate1SeedPersistedClosure(pool);
     const generated = await buildGate1SeedClosureArtifacts({
       tableClosure: derived.table_closure

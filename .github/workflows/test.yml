@@ -64,12 +64,12 @@ jobs:
         run: npm ci
 
       - name: Use Python 3.12 for world_base importer
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'acceptance' || matrix.suite == 'browser-architecture')
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Provision pinned World Knowledge encoder
-        if: steps.profile.outputs.profile == 'full' && matrix.suite == 'fast'
+        if: steps.profile.outputs.profile == 'full' && (matrix.suite == 'fast' || matrix.suite == 'acceptance' || matrix.suite == 'browser-architecture')
         run: |
           python -m pip install -r tools/world-catalog-workflow/requirements-embeddings.txt
           python - <<'PY'

@@ -22,6 +22,7 @@ export { compileApprovedNpcRuntimeBasis, compileProceduralSceneProfile,
   deriveApprovedInitialEnvironment, materializeApprovedProceduralNpc,
   validateProceduralSceneAuthoringCandidate } from
   './procedural-authoring.js';
+export { compileProceduralScenePartyPackages } from './procedural-scene-party-packages.js';
 export { completeAuthoredItemMechanics } from
   './lower-dvina-trace-selection.js';
 export {

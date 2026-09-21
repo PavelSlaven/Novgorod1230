@@ -229,6 +229,59 @@ export function validatePendingGate1ActivationAmendment(request) {
   return true;
 }
 
+export function validateGate1RuntimeActivationAttestation({ request,
+  attestation }) {
+  validatePendingGate1ActivationAmendment(request);
+  const expectedBindings = {
+    predecessor_request_digest: request.predecessor.request_digest,
+    import_readback: request.completed_import_readback,
+    reconciled_stage3c: request.reconciled_stage3c,
+    target_catalog: request.target_catalog,
+    approval_chain: request.approval_chain,
+    compatible_world_pins: request.compatible_world_pins,
+    world_revisions_digest: request.world_revisions_digest
+  };
+  const authority = attestation?.authority ?? {};
+  if (attestation?.schema !==
+        'rus.gate1_v5_v6_runtime_activation_approval_attestation.v1'
+      || attestation.status !==
+        'approved_new_development_parties_only_not_executed'
+      || attestation.decision !==
+        'approve_exact_new_development_runtime_activation'
+      || attestation.activation_amendment_request_digest !==
+        request.request_digest
+      || attestation.activation_scope !==
+        'new_development_parties_only'
+      || canonicalDigest(attestation.approved_permissions) !==
+        canonicalDigest(request.requested_permissions)
+      || canonicalDigest(attestation.approved_bindings) !==
+        canonicalDigest(expectedBindings)
+      || attestation.restart_evidence?.verified !== true
+      || attestation.restart_evidence?.managed_postgresql_result !== 'pass'
+      || canonicalDigest(attestation.restart_evidence?.verification) !==
+        canonicalDigest(request.completed_import_readback
+          .restart_verification)
+      || authority.approval_attestation_present !== true
+      || authority.activation_authorized !== true
+      || authority.new_development_party_activation_authorized !== true
+      || authority.import_authorized !== false
+      || authority.production_authorized !== false
+      || authority.existing_party_migration_authorized !== false
+      || authority.old_save_rematerialization_authorized !== false
+      || authority.authoring_only_functional_allocation_runtime_selection
+        !== false
+      || authority.runtime_item_creation_authorized !== false
+      || attestation.activation_executed !== false
+      || attestation.database_mutated !== false) {
+    throw new Error('GATE1_RUNTIME_ACTIVATION_ATTESTATION_INVALID');
+  }
+  const { attestation_digest: claimed, ...payload } = attestation;
+  if (claimed !== canonicalDigest(payload)) {
+    throw new Error('GATE1_RUNTIME_ACTIVATION_ATTESTATION_DIGEST_INVALID');
+  }
+  return true;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const request = await buildGate1ActivationAmendmentRequest();
   if (process.argv.includes('--write')) {

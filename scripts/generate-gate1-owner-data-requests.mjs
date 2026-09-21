@@ -107,6 +107,76 @@ export function validatePendingGate1OwnerDataArtifacts({ parent, activation }) {
   return true;
 }
 
+export function validateGate1OwnerDataAuthoringAttestation({ parent,
+  activation, attestation }) {
+  validatePendingGate1OwnerDataArtifacts({ parent, activation });
+  const expectedScope = {
+    proposed_world_base_rows: parent.proposed_world_base_rows.map((row) => ({
+      id: row.id, source_status: row.status
+    })),
+    authoring_promotions: parent.requested_authoring_promotions,
+    unchanged_approved_dependencies: {
+      region_social_roles: parent.exact_dependencies.region_social_roles.map(
+        ({ source_row: row, requested_status }) => ({
+          id: row.role_id, source_status: row.status, requested_status
+        }))
+    }
+  };
+  const expectedSourceHashes = {
+    archive_sha256: parent.source_snapshot.sha256,
+    g4_member_sha256: parent.source_snapshot.archive_member_sha256,
+    place_seed_sha256: parent.exact_dependencies.place_template_source.sha256,
+    place_member_sha256:
+      parent.exact_dependencies.place_template_source.archive_member_sha256,
+    region_profile_member_sha256:
+      parent.exact_dependencies.region.source.archive_member_sha256,
+    region_place_member_sha256:
+      parent.exact_dependencies.region_place_template_source
+        .archive_member_sha256,
+    social_role_member_sha256:
+      parent.exact_dependencies.region_social_roles[0].source
+        .archive_member_sha256,
+    research_revision_sha256: parent.research_revision_source.sha256,
+    baseline_manifest_sha256: parent.proposed_world_base_rows[0].source.sha256,
+    g4_dependency_request_sha256: parent.existing_approval_evidence[0].sha256,
+    final_approval_request_sha256: parent.existing_approval_evidence[1].sha256,
+    final_approval_attestation_sha256:
+      parent.existing_approval_evidence[2].sha256
+  };
+  const authority = attestation.authority ?? {};
+  if (attestation.schema !==
+        'rus.gate1_parent_world_revision_authoring_approval_attestation.v1'
+      || attestation.status !==
+        'approved_authoring_and_transactional_import_readback'
+      || attestation.parent_request_digest !== parent.request_digest
+      || attestation.activation_request_digest !== activation.request_digest
+      || attestation.activation_request_status !==
+        'pending_independent_runtime_approval'
+      || canonicalDigest(attestation.approved_scope)
+        !== canonicalDigest(expectedScope)
+      || canonicalDigest(attestation.approved_source_hashes)
+        !== canonicalDigest(expectedSourceHashes)
+      || authority.approval_attestation_present !== true
+      || authority.authoring_promotions_authorized !== true
+      || authority.import_authorized !== true
+      || authority.transactional_import_readback_only !== true
+      || authority.exact_readback_required !== true
+      || authority.activation_authorized !== false
+      || authority.production_authorized !== false
+      || authority.existing_party_migration_authorized !== false
+      || authority.old_save_rematerialization_authorized !== false
+      || authority.authoring_only_functional_allocation_runtime_selection
+        !== false
+      || authority.runtime_item_creation_authorized !== false) {
+    throw new Error('GATE1_AUTHORING_ATTESTATION_INVALID');
+  }
+  const { attestation_digest: claimed, ...unsigned } = attestation;
+  if (claimed !== canonicalDigest(unsigned)) {
+    throw new Error('GATE1_AUTHORING_ATTESTATION_DIGEST_INVALID');
+  }
+  return true;
+}
+
 export async function buildGate1OwnerDataArtifacts() {
   const [revision, baseline, archiveManifest, placeSeed, dependencyRequest,
     finalRequest, finalApproval, archive, revisionSource, baselineSource,
@@ -146,6 +216,12 @@ export async function buildGate1OwnerDataArtifacts() {
   }
   const requestedIds = dependencyRequest.profile_mappings
     .map(({ graph_node_id }) => graph_node_id).sort();
+  const finalTransitions = new Map(finalRequest.g4_status_transitions
+    .map((transition) => [transition.id, transition]));
+  if (finalTransitions.size !== requestedIds.length
+      || finalRequest.g4_status_transitions.length !== requestedIds.length) {
+    throw new Error('GATE1_G4_APPROVED_TRANSITION_SET_MISMATCH');
+  }
   const regionProfile = JSON.parse(regionProfileBytes.toString('utf8'));
   const sourceRows = parseTsv(g4Bytes.toString('utf8')
     .replace(/^\uFEFF/u, ''));
@@ -159,8 +235,11 @@ export async function buildGate1OwnerDataArtifacts() {
     if (!row) throw new Error(`GATE1_G4_SOURCE_ROW_MISSING:${id}`);
     const approved = dependencyRequest.profile_mappings.find(
       ({ graph_node_id }) => graph_node_id === id);
+    const finalTransition = finalTransitions.get(id);
     if (row.status !== approved.current_status
-        || row.place_template_id !== approved.place_template_id) {
+        || row.place_template_id !== approved.place_template_id
+        || finalTransition?.from_status !== row.status
+        || finalTransition?.to_status !== approved.requested_status) {
       throw new Error(`GATE1_G4_SOURCE_ROW_DRIFT:${id}`);
     }
     return Object.freeze({ graph_node_id: id, source_row: Object.freeze({

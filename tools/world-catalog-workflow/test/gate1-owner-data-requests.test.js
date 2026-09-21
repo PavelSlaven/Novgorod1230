@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 
 import { buildGate1OwnerDataArtifacts,
+  validateGate1OwnerDataAuthoringAttestation,
   validatePendingGate1OwnerDataArtifacts } from
   '../../../scripts/generate-gate1-owner-data-requests.mjs';
 
@@ -79,5 +80,28 @@ test('Gate1 validator rejects runtime item creation and authoring allocation',
       artifacts.activation.requested_permissions[field] = true;
       assert.throws(() => validatePendingGate1OwnerDataArtifacts(artifacts),
         /GATE1_RUNTIME_SCOPE_FORBIDDEN/u);
+  }
+});
+
+test('authoring attestation approves only exact transactional import/readback',
+  async () => {
+    const artifacts = await buildGate1OwnerDataArtifacts();
+    const attestation = JSON.parse(await readFile(
+      `${root}/authoring-approval-attestation.json`, 'utf8'));
+    assert.equal(validateGate1OwnerDataAuthoringAttestation({
+      ...artifacts, attestation
+    }), true);
+    assert.equal(artifacts.activation.status,
+      'pending_independent_runtime_approval');
+    for (const field of ['activation_authorized', 'production_authorized',
+      'existing_party_migration_authorized',
+      'authoring_only_functional_allocation_runtime_selection',
+      'runtime_item_creation_authorized']) {
+      assert.equal(attestation.authority[field], false);
     }
+    const widened = structuredClone(attestation);
+    widened.authority.runtime_item_creation_authorized = true;
+    assert.throws(() => validateGate1OwnerDataAuthoringAttestation({
+      ...artifacts, attestation: widened
+    }), /GATE1_AUTHORING_ATTESTATION_INVALID/u);
   });

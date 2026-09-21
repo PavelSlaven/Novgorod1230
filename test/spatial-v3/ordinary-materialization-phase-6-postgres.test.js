@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import test from 'node:test';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { Pool } from 'pg';
 import {
   applyOrdinaryAggregateTransition,
@@ -26,6 +28,8 @@ import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-enablement.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-ordinary-discovery.js';
+import { ensureLocalPostgres, LOCAL_POSTGRES } from
+  '../../tools/local-play/local-postgres.js';
 
 const docker = (args, input) => spawnSync('docker', args, {
   input,
@@ -165,26 +169,39 @@ async function bounded(promise) {
 }
 
 test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and stale-safe', async (t) => {
-  if (docker(['version']).status !== 0) return t.skip('Docker required for isolated PostgreSQL test');
-  let pool;
+  const dockerReady = docker(['version']).status === 0;
+  let pool, managed, managedRoot;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', container]);
+    if (managed) await managed.close();
+    if (managedRoot) await rm(managedRoot, { recursive: true, force: true });
+    if (dockerReady) docker(['rm', '-f', container]);
   });
-  const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
-    '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',
-    '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
-  assert.equal(started.status, 0, started.stderr);
-  let ready = false;
-  for (let attempt = 0; attempt < 50; attempt += 1) {
-    await new Promise((done) => setTimeout(done, 250));
-    if (docker(['exec', container, 'pg_isready', '-U', 'ordinary', '-d', 'ordinary']).status === 0) { ready = true; break; }
+  if (dockerReady) {
+    const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',
+      '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
+    assert.equal(started.status, 0, started.stderr);
+    let ready = false;
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      await new Promise((done) => setTimeout(done, 250));
+      if (docker(['exec', container, 'pg_isready', '-U', 'ordinary', '-d', 'ordinary']).status === 0) { ready = true; break; }
+    }
+    assert.equal(ready, true, 'isolated PostgreSQL must become ready');
+    await new Promise((done) => setTimeout(done, 750));
+    const port = Number(docker(['port', container, '5432/tcp']).stdout.match(/:(\d+)\s*$/u)?.[1]);
+    assert.ok(Number.isSafeInteger(port));
+    pool = new Pool({ host: '127.0.0.1', port, user: 'ordinary', password: 'ordinary', database: 'ordinary', max: 6, connectionTimeoutMillis: 5_000 });
+  } else {
+    managedRoot = await mkdtemp(join(tmpdir(), 'novgorod-ordinary-phase6-'));
+    managed = await ensureLocalPostgres({ dataRoot: managedRoot,
+      settings: { ...LOCAL_POSTGRES,
+        worldDatabase: `ordinary_world_${process.pid}`,
+        partyDatabase: `ordinary_party_${process.pid}`,
+        worldUser: 'postgres', partyUser: 'postgres' } });
+    pool = new Pool({ connectionString: managed.partyUrl, max: 6,
+      connectionTimeoutMillis: 5_000 });
   }
-  assert.equal(ready, true, 'isolated PostgreSQL must become ready');
-  await new Promise((done) => setTimeout(done, 750));
-  const port = Number(docker(['port', container, '5432/tcp']).stdout.match(/:(\d+)\s*$/u)?.[1]);
-  assert.ok(Number.isSafeInteger(port));
-  pool = new Pool({ host: '127.0.0.1', port, user: 'ordinary', password: 'ordinary', database: 'ordinary', max: 6, connectionTimeoutMillis: 5_000 });
   for (const file of migrations) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   await pool.query(await readFile('schemas/party-db/025_party_runtime_finite_resource_transitions.sql', 'utf8'));
   await pool.query(`INSERT INTO party_runtime.parties
@@ -259,7 +276,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
     property_version: '1', placement_version: '1', supporting_basis_catalog_version: '1',
     supporting_basis_catalog_digest: positive.next_supporting_basis_catalog_digest
   });
-  assert.equal(positive.next_aggregate.remaining_identity_budget, 3);
+  assert.equal(positive.next_aggregate.remaining_identity_budget, 4);
   assert.equal(positive.next_aggregate.background_groups.length, 1, 'candidate-free Stage A group is committed with the resolution');
   const persistedBasis = await pool.query(`SELECT basis_ref,origin_request_identity,basis_snapshot
     FROM party_runtime.party_ordinary_materialization_basis_catalog
@@ -288,7 +305,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   assert.equal(negative.transitions.length, 1, 'an already seeded aggregate uses exactly one resolution transition');
   assert.deepEqual(await bounded(committer.commit(negative)), { status: 'committed', replay: false, state_version: 3 });
   assert.equal((await pool.query(`SELECT count(*)::int AS count FROM party_runtime.party_ordinary_materialization_items WHERE party_id='party-a'`)).rows[0].count, 1);
-  assert.equal(negative.next_aggregate.remaining_identity_budget, 3, 'negative result must not decrement budget');
+  assert.equal(negative.next_aggregate.remaining_identity_budget, 4, 'negative result must not decrement budget');
   assert.deepEqual((await pool.query(`SELECT transition_count,from_ordinary_state_version,to_ordinary_state_version FROM party_runtime.party_ordinary_materialization_commits WHERE party_id='party-a' AND request_identity='negative-a'`)).rows[0], { transition_count: 1, from_ordinary_state_version: '2', to_ordinary_state_version: '3' });
 
   const staleParty = plan({ aggregate: negative.next_aggregate, party_state_version: 2,
@@ -867,6 +884,19 @@ async function assertFiniteResolverReloadLifecycle(pool) {
   assert.equal(second.finite_resource_transition.expected_state_version, 9);
   assert.equal(second.finite_resource_transition.lifecycle_state_after, 'depleted');
   await commitFiniteInP16(pool, second, 'finite-reload-change-2', 1);
+  const decrements = await pool.query(`SELECT expected_state_version,
+    before_numerator,decrement_numerator,after_numerator,lifecycle_state_after
+    FROM party_runtime.party_resource_node_decrements
+    WHERE party_id=$1 AND resource_node_id=$2 ORDER BY expected_state_version`,
+  [partyId, sourceRef]);
+  assert.deepEqual(decrements.rows, [
+    { expected_state_version: '8', before_numerator: '2',
+      decrement_numerator: '1', after_numerator: '1',
+      lifecycle_state_after: 'active' },
+    { expected_state_version: '9', before_numerator: '1',
+      decrement_numerator: '1', after_numerator: '0',
+      lifecycle_state_after: 'depleted' }
+  ]);
   assert.equal(modelCalls, 2, 'each fresh discovery performs one Stage B call');
   const persistedNames = await pool.query(`SELECT state->'ordinary_metadata'->>'name' AS name
     FROM party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId]);

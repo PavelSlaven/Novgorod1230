@@ -25,7 +25,9 @@ export function compileProceduralScenePartyPackages({ party_id: partyId,
       family: profile.family, g5_node_id: scene.g5_node_id,
       g6_instance_id: scene.g6_instance_id, position_id: scene.position_id,
       profile: allocationReadiness(profile, allocation), actors: sceneActors,
-      allocation_policy: allocation, pin: structuredClone(catalog.pin) };
+      allocation_policy: allocation,
+      inventory_profiles: allocationProfiles(catalog.item_inventory_profiles,
+        allocation?.policy), pin: structuredClone(catalog.pin) };
     return { ...payload, scene_package_digest: stage24Digest(payload) };
   });
   return deepFreeze({ schema: 'rus.procedural_scene_party_packages.v1', version: 1,
@@ -60,6 +62,18 @@ function pendingAllocation(policy, profile, actors) {
     policy_id: policy.policy_id, actor_instance_id: applicable[0].instance_id,
     policy: structuredClone(policy) });
 }
+
+function allocationProfiles(profiles, policy) {
+  if (policy == null) return [];
+  const selected = (policy.allocations ?? []).map((line) =>
+    (profiles ?? []).filter((profile) => profile?.id === line.inventory_profile_ref
+      && profile.item_template_id === line.item_template_ref
+      && profile.status === 'approved'));
+  if (selected.some((matches) => matches.length !== 1)) {
+    gap('ALLOCATION_INVENTORY_PROFILE');
+  }
+  return selected.map(([profile]) => structuredClone(profile));
+}
 function actorMatchesPolicy(actor, applicability = {}) {
   const kind = actor.actor_kind ?? 'npc';
   const activity = actor.machine_state?.current_activity;
@@ -70,9 +84,23 @@ function actorMatchesPolicy(actor, applicability = {}) {
     && (applicability.occupation_ref == null
       || actor.occupation_ref?.id === applicability.occupation_ref)
     && (applicability.activity_profile_ref == null
-      || activity?.activity_profile_ref === applicability.activity_profile_ref)
+      || activityMatchesPolicy(actor.machine_state, activity,
+        applicability.activity_profile_ref))
     && (applicability.activity_category_ref == null
       || activity?.activity_category_id === applicability.activity_category_ref);
+}
+
+// An approved routine may expose only its generic current-work carrier.  The
+// allocation policy supplies the exact activity profile; role, occupation and
+// scene function above remain the admission basis.  This is deliberately not
+// keyed by scenario, NPC, or authored prose.
+function activityMatchesPolicy(machine, activity, profileRef) {
+  if (activity?.activity_profile_ref === profileRef) return true;
+  return machine?.schedule_state === 'working'
+    && activity?.status === 'active'
+    && ['ordinary_local_work_cycle_v1', 'current_ordinary_work']
+      .includes(activity?.activity_ref)
+    && activity.can_continue_automatically === true;
 }
 function normalizeScene(scene) {
   if (!object(scene) || ![scene.scene_template_id, scene.g5_id,

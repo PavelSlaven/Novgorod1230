@@ -22,6 +22,8 @@ import {
 } from './lower-dvina-trace-persisted-projection.js';
 import { assertRevision19CharacterState } from './lower-dvina-trace-revision19-write-boundary.js';
 import { approvedNpcBodyRows, approvedNpcConditionRows } from './actor-write-boundary.js';
+import { resolveProceduralActorAllocations } from './procedural-actor-allocation.js';
+import { addBatch, validatedProceduralPackages } from './write-plan-batches.js';
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertInput(input);
   const request_id = input.request_id;
@@ -49,6 +51,10 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertMaterializationRuntimeCatalogPins({ trace: result.trace, pins, domainPin });
   const proceduralScenePackages = validatedProceduralPackages(result.trace,
     result.procedural_scene_packages, domainPin);
+  const proceduralAllocations = resolveProceduralActorAllocations({
+    packages: proceduralScenePackages, result, partyId, runId });
+  const allocatedItems = proceduralAllocations.filter(({ reused }) => !reused)
+    .map(({ item }) => item);
   const runRecord = {
     party_id: partyId,
     run_id: runId,
@@ -287,7 +293,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     terminal_change_set_id: null
   })).concat(approvedNpcConditionRows(identityNpcs, partyId, changeSetId)),
   ['party_actor_body_states', 'party_v3_change_sets'], sourceTrace);
-  addBatch(batches, 'party_items', result.immediate.items.map((item) => ({
+  addBatch(batches, 'party_items', [...result.immediate.items, ...allocatedItems].map((item) => ({
     party_id: partyId,
     item_id: item.instance_id,
     run_id: runId,
@@ -299,7 +305,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     legal_status: item.legal_status,
     state: item.state
   })), ['party_materialization_runs'], sourceTrace);
-  addBatch(batches, 'party_item_placements', result.immediate.items.map((item) => ({
+  addBatch(batches, 'party_item_placements', [...result.immediate.items, ...allocatedItems].map((item) => ({
     party_id: partyId,
     item_id: item.instance_id,
     anchor_id: item.anchor_id ?? null,
@@ -311,7 +317,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   })), ['party_items', 'party_containers', 'party_player_characters',
     'party_npcs', 'party_g5_anchors'], sourceTrace);
   addBatch(batches, 'party_ownership', [
-    ...result.immediate.items.map((item) => ({
+    ...[...result.immediate.items, ...allocatedItems].map((item) => ({
       party_id: partyId,
       ownership_id: `ownership_${item.instance_id}`,
       item_id: item.instance_id,
@@ -455,42 +461,6 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   return plan;
 }
 
-function validatedProceduralPackages(trace, packages, pin) {
-  const v2 = pin?.catalog_revision_id === 'procedural_scene_final_candidate_v2_001';
-  if (packages == null) {
-    if (!v2) return null;
-    const error = new Error('PROCEDURAL_SCENE_PACKAGES_REQUIRED');
-    error.code = 'PROCEDURAL_SCENE_PACKAGES_REQUIRED';
-    throw error;
-  }
-  if ((!v2 && packages != null)
-      || trace.catalog_digest !== pin?.catalog_digest
-      || packages.schema !== 'rus.procedural_scene_party_packages.v1'
-      || !Array.isArray(packages.packages) || packages.packages.length === 0
-      || packages.pin?.catalog_digest !== trace.catalog_digest
-      || packages.digest !== computeStage24ArtifactDigest(packages.packages)
-      || packages.packages.some((entry) => entry.run_id !== trace.run_id
-        || entry.pin?.catalog_digest !== trace.catalog_digest
-        || entry.scene_package_digest !== computeStage24ArtifactDigest({
-          ...entry, scene_package_digest: undefined }))) {
-    const error = new Error('PROCEDURAL_SCENE_PACKAGES_INVALID');
-    error.code = 'PROCEDURAL_SCENE_PACKAGES_INVALID';
-    throw error;
-  }
-  return structuredClone(packages);
-}
-function addBatch(batches, table, records, dependencies, sourceTrace) {
-  if (records.length === 0) return;
-  batches.push({
-    batch_id: `batch-${table}`,
-    order: batches.length + 1,
-    target_table: table,
-    operation_mode: 'insert_only',
-    depends_on_batches: dependencies.filter((dependency) => batches.some((batch) => batch.target_table === dependency)).map((dependency) => `batch-${dependency}`),
-    records,
-    source_trace: sourceTrace
-  });
-}
 function assertInput(input) {
   const result = input?.approved_pipeline_outputs?.materialization_result;
   const semantic = input?.approved_pipeline_outputs?.player_character_audit;

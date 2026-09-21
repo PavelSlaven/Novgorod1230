@@ -31,6 +31,14 @@ async function catalog() {
       ...v1.candidate_rows_by_table.procedural_scene_compiled_records,
       v2.append_only_delta.record
     ].map((record) => ({ ...record, version: String(record.version) })),
+    item_template_inventory_profiles: [
+      { id: 'inventory_item_tpl_nov_fishing_net_v1',
+        item_template_id: 'item_tpl_nov_fishing_net_v1', status: 'approved',
+        mass_grams: 5000, carry_form: 'regular', external_hand_cost: 2 },
+      { id: 'inventory_item_tpl_nov_fishing_line_v1',
+        item_template_id: 'item_tpl_nov_fishing_line_v1', status: 'approved',
+        mass_grams: 200, carry_form: 'regular', external_hand_cost: 0 }
+    ],
     universal_categories: []
   }}});
 }
@@ -122,6 +130,19 @@ test('packages are stable, policy stays pending P16, and V1/wrong/tampered input
     assert.equal(packageFishing.allocation_policy.actor_instance_id, 'npc:a');
     assert.equal(packageFishing.allocation_policy.policy.property_basis.owner_ref,
       'selected_actor_instance');
+    assert.deepEqual(packageFishing.inventory_profiles.map(({ id }) => id), [
+      'inventory_item_tpl_nov_fishing_net_v1',
+      'inventory_item_tpl_nov_fishing_line_v1'
+    ]);
+    const genericRoutine = compileProceduralScenePartyPackages({ ...input,
+      actors: [{ ...actors[0], machine_state: {
+        schedule_state: 'working', current_activity: {
+          activity_ref: 'current_ordinary_work', status: 'active',
+          can_continue_automatically: true
+        }
+      } }], scenes: [fishing] });
+    assert.equal(genericRoutine.packages[0].allocation_policy.status,
+      'pending_p16_inventory_validation');
     const wrongActivity = compileProceduralScenePartyPackages({ ...input,
       actors: [{ ...actors[0], machine_state: { current_activity: {} } }],
       scenes: [fishing] });

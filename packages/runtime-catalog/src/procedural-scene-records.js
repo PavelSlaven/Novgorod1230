@@ -125,6 +125,8 @@ export function loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
       kind === 'approval_metadata'),
     allocation_policy: allocationPolicy,
     runtime_item_creation_authorized: false,
+    item_inventory_profiles: structuredClone(
+      verifiedCatalog.records_by_table.item_template_inventory_profiles ?? []),
     universal_categories: structuredClone(
       verifiedCatalog.records_by_table.universal_categories ?? [])
   });

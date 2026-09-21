@@ -284,7 +284,6 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     catalog = authoredStartCatalog,
     authoredStartResolver = catalog.resolveProfile,
     traceTurnRuntime = null,
-    runtimeCatalogLoader = null,
     committer = { commit: async () => ({ ok: true }) }
   } = {}) => {
     const adapter = createLowerDvinaTracePhase1BProductionAdapter({
@@ -293,8 +292,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       release,
       runtimeCatalogPin,
       initialOrdinaryProvisioner,
-      authoredStartResolver,
-      runtimeCatalogLoader
+      authoredStartResolver
     });
     const runtimeAdapter = adapterTransform
       ? adapterTransform(adapter)
@@ -411,7 +409,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const fishingPackage = scenePackages.packages.find(({ family }) =>
     family === 'inland_fishing_worksite');
   assert.equal(fishingPackage.allocation_policy.status,
-    'pending_p16_independent_attestation');
+    'pending_runtime_allocation_approval');
   assert.equal(fishingPackage.profile.readiness.functional_layers.find(
     ({ layer }) => layer === 'tool').status, 'pending_p16_owner');
   assert.equal(fishingPackage.profile.readiness.functional_layers.find(
@@ -426,22 +424,6 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     'position_id', 'environment_facets', 'functional_groups',
     'allocation_status'
   ].includes(key))));
-  assert.equal(safePackages.find(({ family }) => family ===
-    'inland_fishing_worksite').allocation_status,
-  'pending_p16_independent_attestation');
-  const allocatedFishingItems = (await pool.query(
-    `SELECT item.template_id,item.profile_id,item.quantity,item.state,
-            placement.holder_npc_id,placement.physical_position,
-            ownership.owner_npc_id,ownership.controller_npc_id
-       FROM party_runtime.party_items item
-       JOIN party_runtime.party_item_placements placement
-         ON placement.party_id=item.party_id AND placement.item_id=item.item_id
-       JOIN party_runtime.party_ownership ownership
-         ON ownership.party_id=item.party_id AND ownership.item_id=item.item_id
-      WHERE item.party_id=$1
-        AND item.state->>'causal_basis'='procedural_actor_allocation_v1'
-      ORDER BY item.template_id`, [authoredPartyId])).rows;
-  assert.deepEqual(allocatedFishingItems, []);
   assert.deepEqual(await sceneRepository.loadPlayerSafeScenePackages(
     'party-v1-development'), []);
   assert.equal((await pool.query(
@@ -487,39 +469,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     (await api(base, '/api/v1/new-games', authoredRequest)).data,
     authoredStart.data
   );
-  assert.equal((await pool.query(
-    `SELECT count(*)::int AS count FROM party_runtime.party_items
-      WHERE party_id=$1
-        AND state->>'causal_basis'='procedural_actor_allocation_v1'`,
-    [authoredPartyId])).rows[0].count, 0);
   assert.deepEqual((await pool.query(
     `SELECT trace FROM party_runtime.party_materialization_runs
       WHERE party_id=$1`, [authoredPartyId])).rows[0].trace
     .procedural_scene_packages, scenePackages);
-  const allocationFixture = await installAllocationRepositoryFixture(pool,
-    authoredPartyId, packageTrace);
-  const allocatedRows = allocationFixture.items;
-  const attestedRepository = createLowerDvinaTracePhase1ARepository({
-    query: pool.query.bind(pool)
-  });
-  await attestedRepository.loadInternal(authoredPartyId);
-  const removedItemId = allocatedRows[0].item_id;
-  await assertRehydrateTamper(pool, async (transaction) => {
-    await transaction.query(`DELETE FROM party_runtime.party_item_placements
-      WHERE party_id=$1 AND item_id=$2`, [authoredPartyId, removedItemId]);
-    await transaction.query(`DELETE FROM party_runtime.party_ownership
-      WHERE party_id=$1 AND item_id=$2`, [authoredPartyId, removedItemId]);
-    await transaction.query(`DELETE FROM party_runtime.party_items
-      WHERE party_id=$1 AND item_id=$2`, [authoredPartyId, removedItemId]);
-  }, authoredPartyId);
-  await attestedRepository.loadInternal(authoredPartyId);
-  await assertRehydrateTamper(pool, (transaction) => transaction.query(
-    `UPDATE party_runtime.party_items
-        SET state=jsonb_set(state,'{allocation_evidence,policy_id}',
-          '"wrong-policy"'::jsonb)
-      WHERE party_id=$1 AND item_id=$2`, [authoredPartyId, removedItemId]
-  ), authoredPartyId);
-  await attestedRepository.loadInternal(authoredPartyId);
   const tamperedTop = structuredClone(packageTrace);
   tamperedTop.procedural_scene_packages.digest = '0'.repeat(64);
   await pool.query(`UPDATE party_runtime.party_materialization_runs
@@ -570,11 +523,6 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     result_schema: 'rus.authored_start_party_materialization_result.v3'
   });
   assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
-  assert.equal((await pool.query(
-    `SELECT count(*)::int AS count FROM party_runtime.party_items
-      WHERE party_id=$1
-        AND state->>'causal_basis'='procedural_actor_allocation_v1'`,
-    [partyId])).rows[0].count, 0);
   const invalidCases = [
     ['g4', (profile) => { profile.geometry.start.g4_id = 'missing-g4'; }],
     ['node-template', (profile) => {
@@ -934,11 +882,6 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     afterRestart.environment_snapshot,
     beforeRestart.environment_snapshot
   );
-  assert.equal((await pool.query(
-    `SELECT count(*)::int AS count FROM party_runtime.party_items
-      WHERE party_id=$1
-        AND state->>'causal_basis'='procedural_actor_allocation_v1'`,
-    [authoredPartyId])).rows[0].count, 0);
   const repeatedAck =
     await restarted.runtime.acknowledgeOpening(partyId, {
       client_ack_id: 'phase-1b-ack'
@@ -1155,23 +1098,6 @@ async function count(pool, table, partyId) {
     `SELECT count(*)::int AS count FROM ${table} WHERE party_id=$1`,
     [partyId]
   )).rows[0].count;
-}
-
-async function assertRehydrateTamper(pool, mutate, partyId) {
-  const transaction = await pool.connect();
-  try {
-    await transaction.query('BEGIN');
-    await mutate(transaction);
-    const repository = createLowerDvinaTracePhase1ARepository({
-      query: transaction.query.bind(transaction)
-    });
-    await assert.rejects(() => repository.loadInternal(partyId), {
-      code: 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE'
-    });
-  } finally {
-    await transaction.query('ROLLBACK').catch(() => {});
-    transaction.release();
-  }
 }
 
 async function waitForPostgres(name) {

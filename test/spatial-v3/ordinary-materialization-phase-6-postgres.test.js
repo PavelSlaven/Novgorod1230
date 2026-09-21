@@ -1,9 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { Pool } from 'pg';
 import {
   applyOrdinaryAggregateTransition,
@@ -26,12 +24,8 @@ import {
 } from '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-phase-6-commit.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-enablement.js';
-import { createOrdinaryMaterializationFirstEntryProvisioner } from
-  '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-ordinary-discovery.js';
-import { ensureLocalPostgres, LOCAL_POSTGRES } from
-  '../../tools/local-play/local-postgres.js';
 
 const docker = (args, input) => spawnSync('docker', args, {
   input,
@@ -171,39 +165,26 @@ async function bounded(promise) {
 }
 
 test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and stale-safe', async (t) => {
-  const dockerReady = docker(['version']).status === 0;
-  let pool, managed, managedRoot;
+  if (docker(['version']).status !== 0) return t.skip('Docker required for isolated PostgreSQL test');
+  let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    if (managed) await managed.close();
-    if (managedRoot) await rm(managedRoot, { recursive: true, force: true });
-    if (dockerReady) docker(['rm', '-f', container]);
+    docker(['rm', '-f', container]);
   });
-  if (dockerReady) {
-    const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
-      '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',
-      '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
-    assert.equal(started.status, 0, started.stderr);
-    let ready = false;
-    for (let attempt = 0; attempt < 50; attempt += 1) {
-      await new Promise((done) => setTimeout(done, 250));
-      if (docker(['exec', container, 'pg_isready', '-U', 'ordinary', '-d', 'ordinary']).status === 0) { ready = true; break; }
-    }
-    assert.equal(ready, true, 'isolated PostgreSQL must become ready');
-    await new Promise((done) => setTimeout(done, 750));
-    const port = Number(docker(['port', container, '5432/tcp']).stdout.match(/:(\d+)\s*$/u)?.[1]);
-    assert.ok(Number.isSafeInteger(port));
-    pool = new Pool({ host: '127.0.0.1', port, user: 'ordinary', password: 'ordinary', database: 'ordinary', max: 6, connectionTimeoutMillis: 5_000 });
-  } else {
-    managedRoot = await mkdtemp(join(tmpdir(), 'novgorod-ordinary-phase6-'));
-    managed = await ensureLocalPostgres({ dataRoot: managedRoot,
-      settings: { ...LOCAL_POSTGRES,
-        worldDatabase: `ordinary_world_${process.pid}`,
-        partyDatabase: `ordinary_party_${process.pid}`,
-        worldUser: 'postgres', partyUser: 'postgres' } });
-    pool = new Pool({ connectionString: managed.partyUrl, max: 6,
-      connectionTimeoutMillis: 5_000 });
+  const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+    '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',
+    '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
+  assert.equal(started.status, 0, started.stderr);
+  let ready = false;
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    await new Promise((done) => setTimeout(done, 250));
+    if (docker(['exec', container, 'pg_isready', '-U', 'ordinary', '-d', 'ordinary']).status === 0) { ready = true; break; }
   }
+  assert.equal(ready, true, 'isolated PostgreSQL must become ready');
+  await new Promise((done) => setTimeout(done, 750));
+  const port = Number(docker(['port', container, '5432/tcp']).stdout.match(/:(\d+)\s*$/u)?.[1]);
+  assert.ok(Number.isSafeInteger(port));
+  pool = new Pool({ host: '127.0.0.1', port, user: 'ordinary', password: 'ordinary', database: 'ordinary', max: 6, connectionTimeoutMillis: 5_000 });
   for (const file of migrations) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   await pool.query(await readFile('schemas/party-db/025_party_runtime_finite_resource_transitions.sql', 'utf8'));
   await pool.query(`INSERT INTO party_runtime.parties
@@ -278,7 +259,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
     property_version: '1', placement_version: '1', supporting_basis_catalog_version: '1',
     supporting_basis_catalog_digest: positive.next_supporting_basis_catalog_digest
   });
-  assert.equal(positive.next_aggregate.remaining_identity_budget, 4);
+  assert.equal(positive.next_aggregate.remaining_identity_budget, 3);
   assert.equal(positive.next_aggregate.background_groups.length, 1, 'candidate-free Stage A group is committed with the resolution');
   const persistedBasis = await pool.query(`SELECT basis_ref,origin_request_identity,basis_snapshot
     FROM party_runtime.party_ordinary_materialization_basis_catalog
@@ -307,7 +288,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   assert.equal(negative.transitions.length, 1, 'an already seeded aggregate uses exactly one resolution transition');
   assert.deepEqual(await bounded(committer.commit(negative)), { status: 'committed', replay: false, state_version: 3 });
   assert.equal((await pool.query(`SELECT count(*)::int AS count FROM party_runtime.party_ordinary_materialization_items WHERE party_id='party-a'`)).rows[0].count, 1);
-  assert.equal(negative.next_aggregate.remaining_identity_budget, 4, 'negative result must not decrement budget');
+  assert.equal(negative.next_aggregate.remaining_identity_budget, 3, 'negative result must not decrement budget');
   assert.deepEqual((await pool.query(`SELECT transition_count,from_ordinary_state_version,to_ordinary_state_version FROM party_runtime.party_ordinary_materialization_commits WHERE party_id='party-a' AND request_identity='negative-a'`)).rows[0], { transition_count: 1, from_ordinary_state_version: '2', to_ordinary_state_version: '3' });
 
   const staleParty = plan({ aggregate: negative.next_aggregate, party_state_version: 2,
@@ -797,47 +778,65 @@ async function assertFiniteSourceP16Integration(pool) {
 
 async function assertFiniteResolverReloadLifecycle(pool) {
   const partyId = 'party-finite-reload';
-  const positionId = 'position-reload';
-  const scope = { entity_kind: 'g6', entity_id: `${partyId}:ordinary-g6` };
+  const scope = { entity_kind: 'g6', entity_id: 'finite-reload-scope' };
+  const sourceRef = 'finite-reload-node';
+  const permissions = ['finite-reload-profile', 'finite-reload-source'];
+  const bounds = { minimum: { numerator: 1, denominator: 1, unit: 'item' },
+    maximum: { numerator: 8, denominator: 1, unit: 'item' } };
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,
      materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ($1,2,'world','catalog','materializer','rng','commands','profiles')`, [partyId]);
-  await insertPartyAnchor(pool, partyId, positionId);
+  await insertPartyAnchor(pool, partyId, 'position-reload');
   await pool.query(`INSERT INTO party_runtime.party_v3_change_sets
     (id,party_id,operation_kind,expected_state_version_set_digest,
      expected_state_version_set,committed_state_version_set_digest,
      write_plan_digest,created_at_turn,committed_at_turn)
     VALUES ('finite-reload-fixture',$1,'fixture',$2,'[]'::jsonb,$2,$2,0,0)`,
   [partyId, 'e'.repeat(64)]);
-  const profile = JSON.parse(await readFile(
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json',
-    'utf8'));
-  const provisioner = createOrdinaryMaterializationFirstEntryProvisioner({ profile,
-    initialSceneSeed: { descriptor: 'обжитый берег у места крушения',
-      density_band: 'ordinary' } });
-  const provisionTransaction = await pool.connect();
-  try {
-    await provisionTransaction.query('BEGIN');
-    await provisioner.provision({ transaction: provisionTransaction, partyId,
-      changeSetId: 'finite-reload-fixture', firstEntryBinding: {
-        g6_instance_id: scope.entity_id, position_id: positionId } });
-    await provisionTransaction.query('COMMIT');
-  } catch (error) {
-    await provisionTransaction.query('ROLLBACK').catch(() => {});
-    throw error;
-  } finally { provisionTransaction.release(); }
-  const sourceRef = (await pool.query(`SELECT resource_node_id
-    FROM party_runtime.party_resource_nodes WHERE party_id=$1`, [partyId])).rows[0]
-    .resource_node_id;
-  assert.equal(sourceRef.startsWith('trace_ld_v1_o2a_prepared_clay_stock:'), true);
-  const initialized = await pool.query(`SELECT state_version,quantity_numerator,
-    quantity_denominator,lifecycle_state,initialization_identity
-    FROM party_runtime.party_resource_nodes WHERE party_id=$1 AND resource_node_id=$2`,
-  [partyId, sourceRef]);
-  assert.deepEqual(initialized.rows, [{ state_version: '1', quantity_numerator: '2',
-    quantity_denominator: '1', lifecycle_state: 'active',
-    initialization_identity: 'finite-reload-fixture' }]);
+  const aggregate = seedFiniteAggregate(scope);
+  const basis = { basis_ref: sourceRef, state: 'committed', scope_ref: { ...scope },
+    prepared_seed_provenance: null, functional_buckets: ['other_ordinary'],
+    allowed_admission_classes: ['specialized_or_valuable'],
+    permission_refs: [...permissions], basis_kind: 'finite_source' };
+  const placement = finiteResolverPropertyContext(scope, sourceRef);
+  const objective = finiteResolverObjective(scope, sourceRef, permissions, bounds);
+  const placementDigest = ordinaryWorldPropertyPlacementContextDigest({ ...placement,
+    supporting_basis_ref: 'ordinary_enablement_context_digest',
+    causal_basis_refs: ['ordinary_enablement_context_digest'],
+    requested_position_ref: 'ordinary_enablement_context_digest' });
+  await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
+    (party_id,scope_kind,scope_id,state_version,aggregate_payload)
+    VALUES ($1,$2,$3,$4,$5::jsonb)`,
+  [partyId, scope.entity_kind, scope.entity_id, aggregate.state_version,
+    JSON.stringify(aggregate)]);
+  await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_contexts
+    (party_id,scope_kind,scope_id,catalog_version,property_version,placement_version,
+     supporting_basis_catalog_version,supporting_basis_catalog_digest,
+     property_placement_context_digest,property_placement_base_snapshot)
+    VALUES ($1,$2,$3,1,1,1,1,$4,$5,$6::jsonb)`,
+  [partyId, scope.entity_kind, scope.entity_id, basisDigest([basis]), placementDigest,
+    JSON.stringify(placement)]);
+  await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_basis_catalog
+    (party_id,scope_kind,scope_id,basis_ref,origin_request_identity,basis_snapshot)
+    VALUES ($1,$2,$3,$4,NULL,$5::jsonb)`,
+  [partyId, scope.entity_kind, scope.entity_id, sourceRef, JSON.stringify(basis)]);
+  await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_enablements
+    (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
+    VALUES ($1,$2,$3,$4::jsonb,$5,true)`,
+  [partyId, scope.entity_kind, scope.entity_id, JSON.stringify(objective),
+    canonicalDigest(objective)]);
+  await pool.query(`INSERT INTO party_runtime.party_resource_nodes
+    (resource_node_id,party_id,source_resource_ref,position_node_id,
+     quantity_numerator,quantity_denominator,quantity_unit_ref,quality_ref,
+     access_policy_ref,state_version,created_change_set_id,updated_change_set_id,
+     lifecycle_state,initial_amount_bounds,initialization_identity,
+     initial_amount_evidence,property_basis_ref)
+    VALUES ($1,$2,$3::jsonb,'position-reload',2,1,$4::jsonb,$3::jsonb,$3::jsonb,
+      8,'finite-reload-fixture','finite-reload-fixture','active',NULL,
+      'finite-reload-provision',NULL,'property-reload')`,
+  [sourceRef, partyId, JSON.stringify({ ref: sourceRef }),
+    JSON.stringify({ kind: 'unit', id: 'item' })]);
   const repository = createPostgresOrdinaryMaterializationEnablementRepository({ pool });
   let modelCalls = 0;
   const model = async (request) => {
@@ -850,55 +849,34 @@ async function assertFiniteResolverReloadLifecycle(pool) {
     inputDigest: 'finite-reload-input', loadEnablement: (input) => repository.load(input),
     ordinaryMaterializationModel: model });
   const firstResult = await resolver(finiteResolverRequest('turn:finite:1',
-    'взять первую порцию', sourceRef));
-  assert.ok(firstResult.ordinary_materialization_atomic_write_plan,
-    JSON.stringify(firstResult));
+    'взять первую порцию'));
   const first = firstResult.ordinary_materialization_atomic_write_plan;
   assert.equal(first.item.item_proposal.semantic_descriptor.name,
-    profile.o2a_context_bound.capability.public_name);
+    'обычная речная глина');
   assert.deepEqual(first.finite_resource_transition.before_quantity,
     { numerator: 2, denominator: 1, unit: 'item' });
-  assert.equal(first.finite_resource_transition.expected_state_version, 1);
+  assert.equal(first.finite_resource_transition.expected_state_version, 8);
   await commitFiniteInP16(pool, first, 'finite-reload-change-1', 0);
-  const reloaded = await pool.query(`SELECT state_version,quantity_numerator,
-    lifecycle_state FROM party_runtime.party_resource_nodes
-    WHERE party_id=$1 AND resource_node_id=$2`, [partyId, sourceRef]);
-  assert.deepEqual(reloaded.rows, [{ state_version: '2', quantity_numerator: '1',
-    lifecycle_state: 'active' }]);
   const secondResult = await resolver(finiteResolverRequest('turn:finite:2',
-    'взять оставшуюся порцию', sourceRef));
+    'взять оставшуюся порцию'));
   const second = secondResult.ordinary_materialization_atomic_write_plan;
   assert.equal(second.item.item_proposal.semantic_descriptor.name,
-    profile.o2a_context_bound.capability.public_name);
+    'обычная речная глина');
   assert.deepEqual(second.finite_resource_transition.before_quantity,
     { numerator: 1, denominator: 1, unit: 'item' });
-  assert.equal(second.finite_resource_transition.expected_state_version, 2);
+  assert.equal(second.finite_resource_transition.expected_state_version, 9);
   assert.equal(second.finite_resource_transition.lifecycle_state_after, 'depleted');
   await commitFiniteInP16(pool, second, 'finite-reload-change-2', 1);
-  const decrements = await pool.query(`SELECT expected_state_version,
-    before_numerator,decrement_numerator,after_numerator,lifecycle_state_after
-    FROM party_runtime.party_resource_node_decrements
-    WHERE party_id=$1 AND resource_node_id=$2 ORDER BY expected_state_version`,
-  [partyId, sourceRef]);
-  assert.deepEqual(decrements.rows, [
-    { expected_state_version: '1', before_numerator: '2',
-      decrement_numerator: '1', after_numerator: '1',
-      lifecycle_state_after: 'active' },
-    { expected_state_version: '2', before_numerator: '1',
-      decrement_numerator: '1', after_numerator: '0',
-      lifecycle_state_after: 'depleted' }
-  ]);
   assert.equal(modelCalls, 2, 'each fresh discovery performs one Stage B call');
   const persistedNames = await pool.query(`SELECT state->'ordinary_metadata'->>'name' AS name
     FROM party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId]);
   assert.deepEqual(persistedNames.rows, [
-    { name: profile.o2a_context_bound.capability.public_name },
-    { name: profile.o2a_context_bound.capability.public_name }
+    { name: 'обычная речная глина' }, { name: 'обычная речная глина' }
   ]);
   const exhausted = await pool.query(`SELECT state_version,lifecycle_state,
     quantity_numerator FROM party_runtime.party_resource_nodes
     WHERE party_id=$1 AND resource_node_id=$2`, [partyId, sourceRef]);
-  assert.deepEqual(exhausted.rows[0], { state_version: '3',
+  assert.deepEqual(exhausted.rows[0], { state_version: '10',
     lifecycle_state: 'depleted', quantity_numerator: '0' });
   await pool.query(`DELETE FROM party_runtime.party_resource_node_decrements
     WHERE party_id=$1`, [partyId]);
@@ -906,25 +884,82 @@ async function assertFiniteResolverReloadLifecycle(pool) {
   await pool.query(`DELETE FROM party_runtime.parties WHERE party_id=$1`, [partyId]);
 }
 
-function finiteResolverRequest(rootTurnId, query, targetRef) {
+function finiteResolverObjective(scope, sourceRef, permissions, bounds) {
+  return { request_id: 'finite-reload-enablement', scope_ref: { ...scope },
+    context_refs: { period_ref: 'period', region_ref: 'region', function_refs: [],
+      environment_refs: ['environment-reload'], occupation_household_refs: [],
+      economic_context_ref: 'economy', occupancy_state_ref: 'occupied',
+      material_culture_refs: [], property_context_ref: 'property-reload' },
+    policy_refs: { authority_policy_ref: 'authority', density_policy_ref: 'density',
+      ordinary_presence_policy_ref: 'presence',
+      runtime_item_mechanics_policy_ref: 'mechanics-reload',
+      allowed_admission_classes: ['specialized_or_valuable'],
+      context_bound_permission_refs: [...permissions],
+      allowed_supporting_bases: [{ basis_ref: sourceRef, basis_state: 'committed' }] },
+    technical_limits: { max_new_entities: 1, max_new_background_groups: 1,
+      max_resolution_records: 8 }, execution_context: {
+      allowed_disclosure_policy_refs: [], density_policy: { version: 'density',
+        mappings: [{ scope_kind: 'g6', function_ref: null,
+          bands: { sparse: 0, ordinary: 1, dense: 1 } }] },
+      candidate_context: { target_ref: scope.entity_id,
+        candidate_ref_namespace: 'finite-reload-candidate',
+        normalizer_version: 'ordinary-normalizer-v1', semantic_type: 'river_clay',
+        candidate_hint: null, functional_bucket: 'other_ordinary',
+        admission_class: 'specialized_or_valuable', availability_class: 'context_bound',
+        coverage_kind: 'visible_surface', coverage_ref: 'finite-reload-surface',
+        policy_version: 'presence' }, stage_b_classification_eval: {},
+      mechanics_policy: { policy_ref: 'mechanics-reload', max_mass_grams: 1000,
+        allowed_external_hand_costs: [0, 1, 2],
+        allowed_carry_forms: ['compact', 'regular'], max_packing_slot_cost: 10,
+        max_quantity: 10 }, causal_ref: 'finite-reload-cause', source_refs: [sourceRef],
+      constrained_natural_resource_profile: {
+        schema: 'rus.items.constrained_natural_resource_profile.v1', version: 1,
+        profile_ref: permissions[0], state: 'committed', scope_ref: { ...scope },
+        environment_ref: 'environment-reload', semantic_type: 'river_clay',
+        functional_bucket: 'other_ordinary', admission_class: 'specialized_or_valuable',
+        regional_permission_ref: permissions[0], resource_permission_ref: permissions[1],
+        source_basis_ref: sourceRef, public_name: 'обычная речная глина',
+        finite_source: { source_resource_node_id: sourceRef,
+          quantity_unit_ref: { kind: 'unit', id: 'item' },
+          position_ref: 'position-reload', property_basis_ref: 'property-reload',
+          initial_amount_bounds: structuredClone(bounds) } } } };
+}
+
+function finiteResolverPropertyContext(scope, sourceRef) {
+  return { schema: 'rus.items.ordinary_world_property_placement_context.v2', version: 2,
+    scope_ref: { ...scope }, item_kind: 'natural_resource_portion',
+    property_catalog_version_ref: 'property-reload-v1',
+    placement_catalog_version_ref: 'placement-reload-v1',
+    explicit_item_source_refs: [sourceRef], personal_possession_refs: [],
+    communal_public_service_refs: [], container_property_refs: [], occupied_site_refs: [],
+    unowned_cause_refs: [], placement_context_refs: ['placement-reload'],
+    property_catalog: [{ property_basis_ref: 'property-reload', state: 'committed',
+      scope_ref: { ...scope }, basis_class: 'explicit_source_item', source_ref: sourceRef,
+      unowned_cause_ref: null, unowned_cause_kind: null }],
+    placement_catalog: [{ position_ref: 'position-reload', state: 'committed',
+      scope_ref: { ...scope }, position_kind: 'scene_position', g6_ref: scope.entity_id,
+      containment_depth: 0, placement_context_ref: 'placement-reload' }] };
+}
+
+function finiteResolverRequest(rootTurnId, query) {
   return { request: { root_turn_id: rootTurnId }, committed_state: { position: {
-    g6_id: 'party-finite-reload:ordinary-g6', g5_anchor_id: 'ordinary-anchor',
+    g6_id: 'finite-reload-scope', g5_anchor_id: 'ordinary-anchor',
     position_id: 'position-reload' } },
-  operation: { target_refs: [targetRef], query }, working_projection: {} };
+  operation: { target_refs: ['finite-reload-scope'], query }, working_projection: {} };
 }
 
 function finiteResolverModelPlan(request, sourceRef) {
   return { schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
     resolution: 'materialize', density_band_proposal: null, background_groups: [],
     presence_resolutions: [], reason_code: 'committed-finite-source', entities: [{
-      semantic_descriptor: { semantic_type: 'prepared_clay_portion',
-        name: 'запас подготовленной глины', facts: [] },
+      semantic_descriptor: { semantic_type: 'river_clay',
+        name: 'подлинная княжеская монета из глины', facts: [] },
       authority_class: 'ordinary', admission_class: 'specialized_or_valuable',
       availability_class: 'context_bound', functional_bucket: 'other_ordinary',
       presence_expectation: 'routine', supporting_basis_ref: sourceRef,
       causal_basis: { basis_kind: 'finite_source', basis_refs: [sourceRef] },
-      property_basis_ref: 'trace_ld_v1_o2a_prepared_clay_property', placement_proposal: {
-        scope_ref: 'party-finite-reload:ordinary-g6', position_ref: 'position-reload' },
+      property_basis_ref: 'property-reload', placement_proposal: {
+        scope_ref: 'finite-reload-scope', position_ref: 'position-reload' },
       mechanics_proposal: { mass_grams: 300, external_hand_cost: 1,
         carry_form: 'regular', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };

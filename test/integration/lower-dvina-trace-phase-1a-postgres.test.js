@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFile, readdir } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import pg from 'pg';
 import { sha256 } from '@rus/kernel';
 import {
@@ -26,32 +28,42 @@ import {
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { ensureLocalPostgres, LOCAL_POSTGRES } from
+  '../../tools/local-play/local-postgres.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 
 test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth', async (t) => {
-  if (docker(['version']).status !== 0) {
-    t.skip('Docker is required for isolated Phase 1A PostgreSQL integration');
-    return;
-  }
+  const dockerReady = docker(['version']).status === 0;
   const name = `lower-dvina-phase-1a-${process.pid}`;
-  let pool;
+  let pool, managed, managedRoot;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', name]);
+    if (managed) await managed.close();
+    if (managedRoot) await rm(managedRoot, { recursive: true, force: true });
+    if (dockerReady) docker(['rm', '-f', name]);
   });
-  const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
-    '-e', 'POSTGRES_PASSWORD=local_only',
-    '-e', 'POSTGRES_USER=phase1a',
-    '-e', 'POSTGRES_DB=phase1a',
-    'postgres:16-alpine'
-  ]);
-  assert.equal(started.status, 0, started.stderr);
-  await waitForPostgres(name);
-  await new Promise((resolve) => setTimeout(resolve, 700));
-  const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
-  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase1a', password: 'local_only', database: 'phase1a', max: 6 });
+  if (dockerReady) {
+    const started = docker([
+      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase1a',
+      '-e', 'POSTGRES_DB=phase1a', 'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    await waitForPostgres(name);
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
+    pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase1a',
+      password: 'local_only', database: 'phase1a', max: 6 });
+  } else {
+    managedRoot = await mkdtemp(join(tmpdir(), 'novgorod-phase1a-postgres-'));
+    managed = await ensureLocalPostgres({ dataRoot: managedRoot,
+      settings: { ...LOCAL_POSTGRES,
+        worldDatabase: `phase1a_world_${process.pid}`,
+        partyDatabase: `phase1a_party_${process.pid}`,
+        worldUser: 'postgres', partyUser: 'postgres' } });
+    pool = new pg.Pool({ connectionString: managed.partyUrl, max: 6 });
+  }
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();

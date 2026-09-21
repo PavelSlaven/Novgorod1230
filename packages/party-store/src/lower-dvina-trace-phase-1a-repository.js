@@ -1,4 +1,5 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
+import { validateActorBaseAttributes } from '@rus/materialization';
 import { computeMaterializationEnvelopeDigest,
   computeStage24ArtifactDigest } from '@rus/contracts';
 import { normalizedContainer } from
@@ -424,6 +425,11 @@ function assertRoundTrip({
     || npcs.some((npc) => JSON.stringify(npc.attribute_profile_snapshot ?? null)
       !== JSON.stringify(expectedNpcs.find(({ instance_id }) => instance_id
         === npc.npc_id)?.base_attributes ?? null))
+    || expectedNpcs.some((npc) => npc.attribute_generation_gate === 'active'
+      && !validateActorBaseAttributes(npc.base_attributes))
+    || npcs.some((npc) => expectedNpcs.find(({ instance_id }) => instance_id
+      === npc.npc_id)?.attribute_generation_gate === 'active'
+      && !validateActorBaseAttributes(npc.attribute_profile_snapshot))
     || counts.profile_binding_count !== 1 + expectedNpcs.length
     || counts.container_count !== payload.immediate.containers.length
     || counts.obligation_count !== (payload.immediate.promise_instances ?? []).length

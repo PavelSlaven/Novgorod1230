@@ -18,7 +18,7 @@ import {
   runStage24PartyDbWritePlan
 } from '@rus/new-game/stages/stage-24';
 import {
-  computeStage24ArtifactDigest
+  computeMaterializationEnvelopeDigest, computeStage24ArtifactDigest
 } from '@rus/contracts';
 import {
   buildStage25CommitInput,
@@ -496,6 +496,23 @@ test('canonical Stage 24 blocks stale materialization and a failed audit before 
     }),
     (error) => error.lifecycle?.failed_gate === 'stage24_semantic_audit'
   );
+});
+
+test('Stage 24 rejects an active NPC attribute gate without its snapshot', async () => {
+  const fixture = await stage24Fixture();
+  const artifacts = structuredClone(fixture.artifacts);
+  const npc = artifacts.materialization_result.immediate.npcs[0];
+  npc.attribute_generation_gate = 'active';
+  npc.base_attributes = null;
+  artifacts.materialization_result.trace.result_digest =
+    computeMaterializationEnvelopeDigest(artifacts.materialization_result);
+  artifacts.sealed_selection_closure.materialization_result_digest =
+    artifacts.materialization_result.trace.result_digest;
+  const input = phase1AStage24Input({ artifacts, context: fixture.context,
+    schema: fixture.schema });
+  assert.throws(() => buildLowerDvinaTracePhase1AWritePlan(input), {
+    code: 'WRITE_PLAN_ACTOR_ATTRIBUTES_INCOMPLETE'
+  });
 });
 
 test('Stage 24 fails closed for missing, forged or world-incompatible domain pins', async () => {

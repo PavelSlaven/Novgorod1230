@@ -363,6 +363,7 @@ export {
   canonicalCandidateDigest,
   canonicalRequestDigest,
   materializeActorBaseAttributes,
+  materializeOrPreserveActorBaseAttributes,
   validateActorBaseAttributesCandidate,
   validateActorBaseAttributes
 } from './actor-base-attributes.js';

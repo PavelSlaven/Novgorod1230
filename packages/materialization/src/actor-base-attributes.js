@@ -50,6 +50,17 @@ export function materializeActorBaseAttributes({ approved_bundle: bundle,
   return Object.freeze(result);
 }
 
+// Existing actors carry their original snapshot through profile-level promotion.
+// New actors alone consume the pinned materialization seed.
+export function materializeOrPreserveActorBaseAttributes({ existing_attributes: existing,
+  ...input } = {}) {
+  if (existing != null) {
+    if (!validateActorBaseAttributes(existing)) gap('SNAPSHOT');
+    return Object.freeze(structuredClone(existing));
+  }
+  return materializeActorBaseAttributes(input);
+}
+
 export function validateActorBaseAttributes(value) {
   const generation = value?.generation;
   const values = ACTOR_BASE_ATTRIBUTE_KEYS.map((key) => value?.values?.[key]);

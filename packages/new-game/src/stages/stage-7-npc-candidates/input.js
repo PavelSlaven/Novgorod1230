@@ -8,6 +8,7 @@ export function buildStage7NpcCandidatesInput(context, {
   candidatePlaceTemplateSet = null,
   worldRevisionId = null,
   approvedActorProfileSnapshot = null,
+  approvedActorBaseAttributesBundle = null,
   npcCandidatePolicy = {}
 } = {}) {
   const frame = historicalFrame ?? context.getStageOutput(3) ?? null;
@@ -25,6 +26,10 @@ export function buildStage7NpcCandidatesInput(context, {
     candidate_place_template_set: candidatePlaceTemplateSet ?? context.getStageOutput(6) ?? null,
     world_revision_id: worldRevisionId ?? approvedActorProfileSnapshot?.world_revision_id ?? runtimeSnapshot?.world_revision_id ?? null,
     approved_actor_profile_snapshot: actorSnapshot,
+    ...(approvedActorBaseAttributesBundle == null ? {} : {
+      actor_base_attributes_bundle:
+        structuredClone(approvedActorBaseAttributesBundle)
+    }),
     npc_candidate_policy: {
       ...npcCandidatePolicy,
       ...(npcCandidatePolicy.require_actor_base_appearance == null

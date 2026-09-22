@@ -1,12 +1,12 @@
 # Правка документа нормативного корпуса
 
-> Процедура. Норм не создаёт: при конфликте действует AGENTS.md, CONTRACT_INDEX и профильные контракты. Слово «обязательно» здесь до утверждения роутера AGENTS.md означает рекомендацию. Проверено: 2026-09-22, commit c5501419.
+> Процедура. Норм не создаёт: при конфликте действует AGENTS.md, CONTRACT_INDEX и профильные контракты. Проверено: 2026-09-22, commit c5501419.
 
 Корпус — `data/knowledge-source/corpus/DOCUMENTS/*`, реестр —
 [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json) (44 документа). Правила изменения корпуса
 задают [KNOWLEDGE_SOURCE_POLICY](../architecture/KNOWLEDGE_SOURCE_POLICY.md) («Изменение корпуса», «RAG-готовность»)
 и [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md) §10. Правка нормативного
-документа — триггер Contract Auditor ([AGENTS.md](../../AGENTS.md) §25.1).
+документа — триггер Contract Auditor ([AGENTS.md §25.1](../governance/AUDIT_RULES.md)).
 
 ## Область: что можно править по этой процедуре
 

@@ -5,14 +5,16 @@ import test from 'node:test';
 const source = (path) => readFile(new URL(`../../${path}`, import.meta.url), 'utf8');
 
 test('ordinary foundation remains shadow-only: discovery has no ordinary model or ledger route', async () => {
-  const [actorStep, runtimePorts, bindings, bindingProfile, agents, contract]
+  const [actorStep, runtimePorts, bindings, bindingProfile, agents, contract, ...governance]
     = await Promise.all([
     source('packages/turn/src/turn-step-actor-step.js'),
     source('apps/game-server/src/runtime/lower-dvina-trace-turn-step-runtime-ports.js'),
     source('apps/game-server/src/runtime/lower-dvina-trace-turn-step-bindings.js'),
     source('apps/game-server/src/runtime/lower-dvina-trace-turn-step-binding-profile.js'),
     source('AGENTS.md'),
-    source('data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md')
+    source('data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md'),
+    ...['README', 'PRODUCT_CONSTITUTION', 'ARCHITECTURE_INVARIANTS', 'WORKFLOW_RULES', 'AUDIT_RULES', 'GIT_SAFETY_RULES']
+      .map((name) => source(`docs/governance/${name}.md`))
   ]);
 
   assert.match(`${bindings}\n${bindingProfile}`, /operation: 'request_discovery'/u);
@@ -23,6 +25,8 @@ test('ordinary foundation remains shadow-only: discovery has no ordinary model o
   }
   assert.match(runtimePorts, /request_container_access:/u);
   assert.doesNotMatch(runtimePorts, /request_discovery:/u);
-  assert.doesNotMatch(agents, /\bO1\b[^\n]*\bactive\b/iu);
+  for (const governingText of [agents, ...governance]) {
+    assert.doesNotMatch(governingText, /\bO1\b[^\n]*\bactive\b/iu);
+  }
   assert.match(contract, /\*\*Статус:\*\*\s*`proposed umbrella target`/u);
 });

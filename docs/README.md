@@ -13,7 +13,8 @@
 
 | Где | status | kind | Когда загружать |
 |---|---|---|---|
-| `AGENTS.md` | `GOVERNING` | правила | всегда, при старте задачи |
+| `AGENTS.md` | `GOVERNING` | правила (роутер) | всегда, целиком, при старте задачи |
+| `docs/governance/` | `GOVERNING` (корпус `AGENTS.md` §1.3) | правила | разделы, назначенные строкой маршрутизации роутера; целиком — governance-задачи и Contract Auditor: [карта §N](governance/README.md) |
 | `data/knowledge-source/corpus/DOCUMENTS/` | по CONTRACT_INDEX | нормативный корпус | строка scope matrix CONTRACT_INDEX §8.1 для области задачи; поиск — `npm run knowledge:query` |
 | `docs/context/` | `REFERENCE / DOMAIN GUIDE` | context | когда задаче нужен факт о стеке, структуре, БД, ошибках, UI, тестах: [STACK](context/STACK.md), [ARCHITECTURE](context/ARCHITECTURE.md), [DB_SCHEMA](context/DB_SCHEMA.md), [EDGE_CASES](context/EDGE_CASES.md), [UI_KIT](context/UI_KIT.md), [LINKS](context/LINKS.md), [TESTING](context/TESTING.md) |
 | `docs/process/` | `REFERENCE / DOMAIN GUIDE` | procedure | рабочий цикл и процедуры: [WORKFLOW](process/WORKFLOW.md), [CHANGE_REQUEST](process/CHANGE_REQUEST.md), [CONTEXT_DUMP](process/CONTEXT_DUMP.md), [CORPUS_EDIT](process/CORPUS_EDIT.md) |
@@ -37,7 +38,7 @@
 
 | Что появилось | Куда |
 |---|---|
-| правило работы агентов, продуктовый инвариант | governing-корпус (`AGENTS.md`) — только по явному разрешению администратора (AGENTS.md §1.1) |
+| правило работы агентов, продуктовый инвариант | governing-корпус (`AGENTS.md` и `docs/governance/`) — только по явному разрешению администратора (AGENTS.md §1.1) |
 | норма подсистемы | нормативный корпус через [CORPUS_EDIT](process/CORPUS_EDIT.md) и CONTRACT_INDEX |
 | ответственность и public contract модуля | `MODULE.md` этого модуля |
 | процедура (как делать) | `docs/process/` |

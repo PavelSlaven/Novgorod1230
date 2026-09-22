@@ -6,24 +6,11 @@ import {
 } from '@rus/contracts';
 import { sha256 } from '@rus/kernel';
 import { addFirstEntryPreparationBatches } from './lower-dvina-trace-first-entry-preparation.js';
-import { addAuthoredStartSpatialV3Batches, authoredStartSnapshotSchema,
-  isAuthoredStartMaterializationResult } from './authored-start-spatial-v3.js';
-import {
-  assertMaterializationRuntimeCatalogPins,
-  assertActorBaseAttributesCatalogPin,
-  assertPartyRuntimeCatalogPins,
-  buildMaterializationRunCatalogPinRecord,
-  buildPartyCatalogPinRecord
-} from './runtime-catalog-pins.js';
-import {
-  buildLowerDvinaTracePersistedProjection,
-  normalizeExternalOwnerRef,
-  phase3PreparedInputs,
-  projectNameProfileSnapshot
-} from './lower-dvina-trace-persisted-projection.js';
+import { addAuthoredStartSpatialV3Batches, authoredStartSnapshotSchema, isAuthoredStartMaterializationResult } from './authored-start-spatial-v3.js';
+import { assertMaterializationRuntimeCatalogPins, assertActorBaseAttributesCatalogPin, assertPartyRuntimeCatalogPins, buildMaterializationRunCatalogPinRecord, buildPartyCatalogPinRecord } from './runtime-catalog-pins.js';
+import { buildLowerDvinaTracePersistedProjection, normalizeExternalOwnerRef, phase3PreparedInputs, projectNameProfileSnapshot } from './lower-dvina-trace-persisted-projection.js';
 import { assertRevision19CharacterState } from './lower-dvina-trace-revision19-write-boundary.js';
-import { approvedNpcBodyRows, approvedNpcConditionRows,
-  assertNewActorBaseAttributes } from './actor-write-boundary.js';
+import { approvedNpcBodyRows, approvedNpcConditionRows, assertNewActorBaseAttributes } from './actor-write-boundary.js';
 import { addBatch, validatedProceduralPackages } from './write-plan-batches.js';
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertInput(input);
@@ -42,10 +29,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const runId = result.run_id;
   const { preparedScenes, preparedNpcs, preparedContainers } = phase3PreparedInputs(result);
   const identityNpcs = preparedNpcs;
-  identityNpcs.forEach((npc) => assertNewActorBaseAttributes(npc.base_attributes,
-    `npc:${npc.instance_id}.base_attributes`, npc.attribute_generation_gate === 'active'));
-  assertActorBaseAttributesCatalogPin(party_creation_context,
-    identityNpcs.some((npc) => npc.attribute_generation_gate === 'active'));
+  identityNpcs.forEach((npc) => assertNewActorBaseAttributes(npc.base_attributes, `npc:${npc.instance_id}.base_attributes`, npc.attribute_generation_gate === 'active'));
+  assertActorBaseAttributesCatalogPin(party_creation_context, identityNpcs.some((npc) => npc.attribute_generation_gate === 'active'));
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
@@ -56,8 +41,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   }];
   assertPartyRuntimeCatalogPins(party_creation_context);
   assertMaterializationRuntimeCatalogPins({ trace: result.trace, pins, domainPin });
-  const proceduralScenePackages = validatedProceduralPackages(result.trace,
-    result.procedural_scene_packages, domainPin);
+  const proceduralScenePackages = validatedProceduralPackages(result.trace, result.procedural_scene_packages, domainPin);
   const runRecord = {
     party_id: partyId,
     run_id: runId,

@@ -74,6 +74,45 @@ const pendingAuthority = () => Object.freeze({
   broader_m3_attested: false
 });
 
+const approvedPermissions = () => Object.freeze({
+  transactional_registration_activation_readback_for_new_development_parties_only:
+    true,
+  production_activation: false,
+  default_runtime_cutover: false,
+  existing_party_migration: false,
+  old_save_rematerialization: false,
+  runtime_item_creation: false,
+  functional_allocation_runtime_selection: false,
+  equipment_allocation_activation: false,
+  actor_world_owner_migration_execution: false,
+  actor_party_pin_migration_execution: false,
+  actor_base_attributes_runtime_activation_execution: false,
+  party_pin_writes: false,
+  gameplay_writes: false,
+  broader_m3_activation: false
+});
+
+const approvedAuthority = () => Object.freeze({
+  approval_attestation_present: true,
+  release_registration_authorized: true,
+  activation_authorized: true,
+  exact_readback_required: true,
+  new_development_party_activation_authorized: true,
+  production_authorized: false,
+  default_runtime_cutover_authorized: false,
+  existing_party_migration_authorized: false,
+  old_save_rematerialization_authorized: false,
+  runtime_item_creation_authorized: false,
+  functional_allocation_runtime_selection_authorized: false,
+  equipment_allocation_activation_authorized: false,
+  actor_world_owner_migration_execution_authorized: false,
+  actor_party_pin_migration_execution_authorized: false,
+  actor_base_attributes_runtime_activation_execution_authorized: false,
+  party_pin_writes_authorized: false,
+  gameplay_writes_authorized: false,
+  broader_m3_attested: false
+});
+
 export async function buildSpatialV3M3CurrentSchemaReleaseArtifacts() {
   const actor = await loadActorChain();
   const candidatePayload = {
@@ -235,6 +274,78 @@ export function validateSpatialV3M3CurrentSchemaReleaseArtifacts({ candidate,
     'SPATIAL_V3_M3_CURRENT_SCHEMA_RELEASE_CANDIDATE_DIGEST_INVALID');
   assertDigest(request, 'request_digest',
     'SPATIAL_V3_M3_CURRENT_SCHEMA_RELEASE_REQUEST_DIGEST_INVALID');
+  return true;
+}
+
+export function validateSpatialV3M3CurrentSchemaReleaseApproval({ candidate,
+  request, attestation }) {
+  validateSpatialV3M3CurrentSchemaReleaseArtifacts({ candidate, request });
+  const bindings = attestation?.approved_bindings;
+  const permissions = attestation?.approved_permissions;
+  const authority = attestation?.authority;
+  const truePermissions = Object.entries(permissions ?? {})
+    .filter(([, value]) => value === true).map(([key]) => key);
+  if (!exact(attestation, ['schema', 'version', 'status', 'decision',
+    'reviewed_repository_head', 'auditor_ref', 'independence_basis',
+    'reviewed_at', 'activation_scope', 'operation', 'approved_bindings',
+    'approved_permissions', 'authority', 'activation_executed',
+    'database_mutated', 'actor_migrations_executed', 'party_pins_written',
+    'gameplay_writes_performed', 'broader_m3_attested', 'limits',
+    'attestation_digest'])
+      || !exact(bindings, ['candidate_ref', 'candidate_digest',
+        'approval_request_ref', 'approval_request_digest', 'subject_commit',
+        'lineage', 'release', 'compatible_world',
+        'preserved_actor_approval_chain'])
+      || attestation?.schema !==
+        'rus.spatial_v3_m3_current_schema_development_release_runtime_approval_attestation.v1'
+      || attestation.version !== 1
+      || attestation.status !==
+        'approved_new_development_parties_only_not_executed'
+      || attestation.decision !==
+        'approve_exact_transactional_registration_activation_readback'
+      || attestation.reviewed_repository_head !==
+        '4ff55c911350746dc92d2c38d2c7f082196f5c06'
+      || attestation.auditor_ref !== '/root/m3_chain_auditor'
+      || typeof attestation.independence_basis !== 'string'
+      || attestation.independence_basis.length === 0
+      || attestation.reviewed_at !== '2026-09-22'
+      || attestation.activation_scope !==
+        'fresh_new_development_parties_only'
+      || attestation.operation !==
+        'transactional_registration_activation_exact_readback'
+      || bindings?.candidate_ref !== paths.candidate
+      || bindings?.candidate_digest !== candidate.candidate_digest
+      || bindings?.approval_request_ref !== paths.request
+      || bindings?.approval_request_digest !== request.request_digest
+      || bindings?.subject_commit !== candidate.subject_commit
+      || canonicalDigest(bindings?.lineage) !==
+        canonicalDigest(candidate.lineage)
+      || canonicalDigest(bindings?.release) !==
+        canonicalDigest(candidate.proposed_release)
+      || canonicalDigest(bindings?.compatible_world) !==
+        canonicalDigest(candidate.compatible_world)
+      || canonicalDigest(bindings?.preserved_actor_approval_chain) !==
+        canonicalDigest(candidate.preserved_actor_approval_chain)
+      || canonicalDigest(permissions) !==
+        canonicalDigest(approvedPermissions())
+      || truePermissions.length !== 1
+      || truePermissions[0] !==
+        'transactional_registration_activation_readback_for_new_development_parties_only'
+      || canonicalDigest(authority) !== canonicalDigest(approvedAuthority())
+      || attestation.activation_executed !== false
+      || attestation.database_mutated !== false
+      || attestation.actor_migrations_executed !== false
+      || attestation.party_pins_written !== false
+      || attestation.gameplay_writes_performed !== false
+      || attestation.broader_m3_attested !== false
+      || typeof attestation.limits !== 'string'
+      || attestation.limits.length === 0) {
+    throw new Error(
+      'SPATIAL_V3_M3_CURRENT_SCHEMA_RELEASE_APPROVAL_ATTESTATION_INVALID'
+    );
+  }
+  assertDigest(attestation, 'attestation_digest',
+    'SPATIAL_V3_M3_CURRENT_SCHEMA_RELEASE_APPROVAL_ATTESTATION_DIGEST_INVALID');
   return true;
 }
 

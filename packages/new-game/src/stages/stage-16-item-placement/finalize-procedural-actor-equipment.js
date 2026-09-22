@@ -1,5 +1,7 @@
+import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
 import { calculateHandsState, calculateInventoryMass, resolveInventoryLoad,
   validateInventoryTopology } from '@rus/items-property';
+import { deepFreeze } from '@rus/kernel';
 import { MaterializationError } from '@rus/materialization';
 import { calculatePackingSlots } from '@rus/world-catalog-workflow';
 import { evaluateStage16NormalizedInventory } from './validation/inventory-validation.js';
@@ -122,44 +124,44 @@ function draftPlacements(immediate, kind) { return inventoryPlacements(immediate
 function hasPlacement(entry, placements, id, kind) { const key = kind === 'item' ? 'item_id' : 'container_id'; return placements.some((row) => row?.[key] === id && ['anchor_id', 'container_id', 'holder_npc_id', 'holder_character_id', 'attached_item_id', 'location_ref', 'scene_position_id'].some((field) => row[field] != null)); }
 function placementFromEntry(entry, key) { const value = { [key]: entry.instance_id ?? entry[key.replace('_id', '_instance_id')] }; for (const field of ['anchor_id', 'container_id', 'holder_npc_id', 'holder_character_id', 'attached_item_id', 'parent_container_id']) if (entry[field] != null) value[field] = entry[field]; if (entry.physical_position != null) value.physical_position = entry.physical_position; if (entry.equipment_slot_id != null) value.equipment_slot_id = entry.equipment_slot_id; if (entry.equipment_slot_category_id != null) value.equipment_slot_id = entry.equipment_slot_category_id; return value; }
 
-/** Stage 16 owns approved procedural equipment; inactive policy creates nothing. */
+/**
+ * Stage 16 owns approved procedural equipment commit.
+ * Packages without status `approved_for_stage16_materialization` are ignored
+ * (production catalogs stay fail-closed until independent runtime approval).
+ * When that envelope status is present, dry-run must pass, then one causal
+ * change set updates immediate inventory and marks `materialized_stage16`.
+ */
 export function finalizeProceduralActorEquipment(partyMaterialization) {
   const packages = partyMaterialization?.procedural_scene_packages?.packages ?? [];
   const active = packages.filter(({ allocation_policy: policy }) =>
     policy?.status === 'approved_for_stage16_materialization');
   if (active.length === 0) return partyMaterialization;
+  const completed = structuredClone(partyMaterialization);
   const immediate = {
-    party_id: partyMaterialization.party_id,
-    npcs: partyMaterialization.immediate?.npcs ?? [],
-    items: partyMaterialization.immediate?.items ?? [],
-    containers: partyMaterialization.immediate?.containers ?? [],
-    item_placements: partyMaterialization.immediate?.item_placements,
-    container_placements: partyMaterialization.immediate?.container_placements
+    party_id: completed.party_id,
+    npcs: completed.immediate?.npcs ?? [],
+    items: [...(completed.immediate?.items ?? [])],
+    containers: [...(completed.immediate?.containers ?? [])],
+    item_placements: completed.immediate?.item_placements,
+    container_placements: completed.immediate?.container_placements
   };
-  for (const pkg of active) {
+  const stage16Runs = [];
+  for (const pkg of completed.procedural_scene_packages.packages) {
     const policy = pkg.allocation_policy;
+    if (policy?.status !== 'approved_for_stage16_materialization') continue;
     const actor = immediate.npcs.find((npc) => npc.instance_id === policy.actor_instance_id);
     if (actor?.base_attributes?.values?.strength == null) {
       throw new MaterializationError('PROCEDURAL_NPC_ATTRIBUTES_DATA_GAP',
         'Stage 16 requires persisted actor_base_attributes_v1.');
     }
-    if (Array.isArray(policy.allocations)) {
-      const validated = dryRunProceduralActorEquipment({
-        allocationPlan: policy, immediate,
-        scenePackage: { inventory_profiles: pkg.inventory_profiles ?? [] }
-      });
-      if (!validated.pass) {
-        throw new MaterializationError(validated.concerns[0].code,
-          validated.concerns[0].message, validated.concerns[0].details);
-      }
-    } else {
-      const topology = validateInventoryTopology({ party_id: partyMaterialization.party_id,
+    if (!Array.isArray(policy.allocations)) {
+      const topology = validateInventoryTopology({ party_id: completed.party_id,
         actor_id: actor.instance_id, items: [], containers: [],
         item_placements: [], container_placements: [] });
-      const mass = calculateInventoryMass({ party_id: partyMaterialization.party_id,
+      const mass = calculateInventoryMass({ party_id: completed.party_id,
         actor_id: actor.instance_id, items: [], containers: [],
         item_placements: [], container_placements: [] });
-      const hands = calculateHandsState({ party_id: partyMaterialization.party_id,
+      const hands = calculateHandsState({ party_id: completed.party_id,
         actor_id: actor.instance_id, items: [], containers: [],
         item_placements: [], container_placements: [] });
       const load = resolveInventoryLoad({ total_mass_grams: mass.total_mass_grams,
@@ -168,9 +170,51 @@ export function finalizeProceduralActorEquipment(partyMaterialization) {
         throw new MaterializationError('PROCEDURAL_NPC_EQUIPMENT_DATA_GAP',
           'Stage 16 inventory basis is incomplete.');
       }
+      throw new MaterializationError('PROCEDURAL_NPC_EQUIPMENT_DATA_GAP',
+        'Stage 16 requires independently runtime-approved allocation rows.');
     }
-    throw new MaterializationError('PROCEDURAL_NPC_EQUIPMENT_DATA_GAP',
-      'Stage 16 requires independently runtime-approved allocation rows.');
+    const validated = dryRunProceduralActorEquipment({
+      allocationPlan: policy, immediate,
+      scenePackage: { inventory_profiles: pkg.inventory_profiles ?? [] }
+    });
+    if (!validated.pass) {
+      throw new MaterializationError(validated.concerns[0].code,
+        validated.concerns[0].message, validated.concerns[0].details);
+    }
+    immediate.items = validated.immediate.items;
+    immediate.containers = validated.immediate.containers;
+    if (validated.immediate.item_placements != null) {
+      immediate.item_placements = validated.immediate.item_placements;
+    }
+    if (validated.immediate.container_placements != null) {
+      immediate.container_placements = validated.immediate.container_placements;
+    }
+    pkg.allocation_policy = {
+      ...policy,
+      status: 'materialized_stage16',
+      readiness: 'materialized_stage16',
+      pending_gap: null
+    };
+    stage16Runs.push({
+      scene_package_id: pkg.scene_package_id ?? null,
+      actor_instance_id: policy.actor_instance_id,
+      allocations: validated.allocations,
+      trace: validated.trace
+    });
   }
-  return partyMaterialization;
+  completed.immediate = {
+    ...completed.immediate,
+    items: immediate.items,
+    containers: immediate.containers,
+    ...(immediate.item_placements != null
+      ? { item_placements: immediate.item_placements } : {}),
+    ...(immediate.container_placements != null
+      ? { container_placements: immediate.container_placements } : {})
+  };
+  if (completed.trace != null) {
+    completed.trace.procedural_actor_equipment_materialization = stage16Runs;
+    delete completed.trace.result_digest;
+    completed.trace.result_digest = computeMaterializationEnvelopeDigest(completed);
+  }
+  return deepFreeze(completed);
 }

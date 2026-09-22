@@ -6,6 +6,8 @@ import { normalizedContainer } from
   './lower-dvina-trace-phase-1a-read-assets.js';
 import { buildActualPersistedProjection } from
   './lower-dvina-trace-phase-1a-projection.js';
+import { projectPlayerSafeScenePackages } from
+  './player-safe-scene-packages.js';
 
 export function createLowerDvinaTracePhase1ARepository({query}={}) {
   if (typeof query !== 'function') throw new TypeError('query function is required.');
@@ -324,33 +326,13 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         throw Object.assign(new Error('PROCEDURAL_SCENE_PACKAGES_TAMPERED'), {
           code: 'PROCEDURAL_SCENE_PACKAGES_TAMPERED' });
       }
-      return deepFreeze(source.packages.map(({ scene_package_id: id, family,
-        g5_node_id: g5, g6_instance_id: g6, position_id: position, profile,
-        allocation_policy: allocation }) => ({ scene_package_id: id, family,
-        g5_node_id: g5, g6_instance_id: g6, position_id: position,
-        environment_facets: profile?.components?.filter((entry) =>
-          ['surface', 'relief', 'vegetation', 'environment', 'water',
-            'place_function', 'work_zone'].includes(entry.layer))
-          .map(playerSafeComponent),
-        functional_groups: profile?.components?.filter((entry) =>
-          ['tool', 'storage', 'work_material'].includes(entry.layer))
-          .map(playerSafeComponent),
-        allocation_status: allocationResolved(state.items, allocation)
-          ? 'resolved' : allocation?.status ?? null })));
+      return projectPlayerSafeScenePackages(source.packages, state.items);
     },
 
     async loadIdempotency(idempotencyKey) {
       return one('SELECT idempotency_key,request_id,payload_hash,physical_plan_digest,status,committed_result FROM party_runtime.commit_idempotency WHERE idempotency_key=$1', [idempotencyKey]);
     }
   });
-}
-
-function playerSafeComponent({ layer, required }) {
-  return { layer, required: required === true };
-}
-
-function allocationResolved(_items, allocation) {
-  return allocation?.status === 'materialized_stage16';
 }
 
 function assertRoundTrip({

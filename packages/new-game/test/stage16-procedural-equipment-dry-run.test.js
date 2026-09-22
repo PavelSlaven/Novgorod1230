@@ -74,8 +74,60 @@ test('Stage16 dry-run accepts canonical immediate instance/profile ids', () => {
   assert.equal(result.trace.summary.total_mass_grams, 200);
 });
 
-test('Stage16 finalize dry-runs allocations then keeps inactive creation gate', () => {
+test('Stage16 finalize commits approved allocations into materialized_stage16', () => {
   const created = profile('create-profile', 'net', 500);
+  const party = {
+    party_id: 'party',
+    immediate: base(),
+    procedural_scene_packages: {
+      packages: [{
+        scene_package_id: 'pkg:net',
+        inventory_profiles: [created],
+        allocation_policy: {
+          status: 'approved_for_stage16_materialization',
+          actor_instance_id: 'npc',
+          allocations: [alloc('item:net', 'net', 'create-profile')]
+        }
+      }]
+    },
+    trace: { choices: [] }
+  };
+  const result = finalizeProceduralActorEquipment(party);
+  assert.equal(result.immediate.items.length, 1);
+  assert.equal(result.immediate.items[0].instance_id, 'item:net');
+  assert.equal(result.immediate.items[0].holder_npc_id, 'npc');
+  assert.equal(result.immediate.items[0].owner_npc_id, 'npc');
+  assert.equal(result.immediate.items[0].controller_npc_id, 'npc');
+  assert.equal(result.procedural_scene_packages.packages[0].allocation_policy.status,
+    'materialized_stage16');
+  assert.equal(result.trace.procedural_actor_equipment_materialization[0]
+    .allocations[0].disposition, 'create');
+  assert.ok(result.trace.result_digest);
+});
+
+test('Stage16 finalize stays fail-closed without approved envelope status', () => {
+  const created = profile('create-profile', 'net', 500);
+  const party = {
+    party_id: 'party',
+    immediate: base(),
+    procedural_scene_packages: {
+      packages: [{
+        inventory_profiles: [created],
+        allocation_policy: {
+          status: 'pending_runtime_allocation_approval',
+          actor_instance_id: 'npc',
+          allocations: [alloc('item:net', 'net', 'create-profile')]
+        }
+      }]
+    }
+  };
+  const result = finalizeProceduralActorEquipment(party);
+  assert.equal(result, party);
+  assert.equal(result.immediate.items.length, 0);
+});
+
+test('Stage16 finalize commits unseen-equivalent allocation without special branch', () => {
+  const created = profile('create-profile', 'basket', 200);
   const party = {
     party_id: 'party',
     immediate: base(),
@@ -85,7 +137,27 @@ test('Stage16 finalize dry-runs allocations then keeps inactive creation gate', 
         allocation_policy: {
           status: 'approved_for_stage16_materialization',
           actor_instance_id: 'npc',
-          allocations: [alloc('item:net', 'net', 'create-profile')]
+          allocations: [alloc('item:basket', 'basket', 'create-profile')]
+        }
+      }]
+    },
+    trace: { choices: [] }
+  };
+  const result = finalizeProceduralActorEquipment(party);
+  assert.equal(result.immediate.items[0].template_id, 'basket');
+  assert.equal(result.procedural_scene_packages.packages[0].allocation_policy.status,
+    'materialized_stage16');
+});
+
+test('Stage16 finalize without allocation rows stays DATA_GAP', () => {
+  const party = {
+    party_id: 'party',
+    immediate: base(),
+    procedural_scene_packages: {
+      packages: [{
+        allocation_policy: {
+          status: 'approved_for_stage16_materialization',
+          actor_instance_id: 'npc'
         }
       }]
     }

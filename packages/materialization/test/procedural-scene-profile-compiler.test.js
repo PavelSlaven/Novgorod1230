@@ -74,9 +74,15 @@ test('V2 compiler covers all families and preserves complete regional facets',
         approved_members.every(({ universal, regional }) =>
           universal?.status === 'approved' && regional?.status === 'approved')));
       if (family === 'natural_shore') {
-        assert.deepEqual(compiled.readiness.functional_layers, []);
+        assert.equal(compiled.readiness.functional_layers.length, 1);
+        assert.equal(compiled.readiness.functional_layers[0].layer, 'natural_layers');
+        assert.equal(compiled.readiness.functional_layers[0].status, 'unresolved');
+        assert.equal(compiled.readiness.functional_layers[0].factual_basis,
+          'abstract_generic_only');
         assert.equal(compiled.readiness.required_layers_mapped, true);
-        assert.equal(compiled.readiness.required_layers_satisfied, true);
+        assert.equal(compiled.readiness.required_layers_satisfied, false);
+        assert.ok(compiled.readiness.unresolved_current_gaps.includes(
+          'NATURAL_BASELINE_FACTUAL_DATA_GAP'));
       }
     }
   });
@@ -107,6 +113,38 @@ test('V2 compiler is deterministic and matches unseen catalog data without famil
       verified_procedural_compiled_catalog: unseen, scene, world_pin: worldPin(verified) });
     assert.deepEqual(first, second);
     assert.equal(first.family, 'unseen_equivalent_shore');
+    assert.equal(first.readiness.required_layers_satisfied, false);
+  });
+
+test('concrete natural semantic ref satisfies baseline without family whitelist',
+  async () => {
+    const verified = await catalog();
+    const concrete = structuredClone(verified);
+    const original = concrete.profiles.find(({ payload }) =>
+      payload.family === 'natural_shore');
+    const copy = structuredClone(original);
+    copy.record_id = 'profile:concrete_shore_v3';
+    copy.payload.family = 'concrete_shore';
+    copy.payload.spatial_closure_ref.scene_template_id = 'scene:concrete';
+    copy.payload.spatial_closure_ref.g5_id = 'g5:concrete';
+    concrete.profiles.push(copy);
+    const mapping = structuredClone(concrete.mappings.find(({ payload }) =>
+      payload.family_candidate_ref === 'novgorod_natural_shore_v3@1'));
+    mapping.record_id = 'mapping:concrete_shore';
+    mapping.payload.family_candidate_ref = 'concrete_shore_v3@1';
+    mapping.payload.typed_semantic_refs = [
+      'riparian_willow_stand', 'sandy_shore_substrate', 'open_water_body'
+    ];
+    concrete.mappings.push(mapping);
+    const compiled = compileProceduralSceneProfile({
+      verified_procedural_compiled_catalog: concrete,
+      scene: { scene_template_id: 'scene:concrete', g5_id: 'g5:concrete',
+        g5_node_id: 'g5:concrete-instance', g6_instance_id: 'g6:concrete',
+        position_id: 'position:concrete' },
+      world_pin: worldPin(verified) });
+    assert.equal(compiled.readiness.required_layers_satisfied, true);
+    assert.equal(compiled.readiness.functional_layers[0].factual_basis, 'concrete');
+    assert.equal(compiled.readiness.functional_layers[0].status, 'mapped');
   });
 
 test('packages are stable, policy stays pending P16, and V1/wrong/tampered input fails',

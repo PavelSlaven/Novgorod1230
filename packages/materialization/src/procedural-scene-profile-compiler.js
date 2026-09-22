@@ -124,7 +124,20 @@ function reconcileReadiness({ profileRecord, mappings, allocationPolicy,
     if (layer) expected.set(layer, { source_gap_code: code });
   }
   for (const { payload } of mappings) {
-    if (payload.layer !== 'natural_layers') expected.set(payload.layer,
+    if (payload.layer === 'natural_layers') {
+      const factual = naturalBaselineFactual(payload);
+      expected.set('natural_layers', {
+        ...expected.get('natural_layers'),
+        mapping_required: payload.required === true,
+        factual_basis: factual.basis,
+        ...(factual.satisfied ? {} : {
+          source_gap_code: factual.source_gap_code
+            ?? 'NATURAL_BASELINE_FACTUAL_DATA_GAP'
+        })
+      });
+      continue;
+    }
+    expected.set(payload.layer,
       { ...expected.get(payload.layer), mapping_required: payload.required === true });
   }
   if (allocationPolicy?.family_candidate_ref === familyCandidateRef) {
@@ -136,13 +149,23 @@ function reconcileReadiness({ profileRecord, mappings, allocationPolicy,
   const mapped = new Set(mappings.map(({ payload }) => payload.layer));
   const activeProcessOnly = mappings.length > 0
     && mappings.every(({ payload }) => payload.variant_id === 'dormant');
-  const layers = [...expected].map(([layer, basis]) => ({ layer,
-    status: mapped.has(layer) ? (basis.allocation_contract
-      ? 'pending_p16_owner' : 'mapped')
-      : activeProcessOnly && layer !== 'container'
-        ? 'not_applicable_active_process_only' : 'unresolved', ...basis })).sort((a, b) =>
-    a.layer.localeCompare(b.layer));
-  const required = layers.filter(({ source_gap_code }) => source_gap_code != null);
+  const layers = [...expected].map(([layer, basis]) => {
+    let status;
+    if (!mapped.has(layer)) {
+      status = activeProcessOnly && layer !== 'container'
+        ? 'not_applicable_active_process_only' : 'unresolved';
+    } else if (layer === 'natural_layers' && basis.factual_basis
+        && basis.factual_basis !== 'concrete') {
+      status = 'unresolved';
+    } else if (basis.allocation_contract) {
+      status = 'pending_p16_owner';
+    } else {
+      status = 'mapped';
+    }
+    return { layer, status, ...basis };
+  }).sort((a, b) => a.layer.localeCompare(b.layer));
+  const required = layers.filter(({ source_gap_code, mapping_required }) =>
+    source_gap_code != null || mapping_required === true);
   return { required_layers_mapped: required.every(({ layer }) => mapped.has(layer)),
     required_layers_satisfied: required.every(({ status }) =>
       ['mapped', 'not_applicable_active_process_only'].includes(status)),
@@ -151,6 +174,43 @@ function reconcileReadiness({ profileRecord, mappings, allocationPolicy,
       'mapped', 'not_applicable_active_process_only'
     ].includes(status))
       .map(({ source_gap_code, layer }) => source_gap_code ?? `MAPPING:${layer}`) };
+}
+
+/** Abstract generic natural refs alone are not enough for factual first screen. */
+function naturalBaselineFactual(payload = {}) {
+  if (payload.local_taxon_authorized === true
+      && Array.isArray(payload.candidates) && payload.candidates.length > 0) {
+    return { satisfied: true, basis: 'concrete' };
+  }
+  if (payload.local_resource_authorized === true
+      && Array.isArray(payload.resource_candidates)
+      && payload.resource_candidates.length > 0) {
+    return { satisfied: true, basis: 'concrete' };
+  }
+  for (const key of [
+    'surface_ref', 'relief_ref', 'vegetation_ref', 'water_body_ref',
+    'shore_structure_ref'
+  ]) {
+    if (text(payload[key])) return { satisfied: true, basis: 'concrete' };
+  }
+  const refs = Array.isArray(payload.typed_semantic_refs)
+    ? payload.typed_semantic_refs.filter((ref) => typeof ref === 'string' && ref)
+    : [];
+  if (refs.some((ref) => !isAbstractNaturalRef(ref))) {
+    return { satisfied: true, basis: 'concrete' };
+  }
+  return {
+    satisfied: false,
+    basis: refs.length > 0 ? 'abstract_generic_only' : 'missing',
+    source_gap_code: 'NATURAL_BASELINE_FACTUAL_DATA_GAP'
+  };
+}
+
+function isAbstractNaturalRef(ref) {
+  return ref.startsWith('generic_')
+    || ref === 'water_adjacency'
+    || ref === 'generic_substrate'
+    || ref === 'generic_riparian_ecology';
 }
 function functionalLayerFromGap(code) {
   const match = /^FUNCTIONAL_([A-Z_]+)_MAPPING_MISSING$/u.exec(code ?? '');

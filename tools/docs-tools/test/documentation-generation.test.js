@@ -18,7 +18,7 @@ test('documentation outputs are deterministic', async () => {
   assert.deepEqual([...first.entries()], [...second.entries()]);
 });
 
-const AGENT_INSTRUCTION_FILES = ['AGENTS.md', '.github/README.md', '.github/copilot-instructions.md'];
+const AGENT_INSTRUCTION_FILES = ['AGENTS.md', '.github/copilot-instructions.md'];
 const SKILL_ROOTS = ['.agents/skills', '.claude/skills'];
 const GOVERNANCE_FILES = ['README.md', 'PRODUCT_CONSTITUTION.md', 'ARCHITECTURE_INVARIANTS.md', 'WORKFLOW_RULES.md', 'AUDIT_RULES.md', 'GIT_SAFETY_RULES.md']
   .map((name) => `docs/governance/${name}`);
@@ -61,6 +61,8 @@ test('agent instruction links resolve to repository files', async () => {
   }
   const navigationDocs = [
     'docs/README.md',
+    'README.md',
+    'docs/archive/README.md',
     ...GOVERNANCE_FILES,
     ...await markdownFilesUnder('docs/context'),
     ...await markdownFilesUnder('docs/process'),
@@ -75,6 +77,10 @@ test('agent instruction links resolve to repository files', async () => {
   await assert.rejects(stat(join(root, '.codex/skills/README.md')));
   await assert.rejects(stat(join(root, '.codex/skills/graphify/SKILL.md')));
   await assert.rejects(stat(join(root, '.agents/skills/graphify/SKILL.md')));
+  for (const archived of ['.cursorrules.txt', 'legacy/.cursorrules.txt', 'legacy/.cursor/rules/project.mdc', '.github/README.md',
+    '.github/Правила разработки.txt', '.github/Работа с картой G0-G4.txt']) {
+    await assert.rejects(stat(join(root, archived)), `${archived} is archived in docs/archive and must not return`);
+  }
 
   const readme = await readFile(join(root, 'README.md'), 'utf8');
   assert.doesNotMatch(readme, /\.github\/AGENTS\.md/u);

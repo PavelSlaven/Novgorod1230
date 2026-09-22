@@ -30,7 +30,7 @@
 | `docs/plans/` | `UNDECLARED` | plan | только задачи соответствующего плана |
 | `docs/implementation/` | `UNDECLARED` | plan / evidence | только задачи соответствующей реализации; часть читают tools (LW-010) |
 | `docs/migration/` | `UNDECLARED` | archive / evidence | исторический архив прошлой миграции; `CANONICAL_PATHS.json` — реестр canonical-путей для `docs:generate` |
-| `docs/archive/` | `UNDECLARED` (не норматив) | archive | снятые agent instructions и журналы (появится в DOC-03) |
+| `docs/archive/` | `UNDECLARED` (не норматив) | archive | снятые agent instructions и журналы: [индекс](archive/README.md); не читать как правила |
 | `MODULE_INDEX.md`, `generated/` | — | generated | навигация; вручную не править, пересобирать `npm run docs:generate` |
 | `DOCUMENTS/`, `legacy/` | `UNDECLARED` | legacy | не читать как норму (LW-003) |
 

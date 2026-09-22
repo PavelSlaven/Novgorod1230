@@ -35,7 +35,6 @@
 | 018 | `**/MODULE.md` | разнобой формата MODULE.md |
 | 019 | `infra/world-base/SCHEMA_REFERENCE.md`, `schemas/party-db/` | документация БД |
 | 020 | `tools/local-play/`, `packages/llm-runtime/src/provider-config.js` | LLM по умолчанию |
-| 021 | `.cursorrules.txt`, `legacy/.cursor/rules/project.mdc`, `.github/*.txt` | противоречивые правила агентов |
 | 022 | `MapMaker/`, `docker-compose.yml`, `.github/workflows/bootstrap.yml` | инфра-гигиена |
 | 023 | `packages/knowledge-source/src/cli.js` | `knowledge:read` отдаёт документ целиком |
 | 024 | PR #98 | статус Runtime живёт в описании PR |
@@ -122,10 +121,6 @@
 ### LW-020 — LLM по умолчанию
 - **Что.** Два разных «default»: `packages/llm-runtime/src/provider-config.js` — role defaults уровня окружения; gameplay-default `play:local` (managed Gemma) — `tools/local-play/*` и его MODULE.md. PR #98 меняет gameplay-default (vLLM endpoint), `provider-config.js` не трогает.
 - **Как жить.** В документах ссылаться на владельца, не на значение.
-
-### LW-021 — противоречивые правила агентов
-- **Что.** `legacy/.cursor/rules/project.mdc` (`alwaysApply: true` для `legacy/`) утверждает «код не сочиняет мир», что противоречит AGENTS.md §7/§10; `.cursorrules.txt`, `legacy/.cursorrules.txt`, `.github/Правила разработки.txt`, `.github/Работа с картой G0-G4.txt` требуют полного чтения REFERENCE/ROLLBACK-документов.
-- **Как жить.** Действует AGENTS.md. Перенос в архив — DOC-03 (#101).
 
 ### LW-022 — инфра-гигиена
 - **Что.** esbuild нужен только `MapMaker/` (не workspace); `docker-compose.yml` тянет `nocodb/nocodb:latest`; `.github/workflows/bootstrap.yml` — одноразовый импорт с `contents: write`.

@@ -6,16 +6,17 @@ import { getSpatialV3TargetMigrationsBeforeCatalogMigration } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import {
   applyFirstPlayableV2ActivationBundle,
-  buildFirstPlayableV2ActivationBundle
+  buildFirstPlayableV2ActivationBundle,
+  FIRST_PLAYABLE_V3_RELEASE
 } from '../runtime-catalog-activation/src/first-playable-v2-activation.js';
 import {
-  applySpatialV3ProductionV12ActivationBundle,
-  buildSpatialV3ProductionV12ActivationBundle,
+  applySpatialV3DevelopmentV13ActivationBundle,
+  buildSpatialV3DevelopmentV13ActivationBundle,
   SPATIAL_V3_M3_DEVELOPMENT_V14_RELEASE
 } from '../runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
 import {
-  applyLowerDvinaBoundaryV3ActivationBundle,
-  buildLowerDvinaBoundaryV3ActivationBundle
+  applyLowerDvinaBoundaryV3CurrentSchemaActivationBundle,
+  buildLowerDvinaBoundaryV3CurrentSchemaActivationBundle
 } from '../runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
 import {
   runActorBaseAttributesOwnerMigrations,
@@ -81,10 +82,11 @@ export async function installActivatedRuntimeCatalog({
   if (lifecycleResult?.pass !== true) {
     throw new Error('Stage 3c lifecycle did not pass.');
   }
-  // Green order (daec52ed / first-playable-v2 fixture): catalog → v2 immediately.
+  // Green order (first-playable fixture): catalog → FIRST_PLAYABLE_V3_RELEASE.
+  // Catalog migration leaves V3 fingerprint; V2 release target would mismatch.
   // Narrow parent-revision ensure before S1 (FK only). Actor + full 21.sql after
-  // v12 so assertExactMigrationTargets still sees exact catalog fingerprint.
-  // Gate1 before actor is not on the green path: v12 registers approved parent.
+  // activations so assertExactMigrationTargets still sees exact catalog fingerprint.
+  // Gate1 before actor is not on the green path: final pin registers approved parent.
   for (const file of ['18.sql', '19.sql', '20.sql']) {
     await worldPool.query(await readFile(
       resolve(repositoryRoot, 'infra/world-base/schema', file),
@@ -119,38 +121,40 @@ export async function installActivatedRuntimeCatalog({
     partyPool,
     repositoryRoot,
     gitCommitSha: commitSha,
-    authorizationRef
+    authorizationRef,
+    release: FIRST_PLAYABLE_V3_RELEASE
   });
   await applyFirstPlayableV2ActivationBundle({
     worldPool,
     partyPool,
-    bundle: v2Bundle
+    bundle: v2Bundle,
+    release: FIRST_PLAYABLE_V3_RELEASE
   });
-  const v3Bundle = await buildLowerDvinaBoundaryV3ActivationBundle({
+  const v3Bundle = await buildLowerDvinaBoundaryV3CurrentSchemaActivationBundle({
     worldPool,
     partyPool,
     repositoryRoot,
     gitCommitSha: commitSha,
     authorizationRef
   });
-  await applyLowerDvinaBoundaryV3ActivationBundle({
+  await applyLowerDvinaBoundaryV3CurrentSchemaActivationBundle({
     worldPool,
     partyPool,
     bundle: v3Bundle
   });
-  const v12Bundle = await buildSpatialV3ProductionV12ActivationBundle({
+  const v12Bundle = await buildSpatialV3DevelopmentV13ActivationBundle({
     worldPool,
     partyPool,
     repositoryRoot,
     gitCommitSha: commitSha,
     authorizationRef
   });
-  await applySpatialV3ProductionV12ActivationBundle({
+  await applySpatialV3DevelopmentV13ActivationBundle({
     worldPool,
     partyPool,
     bundle: v12Bundle
   });
-  // Actor import needs exact approved item-container parent from v12 pin.
+  // Actor import needs exact approved item-container parent from final pin.
   // Owner migration source fingerprint is catalog target — before 21.sql.
   await ensureActorBaseAttributesRuntimeActive({
     worldPool, partyPool, worldUrl, repositoryRoot

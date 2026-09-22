@@ -16,7 +16,7 @@ test('local bootstrap reports the M3 gap without manufacturing authority', async
   assert.doesNotMatch(source, /migrateExisting|rematerializeExisting/u);
 });
 
-test('local bootstrap matches green catalog-then-v2 activation order', async () => {
+test('local bootstrap matches green catalog-then-v3 activation order', async () => {
   const source = await readFile(new URL('../production-setup.js', import.meta.url),
     'utf8');
   const schemaInstall = source.indexOf("['18.sql', '19.sql', '20.sql']");
@@ -34,15 +34,20 @@ test('local bootstrap matches green catalog-then-v2 activation order', async () 
   assert.ok(parentRevisionEnsure < s1Import);
   assert.ok(s1Import < migration);
   assert.ok(migration < activation,
-    'exact catalog fingerprint must reach v2 before actor/21 DDL');
+    'exact catalog fingerprint must reach first-playable before actor/21 DDL');
   assert.ok(activation < actorEnsure,
-    'actor ensure stays after v12 activations (green M3 / acceptance path)');
+    'actor ensure stays after current-schema activations (green M3 / acceptance path)');
   assert.ok(actorEnsure < appearanceDdl,
     'full 21.sql stays after actor ensure for owner-migration fingerprint');
   assert.ok(appearanceDdl < appearanceImport);
   assert.doesNotMatch(source, /activateGate1RuntimeCatalog/u,
-    'gate1 before actor is not on green install path; v12 registers parent');
-  assert.doesNotMatch(source, /FIRST_PLAYABLE_V3_RELEASE/u);
+    'gate1 before actor is not on green install path; final pin registers parent');
+  assert.match(source, /release:\s*FIRST_PLAYABLE_V3_RELEASE/u,
+    'post-catalog activation must use V3 fingerprint left by catalog migration');
+  assert.match(source, /buildLowerDvinaBoundaryV3CurrentSchemaActivationBundle/u);
+  assert.match(source, /buildSpatialV3DevelopmentV13ActivationBundle/u);
+  assert.doesNotMatch(source, /buildSpatialV3ProductionV12ActivationBundle/u);
+  assert.doesNotMatch(source, /buildLowerDvinaBoundaryV3ActivationBundle\(\{/u);
 });
 
 test('local bootstrap materializes appearance parent revision before S1 import', async () => {

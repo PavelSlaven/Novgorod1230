@@ -144,6 +144,28 @@ test('local play provisions Giga only and owns shutdown', async () => {
   assert.deepEqual(closed.sort(), ['postgres', 'runtime']);
 });
 
+test('M3 v14 setup runs only behind the explicit new-development option',
+  async () => {
+    const stop = Object.assign(new Error('stop'), { code: 'STOP' });
+    let productionCalls = 0; let developmentCalls = 0;
+    await assert.rejects(startLocalPlay({ env: {
+      RUS_RUNTIME_SETUP: 'spatial-v3-m3-development-v14'
+    }, readGit: async () => git, isPortAvailable: async () => true,
+    provisionRuntime: async () => managed,
+    ensurePostgres: async () => ({ worldUrl: 'world', partyUrl: 'party',
+      state: 'existing', close: async () => {} }),
+    createPool: () => ({ end: async () => {} }),
+    setupProduction: async () => { productionCalls += 1; throw stop; },
+    setupM3Development: async ({ worldUrl, partyUrl }) => {
+      developmentCalls += 1;
+      assert.equal(worldUrl, 'world'); assert.equal(partyUrl, 'party');
+      throw stop;
+    }
+  }), stop);
+    assert.equal(productionCalls, 0);
+    assert.equal(developmentCalls, 1);
+  });
+
 test('missing provider settings never request gameplay-model provisioning', async () => {
   const stop = Object.assign(new Error('stop'), { code: 'STOP' });
   await assert.rejects(startLocalPlay({ env: {},

@@ -22,6 +22,13 @@ OpenAI-compatible `chat/completions` настроенного vLLM endpoint.
 Никакого fallback на DeepSeek нет. Подробности:
 [`docs/setup/LLM_PROVIDERS.md`](../../docs/setup/LLM_PROVIDERS.md).
 
+`RUS_RUNTIME_SETUP=spatial-v3-m3-development-v14` включает только явный
+development setup для новой БД без партий. Он активирует approved v14 release,
+применяет versioned actor owner migrations, replay-проверяет approved
+`actor_base_attributes_v1` import/activation и передаёт active exact binding
+обычному new-game path. Default/production setup не меняется; существующие
+parties и old saves этот режим отклоняет.
+
 `gameplay-gap-campaign.mjs` — development-only HTTP driver реальных production
 HTTP turns для отдельно назначаемой gameplay-testing фазы (World Knowledge
 contract §§0.1, 112.12). Injected explorer получает только актуальный public screen и

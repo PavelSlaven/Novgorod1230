@@ -16,7 +16,8 @@ import {
   localPlayError
 } from './local-postgres.js';
 import { provisionManagedRuntime } from './managed-runtime.js';
-import { installActivatedRuntimeCatalog } from './production-setup.js';
+import { installActivatedRuntimeCatalog,
+  installM3DevelopmentV14NewPartyRuntime } from './production-setup.js';
 import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from './runtime-capabilities.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -100,6 +101,7 @@ export async function startLocalPlay({
   ensurePostgres = ensureLocalPostgres,
   localPostgresSettings,
   setupProduction = installActivatedRuntimeCatalog,
+  setupM3Development = installM3DevelopmentV14NewPartyRuntime,
   loadPin = loadActiveRuntimeCatalogPin,
   createPool = (options) => new pg.Pool(options),
   provisionRuntime = provisionManagedRuntime,
@@ -135,11 +137,15 @@ export async function startLocalPlay({
   const partyPool = createPool({ connectionString: postgres.partyUrl, max: 1 });
   let pin;
   let runtimeCapabilities = LOCAL_PLAY_RUNTIME_CAPABILITIES_V1;
+  const m3DevelopmentRequested = env.RUS_RUNTIME_SETUP ===
+    'spatial-v3-m3-development-v14';
   try {
     try {
-      if (postgres.state === 'fresh') {
-        const setup = await setupProduction({ worldPool, partyPool,
-          worldUrl: postgres.worldUrl, repositoryRoot: ROOT });
+      if (postgres.state === 'fresh' || m3DevelopmentRequested) {
+        const setup = await (m3DevelopmentRequested
+          ? setupM3Development : setupProduction)({ worldPool, partyPool,
+          worldUrl: postgres.worldUrl, partyUrl: postgres.partyUrl,
+          repositoryRoot: ROOT });
         runtimeCapabilities = setup.runtimeCapabilities;
       }
       pin = await loadPin(worldPool,

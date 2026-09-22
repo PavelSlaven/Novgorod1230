@@ -32,6 +32,11 @@ world/domain closure digests и resolved refs; одного `pass` boolean не�
 Current authored binding v3 сохраняет из approved closure один initial
 Spatial-v3 baseline/G6/position и actor journey location в той же new-game
 transaction; route либо local topology этим не синтезируются.
+Для явно активированного new-development runtime Stage 24 сохраняет exact
+`actor_base_attributes_v1` party pin и полные snapshots шести характеристик
+в той же Stage 24/25 transaction. Reload, retry и profile promotion используют
+persisted snapshots без reroll; inactive или несовместимый binding остаётся
+typed DATA GAP/INVALID.
 
 Каждый stage принимает точный input contract. Для активированного
 `actor_base_appearance_v1` Stage 7 требует pinned actor profile snapshot и

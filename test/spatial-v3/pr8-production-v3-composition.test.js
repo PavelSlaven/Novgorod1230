@@ -699,7 +699,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger through migration 032', async () => {
+test('restart extends the exact immutable catalog ledger through migration 034', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -751,7 +751,8 @@ test('restart extends the exact immutable catalog ledger through migration 032',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commits',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_enablements',
     'initial_amount_bounds jsonb',
-    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commit_items'
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commit_items',
+    'ADD COLUMN IF NOT EXISTS attribute_profile_snapshot jsonb'
   ]) {
     assert.equal(
       statements.filter((sql) => sql.includes(marker)).length,

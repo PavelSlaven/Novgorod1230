@@ -1086,9 +1086,9 @@
       "type": "sql"
     },
     {
-      "bytes": 102,
+      "bytes": 116,
       "path": "schemas/party-db/034_party_runtime_actor_base_attributes.sql",
-      "sha256": "20a426a488e02f75c0a8ad5a331cbaa903d1c5bf683cfe475f528dab74443233",
+      "sha256": "db348b4f7b091798c7b94bcfab2520ba2aa8afc1af3e83ff22a4c5ed40cb25ce",
       "type": "sql"
     },
     {

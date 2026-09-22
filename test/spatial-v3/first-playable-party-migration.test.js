@@ -118,6 +118,12 @@ test('target chain appends migrations 011 through 034 in exact order', () => {
     factualPresentationSql, initialSemanticDecisionSql, actorBaseAttributesSql]);
 });
 
+test('034 adds attribute_profile_snapshot idempotently for restart re-apply', () => {
+  assert.match(actorBaseAttributesSql,
+    /ADD COLUMN IF NOT EXISTS attribute_profile_snapshot jsonb/u);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), actorBaseAttributesSql);
+});
+
 test('015 and 030 qualify jsonb array entry values in snapshot validators', () => {
   for (const validatorSql of [turnStepItemsSql, snapshotValidatorAliasSql]) {
     assert.match(validatorSql,

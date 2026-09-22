@@ -25,6 +25,7 @@ test('local bootstrap completes canonical schema before exact migration and acti
   );
   const s1Import = source.indexOf('buildS1AuthoringV6ImportSql({');
   const migration = source.indexOf('runWorldRuntimeCatalogMigration(worldPool)');
+  const gate1 = source.indexOf('activateGate1RuntimeCatalog({');
   const actorEnsure = source.indexOf('ensureActorBaseAttributesRuntimeActive({');
   const appearanceDdl = source.indexOf("infra/world-base/schema/21.sql");
   const appearanceImport = source.indexOf('buildCharacterAppearanceV1ImportSql({');
@@ -33,7 +34,8 @@ test('local bootstrap completes canonical schema before exact migration and acti
   assert.ok(schemaInstall < parentRevisionEnsure);
   assert.ok(parentRevisionEnsure < s1Import);
   assert.ok(s1Import < migration);
-  assert.ok(migration < actorEnsure);
+  assert.ok(migration < gate1);
+  assert.ok(gate1 < actorEnsure);
   assert.ok(actorEnsure < appearanceDdl);
   assert.ok(appearanceDdl < appearanceImport);
   assert.ok(appearanceImport < activation);
@@ -47,6 +49,7 @@ test('local bootstrap materializes appearance parent revision before S1 import',
     'buildCharacterAppearanceParentRevisionEnsureSql({'
   );
   const s1Import = source.indexOf('buildS1AuthoringV6ImportSql({');
+  const gate1 = source.indexOf('activateGate1RuntimeCatalog({');
   const appearanceDdl = source.indexOf("infra/world-base/schema/21.sql");
   const appearanceImport = source.indexOf('buildCharacterAppearanceV1ImportSql({');
   const actorEnsure = source.indexOf('ensureActorBaseAttributesRuntimeActive({');
@@ -54,6 +57,10 @@ test('local bootstrap materializes appearance parent revision before S1 import',
   assert.ok(s1Import >= 0);
   assert.ok(parentRevisionEnsure < s1Import,
     'v4 parent revision row must exist before S1 v5/v6 parent_revision FK');
+  assert.ok(gate1 < actorEnsure,
+    'gate1 registers exact approved domain parent before actor import');
+  assert.ok(parentRevisionEnsure < gate1,
+    'early spatial parent ensure must not replace gate1 domain catalog parent');
   assert.ok(actorEnsure < appearanceDdl,
     'full 21.sql stays after actor ensure for known schema fingerprint');
   assert.ok(appearanceDdl < appearanceImport);

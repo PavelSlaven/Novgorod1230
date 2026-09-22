@@ -25,6 +25,8 @@ import {
 import {
   activateSpatialV3M3DevelopmentV14
 } from '../runtime-catalog-activation/src/spatial-v3-m3-development-v14-activation.js';
+import { activateGate1RuntimeCatalog } from
+  '../runtime-catalog-activation/src/gate1-runtime-activation.js';
 import { runActorBaseAttributesImport } from
   '../../scripts/run-actor-base-attributes-import.mjs';
 import { runActorBaseAttributesRuntimeActivation } from
@@ -81,8 +83,9 @@ export async function installActivatedRuntimeCatalog({
   if (lifecycleResult?.pass !== true) {
     throw new Error('Stage 3c lifecycle did not pass.');
   }
-  // Forward-migration: bootstrap 01..20, then catalog, then actor ensure.
-  // S1 needs only v4 parent revision row (not full 21.sql DDL — fingerprint).
+  // Forward-migration: bootstrap 01..20, then catalog, gate1 parent, actor.
+  // S1 needs only v4 spatial parent row (not full 21.sql — fingerprint).
+  // Gate1 registers exact approved item-container domain parent for actor import.
   // Full 21.sql + appearance import stay after actor ensure.
   for (const file of ['18.sql', '19.sql', '20.sql']) {
     await worldPool.query(await readFile(
@@ -109,6 +112,13 @@ export async function installActivatedRuntimeCatalog({
     runWorldRuntimeCatalogMigration(worldPool),
     runPartyRuntimeCatalogMigration(partyPool)
   ]);
+  // Exact approved parent catalog must exist before actor import parent check.
+  await activateGate1RuntimeCatalog({
+    worldPool,
+    partyPool,
+    repositoryRoot,
+    worldReleaseId: 'spatial-v3-production-v6'
+  });
   // Catalog migration is fingerprint target; ensure stays idempotent if already active.
   await ensureActorBaseAttributesRuntimeActive({
     worldPool, partyPool, worldUrl, repositoryRoot

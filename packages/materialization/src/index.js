@@ -12,28 +12,22 @@ import { assertConnectedG5Graph, assertG5TemplateBundle, chooseApprovedCount, in
 import { approvedWeight, assertApplicableRecord, assertMaterializationInput, chooseCount, compareRule, partitionInstances, weightedCandidate } from './world-validation.js';
 import { materializeNpcInstanceAppearances } from
   './actor-base-appearance.js';
-
-export { AUTHORED_MATERIALIZER_VERSION, canonicalDigest, createRandomSource,
-  deriveSeed, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from
-  './core.js';
-export { materializeAuthoredStartPartyInstance } from './authored-start.js';
-export { materializeActorBaseAppearance } from './actor-base-appearance.js';
-export { compileApprovedNpcRuntimeBasis, compileProceduralSceneProfile,
+import { materializeAuthoredStartPartyInstance } from './authored-start.js';
+import { materializeActorBaseAppearance } from './actor-base-appearance.js';
+import { compileApprovedNpcRuntimeBasis, compileProceduralSceneProfile,
   deriveApprovedInitialEnvironment, materializeApprovedProceduralNpc,
-  validateProceduralSceneAuthoringCandidate } from
-  './procedural-authoring.js';
-export { compileProceduralScenePartyPackages } from './procedural-scene-party-packages.js';
-export { completeAuthoredItemMechanics } from
-  './lower-dvina-trace-selection.js';
-export {
+  validateProceduralSceneAuthoringCandidate } from './procedural-authoring.js';
+import { compileProceduralScenePartyPackages } from './procedural-scene-party-packages.js';
+import { completeAuthoredItemMechanics } from './lower-dvina-trace-selection.js';
+import {
   LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
   LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
   LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
   LOWER_DVINA_TRACE_REVISION26_WORLD_COMPATIBILITY_DIGEST
 } from './lower-dvina-trace-contract.js';
-export { executeBoundedDecision, issueBoundedDecisionRequest, validateBoundedDecisionResult } from './bounded-decision.js';
-export { computeMaterializationResultDigest as materializationResultDigest } from '@rus/contracts';
-export {
+import { executeBoundedDecision, issueBoundedDecisionRequest, validateBoundedDecisionResult } from './bounded-decision.js';
+import { computeMaterializationResultDigest as materializationResultDigest } from '@rus/contracts';
+import {
   applyOrdinaryAggregateTransition,
   assertAndNormalizeOrdinaryAggregate,
   computeOrdinaryIdentityBudget,
@@ -47,8 +41,46 @@ export {
   validateOrdinaryBackgroundGroup,
   validateSupportingBasisAdmission
 } from './ordinary-materialization-foundation.js';
+import { materializeItemPlacement, materializeNpcPlacement } from './placement-materializers.js';
+import { materializeApprovedActorEquipment } from './approved-actor-equipment.js';
+import {
+  ACTOR_BASE_ATTRIBUTE_KEYS,
+  canonicalCandidateDigest,
+  canonicalRequestDigest,
+  materializeActorBaseAttributes,
+  materializeOrPreserveActorBaseAttributes,
+  profileFromVerifiedRuntimeRecord,
+  validateActorBaseAttributesCandidate,
+  validateActorBaseAttributes
+} from './actor-base-attributes.js';
 
-export function materializeWorldInstances(input) {
+export {
+  ACTOR_BASE_ATTRIBUTE_KEYS, AUTHORED_MATERIALIZER_VERSION, canonicalCandidateDigest,
+  canonicalDigest, canonicalRequestDigest, completeAuthoredItemMechanics,
+  compileApprovedNpcRuntimeBasis, compileProceduralScenePartyPackages,
+  compileProceduralSceneProfile, createOrdinaryAggregate, createOrdinaryCandidateKey,
+  createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey,
+  createOrdinaryResolutionRef, createPreparedGroupRef, createRandomSource, deriveSeed,
+  deriveApprovedInitialEnvironment, executeBoundedDecision,
+  issueBoundedDecisionRequest, LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
+  LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
+  LOWER_DVINA_TRACE_REVISION26_WORLD_COMPATIBILITY_DIGEST,
+  LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
+  materializationResultDigest, materializeActorBaseAppearance,
+  materializeActorBaseAttributes, materializeApprovedActorEquipment,
+  materializeApprovedProceduralNpc, materializeAuthoredStartPartyInstance,
+  materializeG5Scene, materializeItemPlacement,
+  materializeNpcPlacement, materializeOrPreserveActorBaseAttributes,
+  materializeWorldInstances, MATERIALIZER_VERSION, MaterializationError,
+  profileFromVerifiedRuntimeRecord, repairWorldInstances, RNG_VERSION,
+  validateActorBaseAttributes, validateActorBaseAttributesCandidate,
+  validateBoundedDecisionResult, validateProceduralSceneAuthoringCandidate,
+  validateSupportingBasisAdmission, assertAndNormalizeOrdinaryAggregate,
+  applyOrdinaryAggregateTransition, computeOrdinaryIdentityBudget,
+  validateOrdinaryBackgroundGroup
+};
+
+function materializeWorldInstances(input) {
   assertMaterializationInput(input);
   if (input.existing_party_state.baseline_exists === true && ['new_game', 'first_entry'].includes(input.trigger)) throw new MaterializationError('BASELINE_ALREADY_MATERIALIZED', 'Baseline materialization is immutable and cannot be created twice.');
   const seedContext = {
@@ -172,7 +204,7 @@ export function materializeWorldInstances(input) {
   return deepFreeze(output);
 }
 
-export function repairWorldInstances(input) {
+function repairWorldInstances(input) {
   if (input?.version !== 2 || input?.schema !== 'world_materialization_repair_request_v2' || typeof input.repair_reason !== 'string' || !input.repair_reason.trim() || !input.previous_result || typeof input.previous_result !== 'object' || !/^[a-f0-9]{64}$/.test(String(input.previous_result_digest ?? '')) || !/^[a-f0-9]{64}$/.test(String(input.replacement_request_digest ?? '')) || !Array.isArray(input.repair_history) || input.repair_history.length === 0) throw new MaterializationError('MATERIALIZATION_REPAIR_REQUEST_INVALID', 'Repair requires the persisted previous result, reason, old/new digests and non-empty repair history.');
   if (input.previous_result_digest === input.replacement_request_digest || canonicalDigest(input.replacement_request) !== input.replacement_request_digest) throw new MaterializationError('MATERIALIZATION_REPAIR_REQUEST_INVALID', 'Repair digests are invalid or do not bind the replacement request.');
   if (computeMaterializationResultDigest(input.previous_result) !== input.previous_result_digest || input.previous_result.trace?.result_digest !== input.previous_result_digest) throw new MaterializationError('MATERIALIZATION_REPAIR_PREVIOUS_RESULT_TAMPERED', 'Repair previous result does not match its persisted digest.');
@@ -187,7 +219,7 @@ export function repairWorldInstances(input) {
   return deepFreeze(result);
 }
 
-export function materializeG5Scene(input) {
+function materializeG5Scene(input) {
   const catalogSet = input?.allowed_g5_template_set ?? {};
   const suppliedCatalogDigest = catalogSet.catalog_digest;
   const sourceCatalogDigest = catalogSet.source_catalog_digest ?? null;
@@ -350,24 +382,6 @@ export function materializeG5Scene(input) {
     write_set: { g5_nodes: minilocations.map((item) => item.g5_minilocation_id), g5_anchors: anchors.map((item) => item.anchor_id), g5_edges: edges.map((item) => item.edge_id) }
   });
 }
-
-export {
-  materializeItemPlacement,
-  materializeNpcPlacement
-} from './placement-materializers.js';
-export {
-  materializeApprovedActorEquipment
-} from './approved-actor-equipment.js';
-export {
-  ACTOR_BASE_ATTRIBUTE_KEYS,
-  canonicalCandidateDigest,
-  canonicalRequestDigest,
-  materializeActorBaseAttributes,
-  materializeOrPreserveActorBaseAttributes,
-  profileFromVerifiedRuntimeRecord,
-  validateActorBaseAttributesCandidate,
-  validateActorBaseAttributes
-} from './actor-base-attributes.js';
 
 function g5TemplateMatchesScope(template, scope = {}, selectedG4TypeId) {
   if (!selectedG4TypeId || template?.g4_type_id !== selectedG4TypeId || !scope.world_revision_id || !scope.region_id || !Number.isInteger(scope.year) || typeof scope.season !== 'string' || !scope.season) return false;

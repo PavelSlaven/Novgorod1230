@@ -1,5 +1,5 @@
 import { serverError } from '../../errors.js';
-import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
+import { canonicalStringify } from '@rus/runtime-catalog';
 import { createHash } from 'node:crypto';
 
 const V2 = Object.freeze({

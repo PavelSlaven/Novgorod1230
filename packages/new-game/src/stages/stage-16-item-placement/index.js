@@ -1,5 +1,4 @@
 export { stage16Definition } from './definition.js';
-export { finalizeProceduralActorEquipment } from './finalize-procedural-actor-equipment.js';
 export { runStage16ItemPlacementBlock, runStage16ItemPlacement } from './orchestration/run-stage-16.js';
 export { buildStage16ItemPlacementInput, validateStage16ItemPlacementInput } from './input/input-boundary.js';
 export { buildStage16ItemCandidateIndexes, buildStage16ContainerCandidateIndexes, buildStage16PropertyRuleIndexes, buildStage16AnchorIndexes } from './references/indexes.js';

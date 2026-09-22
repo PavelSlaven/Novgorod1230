@@ -12,8 +12,8 @@
 
 Для любой задачи:
 
-1. прочитать root [`AGENTS.md`](../../../../AGENTS.md);
-2. прочитать этот индекс;
+1. прочитать root [`AGENTS.md`](../../../../AGENTS.md) (роутер) и назначенные им разделы `docs/governance/*.md`;
+2. открыть этот индекс: §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки; для World Knowledge и direct speech — также §6 и §10; индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor;
 3. прочитать applicable nested `AGENTS.md`;
 4. прочитать relevant `MODULE.md`;
 5. установить active release, profile, manifest, binding и schema затронутой области;
@@ -34,7 +34,7 @@
 
 | Статус | Значение |
 |---|---|
-| `GOVERNING` | стабильная продуктовая и административная норма; высший уровень — root `AGENTS.md` |
+| `GOVERNING` | стабильная продуктовая и административная норма; высший уровень — governing-корпус root `AGENTS.md` (роутер и `docs/governance/*.md`, `AGENTS.md` §1.3) |
 | `ACTIVE` | действующий норматив текущей production-семантики в заявленной области |
 | `ACTIVE SPECIALIZATION` | действующий более узкий норматив; имеет приоритет над общим документом только в своём scope |
 | `PROPOSED / UMBRELLA TARGET` | целевое предложение; не описывает production само по себе |
@@ -50,6 +50,15 @@
 | Документ | Статус | Scope |
 |---|---|---|
 | [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |
+
+Governing-корпус `AGENTS.md` (§1.3) также включает:
+
+- [`docs/governance/README.md`](../../../../docs/governance/README.md) — преамбула, §1.2, карта старых разделов;
+- [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30;
+- [`docs/governance/ARCHITECTURE_INVARIANTS.md`](../../../../docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28;
+- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §29;
+- [`docs/governance/AUDIT_RULES.md`](../../../../docs/governance/AUDIT_RULES.md) — §25, §25.1;
+- [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.
 
 `Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.
 

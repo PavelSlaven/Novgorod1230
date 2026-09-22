@@ -3,7 +3,7 @@
 > status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
 
 Это карта: где лежит схема, кто ей владеет и где проверять. Нормы здесь не повторяются.
-Правила записи, причинности, атомарности и replay — [AGENTS.md](../../AGENTS.md) §14 (сохранение
+Правила записи, причинности, атомарности и replay — [AGENTS.md §14](../governance/ARCHITECTURE_INVARIANTS.md) (сохранение
 причинности) и §23 (persistence, concurrency и БД). Статусы документов — [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md).
 Если утверждение ниже расходится с кодом, прав код; расхождение нужно сообщить.
 
@@ -128,7 +128,7 @@ Runtime игры её не использует. Новые файлы сюда 
 
 ## 6. Только тестовая БД
 
-Правило — [AGENTS.md](../../AGENTS.md) §23: migrations, import, seed и tests никогда не направляются в
+Правило — [AGENTS.md §23](../governance/ARCHITECTURE_INVARIANTS.md): migrations, import, seed и tests никогда не направляются в
 operator/production базу. Как это устроено сейчас:
 
 - PostgreSQL-тесты поднимают одноразовый контейнер `postgres:16-alpine` и в `t.after` удаляют его через

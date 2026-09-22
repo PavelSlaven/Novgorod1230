@@ -20,6 +20,10 @@ test('documentation outputs are deterministic', async () => {
 
 const AGENT_INSTRUCTION_FILES = ['AGENTS.md', '.github/README.md', '.github/copilot-instructions.md'];
 const SKILL_ROOTS = ['.agents/skills', '.claude/skills'];
+const GOVERNANCE_FILES = ['README.md', 'PRODUCT_CONSTITUTION.md', 'ARCHITECTURE_INVARIANTS.md', 'WORKFLOW_RULES.md', 'AUDIT_RULES.md', 'GIT_SAFETY_RULES.md']
+  .map((name) => `docs/governance/${name}`);
+const ROUTER_MAX_BYTES = 16384;
+const ROUTER_MAX_LINES = 200;
 
 async function markdownFilesUnder(relativeDir) {
   const entries = await readdir(join(root, relativeDir), { recursive: true, withFileTypes: true });
@@ -29,9 +33,12 @@ async function markdownFilesUnder(relativeDir) {
     .sort();
 }
 
+function withoutCode(text) {
+  return text.replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gmu, '').replace(/`[^`\n]*`/gu, '');
+}
+
 function markdownLinkTargets(text) {
-  const withoutCode = text.replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gmu, '').replace(/`[^`\n]*`/gu, '');
-  return [...withoutCode.matchAll(/\[[^\]]*\]\(<?([^)>]+)>?\)/gu)].map((match) => match[1].trim());
+  return [...withoutCode(text).matchAll(/\[[^\]]*\]\(<?([^)>]+)>?\)/gu)].map((match) => match[1].trim());
 }
 
 async function assertLinksResolve(relativePath, { requireLinks }) {
@@ -54,6 +61,7 @@ test('agent instruction links resolve to repository files', async () => {
   }
   const navigationDocs = [
     'docs/README.md',
+    ...GOVERNANCE_FILES,
     ...await markdownFilesUnder('docs/context'),
     ...await markdownFilesUnder('docs/process'),
     'docs/work/CURRENT_SPRINT.md',
@@ -109,19 +117,48 @@ test('agent skill stubs are identical across tools and point to existing canon',
   }
 });
 
+test('AGENTS.md router fits the agent context budget and links every governance file', async () => {
+  const router = await readFile(join(root, 'AGENTS.md'));
+  assert.ok(router.length <= ROUTER_MAX_BYTES, `AGENTS.md is ${router.length} bytes; limit ${ROUTER_MAX_BYTES}`);
+  const text = router.toString('utf8');
+  assert.ok(text.split('\n').length <= ROUTER_MAX_LINES + 1, 'AGENTS.md exceeds the router line limit');
+  const linked = new Set(markdownLinkTargets(text).map((target) => target.split('#')[0]));
+  for (const file of GOVERNANCE_FILES) assert.ok(linked.has(file), `AGENTS.md must link ${file}`);
+  for (const relativePath of ['AGENTS.md', ...GOVERNANCE_FILES]) {
+    const imports = withoutCode(await readFile(join(root, relativePath), 'utf8')).match(/(?:^|[\s([])@[\w.~/-]+/gmu) ?? [];
+    assert.deepEqual(imports, [], `${relativePath}: @path outside code spans would be imported by Claude Code`);
+  }
+  assert.match(text, /^### 1\.1\. Кто может менять этот файл$/mu);
+  assert.match(text, /\*\*Поправка к §1\.1\.\*\* Защита §1\.1 распространяется на каждый файл `docs\/governance\/\*\.md`/u);
+  assert.match(text, /Полный и обязательный текст — AR §25, §25\.1/u);
+});
+
+test('governance corpus holds every former AGENTS.md section exactly once', async () => {
+  const sections = [];
+  for (const file of GOVERNANCE_FILES.filter((path) => !path.endsWith('/README.md'))) {
+    const text = await readFile(join(root, file), 'utf8');
+    sections.push(...[...text.matchAll(/^## (\d+)\. /gmu)].map((match) => Number(match[1])));
+  }
+  assert.deepEqual(sections.toSorted((a, b) => a - b), Array.from({ length: 29 }, (_, index) => index + 2));
+  const map = await readFile(join(root, 'docs/governance/README.md'), 'utf8');
+  assert.match(map, /^### 1\.2\. /mu);
+  for (let section = 2; section <= 30; section += 1) assert.match(map, new RegExp(`^\\| ${section}\\. `, 'mu'));
+});
+
 test('canonical documentation preserves active guidance without obsolete workflow gates', async () => {
   const agents = await readFile(join(root, 'AGENTS.md'), 'utf8');
+  const corpus = (await Promise.all(['AGENTS.md', ...GOVERNANCE_FILES].map((path) => readFile(join(root, path), 'utf8')))).join('\n');
 
-  assert.doesNotMatch(agents, /Перед любой задачей полностью прочитай/u);
-  assert.doesNotMatch(agents, /Перед grep, file search, GitHub code search/u);
-  assert.doesNotMatch(agents, /PR №13/u);
+  assert.doesNotMatch(corpus, /Перед любой задачей полностью прочитай/u);
+  assert.doesNotMatch(corpus, /Перед grep, file search, GitHub code search/u);
+  assert.doesNotMatch(corpus, /PR №13/u);
   assert.match(agents, /Канонический индекс контрактов/u);
   assert.match(agents, /`codebase-memory-mcp` в режиме Verify \(Tier 2\)/u);
   assert.match(agents, /`detect_changes` для фактического diff/u);
   assert.match(agents, /`check_index_coverage` для всех путей/u);
   assert.match(agents, /`@rus\/knowledge-source` остаётся отдельным нормативным каналом/u);
   assert.match(agents, /очевидной локальной задачи[\s\S]*прямой `rg`/u);
-  assert.doesNotMatch(agents, /Graphify|repo-intel/u);
+  assert.doesNotMatch(corpus, /Graphify|repo-intel/u);
 
   const developmentRules = await readFile(join(root, 'data/knowledge-source/corpus/DOCUMENTS/development_rules.txt'), 'utf8');
   assert.match(developmentRules, /Эти правила реализуют active-архитектуру materialization v2 и проверяются единым release gate/u);

@@ -5,6 +5,8 @@ alwaysApply: false
 
 # Project knowledge RAG
 
+The root `AGENTS.md` is a router: its task routing table decides which governance sections, CONTRACT_INDEX rows and documents to load. This rule only describes the RAG CLI.
+
 Use the knowledge-source CLI when a task changes game behavior, architecture, contracts, persistence, materialization, or another area governed by project normative documents.
 
 ```bash
@@ -12,6 +14,6 @@ npm run knowledge:query -- --query "<concrete normative need>"
 npm run knowledge:read -- --document-id <document_id>
 ```
 
-Use the result to locate the relevant source document, then verify the requirement in that document. Do not query or read the whole normative corpus for small local, documentation-only, formatting, or mechanical tasks.
+Use the result to locate the relevant source document, then verify the requirement in the relevant sections of that document; read it whole only when you edit it or it is the contract of a high-risk change. Do not query or read the whole normative corpus for small local, documentation-only, formatting, or mechanical tasks.
 
 Default retrieval is `active` only. Access `proposed` or `deprecated` documents only when the task explicitly requires them.

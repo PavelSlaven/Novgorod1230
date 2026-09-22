@@ -461,7 +461,8 @@ export async function registerAlreadyImportedCatalogAndActivate({
   activationRequest,
   activationAttestation,
   activationAmendmentRequest,
-  registrationProvenance
+  registrationProvenance,
+  activateRuntime = true
 }) {
   verifyDecisionAttestation({
     attestation: activationAttestation,
@@ -570,6 +571,15 @@ export async function registerAlreadyImportedCatalogAndActivate({
     }
     await verifyImportedCatalog(client, ledger.root,
       domainRevision.runtime_contract_digest);
+
+    // Registration alone satisfies actor-import parent lookup; skip pin write.
+    if (activateRuntime === false) {
+      return Object.freeze({
+        status: 'registered',
+        catalog_revision_id: domainRevision.catalog_revision_id,
+        parent_registration_id: domainRevision.parent_registration_id
+      });
+    }
 
     const latest = (await client.query(
       `SELECT event_id,event_sequence,event_type,catalog_scope,

@@ -26,7 +26,7 @@ import {
 import {
   activateSpatialV3M3DevelopmentV14
 } from '../runtime-catalog-activation/src/spatial-v3-m3-development-v14-activation.js';
-import { activateGate1RuntimeCatalog } from
+import { registerGate1ApprovedParentCatalog } from
   '../runtime-catalog-activation/src/gate1-runtime-activation.js';
 import { runActorBaseAttributesImport } from
   '../../scripts/run-actor-base-attributes-import.mjs';
@@ -86,8 +86,8 @@ export async function installActivatedRuntimeCatalog({
   }
   // Green order: catalog → FIRST_PLAYABLE_V3_RELEASE (V3 fingerprint).
   // Narrow parent-revision ensure before S1 (FK only). Current-schema v3/v13
-  // peers after first-playable. Gate1 after those activations registers the
-  // exact approved item-container domain parent actor import checks (V12 pin);
+  // peers after first-playable. Gate1 parent registration (no active pin write)
+  // supplies domain_catalog_revisions row actor import checks (V12 pin);
   // V13 domain revision is not that parent. Full 21.sql after actor ensure.
   for (const file of ['18.sql', '19.sql', '20.sql']) {
     await worldPool.query(await readFile(
@@ -157,8 +157,8 @@ export async function installActivatedRuntimeCatalog({
     bundle: v12Bundle
   });
   // Exact approved parent catalog row for actor import (V12-compatible pin).
-  // No DDL — registration/activation only; stays after assertExactMigrationTargets.
-  await activateGate1RuntimeCatalog({
+  // No DDL, no active pin / runtime_contract_digest swap — registration only.
+  await registerGate1ApprovedParentCatalog({
     worldPool,
     partyPool,
     repositoryRoot,

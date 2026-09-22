@@ -26,7 +26,7 @@ test('local bootstrap matches green catalog-then-v3 activation order', async () 
   const s1Import = source.indexOf('buildS1AuthoringV6ImportSql({');
   const migration = source.indexOf('runWorldRuntimeCatalogMigration(worldPool)');
   const activation = source.indexOf('buildFirstPlayableV2ActivationBundle({');
-  const gate1 = source.indexOf('activateGate1RuntimeCatalog({');
+  const gate1Parent = source.indexOf('registerGate1ApprovedParentCatalog({');
   const actorEnsure = source.indexOf('ensureActorBaseAttributesRuntimeActive({');
   const appearanceDdl = source.indexOf("infra/world-base/schema/21.sql");
   const appearanceImport = source.indexOf('buildCharacterAppearanceV1ImportSql({');
@@ -36,9 +36,9 @@ test('local bootstrap matches green catalog-then-v3 activation order', async () 
   assert.ok(s1Import < migration);
   assert.ok(migration < activation,
     'exact catalog fingerprint must reach first-playable before actor/21 DDL');
-  assert.ok(activation < gate1,
+  assert.ok(activation < gate1Parent,
     'gate1 parent registration stays after current-schema activations');
-  assert.ok(gate1 < actorEnsure,
+  assert.ok(gate1Parent < actorEnsure,
     'approved V12-compatible gate1 parent must exist before actor ensure');
   assert.ok(actorEnsure < appearanceDdl,
     'full 21.sql stays after actor ensure for owner-migration fingerprint');
@@ -47,6 +47,8 @@ test('local bootstrap matches green catalog-then-v3 activation order', async () 
     'post-catalog activation must use V3 fingerprint left by catalog migration');
   assert.match(source, /buildLowerDvinaBoundaryV3CurrentSchemaActivationBundle/u);
   assert.match(source, /buildSpatialV3DevelopmentV13ActivationBundle/u);
+  assert.doesNotMatch(source, /activateGate1RuntimeCatalog\(\{/u,
+    'bootstrap must not swap active runtime catalog pin via full gate1 activate');
   assert.doesNotMatch(source, /buildSpatialV3ProductionV12ActivationBundle/u);
   assert.doesNotMatch(source, /buildLowerDvinaBoundaryV3ActivationBundle\(\{/u);
 });
@@ -58,7 +60,7 @@ test('local bootstrap materializes appearance parent revision before S1 import',
     'buildCharacterAppearanceParentRevisionEnsureSql({'
   );
   const s1Import = source.indexOf('buildS1AuthoringV6ImportSql({');
-  const gate1 = source.indexOf('activateGate1RuntimeCatalog({');
+  const gate1Parent = source.indexOf('registerGate1ApprovedParentCatalog({');
   const appearanceDdl = source.indexOf("infra/world-base/schema/21.sql");
   const appearanceImport = source.indexOf('buildCharacterAppearanceV1ImportSql({');
   const activation = source.indexOf('buildFirstPlayableV2ActivationBundle({');
@@ -68,7 +70,7 @@ test('local bootstrap materializes appearance parent revision before S1 import',
   assert.ok(parentRevisionEnsure < s1Import,
     'v4 parent revision row must exist before S1 v5/v6 parent_revision FK');
   assert.ok(parentRevisionEnsure < activation);
-  assert.ok(parentRevisionEnsure < gate1,
+  assert.ok(parentRevisionEnsure < gate1Parent,
     'early spatial parent ensure must not replace gate1 domain catalog parent');
   assert.ok(activation < appearanceDdl,
     'full 21.sql must not precede assertExactMigrationTargets');

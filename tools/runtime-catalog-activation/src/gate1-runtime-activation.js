@@ -23,11 +23,17 @@ const SCOPE = 'item_container_materialization_v2';
 const GATE1_ROOT = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
 const CANDIDATE_ROOT = 'data/knowledge-source/imports/item-container-120-v5/candidate';
 
+/** Idempotent parent domain+baseline rows only; does not write active pin. */
+export async function registerGate1ApprovedParentCatalog(options) {
+  return activateGate1RuntimeCatalog({ ...options, activateRuntime: false });
+}
+
 export async function activateGate1RuntimeCatalog({
   worldPool,
   partyPool,
   repositoryRoot,
-  worldReleaseId
+  worldReleaseId,
+  activateRuntime = true
 }) {
   const root = resolve(repositoryRoot);
   const request = await readBoundJson(root,
@@ -242,6 +248,7 @@ export async function activateGate1RuntimeCatalog({
     activationRequest,
     activationAttestation: attestation,
     activationAmendmentRequest: request,
+    activateRuntime,
     registrationProvenance: {
       gate1_already_imported_registration: {
         schema: 'rus.gate1_already_imported_registration.v1',

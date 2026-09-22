@@ -360,7 +360,8 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-retry-opening-ack]');
   assert.equal(await page.locator('[data-turn-form] textarea:disabled').count(), 1);
-  assert.deepEqual(records.newGames[0], { scenario_id: 'lower_dvina_trace_v1' });
+  assert.equal(records.newGames[0].scenario_id, 'lower_dvina_trace_v1');
+  assert.match(records.newGames[0].request_id, /^web:new-game:[0-9a-f-]{36}$/u);
   const firstPendingAck = await page.evaluate(() => JSON.parse(
     localStorage.getItem('rus.pending_opening_ack') ?? 'null'
   ));
@@ -472,7 +473,8 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(secondPartyAcks.length, 2);
   assert.deepEqual(secondPartyAcks[1].input, secondPartyAcks[0].input,
     'response-loss retry must replay the exact committed acknowledgement');
-  assert.deepEqual(records.newGames.at(-1), { scenario_id: 'lower_dvina_trace_v1' });
+  assert.equal(records.newGames.at(-1).scenario_id, 'lower_dvina_trace_v1');
+  assert.match(records.newGames.at(-1).request_id, /^web:new-game:[0-9a-f-]{36}$/u);
   assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')), 'party-e2e-2');
   assert.equal(await page.evaluate(() => localStorage.getItem(
     'rus.pending_opening_ack'

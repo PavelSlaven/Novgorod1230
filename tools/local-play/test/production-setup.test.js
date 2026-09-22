@@ -19,11 +19,15 @@ test('local bootstrap reports the M3 gap without manufacturing authority', async
 test('local bootstrap completes canonical schema before exact migration and activation', async () => {
   const source = await readFile(new URL('../production-setup.js', import.meta.url),
     'utf8');
-  const schemaInstall = source.indexOf("['18.sql', '19.sql', '20.sql', '21.sql']");
+  const schemaInstall = source.indexOf("['18.sql', '19.sql', '20.sql']");
   const migration = source.indexOf('runWorldRuntimeCatalogMigration(worldPool)');
+  const actorEnsure = source.indexOf('ensureActorBaseAttributesRuntimeActive({');
+  const appearanceDdl = source.indexOf("infra/world-base/schema/21.sql");
   const activation = source.indexOf('buildFirstPlayableV2ActivationBundle({');
   assert.ok(schemaInstall >= 0);
   assert.ok(schemaInstall < migration);
-  assert.ok(migration < activation);
+  assert.ok(migration < actorEnsure);
+  assert.ok(actorEnsure < appearanceDdl);
+  assert.ok(appearanceDdl < activation);
   assert.doesNotMatch(source, /FIRST_PLAYABLE_V3_RELEASE/u);
 });

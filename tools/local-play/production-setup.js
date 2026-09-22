@@ -79,7 +79,9 @@ export async function installActivatedRuntimeCatalog({
   if (lifecycleResult?.pass !== true) {
     throw new Error('Stage 3c lifecycle did not pass.');
   }
-  for (const file of ['18.sql', '19.sql', '20.sql', '21.sql']) {
+  // Forward-migration contracts: bootstrap 01..20, then catalog migration.
+  // 21.sql (appearance DDL) and actor-attrs owner migration stay after that.
+  for (const file of ['18.sql', '19.sql', '20.sql']) {
     await worldPool.query(await readFile(
       resolve(repositoryRoot, 'infra/world-base/schema', file),
       'utf8'
@@ -89,9 +91,6 @@ export async function installActivatedRuntimeCatalog({
     root: repositoryRoot
   }));
   await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
-    root: repositoryRoot
-  }));
-  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
     root: repositoryRoot
   }));
   await worldPool.query(await buildS1AuthoringV6ImportSql({
@@ -104,6 +103,17 @@ export async function installActivatedRuntimeCatalog({
     runWorldRuntimeCatalogMigration(worldPool),
     runPartyRuntimeCatalogMigration(partyPool)
   ]);
+  // Actor owner source fingerprint is catalog-migration target; apply before 21.sql.
+  await ensureActorBaseAttributesRuntimeActive({
+    worldPool, partyPool, worldUrl, repositoryRoot
+  });
+  await worldPool.query(await readFile(
+    resolve(repositoryRoot, 'infra/world-base/schema/21.sql'),
+    'utf8'
+  ));
+  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
+    root: repositoryRoot
+  }));
   const commitSha = execFileSync('git', ['rev-parse', 'HEAD'], {
     cwd: repositoryRoot,
     encoding: 'utf8'
@@ -231,9 +241,14 @@ export async function ensureActorBaseAttributesRuntimeActive({
   if (typeof repositoryRoot !== 'string' || repositoryRoot.length === 0) {
     throw new TypeError('repositoryRoot must be a non-empty string.');
   }
-  const migrations = await runActorBaseAttributesOwnerMigrations({ worldPool,
-    partyPool });
+  // Idempotent when binding already active (e.g. after install applied 21.sql).
   let actorBinding = await readActorBindingIfActive(worldPool);
+  const migrations = actorBinding == null
+    ? await runActorBaseAttributesOwnerMigrations({ worldPool, partyPool })
+    : Object.freeze({
+      world: Object.freeze({ status: 'already_applied' }),
+      party: Object.freeze({ status: 'already_applied' })
+    });
   const actorImport = actorBinding == null
     ? await runActorBaseAttributesImport({ databaseUrl: worldUrl })
     : JSON.parse(await readFile(resolve(repositoryRoot,

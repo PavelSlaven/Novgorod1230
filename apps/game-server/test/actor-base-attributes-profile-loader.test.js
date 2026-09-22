@@ -82,9 +82,9 @@ const importRoot = Object.freeze({
   import_audit_digest: computeImportAuditDigest(importRootPayload),
   import_approval_status: 'approved'
 });
-const activation = Object.freeze({
-  event_id: 'activation-1',
-  event_sequence: '1',
+const activationEnvelope = Object.freeze({
+  schema: 'rus.runtime_catalog_activation_event.v2',
+  event_sequence: 1,
   event_type: 'activate',
   catalog_scope: ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE,
   catalog_revision_id: profileRow.catalog_revision_id,
@@ -96,7 +96,18 @@ const activation = Object.freeze({
   compatible_world_revision_id: importRoot.compatible_world_revision_id,
   compatible_world_catalog_digest: importRoot.compatible_world_catalog_digest,
   compatible_world_pin_manifest_digest:
-    importRoot.compatible_world_pin_manifest_digest
+    importRoot.compatible_world_pin_manifest_digest,
+  request_digest: digest('c'),
+  attestation_digest: digest('d'),
+  expected_previous_event_id: null,
+  runtime_release_id: 'runtime-release-v1',
+  operator_principal: 'test'
+});
+const activationDigest = canonicalDigest(activationEnvelope);
+const activation = Object.freeze({
+  ...activationEnvelope,
+  event_digest: activationDigest,
+  event_id: `runtime_catalog_activation_${activationDigest.slice(0, 32)}`
 });
 const revision = Object.freeze({
   catalog_revision_id: activation.catalog_revision_id,
@@ -147,6 +158,13 @@ test('actor profile loader rejects missing, extra, and drifted membership',
     })), { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID' });
     await assert.rejects(() => loadActiveActorBaseAttributesProfile(pool({
       imports: [{ ...importRoot, promotion_manifest_digest: digest('d') }]
+    })), { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID' });
+  });
+
+test('actor profile loader rejects tampered activation event envelope',
+  async () => {
+    await assert.rejects(() => loadActiveActorBaseAttributesProfile(pool({
+      activations: [{ ...activation, request_digest: digest('e') }]
     })), { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID' });
   });
 

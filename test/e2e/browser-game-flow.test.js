@@ -67,7 +67,7 @@ function createRecordedRoot(records) {
   const acknowledgementAttempts = new Map();
   return Object.freeze({
     health: () => ({ status: 'ok', service: '@rus/game-server', api_version: 1 }),
-    getLlmSettings: () => ({ mode: 'local',
+    getLlmSettings: () => ({ mode: 'custom',
       compatibility: 'openai_compatible',
       base_url: 'http://127.0.0.1:8000/v1',
       model: 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced',

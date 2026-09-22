@@ -13,7 +13,8 @@ import { createStaticAssetResolver } from
   '../../apps/game-server/src/http/static-assets.js';
 import { createGameHttpServer, listen } from
   '../../apps/game-server/src/http/server.js';
-import { installActivatedRuntimeCatalog } from
+import { ensureActorBaseAttributesRuntimeActive,
+  installActivatedRuntimeCatalog } from
   '../../tools/local-play/production-setup.js';
 import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from
   '../../tools/local-play/runtime-capabilities.js';
@@ -63,6 +64,10 @@ export async function startLowerDvinaProductionAcceptanceEnv({
     });
     assert.deepEqual(activation.runtimeCapabilities,
       LOCAL_PLAY_RUNTIME_CAPABILITIES_V1);
+    // Production facade fail-closes without exact active actor attributes.
+    await ensureActorBaseAttributesRuntimeActive({
+      worldPool, partyPool, worldUrl, repositoryRoot
+    });
     const env = {
       ...process.env,
       ...llm.env,

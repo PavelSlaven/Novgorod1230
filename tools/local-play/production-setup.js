@@ -190,6 +190,47 @@ export async function installM3DevelopmentV14NewPartyRuntime({
     v14 = await activateSpatialV3M3DevelopmentV14({ worldPool, partyPool,
       repositoryRoot });
   }
+  const actor = await ensureActorBaseAttributesRuntimeActive({
+    worldPool, partyPool, worldUrl, repositoryRoot
+  });
+  await assertNoExistingParties(partyPool);
+  return Object.freeze({
+    schema: 'rus.m3_development_v14_new_party_setup_result.v1',
+    status: 'ready_for_new_development_party',
+    activation_scope: 'new_development_parties_only',
+    base,
+    v14,
+    migrations: actor.migrations,
+    actorImport: actor.actorImport,
+    actorActivation: actor.actorActivation,
+    actorBinding: actor.actorBinding,
+    runtimeCapabilities: LOCAL_PLAY_RUNTIME_CAPABILITIES_V1,
+    existing_party_count: 0,
+    production_authorized: false,
+    default_runtime_cutover_authorized: false,
+    existing_party_migration_authorized: false,
+    old_save_rematerialization_authorized: false,
+    runtime_item_creation_authorized: false,
+    functional_allocation_runtime_selection_authorized: false,
+    equipment_allocation_activation_authorized: false
+  });
+}
+
+export async function ensureActorBaseAttributesRuntimeActive({
+  worldPool,
+  partyPool,
+  worldUrl,
+  repositoryRoot
+}) {
+  if (!worldPool?.query || !partyPool?.query) {
+    throw new TypeError('worldPool and partyPool must provide query().');
+  }
+  if (typeof worldUrl !== 'string' || worldUrl.length === 0) {
+    throw new TypeError('worldUrl must be a non-empty string.');
+  }
+  if (typeof repositoryRoot !== 'string' || repositoryRoot.length === 0) {
+    throw new TypeError('repositoryRoot must be a non-empty string.');
+  }
   const migrations = await runActorBaseAttributesOwnerMigrations({ worldPool,
     partyPool });
   let actorBinding = await readActorBindingIfActive(worldPool);
@@ -202,26 +243,12 @@ export async function installM3DevelopmentV14NewPartyRuntime({
   const actorActivation = await runActorBaseAttributesRuntimeActivation({
     databaseUrl: worldUrl });
   actorBinding = await loadActiveActorBaseAttributesBinding(worldPool);
-  await assertNoExistingParties(partyPool);
   return Object.freeze({
-    schema: 'rus.m3_development_v14_new_party_setup_result.v1',
-    status: 'ready_for_new_development_party',
-    activation_scope: 'new_development_parties_only',
-    base,
-    v14,
+    schema: 'rus.actor_base_attributes_runtime_setup_result.v1',
     migrations,
     actorImport,
     actorActivation,
-    actorBinding,
-    runtimeCapabilities: LOCAL_PLAY_RUNTIME_CAPABILITIES_V1,
-    existing_party_count: 0,
-    production_authorized: false,
-    default_runtime_cutover_authorized: false,
-    existing_party_migration_authorized: false,
-    old_save_rematerialization_authorized: false,
-    runtime_item_creation_authorized: false,
-    functional_allocation_runtime_selection_authorized: false,
-    equipment_allocation_activation_authorized: false
+    actorBinding
   });
 }
 

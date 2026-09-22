@@ -169,6 +169,30 @@ test('actor profile loader verifies exact import envelope and membership',
       VALUES ($1,$2,$3,$4::jsonb,'approved')`,
     [owner.catalog_revision_id, owner.profile_id, owner.profile_digest,
       JSON.stringify(owner.profile_payload)]);
+    const activationEnvelope = {
+      schema: 'rus.runtime_catalog_activation_event.v2',
+      event_sequence: 1,
+      event_type: 'activate',
+      catalog_scope: 'actor_base_attributes_v1',
+      catalog_revision_id: owner.catalog_revision_id,
+      catalog_digest: root.target_catalog_digest,
+      import_id: root.import_id,
+      import_audit_digest: root.import_audit_digest,
+      record_registry_digest: root.record_registry_digest,
+      runtime_contract_digest: ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT_DIGEST,
+      compatible_world_revision_id: 'actor-base-parent',
+      compatible_world_catalog_digest: root.compatible_world_catalog_digest,
+      compatible_world_pin_manifest_digest:
+        root.compatible_world_pin_manifest_digest,
+      request_digest: sha('c'),
+      attestation_digest: sha('d'),
+      expected_previous_event_id: null,
+      runtime_release_id: sha('e'),
+      operator_principal: 'test'
+    };
+    const activationDigest = canonicalDigest(activationEnvelope);
+    const activationEventId =
+      `runtime_catalog_activation_${activationDigest.slice(0, 32)}`;
     await client.query(`INSERT INTO world_base.runtime_catalog_activation_events
       (event_id,event_sequence,event_type,catalog_scope,catalog_revision_id,
        catalog_digest,import_id,import_audit_digest,record_registry_digest,
@@ -176,14 +200,14 @@ test('actor profile loader verifies exact import envelope and membership',
        compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
        request_digest,attestation_digest,expected_previous_event_id,
        runtime_release_id,operator_principal,event_digest)
-      VALUES ('actor-activation-1',1,'activate','actor_base_attributes_v1',$1,
-       $2,$3,$4,$5,$6,'actor-base-parent',$7,$8,$9,$10,NULL,$11,'test',$12)`,
-    [owner.catalog_revision_id, root.target_catalog_digest, root.import_id,
-      root.import_audit_digest, root.record_registry_digest,
+      VALUES ($1,1,'activate','actor_base_attributes_v1',$2,
+       $3,$4,$5,$6,$7,'actor-base-parent',$8,$9,$10,$11,NULL,$12,'test',$13)`,
+    [activationEventId, owner.catalog_revision_id, root.target_catalog_digest,
+      root.import_id, root.import_audit_digest, root.record_registry_digest,
       ACTOR_BASE_ATTRIBUTES_RUNTIME_CONTRACT_DIGEST,
       root.compatible_world_catalog_digest,
       root.compatible_world_pin_manifest_digest, sha('c'), sha('d'), sha('e'),
-      sha('f')]);
+      activationDigest]);
 
     const loaded = await loadActiveActorBaseAttributesProfile(client);
     assert.equal(loaded.profile_digest, owner.profile_digest);
@@ -230,8 +254,8 @@ test('actor profile loader verifies exact import envelope and membership',
        compatible_world_revision_id,$1,compatible_world_pin_manifest_digest,
        $2,$3,event_id,$4,operator_principal,$5
       FROM world_base.runtime_catalog_activation_events
-      WHERE event_id='actor-activation-1'`,
-    [sha('0'), sha('1'), sha('2'), sha('3'), sha('4')]);
+      WHERE event_id=$6`,
+    [sha('0'), sha('1'), sha('2'), sha('3'), sha('4'), activationEventId]);
     await assert.rejects(() => loadActiveActorBaseAttributesProfile(client),
       { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID' });
     await client.query('ROLLBACK TO SAVEPOINT tuple_drift');

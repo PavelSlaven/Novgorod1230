@@ -40,6 +40,7 @@ export function evaluateStage16NormalizedInventory(state = {}) {
     ...mass.errors,
     ...hands.errors,
     ...(load.errors ?? []),
+    ...(load.load_category === 'overloaded' ? [{ code: 'INVENTORY_LOAD_EXCEEDED', message: 'INVENTORY_LOAD_EXCEEDED', details: { total_mass_grams: mass.total_mass_grams, strength: state.strength } }] : []),
     ...usages.flatMap((usage) => usage.errors)
   ].map((error) => concern(error.code, error.message, error.details));
   if (concerns.length) return Object.freeze({ concerns: Object.freeze(concerns), trace: null });

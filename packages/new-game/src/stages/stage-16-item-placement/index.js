@@ -6,3 +6,5 @@ export { validateStage16ItemPlacementDraft } from './validation/draft-validation
 export { buildStage16ItemPlacementCodePrecheck, validateStage16ItemPlacementAudit } from './validation/audit-validation.js';
 export { buildStage17TimeLightConsistencyInput } from './handoff/stage17-input.js';
 export { STAGE16_INPUT_SCHEMA, STAGE16_DRAFT_SCHEMA, STAGE16_AUDIT_SCHEMA, STAGE16_PRECHECK_SCHEMA, normalizeStage16ItemPlacementPolicy } from './policy/constants.js';
+export { dryRunProceduralActorEquipment, finalizeProceduralActorEquipment } from './finalize-procedural-actor-equipment.js';
+export { materializeInitialActorEquipment } from './materialize-initial-actor-equipment.js';

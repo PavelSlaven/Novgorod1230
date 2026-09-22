@@ -25,10 +25,14 @@ export function evaluateStage16InventoryFoundation(draft = {}, input = {}) {
     item_placements: draft.item_instances.map((item) => placement('item_id', item.item_instance_id, item.placement, foundation.party_id)),
     container_placements: draft.container_instances.map((container) => placement('container_id', container.container_instance_id, container.placement, foundation.party_id))
   };
+  return evaluateStage16NormalizedInventory(state);
+}
+
+export function evaluateStage16NormalizedInventory(state = {}) {
   const topology = validateInventoryTopology(state);
   const mass = calculateInventoryMass(state);
   const hands = calculateHandsState(state);
-  const load = mass.pass ? resolveInventoryLoad({ total_mass_grams: mass.total_mass_grams, strength: foundation.strength }) : { pass: false, errors: mass.errors };
+  const load = mass.pass ? resolveInventoryLoad({ total_mass_grams: mass.total_mass_grams, strength: state.strength }) : { pass: false, errors: mass.errors };
   const usages = state.containers.map((container) => calculateContainerUsage({ ...state, container_id: container.container_id }));
   const access = state.items.map((item) => ({ item_id: item.item_id, ...resolveInventoryAccess({ ...state, item_id: item.item_id }) }));
   const concerns = [

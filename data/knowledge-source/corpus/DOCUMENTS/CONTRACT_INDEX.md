@@ -56,7 +56,7 @@ Governing-корпус `AGENTS.md` (§1.3) также включает:
 - [`docs/governance/README.md`](../../../../docs/governance/README.md) — преамбула, §1.2, карта старых разделов;
 - [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30;
 - [`docs/governance/ARCHITECTURE_INVARIANTS.md`](../../../../docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28;
-- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §29;
+- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §24.1, §29;
 - [`docs/governance/AUDIT_RULES.md`](../../../../docs/governance/AUDIT_RULES.md) — §25, §25.1;
 - [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.
 

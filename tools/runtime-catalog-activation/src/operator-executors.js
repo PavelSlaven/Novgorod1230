@@ -25,6 +25,7 @@ const IMPORT_LOCK = '742019261002';
 
 export async function registerCatalogBaseline({
   pool,
+  client = null,
   request,
   attestation,
   baselineManifest,
@@ -65,7 +66,7 @@ export async function registerCatalogBaseline({
       action: 'register_baseline'
     }
   });
-  return transaction(pool, async (client) => {
+  return inTransaction(pool, client, async (client) => {
     await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [BASELINE_LOCK]);
     await verifyBaseWorldCompatibility({
       reader: client,
@@ -217,6 +218,7 @@ export async function verifyBaseWorldCompatibility({
 
 export async function importApprovedCatalog({
   pool,
+  client = null,
   ledger,
   domainRevision,
   approvalAttestation,
@@ -238,7 +240,7 @@ export async function importApprovedCatalog({
       ?? approvalAttestation.authority?.activation_authorized) !== false) {
     fail('OVERLAY_APPROVAL_INVALID', 'Overlay import approval must not authorize activation.');
   }
-  return transaction(pool, async (client) => {
+  return inTransaction(pool, client, async (client) => {
     await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [IMPORT_LOCK]);
     const existing = await client.query(
       `SELECT import_id, import_audit_digest
@@ -345,26 +347,33 @@ async function verifyImportReadback(client, ledger, runtimeContractDigest,
 
 export async function activateApprovedCatalog({
   worldPool,
+  client = null,
   partyPool,
   request,
   attestation,
   activationScope = 'initial_empty_party_database'
 }) {
-  return transaction(worldPool, async (client) => {
+  return inTransaction(worldPool, client, async (client) => {
     await client.query(
       'SELECT pg_advisory_xact_lock($1::bigint)',
       [RUNTIME_CATALOG_ACTIVATION_LOCK_KEY]
     );
-    const latest = await client.query(
-      `SELECT event_id, event_sequence, request_digest
+    const latestResult = await client.query(
+      `SELECT event_id,event_sequence,event_type,catalog_scope,
+              catalog_revision_id,catalog_digest,import_id,import_audit_digest,
+              record_registry_digest,runtime_contract_digest,
+              compatible_world_revision_id,compatible_world_catalog_digest,
+              compatible_world_pin_manifest_digest,request_digest,
+              attestation_digest,expected_previous_event_id,runtime_release_id,
+              operator_principal,event_digest
        FROM world_base.runtime_catalog_activation_events
        WHERE catalog_scope = 'item_container_materialization_v2'
        ORDER BY event_sequence DESC
        LIMIT 1`
     );
-    if (latest.rows[0]?.request_digest === request.activation_request_digest) {
-      return Object.freeze({ status: 'already_active', event_id: latest.rows[0].event_id });
-    }
+    const latest = latestResult.rows[0] ?? null;
+    const replayCandidate = latest?.request_digest ===
+      request.activation_request_digest;
     const counts = await partyPool.query(
       `SELECT
          (SELECT count(*)::int FROM party_runtime.parties) AS party_count,
@@ -397,12 +406,29 @@ export async function activateApprovedCatalog({
       fail('ACTIVATION_PARTY_PREFLIGHT_STALE', 'Party preflight changed after activation request.');
     }
     const principal = (await client.query('SELECT current_user AS principal')).rows[0].principal;
+    const predecessor = replayCandidate
+      ? request.expected_previous_event_id == null
+        ? null
+        : (await client.query(
+          `SELECT event_id,event_sequence
+             FROM world_base.runtime_catalog_activation_events
+            WHERE event_id=$1`,
+          [request.expected_previous_event_id])).rows[0] ?? null
+      : latest;
     const event = buildActivationEvent({
       request,
       attestation,
-      previousEvent: latest.rows[0] ?? null,
+      previousEvent: predecessor,
       operatorPrincipal: principal
     });
+    if (replayCandidate) {
+      const persisted = { ...latest,
+        event_sequence: Number(latest.event_sequence) };
+      assertExact(persisted, activationEventRow(event),
+        'ACTIVATION_EVENT_COLLISION');
+      return Object.freeze({ status: 'already_active',
+        event_id: event.event_id, event_sequence: event.event_sequence });
+    }
     await client.query(
       `INSERT INTO world_base.runtime_catalog_activation_events
          (event_id,event_sequence,event_type,catalog_scope,catalog_revision_id,
@@ -846,6 +872,10 @@ async function transaction(pool, operation) {
   } finally {
     client.release();
   }
+}
+
+function inTransaction(pool, client, operation) {
+  return client ? operation(client) : transaction(pool, operation);
 }
 
 function assertExact(actual, expected, code) {

@@ -355,7 +355,7 @@ export async function buildFirstPlayableV2ActivationBundle({
       RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
   });
   const expectedPreviousEventId =
-    await readCurrentActivationEventId(worldPool);
+    await readActivationPredecessorId(worldPool, release.domainRevision);
   const activationRequest = buildActivationRequest({
     fields: {
       parent_revision_id: baselineRequest.parent_revision_id,
@@ -447,10 +447,34 @@ export async function applyFirstPlayableV2ActivationBundle({
   worldPool,
   partyPool,
   bundle,
-  release = FIRST_PLAYABLE_V2_RELEASE
+  release = FIRST_PLAYABLE_V2_RELEASE,
+  activationScope = 'initial_empty_party_database',
+  transactional = false
 }) {
+  if (transactional) {
+    const client = await worldPool.connect();
+    try {
+      await client.query('BEGIN');
+      const result = await applyBundle({ worldPool, partyPool, bundle, release,
+        activationScope, client });
+      await client.query('COMMIT');
+      return result;
+    } catch (error) {
+      await client.query('ROLLBACK').catch(() => {});
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+  return applyBundle({ worldPool, partyPool, bundle, release,
+    activationScope, client: null });
+}
+
+async function applyBundle({ worldPool, partyPool, bundle, release,
+  activationScope, client }) {
   const baseline = await registerCatalogBaseline({
     pool: worldPool,
+    client,
     request: bundle.baseline_request,
     attestation: bundle.baseline_attestation,
     baselineManifest: bundle.baseline_manifest,
@@ -461,15 +485,18 @@ export async function applyFirstPlayableV2ActivationBundle({
   });
   const imported = await importApprovedCatalog({
     pool: worldPool,
+    client,
     ledger: bundle.import_ledger,
     domainRevision: bundle.domain_revision,
     approvalAttestation: bundle.overlay_attestation
   });
   const activated = await activateApprovedCatalog({
     worldPool,
+    client,
     partyPool,
     request: bundle.activation_request,
-    attestation: bundle.activation_attestation
+    attestation: bundle.activation_attestation,
+    activationScope
   });
   return deepFreeze({
     schema: release.resultSchema,
@@ -585,16 +612,18 @@ function assertApprovedSources({
   }
 }
 
-async function readCurrentActivationEventId(pool) {
+async function readActivationPredecessorId(pool, targetRevisionId) {
   const row = (await pool.query(
-    `SELECT event_id
+    `SELECT event_id,expected_previous_event_id,catalog_revision_id
        FROM world_base.runtime_catalog_activation_events
       WHERE catalog_scope=$1
       ORDER BY event_sequence DESC
       LIMIT 1`,
     [CATALOG_SCOPE]
   )).rows[0];
-  return row?.event_id ?? null;
+  return row?.catalog_revision_id === targetRevisionId
+    ? row.expected_previous_event_id ?? null
+    : row?.event_id ?? null;
 }
 
 async function readPartyPreflightCounts(pool) {

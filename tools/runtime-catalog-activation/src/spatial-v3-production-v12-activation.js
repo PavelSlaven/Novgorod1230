@@ -45,6 +45,22 @@ export const SPATIAL_V3_DEVELOPMENT_V13_RELEASE = Object.freeze({
   activationBasis: 'disposable development runtime acceptance'
 });
 
+/** Independently approved current-schema M3 development release. */
+export const SPATIAL_V3_M3_DEVELOPMENT_V14_RELEASE = Object.freeze({
+  ...SPATIAL_V3_DEVELOPMENT_V13_RELEASE,
+  releaseId: 'spatial-v3-m3-development-v14',
+  baselineRevision:
+    'world_revision_novgorod_1230_runtime_catalog_baseline_m3_dev_001',
+  domainRevision: 'runtime_catalog_lower_dvina_spatial_v3_m3_dev_001',
+  bundleSchema: 'rus.spatial_v3_m3_development_v14_activation_bundle.v1',
+  bundleIdentitySchema:
+    'rus.spatial_v3_m3_development_v14_activation_bundle_identity.v1',
+  resultSchema: 'rus.spatial_v3_m3_development_v14_activation_result.v1',
+  baselineTitle: 'Spatial-v3 M3 development v14 runtime catalog baseline',
+  activationBasis:
+    'independent M3 current-schema development runtime approval'
+});
+
 export function buildSpatialV3ProductionV12ActivationBundle(options) {
   return buildFirstPlayableV2ActivationBundle({
     ...options,

@@ -37,8 +37,10 @@ import { buildLowerDvinaBoundaryV1ImportSql } from
   '../spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildLowerDvinaV2ImportSql } from
   '../spatial-v3/lower-dvina-v2-importer.mjs';
-import { buildCharacterAppearanceV1ImportSql } from
-  '../spatial-v3/character-appearance-v1-importer.mjs';
+import {
+  buildCharacterAppearanceParentRevisionEnsureSql,
+  buildCharacterAppearanceV1ImportSql
+} from '../spatial-v3/character-appearance-v1-importer.mjs';
 import { buildS1AuthoringV6ImportSql } from
   '../spatial-v3/s1-authoring-v5-importer.mjs';
 import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from './runtime-capabilities.js';
@@ -79,9 +81,9 @@ export async function installActivatedRuntimeCatalog({
   if (lifecycleResult?.pass !== true) {
     throw new Error('Stage 3c lifecycle did not pass.');
   }
-  // Forward-migration contracts: bootstrap 01..20, then catalog migration.
-  // Appearance DDL+import must precede S1 (v4 parent_revision FK for v5/v6).
-  // Actor-attrs owner migration stays after catalog (fingerprint target).
+  // Forward-migration: bootstrap 01..20, then catalog, then actor ensure.
+  // S1 needs only v4 parent revision row (not full 21.sql DDL — fingerprint).
+  // Full 21.sql + appearance import stay after actor ensure.
   for (const file of ['18.sql', '19.sql', '20.sql']) {
     await worldPool.query(await readFile(
       resolve(repositoryRoot, 'infra/world-base/schema', file),
@@ -94,11 +96,7 @@ export async function installActivatedRuntimeCatalog({
   await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
     root: repositoryRoot
   }));
-  await worldPool.query(await readFile(
-    resolve(repositoryRoot, 'infra/world-base/schema/21.sql'),
-    'utf8'
-  ));
-  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
+  await worldPool.query(await buildCharacterAppearanceParentRevisionEnsureSql({
     root: repositoryRoot
   }));
   await worldPool.query(await buildS1AuthoringV6ImportSql({
@@ -115,6 +113,13 @@ export async function installActivatedRuntimeCatalog({
   await ensureActorBaseAttributesRuntimeActive({
     worldPool, partyPool, worldUrl, repositoryRoot
   });
+  await worldPool.query(await readFile(
+    resolve(repositoryRoot, 'infra/world-base/schema/21.sql'),
+    'utf8'
+  ));
+  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
+    root: repositoryRoot
+  }));
   const commitSha = execFileSync('git', ['rev-parse', 'HEAD'], {
     cwd: repositoryRoot,
     encoding: 'utf8'

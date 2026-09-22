@@ -31,15 +31,38 @@ function primaryKey(schema) {
   return names.map((name) => schema.columns.find((column) => column.name === name)).filter(Boolean);
 }
 
-export async function buildCharacterAppearanceV1ImportSql({ root = process.cwd(), rollback = false } = {}) {
+// S1 v5/v6 parent_revision FK needs v4 revision row; not full appearance DDL/import.
+const PARENT_REVISION_ENSURE_TABLES = Object.freeze([
+  'source_records',
+  'world_revisions',
+  'spatial_v3_world_revisions'
+]);
+
+export async function buildCharacterAppearanceParentRevisionEnsureSql({
+  root = process.cwd(), rollback = false
+} = {}) {
+  return buildCharacterAppearanceV1ImportSql({
+    root, rollback, tables: PARENT_REVISION_ENSURE_TABLES
+  });
+}
+
+export async function buildCharacterAppearanceV1ImportSql({
+  root = process.cwd(), rollback = false, tables = null
+} = {}) {
   const validation = await validateCharacterAppearanceV1(root);
   if (!validation.pass) throw new Error(`character_appearance_candidate_invalid:${validation.errors.map(({ code }) => code).join(',')}`);
   const candidateRoot = resolve(root, CHARACTER_APPEARANCE_CANDIDATE_ROOT);
   const manifest = JSON.parse(await readFile(resolve(candidateRoot, 'manifest.json')));
+  const datasets = tables == null
+    ? manifest.datasets
+    : manifest.datasets.filter((item) => tables.includes(item.table));
+  if (tables != null && datasets.length !== tables.length) {
+    throw new Error('character_appearance_parent_revision_tables_missing');
+  }
   const ddl = await buildWorldBaseSchemaReference({ root });
   const schemas = new Map(ddl.schema.tables.map((table) => [table.name, table]));
   const sql = ['BEGIN;', 'SET CONSTRAINTS ALL DEFERRED;'];
-  for (const item of dependencyOrder(manifest.datasets)) {
+  for (const item of dependencyOrder(datasets)) {
     const tableName = identifier(item.table);
     const schema = schemas.get(tableName);
     if (!schema) throw new Error(`character_appearance_import_table_not_in_schema:${tableName}`);

@@ -70,7 +70,8 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
           digest(entry.source_binding_refs)))
       fail('FUNCTIONAL_REUSE_PROJECTION_INVALID');
     if (existing) used.add(existing.item_instance_id);
-    const physicalPosition = entry.external_hand_cost > 0 ? 'hands' : 'external';
+    const physicalPosition = existing?.physical_position
+      ?? (entry.external_hand_cost > 0 ? 'hands' : 'external');
     const identity = `${policy.policy_id}:${actor.actor_instance_id}:`
       + `${entry.layer}:${entry.item_template_ref}`;
     const holderFields = actor.actor_kind === 'npc'

@@ -135,13 +135,26 @@ test('reuse, duplicate item and mechanics guards are fail-closed', async () => {
       item_instance_id: 'item:net', actor_instance_id: 'actor:f',
       item_template_ref: tool.item_template_ref, state: 'committed',
       owner_id: 'actor:f', holder_id: 'actor:f', controller_id: 'actor:f',
-      physical_position: 'hands', quantity: 1,
+      physical_position: 'external', quantity: 1,
       inventory_profile_ref: tool.inventory_profile_ref,
       quantity_profile_ref: tool.quantity_profile_ref,
       profile_entry_ref: tool.profile_entry_ref,
       source_binding_refs_digest: createHash('sha256')
         .update(JSON.stringify(tool.source_binding_refs)).digest('hex') }] });
   assert.equal(reused.allocations[0].disposition, 'reuse');
+  assert.equal(reused.allocations[0].physical_position, 'external');
+  const handsReused = resolveProceduralFunctionalAllocations({ policy,
+    actors: actor, persistedPositions, scenePackage, existing_items: [{
+      item_instance_id: 'item:net-hands', actor_instance_id: 'actor:f',
+      item_template_ref: tool.item_template_ref, state: 'committed',
+      owner_id: 'actor:f', holder_id: 'actor:f', controller_id: 'actor:f',
+      physical_position: 'hands', quantity: 1,
+      inventory_profile_ref: tool.inventory_profile_ref,
+      quantity_profile_ref: tool.quantity_profile_ref,
+      profile_entry_ref: tool.profile_entry_ref,
+      source_binding_refs_digest: createHash('sha256')
+        .update(JSON.stringify(tool.source_binding_refs)).digest('hex') }] });
+  assert.equal(handsReused.allocations[0].physical_position, 'hands');
   assert.throws(() => resolveProceduralFunctionalAllocations({ policy,
     actors: actor, persistedPositions, scenePackage, existing_items: [
       { item_instance_id: 'duplicate', actor_instance_id: 'actor:f',
@@ -192,4 +205,3 @@ test('stale digest owner-kind tamper is rejected', async () => {
     [path]: pack
   }), { code: 'FINAL_PACK_DIGEST_MISMATCH' });
 });
-

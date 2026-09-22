@@ -18,17 +18,50 @@ test('documentation outputs are deterministic', async () => {
   assert.deepEqual([...first.entries()], [...second.entries()]);
 });
 
+const AGENT_INSTRUCTION_FILES = ['AGENTS.md', '.github/README.md', '.github/copilot-instructions.md'];
+const SKILL_ROOTS = ['.agents/skills', '.claude/skills'];
+
+async function markdownFilesUnder(relativeDir) {
+  const entries = await readdir(join(root, relativeDir), { recursive: true, withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+    .map((entry) => join(entry.parentPath, entry.name).slice(root.length + 1).replaceAll('\\', '/'))
+    .sort();
+}
+
+function markdownLinkTargets(text) {
+  const withoutCode = text.replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gmu, '').replace(/`[^`\n]*`/gu, '');
+  return [...withoutCode.matchAll(/\[[^\]]*\]\(<?([^)>]+)>?\)/gu)].map((match) => match[1].trim());
+}
+
+async function assertLinksResolve(relativePath, { requireLinks }) {
+  const absolutePath = join(root, relativePath);
+  const targets = markdownLinkTargets(await readFile(absolutePath, 'utf8'));
+  if (requireLinks) assert.ok(targets.length > 0, `${relativePath} must contain repository links`);
+  for (const target of targets) {
+    if (/^[a-z][a-z0-9+.-]*:/iu.test(target)) continue;
+    const pathPart = target.split('#')[0];
+    assert.notEqual(pathPart, '', `${relativePath}: anchor-only link ${target}`);
+    const resolvedTarget = resolve(dirname(absolutePath), decodeURIComponent(pathPart));
+    const info = await stat(resolvedTarget).catch(() => null);
+    assert.equal(info?.isFile(), true, `${relativePath}: link must point to an existing file: ${target}`);
+  }
+}
+
 test('agent instruction links resolve to repository files', async () => {
-  for (const relativePath of ['AGENTS.md', '.github/README.md', '.github/copilot-instructions.md']) {
-    const absolutePath = join(root, relativePath);
-    const text = await readFile(absolutePath, 'utf8');
-    const targets = [...text.matchAll(/\[[^\]]+\]\(([^)]+)\)/gu)].map((match) => match[1]);
-    assert.ok(targets.length > 0, `${relativePath} must contain repository links`);
-    for (const target of targets) {
-      if (/^[a-z][a-z0-9+.-]*:/iu.test(target)) continue;
-      const resolvedTarget = resolve(dirname(absolutePath), target.split('#')[0]);
-      assert.equal((await stat(resolvedTarget)).isFile(), true, `${relativePath}: missing ${target}`);
-    }
+  for (const relativePath of AGENT_INSTRUCTION_FILES) {
+    await assertLinksResolve(relativePath, { requireLinks: true });
+  }
+  const navigationDocs = [
+    'docs/README.md',
+    ...await markdownFilesUnder('docs/context'),
+    ...await markdownFilesUnder('docs/process'),
+    'docs/work/CURRENT_SPRINT.md',
+    'docs/work/LEGACY_WARNINGS.md',
+    ...(await Promise.all(SKILL_ROOTS.map(markdownFilesUnder))).flat()
+  ];
+  for (const relativePath of navigationDocs) {
+    await assertLinksResolve(relativePath, { requireLinks: false });
   }
   await assert.rejects(stat(join(root, '.github/AGENTS.md')));
   await assert.rejects(stat(join(root, '.codex/skills/README.md')));
@@ -38,6 +71,42 @@ test('agent instruction links resolve to repository files', async () => {
   const readme = await readFile(join(root, 'README.md'), 'utf8');
   assert.doesNotMatch(readme, /\.github\/AGENTS\.md/u);
   assert.doesNotMatch(readme, /Правила автоматического применения/u);
+});
+
+function parseSkillFrontmatter(text, relativePath) {
+  const match = /^---\n([\s\S]*?)\n---\n/u.exec(text);
+  assert.ok(match, `${relativePath}: missing frontmatter`);
+  const fields = {};
+  let section = null;
+  for (const line of match[1].split('\n')) {
+    const nested = /^ {2}([a-z_]+):\s*(.*)$/u.exec(line);
+    const top = /^([a-z_]+):\s*(.*)$/u.exec(line);
+    const unquote = (value) => value.replace(/^"(.*)"$/u, '$1');
+    if (nested && section) fields[`${section}.${nested[1]}`] = unquote(nested[2]);
+    else if (top) {
+      section = top[2] === '' ? top[1] : null;
+      if (top[2] !== '') fields[top[1]] = unquote(top[2]);
+    }
+  }
+  return fields;
+}
+
+test('agent skill stubs are identical across tools and point to existing canon', async () => {
+  const [agentsSkills, claudeSkills] = await Promise.all(SKILL_ROOTS.map(async (skillRoot) =>
+    (await readdir(join(root, skillRoot), { withFileTypes: true })).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort()));
+  assert.deepEqual(claudeSkills, agentsSkills, 'skill sets differ between .agents/skills and .claude/skills');
+  assert.ok(agentsSkills.length > 0);
+  for (const name of agentsSkills) {
+    assert.match(name, /^[a-z0-9-]{1,64}$/u);
+    assert.doesNotMatch(name, /graphify/u);
+    const [agentsText, claudeText] = await Promise.all(SKILL_ROOTS.map((skillRoot) => readFile(join(root, skillRoot, name, 'SKILL.md'), 'utf8')));
+    assert.equal(claudeText, agentsText, `${name}: SKILL.md differs between tools`);
+    const fields = parseSkillFrontmatter(agentsText, name);
+    assert.equal(fields.name, name);
+    assert.ok(fields.description && fields.description.length <= 1024, `${name}: description must be 1..1024 chars`);
+    assert.ok(fields['metadata.canonical'], `${name}: metadata.canonical is required`);
+    assert.equal((await stat(join(root, fields['metadata.canonical']))).isFile(), true, `${name}: missing canonical ${fields['metadata.canonical']}`);
+  }
 });
 
 test('canonical documentation preserves active guidance without obsolete workflow gates', async () => {

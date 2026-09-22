@@ -1,0 +1,33 @@
+name: Tech debt / legacy warning
+description: Известный костыль или legacy-ловушка (запись LW в docs/work/LEGACY_WARNINGS.md).
+title: "LW: "
+labels: ["tech-debt"]
+body:
+  - type: input
+    id: lw
+    attributes:
+      label: LW-номер
+      description: Существующий LW-### или «новый».
+  - type: textarea
+    id: paths
+    attributes:
+      label: Пути
+      description: Файлы и каталоги, к которым относится запись (по ним агенты ищут LW через rg).
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Что не так
+    validations:
+      required: true
+  - type: textarea
+    id: how_to_live
+    attributes:
+      label: Как с этим жить до исправления
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Предлагаемое исправление и владелец решения

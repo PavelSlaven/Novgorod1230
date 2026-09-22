@@ -1,0 +1,64 @@
+name: Change request
+description: Спецификация задачи до кода (docs/process/CHANGE_REQUEST.md).
+title: "CR: "
+labels: ["change-request"]
+body:
+  - type: markdown
+    attributes:
+      value: "Формат и правила заполнения — [docs/process/CHANGE_REQUEST.md](https://github.com/PavelSlaven/Novgorod1230/blob/main/docs/process/CHANGE_REQUEST.md). Не больше одной страницы."
+  - type: textarea
+    id: goal
+    attributes:
+      label: Цель
+      description: Какой результат нужен и зачем.
+    validations:
+      required: true
+  - type: input
+    id: task_type
+    attributes:
+      label: Тип задачи
+      description: Строка маршрутизации AGENTS.md (свободный текст), например docs-only, NPC, persistence / DB.
+    validations:
+      required: true
+  - type: textarea
+    id: owners
+    attributes:
+      label: Владельцы и MODULE.md
+    validations:
+      required: true
+  - type: textarea
+    id: context_pack
+    attributes:
+      label: Context pack
+      description: Разделы правил, строка CONTRACT_INDEX §8.1, MODULE.md, docs/context/*, LW по путям.
+    validations:
+      required: true
+  - type: textarea
+    id: do_not_touch
+    attributes:
+      label: Не трогать
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Критерии готовности
+      description: Включая unseen-equivalent случай для gameplay-изменений.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Проверки
+    validations:
+      required: true
+  - type: textarea
+    id: contract_auditor
+    attributes:
+      label: Contract Auditor
+      description: Да/нет и почему (триггеры AGENTS.md §25.1).
+    validations:
+      required: true
+  - type: textarea
+    id: tech_debt
+    attributes:
+      label: Техдолг
+      description: Затронутые или новые LW-### (docs/work/LEGACY_WARNINGS.md).

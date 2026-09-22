@@ -1,0 +1,31 @@
+name: Bug
+description: Наблюдаемый дефект поведения.
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: symptom
+    attributes:
+      label: Симптом
+      description: Что наблюдается и что ожидалось.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Воспроизведение
+      description: Шаги, commit, окружение.
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Серьёзность
+      options: ["P0", "P1", "P2", "P3"]
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Доказательства
+      description: Логи, вывод команд, скриншоты. Санитизировать — без secrets, ключей, приватных traces и hidden state.

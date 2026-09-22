@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Процесс работы агентов и людей
+    url: https://github.com/PavelSlaven/Novgorod1230/blob/main/docs/process/WORKFLOW.md
+    about: Рабочий цикл, change request и завершение задачи.

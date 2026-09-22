@@ -70,6 +70,9 @@ activation event, approved import/readback и profile membership. Отсутст
 active membership остаётся typed
 `ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_DATA_GAP`; default `strength` и чтение
 authoring-only candidate запрещены.
+`attachActorBaseAttributesToNpcs` применяет тот же owner ко всем новым NPC из
+approved occupation→archetype mapping и сохраняет уже materialized snapshot
+при profile-level promotion/reload вместо повторного RNG.
 
 `compileProceduralSceneProfile` is an authoring/readiness compiler over exact
 approved landscape, water, land-use, place-function, item and actor owner rows.

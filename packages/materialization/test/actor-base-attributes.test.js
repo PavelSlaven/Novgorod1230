@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalDigest,
-  materializeActorBaseAttributes, materializeOrPreserveActorBaseAttributes } from '../src/index.js';
+  attachActorBaseAttributesToNpcs, materializeActorBaseAttributes,
+  materializeOrPreserveActorBaseAttributes } from '../src/index.js';
 
 const profile = { schema: 'rus.actor_base_attributes_profile.v1', version: 1,
   profile_id: 'ordinary-v1', algorithm_version: 'actor_base_attributes_v1',
@@ -56,4 +57,27 @@ test('actor attributes preserve only their exact original materialization bindin
   assert.deepEqual(materializeOrPreserveActorBaseAttributes({ ...input,
     seed_basis: { ...input.seed_basis, parent_seed_digest: 'e'.repeat(64) },
     existing_attributes: snapshot }), snapshot);
+});
+
+test('NPC attachment uses approved occupation archetypes and preserves promotion snapshots', () => {
+  const input = { runtime_profile: runtimeProfile,
+    occupation_records: [{ occupation_id: 'fisher',
+      occupation_archetype_id: 'fishing_water', status: 'approved',
+      mapping_review_status: 'accepted_with_caution' }],
+    world_revision_id: 'world', world_catalog_digest: 'b'.repeat(64),
+    parent_seed_digest: 'c'.repeat(64) };
+  const first = attachActorBaseAttributesToNpcs({ ...input, npcs: [{
+    participant_slot_ref: 'background:0', profile_level: 'background',
+    occupation_ref: { id: 'fisher' }
+  }] });
+  assert.equal(Object.keys(first[0].base_attributes.values).length, 6);
+  assert.equal(first[0].attribute_generation_gate, 'active');
+  const promoted = attachActorBaseAttributesToNpcs({ ...input,
+    parent_seed_digest: 'd'.repeat(64), npcs: [{ ...first[0],
+      profile_level: 'scene' }] });
+  assert.deepEqual(promoted[0].base_attributes, first[0].base_attributes);
+  assert.throws(() => attachActorBaseAttributesToNpcs({ ...input,
+    occupation_records: [], npcs: first }), {
+    code: 'ACTOR_BASE_ATTRIBUTES_ARCHETYPE_MAPPING_DATA_GAP'
+  });
 });

@@ -10,6 +10,7 @@ import { addAuthoredStartSpatialV3Batches, authoredStartSnapshotSchema,
   isAuthoredStartMaterializationResult } from './authored-start-spatial-v3.js';
 import {
   assertMaterializationRuntimeCatalogPins,
+  assertActorBaseAttributesCatalogPin,
   assertPartyRuntimeCatalogPins,
   buildMaterializationRunCatalogPinRecord,
   buildPartyCatalogPinRecord
@@ -30,6 +31,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const party_creation_context = input.party_creation_context;
   const pins = party_creation_context.version_pins;
   const domainPin = party_creation_context.domain_catalog_pin;
+  const actorAttributesPin =
+    party_creation_context.actor_base_attributes_catalog_pin;
   const result = input.approved_pipeline_outputs.materialization_result;
   const semantic_validation = input.approved_pipeline_outputs.player_character_audit;
   const sealedClosure = input.approved_pipeline_outputs.sealed_selection_closure;
@@ -41,6 +44,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const identityNpcs = preparedNpcs;
   identityNpcs.forEach((npc) => assertNewActorBaseAttributes(npc.base_attributes,
     `npc:${npc.instance_id}.base_attributes`, npc.attribute_generation_gate === 'active'));
+  assertActorBaseAttributesCatalogPin(party_creation_context,
+    identityNpcs.some((npc) => npc.attribute_generation_gate === 'active'));
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
@@ -112,7 +117,10 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   addBatch(
     batches,
     'party_catalog_pins',
-    [buildPartyCatalogPinRecord(partyId, domainPin)],
+    [buildPartyCatalogPinRecord(partyId, domainPin),
+      ...(actorAttributesPin == null ? [] : [
+        buildPartyCatalogPinRecord(partyId, actorAttributesPin)
+      ])],
     ['parties'],
     sourceTrace
   );
@@ -132,7 +140,11 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   addBatch(
     batches,
     'party_materialization_run_catalog_pins',
-    [buildMaterializationRunCatalogPinRecord({ partyId, runId, domainPin })],
+    [buildMaterializationRunCatalogPinRecord({ partyId, runId, domainPin }),
+      ...(actorAttributesPin == null ? [] : [
+        buildMaterializationRunCatalogPinRecord({ partyId, runId,
+          domainPin: actorAttributesPin })
+      ])],
     ['party_catalog_pins', 'party_materialization_runs'],
     sourceTrace
   );

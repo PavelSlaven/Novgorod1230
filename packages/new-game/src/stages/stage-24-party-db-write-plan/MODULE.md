@@ -64,7 +64,8 @@
 - новый actor/player с marker `actor_base_appearance_v1` проходит повторную
   строгую проверку; если marker есть у одного нового actor, он обязателен у всех;
 - сериализует уже materialized `actor_base_attributes_v1` в existing actor
-  profile binding; не вычисляет характеристики, inventory или item identity;
+  profile binding и сохраняет exact actor attribute catalog pin для party/run;
+  не вычисляет характеристики, inventory или item identity;
 - `portrait_spec_v1` рекурсивно запрещён во входных outputs и во всех write
   batches: это только read projection;
 - Stage 25 отклоняет v1 и любые physical targets вне `party_runtime_v2`.

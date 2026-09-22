@@ -25,6 +25,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   initialOrdinaryProvisioner = null,
   worldKnowledge = null,
   authoredStartResolver = null,
+  approvedActorCatalog = null,
+  actorBaseAttributesBinding = null,
   runtimeCatalogLoader = null,
   rootDir = process.cwd()
 } = {}) {
@@ -69,6 +71,9 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
           ),
           catalogLoader.loadApprovedItemCatalog({ pin: runtimeCatalogPin })
         ]);
+      if (actorBaseAttributesBinding != null) {
+        assertActorBaseAttributesBinding(actorBaseAttributesBinding, release);
+      }
       const verifiedProceduralCatalog = domainCatalog != null
         && runtimeCatalogPin.catalog_revision_id
           === 'procedural_scene_final_candidate_v2_001'
@@ -94,6 +99,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         partyDatabaseSchema,
         worldBaseReferenceSnapshot,
         domainCatalog,
+        actorBaseAttributesBinding,
+        approvedActorCatalog,
         verified_procedural_compiled_catalog: verifiedProceduralCatalog,
         repository,
         stage25Ports,
@@ -177,6 +184,18 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     loadInternal: (partyId) => repository.loadInternal(partyId),
     loadVisible: (partyId) => repository.loadVisible(partyId)
   });
+}
+
+function assertActorBaseAttributesBinding(binding, release) {
+  const pin = binding?.pin;
+  if (binding?.schema !== 'rus.actor_base_attributes_runtime_binding.v1'
+      || pin?.schema !== 'rus.runtime_catalog_pin.v2'
+      || pin.catalog_scope !== 'actor_base_attributes_v1'
+      || pin.compatible_world_revision_id !== release.world_revision_id
+      || pin.compatible_world_catalog_digest !== release.world_catalog_digest) {
+    fail('ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID',
+      'Active actor base attribute profile does not match production world.');
+  }
 }
 
 function assertProductionPin(release, pin) {

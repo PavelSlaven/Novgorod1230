@@ -19,6 +19,8 @@ import { createSpatialSemanticAtomicWritePlan } from
   '../src/infrastructure/postgres/spatial-semantic-atomic-write-plan.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { loadApprovedActorBaseAttributesTestBinding } from
+  './support/actor-base-attributes-binding.js';
 
 test('S1 profile loads revision 24 bundle', async () => {
   const loaded = await loadLowerDvinaTraceSpatialSemanticProfile();
@@ -381,6 +383,8 @@ async function capturedTraceRuntime(spatialSemanticProfile = null) {
     spatialSemanticProfile
   }, {
     createNpcRuntimePorts: () => ({}),
+    actorBaseAttributesBindingLoader:
+      loadApprovedActorBaseAttributesTestBinding,
     createPhase2RuntimeFactory: (input) => { captured = input; return {}; }
   });
   await bindings.createPublicRuntimeFacade({

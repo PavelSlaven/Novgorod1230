@@ -49,6 +49,7 @@ import {
 } from './lower-dvina-trace-selection.js';
 import { compileProceduralScenePartyPackages } from
   './procedural-scene-party-packages.js';
+import { attachActorBaseAttributesToNpcs } from './actor-base-attributes.js';
 
 export {
   assertLowerDvinaTraceSelectionClosure,
@@ -450,6 +451,16 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     if (template?.display_name && item.state.display_name == null) {
       item.state.display_name = template.display_name;
     }
+  }
+  if (input.actor_base_attributes_runtime_profile != null) {
+    immediate.npcs = attachActorBaseAttributesToNpcs({
+      npcs: immediate.npcs,
+      runtime_profile: input.actor_base_attributes_runtime_profile,
+      occupation_records: input.approved_actor_catalog?.occupations,
+      world_revision_id: input.world_revision_id,
+      world_catalog_digest: input.world_catalog_digest,
+      parent_seed_digest: seed.digest
+    });
   }
   const validationReport = {
     pass: true,

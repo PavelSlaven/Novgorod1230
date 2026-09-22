@@ -25,6 +25,8 @@ import { loadLiveWorldAuthoredStartCatalog } from
   '../../internal/live-world-authored-starts.js';
 import { createSpatialSemanticFirstEntryProvisioner } from
   '../../infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
+import { loadActiveActorBaseAttributesBinding } from
+  '../../infrastructure/postgres/actor-base-attributes-profile-loader.js';
 
 export async function firstPlayableCommitRecheck(input) {
   if (input?.plan?.operation_kind === 'first_entry'
@@ -111,6 +113,8 @@ export async function createSpatialV3ProductionBindings(
     createNpcRuntimePorts,
     publicationLoader,
     createPhase2RuntimeFactory = createLowerDvinaTracePhase2Runtime,
+    actorBaseAttributesBindingLoader =
+      loadActiveActorBaseAttributesBinding,
     technicalCommandBoundary = 'production-v2'
   } = {}
 ) {
@@ -148,12 +152,16 @@ export async function createSpatialV3ProductionBindings(
       if (typeof technicalCore?.executeReleaseOperation !== 'function') {
         throw new TypeError('technical spatial-v3 core is required');
       }
-      const authoredStartCatalog = await loadLiveWorldAuthoredStartCatalog({
-        rootDir: config.rootDir ?? process.cwd(),
-        phase1AManifestDigest: release.scenario_profile_exact_pins?.phase_1a_manifest_digest
-          ?? TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
-        scenarioDefinitionRevision: release.scenario_profile_exact_pins?.scenario_definition_revision ?? 32
-      });
+      const [authoredStartCatalog, actorBaseAttributesBinding] =
+        await Promise.all([
+          loadLiveWorldAuthoredStartCatalog({
+            rootDir: config.rootDir ?? process.cwd(),
+            phase1AManifestDigest: release.scenario_profile_exact_pins?.phase_1a_manifest_digest
+              ?? TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
+            scenarioDefinitionRevision: release.scenario_profile_exact_pins?.scenario_definition_revision ?? 32
+          }),
+          actorBaseAttributesBindingLoader(ports.worldPool)
+        ]);
       const authoredSpatialProvisioner =
         createSpatialSemanticFirstEntryProvisioner({
           loadedProfile: authoredStartCatalog.ordinary_profiles.s1
@@ -185,6 +193,8 @@ export async function createSpatialV3ProductionBindings(
             runtimeCatalogPin,
             worldKnowledge,
             authoredStartResolver: authoredStartCatalog.resolveProfile,
+            approvedActorCatalog: authoredStartCatalog.actor_catalog,
+            actorBaseAttributesBinding,
             ...(authoredInitialProvisioner == null ? {} : {
               initialOrdinaryProvisioner: authoredInitialProvisioner
             })

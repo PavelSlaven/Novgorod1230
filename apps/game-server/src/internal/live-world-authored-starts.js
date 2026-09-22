@@ -71,6 +71,7 @@ export async function loadLiveWorldAuthoredStartCatalog({
     profile.scenario_id, authoredPublication({ manifest, profile, starts,
       binding: currentBinding }));
   return Object.freeze({
+    actor_catalog: freezeDeep(structuredClone(actorCatalog)),
     turn_profile: freezeDeep({ profile: structuredClone(turnProfile),
       pin: { artifact_id: turnProfile.profile_set_id,
         revision: turnProfile.revision,

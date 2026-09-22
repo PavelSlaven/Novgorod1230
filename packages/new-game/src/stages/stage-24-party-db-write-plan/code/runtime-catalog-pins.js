@@ -37,6 +37,22 @@ export function assertPartyRuntimeCatalogPins(context = {}) {
   }
 }
 
+export function assertActorBaseAttributesCatalogPin(context = {}, required = false) {
+  const pin = context.actor_base_attributes_catalog_pin;
+  if (pin == null && !required) return;
+  const missing = REQUIRED_DOMAIN_PINS.filter((key) => !pin?.[key]);
+  if (pin?.schema !== 'rus.runtime_catalog_pin.v2'
+      || pin?.catalog_scope !== 'actor_base_attributes_v1'
+      || missing.length > 0
+      || pin.compatible_world_revision_id !== context.version_pins?.world_revision_id
+      || pin.compatible_world_catalog_digest !== context.version_pins?.world_catalog_digest) {
+    throw Object.assign(
+      new Error('Exact actor_base_attributes_v1 party pin is required.'),
+      { code: 'WRITE_PLAN_ACTOR_ATTRIBUTES_PIN_MISMATCH', missing }
+    );
+  }
+}
+
 export function assertMaterializationRuntimeCatalogPins({ trace, pins, domainPin }) {
   const pairs = [
     ['world_revision_id', 'world_revision_id'],

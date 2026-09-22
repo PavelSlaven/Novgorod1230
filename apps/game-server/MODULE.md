@@ -40,6 +40,9 @@ and adds no second transaction owner.
   development saves старых authored revisions не поддерживаются. Authored profile получает
   bounded role/occupation closure из digest-pinned regional catalogs; server
   не назначает actor approval самостоятельно.
+  Для новой development-party composition загружает exact active
+  `actor_base_attributes_v1` binding из runtime-catalog ledger; отсутствие или
+  несовместимость binding остаётся typed DATA GAP/INVALID до materialization.
 
 - M2b проводит demo и authored-start партии через один существующий
   `runTurnWorkflow` → P16 commit → durable narration/recovery path. Для

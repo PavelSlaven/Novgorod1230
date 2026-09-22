@@ -38,6 +38,8 @@ export async function materializeLowerDvinaTraceParty({
   partyDatabaseSchema,
   worldBaseReferenceSnapshot,
   domainCatalog = null,
+  actorBaseAttributesBinding = null,
+  approvedActorCatalog = null,
   verified_procedural_compiled_catalog: verifiedProceduralCompiledCatalog = null,
   repository,
   stage25Ports,
@@ -64,6 +66,8 @@ export async function materializeLowerDvinaTraceParty({
     partyDatabaseSchema,
     worldBaseReferenceSnapshot,
     domainCatalog,
+    actorBaseAttributesBinding,
+    approvedActorCatalog,
     verifiedProceduralCompiledCatalog,
     repository,
     stage25Ports,
@@ -82,7 +86,7 @@ export async function materializeLowerDvinaTraceParty({
   }
 }
 
-async function materializeAndCommit({ request, domainCatalogPinLoader, partyDatabaseSchema, worldBaseReferenceSnapshot, domainCatalog, verifiedProceduralCompiledCatalog, repository, stage25Ports, stage24Auditor, worldKnowledge, scenarioBundleLoader, materializePartyInstance, validatePlayerDossier, rootDir }) {
+async function materializeAndCommit({ request, domainCatalogPinLoader, partyDatabaseSchema, worldBaseReferenceSnapshot, domainCatalog, actorBaseAttributesBinding, approvedActorCatalog, verifiedProceduralCompiledCatalog, repository, stage25Ports, stage24Auditor, worldKnowledge, scenarioBundleLoader, materializePartyInstance, validatePlayerDossier, rootDir }) {
   if (typeof domainCatalogPinLoader !== 'function') {
     fail('TRACE_PHASE_1A_DOMAIN_CATALOG_PIN_MISSING', 'The active item/container domain catalog pin loader is required before materialization.');
   }
@@ -108,6 +112,9 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
     scenario_bundle: bundle,
     world_base_reference_snapshot: worldBaseReferenceSnapshot,
     domain_catalog: domainCatalog,
+    actor_base_attributes_runtime_profile:
+      actorBaseAttributesBinding?.runtime_profile,
+    approved_actor_catalog: approvedActorCatalog,
     verified_procedural_compiled_catalog: verifiedProceduralCompiledCatalog,
     resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
   });
@@ -141,6 +148,8 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
     request_id: request.idempotency_key,
     commit_mode: 'internal_materialization',
     domain_catalog_pin: structuredClone(domainCatalogPin),
+    actor_base_attributes_catalog_pin:
+      structuredClone(actorBaseAttributesBinding?.pin),
     version_pins: {
       world_revision_id: request.world_revision_id,
       world_catalog_digest: request.world_catalog_digest,

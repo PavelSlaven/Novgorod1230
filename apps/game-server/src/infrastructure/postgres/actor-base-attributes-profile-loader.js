@@ -13,6 +13,10 @@ export const ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE =
   'actor_base_attributes_v1';
 
 export async function loadActiveActorBaseAttributesProfile(worldPool) {
+  return (await loadActiveActorBaseAttributesBinding(worldPool)).runtime_profile;
+}
+
+export async function loadActiveActorBaseAttributesBinding(worldPool) {
   let activationRows, revisionRows, importRows, tables, records, profileRows;
   try {
     activationRows = (await worldPool.query(
@@ -194,7 +198,7 @@ export async function loadActiveActorBaseAttributesProfile(worldPool) {
   } catch {
     invalid();
   }
-  return Object.freeze({
+  const runtimeProfile = Object.freeze({
     schema: 'rus.actor_base_attributes_runtime_profile.v1',
     catalog_scope: ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE,
     catalog_revision_id: row.catalog_revision_id,
@@ -207,6 +211,26 @@ export async function loadActiveActorBaseAttributesProfile(worldPool) {
     profile_id: row.profile_id,
     profile_digest: row.profile_digest,
     profile: Object.freeze(structuredClone(profile))
+  });
+  return Object.freeze({
+    schema: 'rus.actor_base_attributes_runtime_binding.v1',
+    runtime_profile: runtimeProfile,
+    pin: Object.freeze({
+      schema: 'rus.runtime_catalog_pin.v2',
+      catalog_scope: activation.catalog_scope,
+      catalog_revision_id: activation.catalog_revision_id,
+      catalog_digest: activation.catalog_digest,
+      import_id: activation.import_id,
+      import_audit_digest: activation.import_audit_digest,
+      record_registry_digest: activation.record_registry_digest,
+      runtime_contract_digest: activation.runtime_contract_digest,
+      compatible_world_revision_id: activation.compatible_world_revision_id,
+      compatible_world_catalog_digest:
+        activation.compatible_world_catalog_digest,
+      compatible_world_pin_manifest_digest:
+        activation.compatible_world_pin_manifest_digest,
+      activation_event_id: activation.event_id
+    })
   });
 }
 

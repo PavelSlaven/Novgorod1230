@@ -73,6 +73,39 @@ export function materializeOrPreserveActorBaseAttributes({ existing_attributes: 
   return materializeActorBaseAttributes(input);
 }
 
+export function attachActorBaseAttributesToNpcs({ npcs, runtime_profile: runtimeProfile,
+  occupation_records: occupationRecords, world_revision_id: worldRevisionId,
+  world_catalog_digest: worldCatalogDigest, parent_seed_digest: parentSeedDigest } = {}) {
+  if (!Array.isArray(npcs) || !Array.isArray(occupationRecords)) gap('OCCUPATION_RECORDS');
+  const occupations = new Map();
+  for (const row of occupationRecords) {
+    const occupationId = row?.occupation_id ?? row?.id;
+    if (!['approved', 'usable_with_caution'].includes(row?.status)
+        || !['approved', 'accepted_with_caution'].includes(
+          row?.mapping_review_status)) continue;
+    if (!text(occupationId) || !text(row.occupation_archetype_id)
+        || occupations.has(occupationId)) gap('OCCUPATION_RECORDS');
+    occupations.set(occupationId, row.occupation_archetype_id);
+  }
+  return npcs.map((npc) => {
+    const occupation = occupations.get(npc?.occupation_ref?.id);
+    if (!occupation || !text(npc?.participant_slot_ref)) gap('ARCHETYPE_MAPPING');
+    return {
+      ...structuredClone(npc),
+      base_attributes: structuredClone(materializeOrPreserveActorBaseAttributes({
+        existing_attributes: npc.base_attributes,
+        runtime_profile: runtimeProfile,
+        occupation_archetype_id: occupation,
+        actor_slot_ref: npc.participant_slot_ref,
+        seed_basis: { world_revision_id: worldRevisionId,
+          world_catalog_digest: worldCatalogDigest,
+          parent_seed_digest: parentSeedDigest }
+      })),
+      attribute_generation_gate: 'active'
+    };
+  });
+}
+
 export function validateActorBaseAttributes(value) {
   const generation = value?.generation;
   const values = ACTOR_BASE_ATTRIBUTE_KEYS.map((key) => value?.values?.[key]);

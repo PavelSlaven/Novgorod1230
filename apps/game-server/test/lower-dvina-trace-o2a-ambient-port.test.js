@@ -15,6 +15,8 @@ import { applyLowerDvinaTraceWorkingProjection,
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { loadApprovedActorBaseAttributesTestBinding } from
+  './support/actor-base-attributes-binding.js';
 import { loadLowerDvinaTraceO2bProfile } from
   '../src/internal/lower-dvina-trace-o2b-profile.js';
 
@@ -331,6 +333,8 @@ async function capturedTraceRuntime(ordinaryMaterializationProfile,
     ordinaryMaterializationProfile,ordinaryContainerContentsProfile
   }, {
     createNpcRuntimePorts: () => ({}),
+    actorBaseAttributesBindingLoader:
+      loadApprovedActorBaseAttributesTestBinding,
     createPhase2RuntimeFactory: (input) => {
       captured = input;
       return {};

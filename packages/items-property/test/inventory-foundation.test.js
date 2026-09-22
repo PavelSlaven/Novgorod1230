@@ -240,6 +240,27 @@ test('inventory foundation: generic item moves are planned as a validated change
   assert.equal(planInventoryTransfer({ ...input, operation: 'equip', item_or_container_id: 'knife-1', expected_state_version: 4 }).errors[0].code, 'INVENTORY_EQUIPMENT_SLOT_REQUIRED');
 });
 
+test('inventory foundation: NPC transfer preserves carrier field and derived inventory state', () => {
+  const input = state({
+    actor_id: 'npc-1', actor_kind: 'npc', strength: 10,
+    items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }],
+    item_placements: [{ item_id: 'knife-1', holder_npc_id: 'npc-1', physical_position: 'equipped', equipment_slot_id: 'belt' }]
+  });
+  const result = planInventoryTransfer({ ...input, operation: 'unequip', item_or_container_id: 'knife-1', target_physical_position: 'hands', expected_state_version: 4 });
+  assert.equal(result.pass, true);
+  assert.deepEqual(result.change_set.placement_changes[0], {
+    instance_kind: 'item', party_id: partyId, item_id: 'knife-1',
+    holder_npc_id: 'npc-1', physical_position: 'hands'
+  });
+  assert.deepEqual(result.derived_after, {
+    total_mass_grams: 300, load_category: 'light', hands_used: 1, hands_free: 1
+  });
+  assert.equal(validateInventoryTopology({
+    ...input,
+    item_placements: [result.change_set.placement_changes[0]]
+  }).pass, true);
+});
+
 test('inventory foundation: approved actor transition moves a NPC-held quick item to NPC hands without changing its owner', () => {
   const input = state({
     strength: undefined,

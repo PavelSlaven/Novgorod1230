@@ -185,7 +185,7 @@ function planGenericTransfer(input, operation, instanceId) {
       const access = resolveInventoryAccess({ ...input, item_id: instanceId });
       if (!access.pass || access.access?.tier === 'closed' || access.access?.tier === 'unavailable') return planFailure(access.errors?.[0] ?? error('INVENTORY_ACCESS_DENIED', 'topology', { instance_id: instanceId }));
     }
-    nextPlacement = { party_id: input.party_id, [target.key]: instanceId, holder_character_id: input.actor_id, physical_position: 'hands' };
+    nextPlacement = { party_id: input.party_id, [target.key]: instanceId, ...holderPlacement(input), physical_position: 'hands' };
   } else if (operation === 'move_to_container' || operation === 'move_to_quick_container' || operation === 'move_to_primary_container') {
     const containerId = operation === 'move_to_container' ? text(input.target_container_id) : carriedContainerId(input, operation === 'move_to_quick_container' ? 'quick_container' : 'primary_container');
     const destination = list(input.containers).find((value) => value.container_id === containerId);
@@ -197,12 +197,12 @@ function planGenericTransfer(input, operation, instanceId) {
     if (target.kind !== 'item') return planFailure(error('INVENTORY_ACCESS_DENIED', 'topology', { instance_id: instanceId, reason: 'container_cannot_equip' }));
     const slot = text(input.equipment_slot_id);
     if (!slot) return planFailure(error('INVENTORY_EQUIPMENT_SLOT_REQUIRED', 'topology', { item_id: instanceId }));
-    nextPlacement = { party_id: input.party_id, item_id: instanceId, holder_character_id: input.actor_id, physical_position: 'equipped', equipment_slot_id: slot };
+    nextPlacement = { party_id: input.party_id, item_id: instanceId, ...holderPlacement(input), physical_position: 'equipped', equipment_slot_id: slot };
   } else {
     if (target.kind !== 'item' || !holderMatchesActor(input, current) || current.physical_position !== 'equipped') return planFailure(error('INVENTORY_ACCESS_DENIED', 'topology', { instance_id: instanceId }));
     const physicalPosition = ['hands', 'worn_quick', 'external_load'].includes(input.target_physical_position) ? input.target_physical_position : null;
     if (!physicalPosition) return planFailure(error('INVENTORY_ACCESS_DENIED', 'topology', { instance_id: instanceId, reason: 'target_position_required' }));
-    nextPlacement = { party_id: input.party_id, item_id: instanceId, holder_character_id: input.actor_id, physical_position: physicalPosition };
+    nextPlacement = { party_id: input.party_id, item_id: instanceId, ...holderPlacement(input), physical_position: physicalPosition };
   }
   const next = replacePlacement(input, target, nextPlacement);
   const validation = validatePlanAfter(next, target.kind === 'item' && nextPlacement.container_id ? nextPlacement.container_id : target.kind === 'container' && nextPlacement.parent_container_id ? nextPlacement.parent_container_id : null);
@@ -227,10 +227,10 @@ function planRecoverPrimary(input, containerId) {
   const placement = findPlacement(input.container_placements, 'container_id', containerId);
   const profile = profileFor(input.container_profiles, container?.template_id);
   if (!container || profile?.inventory_role !== 'primary_container' || placement?.anchor_id !== input.current_g5_anchor_id) return planFailure(error('INVENTORY_ACCESS_DENIED', 'topology', { container_id: containerId }));
-  const next = { ...input, container_placements: list(input.container_placements).map((entry) => entry.container_id === containerId ? { party_id: input.party_id, container_id: containerId, holder_character_id: input.actor_id, physical_position: 'worn' } : structuredClone(entry)) };
+  const next = { ...input, container_placements: list(input.container_placements).map((entry) => entry.container_id === containerId ? { party_id: input.party_id, container_id: containerId, ...holderPlacement(input), physical_position: 'worn' } : structuredClone(entry)) };
   const validation = validatePlanAfter(next);
   if (!validation.pass) return planFailure(validation.error);
-  return planSuccess({ placement_changes: [deepFreeze({ instance_kind: 'container', container_id: containerId, holder_character_id: input.actor_id, physical_position: 'worn' })], quantity_changes: [], container_state_changes: [], ownership_changes: [] }, input, validation.mass, validation.hands, validation.load, { operation: 'recover_primary_container' });
+  return planSuccess({ placement_changes: [deepFreeze({ instance_kind: 'container', container_id: containerId, ...holderPlacement(input), physical_position: 'worn' })], quantity_changes: [], container_state_changes: [], ownership_changes: [] }, input, validation.mass, validation.hands, validation.load, { operation: 'recover_primary_container' });
 }
 
 function planSuccess(changeSet, input, mass, hands, load, trace) {
@@ -340,4 +340,10 @@ function holderMatchesActor(input, placement) {
   return (input.actor_kind === 'npc'
     ? placement?.holder_npc_id
     : placement?.holder_character_id) === input.actor_id;
+}
+
+function holderPlacement(input) {
+  return input.actor_kind === 'npc'
+    ? { holder_npc_id: input.actor_id }
+    : { holder_character_id: input.actor_id };
 }

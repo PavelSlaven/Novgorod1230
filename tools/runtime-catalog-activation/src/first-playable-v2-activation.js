@@ -11,6 +11,7 @@ import {
   computeDependencyAssertionAuditDigest
 } from '@rus/runtime-catalog/ledger-digests';
 import {
+  buildActivationEvent,
   buildActivationRequest,
   buildBaseWorldCompatibilityManifest,
   buildBaselineRegistrationId,
@@ -354,10 +355,7 @@ export async function buildFirstPlayableV2ActivationBundle({
     runtimeContractDigest:
       RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
   });
-  const expectedPreviousEventId =
-    await readActivationPredecessorId(worldPool, release.domainRevision);
-  const activationRequest = buildActivationRequest({
-    fields: {
+  const activationFields = {
       parent_revision_id: baselineRequest.parent_revision_id,
       parent_catalog_digest: baselineRequest.parent_catalog_digest,
       parent_snapshot_manifest_digest:
@@ -374,27 +372,28 @@ export async function buildFirstPlayableV2ActivationBundle({
       approval_request_digest: ledger.root.approval_request_digest,
       approval_attestation_digest:
         ledger.root.approval_attestation_digest,
-      expected_previous_event_id: expectedPreviousEventId,
       runtime_release_id: runtimeRelease.runtime_release_id
-    },
-    partyPreflight
-  });
-  const activationAttestation = sealAttestation({
-    schema: 'rus.runtime_catalog_activation_attestation.v2',
-    activation_request_digest:
-      activationRequest.activation_request_digest,
-    catalog_scope: activationRequest.catalog_scope,
-    target_revision_id: activationRequest.target_revision_id,
-    target_catalog_digest: activationRequest.target_catalog_digest,
-    import_id: activationRequest.import_id,
-    import_audit_digest: activationRequest.import_audit_digest,
-    runtime_contract_digest: activationRequest.runtime_contract_digest,
-    runtime_release_id: activationRequest.runtime_release_id,
-    decision: 'approve_activation',
-    attested_by: authorizationRef,
-    source_authorization:
-      release.activationBasis
-  });
+  };
+  const latestEvent = await readCurrentActivationEvent(worldPool);
+  let expectedPreviousEventId = latestEvent?.event_id ?? null;
+  if (latestEvent?.catalog_revision_id === release.domainRevision) {
+    const replay = buildActivationArtifacts({ activationFields,
+      expectedPreviousEventId: latestEvent.expected_previous_event_id ?? null,
+      partyPreflight, authorizationRef, release });
+    const predecessor = await readActivationEvent(
+      worldPool, latestEvent.expected_previous_event_id);
+    const principal = (await worldPool.query(
+      'SELECT current_user AS principal')).rows[0].principal;
+    const replayEvent = buildActivationEvent({ request: replay.request,
+      attestation: replay.attestation, previousEvent: predecessor,
+      operatorPrincipal: principal });
+    expectedPreviousEventId = selectExactActivationPredecessor({ latestEvent,
+      targetRevisionId: release.domainRevision, replayEvent });
+  }
+  const activation = buildActivationArtifacts({ activationFields,
+    expectedPreviousEventId, partyPreflight, authorizationRef, release });
+  const activationRequest = activation.request;
+  const activationAttestation = activation.attestation;
 
   return deepFreeze({
     schema: release.bundleSchema,
@@ -612,18 +611,98 @@ function assertApprovedSources({
   }
 }
 
-async function readActivationPredecessorId(pool, targetRevisionId) {
+async function readCurrentActivationEvent(pool) {
   const row = (await pool.query(
-    `SELECT event_id,expected_previous_event_id,catalog_revision_id
+    `SELECT event_id,event_sequence,event_type,catalog_scope,
+            catalog_revision_id,catalog_digest,import_id,import_audit_digest,
+            record_registry_digest,runtime_contract_digest,
+            compatible_world_revision_id,compatible_world_catalog_digest,
+            compatible_world_pin_manifest_digest,request_digest,
+            attestation_digest,expected_previous_event_id,runtime_release_id,
+            operator_principal,event_digest
        FROM world_base.runtime_catalog_activation_events
       WHERE catalog_scope=$1
       ORDER BY event_sequence DESC
       LIMIT 1`,
     [CATALOG_SCOPE]
   )).rows[0];
-  return row?.catalog_revision_id === targetRevisionId
-    ? row.expected_previous_event_id ?? null
-    : row?.event_id ?? null;
+  return row ? { ...row, event_sequence: Number(row.event_sequence) } : null;
+}
+
+async function readActivationEvent(pool, eventId) {
+  if (eventId == null) return null;
+  const row = (await pool.query(
+    `SELECT event_id,event_sequence
+       FROM world_base.runtime_catalog_activation_events
+      WHERE event_id=$1`, [eventId])).rows[0];
+  return row ? { ...row, event_sequence: Number(row.event_sequence) } : null;
+}
+
+export function selectExactActivationPredecessor({ latestEvent,
+  targetRevisionId, replayEvent }) {
+  if (latestEvent?.catalog_revision_id === targetRevisionId) {
+    if (exactActivationEvent(latestEvent, replayEvent)) {
+      return latestEvent.expected_previous_event_id ?? null;
+    }
+    if (latestEvent.request_digest === replayEvent?.request_digest
+        || latestEvent.attestation_digest === replayEvent?.attestation_digest) {
+      fail('ACTIVATION_EVENT_COLLISION',
+        'Stored activation identity has a different event envelope.');
+    }
+  }
+  return latestEvent?.event_id ?? null;
+}
+
+function buildActivationArtifacts({ activationFields, expectedPreviousEventId,
+  partyPreflight, authorizationRef, release }) {
+  const request = buildActivationRequest({ fields: { ...activationFields,
+    expected_previous_event_id: expectedPreviousEventId }, partyPreflight });
+  const attestation = sealAttestation({
+    schema: 'rus.runtime_catalog_activation_attestation.v2',
+    activation_request_digest: request.activation_request_digest,
+    catalog_scope: request.catalog_scope,
+    target_revision_id: request.target_revision_id,
+    target_catalog_digest: request.target_catalog_digest,
+    import_id: request.import_id,
+    import_audit_digest: request.import_audit_digest,
+    runtime_contract_digest: request.runtime_contract_digest,
+    runtime_release_id: request.runtime_release_id,
+    decision: 'approve_activation',
+    attested_by: authorizationRef,
+    source_authorization: release.activationBasis
+  });
+  return { request, attestation };
+}
+
+function exactActivationEvent(actual, expected) {
+  const expectedRow = activationEventRow(expected);
+  return actual != null && Object.entries(expectedRow).every(
+    ([field, value]) => actual[field] === value);
+}
+
+function activationEventRow(event) {
+  return {
+    event_id: event.event_id,
+    event_sequence: event.event_sequence,
+    event_type: event.event_type,
+    catalog_scope: event.catalog_scope,
+    catalog_revision_id: event.catalog_revision_id,
+    catalog_digest: event.catalog_digest,
+    import_id: event.import_id,
+    import_audit_digest: event.import_audit_digest,
+    record_registry_digest: event.record_registry_digest,
+    runtime_contract_digest: event.runtime_contract_digest,
+    compatible_world_revision_id: event.compatible_world_revision_id,
+    compatible_world_catalog_digest: event.compatible_world_catalog_digest,
+    compatible_world_pin_manifest_digest:
+      event.compatible_world_pin_manifest_digest,
+    request_digest: event.request_digest,
+    attestation_digest: event.attestation_digest,
+    expected_previous_event_id: event.expected_previous_event_id,
+    runtime_release_id: event.runtime_release_id,
+    operator_principal: event.operator_principal,
+    event_digest: event.event_digest
+  };
 }
 
 async function readPartyPreflightCounts(pool) {

@@ -90,6 +90,16 @@ test('approved M3 v14 activates atomically and survives exact replay',
     assert.equal(await count(pool,
       'world_base.runtime_catalog_activation_events',
       'catalog_revision_id', RELEASE.domainRevision), 1);
+    const newSameTarget = await buildFirstPlayableV2ActivationBundle({
+      worldPool: pool, partyPool: pool, repositoryRoot: process.cwd(),
+      gitCommitSha: '9b9749f63b0b98fb5246714976b8892c87ff8bb1',
+      authorizationRef: 'integration-test-only-new-same-target-request',
+      release: RELEASE
+    });
+    assert.equal(newSameTarget.activation_request.expected_previous_event_id,
+      first.event_id);
+    assert.notEqual(newSameTarget.activation_request.activation_request_digest,
+      first.request_digest);
 
     await pool.end();
     pool = null;

@@ -125,9 +125,24 @@ test('AGENTS.md router fits the agent context budget and links every governance 
   const linked = new Set(markdownLinkTargets(text).map((target) => target.split('#')[0]));
   for (const file of GOVERNANCE_FILES) assert.ok(linked.has(file), `AGENTS.md must link ${file}`);
   for (const relativePath of ['AGENTS.md', ...GOVERNANCE_FILES]) {
-    const imports = withoutCode(await readFile(join(root, relativePath), 'utf8')).match(/(?:^|\s)@[\w.~/-]+/gmu) ?? [];
+    const imports = withoutCode(await readFile(join(root, relativePath), 'utf8')).match(/(?:^|[\s([])@[\w.~/-]+/gmu) ?? [];
     assert.deepEqual(imports, [], `${relativePath}: @path outside code spans would be imported by Claude Code`);
   }
+  assert.match(text, /^### 1\.1\. Кто может менять этот файл$/mu);
+  assert.match(text, /\*\*Поправка к §1\.1\.\*\* Защита §1\.1 распространяется на каждый файл `docs\/governance\/\*\.md`/u);
+  assert.match(text, /Полный и обязательный текст — AR §25, §25\.1/u);
+});
+
+test('governance corpus holds every former AGENTS.md section exactly once', async () => {
+  const sections = [];
+  for (const file of GOVERNANCE_FILES.filter((path) => !path.endsWith('/README.md'))) {
+    const text = await readFile(join(root, file), 'utf8');
+    sections.push(...[...text.matchAll(/^## (\d+)\. /gmu)].map((match) => Number(match[1])));
+  }
+  assert.deepEqual(sections.toSorted((a, b) => a - b), Array.from({ length: 29 }, (_, index) => index + 2));
+  const map = await readFile(join(root, 'docs/governance/README.md'), 'utf8');
+  assert.match(map, /^### 1\.2\. /mu);
+  for (let section = 2; section <= 30; section += 1) assert.match(map, new RegExp(`^\\| ${section}\\. `, 'mu'));
 });
 
 test('canonical documentation preserves active guidance without obsolete workflow gates', async () => {

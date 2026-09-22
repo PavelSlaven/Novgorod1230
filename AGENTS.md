@@ -39,7 +39,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 Этот роутер и файлы `docs/governance/*.md` образуют единый governing-корпус `AGENTS.md`. Инкорпорация касается только текста этих файлов и явных ссылок «AGENTS.md §N»; прежняя нумерация разделов сохранена.
 
-«Прочитать `AGENTS.md`» означает: прочитать этот роутер целиком и разделы governance, назначенные применимой строкой маршрутизации. Весь корпус читается только в governance-задачах и Contract Auditor.
+«Прочитать `AGENTS.md`» означает: прочитать этот роутер целиком и разделы governance, назначенные всеми применимыми строками маршрутизации (по каждой затронутой области). Весь корпус обязателен к чтению в governance-задачах и для Contract Auditor.
 
 ## Источники истины
 
@@ -47,7 +47,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 Затем открой [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы установить статусы документов, applicable active contracts, precedence и обязательные триггеры Contract Auditor.
 
-**Как открывать индекс.** «Открыть индекс» = прочитать §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки. Для World Knowledge и direct speech — также §6 и §10 (строки WK в §8.1 нет: WK = строка §5 + §6). Индекс целиком читается только при правке самого индекса или статусов документов и для Contract Auditor.
+**Как открывать индекс.** «Открыть индекс» = прочитать §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки. Для World Knowledge и direct speech — также §6 и §10 (строки WK в §8.1 нет: WK = строка §5 + §6). Индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor.
 
 Остальные правила об источниках истины — WR §2.
 
@@ -55,32 +55,32 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 Легенда: [GR](docs/governance/README.md) — преамбула, §1.2, карта §N; [PC](docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30; [AI](docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28; [WR](docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §29; [AR](docs/governance/AUDIT_RULES.md) — §25, §25.1; [GS](docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27; IDX — CONTRACT_INDEX; ctx — `docs/context/`.
 
-- **Код:** WR §18, §19, §21, §24, §29; AI §16; GS §26, §27.
-- **Docs:** WR §18, §20, §24, §29; GS §26, §27.
+- **Код:** WR §2, §18, §19, §21, §24, §29; AI §16; GS §26, §27.
+- **Docs:** WR §2, §18, §20, §24, §29; GS §26, §27.
 - **Домен:** «Код» + PC целиком + AI §13–17, §28 + строка IDX §8.1 + MODULE.md владельцев.
 
 Строки только добавляют к пакету; роутер ничего не запрещает читать.
 
 | Задача | Пакет | Добавить | Не требуется по умолчанию |
 |---|---|---|---|
-| docs-only | Docs | [docs/README.md](docs/README.md) | PC, AI, IDX |
+| docs-only | Docs | [docs/README.md](docs/README.md) | PC, AI |
 | governance (этот корпус) | Docs | весь корпус, AR | — |
 | нормативный корпус | Docs | IDX целиком, AR, [CORPUS_EDIT](docs/process/CORPUS_EDIT.md) | PC, AI |
 | tooling / CI | Код | AI §17; ctx TESTING, STACK | PC |
-| gameplay / turn / LLM | Домен | AI §10, §12; IDX «Player semantic action / LLM» | — |
+| gameplay / turn / LLM | Домен | AI §10, §12; IDX «Player semantic action / LLM»; для провайдера и конфигурации — «Production LLM provider/configuration» | — |
 | NPC | Домен | IDX «NPC agency», «Conversation», «Combat» | — |
 | spatial | Домен | AI §11; IDX «Spatial/map» | — |
 | time / processes | Домен | IDX «Time/activities/processes» | — |
-| items / materialization | Домен | AI §10, §12; IDX «Ordinary items…» или «Authored materialization» | — |
+| items / materialization | Домен | AI §10, §12, §23; IDX «Ordinary items…» или «Authored materialization» | — |
 | World Knowledge | Домен | IDX §5, §6, §10 | — |
-| persistence / DB | Код | AI §14, §23; IDX «DB/persistence»; ctx DB_SCHEMA, STACK | PC |
+| persistence / DB | Код | AI §14, §15, §17, §23; IDX «DB/persistence»; ctx DB_SCHEMA, STACK | PC |
 | UI | Код | IDX «Narration/UI»; ctx UI_KIT, ARCHITECTURE | AI §10–12 |
 | world-catalog | Домен | AI §10, §11; IDX «Historical/knowledge grounding» | — |
 | bugfix | Код + строка области | WR §22; ctx EDGE_CASES | — |
 | release / Git | Код | GS §26.1 | PC |
 | многоэтапный план | по задаче | [CURRENT_SPRINT](docs/work/CURRENT_SPRINT.md) и его ссылки | — |
 
-**Contract Auditor.** Триггеры (сжато): меняются governing/normative документы, IDX, `MODULE.md` или статусы; active release/profile/manifest/binding; public schema/API/export, DDL, persistence, transaction, idempotency, replay; domain owner или handoff; LLM authority, prompt, plan contract; free actions, materialization, items, Spatial, NPC, time, perception, speech, narration; план ссылается на proposed/target/migration; описания current behavior расходятся; final acceptance. Полный и обязательный текст — AR §25.1; при сомнении открыть его. AR загружается, когда триггер сработал.
+**Contract Auditor.** Триггеры (сжато): создаются, меняются, переносятся, удаляются или повышаются в статусе governing/normative документы, IDX, `MODULE.md`; active release/profile/manifest/binding; public schema, operation, API/export, DDL, persistence, transaction, idempotency, replay; domain owner или handoff; LLM authority, prompt, plan contract, model-call topology, repair policy; free actions, materialization, items, Spatial, NPC decisions/conversation/combat, time, visibility/knowledge/perception, speech, narration; план ссылается на proposed/target/migration; описания current behavior расходятся; final acceptance. Независимый аудит (§25) также обязателен при риске повреждения или потери данных, critical orchestration и сложной логике без достаточных тестов. Исключение — только локальный fix, для которого доказано, что не меняются public behavior, contracts, owner boundary, persistence/schema, LLM authority и active profile status. Полный и обязательный текст — AR §25, §25.1; AR загружается, если триггер сработал или его нельзя исключить.
 
 ## Рабочий цикл
 

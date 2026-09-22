@@ -65,6 +65,7 @@ npm run play:local
 - нормативные контракты и их статусы — [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md);
 - поиск по нормативному корпусу — `npm run knowledge:query -- --query "<потребность>"`;
 - карты проекта — `docs/context/`; процедуры — `docs/process/`;
+- текущий сценарий Lower Dvina Trace — [docs/plans/lower-dvina-trace-reference.md](docs/plans/lower-dvina-trace-reference.md) (сценарный документ, не норма);
 - архив прошлой миграции — [docs/migration/README.md](docs/migration/README.md); снятые инструкции агентов и журналы — [docs/archive/README.md](docs/archive/README.md).
 
 ## Для агентов разработки

@@ -77,7 +77,8 @@ test('agent instruction links resolve to repository files', async () => {
   await assert.rejects(stat(join(root, '.codex/skills/README.md')));
   await assert.rejects(stat(join(root, '.codex/skills/graphify/SKILL.md')));
   await assert.rejects(stat(join(root, '.agents/skills/graphify/SKILL.md')));
-  for (const archived of ['.cursorrules.txt', 'legacy/.cursorrules.txt', 'legacy/.cursor/rules/project.mdc', '.github/README.md']) {
+  for (const archived of ['.cursorrules.txt', 'legacy/.cursorrules.txt', 'legacy/.cursor/rules/project.mdc', '.github/README.md',
+    '.github/Правила разработки.txt', '.github/Работа с картой G0-G4.txt']) {
     await assert.rejects(stat(join(root, archived)), `${archived} is archived in docs/archive and must not return`);
   }
 

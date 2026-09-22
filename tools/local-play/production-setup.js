@@ -80,7 +80,8 @@ export async function installActivatedRuntimeCatalog({
     throw new Error('Stage 3c lifecycle did not pass.');
   }
   // Forward-migration contracts: bootstrap 01..20, then catalog migration.
-  // 21.sql (appearance DDL) and actor-attrs owner migration stay after that.
+  // Appearance DDL+import must precede S1 (v4 parent_revision FK for v5/v6).
+  // Actor-attrs owner migration stays after catalog (fingerprint target).
   for (const file of ['18.sql', '19.sql', '20.sql']) {
     await worldPool.query(await readFile(
       resolve(repositoryRoot, 'infra/world-base/schema', file),
@@ -93,6 +94,13 @@ export async function installActivatedRuntimeCatalog({
   await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
     root: repositoryRoot
   }));
+  await worldPool.query(await readFile(
+    resolve(repositoryRoot, 'infra/world-base/schema/21.sql'),
+    'utf8'
+  ));
+  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
+    root: repositoryRoot
+  }));
   await worldPool.query(await buildS1AuthoringV6ImportSql({
     root: repositoryRoot
   }));
@@ -103,17 +111,10 @@ export async function installActivatedRuntimeCatalog({
     runWorldRuntimeCatalogMigration(worldPool),
     runPartyRuntimeCatalogMigration(partyPool)
   ]);
-  // Actor owner source fingerprint is catalog-migration target; apply before 21.sql.
+  // Catalog migration is fingerprint target; ensure stays idempotent if already active.
   await ensureActorBaseAttributesRuntimeActive({
     worldPool, partyPool, worldUrl, repositoryRoot
   });
-  await worldPool.query(await readFile(
-    resolve(repositoryRoot, 'infra/world-base/schema/21.sql'),
-    'utf8'
-  ));
-  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
-    root: repositoryRoot
-  }));
   const commitSha = execFileSync('git', ['rev-parse', 'HEAD'], {
     cwd: repositoryRoot,
     encoding: 'utf8'

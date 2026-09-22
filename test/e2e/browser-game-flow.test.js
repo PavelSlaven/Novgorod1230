@@ -534,9 +534,8 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.click('[data-start-new-game]');
   await page.click('[data-scenario-id="vikhtuy_fishing_camp_v1"]');
   await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
-  assert.deepEqual(records.newGames.at(-1), {
-    scenario_id: 'vikhtuy_fishing_camp_v1'
-  });
+  assert.equal(records.newGames.at(-1).scenario_id, 'vikhtuy_fishing_camp_v1');
+  assert.match(records.newGames.at(-1).request_id, /^web:new-game:[0-9a-f-]{36}$/u);
   assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
   const authoredPartyId = await page.evaluate(() =>
     localStorage.getItem('rus.party_id'));

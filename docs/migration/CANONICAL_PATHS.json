@@ -3,13 +3,6 @@
   "policy": "Each document has one canonical path. previous_paths are historical aliases and must not coexist as files.",
   "documents": [
     {
-      "canonical_path": "CHANGELOG.md",
-      "category": "root",
-      "previous_paths": [
-        "CHANGELOG.md"
-      ]
-    },
-    {
       "canonical_path": "MIGRATION_PHASES_SHORT.md",
       "category": "root",
       "previous_paths": [

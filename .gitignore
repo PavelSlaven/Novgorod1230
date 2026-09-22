@@ -16,3 +16,8 @@ logs/*
 data/rus13-base-staging/
 # Local codebase-memory SQLite/cache/artifact; the shared source of truth stays in Git.
 .codebase-memory/
+# Google Drive sync temp folder (not project data).
+.tmp.driveupload/
+# Personal Claude Code instructions: a committed CLAUDE*.md disables direct AGENTS.md reading.
+CLAUDE.local.md
+.claude/settings.local.json

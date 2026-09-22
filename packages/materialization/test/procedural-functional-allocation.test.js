@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import {
-  generateProceduralFunctionalAllocations,
-  resolveProceduralFunctionalAllocations
-} from '../../../scripts/generate-procedural-functional-allocations.mjs';
+import { generateProceduralFunctionalAllocations } from
+  '../../../scripts/generate-procedural-functional-allocations.mjs';
+import { resolveProceduralFunctionalAllocations } from
+  '../src/index.js';
 
 const root = new URL('../../../', import.meta.url).pathname.replace(/^\/(.:)/u,
   '$1');
@@ -41,7 +41,8 @@ test('unseen equivalent fisher identity resolves without identity branch',
         scene_package_digest: scenePackage.scene_package_digest }],
       persistedPositions: [{ actor_instance_id: 'actor:unseen-987',
         function_layer: 'work_zone', state: 'committed',
-        position_id: 'position:persisted-1', ...scenePackage }], scenePackage
+        position_id: 'position:persisted-1', ...scenePackage }],
+      existing_items: [], scenePackage
     });
     assert.deepEqual(resolved.allocations.map(({ layer }) => layer),
       ['tool', 'work_material']);
@@ -62,7 +63,7 @@ test('missing matching committed actor remains a typed gap', async () => {
       role_ref: 'nov_role_boatman', activity_profile_refs: [],
       scene_package_id: scenePackage.scene_package_id,
       scene_package_digest: scenePackage.scene_package_digest }],
-    persistedPositions: [], scenePackage
+    persistedPositions: [], existing_items: [], scenePackage
   }), { code: 'FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING' });
 });
 
@@ -77,16 +78,17 @@ test('wrong scene package or actor kind is rejected', async () => {
     scene_package_id: scenePackage.scene_package_id,
     scene_package_digest: scenePackage.scene_package_digest };
   assert.throws(() => resolveProceduralFunctionalAllocations({ policy,
-    actors: [actor], persistedPositions: [], scenePackage }),
+    actors: [actor], persistedPositions: [], existing_items: [], scenePackage }),
   { code: 'FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING' });
   assert.throws(() => resolveProceduralFunctionalAllocations({ policy,
     actors: [{ ...actor, actor_kind: 'npc' }], persistedPositions: [],
+    existing_items: [],
     scenePackage: { ...scenePackage, scene_package_digest: 'b'.repeat(64) } }),
   { code: 'FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING' });
 });
 test('allocation production code has no scene or NPC identity branches', async () => {
   const source = await import('node:fs/promises').then(({ readFile }) => readFile(
-    new URL('../../../scripts/generate-procedural-functional-allocations.mjs',
+    new URL('../src/procedural-functional-allocation.js',
       import.meta.url), 'utf8'));
   assert.doesNotMatch(source, /Vikhtuy|Вихтуй|reed|branch|specific_npc/u);
 });
@@ -105,7 +107,7 @@ test('selection is input-order independent and rejects duplicate actor ids',
       position_id: `position:${id}`, ...scenePackage }));
     const resolve = (actors) => resolveProceduralFunctionalAllocations({
       policy: candidate.policies[0], actors, persistedPositions: positions,
-      scenePackage });
+      existing_items: [], scenePackage });
     assert.equal(resolve([actor('actor:z'), actor('actor:a')]).actor_instance_id,
       'actor:a');
     assert.equal(resolve([actor('actor:a'), actor('actor:z')]).actor_instance_id,
@@ -129,7 +131,7 @@ test('reuse, duplicate item and mechanics guards are fail-closed', async () => {
     ...scenePackage }];
   const tool = policy.allocations[0];
   const reused = resolveProceduralFunctionalAllocations({ policy, actors: actor,
-    persistedPositions, scenePackage, existingItems: [{
+    persistedPositions, scenePackage, existing_items: [{
       item_instance_id: 'item:net', actor_instance_id: 'actor:f',
       item_template_ref: tool.item_template_ref, state: 'committed',
       owner_id: 'actor:f', holder_id: 'actor:f', controller_id: 'actor:f',
@@ -141,14 +143,14 @@ test('reuse, duplicate item and mechanics guards are fail-closed', async () => {
         .update(JSON.stringify(tool.source_binding_refs)).digest('hex') }] });
   assert.equal(reused.allocations[0].disposition, 'reuse');
   assert.throws(() => resolveProceduralFunctionalAllocations({ policy,
-    actors: actor, persistedPositions, scenePackage, existingItems: [
+    actors: actor, persistedPositions, scenePackage, existing_items: [
       { item_instance_id: 'duplicate', actor_instance_id: 'actor:f',
         item_template_ref: tool.item_template_ref },
       { item_instance_id: 'duplicate', actor_instance_id: 'actor:f',
         item_template_ref: policy.allocations[1].item_template_ref }] }),
   { code: 'FUNCTIONAL_CROSS_LAYER_REUSE_INVALID' });
   assert.throws(() => resolveProceduralFunctionalAllocations({ policy,
-    actors: actor, persistedPositions, scenePackage,
+    actors: actor, persistedPositions, existing_items: [], scenePackage,
     inventorySummary: { mass_grams: 0, capacity_grams: 1 } }),
   { code: 'FUNCTIONAL_CALLER_MECHANICS_SUMMARY_FORBIDDEN' });
 });

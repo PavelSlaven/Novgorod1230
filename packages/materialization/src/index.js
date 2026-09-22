@@ -43,6 +43,8 @@ import {
 } from './ordinary-materialization-foundation.js';
 import { materializeItemPlacement, materializeNpcPlacement } from './placement-materializers.js';
 import { materializeApprovedActorEquipment } from './approved-actor-equipment.js';
+import { resolveProceduralFunctionalAllocations } from
+  './procedural-functional-allocation.js';
 import {
   ACTOR_BASE_ATTRIBUTE_KEYS,
   canonicalCandidateDigest,
@@ -71,6 +73,7 @@ export {
   materializeActorBaseAppearance,
   materializeActorBaseAttributes, materializeApprovedActorEquipment,
   materializeApprovedProceduralNpc, materializeAuthoredStartPartyInstance,
+  resolveProceduralFunctionalAllocations,
   materializeG5Scene, materializeItemPlacement,
   materializeNpcPlacement, materializeOrPreserveActorBaseAttributes,
   materializeWorldInstances, MATERIALIZER_VERSION, MaterializationError,

@@ -81,6 +81,3 @@
 - промежуточные implementation plans.
 
 Точное текущее production-поведение определяется кодом, active bindings, versioned profiles, профильными нормативными контрактами и тестами, а не этим файлом.
-
----
-

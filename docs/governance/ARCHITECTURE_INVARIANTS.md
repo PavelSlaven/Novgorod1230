@@ -486,6 +486,3 @@ Retry/replay должен использовать существующий idem
 Можно ли назвать реального attacker/trust boundary или конкретный normal-use defect, который требует нового digest/fingerprint/hash/ledger?
 
 Если нет — такой механизм не должен появляться.
-
----
-

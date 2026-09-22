@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "5a51ae635d14c821ec739ac6f05f211b7570c5315e1bff0512210a6589ba1f0d",
+  "corpus_hash": "83c419d58fd8f4e07043553d6b48c6bba582221a1ec5765fc31221811153a14b",
   "chunk_count": 2814,
   "chunks": [
     {
@@ -1332,8 +1332,8 @@
       "section": "1. Обязательный порядок чтения",
       "line_start": 11,
       "line_end": 32,
-      "text": "## CONTRACT_INDEX.md — 1. Обязательный порядок чтения\n## 1. Обязательный порядок чтения\n\nДля любой задачи:\n\n1. прочитать root [`AGENTS.md`](../../../../AGENTS.md) (роутер) и назначенные им разделы `docs/governance/*.md`;\n2. открыть этот индекс: §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки; для World Knowledge и direct speech — также §6 и §10; индекс целиком — только при правке самого индекса или статусов документов и для Contract Auditor;\n3. прочитать applicable nested `AGENTS.md`;\n4. прочитать relevant `MODULE.md`;\n5. установить active release, profile, manifest, binding и schema затронутой области;\n6. прочитать applicable active contracts;\n7. сверить production code, callers, tests и CI;\n8. читать proposed/target/migration/reference документы только в их заявленном статусе.\n\nДля вопроса «что уже смержено сейчас» source of truth — `main`. Для текущей PR-задачи рабочим состоянием является exact checkout ветки, но несмёрженный diff не становится общей production-нормой.\n\nФайл, имя которого содержит `contract`, `standard`, `policy` или `target`, не получает статус автоматически. Статус определяется одновременно:",
-      "char_count": 1156
+      "text": "## CONTRACT_INDEX.md — 1. Обязательный порядок чтения\n## 1. Обязательный порядок чтения\n\nДля любой задачи:\n\n1. прочитать root [`AGENTS.md`](../../../../AGENTS.md) (роутер) и назначенные им разделы `docs/governance/*.md`;\n2. открыть этот индекс: §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки; для World Knowledge и direct speech — также §6 и §10; индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor;\n3. прочитать applicable nested `AGENTS.md`;\n4. прочитать relevant `MODULE.md`;\n5. установить active release, profile, manifest, binding и schema затронутой области;\n6. прочитать applicable active contracts;\n7. сверить production code, callers, tests и CI;\n8. читать proposed/target/migration/reference документы только в их заявленном статусе.\n\nДля вопроса «что уже смержено сейчас» source of truth — `main`. Для текущей PR-задачи рабочим состоянием является exact checkout ветки, но несмёрженный diff не становится общей production-нормой.\n\nФайл, имя которого содержит `contract`, `standard`, `policy` или `target`, не получает статус автоматически. Статус определяется одновременно:",
+      "char_count": 1180
     },
     {
       "id": "CONTRACT_INDEX.md:1. Обязательный порядок чтения:1",

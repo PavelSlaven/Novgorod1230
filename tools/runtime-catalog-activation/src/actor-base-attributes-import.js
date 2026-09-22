@@ -137,7 +137,7 @@ export async function importApprovedActorBaseAttributes({ pool, request,
 }
 
 export async function readActorBaseAttributesImport(client, { request,
-  attestation, ledger = null }) {
+  attestation, ledger = null, expectedActivationEventCount = 0 }) {
   const approvedLedger = buildActorBaseAttributesImportLedger({ request,
     attestation });
   if (ledger != null && canonicalStringify(ledger)
@@ -191,9 +191,11 @@ export async function readActorBaseAttributesImport(client, { request,
     `SELECT count(*) AS count
        FROM world_base.runtime_catalog_activation_events
       WHERE catalog_scope=$1`, [request.catalog_scope])).rows[0].count);
+  if (![0, 1].includes(expectedActivationEventCount)) readbackFail();
   if (domainRows.length !== 1 || revisionRows.length !== 1
       || importRows.length !== 1
-      || ownerRows.length !== 1 || activationCount !== 0) readbackFail();
+      || ownerRows.length !== 1
+      || activationCount !== expectedActivationEventCount) readbackFail();
   const domain = domainRows[0];
   const { approval_status: approvalStatus, ...importRoot } = importRows[0];
   const owner = request.owner_rows[0].row;

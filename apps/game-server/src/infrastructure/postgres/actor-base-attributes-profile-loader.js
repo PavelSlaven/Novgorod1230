@@ -21,7 +21,9 @@ export async function loadActiveActorBaseAttributesProfile(worldPool) {
               import_audit_digest,record_registry_digest,
               runtime_contract_digest,compatible_world_revision_id,
               compatible_world_catalog_digest,
-              compatible_world_pin_manifest_digest
+              compatible_world_pin_manifest_digest,request_digest,
+              attestation_digest,expected_previous_event_id,
+              runtime_release_id,operator_principal,event_digest
          FROM world_base.runtime_catalog_activation_events
         WHERE catalog_scope=$1
         ORDER BY event_sequence DESC LIMIT 1`,
@@ -87,6 +89,29 @@ export async function loadActiveActorBaseAttributesProfile(worldPool) {
   if (profileRows.length === 0) gap();
   if (profileRows.length !== 1) invalid();
   const activation = activationRows[0];
+  const eventEnvelope = {
+    schema: 'rus.runtime_catalog_activation_event.v2',
+    event_sequence: Number(activation.event_sequence),
+    event_type: activation.event_type,
+    catalog_scope: activation.catalog_scope,
+    catalog_revision_id: activation.catalog_revision_id,
+    catalog_digest: activation.catalog_digest,
+    import_id: activation.import_id,
+    import_audit_digest: activation.import_audit_digest,
+    record_registry_digest: activation.record_registry_digest,
+    runtime_contract_digest: activation.runtime_contract_digest,
+    compatible_world_revision_id: activation.compatible_world_revision_id,
+    compatible_world_catalog_digest:
+      activation.compatible_world_catalog_digest,
+    compatible_world_pin_manifest_digest:
+      activation.compatible_world_pin_manifest_digest,
+    request_digest: activation.request_digest,
+    attestation_digest: activation.attestation_digest,
+    expected_previous_event_id: activation.expected_previous_event_id,
+    runtime_release_id: activation.runtime_release_id,
+    operator_principal: activation.operator_principal
+  };
+  const eventDigest = digest(eventEnvelope);
   const revision = revisionRows[0];
   const { import_approval_status: importApprovalStatus,
     ...importRoot } = importRows[0];
@@ -105,6 +130,11 @@ export async function loadActiveActorBaseAttributesProfile(worldPool) {
   });
   const record = records?.[0], table = tables?.[0];
   if (activation.event_type !== 'activate'
+      || Number(activation.event_sequence) !== 1
+      || activation.expected_previous_event_id !== null
+      || activation.event_digest !== eventDigest
+      || activation.event_id !==
+        `runtime_catalog_activation_${eventDigest.slice(0, 32)}`
       || activation.catalog_scope !== ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE
       || activation.catalog_revision_id !== revision.catalog_revision_id
       || activation.catalog_digest !== revision.target_catalog_digest

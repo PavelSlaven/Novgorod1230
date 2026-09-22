@@ -7,6 +7,8 @@ const windowsOnly = new Set([
   'gate1-owner-data-import-postgres.test.js'
 ]);
 const clusterRoleSerial = new Set([
+  'actor-base-attributes-activation-postgres.test.js',
+  'actor-base-attributes-import-postgres.test.js',
   'gate1-runtime-activation-postgres.test.js',
   'gate1-seed-closure-postgres.test.js',
   'procedural-authoring-import-postgres.test.js'

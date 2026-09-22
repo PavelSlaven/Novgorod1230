@@ -54,6 +54,12 @@ Parent pin проверяется через exact append-only Gate1 domain regi
 V6 world-manifest SHA отличается от actor compatibility-envelope digest.
 Actor target сохраняет последний в собственной domain revision.
 
+`activateActorBaseAttributes` повторно читает exact approved import под
+importer role и добавляет один deterministic activation event под activator
+role. Scope — только new-development-party runtime selection; replay сверяет
+полный event envelope, а остальные runtime и migration permissions остаются
+ложными.
+
 ## Допустимые зависимости
 
 `@rus/runtime-catalog`, `@rus/world-catalog-workflow`, `pg` и стандартная

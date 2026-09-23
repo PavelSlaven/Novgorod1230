@@ -65,6 +65,7 @@ function formalNpcState(npc) {
     profile_revision: npc.profile_revision
       ?? npc.semantic_state?.profile_revision,
     profile_level: npc.profile_level,
+    ...(npc.semantic_state?.source_binding ? { source_binding: structuredClone(npc.semantic_state.source_binding) } : {}),
     anchor_id: npc.anchor_id,
     location_profile_ref: npc.location_profile_ref
       ?? npc.semantic_state?.location_profile_ref,

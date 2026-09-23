@@ -138,6 +138,8 @@ test('canonical initial scene uses explicit canonical regional applicability in 
   const npcInput = data.npc_inputs[0];
   npcInput.binding.canonical_g5_ref = data.canonical_g5_ref;
   delete npcInput.binding.generation_template_ref;
+  npcInput.binding.source_binding.canonical_g5_ref = data.canonical_g5_ref;
+  delete npcInput.binding.source_binding.generation_template_ref;
   assert.throws(() => prepareGeneratedNpcFirstEntry(data), (error) => error.code === 'PROCEDURAL_NPC_REGIONAL_CONTEXT_DATA_GAP');
   const applicability = npcInput.approved_bundle.regional_context_profiles[0].applicability[0];
   applicability.canonical_g5_ref = data.canonical_g5_ref;
@@ -181,7 +183,7 @@ test('generated NPC rows commit atomically and reload without reroll in PostgreS
   const outcome = await committer.commit({ plan });
   assert.equal(outcome.ok, true, JSON.stringify(outcome));
   assert.equal((await committer.commit({ plan })).replay, true);
-  const saved = await pool.query(`SELECT n.identity_state,n.machine_state,b.health,b.energy,b.satiety,
+  const saved = await pool.query(`SELECT n.identity_state,n.machine_state,n.semantic_state,n.profile_set_id,b.health,b.energy,b.satiety,
     p.attribute_profile_snapshot,s.current_position_node_id,s.next_transition_at_whole_minutes,
     s.causal_state_ref FROM party_runtime.party_npcs n
     JOIN party_runtime.party_actor_body_states b ON b.party_id=n.party_id AND b.actor_id=n.npc_id
@@ -191,6 +193,9 @@ test('generated NPC rows commit atomically and reload without reroll in PostgreS
   const expected = proposed.write_set.inserts.find((row) => row.target_table === 'party_npcs').record;
   assert.deepEqual(saved.rows[0].identity_state, expected.identity_state);
   assert.deepEqual(saved.rows[0].machine_state, expected.machine_state);
+  assert.deepEqual(saved.rows[0].semantic_state.source_binding, input().npc_inputs[0].binding.source_binding);
+  assert.equal(saved.rows[0].profile_set_id, saved.rows[0].semantic_state.source_binding.npc_binding_ref.id);
+  assert.equal(saved.rows[0].semantic_state.profile_revision, saved.rows[0].semantic_state.source_binding.npc_binding_ref.version);
   assert.deepEqual([saved.rows[0].health, saved.rows[0].energy, saved.rows[0].satiety], ['100', '80', '70']);
   assert.equal(saved.rows[0].current_position_node_id, 'pos');
   assert.equal(saved.rows[0].next_transition_at_whole_minutes, '30');

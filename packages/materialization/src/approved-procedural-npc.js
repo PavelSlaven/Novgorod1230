@@ -26,6 +26,21 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
   const role = exact(bundle.roles, 'role_id', binding.role_ref);
   const occupation = exact(bundle.occupations, 'occupation_id',
     binding.occupation_ref);
+  if (binding.source_binding) {
+    const source = binding.source_binding;
+    const same = (left, right) => text(left?.id) && left.id === right?.id
+      && Number.isSafeInteger(left.version) && left.version > 0 && left.version === right.version;
+    if (source.world_revision_id !== binding.world_revision_id
+      || !text(source.npc_binding_ref?.id)
+      || !Number.isSafeInteger(source.npc_binding_ref.version) || source.npc_binding_ref.version < 1
+      || source.npc_composition_ref?.id !== binding.location_profile_ref
+      || !Number.isSafeInteger(source.npc_composition_ref.version) || source.npc_composition_ref.version < 1
+      || !same(source.g4_ref, binding.g4_ref) || !same(source.regional_context_ref, binding.regional_context_ref)
+      || Boolean(source.canonical_g5_ref) !== Boolean(binding.canonical_g5_ref)
+      || Boolean(source.generation_template_ref) !== Boolean(binding.generation_template_ref)
+      || !same(source.canonical_g5_ref ?? source.generation_template_ref,
+        binding.canonical_g5_ref ?? binding.generation_template_ref)) gap('PROCEDURAL_NPC_SOURCE_BINDING_DATA_GAP');
+  }
   const regionalContext = approvedRegionalContext(bundle, binding);
   const legal = exact(bundle.legal_status_archetypes, 'id',
     role.legal_status_archetype_id);
@@ -101,7 +116,8 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     public_role_label: publicLabel };
   const npc = {
     instance_id: npcId, participant_slot_ref: binding.actor_slot_ref,
-    profile_id: binding.actor_profile_rule_ref, profile_revision: 1,
+    profile_id: binding.source_binding?.npc_binding_ref.id ?? binding.actor_profile_rule_ref,
+    profile_revision: binding.source_binding?.npc_binding_ref.version ?? 1,
     profile_level: binding.profile_level,
     anchor_id: binding.anchor_id,
     location_profile_ref: binding.location_profile_ref,
@@ -121,6 +137,13 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
         summary: observable.value, source_ref: observable.source_ref } },
     semantic_state: { scenario_function: 'ordinary_procedural_person',
       causal_basis: 'approved_procedural_binding',
+      ...(binding.source_binding ? {
+        source_binding: structuredClone(binding.source_binding),
+        profile_revision: binding.source_binding.npc_binding_ref.version,
+        participant_slot_ref: binding.actor_slot_ref,
+        location_profile_ref: binding.location_profile_ref,
+        zone_ref: binding.zone_ref
+      } : {}),
       legal_status_ref: { id: legal.id, source: 'legal_status_archetypes' },
       social_position_ref: { id: social.id,
         source: 'social_position_archetypes' },

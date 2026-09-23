@@ -74,7 +74,7 @@ CI (`test.yml`, один job `full-npm-test`, профиль `full` для pull_
 
 ## 4. Матрица «тип изменения → команды»
 
-Команды — `npm run <скрипт>`. Всегда добавляется `git diff --check` (AGENTS §24).
+Команды — `npm run <скрипт>`. Всегда добавляются `git diff --check` (AGENTS §24) и `npm run check:syntax` — `node --check` / `JSON.parse` для изменённых относительно `origin/main` JS и JSON ([check-syntax.mjs](../../scripts/check-syntax.mjs); `--base <ref>` или явный список файлов).
 
 | Тип изменения | Focused/profile | Дополнительно (AGENTS §24) |
 |---|---|---|

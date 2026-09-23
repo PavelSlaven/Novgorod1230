@@ -77,6 +77,11 @@
   `DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/` — старые данные в legacy-корпусе,
   не инструмент.
 
+## Форматирование и синтаксис
+
+- Formatter и linter в проекте нет: повторяй стиль окружающего кода и не переформатируй нетронутое.
+- Детерминированные проверки: `npm run check:syntax` (синтаксис изменённых JS/JSON), `git diff --check`, `npm run architecture:check`. Это работа инструментов, а не агента.
+
 ## Нельзя
 
 - **Обновлять зависимости и toolchain без задачи** — AGENTS.md §21 («Используй текущий stack…»).

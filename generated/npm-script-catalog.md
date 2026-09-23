@@ -15,6 +15,10 @@
 - `character-appearance:test-world-v4-postgres`
 - `character-appearance:validate-world-v4`
 
+## check (1)
+
+- `check:syntax`
+
 ## cutover (1)
 
 - `cutover:run`

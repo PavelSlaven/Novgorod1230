@@ -19,6 +19,7 @@
     "test:legacy": "cd legacy && node --test --test-concurrency=1 test/*.test.js",
     "test:stage26": "node --test test/modules/stage26-*.test.js",
     "architecture:check": "node tools/architecture/check-boundaries.mjs",
+    "check:syntax": "node scripts/check-syntax.mjs",
     "release:check": "node tools/release/check-release-hygiene.mjs",
     "spatial-v3:test-p27-release": "node --test test/spatial-v3/p27-release-hygiene.test.js",
     "lower-dvina:first-playable:readiness": "node tools/spatial-v3/lower-dvina-first-playable-readiness.mjs",

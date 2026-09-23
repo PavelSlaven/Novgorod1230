@@ -53,4 +53,4 @@
 
 Проект работает в direct-AGENTS mode: Codex, Cursor, GitHub Copilot и Claude Code (≥ 2.1.277) читают корневой `AGENTS.md` сами. `CLAUDE.md`, `.claude/CLAUDE.md` и `CLAUDE.local.md` в репозиторий не коммитить: любой из них отключает прямое чтение `AGENTS.md` в Claude Code. Для сессий Claude без такой поддержки — личный gitignored `CLAUDE.local.md` с одной строкой `@AGENTS.md`; он не становится репозиторным источником истины. Подробнее — [STACK](context/STACK.md), раздел «Инструменты агентов».
 
-Skills-заглушки лежат байт-в-байт одинаково в `.agents/skills/` и `.claude/skills/`; канон каждой — процедура в `docs/process/` или governance.
+Skills лежат байт-в-байт одинаково в `.agents/skills/` и `.claude/skills/`: процедуры проекта — заглушки с каноном в `docs/process/` или governance; обязательные навыки `caveman` и `ponytail` (AGENTS.md §18.1) — полные копии upstream с указанием источника.

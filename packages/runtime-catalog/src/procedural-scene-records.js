@@ -257,7 +257,10 @@ async function readOwnerRows(reader, table, ids) {
 async function readSkillDefaults(reader, ids) {
   if (ids.length === 0) return [];
   return rowsFrom(await reader.read(
-    `SELECT * FROM world_base.occupation_skill_defaults WHERE occupation_archetype_id=ANY($1::text[]) AND status='approved' ORDER BY occupation_archetype_id,skill_id`,
+    `SELECT occupation_archetype_id,primary_skill_ids,secondary_skill_ids,gate_skill_ids,
+       forbidden_skill_ids,default_level_logic,status,confidence,sources,audit_notes
+     FROM world_base.occupation_skill_defaults WHERE occupation_archetype_id=ANY($1::text[])
+       AND status='approved' ORDER BY occupation_archetype_id`,
     [ids]));
 }
 

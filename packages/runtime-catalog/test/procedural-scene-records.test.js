@@ -62,7 +62,8 @@ test('actor Temporal exporter keeps approved source dependencies', async () => {
     occupation_archetypes: [{ id: 'occ-a', status: 'approved' }],
     legal_status_archetypes: [{ id: 'legal-a', status: 'approved' }],
     social_position_archetypes: [{ id: 'position-a', status: 'approved' }],
-    occupation_skill_defaults: [{ occupation_archetype_id: 'occ-a', skill_id: 'fishing', status: 'approved' }] };
+    occupation_skill_defaults: [{ occupation_archetype_id: 'occ-a', primary_skill_ids: ['fishing'],
+      secondary_skill_ids: [], gate_skill_ids: [], forbidden_skill_ids: [], status: 'approved' }] };
   const result = await loadApprovedProceduralActorTemporalBundle({
     worldBaseReader: { read: async (sql) => ({ rows: Object.entries(sqlRows)
       .find(([key]) => sql.includes(key))?.[1] ?? [] }) }, worldPin,
@@ -72,6 +73,6 @@ test('actor Temporal exporter keeps approved source dependencies', async () => {
     actorProfileCatalog: { schema: 'rus.verified_actor_profile_catalog.v1',
       verified: true, world_pin: worldPin, records_by_table: {} },
     temporalRecords: [{ record_id: 'daylight', status: 'approved' }] });
-  assert.equal(result.occupation_skill_defaults[0].skill_id, 'fishing');
+  assert.deepEqual(result.occupation_skill_defaults[0].primary_skill_ids, ['fishing']);
   assert.equal(result.temporal_records[0].record_id, 'daylight');
 });

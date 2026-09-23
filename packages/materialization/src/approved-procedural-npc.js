@@ -93,7 +93,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
   const skills = (bundle.occupation_skill_defaults ?? []).filter((row) =>
     row.status === 'approved'
       && row.occupation_archetype_id === occupation.occupation_archetype_id)
-    .sort((a, b) => String(a.skill_id).localeCompare(String(b.skill_id)));
+    .sort((a, b) => a.occupation_archetype_id.localeCompare(b.occupation_archetype_id));
   const publicLabel = role.role_title ?? occupation.occupation_title
     ?? binding.public_role_label;
   if (!text(publicLabel)) gap('PROCEDURAL_NPC_PUBLIC_LABEL_DATA_GAP');

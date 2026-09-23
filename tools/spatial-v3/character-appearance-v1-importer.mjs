@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { createHash } from 'node:crypto';
+import { buildTargetAppearanceTransferImportArtifacts } from '../runtime-catalog-activation/src/target-appearance-transfer.js';
 
 import { buildWorldBaseSchemaReference } from '../../scripts/generate-world-base-schema-reference.mjs';
 import {
@@ -59,16 +61,55 @@ export async function buildCharacterAppearanceV1ImportSql({
   if (tables != null && datasets.length !== tables.length) {
     throw new Error('character_appearance_parent_revision_tables_missing');
   }
+  const rowsByTable = new Map(await Promise.all(datasets.map(async (item) =>
+    [item.table, JSON.parse(await readFile(resolve(candidateRoot, item.file)))])));
+  return buildAppearanceRowsSql({ root, rollback, datasets, rowsByTable });
+}
+
+/** Exact reviewed target successor through the existing appearance insert/readback owner. */
+export async function buildTargetAppearanceTransferImportSql({ root = process.cwd(), rollback = false } = {}) {
+  const { manifest: expectedManifest, datasets: expectedRows } =
+    await buildTargetAppearanceTransferImportArtifacts({ repositoryRoot: root });
+  const candidateRoot = resolve(root, 'data/world-catalogs/novgorod/live-world-runtime-v17');
+  const bytes = await readFile(resolve(candidateRoot, 'appearance-transfer-v2-import-manifest.json'));
+  const manifest = JSON.parse(bytes);
+  const approval = JSON.parse(await readFile(resolve(root,
+    'data/world-catalogs/novgorod/m2c-sol-data-approval.json')));
+  if (approval.decision !== 'APPROVE_DATA_ONLY'
+    || approval.target_appearance_mapped_approval?.import_manifest_sha256 !== sha256(bytes)
+    || JSON.stringify(manifest) !== JSON.stringify(expectedManifest)) {
+    throw new Error('TARGET_APPEARANCE_EXACT_IMPORT_MAPPING_APPROVAL_REQUIRED');
+  }
+  const rowsByTable = new Map();
+  for (const item of manifest.datasets) {
+    const content = await readFile(resolve(candidateRoot, item.file));
+    const rows = JSON.parse(content);
+    if (sha256(content) !== item.sha256 || JSON.stringify(rows) !== JSON.stringify(expectedRows[item.table])) {
+      throw new Error('TARGET_APPEARANCE_IMPORT_DATASET_MISMATCH');
+    }
+    rowsByTable.set(item.table, rows);
+  }
+  return buildAppearanceRowsSql({ root, rollback, datasets: manifest.datasets, rowsByTable,
+    requiredExistingRows: manifest.existing_dependencies });
+}
+
+async function buildAppearanceRowsSql({ root, rollback, datasets, rowsByTable, requiredExistingRows = {} }) {
   const ddl = await buildWorldBaseSchemaReference({ root });
   const schemas = new Map(ddl.schema.tables.map((table) => [table.name, table]));
   const sql = ['BEGIN;', 'SET CONSTRAINTS ALL DEFERRED;'];
+  for (const [table, rows] of Object.entries(requiredExistingRows)) for (const row of rows) {
+    sql.push(`DO $appearance$ BEGIN IF NOT EXISTS (SELECT 1 FROM world_base.${identifier(table)} actual`,
+      `WHERE actual.id=${literal(row.id)} AND to_jsonb(actual) @> ${literal(row, 'JSONB')}) THEN`,
+      `RAISE EXCEPTION 'CHARACTER_APPEARANCE_DEPENDENCY_READBACK_MISMATCH:${identifier(table)}';`,
+      'END IF; END $appearance$;');
+  }
   for (const item of dependencyOrder(datasets)) {
     const tableName = identifier(item.table);
     const schema = schemas.get(tableName);
     if (!schema) throw new Error(`character_appearance_import_table_not_in_schema:${tableName}`);
     const keys = primaryKey(schema);
     if (keys.length === 0) throw new Error(`character_appearance_import_table_without_primary_key:${tableName}`);
-    const rows = JSON.parse(await readFile(resolve(candidateRoot, item.file)));
+    const rows = rowsByTable.get(item.table);
     const managed = schema.columns.filter(({ name }) => ['created_at', 'updated_at'].includes(name)).map(({ name }) => name);
     const comparable = managed.length > 0
       ? `(to_jsonb(actual) - ARRAY[${managed.map((name) => `'${name}'`).join(',')}]::text[])`
@@ -93,6 +134,8 @@ export async function buildCharacterAppearanceV1ImportSql({
   return `${sql.join('\n')}\n`;
 }
 
+function sha256(bytes) { return createHash('sha256').update(bytes).digest('hex'); }
+
 function dependencyOrder(datasets = []) {
   const remaining = new Map(datasets.map((item) => [item.table, item]));
   const ordered = [];
@@ -108,7 +151,9 @@ function dependencyOrder(datasets = []) {
 
 async function main() {
   const rootArgument = process.argv.slice(2).find((argument) => !argument.startsWith('--'));
-  process.stdout.write(await buildCharacterAppearanceV1ImportSql({
+  const build = process.argv.includes('--target-transfer')
+    ? buildTargetAppearanceTransferImportSql : buildCharacterAppearanceV1ImportSql;
+  process.stdout.write(await build({
     root: resolve(rootArgument ?? process.cwd()),
     rollback: process.argv.includes('--rollback')
   }));

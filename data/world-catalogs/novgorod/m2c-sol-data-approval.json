@@ -1,0 +1,30 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high — independent Contract Auditor, separate read-only data approval pass",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "reviewed_on": "2026-09-23",
+  "approved_exact_candidates": {
+    "expansion_manifest_sha256": "1899e9b286dcd163b9879e90698fca5dd86899fc4e5c410a4d298f05304d49ce",
+    "expansion_evidence_sha256": "a29676ad909bd1e082f1a8bc97d6e08a168b7cfb6e9e231eb9240b998c1163c6",
+    "natural_baseline_sha256": "d07eaf5abfa684c31c6493c553ae53404b3ed49658ceddcb6f2826db95f89f93",
+    "natural_presentation_sha256": "b06baae3f8befa4468dfeef24c6bb5639f2d21a8c777aae67423a1ae2ee49e5c",
+    "finite_items_sha256": "55a6b48eda10e80af2bb4db200941a22037697afb4e50941ecfec4709c18868d",
+    "property_context_sha256": "7352d869d11fc1d903ba6a48b62f0a878500b3b54ece7f0c6b5336a11551f926",
+    "acoustic_manifest_sha256": "2b621ff76a08198436440267a8b5d74704d780120d8a9b0409fbb16736c9b18a",
+    "vocabulary_v4_sha256": "166a83f2f6a88720f1912195f76704fb33dc2ca9a07ed8b3360b6873e32fcd9c",
+    "natural_placement_sha256": "71de9afaeb73825fd32db2e57cf9ad7c5390b427c6b6c7892e81777740429099"
+  },
+  "regional_npc_partial_approval": {
+    "candidate_sha256": "2a9a15527f0d69b72273c4debc163127bb79e40dca57cdad60e1ea194501abce",
+    "scope": "regional_context_sources, five regional_context_profiles, exact G4 applicability and unknown language only",
+    "excludes": "Nonzero generation, count weights, clothing, body, activity, routine and target actor pin"
+  },
+  "limits": [
+    "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
+    "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",
+    "NPC runtime bindings and canonical initial start need separate independent Sol high data approval.",
+    "Earlier Astra attestations remain historical records; this supplemental decision supersedes their reviewer choice for the listed M2c candidates."
+  ],
+  "activation_authorized": false
+}

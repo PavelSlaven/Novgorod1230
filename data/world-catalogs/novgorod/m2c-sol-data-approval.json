@@ -68,6 +68,18 @@
     "excludes": "PostgreSQL import/readback, player or NPC runtime binding, release activation and historical population claims",
     "reviewed_on": "2026-09-24"
   },
+  "initial_entity_perception_boundary_approval": {
+    "candidate_sha256": "770f1bed777d3e42bf41baeb149558ff6bd7d6cf391c0172a32bbb241e6e6076",
+    "scope": "Exact canonical initial entity perception applicability and truthful typed data gap, with source pins and no historical or current observation claim",
+    "excludes": "NPC or item visibility, recognition, empty-scene inference, import, runtime use and release activation",
+    "reviewed_on": "2026-09-24"
+  },
+  "target_runtime_profiles_candidate_approval": {
+    "candidate_sha256": "8a5e2659008c83668f8f37723580aac78e04df20b35a40500449e426c1eab439",
+    "scope": "Exact 32 G4, 25 generated families and one canonical start applicability; unchanged generic turn/A1 mechanics, eight N1 occupations and twelve approved NPC bindings as editorial gameplay transfer",
+    "excludes": "S1, O2a, O2b and F1 authority gaps; A1 and N1 consumer admission, mapped import, runtime activation and historical claims",
+    "reviewed_on": "2026-09-24"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",

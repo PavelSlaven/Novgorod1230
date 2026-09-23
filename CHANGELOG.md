@@ -2,14 +2,117 @@
 
 ## Unreleased
 
-Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`). История до этой секции не бэкфиллится.
+Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(contracts): нормы World Knowledge и direct speech оставлены у профильных владельцев; индекс содержит навигацию и строку World Knowledge в матрице (#111) LW-009 closed
+- docs(archive): снятое правило вызова критика перенесено в архив, ссылка индекса обновлена (#113)
+- feat(knowledge-source): `knowledge:read` читает раздел или диапазон из `knowledge:query` (#116) LW-023 closed
+- docs(history): текущие release и revision сверены с v16; планы и отчёт перенесены в архив (#120) LW-017 closed
+- docs(db): генерируемый справочник миграций `party_runtime` и актуальные counts `world_base` (#122) LW-019 closed
+- fix(docs): каталог npm-команд и проверка висячих вызовов в действующих инструкциях (#123) LW-015 closed
+- refactor(tooling): единый allowlist корневых Markdown-файлов для docs и architecture (#124) LW-013 closed
+- feat(docs): `knowledge:repin` пересчитывает существующие pins корпуса и generated-файлы (#125) LW-005 closed
+- fix(world-catalog): `tar` получает относительный путь архива для Windows (#126)
+- chore(infra): NocoDB закреплён, сломанный bootstrap удалён, esbuild остался у MapMaker (#128) LW-022 closed
 - docs(governance): обязательные навыки `caveman` и `ponytail` (WR §18.1, роутер, копии в `.agents/skills` и `.claude/skills`); `CBM_RUNTIME_DIR` вне AppData для общего daemon CBM с MSIX-Codex (#131)
 - docs(governance): обязательная проверка, синхронизация и использование CBM в начале спринта (WR §19, роутер); подключение Claude Code и разбор зависшего daemon в CODEBASE_MEMORY_MCP (#130)
 - docs(work): ссылки на backlog-issues #105–#128 в LEGACY_WARNINGS, CURRENT_SPRINT после завершения трека Docs (#129)
 - docs(archive): конфликтующие инструкции агентов (`.cursorrules.txt`, `legacy/.cursor/rules/project.mdc`, `.github/README.md`, `.github/*.txt`) и журналы README перенесены в `docs/archive/`; README переписан как обзор для людей (#104) LW-021 closed
 - docs(governance): AGENTS.md — роутер ≤16 КБ; правила без потерь перенесены в `docs/governance/*` (governing-корпус §1.3); правило чтения CONTRACT_INDEX; KSP читает найденные разделы вместо документов целиком (#103)
 - docs(agents): карты `docs/context/*`, процедуры `docs/process/*`, CURRENT_SPRINT, реестр legacy warnings, skills-заглушки, issue/PR-шаблоны; CHANGELOG снят с регистрации в CANONICAL_PATHS (#102) LW-001…LW-025 added
+- fix(docs): устранены семь противоречий в AGENTS.md (#97)
+- feat(gameplay): Turn Forensic Demo Studio с replay-safe доставкой и quality gates (#96)
+- docs(workflow): обязателен codebase-memory workflow (#95)
+- chore(tooling): Graphify заменён на codebase-memory MCP (#94)
+- feat(gameplay): диагностика blind playthrough и причинного gameplay flow (#93)
+- feat(knowledge-source): production corpus и grounding для World Knowledge (#92)
+- docs(governance): добавлены канонический индекс контрактов и Contract Auditor (#91)
+- fix(narration): replay сохраняет подтверждённый outcome для player-safe presentation (#90)
+- fix(narration): восстановлен approval post-commit presentation (#87)
+- feat(logging): добавлено логирование по party (#89)
+- fix(playtest): release gate учитывает достигнутую ветку open combat (#88)
+- feat(llm): бюджет игровой задержки и Flash-first профили (#86)
+- feat(llm): стабилизирован runtime и добавлен OpenAI-compatible endpoint (#85)
+- feat(dev): добавлен локальный launcher игры (#84)
+- feat(game-web): выборочно подключён UI authored scenes (#83)
+- docs(agents): корневой AGENTS.md заменён конституцией проекта (#81)
+- feat(npc): активирован autonomous NPC actor-step (#80)
+- feat(gameplay): активирован spatial semantic remainder (#79)
+- feat(world-process): активирован локальный exact fire (#78)
+- feat(items): активирован crafting, создаваемый действиями игрока (#77)
+- feat(items): активировано содержимое существующих контейнеров (#76)
+- feat(world-discovery): активированы owners ресурсов и ambient source (#75)
+- feat(world-discovery): активирован обычный поиск объектов O1 (#74)
+- feat(world-base): добавлена foundation/shadow для semantic world materialization (#73)
+- feat(characters): canonical appearance и портреты по экипировке (#72)
+- feat(game-web): procedural landscape и портреты разговоров (#71)
+- feat(game-web): player-safe scene affordances (#70)
+- feat(game-web): интегрирован UI Lovable (#69)
+- feat(art): добавлен процедурный Portrait Lab (#68)
+- fix(gameplay): look отделён от осмотра wreck (#67)
+- docs(agents): уточнена политика вопросов агента (#65)
+- docs(gameplay): согласована цель turn temporal (#64)
+- docs(gameplay): выровнена активная документация Lower Dvina (#63)
+- docs(gameplay): канонизирована документация Lower Dvina (#62)
+- feat(gameplay): добавлена full-stack acceptance Phase 11 (#61)
+- fix(gameplay): исправлена граница видимости evidence Phase 10 (#60)
+- feat(gameplay): добавлены детерминированное завершение Phase 10 и эпилог (#59)
+- feat(gameplay): активированы собственность, evidence и временное распоряжение Phase 9 (#58)
+- fix(combat): исправлено исполнение spatial intent (#57)
+- fix(combat): исправлены инварианты cutover M3 (#56)
+- feat(combat): активирован runtime M3 и Phase 8 Lower Dvina (#55)
+- feat(npc): активирован autonomous NPC Phase 7 fire rest (#54)
+- feat(gameplay): выполнен cutover player turn steps Lower Dvina M1 (#53)
+- feat(npc): выполнен cutover разговоров Lower Dvina M2 (#52)
+- feat(gameplay): реализован carry Onisim в Phase 6 (#51)
+- feat(items): добавлены universal inventory archetypes (#50)
+- feat(gameplay): реализовано лечение Onisim в Phase 5 (#49)
+- feat(gameplay): реализована сдача Ratsha в Phase 4 (#48)
+- feat(gameplay): реализован runtime fishing camp Phase 3 (#47)
+- docs(gameplay): закреплены prerequisites fishing camp (#46)
+- feat(gameplay): реализован осмотр wreck в Phase 2 (#45)
+- feat(gameplay): выполнен cutover canonical body conditions Lower Dvina (#44)
+- feat(gameplay): Phase 1A/1B переведены на definition revision 6 (#43)
+- docs(gameplay): закреплён body effect осмотра wreck (#42)
+- feat(gameplay): добавлены public scenario и opening screen Lower Dvina Phase 1B (#41)
+- feat(gameplay): материализация party Lower Dvina Phase 1A (#40)
+- docs(gameplay): зафиксирован точный контракт стартовой даты Lower Dvina (#39)
+- feat(gameplay): добавлены declarative runtime policies Lower Dvina Phase 0D (#38)
+- feat(gameplay): добавлены items и evidence Lower Dvina Phase 0C (#37)
+- feat(gameplay): добавлены участники и локации Lower Dvina Phase 0B (#36)
+- feat(gameplay): добавлен профиль Lower Dvina trace Phase 0A (#35)
+- docs(gameplay): зафиксирован audit gap сценария Lower Dvina trace (#34)
+- feat(world-db): добавлена безопасная forward migration legacy world (#33)
+- docs(agents): упрощены инструкции и удалены автоматические Graphify gates (#32)
+- docs(gameplay): записан production smoke Lower Dvina v3 (#31)
+- feat(gameplay): активирован runtime Lower Dvina production v3 (#30)
+- fix(gameplay): возобновляется cutover Lower Dvina после сброса party database (#29)
+- fix(gameplay): разрешён retry после abandoned Lower Dvina preparation (#28)
+- fix(gameplay): удаление устаревшей Lower Dvina party выполняется в порядке зависимостей (#27)
+- fix(gameplay): повторно используется active predecessor при cutover Lower Dvina (#26)
+- feat(gameplay): добавлен restart-safe production cutover Lower Dvina v3 (#25)
+- feat(spatial): интегрирован boundary authoring Lower Dvina v1 (#24)
+- fix(gameplay): исправлена database identity в production preflight (#23)
+- feat(gameplay): создан first playable production path Lower Dvina (#22)
+- docs(workflow): добавлено обязательное архивирование после merge (#21)
+- fix(temporal): исправлен post-merge статус документации Temporal World v4 (#20)
+- feat(temporal): добавлен Temporal World v4 и approved authoring data (#19)
+- feat(items): добавлены инструменты активации runtime предметов и контейнеров (#18)
+- feat(items): завершена materialization предметов и контейнеров (#17)
+- docs(agents): добавлена политика простоты indie-разработки (#16)
+- docs(agents): добавлена адаптивная политика моделей субагентов (#15)
+- feat(spatial): добавлена архитектура G0–G6 v4.2 (#14)
+- feat(tooling): добавлен hybrid Repository Intelligence layer (#13)
+- docs(agents): добавлено правило оркестрации субагентов (#12)
+- feat(knowledge-source): оформлен RAG и добавлен agent CLI (#11)
+- feat(spatial): интегрирована Temporal travel, environment и perception runtime (#8)
+- feat(world-base): добавлены Stage 3C promotion, legacy inventory и approved-only materialization (#7)
+
+## 0.23.0-migration.24 — 2026-07-14
+
+- chore(release): root version повышена до `0.23.0-migration.24` (#4)
+- docs(readme): описана игра и завершённая migration перемещена в архив (#3)
+- feat(world-base): восстановлены canonical docs, схема `world_base`, generated artifacts и clean-clone CI (#2)
 
 ## 0.23.0-migration.23 — 2026-07-12
 

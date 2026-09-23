@@ -7,6 +7,7 @@ import {
   verifyKnowledgeSourceMigration
 } from './index.js';
 import { writeKnowledgeSourceOutputsV2 } from './knowledge-materializer-v2.js';
+import { repinCanonicalCorpus } from './knowledge-corpus-repin.js';
 
 const command = process.argv[2] ?? 'check';
 const rootIndex = process.argv.indexOf('--root');
@@ -20,6 +21,9 @@ if (command === 'inventory') {
 } else if (command === 'generate') {
   const result = await writeKnowledgeSourceOutputsV2({ root });
   console.log(`Knowledge source generated: ${result.files.join(', ')}`);
+} else if (command === 'repin') {
+  const result = await repinCanonicalCorpus({ root });
+  console.log(`Canonical corpus repinned: ${result.document_count} documents; ${result.changed_documents} updated; ${result.manifest_sha256}`);
 } else if (command === 'check-corpus') {
   const result = await verifyCanonicalCorpus({ root });
   if (!result.ok) {

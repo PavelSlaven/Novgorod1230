@@ -1,5 +1,7 @@
 # PR8 travel, environment and perception integration
 
+> Исторический план: приведённые команды npm относятся к состоянию репозитория на момент работы. Актуальные команды — в [каталоге](../../../generated/npm-script-catalog.md).
+
 ## Objective
 
 Rebuild `codex/pr8-travel-system` from current canonical `main`, use PR8/PR10

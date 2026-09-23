@@ -1,5 +1,7 @@
 # P24 migration independent critic report
 
+> Исторический отчёт: приведённые команды npm относятся к состоянию репозитория на момент проверки. Актуальные команды — в [каталоге](../../../generated/npm-script-catalog.md).
+
 ## Verdict
 
 **PASS**

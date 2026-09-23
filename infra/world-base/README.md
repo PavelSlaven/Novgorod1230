@@ -1,11 +1,11 @@
 # World Base (PostgreSQL + NocoDB) — Schema v2
 
-Read-only база утверждённых справочных данных мира: **186 таблиц** для ручного аудита, materialization profiles/rules и утверждённого импорта.
+Read-only база утверждённых справочных данных мира: **201 таблица** для ручного аудита, materialization profiles/rules и утверждённого импорта.
 
 Код игрового runtime не создаёт категории или историю и не изменяет `world_base`; он материализует party instances из активных записей. Канонический DDL хранится только в этом инфраструктурном контуре:
 
 - [`schema.sql`](./schema.sql) — исполняемый entrypoint;
-- [`schema/`](./schema/) — семнадцать упорядоченных SQL-частей;
+- [`schema/`](./schema/) — 21 SQL-часть, подключённая entrypoint в числовом порядке;
 - [`IMPORT.md`](./IMPORT.md) — правила импорта и аудита.
 
 Архитектурное описание разделения read-only project DB и party DB хранится в canonical knowledge corpus как `read_only_database_and_graph_architecture.md`. README не подменяет этот нормативный документ.
@@ -18,18 +18,16 @@ npm run world-db:schema-doc
 npm run world-db:schema-doc-check
 ```
 
-Проверка подтверждает:
+`world-db:schema-check` проверяет:
 
-- наличие entrypoint;
-- семнадцать SQL-частей в установленном порядке;
-- 186 уникальных таблиц `world_base`;
-- отсутствие небезопасных include-путей;
-- запрет `PUBLIC CREATE`;
-- наличие read-only роли и разрешений чтения.
+- безопасные пути и доступность частей, подключённых entrypoint;
+- 201 уникальную таблицу `world_base`;
+- наличие роли `world_reader`, `USAGE`, `SELECT` и default `SELECT` grants;
+- отсутствие `PUBLIC CREATE` и write-grants для `world_reader`.
 
-`world-db:schema-doc` детерминированно строит [`SCHEMA_REFERENCE.md`](./SCHEMA_REFERENCE.md) из текущего DDL. Таблицы, колонки, типы, FK и constraints извлекаются из SQL; смысловые описания берутся только из [`field-descriptions.js`](./field-descriptions.js). Неописанные поля остаются явно неописанными.
+`world-db:schema-doc` детерминированно строит [`SCHEMA_REFERENCE.md`](./SCHEMA_REFERENCE.md) из текущего DDL. `world-db:schema-doc-check` сравнивает этот результат с сохранённым справочником. Таблицы, колонки, типы, FK и constraints извлекаются из SQL; смысловые описания берутся только из [`field-descriptions.js`](./field-descriptions.js). Неописанные поля остаются явно неописанными.
 
-GitHub Actions дополнительно исполняет весь entrypoint в PostgreSQL 16 с `ON_ERROR_STOP=1`, подтверждает 186 таблиц, роль `world_reader`, `USAGE`/`SELECT` и отсутствие `CREATE`/write grants.
+В full-профиле GitHub Actions исполняет весь entrypoint в PostgreSQL 16 с `ON_ERROR_STOP=1` и проверяет 201 таблицу, роль `world_reader`, `USAGE`/`SELECT` для каждой таблицы и отсутствие `CREATE`/write grants.
 
 ## Слои данных
 
@@ -47,7 +45,7 @@ GitHub Actions дополнительно исполняет весь entrypoint
 
 ## Источник истины
 
-`infra/world-base/schema.sql` и семнадцать файлов `infra/world-base/schema/*.sql` являются единственным исполняемым источником истины для структуры базы.
+`infra/world-base/schema.sql` и подключённые им 21 файл `infra/world-base/schema/*.sql` являются единственным исполняемым источником истины для структуры базы.
 
 Справочник полей является generated representation и не должен редактироваться вручную или существовать как независимая нормативная копия. Единственный исполняемый источник структуры — текущий DDL; `field-descriptions.js` владеет только утверждёнными пояснениями.
 

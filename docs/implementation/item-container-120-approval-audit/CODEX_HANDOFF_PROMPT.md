@@ -1,5 +1,7 @@
 # Codex handoff: integrate V5 into PR #17
 
+> Исторический handoff: команды npm и инструкции ниже относятся к прежнему PR. Актуальные команды — в [каталоге](../../../generated/npm-script-catalog.md).
+
 Работай только в существующем PR #17 репозитория `PavelSlaven/Novgorod1230`.
 
 - Branch: `chatgpt/item-container-120-approval-audit`

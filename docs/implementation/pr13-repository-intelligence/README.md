@@ -1,5 +1,7 @@
 # PR №13 — Repository Graph
 
+> Исторический документ: приведённые команды npm относятся к состоянию репозитория на момент PR. Актуальные команды — в [каталоге](../../../generated/npm-script-catalog.md).
+
 ## Цель
 
 Поддерживать подробный локальный Graphify-граф актуального checkout: после смены Git HEAD `repo-intel:ensure` пересобирает artifact и manifest. Нормативный `@rus/knowledge-source` остаётся независимым поиском документов и не является readiness gate Repository Graph.

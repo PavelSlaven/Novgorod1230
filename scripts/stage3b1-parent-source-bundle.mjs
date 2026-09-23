@@ -30,7 +30,7 @@ export function loadVerifiedParentSourceRecords(requiredIds) {
   const archivePath = resolveRepositoryPath(manifest.archive?.path);
   const archive = statSync(archivePath);
   if (archive.size !== manifest.archive?.bytes || digest(readFileSync(archivePath)) !== manifest.archive?.sha256) throw new Error('PARENT_SOURCE_ARCHIVE_DIGEST_INVALID');
-  const extracted = spawnSync('tar', ['-xOzf', archivePath, sourceRecordsPath], { encoding: null });
+  const extracted = spawnSync('tar', ['-xOzf', relative(repositoryRoot, archivePath), sourceRecordsPath], { cwd: repositoryRoot, encoding: null });
   if (extracted.status !== 0) throw new Error(`PARENT_SOURCE_EXTRACT_FAILED:${String(extracted.stderr ?? '').trim()}`);
   const bytes = Buffer.from(extracted.stdout ?? []);
   if (bytes.length !== entry.bytes || digest(bytes) !== entry.sha256) throw new Error('PARENT_SOURCE_DATASET_DIGEST_INVALID');

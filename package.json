@@ -179,6 +179,7 @@
     "knowledge:inventory": "node tools/docs-tools/src/knowledge-cli.js inventory --root .",
     "knowledge:import": "node tools/docs-tools/src/knowledge-cli.js import --root .",
     "knowledge:generate": "node tools/docs-tools/src/knowledge-cli.js generate --root .",
+    "knowledge:repin": "node tools/docs-tools/src/knowledge-cli.js repin --root . && npm run docs:generate",
     "knowledge:check-corpus": "node tools/docs-tools/src/knowledge-cli.js check-corpus --root .",
     "knowledge:check": "node tools/docs-tools/src/knowledge-cli.js check --root .",
     "knowledge:query": "node packages/knowledge-source/src/cli.js query --root .",
@@ -230,7 +231,6 @@
     "node": ">=22"
   },
   "devDependencies": {
-    "esbuild": "^0.25.5",
     "pg-mem": "^3.0.5",
     "playwright-core": "^1.53.0"
   }

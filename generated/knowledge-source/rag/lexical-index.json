@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "83c419d58fd8f4e07043553d6b48c6bba582221a1ec5765fc31221811153a14b",
-  "chunk_count": 2814,
+  "corpus_hash": "473fb76036012410f82db7bc2c0efe4ffc9aad428ba076dcb4b4d3143c54581c",
+  "chunk_count": 2812,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -1332,8 +1332,8 @@
       "section": "1. Обязательный порядок чтения",
       "line_start": 11,
       "line_end": 32,
-      "text": "## CONTRACT_INDEX.md — 1. Обязательный порядок чтения\n## 1. Обязательный порядок чтения\n\nДля любой задачи:\n\n1. прочитать root [`AGENTS.md`](../../../../AGENTS.md) (роутер) и назначенные им разделы `docs/governance/*.md`;\n2. открыть этот индекс: §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки; для World Knowledge и direct speech — также §6 и §10; индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor;\n3. прочитать applicable nested `AGENTS.md`;\n4. прочитать relevant `MODULE.md`;\n5. установить active release, profile, manifest, binding и schema затронутой области;\n6. прочитать applicable active contracts;\n7. сверить production code, callers, tests и CI;\n8. читать proposed/target/migration/reference документы только в их заявленном статусе.\n\nДля вопроса «что уже смержено сейчас» source of truth — `main`. Для текущей PR-задачи рабочим состоянием является exact checkout ветки, но несмёрженный diff не становится общей production-нормой.\n\nФайл, имя которого содержит `contract`, `standard`, `policy` или `target`, не получает статус автоматически. Статус определяется одновременно:",
-      "char_count": 1180
+      "text": "## CONTRACT_INDEX.md — 1. Обязательный порядок чтения\n## 1. Обязательный порядок чтения\n\nДля любой задачи:\n\n1. прочитать root [`AGENTS.md`](../../../../AGENTS.md) (роутер) и назначенные им разделы `docs/governance/*.md`;\n2. открыть этот индекс: §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки; индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor;\n3. прочитать applicable nested `AGENTS.md`;\n4. прочитать relevant `MODULE.md`;\n5. установить active release, profile, manifest, binding и schema затронутой области;\n6. прочитать applicable active contracts;\n7. сверить production code, callers, tests и CI;\n8. читать proposed/target/migration/reference документы только в их заявленном статусе.\n\nДля вопроса «что уже смержено сейчас» source of truth — `main`. Для текущей PR-задачи рабочим состоянием является exact checkout ветки, но несмёрженный diff не становится общей production-нормой.\n\nФайл, имя которого содержит `contract`, `standard`, `policy` или `target`, не получает статус автоматически. Статус определяется одновременно:",
+      "char_count": 1126
     },
     {
       "id": "CONTRACT_INDEX.md:1. Обязательный порядок чтения:1",
@@ -1435,38 +1435,20 @@
       "char_count": 2823
     },
     {
-      "id": "CONTRACT_INDEX.md:6. Compatibility navigation and superseded audit rules:0",
+      "id": "CONTRACT_INDEX.md:6. Compatibility navigation:0",
       "file": "CONTRACT_INDEX.md",
-      "section": "6. Compatibility navigation and superseded audit rules",
+      "section": "6. Compatibility navigation",
       "line_start": 110,
-      "line_end": 155,
-      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\n## 6. Compatibility navigation and superseded audit rules\n\nWorld Knowledge ranking (§§58–60 действующего контракта) сохраняет приоритет\nhard constraints, exact focus и requested predicates; внутри этих уровней\nquery relevance предшествует context specificity и qualifiers. Это порядок\nbounded retrieval, не изменение applicability, actor access или authority.\n\nWorld Knowledge §35.1 закрепляет production authoring approval: независимый\nper-claim verdict связан с точными claim/localization/evidence inputs.\nВладелец проверки — internal compiler `@rus/world-catalog-workflow`;\nruntime World Knowledge получает только `verification_ref`, без ledger.\n§98.1 требует отдельной category cartography и независимого поиска missing\nfamilies по location/materialization потребностям, не по числу claims/cells.\n\nWorld Knowledge §0.1 разделяет статическое наполнение и последующую\ngameplay-testing фазу. §112.12 задаёт active testing architecture Gameplay Gap\nAuditor, trace requirements, классификацию, lifecycle и saturation;\nактивированная testing-фаза не делает saturation gate критерием статической\nготовности.",
-      "char_count": 1182
-    },
-    {
-      "id": "CONTRACT_INDEX.md:6. Compatibility navigation and superseded audit rules:1",
-      "file": "CONTRACT_INDEX.md",
-      "section": "6. Compatibility navigation and superseded audit rules",
-      "line_start": 110,
-      "line_end": 155,
-      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\nor, trace requirements, классификацию, lifecycle и saturation;\nактивированная testing-фаза не делает saturation gate критерием статической\nготовности.\n\nWorld Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из\nаналогий и здравого смысла. §35.1 использует тот же независимый approval для\nsource accuracy либо plausibility; точное свидетельство 1230 года для каждой\nordinary-детали не требуется. `editorial_reconstruction` — редакторское\nоснование, не внешний научный источник. Runtime owners и exact state неизменны.\n\n| Документ | Статус после этого index cutover | Replacement |\n|---|---|---|\n| [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |\n| [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |\n| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |\n| [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |",
-      "char_count": 1182
-    },
-    {
-      "id": "CONTRACT_INDEX.md:6. Compatibility navigation and superseded audit rules:2",
-      "file": "CONTRACT_INDEX.md",
-      "section": "6. Compatibility navigation and superseded audit rules",
-      "line_start": 110,
-      "line_end": 155,
-      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\nзова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |\n\nThe obsolete rule “critic after every code change” does not apply. Independent read-only audit is mandatory for elevated-risk changes; an ordinary local fix does not require a separate critic when its boundaries are proven unchanged.\n\nWorld Knowledge §0.4 adds an open place-first authoring need-map:\nenvironment envelopes, linked approved premises, explicit gaps and\nplace-by-conditions reconstruction checks. It does not create location\npresence, an object whitelist, a materializer or gameplay activation.\nStructural map validation is not evidence of environmental completeness.\n\nWorld Knowledge §0.5 adds an open military-first factual need-map and static\n75 rotating + 25 blind-free probe method. It does not define combat mechanics,\na military scenario whitelist, force state, equipment presence or gameplay\nactivation; separate WK-only reconstruction exposes missing premises.",
-      "char_count": 1113
+      "line_end": 118,
+      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation\n## 6. Compatibility navigation\n\n| Документ | Статус после этого index cutover | Replacement |\n|---|---|---|\n| [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |\n| [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |\n| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |\n| [`docs/archive/github/Правило вызова агента-критика.txt`](../../../../docs/archive/github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |",
+      "char_count": 678
     },
     {
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:0",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 156,
-      "line_end": 183,
+      "line_start": 119,
+      "line_end": 146,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\n## 7. Domain guides and legacy/supporting documents\n\nThe following files remain discoverable but do not establish active production behavior by filename alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.",
       "char_count": 371
     },
@@ -1474,8 +1456,8 @@
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:1",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 156,
-      "line_end": 183,
+      "line_start": 119,
+      "line_end": 146,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\name alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.\n\n| Документ | Default treatment until verified | Topic |\n|---|---|---|\n| [`base_turn_orchestration.txt`](base_turn_orchestration.txt) | `UNDECLARED / DOMAIN GUIDE` | legacy/general turn orchestration |\n| [`character_inventory_equipment.txt`](character_inventory_equipment.txt) | `UNDECLARED / DOMAIN GUIDE` | character inventory/equipment |\n| [`character_parameters.txt`](character_parameters.txt) | `UNDECLARED / DOMAIN GUIDE` | character parameters |\n| [`development_rules.txt`](development_rules.txt) | `REFERENCE`; cannot override `AGENTS.md` | legacy development rules |\n| [`formulas.md`](formulas.md) | `UNDECLARED / DOMAIN GUIDE` | formulas and mechanics |\n| [`g1_g5_generation_rules.txt`](g1_g5_generation_rules.txt) | `UNDECLARED / DOMAIN GUIDE` | generation rules |\n| [`historical_events_and_figures.txt`](historical_events_and_figures.txt) | `REFERENCE / KNOWLEDGE GUIDE` | historical figures/events boundary |\n| [`information_sources_llm_prompts.md`](information_sources_llm_prompts.md) | `UNDECLARED / DOMAIN GUIDE` | information-source prompts |\n| [`interface_ux.md`](interface_ux.md) | `UNDECLARED / DOMAIN GUIDE` | player-facing interface/UX |\n| [`llm_agent_prompt_templates.md`](llm_agent_prompt_templates.md) | `REFERENCE / TEMPLATE` | agent prompt templates |\n| [`movement_locations_regions.txt`](movement_locations_regions.txt) | `UNDECLARED / DOMAIN GUIDE` | movement/locations/regions |\n| [`new_game_start_pipeline.txt`](new_game_start_pipeline.txt) | `UNDECLARED / DOMAIN GUIDE` | new-game start pipeline |\n| [`npc_generation_profiles.txt`](npc_generation_profiles.txt) | `UNDECLARED / DOMAIN GUIDE` | NPC generation profiles |\n| [`npc_inventory_item_marks.txt`](npc_inventory_item_marks.txt) | `UNDECLARED / DOMAIN GUIDE` | NPC inventory and marks |\n| [`player_character_generation.txt`](player_character_generation.txt) | `UNDECLARED / DOMAIN GUIDE` | player character generation |\n| [`time_system.txt`](time_system.txt) | `REFERENCE / LEGACY` | older time-system description; active temporal contract has priority |\n| [`weapons_and_armor.txt`](weapons_and_armor.txt) | `UNDECLARED / DOMAIN GUIDE` | weapons/armor |\n| [`world_generation_and_turns.txt`](world_generation_and_turns.txt) | `UNDECLARED / DOMAIN GUIDE` | world generation and turns |\n| [`world_regions.txt`](world_regions.txt) | `REFERENCE / DOMAIN GUIDE` | world regions |",
       "char_count": 2583
     },
@@ -1483,8 +1465,8 @@
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:2",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 156,
-      "line_end": 183,
+      "line_start": 119,
+      "line_end": 146,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\n| `UNDECLARED / DOMAIN GUIDE` | world generation and turns |\n| [`world_regions.txt`](world_regions.txt) | `REFERENCE / DOMAIN GUIDE` | world regions |\n\nAn undeclared guide may still be relevant, but it must not silently override an explicit active contract, schema or current owner.",
       "char_count": 354
     },
@@ -1492,8 +1474,8 @@
       "id": "CONTRACT_INDEX.md:8. Contract Auditor:0",
       "file": "CONTRACT_INDEX.md",
       "section": "8. Contract Auditor",
-      "line_start": 184,
-      "line_end": 187,
+      "line_start": 147,
+      "line_end": 150,
       "text": "## CONTRACT_INDEX.md — 8. Contract Auditor\n## 8. Contract Auditor\n\nОбязательность Contract Auditor, границы логического изменения для его проведения, read-only роль, mandatory triggers, source set по затронутым owners и границам diff, формат `CONTRACT AUDIT FINDING` и blocking criteria определяются единственным governing owner — root `AGENTS.md`, §25.1. Этот индекс не дублирует эти правила; он дополняет их только навигацией и domain scope matrix.",
       "char_count": 450
     },
@@ -1501,8 +1483,8 @@
       "id": "CONTRACT_INDEX.md:8.1. Scope matrix:0",
       "file": "CONTRACT_INDEX.md",
       "section": "8.1. Scope matrix",
-      "line_start": 188,
-      "line_end": 204,
+      "line_start": 151,
+      "line_end": 168,
       "text": "## CONTRACT_INDEX.md — 8.1. Scope matrix\n### 8.1. Scope matrix",
       "char_count": 62
     },
@@ -1510,17 +1492,17 @@
       "id": "CONTRACT_INDEX.md:8.1. Scope matrix:1",
       "file": "CONTRACT_INDEX.md",
       "section": "8.1. Scope matrix",
-      "line_start": 188,
-      "line_end": 204,
-      "text": "## CONTRACT_INDEX.md — 8.1. Scope matrix\n### 8.1. Scope matrix\n\n| Scope | Mandatory contract set |\n|---|---|\n| Player semantic action / LLM | `turn_step_llm_contract.md`, relevant operation schemas, `@rus/turn` MODULE, affected domain contract |\n| Production LLM provider/configuration | `turn_step_llm_contract.md`, `@rus/llm-runtime` MODULE, game-server settings/transport owner, game-web and local-play MODULEs; selected provider must reach every registered gameplay role without fallback |\n| Authored materialization | `code_driven_world_materialization_architecture.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |\n| Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |\n| Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |\n| NPC agency | `npc_autonomous_decision_contract.md`, `turn_step_llm_contract.md`, temporal/perception owners |\n| Conversation | NPC autonomous + `npc_conversation_mode_contract.md` + speech/perception/time contracts |\n| Combat | `npc_combat_and_trigger_contract.md`, `combat_system.md`, NPC autonomous, items/body/time owners |\n| Time/activities/processes | `temporal_world_and_interruptible_activities.md`, relevant time/world-process MODULEs, persistence contract/schema |\n| DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |\n| Historical/knowledge grounding | active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |\n| Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |",
-      "char_count": 1962
+      "line_start": 151,
+      "line_end": 168,
+      "text": "## CONTRACT_INDEX.md — 8.1. Scope matrix\n### 8.1. Scope matrix\n\n| Scope | Mandatory contract set |\n|---|---|\n| Player semantic action / LLM | `turn_step_llm_contract.md`, relevant operation schemas, `@rus/turn` MODULE, affected domain contract |\n| Production LLM provider/configuration | `turn_step_llm_contract.md`, `@rus/llm-runtime` MODULE, game-server settings/transport owner, game-web and local-play MODULEs; selected provider must reach every registered gameplay role without fallback |\n| Authored materialization | `code_driven_world_materialization_architecture.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |\n| Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |\n| Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |\n| NPC agency | `npc_autonomous_decision_contract.md`, `turn_step_llm_contract.md`, temporal/perception owners |\n| Conversation | NPC autonomous + `npc_conversation_mode_contract.md` + speech/perception/time contracts |\n| Combat | `npc_combat_and_trigger_contract.md`, `combat_system.md`, NPC autonomous, items/body/time owners |\n| Time/activities/processes | `temporal_world_and_interruptible_activities.md`, relevant time/world-process MODULEs, persistence contract/schema |\n| DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |\n| Historical/knowledge grounding | active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |\n| World Knowledge | `world_knowledge_platform_implementation_contract.md`, active WK pack/profile/bindings, `@rus/world-knowledge` and affected consumer MODULEs |\n| Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |",
+      "char_count": 2125
     },
     {
       "id": "CONTRACT_INDEX.md:9. Audited conflict register:0",
       "file": "CONTRACT_INDEX.md",
       "section": "9. Audited conflict register",
-      "line_start": 205,
-      "line_end": 206,
+      "line_start": 169,
+      "line_end": 170,
       "text": "## CONTRACT_INDEX.md — 9. Audited conflict register\n## 9. Audited conflict register",
       "char_count": 83
     },
@@ -1528,8 +1510,8 @@
       "id": "CONTRACT_INDEX.md:C-001 — absent `Novgorod1230_project_instruction_full.md`:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-001 — absent `Novgorod1230_project_instruction_full.md`",
-      "line_start": 207,
-      "line_end": 211,
+      "line_start": 171,
+      "line_end": 175,
       "text": "## CONTRACT_INDEX.md — C-001 — absent `Novgorod1230_project_instruction_full.md`\n### C-001 — absent `Novgorod1230_project_instruction_full.md`\n\n**Observed:** exact filename is absent from `main`; an administrator may still supply it externally as current task instruction.  \n**Resolution:** do not add a duplicate to the repository. For merged/current implementation state use `main`, root `AGENTS.md`, active contracts, code and tests. An explicitly supplied administrator project instruction remains governing task input for product/reviewer intent; if it conflicts with repository state, report the conflict and distinguish current production from target instead of silently overriding either side.",
       "char_count": 701
     },
@@ -1537,8 +1519,8 @@
       "id": "CONTRACT_INDEX.md:C-002 — old navigation claimed precedence over root instructions:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-002 — old navigation claimed precedence over root instructions",
-      "line_start": 212,
-      "line_end": 216,
+      "line_start": 176,
+      "line_end": 180,
       "text": "## CONTRACT_INDEX.md — C-002 — old navigation claimed precedence over root instructions\n### C-002 — old navigation claimed precedence over root instructions\n\n**Observed:** `llm_documentation_navigation.md` and `DOCUMENTS/README.md` carried an older reading order and could imply that a domain document outranked root `AGENTS.md`.  \n**Resolution:** root `AGENTS.md` → this index → nested `AGENTS.md` → `MODULE.md` → active profile/contract/schema → code/tests. Compatibility files redirect here.",
       "char_count": 494
     },
@@ -1546,8 +1528,8 @@
       "id": "CONTRACT_INDEX.md:C-003 — critic required after every code change:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-003 — critic required after every code change",
-      "line_start": 217,
-      "line_end": 222,
+      "line_start": 181,
+      "line_end": 186,
       "text": "## CONTRACT_INDEX.md — C-003 — critic required after every code change\n### C-003 — critic required after every code change\n\n**Observed:** two legacy critic-rule files mandated a critic for every behavior/code change.  \n**Conflict:** root `AGENTS.md` requires independent audit for elevated-risk work and explicitly says ordinary local fixes do not require a separate critic.  \n**Resolution:** root `AGENTS.md` §25.1 wins; legacy files redirect to that single governing audit rule and this index supplies only contract status/navigation/scope-matrix data.",
       "char_count": 554
     },
@@ -1555,8 +1537,8 @@
       "id": "CONTRACT_INDEX.md:C-004 — `target` filename interpreted as proposed:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-004 — `target` filename interpreted as proposed",
-      "line_start": 223,
-      "line_end": 227,
+      "line_start": 187,
+      "line_end": 191,
       "text": "## CONTRACT_INDEX.md — C-004 — `target` filename interpreted as proposed\n### C-004 — `target` filename interpreted as proposed\n\n**Observed:** four Spatial v3 files retain `target` in their filenames but their headers state that versioned production activation completed.  \n**Resolution:** they are active specializations. Filename heuristics are forbidden.",
       "char_count": 356
     },
@@ -1564,8 +1546,8 @@
       "id": "CONTRACT_INDEX.md:C-005 — proposed umbrella snapshot versus later profile cutovers:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-005 — proposed umbrella snapshot versus later profile cutovers",
-      "line_start": 228,
-      "line_end": 232,
+      "line_start": 192,
+      "line_end": 196,
       "text": "## CONTRACT_INDEX.md — C-005 — proposed umbrella snapshot versus later profile cutovers\n### C-005 — proposed umbrella snapshot versus later profile cutovers\n\n**Observed:** `semantic_world_actions_materialization_and_processes_contract.md` remains a proposed umbrella snapshot checked against `main` on 2026-08-16, while later `main` contains active profile-specific rules and implementation.  \n**Resolution:** the umbrella never becomes production merely because some ideas were implemented. Current behavior comes from root `AGENTS.md`, active profile contracts/bindings, code and tests. Use the umbrella only as target/history unless explicitly promoted.",
       "char_count": 656
     },
@@ -1573,8 +1555,8 @@
       "id": "CONTRACT_INDEX.md:C-006 — generic world-base norm versus active v3 table specialization:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-006 — generic world-base norm versus active v3 table specialization",
-      "line_start": 233,
-      "line_end": 237,
+      "line_start": 197,
+      "line_end": 201,
       "text": "## CONTRACT_INDEX.md — C-006 — generic world-base norm versus active v3 table specialization\n### C-006 — generic world-base norm versus active v3 table specialization\n\n**Observed:** `world_base_materialization_table_requirements.md` is active for general authoring/readiness semantics but states that the v3 target specialization owns production table-purpose semantics; older v2 portions remain migration/rollback.  \n**Resolution:** use the generic document for shared authoring principles and the v3 specialization for current production table-purpose details. DDL/generated schema remain physical truth.",
       "char_count": 606
     },
@@ -1582,19 +1564,19 @@
       "id": "CONTRACT_INDEX.md:C-007 — authored candidate closure versus active ordinary paths:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-007 — authored candidate closure versus active ordinary paths",
-      "line_start": 238,
-      "line_end": 242,
+      "line_start": 202,
+      "line_end": 206,
       "text": "## CONTRACT_INDEX.md — C-007 — authored candidate closure versus active ordinary paths\n### C-007 — authored candidate closure versus active ordinary paths\n\n**Observed:** the general materialization contract remains fail-closed for authored/significant/hidden/informational candidates, while active item/turn profiles add separately gated ordinary paths.  \n**Resolution:** ordinary paths do not repair an empty authored candidate set. Apply the active ordinary profile through its own request/admission/persistence contract; preserve authored fail-closed semantics.",
       "char_count": 564
     },
     {
-      "id": "CONTRACT_INDEX.md:10. Maintenance rule:0",
+      "id": "CONTRACT_INDEX.md:10. Maintenance navigation:0",
       "file": "CONTRACT_INDEX.md",
-      "section": "10. Maintenance rule",
-      "line_start": 243,
-      "line_end": 257,
-      "text": "## CONTRACT_INDEX.md — 10. Maintenance rule\n## 10. Maintenance rule\n\n`turn_step_llm_contract.md` §8.2.1 также владеет узким direct `player_utterance`\ncontract: exact resolved speech сохраняется через текущий turn semantic trace;\nbroadcast-capable речь обязана нести explicit qualitative delivery, а missing или\nmalformed delivery отклоняется без silent default;\nbroadcast audience/perception этим не активируются. Единственный speech repair\nс isolated copy/goal metadata errors полного envelope получает bounded projection\nтолько через faithful re-audit и повторную strict validation; третьего planner нет.\n§9.1 задаёт owner-aware\ndiscovery prerequisite и проекцию оставшегося intent при player boundary;\nstandalone focused inspect использует существующий short/light activity owner,\nа `look` и prerequisite inspect с неизменённым later intent остаются free.\n\nAny PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.",
-      "char_count": 1161
+      "section": "10. Maintenance navigation",
+      "line_start": 207,
+      "line_end": 209,
+      "text": "## CONTRACT_INDEX.md — 10. Maintenance navigation\n## 10. Maintenance navigation\n\nПравило обновления индекса — `AGENTS.md` §20; процедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).",
+      "char_count": 217
     },
     {
       "id": "development_rules.txt:18.1. Обязательная регистрация повторно используемых модулей:0",

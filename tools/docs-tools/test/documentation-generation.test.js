@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, readdir, stat } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -9,6 +10,7 @@ import {
   validateDocumentationTree
 } from '../src/index.js';
 import { buildWorldBaseSchemaReference } from '../../../scripts/generate-world-base-schema-reference.mjs';
+import { validateNpmScriptReferences } from '../src/documentation.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -16,6 +18,32 @@ test('documentation outputs are deterministic', async () => {
   const first = await buildDocumentationOutputs(root);
   const second = await buildDocumentationOutputs(root);
   assert.deepEqual([...first.entries()], [...second.entries()]);
+});
+
+test('npm script catalog matches root scripts and current instructions reject dangling commands', async () => {
+  const scripts = Object.keys(JSON.parse(await readFile(join(root, 'package.json'), 'utf8')).scripts);
+  const catalog = (await buildDocumentationOutputs(root)).get('generated/npm-script-catalog.md');
+  assert.equal([...catalog.matchAll(/^- `[^`]+`$/gmu)].length, scripts.length);
+  assert.deepEqual(await validateNpmScriptReferences(root), []);
+
+  const fixture = await mkdtemp(join(tmpdir(), 'novgorod-npm-refs-'));
+  try {
+    await writeFile(join(fixture, 'package.json'), JSON.stringify({ scripts: { valid: 'echo ok' } }));
+    await writeFile(join(fixture, 'README.md'), 'npm run valid\nnpm run absent\n');
+    await mkdir(join(fixture, 'infra/world-base'), { recursive: true });
+    await mkdir(join(fixture, 'docs/plans'), { recursive: true });
+    await mkdir(join(fixture, 'docs/implementation/old'), { recursive: true });
+    await writeFile(join(fixture, 'infra/world-base/README.md'), 'npm run missing-infra\n');
+    await writeFile(join(fixture, 'docs/plans/current.md'), 'npm run missing-plan\n');
+    await writeFile(join(fixture, 'docs/implementation/old/README.md'), 'npm run historical-only\n');
+    assert.deepEqual(await validateNpmScriptReferences(fixture), [
+      'README.md:2: unknown npm script absent',
+      'docs/plans/current.md:1: unknown npm script missing-plan',
+      'infra/world-base/README.md:1: unknown npm script missing-infra'
+    ]);
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
 });
 
 const AGENT_INSTRUCTION_FILES = ['AGENTS.md', '.github/copilot-instructions.md'];
@@ -78,7 +106,7 @@ test('agent instruction links resolve to repository files', async () => {
   await assert.rejects(stat(join(root, '.codex/skills/graphify/SKILL.md')));
   await assert.rejects(stat(join(root, '.agents/skills/graphify/SKILL.md')));
   for (const archived of ['.cursorrules.txt', 'legacy/.cursorrules.txt', 'legacy/.cursor/rules/project.mdc', '.github/README.md',
-    '.github/Правила разработки.txt', '.github/Работа с картой G0-G4.txt']) {
+    '.github/Правила разработки.txt', '.github/Работа с картой G0-G4.txt', '.github/Правило вызова агента-критика.txt']) {
     await assert.rejects(stat(join(root, archived)), `${archived} is archived in docs/archive and must not return`);
   }
 
@@ -189,6 +217,7 @@ test('committed documentation and generated data are reproducible', async () => 
     'MODULE_INDEX.md',
     'generated/generated-manifest.json',
     'generated/module-index.json',
+    'generated/npm-script-catalog.md',
     'generated/schema-reference.json',
     'generated/schema-reference.md'
   ]);

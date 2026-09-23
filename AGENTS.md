@@ -53,7 +53,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 ## Маршрутизация: задача → контекст
 
-Легенда: [GR](docs/governance/README.md) — преамбула, §1.2, карта §N; [PC](docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30; [AI](docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28; [WR](docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §18.1, §24, §29; [AR](docs/governance/AUDIT_RULES.md) — §25, §25.1; [GS](docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27; IDX — CONTRACT_INDEX; ctx — `docs/context/`.
+Легенда: [GR](docs/governance/README.md) — преамбула, §1.2, карта §N; [PC](docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30; [AI](docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28; [WR](docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §29; [AR](docs/governance/AUDIT_RULES.md) — §25, §25.1; [GS](docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27; IDX — CONTRACT_INDEX; ctx — `docs/context/`.
 
 - **Код:** WR §2, §18, §19, §21, §24, §29; AI §16; GS §26, §27.
 - **Docs:** WR §2, §18, §20, §24, §29; GS §26, §27.

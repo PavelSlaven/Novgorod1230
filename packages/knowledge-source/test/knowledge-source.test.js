@@ -14,14 +14,13 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
-async function fixture() {
+async function fixture({ text = '# Alpha\n\nCanonical text.\nSecond line.\n' } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'rus-knowledge-source-'));
   const corpus = join(root, 'corpus', 'DOCUMENTS');
   const generated = join(root, 'generated');
   await mkdir(corpus, { recursive: true });
   await mkdir(join(generated, 'graph'), { recursive: true });
   await mkdir(join(generated, 'rag'), { recursive: true });
-  const text = '# Alpha\n\nCanonical text.\nSecond line.\n';
   const proposedText = '# Beta\n\nProposed text.\n';
   await writeFile(join(corpus, 'alpha.md'), text);
   await writeFile(join(corpus, 'beta.md'), proposedText);
@@ -100,6 +99,15 @@ test('reader is fail-closed for unknown ids, path traversal, hash mismatch and i
   await assert.rejects(() => reader.resolveSourceLocation({ document_id: 'alpha', start_line: 0, end_line: 1 }), (error) => error.code === 'SOURCE_LOCATION_INVALID');
   await writeFile(join(fx.corpus, 'alpha.md'), 'changed');
   await assert.rejects(() => reader.getDocument({ document_id: 'alpha' }), (error) => error.code === 'DOCUMENT_HASH_MISMATCH');
+});
+
+test('reader rejects ambiguous section headings', async () => {
+  const fx = await fixture({ text: '# Alpha\n## Repeat\none\n## Repeat\ntwo\n' });
+  const reader = createKnowledgeSourceReader({
+    storage: createFileSystemKnowledgeSourceStorage({ sourceRoot: fx.root, generatedRoot: fx.generated })
+  });
+  await assert.rejects(() => reader.resolveSourceLocation({ document_id: 'alpha', section: 'Repeat' }),
+    (error) => error.code === 'SOURCE_LOCATION_INVALID');
 });
 
 test('full-text search is explicit, source-backed and restricted by allowed ids', async () => {

@@ -3,8 +3,14 @@
 > status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
 
 Это карта, а не норма. Правила проверок задаёт [AGENTS.md §24](../governance/WORKFLOW_RULES.md) (и §22 для отладки, §29 для
-отчёта). Скрипты перечислены по именам из [package.json](../../package.json) (212 скриптов на c5501419); CI —
+отчёта). Все команды по группам перечислены в [генерируемом каталоге](../../generated/npm-script-catalog.md)
+из [package.json](../../package.json); CI —
 [.github/workflows/test.yml](../../.github/workflows/test.yml).
+
+`docs:check` проверяет `npm run` в корневых инструкциях, `docs/`, `infra/`, `apps/`, `packages/`,
+`scripts/`, `tools/` и CI workflows (тестовые файлы исключены). Исторические планы/журналы в
+`docs/implementation/`, `docs/migration/`, `docs/work/temporal-world-v4/`, а также `DOCUMENTS/` и `legacy/`
+сохраняют команды своего времени и не служат инструкцией запуска.
 
 ## 1. Главное правило
 
@@ -68,7 +74,7 @@ CI (`test.yml`, один job `full-npm-test`, профиль `full` для pull_
 
 ## 4. Матрица «тип изменения → команды»
 
-Команды — `npm run <скрипт>`. Всегда добавляется `git diff --check` (AGENTS §24).
+Команды — `npm run <скрипт>`. Всегда добавляются `git diff --check` (AGENTS §24) и `npm run check:syntax` — `node --check` / `JSON.parse` для изменённых относительно `origin/main` JS и JSON ([check-syntax.mjs](../../scripts/check-syntax.mjs); `--base <ref>` или явный список файлов).
 
 | Тип изменения | Focused/profile | Дополнительно (AGENTS §24) |
 |---|---|---|

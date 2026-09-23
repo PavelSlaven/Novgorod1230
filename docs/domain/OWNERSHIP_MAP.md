@@ -18,7 +18,7 @@
 
 Historical P28 evidence did not itself activate production. The later
 `versioned production activation cutover` currently culminates in
-`spatial-v3-production-v9`; these owners form the sole production
+`spatial-v3-production-v16`; these owners form the sole production
 composition. Dual write, mixed reads and compatibility fallback remain
 forbidden.
 
@@ -41,8 +41,8 @@ or write a partial result.
 ## Temporal World v4 production ownership
 
 The completed `versioned production activation cutover` made these
-responsibilities authoritative in current release `spatial-v3-production-v9`.
-Production v8 is an explicit rollback source only.
+responsibilities authoritative in current release `spatial-v3-production-v16`.
+Older releases are historical and not selectable at runtime.
 
 | Owner | Exact target responsibility | Explicit boundary |
 |---|---|---|

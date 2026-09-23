@@ -1,5 +1,7 @@
 # Интеграция перехода Нижней Двины yp025 ↔ yp026
 
+> Исторический план: приведённые команды npm относятся к состоянию репозитория на момент работы. Актуальные команды — в [каталоге](../../../generated/npm-script-catalog.md).
+
 ## Статус
 
 - Этап: production activation committed; runtime composition cutover и smoke.

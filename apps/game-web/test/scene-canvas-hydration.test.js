@@ -51,6 +51,24 @@ test('late hydration cannot draw portrait or weather after next screen', async (
   assert.deepEqual(draws, ['new-portrait', 'new-weather']);
 });
 
+test('only the current hydration marks its scene shell as hydrated', async () => {
+  let resolveOld;
+  const marks = [];
+  const shell = (id) => ({ setAttribute(name) { marks.push(`${id}:${name}`); } });
+  const canvases = { '[data-landscape-canvas]': { id: 'old' }, '.scene-viewport-shell': shell('old') };
+  const renderLandscape = (canvas) => canvas.id === 'old'
+    ? new Promise((resolve) => { resolveOld = resolve; })
+    : Promise.resolve({ model: {} });
+  const sceneRoot = root(canvases);
+  const old = hydrateSceneCanvases(sceneRoot, screen(), { renderLandscape });
+  canvases['[data-landscape-canvas]'] = { id: 'new' };
+  canvases['.scene-viewport-shell'] = shell('new');
+  await hydrateSceneCanvases(sceneRoot, screen(), { renderLandscape });
+  resolveOld({ model: {} });
+  await old;
+  assert.deepEqual(marks, ['new:data-scene-hydrated']);
+});
+
 test('fallback landscape model reaches weather after portrait', async () => {
   const events = [];
   const model = { id: 'fallback' };

@@ -19,6 +19,7 @@
     "test:legacy": "cd legacy && node --test --test-concurrency=1 test/*.test.js",
     "test:stage26": "node --test test/modules/stage26-*.test.js",
     "architecture:check": "node tools/architecture/check-boundaries.mjs",
+    "check:syntax": "node scripts/check-syntax.mjs",
     "release:check": "node tools/release/check-release-hygiene.mjs",
     "spatial-v3:test-p27-release": "node --test test/spatial-v3/p27-release-hygiene.test.js",
     "lower-dvina:first-playable:readiness": "node tools/spatial-v3/lower-dvina-first-playable-readiness.mjs",
@@ -179,6 +180,7 @@
     "knowledge:inventory": "node tools/docs-tools/src/knowledge-cli.js inventory --root .",
     "knowledge:import": "node tools/docs-tools/src/knowledge-cli.js import --root .",
     "knowledge:generate": "node tools/docs-tools/src/knowledge-cli.js generate --root .",
+    "knowledge:repin": "node tools/docs-tools/src/knowledge-cli.js repin --root . && npm run docs:generate",
     "knowledge:check-corpus": "node tools/docs-tools/src/knowledge-cli.js check-corpus --root .",
     "knowledge:check": "node tools/docs-tools/src/knowledge-cli.js check --root .",
     "knowledge:query": "node packages/knowledge-source/src/cli.js query --root .",
@@ -235,7 +237,6 @@
     "node": ">=22"
   },
   "devDependencies": {
-    "esbuild": "^0.25.5",
     "pg-mem": "^3.0.5",
     "playwright-core": "^1.53.0"
   }

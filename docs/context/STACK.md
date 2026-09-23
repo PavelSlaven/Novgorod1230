@@ -15,10 +15,10 @@
 | Workspaces | npm workspaces `apps/*`, `packages/*`, `tools/*`; пакеты `@rus/*` | [package.json](../../package.json) |
 | Lockfile | `package-lock.json`, `lockfileVersion: 3`; CI ставит зависимости через `npm ci` после нормализации registry URL | [package-lock.json](../../package-lock.json), [test.yml](../../.github/workflows/test.yml) |
 | Dependencies | `pg ^8.22.0`, `embedded-postgres 16.14.0-beta.17` | [package.json](../../package.json) |
-| devDependencies | `pg-mem ^3.0.5`, `playwright-core ^1.53.0`, `esbuild ^0.25.5` | [package.json](../../package.json) |
+| devDependencies | `pg-mem ^3.0.5`, `playwright-core ^1.53.0` | [package.json](../../package.json) |
 
-- `esbuild` объявлен в корне, но вызывается только сборкой `MapMaker/` — отдельного пакета `@rus13/map-maker`
-  со своим lockfile, не входящего в workspaces (там же TypeScript `tsc`, `cytoscape`, `elkjs`):
+- `esbuild` объявлен только в `MapMaker/` — отдельном пакете `@rus13/map-maker`
+  со своим lockfile, не входящем в workspaces (там же TypeScript `tsc`, `cytoscape`, `elkjs`):
   [MapMaker/package.json](../../MapMaker/package.json). Workspace-инструмент `tools/map-maker` — другой модуль.
 - `playwright-core` используется browser e2e-тестами `test/e2e/*`; браузер не скачивается пакетом сам.
 - `pg-mem` используется отдельными тестами (например `test/cutover/`); реальную DB semantics проверяют
@@ -38,7 +38,7 @@
 | PostgreSQL | 16 | см. ниже |
 | CI | docker-контейнер `postgres:16` внутри job | [test.yml](../../.github/workflows/test.yml) |
 | Локальная игра | `embedded-postgres` (PostgreSQL 16.14.0) поднимает `npm run play:local` | [local-postgres.js](../../tools/local-play/local-postgres.js), [local-play MODULE.md](../../tools/local-play/MODULE.md) |
-| Dev-only compose | `postgres:16` + `nocodb/nocodb:latest` (ручное заполнение world_base в NocoDB); `npm run world-db:up` | [docker-compose.yml](../../docker-compose.yml) |
+| Dev-only compose | `postgres:16` + `nocodb/nocodb:2026.09.0` (ручное заполнение world_base в NocoDB); `npm run world-db:up` | [docker-compose.yml](../../docker-compose.yml) |
 | Драйвер | `pg` (node-postgres) | [package.json](../../package.json) |
 
 Схемы, миграции и правила записи — `docs/context/DB_SCHEMA.md` и владельцы, на которых он ссылается.
@@ -76,6 +76,11 @@
   (`packages/repository-intelligence`) — commit `be24363a` (PR #94). Каталог
   `DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/` — старые данные в legacy-корпусе,
   не инструмент.
+
+## Форматирование и синтаксис
+
+- Formatter и linter в проекте нет: повторяй стиль окружающего кода и не переформатируй нетронутое.
+- Детерминированные проверки: `npm run check:syntax` (синтаксис изменённых JS/JSON), `git diff --check`, `npm run architecture:check`. Это работа инструментов, а не агента.
 
 ## Нельзя
 

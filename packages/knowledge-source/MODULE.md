@@ -39,6 +39,8 @@ CLI расположен в `packages/knowledge-source/src/cli.js` и вызыв
 npm run knowledge:status
 npm run knowledge:query -- --query "материализация NPC" --limit 8
 npm run knowledge:read -- --document-id code-driven-world-materialization-architecture
+npm run knowledge:read -- --document-id contract-index --section "1. Обязательный порядок чтения"
+npm run knowledge:read -- --document-id contract-index --start-line 11 --end-line 25
 npm run knowledge:controls
 ```
 
@@ -46,6 +48,7 @@ npm run knowledge:controls
 
 - `--statuses active,proposed` — явное разрешение и запрос дополнительных статусов;
 - `--document-ids id-a,id-b` — ограничение поиска конечным списком документов;
+- `--section "заголовок"` или `--start-line N --end-line M` — чтение раздела или диапазона из результата `knowledge:query`; неизвестный или неоднозначный раздел отклоняется;
 - `--query-ids id-a,id-b` — выбор контрольных запросов;
 - `--root <path>` — корень репозитория при прямом запуске CLI.
 

@@ -27,7 +27,7 @@
 | `MapMaker/` | отдельный TypeScript-модуль браузерной карты G1–G4 со своим `package.json`; не workspace (workspaces: `apps/*`, `packages/*`, `tools/*`) | [MapMaker/README.md](../../MapMaker/README.md), [package.json](../../package.json) |
 | `db-snapshot/` | `pg_dump` снимки `world_base` и `party` от 2026-07-10 (архив, не источник схемы) | [db-snapshot/README.txt](../../db-snapshot/README.txt) |
 | `logs/` | локальные логи; в git только `.gitkeep` | [.gitignore](../../.gitignore) |
-| `.github/` | CI (`workflows/test.yml`, `bootstrap.yml`), issue/PR-шаблоны, указатель Copilot на AGENTS.md | [copilot-instructions.md](../../.github/copilot-instructions.md) |
+| `.github/` | CI (`workflows/test.yml`), issue/PR-шаблоны, указатель Copilot на AGENTS.md | [copilot-instructions.md](../../.github/copilot-instructions.md) |
 | `.cursor/` | правило Cursor для RAG (старые правила агента — в [архиве](../archive/README.md)) | [knowledge-rag.mdc](../../.cursor/rules/knowledge-rag.mdc) |
 
 Игнорируются git: `node_modules/`, `artifacts/*`, `releases/*`, `.codebase-memory/`, `.tmp.driveupload/` —

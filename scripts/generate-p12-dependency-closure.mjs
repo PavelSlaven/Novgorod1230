@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
+// Windows: Git/MSYS GNU tar treats `C:\...` as a remote host and cannot read .zip; System32 bsdtar handles both.
+const TAR = process.platform === 'win32' ? `${process.env.SystemRoot ?? 'C:/Windows'}/System32/tar.exe` : 'tar';
 
 const root = resolve(import.meta.dirname, "..");
 const out = join(root, "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/dependency-closure/v1");
@@ -15,8 +17,8 @@ const sourceSnapshotPath = "data/world-catalogs/novgorod/spatial-v3/source-appro
 const v11Path = "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip";
 const zipPrefix = "gn_nov_g1_xp017_yp026_rebuild_002/";
 const json = (path) => JSON.parse(readFileSync(path, "utf8"));
-const zipJson = (path) => JSON.parse(execFileSync("tar", ["-xOf", sourceZip, zipPrefix + path], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }));
-const zipBytes = (archive, member) => execFileSync("tar", ["-xOf", archive, member], { encoding: "buffer", maxBuffer: 64 * 1024 * 1024 });
+const zipJson = (path) => JSON.parse(execFileSync(TAR, ["-xOf", sourceZip, zipPrefix + path], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }));
+const zipBytes = (archive, member) => execFileSync(TAR, ["-xOf", archive, member], { encoding: "buffer", maxBuffer: 64 * 1024 * 1024 });
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const fileSha = (path) => sha(readFileSync(path));
 const expandedDdlSha = () => {

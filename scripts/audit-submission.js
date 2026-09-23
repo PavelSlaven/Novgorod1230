@@ -23,9 +23,9 @@ if (zipArgIndex >= 0) {
 
 run('node scripts/release-guard.js');
 if (!existsSync(releaseZip)) {
-  run('npm run release:build');
+  run('node scripts/build-release.js');
   run('node scripts/zip-release.js');
 }
-run('npm run release:verify');
+run('node scripts/verify-release-archive.js');
 run(`node scripts/release-guard.js --zip "${releaseZip}"`);
 console.log('audit:submission ok');

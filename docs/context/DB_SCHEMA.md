@@ -1,6 +1,6 @@
 # Карта баз данных
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-23.
 
 Это карта: где лежит схема, кто ей владеет и где проверять. Нормы здесь не повторяются.
 Правила записи, причинности, атомарности и replay — [AGENTS.md §14](../governance/ARCHITECTURE_INVARIANTS.md) (сохранение
@@ -12,7 +12,7 @@
 | Схема | Назначение | Где лежит DDL | Кто пишет |
 |---|---|---|---|
 | `world_base` | утверждённые справочные данные мира, read-only для runtime | [schema.sql](../../infra/world-base/schema.sql) + части `infra/world-base/schema/01.sql`–`21.sql` | только утверждённый импорт (`world-db:import:*`), не runtime |
-| `party_runtime` | состояние конкретной партии | `schemas/party-db/` 001–033 | единственный physical transaction owner — `@rus/game-server` |
+| `party_runtime` | состояние конкретной партии | `schemas/party-db/` 001–033; [справочник](../../infra/party-db/SCHEMA_REFERENCE.md) | единственный physical transaction owner — `@rus/game-server` |
 | `operator_control` | append-only журнал событий operator cutover | [001_lower_dvina_v3_cutover_events.sql](../../infra/operator-control/001_lower_dvina_v3_cutover_events.sql) | только operator tooling |
 
 Подключение: `RUS_WORLD_DATABASE_URL` (или `DATABASE_URL`) и `RUS_PARTY_DATABASE_URL` (или `PARTY_DATABASE_URL`),
@@ -40,8 +40,6 @@ migration/rollback source.
   [tools/db-tools/MODULE.md](../../tools/db-tools/MODULE.md).
 - **Описания полей:** только из [field-descriptions.js](../../infra/world-base/field-descriptions.js);
   справочник генерируется, вручную его не правят.
-- ⚠ Устарело: [infra/world-base/README.md](../../infra/world-base/README.md) пишет «186 таблиц» и
-  «семнадцать SQL-частей»; по коду сейчас 201 таблица и 21 часть.
 - ⚠ PR #98 меняет: добавляет в `schema/21.sql` таблицу `world_base.procedural_scene_compiled_records`,
   число таблиц становится 202 (в `check-world-base-schema.mjs`, `test.yml` и `SCHEMA_REFERENCE.md`).
 
@@ -68,6 +66,7 @@ Spatial v3 (authoring core, orientation/routes, scene closure), Temporal World v
 - **Порядок и состав цепочки** задаёт не имя файла, а массив `files` в
   [spatial-v3-target-migrations.js](../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js).
   Оттуда же:
+  - `SPATIAL_V3_TARGET_MIGRATION_FILES` — имена SQL-файлов в порядке исполнения;
   - `SPATIAL_V3_TARGET_MIGRATIONS` — тексты SQL в порядке `files`;
   - `SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST` — sha256 от номера, имени и содержимого каждого файла;
   - `runSpatialV3TargetMigrations` — применяет цепочку в одной транзакции.
@@ -85,9 +84,11 @@ Spatial v3 (authoring core, orientation/routes, scene closure), Temporal World v
 - **Логическая граница записи:** [packages/party-store/MODULE.md](../../packages/party-store/MODULE.md).
   `@rus/party-store` проверяет и передаёт утверждённые write plans через внедрённую транзакцию, но SQL и драйвер
   ему не принадлежат. SQL и физическая транзакция — `apps/game-server/src/infrastructure/postgres/`.
-- **Единого справочника таблиц party_runtime нет.** Таблицы ищут в самих миграциях:
-  `rg -n 'CREATE TABLE' schemas/party-db/`. Перечень файлов с размером и sha256 есть в generated
-  [schema-reference.md](../../generated/schema-reference.md). (В `docs/work/LEGACY_WARNINGS.md` это LW-019.)
+- **Справочник таблиц:** [SCHEMA_REFERENCE.md](../../infra/party-db/SCHEMA_REFERENCE.md)
+  генерируется `npm run docs:generate` из упорядоченных миграций; `npm run docs:check` проверяет
+  его актуальность. Для каждой таблицы приведены SQL-определения `CREATE TABLE`, `ALTER TABLE` и
+  `CREATE INDEX` в порядке исполнения; полный SQL, включая удаления и условные блоки, сохранён в конце справочника.
+  Итоговые поля и ограничения определяет исполняемый SQL.
 - ⚠ PR #98 меняет: добавляет `034_party_runtime_actor_base_attributes.sql`
   (`ALTER TABLE party_runtime.party_actor_profile_bindings ADD COLUMN IF NOT EXISTS attribute_profile_snapshot jsonb`),
   34-ю строку в `files` и, следовательно, `SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST`.

@@ -28,7 +28,14 @@ try {
       allowed_document_ids: csvOption(args, '--document-ids')
     });
   } else if (command === 'read') {
-    result = await sourceReader.getDocument({ document_id: requiredOption(args, '--document-id') });
+    const document_id = requiredOption(args, '--document-id');
+    const section = option(args, '--section');
+    const start_line = option(args, '--start-line');
+    const end_line = option(args, '--end-line');
+    if (section && (start_line || end_line)) throw cliError('Use --section or --start-line/--end-line.');
+    result = section || start_line || end_line
+      ? await sourceReader.resolveSourceLocation({ document_id, section, start_line, end_line })
+      : await sourceReader.getDocument({ document_id });
   } else if (command === 'status') {
     result = await ragReader.getReadinessStatus();
   } else if (command === 'controls') {

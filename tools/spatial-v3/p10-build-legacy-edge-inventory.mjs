@@ -3,6 +3,8 @@ import { spawnSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { buildGraphEdgeMigrationInventory, summarizeGraphEdgeMigrationInventory } from './p10-graph-edge-migration.mjs';
+// Windows: Git/MSYS GNU tar treats `C:\...` as a remote host and cannot read .zip; System32 bsdtar handles both.
+const TAR = process.platform === 'win32' ? `${process.env.SystemRoot ?? 'C:/Windows'}/System32/tar.exe` : 'tar';
 
 const archive = 'data/world-base-sources/rus13-base-v1.tar.gz';
 const member = 'nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_graph_edges_g1_g4_full_v6.tsv';
@@ -20,7 +22,7 @@ export function buildActualLegacyGraphEdgeInventory({ tsv }) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === import.meta.filename) {
-  const extracted = spawnSync('tar', ['-xOf', archive, member], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const extracted = spawnSync(TAR, ['-xOf', archive, member], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   if (extracted.status !== 0) throw new Error(extracted.stderr || 'could not extract pinned legacy graph-edge source');
   const rows = buildActualLegacyGraphEdgeInventory({ tsv: extracted.stdout });
   const summary = { source_archive: archive, source_member: member, source_sha256: sha256(extracted.stdout), ...summarizeGraphEdgeMigrationInventory(rows), policy: 'Every unreviewed legacy edge is a typed gap; no terrain/time/reverse field becomes authoritative v3 topology.' };

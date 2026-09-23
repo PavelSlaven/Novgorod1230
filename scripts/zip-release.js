@@ -7,7 +7,7 @@ const releaseDir = resolve(root, 'dist', 'release');
 const zipPath = resolve(root, 'dist', 'release.zip');
 
 if (!existsSync(releaseDir)) {
-  console.error('release dir missing — run npm run release:build first');
+  console.error('release dir missing — run node scripts/build-release.js first');
   process.exit(1);
 }
 

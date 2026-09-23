@@ -206,6 +206,8 @@ npm run knowledge:query -- --query "<конкретная нормативная
 
 Generated artifacts не являются местом для ручного авторинга. Изменяй canonical source и используй предусмотренный generator/check workflow.
 
+Изменение нормативного контракта обновляет `CONTRACT_INDEX.md` в том же PR — правило в [CONTRACT_INDEX §10](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md); проверки поведения — по §24.
+
 Не создавай рабочие README, evidence packages и дополнительные отчёты без прямой необходимости.
 
 Недоступный документ является блокировкой только если без него действительно нельзя корректно выполнить текущую задачу.

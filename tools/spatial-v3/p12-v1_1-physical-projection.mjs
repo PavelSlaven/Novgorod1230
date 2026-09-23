@@ -8,6 +8,8 @@ import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { buildWorldBaseSchemaReference } from '../../scripts/generate-world-base-schema-reference.mjs';
 import { buildTransactionalImportSql } from './p12-authoring-importer.mjs';
+// Windows: Git/MSYS GNU tar treats `C:\...` as a remote host and cannot read .zip; System32 bsdtar handles both.
+const TAR = process.platform === 'win32' ? `${process.env.SystemRoot ?? 'C:/Windows'}/System32/tar.exe` : 'tar';
 
 const execFile = promisify(execFileCallback);
 const ROOT = resolve(import.meta.dirname, '../..');
@@ -267,7 +269,7 @@ export async function buildP12V11PhysicalProjectionSql({ root = ROOT, rollback =
 }
 
 async function zipJson(zip, path) {
-  const { stdout } = await execFile('tar', ['-xOf', zip, `${PACKAGE}/${path}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+  const { stdout } = await execFile(TAR, ['-xOf', zip, `${PACKAGE}/${path}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
   return JSON.parse(stdout);
 }
 

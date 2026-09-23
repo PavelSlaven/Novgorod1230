@@ -1,5 +1,7 @@
 # Independent critic — Lower Dvina first playable v2
 
+> Исторический отчёт: приведённые команды npm относятся к состоянию репозитория на момент проверки. Актуальные команды — в [каталоге](../../../generated/npm-script-catalog.md).
+
 ## Verdict
 
 `PASS`

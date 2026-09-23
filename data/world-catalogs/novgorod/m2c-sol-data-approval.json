@@ -1,7 +1,7 @@
 {
   "schema": "rus.m2c_supplemental_data_approval.v1",
   "decision": "APPROVE_DATA_ONLY",
-  "reviewer": "gpt-6-sol/high — independent Contract Auditor, separate read-only data approval pass",
+  "reviewer": "gpt-6-sol/high — independent Contract Auditor, separate data approval pass",
   "source_issue": "PavelSlaven/Novgorod1230#133",
   "reviewed_on": "2026-09-23",
   "approved_exact_candidates": {
@@ -55,6 +55,18 @@
     "candidate_sha256": "d870b05b973e1403d008ec7809438bfc3ab754a49f247fb8476e846d802ded66",
     "scope": "Exact legacy target world revision and 84 carried appearance rows from approved v4, with provenance, FK order and target applicability",
     "excludes": "Rejected v1 candidate, promoted import package, PostgreSQL import/readback, runtime pins and release activation"
+  },
+  "target_appearance_transfer_rejected_v1": {
+    "candidate_sha256": "e9dfc7c294d401a691988c55d52c918efc2b7e8db01606f7e2654ba09c66fe3d",
+    "decision": "REJECT_DATA_ONLY",
+    "reason": "Target region options referenced a Spatial revision absent from the required legacy world_revisions table."
+  },
+  "target_appearance_mapped_approval": {
+    "import_manifest_sha256": "4a88afe0e3f0ba64b953c428984891afce03010cfa5c381d6b67e2f40b6baa06",
+    "source_candidate_sha256": "d870b05b973e1403d008ec7809438bfc3ab754a49f247fb8476e846d802ded66",
+    "scope": "Exact approved-status mapping of one target world revision, 42 region options, six demographic entries and 36 appearance entries with source dependencies and FK order",
+    "excludes": "PostgreSQL import/readback, player or NPC runtime binding, release activation and historical population claims",
+    "reviewed_on": "2026-09-24"
   },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",

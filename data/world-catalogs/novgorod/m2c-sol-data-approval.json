@@ -80,6 +80,14 @@
     "excludes": "S1, O2a, O2b and F1 authority gaps; A1 and N1 consumer admission, mapped import, runtime activation and historical claims",
     "reviewed_on": "2026-09-24"
   },
+  "target_runtime_profiles_mapped_approval": {
+    "manifest_sha256": "3f3db9bc8dc3204f765f1fba67b36d67350c6c54a31d5e56caad305063bef739",
+    "dataset_sha256": "0dbf387fba464ce024cb686a2ed0252ea807f93798f6f63daa7b512ee12365ca",
+    "source_candidate_sha256": "8a5e2659008c83668f8f37723580aac78e04df20b35a40500449e426c1eab439",
+    "scope": "Exact approved-status mapping of the reviewed target runtime authoring candidate; 33 applicability scopes, unchanged mechanical payloads and explicit null S1/O2a/O2b/F1 gaps",
+    "excludes": "PostgreSQL import/readback, A1 and N1 consumer admission, runtime activation, historical claims and full release approval",
+    "reviewed_on": "2026-09-24"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",

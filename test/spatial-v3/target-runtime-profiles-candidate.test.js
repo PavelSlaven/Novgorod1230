@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { buildTargetRuntimeProfilesMapping } from '../../tools/runtime-catalog-activation/src/target-runtime-profiles-mapping.js';
 
 const root = new URL('../../', import.meta.url);
 const read = (path) => JSON.parse(readFileSync(new URL(path, root)));
@@ -73,4 +75,28 @@ test('target runtime authoring preserves mechanics and makes unsupported authori
   assert.equal(candidate.provenance.historical_claim, false);
   assert.equal(JSON.stringify(candidate.profiles).includes('trace_ld'), false);
   assert.equal(JSON.stringify(candidate.profiles).includes('fishing_camp'), false);
+});
+
+test('reviewable approved mapping reproduces frozen bytes and changes only explicit statuses', async () => {
+  const mapping = await buildTargetRuntimeProfilesMapping({ repositoryRoot: fileURLToPath(root) });
+  const base = 'data/world-catalogs/novgorod/live-world-runtime-v17/';
+  assert.equal(readFileSync(new URL(`${base}target-runtime-profiles-manifest.json`, root), 'utf8'),
+    `${JSON.stringify(mapping.manifest, null, 2)}\n`);
+  const mappedBytes = readFileSync(new URL(`${base}${mapping.manifest.dataset.path}`, root));
+  assert.equal(mappedBytes.toString(), `${JSON.stringify(mapping.dataset, null, 2)}\n`);
+  assert.equal(createHash('sha256').update(mappedBytes).digest('hex'), mapping.manifest.dataset.sha256);
+  const restored = structuredClone(mapping.dataset);
+  assert.equal(restored.approved, true);
+  restored.approved = false;
+  for (const profile of [restored, restored.profiles.turn_step,
+    restored.profiles.turn_step.neutral_conversation_profile,
+    restored.profiles.turn_step.ordinary_result_policy,
+    restored.profiles.n1.profile, restored.profiles.action_production]) {
+    assert.equal(profile.status, 'approved');
+    profile.status = 'pending_independent_data_approval';
+  }
+  assert.deepEqual(restored, candidate);
+  assert.equal(mapping.dataset.import_authorized, false);
+  assert.equal(mapping.dataset.activation_authorized, false);
+  assert.equal(mapping.manifest.authority.exact_mapped_data_review_required, true);
 });

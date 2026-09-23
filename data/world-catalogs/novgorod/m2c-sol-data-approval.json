@@ -25,6 +25,11 @@
     "scope": "Body transfer, ordinary routine, nine activity references, four clothing variants, personal control and water-without-carrier zero count as authoring data only",
     "excludes": "Imported status, equipment activation, current target actor/item/Temporal pins and NPC production"
   },
+  "npc_mapped_postpromotion_approval": {
+    "import_manifest_sha256": "d1e975b8d92a5f5b44a1f19c0e2b9c9ec3a0698ed936e52dae9250fa14fe6575",
+    "scope": "Exact approved-status mapped NPC authoring rows, provenance, references and P12 union; 32 composition, 36 runtime, five regional and 73 matching authoring-version rows",
+    "excludes": "PostgreSQL import/readback, runtime use and production activation"
+  },
   "target_start_proposal_approval": {
     "candidate_sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
     "scope": "Exact canonical entry and initial-state authoring proposal only",

@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`). История до этой секции не бэкфиллится.
 
+- docs(governance): обязательная проверка, синхронизация и использование CBM в начале спринта (WR §19, роутер); подключение Claude Code и разбор зависшего daemon в CODEBASE_MEMORY_MCP (#130)
 - docs(work): ссылки на backlog-issues #105–#128 в LEGACY_WARNINGS, CURRENT_SPRINT после завершения трека Docs (#129)
 - docs(archive): конфликтующие инструкции агентов (`.cursorrules.txt`, `legacy/.cursor/rules/project.mdc`, `.github/README.md`, `.github/*.txt`) и журналы README перенесены в `docs/archive/`; README переписан как обзор для людей (#104) LW-021 closed
 - docs(governance): AGENTS.md — роутер ≤16 КБ; правила без потерь перенесены в `docs/governance/*` (governing-корпус §1.3); правило чтения CONTRACT_INDEX; KSP читает найденные разделы вместо документов целиком (#103)

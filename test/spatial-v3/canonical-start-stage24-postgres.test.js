@@ -32,7 +32,9 @@ assert.equal(prepared.ok, true, JSON.stringify(prepared.error));
 const typedRef = (kind, id, version = 1) => ({ entity_kind: kind, entity_id: id, authoring_version: String(version) });
 const result = { schema: 'rus.authored_start_party_materialization_result.v3', run_id: 'run',
   trace: { materializer_version: 'm2c', catalog_digest: header.canonical_digest },
-  immediate: { spatial: { node: { parent_g4_id: parent.parent_id } } },
+  immediate: { spatial: { node: { parent_g4_id: parent.parent_id } },
+    npcs: [{ instance_id: 'npc', position_id: prepared.proposal.rows.find((row) =>
+      row.target_table === 'scene_position_nodes' && row.record.template_slot_key === 'focus').id }] },
   initial_spatial_v3: { node_id: 'node', anchor_id: 'compatibility-anchor',
     canonical_g5_ref: typedRef('canonical_spatial_node', node.id, node.version),
     materialization_profile_ref: typedRef('scene_materialization_profile', 'profile'),
@@ -58,10 +60,14 @@ test('Stage24 retains exact canonical scene topology, arrival and authored ambie
   assert.equal(rows('party_journey_locations')[0].scene_position_id, ids.position);
   assert.equal(rows('party_scene_baselines')[0].created_change_set_id, 'committed-change');
   assert.equal(rows('visibility_links').length, 0);
+  assert.equal(rows('entity_placements')[0].position_node_id, result.immediate.npcs[0].position_id);
+  assert.notEqual(rows('entity_placements')[0].position_node_id, ids.position);
   for (const corrupt of [
     (value) => { value.initial_spatial_v3.canonical_scene_proposal.party_id = 'foreign'; },
     (value) => { value.initial_spatial_v3.selected_position_id = 'foreign-position'; },
     (value) => { delete value.initial_spatial_v3.selected_position_id; },
+    (value) => { value.immediate.npcs[0].position_id = 'foreign-position'; },
+    (value) => { delete value.immediate.npcs[0].position_id; },
     (value) => { value.initial_spatial_v3.canonical_scene_proposal.endpoints.push({ ...value.initial_spatial_v3.canonical_scene_proposal.endpoints.find((row) => row.endpoint_role === 'arrival'), slot_key: 'extra' }); },
     (value) => { value.initial_spatial_v3.s1_physical_writes = [{ target_table: 'party_g6_instances' }]; }
   ]) { const value = structuredClone(result); corrupt(value); assert.throws(() => build(value), { code: 'AUTHORED_START_SPATIAL_V3_INVALID' }); }
@@ -88,6 +94,18 @@ test('Stage24 canonical batches persist full approved scene in PostgreSQL withou
     VALUES ('canonical-start',3,$1,'catalog','m2c','rng','commands','profiles')`, [node.world_revision_id]);
   await pool.query(`INSERT INTO party_runtime.party_player_characters(party_id,character_id,profile)
     VALUES ('canonical-start','player','{}')`);
+  await pool.query(`INSERT INTO party_runtime.party_materialization_runs
+    (party_id,run_id,g4_id,run_kind,seed_digest,input_digest,catalog_digest,materializer_version,rng_version,result_digest,idempotency_key,status)
+    VALUES ('canonical-start','run',$1,'baseline','seed','input','catalog','m2c','rng','result','key','committed')`, [parent.parent_id]);
+  await pool.query(`INSERT INTO party_runtime.party_g5_nodes
+    (party_id,g5_node_id,run_id,parent_g4_id,template_id,slot_key)
+    VALUES ('canonical-start','node','run',$1,$2,'main')`, [parent.parent_id, header.id]);
+  await pool.query(`INSERT INTO party_runtime.party_g5_anchors
+    (party_id,anchor_id,g5_node_id,template_id,slot_key,npc_capacity)
+    VALUES ('canonical-start','compatibility-anchor','node',$1,'main',3)`, [header.id]);
+  await pool.query(`INSERT INTO party_runtime.party_npcs
+    (party_id,npc_id,run_id,profile_set_id,profile_level,anchor_id)
+    VALUES ('canonical-start','npc','run','profile','scene','compatibility-anchor')`);
   const { batches, ids } = build();
   await pool.query('BEGIN');
   for (const batch of batches) for (const record of batch.records) {
@@ -103,4 +121,10 @@ test('Stage24 canonical batches persist full approved scene in PostgreSQL withou
     JOIN party_runtime.g6_acoustic_profiles a ON a.g6_instance_id=g.id WHERE j.id=$1`, [ids.journey]);
   assert.deepEqual(readback.rows, [{ scene_position_id: ids.position, g6_instance_id: ids.g6,
     ambient_noise: 1, source_kind: 'canonical_template' }]);
+  const npcPlacement = await pool.query(`SELECT n.anchor_id,p.position_node_id
+    FROM party_runtime.party_npcs n JOIN party_runtime.entity_placements p
+      ON p.party_id=n.party_id AND p.entity_kind='npc' AND p.entity_id=n.npc_id
+    WHERE n.party_id='canonical-start'`);
+  assert.deepEqual(npcPlacement.rows, [{ anchor_id: 'compatibility-anchor',
+    position_node_id: result.immediate.npcs[0].position_id }]);
 });

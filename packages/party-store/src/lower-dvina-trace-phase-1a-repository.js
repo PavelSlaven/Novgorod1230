@@ -108,6 +108,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       )).rows;
       const npcs = (await query(
         `SELECT n.npc_id,n.run_id,n.profile_set_id,n.profile_level,n.anchor_id,
+                placement.position_node_id AS position_id,
                 n.identity_state,n.machine_state,n.semantic_state,
                 apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
                 apb.name_profile_snapshot,apb.language_profile_snapshot,
@@ -117,6 +118,9 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
            FROM party_runtime.party_npcs n
            JOIN party_runtime.party_actor_profile_bindings apb
              ON apb.party_id=n.party_id AND apb.actor_kind='npc' AND apb.actor_id=n.npc_id
+           LEFT JOIN party_runtime.entity_placements placement ON placement.party_id=n.party_id
+             AND placement.entity_kind='npc' AND placement.entity_id=n.npc_id
+             AND placement.placement_kind='scene_position'
           WHERE n.party_id=$1
           ORDER BY n.npc_id`,
         [partyId]
@@ -218,7 +222,8 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       const normalizedContainers = containers.map(normalizedContainer);
       const hydratedNpcs = (payload.immediate.npcs ?? []).map((npc) => {
         const row = npcs.find(({ npc_id: id }) => id === npc.instance_id);
-        return { ...structuredClone(npc), base_attributes:
+        return { ...structuredClone(npc), anchor_id: row.anchor_id,
+          ...(row?.position_id == null ? {} : { position_id: row.position_id }), base_attributes:
           structuredClone(row?.attribute_profile_snapshot ?? null) };
       });
       const normalizedObligations = obligations.map((obligation) => {
@@ -410,6 +415,8 @@ function assertRoundTrip({
     || counts.edge_count !== 0
     || counts.npc_count !== expectedNpcs.length
     || npcs.length !== expectedNpcs.length
+    || (payload.initial_spatial_v3?.canonical_scene_proposal != null && npcs.some((npc) =>
+      npc.position_id !== expectedNpcs.find(({ instance_id }) => instance_id === npc.npc_id)?.position_id))
     || npcs.some((npc) => JSON.stringify(npc.attribute_profile_snapshot ?? null)
       !== JSON.stringify(expectedNpcs.find(({ instance_id }) => instance_id
         === npc.npc_id)?.base_attributes ?? null))

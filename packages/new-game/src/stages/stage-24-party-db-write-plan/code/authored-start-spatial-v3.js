@@ -102,6 +102,9 @@ function addCanonicalScene({ batches, result, spatial, partyId, playerId,
   const ids = { g5: proposal.site_id, baseline: proposal.baseline_id,
     g6: g6.id, position: positions[0].id,
     journey: `journey-location:${partyId}:${playerId}` };
+  const npcs = result.immediate.npcs ?? [];
+  if (npcs.some((npc) => !text(npc.position_id) || rows.filter((row) =>
+    row.target_table === 'scene_position_nodes' && row.id === npc.position_id).length !== 1)) fail();
   addBatch(batches, 'party_g5_sites', [{ id: ids.g5, party_id: partyId,
     origin: 'canonical', parent_g4_id: result.immediate.spatial.node.parent_g4_id,
     canonical_g5_ref: { entity_id: spatial.canonical_g5_ref.entity_id,
@@ -116,6 +119,11 @@ function addCanonicalScene({ batches, result, spatial, partyId, playerId,
     }));
     addBatch(batches, table, records, ['party_g5_sites', ...tables.slice(0, tables.indexOf(table))], sourceTrace);
   }
+  addBatch(batches, 'entity_placements', npcs.map((npc) => ({
+    party_id: partyId, entity_kind: 'npc', entity_id: npc.instance_id,
+    placement_kind: 'scene_position', position_node_id: npc.position_id,
+    occupies_capacity_units: 1, state_version: 1, updated_change_set_id: changeSetId
+  })), ['party_npcs', 'scene_position_nodes'], sourceTrace);
   addBatch(batches, 'party_journey_locations', [{ id: ids.journey,
     party_id: partyId, owner_kind: 'actor', owner_id: playerId,
     location_kind: 'scene', scene_position_id: ids.position,

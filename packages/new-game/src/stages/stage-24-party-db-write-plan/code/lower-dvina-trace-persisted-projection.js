@@ -123,7 +123,9 @@ export function buildLowerDvinaTracePersistedProjection({
         run_id: result.run_id,
         profile_set_id: npc.profile_id,
         profile_level: npc.profile_level,
-        anchor_id: npc.anchor_id,
+        anchor_id: result.initial_spatial_v3?.canonical_scene_proposal
+          ? result.immediate.spatial.anchor.instance_id : npc.anchor_id,
+        ...(result.initial_spatial_v3?.canonical_scene_proposal ? { position_id: npc.position_id } : {}),
         identity_state: structuredClone(npc.identity_state),
         machine_state: structuredClone(npc.machine_state),
         semantic_state: {

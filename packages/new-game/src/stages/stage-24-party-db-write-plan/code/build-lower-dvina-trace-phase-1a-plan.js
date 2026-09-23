@@ -181,7 +181,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     run_id: runId,
     profile_set_id: npc.profile_id,
     profile_level: npc.profile_level,
-    anchor_id: npc.anchor_id,
+    anchor_id: result.initial_spatial_v3?.canonical_scene_proposal
+      ? result.immediate.spatial.anchor.instance_id : npc.anchor_id,
     identity_state: npc.identity_state,
     machine_state: npc.machine_state,
     semantic_state: {
@@ -390,7 +391,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     changeSetId, sourceTrace, addBatch });
   addBatch(batches, 'party_npc_spatial_schedules', initialNpcRoutineRecords({
     result, partyId, changeSetId, npcs: identityNpcs }),
-    ['party_npcs', 'preparation_snapshot_members', 'party_g5_anchors'], sourceTrace);
+    ['party_npcs', 'preparation_snapshot_members', 'party_g5_anchors', 'scene_position_nodes'], sourceTrace);
   const persistedProjection = buildLowerDvinaTracePersistedProjection({
     result,
     changeSetId,

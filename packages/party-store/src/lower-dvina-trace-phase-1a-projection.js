@@ -133,6 +133,7 @@ export function buildActualPersistedProjection({
         profile_set_id: npc.profile_set_id,
         profile_level: npc.profile_level,
         anchor_id: npc.anchor_id,
+        ...(npc.position_id == null ? {} : { position_id: npc.position_id }),
         identity_state: npc.identity_state,
         machine_state: npc.machine_state,
         semantic_state: npc.semantic_state,

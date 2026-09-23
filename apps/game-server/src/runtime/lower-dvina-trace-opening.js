@@ -206,7 +206,40 @@ export function auditAuthoredOpeningContext({ mustInclude = [], visibleNpcs = []
     pass: Object.values(checks).every(Boolean), checks });
 }
 
-function bodyStateSummary(body) {
+/** Structured reader control for a source-limited opening. Unknown is a
+ * completed assessment, never a positive answer or permission to invent one. */
+export function auditOpeningReaderAssessments({ assessments = [], facts = [] } = {}) {
+  const questions = ['identity', 'reason_here', 'preceding_context', 'people',
+    'current_event', 'goal_stake', 'surroundings', 'directions_interactions'];
+  const usable = (value) => typeof value === 'string' && value.trim().length > 0;
+  const byId = new Map(facts.filter((fact) => usable(fact?.fact_id)
+    && usable(fact.text) && Array.isArray(fact.source_refs)
+    && fact.source_refs.length > 0 && fact.source_refs.every(usable))
+    .map((fact) => [fact.fact_id, fact]));
+  const concerns = [];
+  if (byId.size !== facts.length) concerns.push('reader_source_facts_invalid');
+  if (assessments.length !== questions.length) concerns.push('reader_coverage_incomplete');
+  const evaluated = questions.map((question) => {
+    const entries = assessments.filter((entry) => entry?.question === question);
+    const entry = entries[0];
+    const refs = entry?.fact_refs;
+    const valid = entries.length === 1 && usable(entry.reason)
+      && Array.isArray(refs) && new Set(refs).size === refs.length
+      && ['supported', 'unknown', 'not_applicable'].includes(entry.status)
+      && (entry.status === 'unknown' ? refs.length === 0
+        : refs.length > 0 && refs.every((id) => byId.has(id)));
+    if (!valid) concerns.push(`reader_assessment_invalid:${question}`);
+    return { question, status: valid ? entry.status : 'invalid',
+      answered: valid && entry.status === 'supported',
+      reason: valid ? entry.reason : 'Missing or invalid source assessment.',
+      fact_refs: valid ? [...refs] : [] };
+  });
+  return freezeDeep({ version: 1, schema: 'rus.opening_reader_control.v1',
+    pass: concerns.length === 0, pass_scope: 'source_boundary_and_question_coverage',
+    assessments: evaluated, concerns });
+}
+
+export function bodyStateSummary(body) {
   const health = Number(body?.health), energy = Number(body?.energy),
     satiety = Number(body?.satiety);
   if (![health, energy, satiety].every(Number.isFinite)) {
@@ -234,7 +267,7 @@ export function assertLowerDvinaTracePublicScreen(screen) {
   return screen;
 }
 
-function assertVisibleSource(visible, approvedProjection) {
+export function assertVisibleSource(visible, approvedProjection) {
   if (!visible || typeof visible !== 'object' || Array.isArray(visible)
     || visible.party_id == null
     || !visible.player?.name

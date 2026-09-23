@@ -9,10 +9,10 @@ import { serverError } from '../errors.js';
 
 const WRITER = `Return only {"prose":"<complete opening>"}. Write 2-4 connected
 paragraphs of restrained literary Russian in second person. Use only the supplied
-player-safe visible_context_package. The reader must understand identity and role,
-preceding context and reason here, known/present people, current event, immediate
-obligation/stake/uncertainty, physical near/far surroundings, body, and obvious
-directions or interactions. Integrate them as a scene, not a dossier, quest log,
+player-safe visible_context_package. Cover every supplied must_include entry.
+Unprovided history, goals, obligations, people, structures and routes remain unstated;
+an empty observation list does not establish an empty or silent place.
+Integrate the supplied facts as a scene, not a dossier, quest log,
 checklist, command menu, or state report. opening source_hint is optional support,
 never the whole scene. Mention no prop, person, route, sound, weather, memory or
 action absent from supplied persisted sources.`;

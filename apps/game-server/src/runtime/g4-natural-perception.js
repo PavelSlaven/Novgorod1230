@@ -59,7 +59,8 @@ export function prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, cur
         : { condition_losses: structuredClone(admission.condition_losses ?? {}) }) });
   }
   const input = { natural_baseline: baseline, presentation_profile: profile,
-    observer: structuredClone(observer), scene: structuredClone(scene), observations };
+    observer: structuredClone(observer), scene: structuredClone(scene), observations,
+    ...(canonical_source_binding == null ? {} : { canonical_source_binding: structuredClone(canonical_source_binding) }) };
   // Reject incomplete conditions before the opening/arrival consumer runs.
   const result = projectSpatialV3NaturalScene(input);
   if (!result.ok) perceptionGap(result.error.reason);

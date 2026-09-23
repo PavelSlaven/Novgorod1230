@@ -3,7 +3,7 @@ import test from 'node:test';
 import { buildVisibleContextAuditApproval,
   computeVisibleContextPackageDigest } from '@rus/contracts';
 import { buildAuthoredOpeningVisibleContext,
-  auditAuthoredOpeningContext, buildLowerDvinaTraceOpeningScreen } from
+  auditAuthoredOpeningContext, auditOpeningReaderAssessments, buildLowerDvinaTraceOpeningScreen } from
   '../src/runtime/lower-dvina-trace-opening.js';
 import { createAuthoredOpeningNarrationService } from
   '../src/runtime/authored-opening-narration.js';
@@ -11,6 +11,8 @@ import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 import { startLowerDvinaTrace } from '../src/runtime/lower-dvina-trace-public-start.js';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
+import { buildCanonicalOpeningVisibleContext } from '../src/runtime/canonical-opening-context.js';
+import { projectG4NaturalPerception } from '../src/runtime/g4-natural-perception.js';
 
 const checks = ['schema_and_structure', 'visible_context_compliance',
   'new_fact_check', 'npc_check', 'item_check', 'container_check',
@@ -214,12 +216,23 @@ function openingPackage({ raw = false } = {}) {
 }
 
 test('first screen receives natural perception after committed rehydrate without a gameplay turn', async () => {
+  for (const canonical of [false, true]) {
   for (const lighting of ['clear', 'none']) {
     const { visible, internal, approvedProjection } = openingPackage({ raw: true });
     internal.body = visible.body; internal.timestamp = visible.timestamp;
     internal.position = { ...internal.position, position_id: 'position:inside' };
     Object.assign(approvedProjection.opening_projection, { version: 1, schema: 'first_game_screen', calendar_label: 'Лето' });
-    const { perception } = await approvedNaturalPerceptionFixture();
+    const { perception, initialRule } = await approvedNaturalPerceptionFixture({ canonical });
+    if (canonical) {
+      internal.player.dossier.knowledge.known_facts = [];
+      delete internal.player.dossier.opening_context;
+      internal.position.position_id = 'position:shore';
+      internal.position.g6_instance_id = 'g6:inside';
+      internal.environment_snapshot = { schema: 'rus.approved_initial_environment.v1',
+        calendar_date: initialRule.initial_environment_inputs.calendar_date,
+        season: 'summer', light_state: 'daylight' };
+      approvedProjection.scenario_id = initialRule.scenario_id;
+    }
     for (const observation of perception.observations) {
       if (observation.visual_conditions) observation.visual_conditions.lighting = lighting;
     }
@@ -260,9 +273,24 @@ test('first screen receives natural perception after committed rehydrate without
     assert.ok(order.lastIndexOf('rehydrate') < order.indexOf('perception'));
     assert.ok(order.indexOf('perception') < order.indexOf('narrate'));
     assert.equal(result.screen.main_prose.includes(surfaceText), lighting === 'clear');
-    assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), true);
+    assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), !canonical);
+    if (canonical) {
+      assert.deepEqual(narratorInput.visible_npcs, []);
+      assert.equal(narratorInput.opening_reader_control.pass, true);
+      assert.equal(narratorInput.opening_reader_control.assessments.length, 8);
+      assert.deepEqual(narratorInput.opening_reader_control.assessments
+        .find(({ question }) => question === 'goal_stake'), { question: 'goal_stake',
+        status: 'unknown', answered: false, fact_refs: [], reason: 'No player-known goal or obligation is supplied.' });
+      assert.deepEqual(narratorInput.visible_exits, []);
+      assert.equal(narratorInput.visible_scene_dossier.must_include.some(({ category }) =>
+        ['preceding_context', 'goal_stake', 'people'].includes(category)), false);
+      assert.equal(JSON.stringify(narratorInput).includes('навес'), false);
+      assert.equal(JSON.stringify(narratorInput).includes('Милослав'), false);
+      assert.match(JSON.stringify(narratorInput.known_context), /верёвка/u);
+    }
     assert.equal(JSON.stringify(narratorInput).includes('machine-only'), false);
     assert.equal(JSON.stringify(result.screen).includes('payload_digest'), false);
+  }
   }
 });
 
@@ -276,3 +304,52 @@ function openingApproval(pkg) {
       can_write_visible_context_snapshot: true,
       can_generate_player_facing_prose: true } });
 }
+
+test('canonical empty-history package passes Stage 22/23 and rejects mismatched proof', async () => {
+  const { perception, initialRule } = await approvedNaturalPerceptionFixture({ canonical: true });
+  const input = openingPackage({ raw: true });
+  input.internal.player.dossier.knowledge.known_facts = [];
+  delete input.internal.player.dossier.opening_context;
+  input.internal.position = { ...input.visible.position, position_id: 'position:shore', g6_instance_id: 'g6:inside' };
+  input.internal.environment_snapshot = { schema: 'rus.approved_initial_environment.v1',
+    calendar_date: initialRule.initial_environment_inputs.calendar_date, season: 'summer', light_state: 'daylight' };
+  input.approvedProjection.scenario_id = initialRule.scenario_id;
+  input.canonicalSourceBinding = perception.canonical_source_binding;
+  input.naturalScenePerception = projectG4NaturalPerception({ input: perception,
+    partyId: 'party:1', actorId: 'player:1', positionId: 'position:shore' });
+  input.internal.items.push({ instance_id: 'item:hidden', placement: { holder_character_id: 'player:1' },
+    visibility_state: 'concealed', state: { display_name: 'невидимый предмет' } });
+  const pkg = buildCanonicalOpeningVisibleContext(input);
+  const { assessments } = pkg.opening_reader_control;
+  assert.equal(auditOpeningReaderAssessments({ assessments, facts: pkg.visible_scene_facts }).pass, true);
+  assert.equal(auditOpeningReaderAssessments({ assessments: assessments.slice(1), facts: pkg.visible_scene_facts }).pass, false);
+  for (const replacement of [
+    { ...assessments[1], status: 'supported' },
+    { ...assessments[1], fact_refs: ['opening:identity'] },
+    { ...assessments[0], fact_refs: ['invented-source'] },
+    { ...assessments[1], status: 'not_applicable', reason: '' }
+  ]) {
+    const invalid = assessments.map((entry) => entry.question === replacement.question ? replacement : entry);
+    assert.equal(auditOpeningReaderAssessments({ assessments: invalid, facts: pkg.visible_scene_facts }).pass, false);
+  }
+  assert.equal(JSON.stringify(pkg).includes('невидимый предмет'), false);
+  assert.equal(JSON.stringify(pkg).includes('canonical_source_binding'), false);
+  for (const key of ['party_id', 'actor_id', 'position_id', 'scenario_id']) {
+    assert.throws(() => buildCanonicalOpeningVisibleContext({ ...input,
+      canonicalSourceBinding: { ...input.canonicalSourceBinding, [key]: 'wrong' } }),
+    { code: 'CANONICAL_OPENING_CONTEXT_INVALID' });
+  }
+  const roles = [];
+  const service = createAuthoredOpeningNarrationService({ roleRunner: { async run(call) {
+    roles.push(call.role_id);
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(call.messages[0].content, /Cover every supplied must_include entry/u);
+      return { output: { prose: 'Вы — Любава, рыбачка. Тело готово к работе.\n\nПри вас верёвка.' } };
+    }
+    return { output: { pass: true, failed_checks: [], concerns: [], evidence: ['Supplied facts only.'] } };
+  } } });
+  const result = await service.run({ requestId: input.requestId,
+    visibleContextPackage: pkg, visibleContextApproval: openingApproval(pkg) });
+  assert.equal(result.stage23_result.pass, true);
+  assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
+});

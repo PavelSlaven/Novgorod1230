@@ -372,6 +372,9 @@ export function buildActivationRequest({ fields, partyPreflight }) {
   return withDigest({
     schema: 'rus.runtime_catalog_activation_request.v2',
     catalog_scope: 'item_container_materialization_v2',
+    ...(fields.activation_scope == null ? {} : {
+      activation_scope: requireActivationScope(fields.activation_scope)
+    }),
     parent_revision_id: requiredText(fields.parent_revision_id, 'parentRevisionId'),
     parent_catalog_digest:
       requireDigest(fields.parent_catalog_digest, 'parentCatalogDigest'),
@@ -412,12 +415,31 @@ export function buildActivationRequest({ fields, partyPreflight }) {
   }, 'activation_request_digest');
 }
 
+export function buildActivationPartyPreflight({ activationScope =
+  'initial_empty_party_database', ...fields }) {
+  requireActivationScope(activationScope);
+  return activationScope === 'initial_empty_party_database'
+    ? buildPartyPreflight(fields) : buildDevelopmentPartyPreflight(fields);
+}
+
+function requireActivationScope(scope) {
+  if (!['initial_empty_party_database', 'new_development_parties_only',
+    'new_production_parties_only'].includes(scope)) {
+    fail('ACTIVATION_SCOPE_INVALID', 'Unknown catalog activation scope.');
+  }
+  return scope;
+}
+
 export function buildActivationEvent({
   request,
   attestation,
   previousEvent,
   operatorPrincipal
 }) {
+  const { activation_request_digest: claimed, ...payload } = request ?? {};
+  if (claimed !== digestEnvelope(payload)) {
+    fail('ACTIVATION_REQUEST_DIGEST_INVALID', 'Activation request changed after approval.');
+  }
   verifyDecisionAttestation({
     attestation,
     expectedSchema: 'rus.runtime_catalog_activation_attestation.v2',

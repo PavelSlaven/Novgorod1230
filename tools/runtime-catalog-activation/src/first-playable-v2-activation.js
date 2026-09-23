@@ -23,8 +23,11 @@ import {
   buildPromotionManifest,
   buildRuntimeReleaseIdentity,
   digestEnvelope,
-  finalizeOverlayCandidate
+  finalizeOverlayCandidate,
+  verifyDecisionAttestation
 } from './artifact-contracts.js';
+import { buildSpatialV3TargetCatalogRequests } from
+  './spatial-v3-target-catalog-requests.js';
 import {
   activateApprovedCatalog,
   importApprovedCatalog,
@@ -63,6 +66,162 @@ const FIRST_PLAYABLE_V2_RELEASE = Object.freeze({
   activationBasis:
     'mandatory production activation for first launch; no existing parties'
 });
+
+/** Read-only preparation; approvals are supplied later by the independent reviewer. */
+export async function prepareSpatialV3TargetItemCatalog({ worldPool,
+  repositoryRoot, gitCommitSha }) {
+  const pending = (await buildSpatialV3TargetCatalogRequests({
+    repositoryRoot, subjectCommit: gitCommitSha
+  }))['item-compatibility-request.json'];
+  const root = resolve(repositoryRoot);
+  const candidateRoot = resolve(root,
+    'data/knowledge-source/imports/item-container-120-v5/candidate');
+  const candidateManifest = await readJson(resolve(candidateRoot, 'manifest.json'));
+  const finalApproval = await readJson(resolve(root,
+    'docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json'));
+  if (candidateManifest.candidate_digest !== finalApproval.candidate_digest
+      || finalApproval.decision !== 'approve_all_120') {
+    fail('FIRST_PLAYABLE_APPROVAL_CHAIN_INVALID', 'Exact approved item source is required.');
+  }
+  const compatible = pending.compatible_world;
+  const compatibleWorldTuple = Object.fromEntries([
+    'compatible_world_revision_id', 'compatible_world_catalog_digest',
+    'compatible_world_pin_manifest_digest'
+  ].map((key) => [key, compatible[key]]));
+  const world = (await worldPool.query(
+    'SELECT id,catalog_digest,status FROM world_base.world_revisions WHERE id=$1',
+    [compatible.compatible_world_revision_id])).rows;
+  if (world.length !== 1 || world[0].status !== 'approved'
+      || world[0].catalog_digest !== compatible.compatible_world_catalog_digest) {
+    fail('BASE_WORLD_COMPATIBILITY_MISMATCH', 'Exact approved target world is required.');
+  }
+  const rows = await readRegisteredRows(worldPool);
+  const membership = await readPromotedMembership({ candidateManifest,
+    candidateRoot, allRowsByTable: rows });
+  const baselineManifest = buildOperatorBaselineSnapshotManifest({
+    schemaFingerprint: await readPostgresSchemaFingerprint(worldPool, 'world_base'),
+    registry, rowsByTable: Object.fromEntries(Object.entries(rows)
+      .filter(([table]) => table !== 'world_revisions'))
+  });
+  const baselineRequest = buildBaselineRegistrationRequest({
+    parentRevisionId: 'world_revision_novgorod_1230_runtime_catalog_target_v17_001',
+    parentCatalogDigest: baselineManifest.records_aggregate_digest,
+    baselineManifest, compatibleWorldTuple
+  });
+  const g4Approval = await readJson(resolve(root,
+    'docs/implementation/item-container-120-approval-audit/evidence/G4_DEPENDENCY_APPROVAL_REQUEST.json'));
+  const compiled = compileOverlaySemanticPayload({ registry,
+    parentTuple: { parent_revision_id: baselineRequest.parent_revision_id,
+      parent_catalog_digest: baselineRequest.parent_catalog_digest,
+      parent_snapshot_manifest_digest: baselineRequest.parent_snapshot_manifest_digest },
+    compatibleWorldTuple, targetRevisionId: pending.target_revision_id,
+    parentRowsByTable: rows, candidateRowsByTable: membership,
+    dependencyLinks: [], g4Transitions: approvedG4Transitions(g4Approval,
+      digestEnvelope(finalApproval))
+  });
+  if (compiled.record_operations_by_table.some((table) => table.insert_count !== 0)) {
+    fail('FIRST_PLAYABLE_CATALOG_NOT_PROMOTED', 'Target membership must already be approved.');
+  }
+  const equivalence = { schema: 'rus.target_item_catalog_equivalence.v1',
+    result: 'PASS', comparison: 'exact_promoted_rows_to_release_membership',
+    stage3c_candidate_digest: candidateManifest.candidate_digest,
+    compiled_semantic_payload_digest: compiled.semantic_payload_digest,
+    insert_count: 0 };
+  const candidate = finalizeOverlayCandidate({ compiledSemanticPayload: compiled,
+    semanticEquivalenceReportDigest: digestEnvelope(equivalence) });
+  const promotion = buildPromotionManifest({ compiledSemanticPayload: compiled, candidate });
+  return deepFreeze({ schema: 'rus.spatial_v3_target_item_import_preparation.v1',
+    status: 'pending_independent_compatibility_and_import_approval',
+    source_request: pending, baseline_manifest: baselineManifest,
+    baseline_request: baselineRequest,
+    baseline_registration_id: buildBaselineRegistrationId(baselineRequest),
+    compatibility_manifest: compatible,
+    runtime_configuration_tuple: {
+      compatible_world_revision_id: compatible.compatible_world_revision_id,
+      compatible_world_catalog_digest: compatible.compatible_world_catalog_digest,
+      source_runtime_configuration_digest: compatible.source_runtime_configuration_digest
+    },
+    compiled, equivalence_report: equivalence, candidate,
+    promotion_manifest: promotion,
+    approval_request: buildOverlayApprovalRequest({ candidate,
+      promotionManifest: promotion,
+      historicalPr17AttestationDigest: digestEnvelope(finalApproval) }),
+    baseline_attestation: null, overlay_attestation: null,
+    activation_request: null, activation_attestation: null
+  });
+}
+
+export function buildSpatialV3TargetItemImport({ preparation,
+  baselineAttestation, overlayAttestation }) {
+  const baseline = preparation.baseline_request;
+  const compatible = preparation.compatibility_manifest;
+  const compiled = preparation.compiled;
+  const expectedCandidate = finalizeOverlayCandidate({
+    compiledSemanticPayload: compiled,
+    semanticEquivalenceReportDigest: digestEnvelope(preparation.equivalence_report) });
+  const expectedPromotion = buildPromotionManifest({
+    compiledSemanticPayload: compiled, candidate: expectedCandidate });
+  const expectedApproval = buildOverlayApprovalRequest({ candidate: expectedCandidate,
+    promotionManifest: expectedPromotion,
+    historicalPr17AttestationDigest: preparation.approval_request.historical_pr17_attestation_digest });
+  const expectedBaseline = buildBaselineRegistrationRequest({
+    parentRevisionId: baseline.parent_revision_id,
+    parentCatalogDigest: baseline.parent_catalog_digest,
+    baselineManifest: preparation.baseline_manifest, compatibleWorldTuple: compatible });
+  if (digestEnvelope(expectedApproval) !== digestEnvelope(preparation.approval_request)
+      || digestEnvelope(expectedPromotion) !== digestEnvelope(preparation.promotion_manifest)
+      || digestEnvelope(expectedBaseline) !== digestEnvelope(baseline)
+      || compiled.target_revision_id !== preparation.source_request.target_revision_id
+      || compiled.record_operations_by_table.some((table) => table.insert_count !== 0)) {
+    fail('TARGET_ITEM_PREPARATION_MISMATCH', 'Prepared membership changed after review.');
+  }
+  verifyDecisionAttestation({ attestation: baselineAttestation,
+    expectedSchema: 'rus.baseline_registration_attestation.v2',
+    requestDigestField: 'registration_request_digest',
+    expectedRequestDigest: baseline.registration_request_digest,
+    expectedDecision: 'approve_register_baseline' });
+  verifyDecisionAttestation({ attestation: overlayAttestation,
+    expectedSchema: 'rus.item_container_overlay_approval_attestation.v2',
+    requestDigestField: 'approval_request_digest',
+    expectedRequestDigest: preparation.approval_request.approval_request_digest,
+    expectedDecision: 'approve_overlay_import',
+    expectedBindings: { activation_authorized: false } });
+  const importId = `catalog_import_${preparation.approval_request.approval_request_digest.slice(0, 32)}`;
+  const assertions = compiled.dependency_assertions.map((assertion) => {
+    const row = { ...assertion, import_id: importId,
+      overlay_approval_request_digest: preparation.approval_request.approval_request_digest,
+      overlay_approval_attestation_digest: overlayAttestation.attestation_digest };
+    return { ...row, assertion_audit_digest: computeDependencyAssertionAuditDigest(row) };
+  });
+  const ledger = buildImportLedger({ importId,
+    rootFields: { catalog_scope: CATALOG_SCOPE,
+      parent_revision_id: baseline.parent_revision_id,
+      parent_catalog_digest: baseline.parent_catalog_digest,
+      parent_snapshot_manifest_digest: baseline.parent_snapshot_manifest_digest,
+      compatible_world_revision_id: compatible.compatible_world_revision_id,
+      compatible_world_catalog_digest: compatible.compatible_world_catalog_digest,
+      compatible_world_pin_manifest_digest: compatible.compatible_world_pin_manifest_digest,
+      target_revision_id: preparation.source_request.target_revision_id,
+      target_catalog_digest: compiled.target_catalog_digest,
+      record_registry_digest: compiled.record_registry_digest,
+      promotion_manifest_digest: preparation.promotion_manifest.promotion_manifest_digest,
+      approval_request_digest: preparation.approval_request.approval_request_digest,
+      approval_attestation_digest: overlayAttestation.attestation_digest,
+      schema_migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_digest },
+    records: compiled.record_operations_by_table.flatMap(({ records }) =>
+      records.map((record) => ({ ...record, import_id: importId }))),
+    tables: compiled.record_operations_by_table.map((table) => ({
+      table_name: table.table_name, dependency_order: table.dependency_order,
+      insert_count: table.insert_count, assert_existing_count: table.assert_existing_count,
+      record_count: table.record_count, payload_digest: table.records_digest })),
+    dependencyAssertions: assertions, importedBy: overlayAttestation.attested_by
+  });
+  return deepFreeze({ ledger, domain_revision: {
+    parent_registration_id: preparation.baseline_registration_id,
+    runtime_contract_digest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST,
+    title: 'Target-compatible approved item/container catalog' },
+  approval_attestation: overlayAttestation });
+}
 
 export const FIRST_PLAYABLE_V3_RELEASE = Object.freeze({
   ...FIRST_PLAYABLE_V2_RELEASE,
@@ -128,20 +287,7 @@ export async function buildFirstPlayableV2ActivationBundle({
     allRowsByTable
   });
   const historicalApprovalDigest = digestEnvelope(finalApproval);
-  const g4Transitions = g4Approval.profile_mappings.map((mapping) => ({
-    graph_node_id: mapping.graph_node_id,
-    asserted_status: 'approved',
-    source_transition_semantic_digest: digestEnvelope({
-      schema: 'rus.stage3c_g4_transition_semantics.v1',
-      graph_node_id: mapping.graph_node_id,
-      from_status: mapping.current_status,
-      to_status: mapping.requested_status,
-      profile_id: mapping.profile_id,
-      causal_basis_type: mapping.causal_basis_type,
-      causal_basis_id: mapping.causal_basis_id
-    }),
-    historical_approval_basis_digest: historicalApprovalDigest
-  }));
+  const g4Transitions = approvedG4Transitions(g4Approval, historicalApprovalDigest);
 
   const runtimeConfiguration = {
     schema: 'rus.first_playable_runtime_world_configuration.v1',
@@ -514,6 +660,20 @@ async function readRegisteredRows(pool) {
         .map(normalizePostgresRow);
   }
   return result;
+}
+
+function approvedG4Transitions(approval, historicalApprovalDigest) {
+  return approval.profile_mappings.map((mapping) => ({
+    graph_node_id: mapping.graph_node_id, asserted_status: 'approved',
+    source_transition_semantic_digest: digestEnvelope({
+      schema: 'rus.stage3c_g4_transition_semantics.v1',
+      graph_node_id: mapping.graph_node_id,
+      from_status: mapping.current_status, to_status: mapping.requested_status,
+      profile_id: mapping.profile_id,
+      causal_basis_type: mapping.causal_basis_type,
+      causal_basis_id: mapping.causal_basis_id
+    }), historical_approval_basis_digest: historicalApprovalDigest
+  }));
 }
 
 function normalizePostgresRow(row) {

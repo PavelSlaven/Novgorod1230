@@ -4,6 +4,7 @@ import test from 'node:test';
 import {
   RuntimeCatalogArtifactError,
   buildActivationEvent,
+  buildActivationPartyPreflight,
   buildActivationRequest,
   buildBaseWorldCompatibilityManifest,
   buildBaselineRegistrationId,
@@ -18,6 +19,21 @@ import { runRuntimeCatalogOperatorCli } from '../src/cli.js';
 import { RECORD_ADAPTERS } from '../src/record-adapters.generated.js';
 
 const sha = (letter) => letter.repeat(64);
+
+test('production successor preflight preserves every existing party pin', () => {
+  const counts = { activationScope: 'new_production_parties_only',
+    partyCount: 2, pinnedPartyCount: 2, missingDomainPinCount: 0,
+    inflightStage24Stage25Count: 0,
+    runtimeReleaseId: sha('a'), runtimeContractDigest: sha('b') };
+  assert.equal(buildActivationPartyPreflight(counts).party_count, 2);
+  for (const change of [{ missingDomainPinCount: 1 }, { pinnedPartyCount: 1 },
+    { inflightStage24Stage25Count: 1 }, { activationScope: 'initial_empty_party_database' }]) {
+    assert.throws(() => buildActivationPartyPreflight({ ...counts, ...change }),
+      { code: 'ACTIVATION_PARTY_PREFLIGHT_BLOCKED' });
+  }
+  assert.throws(() => buildActivationPartyPreflight({ ...counts,
+    activationScope: 'unknown' }), { code: 'ACTIVATION_SCOPE_INVALID' });
+});
 
 test('generated INSERT adapters use raw identifiers, never SELECT casts', () => {
   for (const adapter of Object.values(RECORD_ADAPTERS)) {

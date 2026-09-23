@@ -11,14 +11,21 @@ import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION } from
   './forward-migrations.js';
 import { SPATIAL_V3_PRODUCTION_V12_RELEASE } from
   './spatial-v3-production-v12-activation.js';
+import { isActorBaseAttributesSuccessor,
+  validateActorBaseAttributesSuccessorImportApproval } from
+  './actor-base-attributes-successor.js';
 
 const IMPORT_LOCK = '742019261002';
 const IMPORT_ID_PREFIX = 'actor_base_attributes_import_';
 
 export function buildActorBaseAttributesImportLedger({ request,
   attestation }) {
-  validateActorBaseAttributesImportApproval({ request, attestation });
-  assertCompatibleWorldContract(request);
+  if (isActorBaseAttributesSuccessor(request)) {
+    validateActorBaseAttributesSuccessorImportApproval({ request, attestation });
+  } else {
+    validateActorBaseAttributesImportApproval({ request, attestation });
+    assertCompatibleWorldContract(request);
+  }
   const entry = ACTOR_BASE_ATTRIBUTES_OWNER_REGISTRY.entries[0];
   const owner = request.owner_rows[0];
   const projection = projectCanonicalRecord({
@@ -190,7 +197,10 @@ export async function readActorBaseAttributesImport(client, { request,
   const activationCount = Number((await client.query(
     `SELECT count(*) AS count
        FROM world_base.runtime_catalog_activation_events
-      WHERE catalog_scope=$1`, [request.catalog_scope])).rows[0].count);
+      WHERE catalog_scope=$1
+        AND ($2::text IS NULL OR catalog_revision_id=$2)`,
+    [request.catalog_scope, isActorBaseAttributesSuccessor(request)
+      ? request.target_revision_id : null])).rows[0].count);
   if (![0, 1].includes(expectedActivationEventCount)) readbackFail();
   if (domainRows.length !== 1 || revisionRows.length !== 1
       || importRows.length !== 1
@@ -261,7 +271,9 @@ export function validateActorBaseAttributesImportResult({ result, request,
 function readbackPayload({ request, attestation, ledger }) {
   const owner = request.owner_rows[0].row;
   return {
-    schema: 'rus.actor_base_attributes_import_readback_result.v1',
+    schema: isActorBaseAttributesSuccessor(request)
+      ? 'rus.actor_base_attributes_import_readback_result.v2'
+      : 'rus.actor_base_attributes_import_readback_result.v1',
     status: 'imported_exact_readback_verified',
     request_digest: request.request_digest,
     import_approval_attestation_digest: attestation.attestation_digest,
@@ -313,6 +325,9 @@ async function assertImportPrerequisites(client, request, ledger) {
 }
 
 async function readParentRegistrationId(client, request) {
+  const parentCompatibilityDigest = isActorBaseAttributesSuccessor(request)
+    ? request.parent_catalog.compatible_world_pin_manifest_digest
+    : SPATIAL_V3_PRODUCTION_V12_RELEASE.worldManifestSha256;
   const rows = (await client.query(
     `SELECT parent_registration_id,target_catalog_digest,
             compatible_world_revision_id,compatible_world_catalog_digest,
@@ -329,7 +344,7 @@ async function readParentRegistrationId(client, request) {
       || row.compatible_world_catalog_digest !==
         request.compatible_world.compatible_world_catalog_digest
       || row.compatible_world_pin_manifest_digest !==
-        SPATIAL_V3_PRODUCTION_V12_RELEASE.worldManifestSha256
+        parentCompatibilityDigest
       || row.status !== 'approved') {
     fail('ACTOR_BASE_ATTRIBUTES_IMPORT_PARENT_MISMATCH',
       'Exact approved parent catalog is unavailable.', {
@@ -352,7 +367,7 @@ async function readParentRegistrationId(client, request) {
         compatible_world_catalog_digest:
           request.compatible_world.compatible_world_catalog_digest,
         compatible_world_pin_manifest_digest:
-          SPATIAL_V3_PRODUCTION_V12_RELEASE.worldManifestSha256
+          parentCompatibilityDigest
       })) {
     fail('ACTOR_BASE_ATTRIBUTES_IMPORT_PARENT_REGISTRATION_MISMATCH',
       'Exact approved parent registration is unavailable.');

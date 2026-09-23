@@ -29,6 +29,22 @@ import {
 } from '../../apps/game-server/src/config.js';
 import { loadProductionWorldKnowledge } from
   '../../apps/game-server/src/internal/world-knowledge-production.js';
+import actorImportRequest from '../../data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/runtime-import-v1/request.json' with { type: 'json' };
+import actorImportAttestation from '../../data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/runtime-import-v1/import-approval-attestation.json' with { type: 'json' };
+import { buildActorBaseAttributesImportLedger } from '../../tools/runtime-catalog-activation/src/actor-base-attributes-import.js';
+import { buildActivationEventFromVerifiedAttestation } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
+
+const actorLedger = buildActorBaseAttributesImportLedger({
+  request: actorImportRequest, attestation: actorImportAttestation
+});
+const actorEvent = buildActivationEventFromVerifiedAttestation({
+  request: { ...actorLedger.root,
+    runtime_contract_digest: actorImportRequest.runtime_contract_digest,
+    activation_request_digest: 'd'.repeat(64), runtime_release_id: 'e'.repeat(64),
+    expected_previous_event_id: null },
+  attestationDigest: 'f'.repeat(64), previousEvent: null,
+  operatorPrincipal: 'isolated-composition-fixture'
+});
 
 const TEST_PIN_MANIFEST_DIGEST = 'e'.repeat(64);
 const TEST_RELEASE = createSpatialV3ProductionRelease(
@@ -213,7 +229,29 @@ function fixture() {
         : ({ rows: [] }),
       release() {}
     }),
-    query: async (sql) => {
+    query: async (sql, params = []) => {
+      if (/runtime_catalog_activation_events/u.test(sql)
+          && params[0] === actorImportRequest.catalog_scope) {
+        return { rows: [actorEvent] };
+      }
+      if (/domain_catalog_revisions/u.test(sql)
+          && params[0] === actorImportRequest.target_revision_id) {
+        return { rows: [{ ...actorEvent,
+          target_catalog_digest: actorEvent.catalog_digest, status: 'approved' }] };
+      }
+      if (/catalog_import_tables/u.test(sql) && params[0] === actorLedger.root.import_id) {
+        return { rows: actorLedger.tables };
+      }
+      if (/catalog_import_records/u.test(sql) && params[0] === actorLedger.root.import_id) {
+        return { rows: actorLedger.records };
+      }
+      if (/catalog_imports/u.test(sql) && params[0] === actorLedger.root.import_id) {
+        const { schema: ignoredSchema, ...root } = actorLedger.root;
+        return { rows: [{ ...root, import_approval_status: 'approved' }] };
+      }
+      if (/actor_base_attribute_profiles/u.test(sql)) {
+        return { rows: [actorImportRequest.owner_rows[0].row] };
+      }
       if (/spatial_v3_world_revisions/u.test(sql)) {
         return {
           rows: [{
@@ -699,7 +737,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger through migration 034', async () => {
+test('restart extends the exact immutable catalog ledger through the current migration chain', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -729,7 +767,7 @@ test('restart extends the exact immutable catalog ledger through migration 034',
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 23);
+  assert.equal(result.newly_applied, SPATIAL_V3_TARGET_MIGRATIONS.length - 11);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),

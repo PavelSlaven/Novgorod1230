@@ -12,11 +12,11 @@ import { serverError } from '../../errors.js';
 export const ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE =
   'actor_base_attributes_v1';
 
-export async function loadActiveActorBaseAttributesProfile(worldPool) {
-  return (await loadActiveActorBaseAttributesBinding(worldPool)).runtime_profile;
+export async function loadActiveActorBaseAttributesProfile(worldPool, options) {
+  return (await loadActiveActorBaseAttributesBinding(worldPool, options)).runtime_profile;
 }
 
-export async function loadActiveActorBaseAttributesBinding(worldPool) {
+export async function loadActiveActorBaseAttributesBinding(worldPool, { expectedPin = null } = {}) {
   let activationRows, revisionRows, importRows, tables, records, profileRows;
   try {
     activationRows = (await worldPool.query(
@@ -29,9 +29,9 @@ export async function loadActiveActorBaseAttributesBinding(worldPool) {
               attestation_digest,expected_previous_event_id,
               runtime_release_id,operator_principal,event_digest
          FROM world_base.runtime_catalog_activation_events
-        WHERE catalog_scope=$1
+        WHERE catalog_scope=$1 AND ($2::text IS NULL OR event_id=$2)
         ORDER BY event_sequence DESC LIMIT 1`,
-      [ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE]
+      [ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE, expectedPin?.activation_event_id ?? null]
     )).rows;
     if (activationRows.length === 0) gap();
     const activation = activationRows[0];
@@ -134,8 +134,11 @@ export async function loadActiveActorBaseAttributesBinding(worldPool) {
   });
   const record = records?.[0], table = tables?.[0];
   if (activation.event_type !== 'activate'
-      || Number(activation.event_sequence) !== 1
-      || activation.expected_previous_event_id !== null
+      || !Number.isSafeInteger(Number(activation.event_sequence))
+      || Number(activation.event_sequence) < 1
+      || (Number(activation.event_sequence) === 1
+        ? activation.expected_previous_event_id !== null
+        : expectedPin == null || typeof activation.expected_previous_event_id !== 'string')
       || activation.event_digest !== eventDigest
       || activation.event_id !==
         `runtime_catalog_activation_${eventDigest.slice(0, 32)}`
@@ -212,7 +215,7 @@ export async function loadActiveActorBaseAttributesBinding(worldPool) {
     profile_digest: row.profile_digest,
     profile: Object.freeze(structuredClone(profile))
   });
-  return Object.freeze({
+  const binding = Object.freeze({
     schema: 'rus.actor_base_attributes_runtime_binding.v1',
     runtime_profile: runtimeProfile,
     pin: Object.freeze({
@@ -232,6 +235,18 @@ export async function loadActiveActorBaseAttributesBinding(worldPool) {
       activation_event_id: activation.event_id
     })
   });
+  if (expectedPin != null
+      && canonicalStringify(binding.pin) !== canonicalStringify(expectedPin)) invalid();
+  if (Number(activation.event_sequence) > 1) {
+    const predecessor = (await worldPool.query(
+      `SELECT event_id,event_sequence FROM world_base.runtime_catalog_activation_events
+        WHERE catalog_scope=$1 AND event_id=$2`,
+      [ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE, activation.expected_previous_event_id]
+    )).rows;
+    if (predecessor.length !== 1
+        || Number(predecessor[0].event_sequence) !== Number(activation.event_sequence) - 1) invalid();
+  }
+  return binding;
 }
 
 function digest(value) {

@@ -12,9 +12,9 @@ import {
   buildBaselineRegistrationId,
   buildActivationEvent,
   buildActivationEventFromVerifiedAttestation,
+  buildActivationPartyPreflight,
   buildDevelopmentPartyPreflight,
   buildOperatorBaselineSnapshotManifest,
-  buildPartyPreflight,
   digestEnvelope,
   verifyDecisionAttestation
 } from './artifact-contracts.js';
@@ -351,8 +351,15 @@ export async function activateApprovedCatalog({
   partyPool,
   request,
   attestation,
-  activationScope = 'initial_empty_party_database'
+  activationScope = request?.activation_scope ?? 'initial_empty_party_database'
 }) {
+  if ((request.activation_scope != null
+      && activationScope !== request.activation_scope)
+      || (activationScope === 'new_production_parties_only'
+        && request.activation_scope !== activationScope)) {
+    fail('ACTIVATION_SCOPE_INVALID',
+      'Production successor scope must be bound by the approved request.');
+  }
   return inTransaction(worldPool, client, async (client) => {
     await client.query(
       'SELECT pg_advisory_xact_lock($1::bigint)',
@@ -391,10 +398,8 @@ export async function activateApprovedCatalog({
            WHERE status IN ('reserved','transaction_committed')) AS inflight_count`
     );
     const row = counts.rows[0];
-    const preflightBuilder = activationScope ===
-      'new_development_parties_only'
-      ? buildDevelopmentPartyPreflight : buildPartyPreflight;
-    const preflight = preflightBuilder({
+    const preflight = buildActivationPartyPreflight({
+      activationScope,
       partyCount: Number(row.party_count),
       pinnedPartyCount: Number(row.pinned_party_count),
       missingDomainPinCount: Number(row.missing_domain_pin_count),

@@ -17,26 +17,36 @@ const IMPORT_RESULT = `${ROOT}/runtime-import-v1/import-readback-result.json`;
 const RESULT = `${ROOT}/runtime-activation-v1/activation-readback-result.json`;
 
 export async function runActorBaseAttributesRuntimeActivation({ databaseUrl,
-  resultPath = null }) {
+  resultPath = null, activationArtifacts = null, partyDatabaseUrl = null }) {
   if (typeof databaseUrl !== 'string' || databaseUrl.length === 0) {
     throw Object.assign(new Error('Actor activation database URL required.'),
       { code: 'ACTOR_BASE_ATTRIBUTES_DATABASE_URL_REQUIRED' });
   }
   const [request, attestation, importResult, importApproval] =
-    await Promise.all([readJson(REQUEST), readJson(ATTESTATION),
-      readJson(IMPORT_RESULT), loadActorBaseAttributesImportApproval()]);
+    activationArtifacts ? [activationArtifacts.request,
+      activationArtifacts.attestation, activationArtifacts.importResult,
+      activationArtifacts.importApproval]
+      : await Promise.all([readJson(REQUEST), readJson(ATTESTATION),
+        readJson(IMPORT_RESULT), loadActorBaseAttributesImportApproval()]);
+  if (request.schema === 'rus.actor_base_attributes_runtime_activation_request.v2'
+      && resultPath && resolve(resultPath) === resolve(RESULT)) {
+    throw new Error('ACTOR_SUCCESSOR_HISTORICAL_RESULT_PATH_FORBIDDEN');
+  }
   const readPool = new pg.Pool({ connectionString: roleUrl(databaseUrl,
     'runtime_catalog_importer'), max: 1 });
   const activationPool = new pg.Pool({ connectionString: roleUrl(databaseUrl,
     'runtime_catalog_activator'), max: 1 });
+  const partyPool = partyDatabaseUrl
+    ? new pg.Pool({ connectionString: partyDatabaseUrl, max: 1 }) : null;
   try {
     const result = await activateActorBaseAttributes({ readPool,
-      activationPool, request, attestation, importApproval, importResult });
+      activationPool, request, attestation, importApproval, importResult,
+      partyPool });
     if (resultPath) await writeFile(resolve(resultPath),
       `${JSON.stringify(result, null, 2)}\n`, 'utf8');
     return result;
   } finally {
-    await Promise.all([readPool.end(), activationPool.end()]);
+    await Promise.all([readPool.end(), activationPool.end(), partyPool?.end()]);
   }
 }
 
@@ -53,9 +63,13 @@ async function readJson(path) {
 async function main(argv) {
   const { values } = parseArgs({ args: argv, options: {
     'database-url': { type: 'string' },
+    'party-database-url': { type: 'string' },
+    input: { type: 'string' },
     'write-result': { type: 'string' }
   } });
   const result = await runActorBaseAttributesRuntimeActivation({
+    partyDatabaseUrl: values['party-database-url'],
+    activationArtifacts: values.input ? await readJson(values.input) : null,
     databaseUrl: values['database-url']
       ?? process.env.ACTOR_BASE_ATTRIBUTES_DATABASE_URL,
     resultPath: values['write-result'] === 'canonical'

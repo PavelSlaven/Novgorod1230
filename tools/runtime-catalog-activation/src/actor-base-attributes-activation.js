@@ -8,20 +8,33 @@ import { buildActivationEventFromVerifiedAttestation,
 import { readActorBaseAttributesImport,
   validateActorBaseAttributesImportResult } from
   './actor-base-attributes-import.js';
+import { isActorBaseAttributesSuccessor,
+  validateActorBaseAttributesSuccessorActivationApproval,
+  buildActorBaseAttributesSuccessorPreflight } from
+  './actor-base-attributes-successor.js';
 
 const ACTIVATOR = 'runtime_catalog_activator';
 
 export async function activateActorBaseAttributes({ readPool, activationPool,
-  request, attestation, importApproval, importResult }) {
-  validateActorBaseAttributesRuntimeActivationAttestation({ request,
-    attestation });
+  request, attestation, importApproval, importResult, partyPool = null }) {
+  validateApproval({ request, attestation });
   validateActorBaseAttributesImportResult({ result: importResult,
     ...importApproval });
+  const successor = isActorBaseAttributesSuccessor(request);
+  if (successor && (canonicalStringify(request.import_request)
+      !== canonicalStringify(importApproval.request)
+      || canonicalStringify(request.completed_import_readback)
+        !== canonicalStringify(importResult))) {
+    fail('ACTOR_BASE_ATTRIBUTES_ACTIVATION_IMPORT_MISMATCH',
+      'Successor activation must bind the exact reviewed import.');
+  }
   const activationEventCount = Number((await readPool.query(
     `SELECT count(*) AS count
        FROM world_base.runtime_catalog_activation_events
-      WHERE catalog_scope=$1`,
-    [request.target_binding.catalog_scope])).rows[0].count);
+      WHERE catalog_scope=$1
+        AND ($2::text IS NULL OR catalog_revision_id=$2)`,
+    [request.target_binding.catalog_scope,
+      successor ? request.target_binding.target_revision_id : null])).rows[0].count);
   if (![0, 1].includes(activationEventCount)) collision();
   const liveImport = await readActorBaseAttributesImport(readPool,
     { ...importApproval, expectedActivationEventCount: activationEventCount });
@@ -33,6 +46,24 @@ export async function activateActorBaseAttributes({ readPool, activationPool,
   return transaction(activationPool, async (client) => {
     await client.query('SELECT pg_advisory_xact_lock($1::bigint)',
       [RUNTIME_CATALOG_ACTIVATION_LOCK_KEY]);
+    if (successor) {
+      if (!partyPool) fail('ACTOR_SUCCESSOR_PARTY_PREFLIGHT_REQUIRED',
+        'Production actor successor requires the current party preflight.');
+      const counts = (await partyPool.query(`SELECT
+        (SELECT count(*)::int FROM party_runtime.parties) AS party_count,
+        (SELECT count(DISTINCT party_id)::int FROM party_runtime.party_catalog_pins
+          WHERE catalog_scope='actor_base_attributes_v1') AS pinned_party_count,
+        (SELECT count(*)::int FROM party_runtime.parties p
+          WHERE NOT EXISTS (SELECT 1 FROM party_runtime.party_catalog_pins c
+            WHERE c.party_id=p.party_id AND c.catalog_scope='actor_base_attributes_v1'))
+          AS missing_domain_pin_count,
+        (SELECT count(*)::int FROM party_runtime.commit_idempotency
+          WHERE status IN ('reserved','transaction_committed')) AS inflight_count`)).rows[0];
+      if (canonicalStringify(buildActorBaseAttributesSuccessorPreflight(counts))
+          !== canonicalStringify(request.party_preflight)) {
+        fail('ACTIVATION_PARTY_PREFLIGHT_STALE', 'Actor party preflight changed after approval.');
+      }
+    }
     await assertActivationSource(client, request);
     const principal = (await client.query(
       'SELECT current_user AS principal')).rows[0].principal;
@@ -52,13 +83,26 @@ export async function activateActorBaseAttributes({ readPool, activationPool,
          FROM world_base.runtime_catalog_activation_events
         WHERE catalog_scope=$1 ORDER BY event_sequence DESC LIMIT 1`,
       [request.target_binding.catalog_scope])).rows[0] ?? null;
+    let previousEvent = null;
+    const replay = latest?.request_digest === request.request_digest;
+    if (successor) {
+      previousEvent = replay ? (await client.query(
+        `SELECT event_id,event_sequence FROM world_base.runtime_catalog_activation_events
+          WHERE event_id=$1 AND catalog_scope=$2`,
+        [request.expected_previous_event.event_id,
+          request.target_binding.catalog_scope])).rows[0] ?? null : latest;
+      if (!previousEvent || previousEvent.event_id !== request.expected_previous_event.event_id
+          || Number(previousEvent.event_sequence) !== request.expected_previous_event.event_sequence) {
+        fail('ACTIVATION_PREVIOUS_EVENT_STALE', 'Actor successor predecessor changed.');
+      }
+    }
     const event = buildActivationEventFromVerifiedAttestation({
       request: eventRequest,
       attestationDigest: attestation.attestation_digest,
-      previousEvent: null,
+      previousEvent,
       operatorPrincipal: principal
     });
-    if (latest) {
+    if (latest && (!successor || replay)) {
       if (canonicalStringify(normalizeEvent(latest)) !==
           canonicalStringify(eventRow(event))) collision();
       return activationResult({ request, attestation, event });
@@ -79,12 +123,11 @@ export async function activateActorBaseAttributes({ readPool, activationPool,
 
 export function validateActorBaseAttributesActivationResult({ result,
   request, attestation }) {
-  validateActorBaseAttributesRuntimeActivationAttestation({ request,
-    attestation });
+  validateApproval({ request, attestation });
   const event = buildActivationEventFromVerifiedAttestation({
     request: buildEventRequest({ request, attestation }),
     attestationDigest: attestation.attestation_digest,
-    previousEvent: null,
+    previousEvent: request.expected_previous_event ?? null,
     operatorPrincipal: ACTIVATOR
   });
   const expected = activationResult({ request, attestation, event });
@@ -112,7 +155,7 @@ function buildEventRequest({ request, attestation }) {
     compatible_world_pin_manifest_digest:
       binding.compatible_world.compatible_world_pin_manifest_digest,
     activation_request_digest: request.request_digest,
-    expected_previous_event_id: null,
+    expected_previous_event_id: request.expected_previous_event?.event_id ?? null,
     runtime_release_id: digestEnvelope({
       schema: 'rus.actor_base_attributes_runtime_release.v1',
       activation_request_digest: request.request_digest,
@@ -175,8 +218,10 @@ async function assertActivationSource(client, request) {
 }
 
 function activationResult({ request, attestation, event }) {
+  const successor = isActorBaseAttributesSuccessor(request);
   const payload = {
-    schema: 'rus.actor_base_attributes_runtime_activation_result.v1',
+    schema: successor ? 'rus.actor_base_attributes_runtime_activation_result.v2'
+      : 'rus.actor_base_attributes_runtime_activation_result.v1',
     status: 'activated_exact_readback_verified',
     activation_scope: request.activation_scope,
     runtime_capability: request.runtime_capability,
@@ -195,9 +240,9 @@ function activationResult({ request, attestation, event }) {
     runtime_authorized: true,
     activation_authorized: true,
     actor_base_attributes_runtime_selection_authorized: true,
-    new_development_party_activation_authorized: true,
+    new_development_party_activation_authorized: !successor,
     import_authorized: false,
-    production_authorized: false,
+    production_authorized: successor,
     equipment_allocation_activation_authorized: false,
     functional_allocation_runtime_selection_authorized: false,
     runtime_item_creation_authorized: false,
@@ -208,6 +253,12 @@ function activationResult({ request, attestation, event }) {
     broader_m3_attested: false
   };
   return Object.freeze({ ...payload, result_digest: digestEnvelope(payload) });
+}
+
+function validateApproval(approval) {
+  return isActorBaseAttributesSuccessor(approval.request)
+    ? validateActorBaseAttributesSuccessorActivationApproval(approval)
+    : validateActorBaseAttributesRuntimeActivationAttestation(approval);
 }
 
 function eventRow(event) {

@@ -1,0 +1,372 @@
+{
+  "schema": "rus.actor_base_attributes_target_compatibility_request.v1",
+  "version": 1,
+  "status": "pending_independent_compatibility_approval",
+  "subject_commit": "821a1e10230fcedd6c846599868bf55521ad0233",
+  "runtime_configuration": {
+    "schema": "rus.spatial_v3_target_catalog_configuration.v1",
+    "release_id": "spatial-v3-production-v17",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "world_manifest_sha256": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e"
+  },
+  "compatible_world": {
+    "schema": "rus.base_world_compatibility_manifest.v1",
+    "compatible_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "compatible_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+    "source_runtime_configuration_digest": "082b68d7b7caa2827382c3b8f7dba9a52e6892e185a296470a434643e0b95a2c",
+    "source_artifact_paths": [
+      "data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_world_revisions.json",
+      "data/world-catalogs/novgorod/spatial-v3/manifest.json"
+    ],
+    "source_commit_sha": "821a1e10230fcedd6c846599868bf55521ad0233",
+    "validation_contract_version": "base_world_compatibility_v2",
+    "compatible_world_pin_manifest_digest": "9fec9e6180fc1f1ac9c5aa80721cd671c16ba4d1a12f509820598aaf2c675f44"
+  },
+  "activation_scope": "new_production_parties_only",
+  "authority": {
+    "import_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false
+  },
+  "independent_approval_attestation": null,
+  "runtime_pin": null,
+  "catalog_scope": "actor_base_attributes_v1",
+  "target_revision_id": "actor_base_attributes_spatial_v3_target_001",
+  "target_catalog_digest": null,
+  "parent_catalog": {
+    "catalog_scope": "item_container_materialization_v2",
+    "catalog_revision_id": "item_container_spatial_v3_target_001",
+    "compatibility_request_digest": "44aca55791e583e588dc23ca8a3f38990f3c824682be9e81993f85d3c96dd44d",
+    "catalog_digest": null,
+    "import_readback": null
+  },
+  "authoring_approval": {
+    "candidate_ref": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/candidate.json",
+    "candidate_digest": "7c0916640715c9c48bd023676b3268deccdc0c83a66c980835ae25173f04d309",
+    "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
+    "request_ref": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/approval-request.json",
+    "request_digest": "fc362bb73f60ad87595d0ca51a2080bff7c970907fa8f2ca5f94e5acae155c89",
+    "attestation_ref": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/authoring-approval-attestation.json",
+    "attestation_digest": "06bbe4e0b12a460ecd8bb34119617c1699579d9724ce6524ed3573b2c9aea7ad"
+  },
+  "record_registry_digest": "6815792a38bf8e0a10f405941bd7116b597805ef68ce8f0a5c4b9c95123e2e64",
+  "runtime_contract_digest": "2151d75852f23b3b70b0c1f0cafec50bad98de5759c580e00e4eead5a06512c0",
+  "owner_rows": [
+    {
+      "table_name": "actor_base_attribute_profiles",
+      "operation": "insert",
+      "row": {
+        "catalog_revision_id": "actor_base_attributes_spatial_v3_target_001",
+        "profile_id": "novgorod_ordinary_actor_base_attributes_v1",
+        "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
+        "profile_payload": {
+          "schema": "rus.actor_base_attributes_profile.v1",
+          "version": 1,
+          "profile_id": "novgorod_ordinary_actor_base_attributes_v1",
+          "algorithm_version": "actor_base_attributes_v1",
+          "rng_version": "mulberry32_v1",
+          "ordinary_array": [
+            13,
+            12,
+            11,
+            10,
+            9,
+            8
+          ],
+          "occupation_archetype_priorities": [
+            {
+              "mapping_id": "agriculture",
+              "occupation_archetype_id": "agriculture",
+              "priority_tiers": [
+                [
+                  "endurance"
+                ],
+                [
+                  "strength"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "reason"
+                ],
+                [
+                  "influence"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "animal_husbandry",
+              "occupation_archetype_id": "animal_husbandry",
+              "priority_tiers": [
+                [
+                  "endurance"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "strength"
+                ],
+                [
+                  "influence"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "reason"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "craft_production",
+              "occupation_archetype_id": "craft_production",
+              "priority_tiers": [
+                [
+                  "dexterity"
+                ],
+                [
+                  "reason"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "endurance"
+                ],
+                [
+                  "strength"
+                ],
+                [
+                  "influence"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "domestic_service",
+              "occupation_archetype_id": "domestic_service",
+              "priority_tiers": [
+                [
+                  "attention"
+                ],
+                [
+                  "endurance"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "influence"
+                ],
+                [
+                  "reason"
+                ],
+                [
+                  "strength"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "fishing_water",
+              "occupation_archetype_id": "fishing_water",
+              "priority_tiers": [
+                [
+                  "strength"
+                ],
+                [
+                  "endurance"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "reason"
+                ],
+                [
+                  "influence"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "forest_hunting",
+              "occupation_archetype_id": "forest_hunting",
+              "priority_tiers": [
+                [
+                  "attention"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "endurance"
+                ],
+                [
+                  "strength"
+                ],
+                [
+                  "reason"
+                ],
+                [
+                  "influence"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "illicit_marginal",
+              "occupation_archetype_id": "illicit_marginal",
+              "priority_tiers": [
+                [
+                  "dexterity"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "influence"
+                ],
+                [
+                  "reason"
+                ],
+                [
+                  "endurance"
+                ],
+                [
+                  "strength"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "military_security",
+              "occupation_archetype_id": "military_security",
+              "priority_tiers": [
+                [
+                  "strength"
+                ],
+                [
+                  "endurance"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "influence"
+                ],
+                [
+                  "reason"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "religious_literate",
+              "occupation_archetype_id": "religious_literate",
+              "priority_tiers": [
+                [
+                  "reason"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "influence"
+                ],
+                [
+                  "endurance"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "strength"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "trade_exchange",
+              "occupation_archetype_id": "trade_exchange",
+              "priority_tiers": [
+                [
+                  "influence"
+                ],
+                [
+                  "reason"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "endurance"
+                ],
+                [
+                  "strength"
+                ]
+              ]
+            },
+            {
+              "mapping_id": "transport_guiding",
+              "occupation_archetype_id": "transport_guiding",
+              "priority_tiers": [
+                [
+                  "endurance"
+                ],
+                [
+                  "attention"
+                ],
+                [
+                  "strength"
+                ],
+                [
+                  "dexterity"
+                ],
+                [
+                  "reason"
+                ],
+                [
+                  "influence"
+                ]
+              ]
+            }
+          ]
+        },
+        "status": "approved"
+      }
+    }
+  ],
+  "historical_activation": {
+    "path": "data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/runtime-activation-v1/activation-readback-result.json",
+    "result_digest": "50916dc71538da994eebf5810f3397b68a88e43f51479af0abc7ea640fa08c7d",
+    "event_id": "runtime_catalog_activation_c7c138d5c84963e5e9be55d462fd9b74",
+    "event_digest": "c7c138d5c84963e5e9be55d462fd9b74436b6b7567b8bb330aade1a5ffbd527c",
+    "live_predecessor_verified": false
+  },
+  "requested_operations": [
+    "transactional_successor_import",
+    "exact_readback",
+    "append_successor_activation_for_new_production_parties_only"
+  ],
+  "operational_import_request": null,
+  "operational_activation_request": null,
+  "required_before_operational_request": [
+    "exact_target_item_parent_catalog_and_registration_readback",
+    "independent_target_actor_import_approval",
+    "target_actor_import_exact_readback",
+    "live_activation_predecessor_and_party_preflight",
+    "independent_new_production_activation_approval"
+  ],
+  "request_digest": "bd0da1e790fcee89f3c63731cc936fc37dd0f1d7397b609cdbab5e6e4cd7dec7"
+}

@@ -11,6 +11,7 @@ import { ACTOR_BASE_ATTRIBUTES_OWNER_REGISTRY,
   '@rus/runtime-catalog/runtime-contract';
 import {
   ACTOR_BASE_ATTRIBUTES_CATALOG_SCOPE,
+  loadActiveActorBaseAttributesBinding,
   loadActiveActorBaseAttributesProfile
 } from '../src/infrastructure/postgres/actor-base-attributes-profile-loader.js';
 
@@ -124,9 +125,9 @@ const revision = Object.freeze({
 
 function pool({ activations = [activation], revisions = [revision],
   imports = [importRoot], tables = [table], records = [record],
-  profiles = [profileRow] } = {}) {
+  profiles = [profileRow], predecessors = [] } = {}) {
   let call = 0;
-  const rows = [activations, revisions, imports, tables, records, profiles];
+  const rows = [activations, revisions, imports, tables, records, profiles, predecessors];
   return { async query() { return { rows: rows[call++] }; } };
 }
 
@@ -176,3 +177,26 @@ test('actor profile loader maps absent owner schema to typed data gap',
       }
     }), { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_DATA_GAP' });
   });
+
+test('actor successor loader requires the exact persisted pin and predecessor', async () => {
+  const first = await loadActiveActorBaseAttributesBinding(pool());
+  const envelope = { ...activationEnvelope, event_sequence: 2,
+    expected_previous_event_id: activation.event_id };
+  const eventDigest = canonicalDigest(envelope);
+  const successor = { ...envelope, event_digest: eventDigest,
+    event_id: `runtime_catalog_activation_${eventDigest.slice(0, 32)}` };
+  const expectedPin = { ...first.pin, activation_event_id: successor.event_id };
+  const fixture = { activations: [successor], predecessors: [activation] };
+  assert.deepEqual((await loadActiveActorBaseAttributesBinding(pool(fixture),
+    { expectedPin })).pin, expectedPin);
+  await assert.rejects(() => loadActiveActorBaseAttributesBinding(pool(fixture)),
+    { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID' });
+  await assert.rejects(() => loadActiveActorBaseAttributesBinding(pool(fixture),
+    { expectedPin: { ...expectedPin, catalog_digest: digest('f') } }),
+  { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID' });
+  await assert.rejects(() => loadActiveActorBaseAttributesBinding(pool({ ...fixture,
+    predecessors: [] }), { expectedPin }),
+  { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID' });
+  assert.deepEqual((await loadActiveActorBaseAttributesBinding(pool(),
+    { expectedPin: first.pin })).pin, first.pin);
+});

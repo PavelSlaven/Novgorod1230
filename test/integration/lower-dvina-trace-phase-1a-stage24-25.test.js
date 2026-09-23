@@ -39,6 +39,8 @@ import { lowerDvinaTraceCanonicalG5SceneBindings } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 import { resolveFirstEntry } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-3-first-entry.js';
+import { buildLowerDvinaTracePersistedProjection } from
+  '../../packages/new-game/src/stages/stage-24-party-db-write-plan/code/lower-dvina-trace-persisted-projection.js';
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 24
@@ -398,6 +400,25 @@ test('revision 32 persists complete mechanics for every initial item', async () 
     .records[0].state_payload.persisted_projection;
   assert.equal(snapshot.npcs.every(({ schedule_records: records }) =>
     records.length === 1), true);
+});
+
+test('persisted projection keeps spatial routines separate from legacy NPC schedules', async () => {
+  const revision32 = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 32 });
+  const result = structuredClone(createMaterialization({ revision: 32, bundle: revision32,
+    domainCatalogPin: lowerDvinaTracePhase1ADomainPin(revision32) }));
+  const npc = result.immediate.npcs[0];
+  assert.ok(npc.schedule_records.length > 0);
+  npc.routine_state = { profile: { profile_id: 'test-routine', revision: 1 },
+    status: 'active', next_transition_at: null };
+  const projection = buildLowerDvinaTracePersistedProjection({ result,
+    changeSetId: 'change:routine', runRecord: {}, choiceRecords: [] });
+  assert.deepEqual(projection.npcs.find((row) => row.npc_id === npc.instance_id).schedule_records, []);
+  assert.equal(projection.npc_spatial_schedules.length, 1);
+  assert.deepEqual(projection.npc_spatial_schedules[0].causal_state_ref.routine_state, npc.routine_state);
+  for (const legacy of result.immediate.npcs.slice(1)) {
+    assert.deepEqual(projection.npcs.find((row) => row.npc_id === legacy.instance_id).schedule_records,
+      legacy.schedule_records ?? []);
+  }
 });
 
 test('unknown table and forbidden operation fail before the transaction executor', async () => {

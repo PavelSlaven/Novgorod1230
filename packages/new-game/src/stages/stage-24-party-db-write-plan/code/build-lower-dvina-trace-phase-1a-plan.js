@@ -243,7 +243,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     occupation_ref: { id: player.dossier.social_status.occupation_id, source: 'approved_scenario_profile' },
     skill_profile_snapshot: player.dossier.skills,
     name_profile_snapshot: projectNameProfileSnapshot(player.dossier.identity),
-    language_profile_snapshot: {},
+    language_profile_snapshot: structuredClone(player.dossier.language ?? {}),
     knowledge_profile_snapshot: player.dossier.knowledge,
     ...(player.base_attributes == null ? {} : { attribute_profile_snapshot: structuredClone(player.base_attributes) }),
     profile_candidate_set_digest: result.trace.choices.find((choice) => choice.choice_key === 'player_profile').candidate_set_digest,

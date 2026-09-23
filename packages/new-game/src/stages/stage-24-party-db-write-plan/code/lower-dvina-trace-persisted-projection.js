@@ -39,7 +39,7 @@ export function buildLowerDvinaTracePersistedProjection({
       },
       skill_profile_snapshot: structuredClone(player.dossier.skills),
       name_profile_snapshot: projectNameProfileSnapshot(player.dossier.identity),
-      language_profile_snapshot: {},
+      language_profile_snapshot: structuredClone(player.dossier.language ?? {}),
       knowledge_profile_snapshot: structuredClone(player.dossier.knowledge),
       ...(player.base_attributes == null ? {} : { attribute_profile_snapshot: structuredClone(player.base_attributes) }),
       profile_candidate_set_digest: result.trace.choices
@@ -144,7 +144,7 @@ export function buildLowerDvinaTracePersistedProjection({
         name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
         language_profile_snapshot: {},
         knowledge_profile_snapshot: structuredClone(npc.knowledge_profile_snapshot),
-        schedule_records: structuredClone(npc.schedule_records ?? []),
+        schedule_records: npc.routine_state == null ? structuredClone(npc.schedule_records ?? []) : [],
         profile_candidate_set_digest: npc.profile_candidate_set_digest,
         state_version: 1,
         created_change_set_id: changeSetId,

@@ -49,14 +49,10 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
 
 - **L29** требует при изменении документа «полного regression и аудита критика». Практически это: полный
   `npm test` как merge gate в CI (AGENTS §24) + Contract Auditor по AGENTS §25.1.
-- **L39** требует для нового или изменённого active-документа без утверждённого embedding
-  `semantic_coverage_disposition: required_before_merge`, если semantic snapshot не обновляется в том же PR.
-  Практика PR #97 сохранила `baseline_gap`: код это правило не проверяет, а `required_before_merge` блокирует
-  RAG readiness и роняет тест «repository RAG exposes explicit baseline semantic gaps and no unacknowledged
-  blocker» (`packages/knowledge-source/test/rag-policy-repository.test.js`).
-- Процедура это расхождение **не узаконивает**. Оно записано в LW-006
-  ([LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md)) и ждёт решения владельца. До решения: сохранить текущее
-  значение поля, явно указать расхождение в описании PR и в Contract Auditor.
+- **L39** (решение владельца 2026-09-23, #115): изменённый существующий active-документ без обновлённого
+  semantic snapshot сохраняет `semantic_coverage_disposition: baseline_gap`; новый active-документ без
+  утверждённого embedding получает `required_before_merge`, если snapshot не обновляется в том же PR.
+  `required_before_merge` блокирует RAG readiness (`packages/knowledge-source/src/services/rag-reader.js`).
 
 ## Закреплённые фразы и байты
 

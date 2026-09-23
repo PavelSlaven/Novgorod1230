@@ -6,6 +6,8 @@
 
 - docs(work): CURRENT_SPRINT — Runtime-трек начинается с M2c (#133) по решению владельца (#134)
 - fix(game-web): маркер готовности `data-scene-hydrated` у текущего кадра; browser e2e ждёт его вместо устаревшего кадра (#139, PR #141)
+- fix(tooling): на Windows `tar` вызывается как System32 bsdtar в p10/p12-инструментах, тестах и staging-скриптах (#126, PR #140)
+- docs(policy): KSP L39 — изменённый существующий active-документ сохраняет `baseline_gap`, новый получает `required_before_merge` (#115, PR #140) LW-006 closed
 - chore(tooling): `npm run check:syntax` — детерминированная проверка синтаксиса изменённых JS/JSON (#138)
 - docs(governance): роутер ведёт World Knowledge через строку IDX §8.1 без особого случая §6/§10; WR §20 требует обновлять CONTRACT_INDEX в том же PR (#111, PR #137) LW-009 closed
 - docs(contracts): нормы World Knowledge и direct speech оставлены у профильных владельцев; индекс содержит навигацию и строку World Knowledge в матрице (#111, PR #136)

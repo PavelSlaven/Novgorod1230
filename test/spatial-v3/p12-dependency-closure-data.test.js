@@ -4,6 +4,8 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import test from "node:test";
+// Windows: Git/MSYS GNU tar treats `C:\...` as a remote host and cannot read .zip; System32 bsdtar handles both.
+const TAR = process.platform === 'win32' ? `${process.env.SystemRoot ?? 'C:/Windows'}/System32/tar.exe` : 'tar';
 
 const root = resolve(import.meta.dirname, "../..");
 const bundle = join(root, "data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/dependency-closure/v1");
@@ -177,7 +179,7 @@ test("all 57 category anchors resolve uniquely and match raw digests", () => {
         continue;
       }
       assert.equal(anchor.anchor_kind, "immutable_zip_json_record");
-      const member = execFileSync("tar", ["-xOf", canonical, anchor.internal_path], { encoding: "buffer", maxBuffer: 64 * 1024 * 1024 });
+      const member = execFileSync(TAR, ["-xOf", canonical, anchor.internal_path], { encoding: "buffer", maxBuffer: 64 * 1024 * 1024 });
       assert.equal(sha(member), anchor.internal_raw_sha256, `${category.id}: member digest`);
       let selected = JSON.parse(member.toString("utf8"));
       for (const token of anchor.json_pointer.split("/").filter(Boolean)) selected = selected[token.replaceAll("~1", "/").replaceAll("~0", "~")];

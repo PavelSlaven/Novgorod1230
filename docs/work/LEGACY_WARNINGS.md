@@ -19,7 +19,6 @@
 | 002 | `test/` | корневые тесты рядом с тестами пакетов | [#127](https://github.com/PavelSlaven/Novgorod1230/issues/127) |
 | 003 | `DOCUMENTS/`, `legacy/` | legacy-корпус и исходная система | [#127](https://github.com/PavelSlaven/Novgorod1230/issues/127) |
 | 004 | `corpus/DOCUMENTS/weapons_and_armor.txt`, `world_regions.txt` | legacy_mirror: байты неизменны | — |
-| 006 | `retrieval-policy.json`, `KNOWLEDGE_SOURCE_POLICY.md` | `baseline_gap` против KSP «required_before_merge» | [#115](https://github.com/PavelSlaven/Novgorod1230/issues/115) |
 | 007 | `llm_documentation_navigation.md`, `development_rules.txt`, `map_g0_g4_workflow.txt` | ловушки в именах и статусах | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
 | 008 | `CONTRACT_INDEX.md`, `retrieval-policy.json`, шапки документов | три системы статусов | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
 | 010 | `docs/work/temporal-world-v4/`, `docs/implementation/`, `docs/migration/` | evidence-пути, которые читают tools и тесты | — |
@@ -53,11 +52,6 @@
 - **Что.** 2 документа корпуса с `provenance_mode: legacy_mirror` (`weapons_and_armor.txt`, `world_regions.txt`) и файлы с `-whitespace` в `.gitattributes` байтово неизменны.
 - **Как жить.** Не править, не нормализовать переводы строк и пробелы.
 
-### LW-006 — `baseline_gap` и KSP
-- **Что.** `docs/architecture/KNOWLEDGE_SOURCE_POLICY.md` (раздел «RAG-готовность») требует `required_before_merge` для изменённого active-документа без нового embedding. Практика (PR #97) сохраняет `baseline_gap`: код правило не проверяет, а `required_before_merge` блокирует RAG readiness и роняет тест «no unacknowledged blocker».
-- **Как жить.** Следовать практике PR #97; расхождение не узаконено и ждёт решения владельца (вариант — выровнять текст KSP в DOC-02, #100).
-- **Issue.** [#115](https://github.com/PavelSlaven/Novgorod1230/issues/115)
-
 ### LW-007 — ловушки в именах и статусах
 - **Что.** `llm_documentation_navigation.md` — SUPERSEDED redirect; `development_rules.txt` — REFERENCE; `map_g0_g4_workflow.txt` и `read_only_database_and_graph_architecture.md` — MIGRATION / ROLLBACK, хотя имена выглядят как основные. Обратная ловушка: `spatial_v3_target_*` — ACTIVE, несмотря на «target» в имени (CONTRACT_INDEX, таблица исключений).
 - **Как жить.** Статус брать только из `CONTRACT_INDEX.md`, не из имени файла.
@@ -77,7 +71,7 @@
 - **Как жить.** Перед правкой: `git grep` по имени файла в `tools/`, `test/`, `*.json`; существующие миграции не править.
 
 ### LW-012 — закрепления фраз
-- **Что.** Проверки ищут точные фразы в документах (`tools/docs-tools/test/documentation-generation.test.js`, `tools/spatial-v3/check-*.mjs`, токены ADR-001 в `check-p25.mjs`, точный термин «versioned production activation cutover» в `check-production-activation-boundary.mjs`; sha256-пины ADR-001 и 17 документов корпуса — `docs/migration/spatial-v3/normative-freeze.json` и `data/contracts/spatial-v3/p05-reviewed-baseline.json`). На Windows вызовы `tar -xOf <абсолютный путь>` в `scripts/generate-p12-dependency-closure.mjs`, `tools/spatial-v3/p12-*.mjs`, `p10-build-legacy-edge-inventory.mjs` и `test/spatial-v3/p12-*.test.js` ещё падают (исправлен только bundle-путь). Уже падают вне merge gate: `temporal-v4:check-docs` (2 конфликта в `llm_documentation_navigation.md`) и `spatial-v3:check-p04` («world: target/active boundary missing»).
+- **Что.** Проверки ищут точные фразы в документах (`tools/docs-tools/test/documentation-generation.test.js`, `tools/spatial-v3/check-*.mjs`, токены ADR-001 в `check-p25.mjs`, точный термин «versioned production activation cutover» в `check-production-activation-boundary.mjs`; sha256-пины ADR-001 и 17 документов корпуса — `docs/migration/spatial-v3/normative-freeze.json` и `data/contracts/spatial-v3/p05-reviewed-baseline.json`). На Windows `tar` теперь явно вызывается как System32 bsdtar (#126). Не-gate `spatial-v3:test-p12` падает на любой ОС: `data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/dependency-closure/v1` закрепляет sha256 `spatial_architecture_standard_g0_g6.md` на версии до `d3c442e9`, а сами тесты перегенерируют эти отслеживаемые файлы при запуске (после прогона — `git restore data/`). Перегенерация — изменение утверждённого data-пакета (утверждение старшей моделью). Уже падают вне merge gate: `temporal-v4:check-docs` (2 конфликта в `llm_documentation_navigation.md`) и `spatial-v3:check-p04` («world: target/active boundary missing»).
 - **Как жить.** Перед правкой текста — `rg` фразы по `tools/` и `test/`. Для non-gate проверок сравнивать с этим baseline.
 - **Issue.** [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126)
 

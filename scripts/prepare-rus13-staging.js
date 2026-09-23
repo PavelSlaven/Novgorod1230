@@ -5,6 +5,8 @@ import { copyFile, mkdir, mkdtemp, readdir, readFile, rename, rm, stat } from 'n
 import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadLocalEnv } from '../src/env.js';
+// Windows: Git/MSYS GNU tar treats `C:\...` as a remote host and cannot read .zip; System32 bsdtar handles both.
+const TAR = process.platform === 'win32' ? `${process.env.SystemRoot ?? 'C:/Windows'}/System32/tar.exe` : 'tar';
 
 const repoRoot = resolve(import.meta.dirname, '..');
 const DEFAULT_BUNDLE_MANIFEST = join(repoRoot, 'data', 'world-base-sources', 'rus13-base-v1.manifest.json');
@@ -241,7 +243,7 @@ function outputLines(value) {
 }
 
 function runTar(args, message = 'Failed to process tracked world_base archive') {
-  const result = spawnSync('tar', args, { encoding: 'utf8' });
+  const result = spawnSync(TAR, args, { encoding: 'utf8' });
   if (result.status !== 0) throw new Error(`${message}: ${result.stderr || result.stdout}`);
   return result.stdout;
 }

@@ -1092,6 +1092,12 @@
       "type": "sql"
     },
     {
+      "bytes": 1235,
+      "path": "schemas/party-db/035_party_runtime_nonportal_availability.sql",
+      "sha256": "010190170846e819f256e841fdd4a2f6c13bbd20940e44bc978d0aa821d6c975",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

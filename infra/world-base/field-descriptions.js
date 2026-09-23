@@ -126,6 +126,10 @@ export const TABLE_GROUPS = [
     tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules', 'spatial_v3_g6_acoustic_baselines']
   },
   {
+    title: 'Spatial architecture v3: NPC composition authoring (target only)',
+    tables: ['spatial_v3_g4_npc_composition_bindings', 'spatial_v3_npc_runtime_profiles', 'spatial_v3_npc_regional_context_profiles']
+  },
+  {
     title: 'Materialization v2: NPC-профили',
     tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets']
   },
@@ -220,6 +224,9 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_scene_selection_rules: 'Закрытые versioned правила выбора scene template; P12 поддерживает только single_candidate.',
   spatial_v3_scene_applicability_rules: 'Закрытые versioned правила применимости scene candidate к точному source reference.',
   spatial_v3_g6_acoustic_baselines: 'Утверждённый ambient-noise baseline каждой G6 scene slot для точного canonical G5 либо G5 generation template и scene template.',
+  spatial_v3_g4_npc_composition_bindings: 'Точное approved авторское решение о допустимом составе NPC для G4 и G5 generation template; запись не создаёт NPC.',
+  spatial_v3_npc_runtime_profiles: 'Переиспользуемые утверждённые target NPC/runtime bindings с точными role, occupation, body, activity, routine, clothing и item refs.',
+  spatial_v3_npc_regional_context_profiles: 'Утверждённый региональный контекст NPC с exact applicability по G4 и generation template.',
   spatial_v3_graph_node_migration_inventory: 'Review-only deterministic mapping legacy graph_nodes to v3 canonical entities; ambiguity/unreviewed row остаётся gap.',
   spatial_v3_orientation_reference_frames: 'Версионированные orientation frames с детерминированным millidegree offset и запрещёнными циклами.',
   spatial_v3_movement_orientation_profiles: 'Fixed/curved profiles движения и только явная reciprocal reverse relation.',
@@ -579,6 +586,22 @@ export const fields = {
     confidence: 'Уверенность в утверждении baseline.',
     provenance_ref: 'FK → source_records(id): источник авторского baseline.',
     canonical_digest: 'SHA-256 canonical aggregate representation.'
+  },
+  spatial_v3_g4_npc_composition_bindings: {
+    g4_id: 'Точный G4 node ID в той же Spatial v3 revision.',
+    generation_template_id: 'Точный G5 generation template ID, выбранный authoring binding.',
+    min_count: 'Нижняя граница авторского количества NPC.',
+    max_count: 'Верхняя граница авторского количества NPC.',
+    payload: 'JSON: count weights и взвешенные exact refs переиспользуемых NPC bindings.'
+  },
+  spatial_v3_npc_runtime_profiles: {
+    profile_kind: 'Тип reusable NPC/runtime profile.',
+    role_ref: 'Опциональный exact source role ID.',
+    occupation_ref: 'Опциональный exact source occupation ID.',
+    payload: 'JSON: source-backed runtime bindings and explicit exact profile refs.'
+  },
+  spatial_v3_npc_regional_context_profiles: {
+    payload: 'JSON: regional origin/language claims and exact G4/template applicability tuples.'
   },
   spatial_v3_graph_node_migration_inventory: {
     legacy_graph_node_id: 'FK → legacy graph_nodes(id); mapping только по explicit source ID.',

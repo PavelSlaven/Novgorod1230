@@ -72,7 +72,10 @@
       "spatial_v3_expansion_profile_template_limits",
       "spatial_v3_expansion_slots",
       "spatial_v3_expansion_slot_templates",
-      "spatial_v3_g5_successor_frontier_rules"
+      "spatial_v3_g5_successor_frontier_rules",
+      "spatial_v3_g4_npc_composition_bindings",
+      "spatial_v3_npc_runtime_profiles",
+      "spatial_v3_npc_regional_context_profiles"
     ],
     ["spatial_v3_g6_acoustic_baselines"],
     ["record_sources"]
@@ -119,6 +122,9 @@
     "spatial_v3_continuation_length_candidates",
     "spatial_v3_g4_expansion_profiles",
     "spatial_v3_g5_generation_templates",
+    "spatial_v3_g4_npc_composition_bindings",
+    "spatial_v3_npc_runtime_profiles",
+    "spatial_v3_npc_regional_context_profiles",
     "spatial_v3_expansion_profile_template_limits",
     "spatial_v3_expansion_slots",
     "spatial_v3_expansion_slot_templates",

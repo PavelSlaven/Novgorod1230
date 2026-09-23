@@ -123,7 +123,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Spatial architecture v3: scene dependency closure (target only)',
-    tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules']
+    tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules', 'spatial_v3_g6_acoustic_baselines']
   },
   {
     title: 'Materialization v2: NPC-профили',
@@ -219,6 +219,7 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_regional_scene_template_bases: 'Утверждённые региональные основы scene templates с topological-only geometry claim.',
   spatial_v3_scene_selection_rules: 'Закрытые versioned правила выбора scene template; P12 поддерживает только single_candidate.',
   spatial_v3_scene_applicability_rules: 'Закрытые versioned правила применимости scene candidate к точному source reference.',
+  spatial_v3_g6_acoustic_baselines: 'Утверждённый ambient-noise baseline каждой G6 scene slot для точного canonical G5 либо G5 generation template и scene template.',
   spatial_v3_graph_node_migration_inventory: 'Review-only deterministic mapping legacy graph_nodes to v3 canonical entities; ambiguity/unreviewed row остаётся gap.',
   spatial_v3_orientation_reference_frames: 'Версионированные orientation frames с детерминированным millidegree offset и запрещёнными циклами.',
   spatial_v3_movement_orientation_profiles: 'Fixed/curved profiles движения и только явная reciprocal reverse relation.',
@@ -562,6 +563,22 @@ export const fields = {
     dependency_role: 'Controlled dependency role из digest-pinned registry; не free text.',
     canonical_ordinal: 'Контрактный порядок dependency edge внутри source и role.',
     provenance_ref: 'FK → source_records(id): evidence dependency edge.'
+  },
+  spatial_v3_g6_acoustic_baselines: {
+    entity_kind: 'Константный discriminator g6_acoustic_baseline для exact authoring version.',
+    world_revision_id: 'Ревизия, к которой одновременно привязаны G5 source и scene template.',
+    g5_template_id: 'Один из двух точных источников baseline: G5 generation template; взаимно исключает canonical_g5_id.',
+    canonical_g5_id: 'Один из двух точных источников baseline: canonical G5 node; взаимно исключает g5_template_id.',
+    g5_template_version: 'Точная версия G5 generation template; парная с g5_template_id.',
+    canonical_g5_version: 'Точная версия canonical G5 node; парная с canonical_g5_id.',
+    scene_template_id: 'FK → scene template: физическая сцена для выбранного G5 source.',
+    scene_template_version: 'Точная версия scene template.',
+    g6_scene_slot_key: 'Точный G6 slot в выбранном scene template.',
+    ambient_noise: 'Постоянный акустический baseline G6: 0, 1 или 2; временный шум сюда не записывается.',
+    directness: 'Связь авторского утверждения с исходными данными.',
+    confidence: 'Уверенность в утверждении baseline.',
+    provenance_ref: 'FK → source_records(id): источник авторского baseline.',
+    canonical_digest: 'SHA-256 canonical aggregate representation.'
   },
   spatial_v3_graph_node_migration_inventory: {
     legacy_graph_node_id: 'FK → legacy graph_nodes(id); mapping только по explicit source ID.',

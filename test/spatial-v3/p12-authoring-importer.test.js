@@ -81,6 +81,73 @@ test('P12 proves expansion capacity per profile using the DDL max_count field', 
   const overCapacity = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
   assert.ok(overCapacity.errors.some((error) => error.code === 'CAPACITY_PROOF_FAILED'));
 });
+
+test('P12 rejects expansion profiles without executable rule closure', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-rules-')); await mkdir(join(dir, 'datasets'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const revision = 'novgorod_spatial_v3_target_contract_approval_001';
+  const rows = [{ id: 'profile', version: 1, world_revision_id: revision,
+    adjacency_rule_set_id: 'missing', adjacency_rule_set_version: 1,
+    connectivity_rule_set_id: 'missing', connectivity_rule_set_version: 1,
+    seed_policy_id: 'missing', seed_policy_version: 1 }];
+  const content = JSON.stringify(rows);
+  await writeFile(join(dir, 'datasets/profiles.json'), content);
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_id: 'rules', world_revision_id: revision, status: 'draft', provenance_ref: 'source',
+    delete_policy: 'forbid', bundle_kind: 'dependency_closure', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP')],
+    datasets: [{ table: 'spatial_v3_g4_expansion_profiles', file: 'datasets/profiles.json',
+      sha256: createHash('sha256').update(content).digest('hex'), status: 'draft',
+      provenance_ref: 'source', delete_policy: 'forbid', depends_on: [] }] };
+  const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.equal(result.errors.filter((error) => error.code === 'EXPANSION_RULE_CLOSURE_MISSING').length, 3);
+});
+
+test('P12 rejects a scene candidate without the schema-15 applicability pin', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-scene-rule-')); await mkdir(join(dir, 'datasets'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const rows = [{ profile_id: 'profile', profile_version: 1, scene_template_id: 'scene',
+    scene_template_version: 1, weight: 1, applicability_rule_id: null, applicability_rule_version: null }];
+  const content = JSON.stringify(rows);
+  await writeFile(join(dir, 'datasets/candidates.json'), content);
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_id: 'scene-rule', world_revision_id: 'r', status: 'draft', provenance_ref: 'source',
+    delete_policy: 'forbid', bundle_kind: 'dependency_closure', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP')],
+    datasets: [{ table: 'spatial_v3_scene_materialization_candidates', file: 'datasets/candidates.json',
+      sha256: createHash('sha256').update(content).digest('hex'), status: 'draft',
+      provenance_ref: 'source', delete_policy: 'forbid', depends_on: [] }] };
+  const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.ok(result.errors.some((error) => error.code === 'SCENE_CANDIDATE_APPLICABILITY_RULE_MISSING'));
+});
+
+test('P12 rejects an external edge without its exact approved registry pin', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-external-')); await mkdir(join(dir, 'datasets'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const entries = [
+    ['spatial_v3_external_dependency_versions', [{ registry_type: 'spatial_materialization',
+      registry_id: 'registry', registry_version: '1', registry_digest: 'a'.repeat(64),
+      dependency_id: 'wood', dependency_version: 1, dependency_digest: 'b'.repeat(64), status: 'approved' }]],
+    ['spatial_v3_authoring_dependency_edges', [{ source_entity_kind: 'spatial_node',
+      source_entity_id: 'g5', source_version: 1, world_revision_id: 'r', dependency_role: 'function',
+      target_entity_kind: 'external_dependency', target_entity_id: 'wood', target_version: 1,
+      target_registry_type: 'spatial_materialization', target_registry_id: 'registry',
+      target_registry_version: '1', target_registry_digest: 'a'.repeat(64),
+      target_dependency_digest: 'c'.repeat(64), canonical_ordinal: 0 }]]];
+  const datasets = [];
+  for (const [table, rows] of entries) {
+    const file = `datasets/${table}.json`; const content = JSON.stringify(rows);
+    await writeFile(join(dir, file), content);
+    datasets.push({ table, file, sha256: createHash('sha256').update(content).digest('hex'),
+      status: 'approved', provenance_ref: 'source', delete_policy: 'forbid', depends_on: [] });
+  }
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_id: 'external', world_revision_id: 'r', status: 'draft', provenance_ref: 'source',
+    delete_policy: 'forbid', bundle_kind: 'dependency_closure', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP')], datasets };
+  const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.ok(result.errors.some((error) => error.code === 'EXTERNAL_DEPENDENCY_PIN_MISSING'));
+});
 test('P12 emits domain readiness failures for route endpoints without canonical G5 or directional-exit compatibility', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'p12-domain-')); await mkdir(join(dir, 'datasets'));
   const rows = JSON.stringify([{ id: 'endpoint', version: 1, world_route_id: 'route', world_route_version: 1, endpoint_role: 'from', route_point_id: 'point', route_point_version: 1, canonical_g5_id: 'missing-g5', canonical_g5_version: 1, directional_exit_id: 'missing-exit', directional_exit_version: 1, scene_endpoint_slot_key: 'departure', world_revision_id: 'r', status: 'draft', provenance_ref: 'source', canonical_digest: 'a'.repeat(64), entity_kind: 'world_route_endpoint_binding' }]); await writeFile(join(dir, 'datasets/endpoints.json'), rows);

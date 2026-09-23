@@ -3,7 +3,9 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
-import { canonicalDigest, deriveApprovedInitialEnvironment } from '@rus/materialization';
+import { canonicalDigest, createRandomSource, deriveApprovedInitialEnvironment,
+  materializeActorBaseAppearance } from '@rus/materialization';
+import { compileApprovedActorAppearanceEntries } from '@rus/materialization';
 
 const root = resolve(import.meta.dirname, '../..');
 const path = 'data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json';
@@ -143,4 +145,37 @@ test('explicit player transfer matches the approved source metrics, attribute pr
   assert.equal(transfer.applicability.actor_kind, 'player_character');
   assert.equal(transfer.approved, false);
   assert.equal(transfer.activation_authorized, false);
+});
+
+test('player basis pins source appearance sets and completes an adult male through the existing owner', async () => {
+  const basis = await read('data/world-catalogs/novgorod/live-world-runtime-v17/player-basis-candidate.json');
+  const sources = {};
+  for (const pin of basis.appearance.source_tables) {
+    const path = `${basis.appearance.source_directory}/${pin.table}.json`;
+    const bytes = await readFile(resolve(root, path));
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), pin.sha256);
+    sources[pin.table] = JSON.parse(bytes);
+  }
+  const entries = compileApprovedActorAppearanceEntries({ records: sources,
+    demographic_profile_ref: basis.appearance.demographic_profile_ref,
+    appearance_profile_ref: basis.appearance.appearance_profile_ref });
+  const actor = materializeActorBaseAppearance({ identity: basis.appearance.identity_intent,
+    approved_entries: entries, random: createRandomSource({ seed: 73 }), choice_key_prefix: 'player:player' });
+  assert.equal(actor.identity.sex_category, 'male');
+  assert.equal(actor.identity.age_category, 'adult');
+  assert.ok(actor.identity.appearance.hair.color);
+  assert.ok(actor.identity.appearance.eyes.color);
+  const sourceLanguage = (await read(basis.language.source_path))
+    .character_candidate_sets.player_boatman.language_profile_candidates[0];
+  for (const [key, value] of Object.entries(sourceLanguage)) assert.deepEqual(basis.language[key], value);
+  assert.equal(Object.keys(basis.skills.values).length, 12);
+  assert.ok(Object.values(basis.skills.values).every((value) =>
+    value.bonus === 1 ? value.level === 'familiar' && value.basis
+      : value.bonus === 0 && value.level === 'no_experience' && value.absence_basis));
+  assert.equal(basis.activation_authorized, false);
+  sources.universal_categories.find((row) => row.id === 'actor.sex_category.male').stable_code = 'invented';
+  assert.throws(() => compileApprovedActorAppearanceEntries({ records: sources,
+    demographic_profile_ref: basis.appearance.demographic_profile_ref,
+    appearance_profile_ref: basis.appearance.appearance_profile_ref }),
+  { code: 'ACTOR_APPEARANCE_SOURCE_DATA_GAP' });
 });

@@ -40,6 +40,11 @@
     "scope": "Exact new-player body, actor forest_hunting and three owned equipped summer garments for the target start scenario",
     "excludes": "Historical party snapshots, appearance, skills, language, knowledge, import, runtime pins and release activation"
   },
+  "target_player_basis_approval": {
+    "candidate_sha256": "62b5f1e2dc09f75671d74756d8ca3c0f0bcd9c8bf2d0332abb252a377d8b9658",
+    "scope": "Exact new-player male adult appearance membership and weights, twelve editorial skills, common Novgorod speech, unknown literacy and empty specific knowledge",
+    "excludes": "Historical frequency, historical party snapshots, import and release activation"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",

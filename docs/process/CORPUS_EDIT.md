@@ -5,7 +5,7 @@
 Корпус — `data/knowledge-source/corpus/DOCUMENTS/*`, реестр —
 [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json) (44 документа). Правила изменения корпуса
 задают [KNOWLEDGE_SOURCE_POLICY](../architecture/KNOWLEDGE_SOURCE_POLICY.md) («Изменение корпуса», «RAG-готовность»)
-и [AGENTS.md §20](../governance/WORKFLOW_RULES.md). Правка нормативного
+и [CONTRACT_INDEX §10](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md). Правка нормативного
 документа — триггер Contract Auditor ([AGENTS.md §25.1](../governance/AUDIT_RULES.md)).
 
 ## Область: что можно править по этой процедуре
@@ -41,7 +41,7 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
    `llm_documentation_navigation.md`), `docs:check`, `test:knowledge-source`, `test:tools`, `git diff --check`.
    Полный `npm test` — в CI (AGENTS §24).
 4. **CONTRACT_INDEX** — обновить в том же PR, если документ создан, повышен, переименован, перемещён, заменён или
-   существенно изменён (AGENTS.md §20). Сам индекс — `native`-документ: его правка идёт по этим же шагам.
+   существенно изменён (CONTRACT_INDEX §10). Сам индекс — `native`-документ: его правка идёт по этим же шагам.
 5. **Коммит generated** вместе с правкой: CI делает `git diff --exit-code -- generated/ …` после `docs:generate`
    ([test.yml](../../.github/workflows/test.yml)).
 

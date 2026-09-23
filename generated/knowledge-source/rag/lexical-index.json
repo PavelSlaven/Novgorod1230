@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "b93fad3f833a206e6cdc8063b3dcc9040bf7e7ac7593e338471fc295972e4b84",
+  "corpus_hash": "573a8568c1ad39c4411dd0dacb283b532c5a794efa3a77044bdda3269f501aa2",
   "chunk_count": 2812,
   "chunks": [
     {
@@ -1570,13 +1570,13 @@
       "char_count": 564
     },
     {
-      "id": "CONTRACT_INDEX.md:10. Maintenance navigation:0",
+      "id": "CONTRACT_INDEX.md:10. Maintenance rule:0",
       "file": "CONTRACT_INDEX.md",
-      "section": "10. Maintenance navigation",
+      "section": "10. Maintenance rule",
       "line_start": 207,
       "line_end": 211,
-      "text": "## CONTRACT_INDEX.md — 10. Maintenance navigation\n## 10. Maintenance navigation\n\nAny PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.\n\nПроцедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).",
-      "char_count": 474
+      "text": "## CONTRACT_INDEX.md — 10. Maintenance rule\n## 10. Maintenance rule\n\nAny PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.\n\nПроцедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).",
+      "char_count": 462
     },
     {
       "id": "development_rules.txt:18.1. Обязательная регистрация повторно используемых модулей:0",

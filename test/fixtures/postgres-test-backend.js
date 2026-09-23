@@ -45,8 +45,11 @@ export async function createPostgresTestBackend(prefix) {
       });
     },
     async close() {
-      await admin.query(`DROP DATABASE IF EXISTS ${partyDatabase} WITH (FORCE)`);
-      await admin.query(`DROP DATABASE IF EXISTS ${worldDatabase} WITH (FORCE)`);
+      // No FORCE: pool.end() does not wait for backends to exit, and FORCE would terminate them
+      // mid-shutdown (57P01 as an uncaught pool error). Plain DROP waits for them; a connection a
+      // test really leaks still fails loudly here.
+      await admin.query(`DROP DATABASE IF EXISTS ${partyDatabase}`);
+      await admin.query(`DROP DATABASE IF EXISTS ${worldDatabase}`);
       await admin.end();
     }
   };

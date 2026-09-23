@@ -38,6 +38,7 @@ gh pr view 98 --json title,isDraft,headRefOid,statusCheckRollup
 
 ## Правило остановки
 
+- Начало спринта (новый milestone, новый этап плана или смена трека): сначала проверка, синхронизация и использование CBM — [AGENTS.md §19](../governance/WORKFLOW_RULES.md).
 - Одна задача = одна сессия; следующая берётся по [WORKFLOW.md](../process/WORKFLOW.md), раздел «Взять следующую задачу».
 - Следующий Runtime-этап не начинается без решения владельца (Runtime_Plan §7.4).
 - Если задача требует решения владельца (права на AGENTS.md и governance, статус документа, issue с `decision:owner`), — остановиться и спросить.

@@ -53,7 +53,7 @@ codebase-memory-mcp cli index_repository --repo-path "C:\path\to\Novgorod1230"
 
 ## Начало спринта
 
-Обязательная проверка в первой задаче нового milestone или этапа плана задана в AGENTS.md §19 ([WORKFLOW_RULES](../governance/WORKFLOW_RULES.md)). Из терминала:
+Обязательная проверка в первой задаче спринта (новый milestone, новый этап плана или смена трека в CURRENT_SPRINT) задана в AGENTS.md §19 ([WORKFLOW_RULES](../governance/WORKFLOW_RULES.md)). Из терминала:
 
 ```powershell
 claude mcp list
@@ -64,7 +64,7 @@ codebase-memory-mcp cli index_status --project <имя проекта из list_
 
 ## Сбои
 
-Если любой запуск CBM, включая `config list`, завершается сообщением `CBM daemon could not start` или «a pre-coordination or unverified CBM generation is active», новые клиенты не могут подключиться к зависшему общему daemon. Закройте все клиенты с CBM (Codex, Cursor, VS Code, Claude Code) либо, с разрешения владельца, завершите оставшиеся процессы `codebase-memory-mcp.exe`: следующий запуск поднимет новый daemon. Прерванные индексации могут оставить в каталоге кэша файлы `<проект>.db.stage.*`; их можно удалить, когда CBM остановлен.
+Если любой запуск CBM, включая `config list`, завершается сообщением `CBM daemon could not start` или «a pre-coordination or unverified CBM generation is active», новые клиенты не могут подключиться к зависшему общему daemon. Закройте все клиенты с CBM (Codex, Cursor, VS Code, Claude Code) либо, с разрешения администратора, завершите оставшиеся процессы `codebase-memory-mcp.exe`: следующий запуск поднимет новый daemon. Прерванные индексации могут оставить в каталоге кэша файлы `<проект>.db.stage.*`; их можно удалить, когда CBM остановлен.
 
 ## Обновление
 

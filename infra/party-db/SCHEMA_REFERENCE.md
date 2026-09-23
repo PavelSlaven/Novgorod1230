@@ -1,7 +1,7 @@
-<!-- GENERATED FILE. Sources: schemas/party-db/001–034, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->
+<!-- GENERATED FILE. Sources: schemas/party-db/001–035, ordered by the game-server migration manifest. Run `npm run docs:generate`; do not edit manually. -->
 # Справочник схемы `party_runtime`
 
-- Исполняемый источник: 34 упорядоченных SQL-миграций в `schemas/party-db/`.
+- Исполняемый источник: 35 упорядоченных SQL-миграций в `schemas/party-db/`.
 - Таблиц: 131.
 - Для каждой таблицы приведены SQL-определения `CREATE TABLE`, `ALTER TABLE` и `CREATE INDEX` в порядке миграций. Полный SQL всех миграций, включая `DROP`, триггеры и условные блоки, приведён ниже. Исполняемые файлы остаются источником истины.
 
@@ -41,6 +41,7 @@
 - [`032_party_runtime_factual_presentation_delivery.sql`](../../schemas/party-db/032_party_runtime_factual_presentation_delivery.sql)
 - [`033_party_runtime_initial_semantic_decision.sql`](../../schemas/party-db/033_party_runtime_initial_semantic_decision.sql)
 - [`034_party_runtime_actor_base_attributes.sql`](../../schemas/party-db/034_party_runtime_actor_base_attributes.sql)
+- [`035_party_runtime_nonportal_availability.sql`](../../schemas/party-db/035_party_runtime_nonportal_availability.sql)
 
 ## `party_runtime.acoustic_edges`
 
@@ -10113,4 +10114,39 @@ ALTER TABLE party_runtime.party_npc_decision_traces
 ```sql
 ALTER TABLE party_runtime.party_actor_profile_bindings
   ADD COLUMN IF NOT EXISTS attribute_profile_snapshot jsonb;
+```
+
+### [`035_party_runtime_nonportal_availability.sql`](../../schemas/party-db/035_party_runtime_nonportal_availability.sql)
+
+```sql
+-- Spatial v3 permits independent non-portal availability conditions.
+-- A portal still requires an availability condition set. Preserve existing rows.
+DO $$
+DECLARE
+  relation_name text;
+  constraint_name text;
+BEGIN
+  FOREACH relation_name IN ARRAY ARRAY['scene_movement_edges', 'g5_site_connections']
+  LOOP
+    FOR constraint_name IN
+      SELECT conname FROM pg_constraint
+      WHERE conrelid = format('party_runtime.%I', relation_name)::regclass
+        AND contype = 'c'
+        AND pg_get_constraintdef(oid) =
+          'CHECK (((portal_entity_id IS NOT NULL) = (availability_condition_set_ref IS NOT NULL)))'
+    LOOP
+      EXECUTE format('ALTER TABLE party_runtime.%I DROP CONSTRAINT %I',
+        relation_name, constraint_name);
+    END LOOP;
+    constraint_name := relation_name || '_portal_requires_availability_check';
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint
+      WHERE conrelid = format('party_runtime.%I', relation_name)::regclass
+        AND conname = constraint_name)
+    THEN
+      EXECUTE format('ALTER TABLE party_runtime.%I ADD CONSTRAINT %I CHECK
+        (portal_entity_id IS NULL OR availability_condition_set_ref IS NOT NULL)',
+        relation_name, constraint_name);
+    END IF;
+  END LOOP;
+END $$;
 ```

@@ -22,6 +22,8 @@ import { createTurnCommandRegistry } from '@rus/turn';
 import { TRACE_SCENARIO_ID } from './lower-dvina-trace-session.js';
 import { createSemanticConversationCommand } from
   './lower-dvina-trace-phase-3-conversation-command.js';
+import { createTraceExpansionCommands } from
+  './lower-dvina-trace-expansion-commands.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   turnStepSemanticGroundingValidator = null, playerConversationModel = null,
@@ -59,6 +61,7 @@ export function createLowerDvinaTracePhase2Runtime({
   }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
   authoredTurnProfile = null,
+  spatialExpansionRuntime = null,
 } = {}) {
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
   const executeRequest = createTraceTurnRequestExecutor();
@@ -220,7 +223,8 @@ export function createLowerDvinaTracePhase2Runtime({
           temporalAdvanceOwner,
           phase8Contracts,
         });
-        const registry = authored ? liveWorldTurnRegistry({ state,
+        const registry = authored ? await liveWorldTurnRegistry({ state,
+          requestId, spatialExpansionRuntime,
           inputDigest, authoredTurnProfile, playerConversationModel,
           npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
           : buildTracePhase2Registry({
@@ -361,7 +365,7 @@ function liveWorldTurnContracts(authoredTurnProfile) {
   });
 }
 
-function liveWorldTurnRegistry(context) {
+async function liveWorldTurnRegistry(context) {
   const blocked = () => ({ status: 'blocked', can_attempt: false,
     check_requests: [] });
   return createTurnCommandRegistry([{
@@ -377,7 +381,8 @@ function liveWorldTurnRegistry(context) {
     availability: blocked,
     consequence: blocked,
     writeTargets: () => []
-  }, ...liveWorldConversationCommands(context)]);
+  }, ...liveWorldConversationCommands(context),
+  ...await createTraceExpansionCommands(context)]);
 }
 
 export function liveWorldConversationCommands({ state, inputDigest,

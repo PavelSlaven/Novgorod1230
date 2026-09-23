@@ -74,6 +74,7 @@ export function createTraceTurnRuntime({
   authoredSpatialSemanticProfile = null,
   authoredNpcSemanticRemainderProfile = null,
   authoredRuntimeBindingResolver,
+  spatialExpansionRuntime = null,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
@@ -258,7 +259,8 @@ export function createTraceTurnRuntime({
     decisionSecret,
     llmTurnBudget: turnBudget,
     llmDiagnostics,
-    authoredTurnProfile
+    authoredTurnProfile,
+    spatialExpansionRuntime
   });
   return Object.freeze({ ...runtime, llmDiagnostics,
     authoredOpeningNarration });

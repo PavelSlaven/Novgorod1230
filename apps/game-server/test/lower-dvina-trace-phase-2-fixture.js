@@ -56,6 +56,7 @@ function fixture({
   worldBaseReferenceSnapshot = undefined,
   llmDiagnostics = null,
   authoredTurnProfile = null,
+  spatialExpansionRuntime = null,
   beforeSemanticResolve = null,
   beforeRandomSource = null,
   afterCommittedVisibleRead = null,
@@ -604,6 +605,7 @@ function fixture({
     },
     ...(llmDiagnostics ? { llmDiagnostics } : {}),
     ...(authoredTurnProfile ? { authoredTurnProfile } : {}),
+    ...(spatialExpansionRuntime ? { spatialExpansionRuntime } : {}),
   });
   return {
     bodyUpdateCount: () => bodyUpdateCount,

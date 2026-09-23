@@ -35,7 +35,7 @@ export function buildLowerDvinaTraceOpeningScreen({
       place: projection.place_label,
       calendar: projection.calendar_label,
       timestamp: structuredClone(visible.timestamp),
-      environment: { facts: visible.environment.facts.filter((fact) =>
+      environment: { facts: (visible.environment.facts ?? []).filter((fact) =>
         SCREEN_ENVIRONMENT_FACTS.has(fact)) }
     },
     action_panel: { suggested_actions: [] },
@@ -279,8 +279,7 @@ export function assertVisibleSource(visible, approvedProjection) {
     || !Number.isFinite(Number(visible.body?.health))
     || !Number.isFinite(Number(visible.body?.energy))
     || !Number.isFinite(Number(visible.body?.satiety))
-    || !visible.environment?.environment_profile_id
-    || !Array.isArray(visible.environment?.facts)) {
+    || !hasOpeningEnvironment(visible.environment)) {
     fail(
       'TRACE_PHASE_1B_VISIBLE_STATE_INCOMPLETE',
       'Committed visible state is incomplete for the approved opening projection.'
@@ -313,6 +312,24 @@ export function assertVisibleSource(visible, approvedProjection) {
       { leaks: explicitLeaks(visible) }
     );
   }
+}
+
+function hasOpeningEnvironment(environment) {
+  if (environment?.schema !== 'rus.approved_initial_environment.v1') {
+    return Boolean(environment?.environment_profile_id) && Array.isArray(environment.facts);
+  }
+  const versionedRef = (ref) => typeof ref?.id === 'string' && ref.id.trim()
+    && Number.isSafeInteger(Number(ref.version)) && Number(ref.version) > 0;
+  return environment.version === 1
+    && versionedRef(environment.calendar_record_ref) && versionedRef(environment.weather_record_ref)
+    && ['year', 'month', 'day'].every((key) => Number.isSafeInteger(environment.calendar_date?.[key]))
+    && Number.isSafeInteger(environment.local_minute_of_day)
+    && environment.local_minute_of_day >= 0 && environment.local_minute_of_day < 1440
+    && typeof environment.season === 'string' && environment.season.trim()
+    && typeof environment.light_state === 'string' && environment.light_state.trim()
+    && typeof environment.weather_state?.weather_state_id === 'string'
+    && environment.weather_state.weather_state_id.trim()
+    && (environment.facts === undefined || Array.isArray(environment.facts));
 }
 
 function explicitLeaks(value, path = [], leaks = []) {

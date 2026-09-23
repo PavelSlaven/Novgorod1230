@@ -222,15 +222,17 @@ test('first screen receives natural perception after committed rehydrate without
     internal.body = visible.body; internal.timestamp = visible.timestamp;
     internal.position = { ...internal.position, position_id: 'position:inside' };
     Object.assign(approvedProjection.opening_projection, { version: 1, schema: 'first_game_screen', calendar_label: 'Лето' });
-    const { perception, initialRule } = await approvedNaturalPerceptionFixture({ canonical });
+    const { perception, initialRule, input: naturalInput } = await approvedNaturalPerceptionFixture({ canonical });
     if (canonical) {
       internal.player.dossier.knowledge.known_facts = [];
       delete internal.player.dossier.opening_context;
       internal.position.position_id = 'position:shore';
       internal.position.g6_instance_id = 'g6:inside';
-      internal.environment_snapshot = { schema: 'rus.approved_initial_environment.v1',
+      internal.environment_snapshot = { ...naturalInput.currentFacts.current_environment, version: 1,
         calendar_date: initialRule.initial_environment_inputs.calendar_date,
+        local_minute_of_day: initialRule.initial_environment_inputs.local_minute_of_day,
         season: 'summer', light_state: 'daylight' };
+      visible.environment = structuredClone(internal.environment_snapshot);
       approvedProjection.scenario_id = initialRule.scenario_id;
     }
     for (const observation of perception.observations) {
@@ -276,6 +278,7 @@ test('first screen receives natural perception after committed rehydrate without
     assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), !canonical);
     if (canonical) {
       assert.deepEqual(narratorInput.visible_npcs, []);
+      assert.deepEqual(result.screen.visible_context.environment, { facts: [] });
       assert.equal(narratorInput.opening_reader_control.pass, true);
       assert.equal(narratorInput.opening_reader_control.assessments.length, 8);
       assert.deepEqual(narratorInput.opening_reader_control.assessments
@@ -352,4 +355,26 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
     visibleContextPackage: pkg, visibleContextApproval: openingApproval(pkg) });
   assert.equal(result.stage23_result.pass, true);
   assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
+});
+
+test('opening accepts source-bound Temporal environment without aggregate profile or invented facts', async () => {
+  const { initialRule, input: natural } = await approvedNaturalPerceptionFixture({ canonical: true });
+  const input = openingPackage({ raw: true });
+  Object.assign(input.approvedProjection.opening_projection, {
+    version: 1, schema: 'first_game_screen', calendar_label: 'Лето' });
+  const environment = { ...natural.currentFacts.current_environment, version: 1,
+    calendar_date: initialRule.initial_environment_inputs.calendar_date,
+    local_minute_of_day: initialRule.initial_environment_inputs.local_minute_of_day };
+  input.visible.environment = environment;
+  assert.deepEqual(buildLowerDvinaTraceOpeningScreen(input).visible_context.environment, { facts: [] });
+  for (const field of ['calendar_record_ref', 'weather_record_ref', 'calendar_date',
+    'local_minute_of_day', 'light_state', 'weather_state']) {
+    const incomplete = structuredClone(environment);
+    delete incomplete[field];
+    assert.throws(() => buildLowerDvinaTraceOpeningScreen({ ...input,
+      visible: { ...input.visible, environment: incomplete } }),
+    { code: 'TRACE_PHASE_1B_VISIBLE_STATE_INCOMPLETE' });
+  }
+  input.visible.environment = { ...environment, facts: ['wet', 'unapproved prose'] };
+  assert.deepEqual(buildLowerDvinaTraceOpeningScreen(input).visible_context.environment, { facts: ['wet'] });
 });

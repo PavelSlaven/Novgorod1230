@@ -5,7 +5,7 @@
 Корпус — `data/knowledge-source/corpus/DOCUMENTS/*`, реестр —
 [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json) (44 документа). Правила изменения корпуса
 задают [KNOWLEDGE_SOURCE_POLICY](../architecture/KNOWLEDGE_SOURCE_POLICY.md) («Изменение корпуса», «RAG-готовность»)
-и [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md) §10. Правка нормативного
+и [CONTRACT_INDEX §10](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md). Правка нормативного
 документа — триггер Contract Auditor ([AGENTS.md §25.1](../governance/AUDIT_RULES.md)).
 
 ## Область: что можно править по этой процедуре
@@ -31,25 +31,18 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
 
 1. **Правка** документа. Перед ней — `rg` по имени файла в [LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md) и в
    списке закреплённых фраз ниже.
-2. **sha256 и bytes** в записи документа в `corpus-manifest.json`:
-
-   ```bash
-   node -e "const f=process.argv[1],b=require('fs').readFileSync(f);console.log(b.length,require('crypto').createHash('sha256').update(b).digest('hex'))" data/knowledge-source/corpus/DOCUMENTS/<файл>
-   ```
-
-3. **`baseline_manifest_sha256`** в [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json) =
-   sha256 нового `corpus-manifest.json` (та же команда для manifest; на c5501419 значения совпадают:
-   `7406af36…39ef`).
-4. **`npm run docs:generate`.** Меняет `generated/knowledge-source/*` (graph, rag, manifests) и
-   `generated/generated-manifest.json`: corpus-manifest зарегистрирован в
-   [CANONICAL_PATHS.json](../migration/CANONICAL_PATHS.json). Generated вручную не править (KSP «Изменение корпуса»).
-5. **Проверки:** `knowledge:check-corpus`, `knowledge:check`, `knowledge:controls`, `knowledge:status`,
+2. **`npm run knowledge:repin`.** Для `native` пересчитывает `sha256`/`bytes` в
+   [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json), закрепляет SHA-256 новых байтов
+   manifest в [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json) и вызывает
+   `docs:generate`. Изменённый документ с legacy provenance требует отдельной процедуры выше; команда
+   останавливается без переписывания его записи. Generated вручную не править (KSP «Изменение корпуса»).
+3. **Проверки:** `knowledge:check-corpus`, `knowledge:check`, `knowledge:controls`, `knowledge:status`,
    `temporal-v4:check-docs` (сравнить с baseline: на c5501419 — `conflict_count: 2`, оба в
    `llm_documentation_navigation.md`), `docs:check`, `test:knowledge-source`, `test:tools`, `git diff --check`.
    Полный `npm test` — в CI (AGENTS §24).
-6. **CONTRACT_INDEX** — обновить в том же PR, если документ создан, повышен, переименован, перемещён, заменён или
+4. **CONTRACT_INDEX** — обновить в том же PR, если документ создан, повышен, переименован, перемещён, заменён или
    существенно изменён (CONTRACT_INDEX §10). Сам индекс — `native`-документ: его правка идёт по этим же шагам.
-7. **Коммит generated** вместе с правкой: CI делает `git diff --exit-code -- generated/ …` после `docs:generate`
+5. **Коммит generated** вместе с правкой: CI делает `git diff --exit-code -- generated/ …` после `docs:generate`
    ([test.yml](../../.github/workflows/test.yml)).
 
 ## Нормы KNOWLEDGE_SOURCE_POLICY и практика

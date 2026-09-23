@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { verifyCanonicalCorpus } from '../src/knowledge-corpus-verifier.js';
+import { repinCanonicalCorpus } from '../src/knowledge-corpus-repin.js';
 
 const repositoryRoot = join(import.meta.dirname, '../../..');
 const requiredNormatives = [
@@ -80,6 +81,23 @@ test('rejects a registered document with a stale digest', async () => {
   const result = await verifyCanonicalCorpus({ root: await fixture({ corrupt: true }) });
   assert.equal(result.ok, false);
   assert.match(result.errors.join('\n'), /native: document hash or size mismatch/u);
+});
+
+test('repin updates native bytes and policy pin, but rejects changed legacy provenance', async () => {
+  const root = await fixture();
+  const source = join(root, 'data/knowledge-source');
+  await writeFile(join(source, 'retrieval-policy.json'), `${JSON.stringify({ baseline_manifest_sha256: '0'.repeat(64) }, null, 2)}\n`);
+  await writeFile(join(source, 'corpus/DOCUMENTS/native.md'), '# Updated native document\n');
+
+  const result = await repinCanonicalCorpus({ root });
+  assert.equal(result.changed_documents, 1);
+  assert.equal((await verifyCanonicalCorpus({ root })).ok, true);
+  const manifestBytes = await readFile(join(source, 'corpus-manifest.json'));
+  const policy = JSON.parse(await readFile(join(source, 'retrieval-policy.json'), 'utf8'));
+  assert.equal(policy.baseline_manifest_sha256, createHash('sha256').update(manifestBytes).digest('hex'));
+
+  await writeFile(join(source, 'corpus/DOCUMENTS/legacy.txt'), 'changed legacy\n');
+  await assert.rejects(repinCanonicalCorpus({ root }), /non-native document requires its provenance procedure/u);
 });
 
 test('rejects duplicate ids, duplicate paths, unknown aliases and traversal paths', async () => {

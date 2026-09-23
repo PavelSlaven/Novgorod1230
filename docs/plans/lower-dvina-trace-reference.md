@@ -2,9 +2,9 @@
 
 - **Статус:** production-active reference
 - **Сценарий:** `lower_dvina_trace_v1`
-- **Последняя revision:** `19`
-- **Текущий release:** `spatial-v3-production-v9`
-- **Граница:** canonical actor appearance и equipment-driven portraits
+- **Последняя revision:** `35`
+- **Текущий release:** `spatial-v3-production-v16`
+- **Граница:** текущие pins — `apps/game-server/MODULE.md`; таблица ниже сохраняет историю cutover до v9
 
 Этот документ отвечает на вопрос «что сейчас существует». Он не является
 roadmap, target-контрактом будущей механики или заменой профильных нормативов.
@@ -15,8 +15,8 @@ Lower Dvina Trace — завершённый первый production vertical sl
 реализуют authored data, materialization и игровое прохождение; Phase 11
 подтверждает весь путь через Chromium, HTTP, production composition и
 PostgreSQL. Phase 11 закрыла immutable revision 18/v8 path; revision
-19/v9 добавляет canonical appearance и equipment-driven portraits, не
-переписывая этот historical release.
+19/v9 добавила canonical appearance и equipment-driven portraits, не
+переписав этот historical release. Текущая композиция v16 публикует revision 35.
 
 Отдельный исторический boatman scenario
 `lower_dvina_late_summer_open_water_v1` сохраняет собственные immutable pins,
@@ -116,8 +116,8 @@ Revisions до 13 сохраняют authored/materialization и ранние ru
   pins; runtime не подменяет их текущими.
 - Автоматической миграции старых незавершённых партий между scenario revisions
   нет.
-- Revision 19 текущая только для новых party; revision 18 parties не
-  получают appearance backfill и сохраняют portrait fallback.
+- Revision 19 была текущей для новых party на v9; revision 18 parties не
+  получали appearance backfill и сохраняли portrait fallback.
 
 ## Player-safe boundary
 
@@ -154,7 +154,7 @@ Full-stack доказательство находится в:
 - restart и exact replay без повторных provider calls/effects;
 - отсутствие hidden/causal утечек через HTTP, DOM и narration;
 - отдельный historical boatman regression;
-- реальный Chromium → `/api/v1` → `spatial-v3-production-v9` → PostgreSQL path.
+- текущий full-stack путь Chromium → `/api/v1` → `spatial-v3-production-v16` → PostgreSQL.
 
 Исторические причины и исходные gaps сохранены в
 [gap audit](lower-dvina-trace-gap-audit.md) и

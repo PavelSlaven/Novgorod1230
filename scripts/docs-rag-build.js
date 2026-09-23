@@ -30,7 +30,7 @@ function embeddingHelp(error) {
     '  2. Set DEEPSEEK_EMBEDDING_API_KEY (or reuse DEEPSEEK_API_KEY)',
     '  3. Set DEEPSEEK_EMBEDDING_MODEL (default: deepseek-embedding)',
     '',
-    'Then rerun: npm run docs:rag:build'
+    'Then rerun: node scripts/docs-rag-build.js'
   ].join('\n');
 }
 

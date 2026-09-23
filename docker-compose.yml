@@ -19,7 +19,7 @@ services:
       retries: 10
 
   nocodb:
-    image: nocodb/nocodb:latest
+    image: nocodb/nocodb:2026.09.0
     restart: unless-stopped
     ports:
       - "${NOCODB_PORT:-8080}:8080"

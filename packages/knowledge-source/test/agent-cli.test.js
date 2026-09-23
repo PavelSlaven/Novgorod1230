@@ -48,6 +48,30 @@ test('read returns an integrity-checked canonical document', () => {
   assert.match(result.text, /Архитектура кодовой материализации мира/u);
 });
 
+test('read accepts query line ranges and sections, rejecting unknown sections', () => {
+  const query = parseJson(runCli(['query', '--root', root, '--query', 'материализация NPC', '--limit', '1']));
+  const hit = query.results[0];
+  const range = parseJson(runCli(['read', '--root', root, '--document-id', hit.document_id,
+    '--start-line', String(hit.start_line), '--end-line', String(hit.end_line)]));
+  assert.equal(range.schema_version, 'rus.knowledge_source_location.v1');
+  assert.equal(range.source_sha256, hit.source_sha256);
+  assert.equal(range.start_line, hit.start_line);
+  assert.equal(range.end_line, hit.end_line);
+
+  const section = parseJson(runCli(['read', '--root', root, '--document-id', 'contract-index',
+    '--section', '1. Обязательный порядок чтения']));
+  assert.match(section.text, /## 1\. Обязательный порядок чтения/u);
+  const headinglessQuery = parseJson(runCli(['query', '--root', root, '--query', 'генерация',
+    '--document-ids', 'g1-g5-generation-rules', '--limit', '1']));
+  const headinglessHit = headinglessQuery.results[0];
+  const headinglessSection = parseJson(runCli(['read', '--root', root, '--document-id', headinglessHit.document_id,
+    '--section', headinglessHit.section]));
+  assert.equal(headinglessSection.source_sha256, headinglessHit.source_sha256);
+  const unknown = runCli(['read', '--root', root, '--document-id', 'contract-index', '--section', 'нет такого раздела']);
+  assert.equal(unknown.status, 1);
+  assert.equal(JSON.parse(unknown.stderr).code, 'SOURCE_LOCATION_INVALID');
+});
+
 test('query can explicitly include non-active statuses only when requested', () => {
   const result = runCli(['query', '--root', root, '--query', 'materialization', '--statuses', 'active,proposed']);
   assert.equal(result.status, 0, result.stderr);

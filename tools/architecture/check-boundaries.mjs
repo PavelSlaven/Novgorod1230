@@ -1,6 +1,7 @@
 import { readFile, readdir } from 'node:fs/promises';
 import { join, relative, extname, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ROOT_MARKDOWN_ALLOWLIST } from '../docs-tools/src/documentation.js';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const sourceRoots = ['apps', 'packages'];
@@ -996,8 +997,7 @@ for (const document of canonicalRegistry.documents ?? []) {
     }
   }
 }
-const allowedRootMarkdown = new Set(['AGENTS.md', 'README.md', 'CHANGELOG.md', 'MIGRATION_PHASES_SHORT.md', 'MIGRATION_STATUS.md', 'MODULE_INDEX.md']);
-for (const name of await readdir(root)) if (name.endsWith('.md') && !allowedRootMarkdown.has(name)) violations.push(`${name}: non-canonical markdown remains in root`);
+for (const name of await readdir(root)) if (name.endsWith('.md') && !ROOT_MARKDOWN_ALLOWLIST.has(name)) violations.push(`${name}: non-canonical markdown remains in root`);
 const generatedManifest = JSON.parse(await readFile(join(root, 'generated/generated-manifest.json'), 'utf8'));
 if (generatedManifest.schema_version !== 'rus.generated_manifest.v1' || generatedManifest.command !== 'npm run docs:generate') violations.push('generated manifest is invalid');
 

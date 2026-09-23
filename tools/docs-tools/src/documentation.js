@@ -7,11 +7,12 @@ const GENERATED_NOTICE = '<!-- GENERATED FILE. Run `npm run docs:generate`; do n
 const GENERATED_OUTPUT_PATHS = new Set([
   'MODULE_INDEX.md',
   'generated/module-index.json',
+  'generated/npm-script-catalog.md',
   'generated/schema-reference.json',
   'generated/schema-reference.md',
   'generated/generated-manifest.json'
 ]);
-const ROOT_MARKDOWN_ALLOWLIST = new Set([
+export const ROOT_MARKDOWN_ALLOWLIST = new Set([
   'AGENTS.md', 'README.md', 'CHANGELOG.md', 'MIGRATION_PHASES_SHORT.md', 'MIGRATION_STATUS.md', 'MODULE_INDEX.md'
 ]);
 
@@ -35,6 +36,7 @@ export async function buildDocumentationOutputs(rootDir = '.') {
   const outputs = new Map();
   outputs.set('MODULE_INDEX.md', renderModuleIndex(moduleIndex));
   outputs.set('generated/module-index.json', stableJson(moduleIndex));
+  outputs.set('generated/npm-script-catalog.md', renderNpmScriptCatalog(rootPackage.scripts));
   outputs.set('generated/schema-reference.json', stableJson(schemaReference));
   outputs.set('generated/schema-reference.md', renderSchemaReference(schemaReference));
 
@@ -94,7 +96,32 @@ export async function validateDocumentationTree(rootDir = '.') {
   errors.push(...await validateDataPolicy(root));
   errors.push(...await validateGeneratedPlacement(root));
   errors.push(...await validateArtifactManifests(root));
+  errors.push(...await validateNpmScriptReferences(root));
   return Object.freeze({ ok: errors.length === 0, errors });
+}
+
+export async function validateNpmScriptReferences(rootDir = '.') {
+  const root = resolve(rootDir);
+  const names = new Set(Object.keys((await readJson(join(root, 'package.json'))).scripts ?? {}));
+  const files = [join(root, 'package.json'), join(root, 'AGENTS.md'), join(root, 'README.md')];
+  for (const dir of ['docs', 'scripts', 'tools', 'infra', 'apps', 'packages', '.github/workflows']) {
+    files.push(...await walk(join(root, dir)));
+  }
+  const errors = [];
+  for (const file of files) {
+    if (!['.md', '.js', '.mjs', '.yml', '.yaml'].includes(extname(file)) && file !== join(root, 'package.json')) continue;
+    const content = await readFile(file, 'utf8').catch(() => null);
+    if (content === null) continue;
+    const rel = relative(root, file).replaceAll('\\', '/');
+    if (rel.split('/').includes('test') || rel.endsWith('.test.js') ||
+      ['docs/archive/', 'docs/implementation/', 'docs/migration/', 'docs/work/temporal-world-v4/'].some((prefix) => rel.startsWith(prefix))) continue;
+    for (const [index, line] of content.split(/\r?\n/u).entries()) {
+      for (const match of line.matchAll(/\bnpm run ([a-z0-9][a-z0-9:_-]*)/giu)) {
+        if (!names.has(match[1])) errors.push(`${rel}:${index + 1}: unknown npm script ${match[1]}`);
+      }
+    }
+  }
+  return errors;
 }
 
 async function discoverModuleGroup(root, group, { requirePackage = true } = {}) {
@@ -307,6 +334,20 @@ function renderModuleIndex(index) {
   for (const tool of index.tools) lines.push(`| \`${escapeCell(tool.name)}\` | \`${tool.path}\` | ${escapeCell(tool.purpose)} |`);
   lines.push('', 'Canonical ownership details are defined by each `MODULE.md`; domain ownership is summarized in `docs/domain/OWNERSHIP_MAP.md`.', '');
   return lines.join('\n');
+}
+
+function renderNpmScriptCatalog(scripts) {
+  const groups = new Map();
+  for (const name of Object.keys(scripts ?? {}).sort()) {
+    const group = name.split(':', 1)[0];
+    if (!groups.has(group)) groups.set(group, []);
+    groups.get(group).push(name);
+  }
+  const lines = [GENERATED_NOTICE, '# Каталог npm-скриптов', '', 'Источник: корневой `package.json`; запуск: `npm run <имя>`.', ''];
+  for (const [group, names] of [...groups].sort(([left], [right]) => left.localeCompare(right))) {
+    lines.push(`## ${group} (${names.length})`, '', ...names.map((name) => `- \`${name}\``), '');
+  }
+  return `${lines.join('\n').trimEnd()}\n`;
 }
 
 function renderSchemaReference(reference) {

@@ -13,7 +13,7 @@
 Для любой задачи:
 
 1. прочитать root [`AGENTS.md`](../../../../AGENTS.md) (роутер) и назначенные им разделы `docs/governance/*.md`;
-2. открыть этот индекс: §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки; для World Knowledge и direct speech — также §6 и §10; индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor;
+2. открыть этот индекс: §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки; индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor;
 3. прочитать applicable nested `AGENTS.md`;
 4. прочитать relevant `MODULE.md`;
 5. установить active release, profile, manifest, binding и schema затронутой области;
@@ -107,51 +107,14 @@ Active status applies only to the scope stated by each header and active profile
 | [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE`, not proposed | explicit exception to filename heuristics |
 | [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE`, not proposed | explicit exception to filename heuristics |
 
-## 6. Compatibility navigation and superseded audit rules
-
-World Knowledge ranking (§§58–60 действующего контракта) сохраняет приоритет
-hard constraints, exact focus и requested predicates; внутри этих уровней
-query relevance предшествует context specificity и qualifiers. Это порядок
-bounded retrieval, не изменение applicability, actor access или authority.
-
-World Knowledge §35.1 закрепляет production authoring approval: независимый
-per-claim verdict связан с точными claim/localization/evidence inputs.
-Владелец проверки — internal compiler `@rus/world-catalog-workflow`;
-runtime World Knowledge получает только `verification_ref`, без ledger.
-§98.1 требует отдельной category cartography и независимого поиска missing
-families по location/materialization потребностям, не по числу claims/cells.
-
-World Knowledge §0.1 разделяет статическое наполнение и последующую
-gameplay-testing фазу. §112.12 задаёт active testing architecture Gameplay Gap
-Auditor, trace requirements, классификацию, lifecycle и saturation;
-активированная testing-фаза не делает saturation gate критерием статической
-готовности.
-
-World Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из
-аналогий и здравого смысла. §35.1 использует тот же независимый approval для
-source accuracy либо plausibility; точное свидетельство 1230 года для каждой
-ordinary-детали не требуется. `editorial_reconstruction` — редакторское
-основание, не внешний научный источник. Runtime owners и exact state неизменны.
+## 6. Compatibility navigation
 
 | Документ | Статус после этого index cutover | Replacement |
 |---|---|---|
 | [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |
 | [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |
 | [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |
-| [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |
-
-The obsolete rule “critic after every code change” does not apply. Independent read-only audit is mandatory for elevated-risk changes; an ordinary local fix does not require a separate critic when its boundaries are proven unchanged.
-
-World Knowledge §0.4 adds an open place-first authoring need-map:
-environment envelopes, linked approved premises, explicit gaps and
-place-by-conditions reconstruction checks. It does not create location
-presence, an object whitelist, a materializer or gameplay activation.
-Structural map validation is not evidence of environmental completeness.
-
-World Knowledge §0.5 adds an open military-first factual need-map and static
-75 rotating + 25 blind-free probe method. It does not define combat mechanics,
-a military scenario whitelist, force state, equipment presence or gameplay
-activation; separate WK-only reconstruction exposes missing premises.
+| [`docs/archive/github/Правило вызова агента-критика.txt`](../../../../docs/archive/github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |
 
 ## 7. Domain guides and legacy/supporting documents
 
@@ -200,6 +163,7 @@ An undeclared guide may still be relevant, but it must not silently override an 
 | Time/activities/processes | `temporal_world_and_interruptible_activities.md`, relevant time/world-process MODULEs, persistence contract/schema |
 | DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |
 | Historical/knowledge grounding | active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |
+| World Knowledge | `world_knowledge_platform_implementation_contract.md`, active WK pack/profile/bindings, `@rus/world-knowledge` and affected consumer MODULEs |
 | Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |
 
 ## 9. Audited conflict register
@@ -242,16 +206,6 @@ An undeclared guide may still be relevant, but it must not silently override an 
 
 ## 10. Maintenance rule
 
-`turn_step_llm_contract.md` §8.2.1 также владеет узким direct `player_utterance`
-contract: exact resolved speech сохраняется через текущий turn semantic trace;
-broadcast-capable речь обязана нести explicit qualitative delivery, а missing или
-malformed delivery отклоняется без silent default;
-broadcast audience/perception этим не активируются. Единственный speech repair
-с isolated copy/goal metadata errors полного envelope получает bounded projection
-только через faithful re-audit и повторную strict validation; третьего planner нет.
-§9.1 задаёт owner-aware
-discovery prerequisite и проекцию оставшегося intent при player boundary;
-standalone focused inspect использует существующий short/light activity owner,
-а `look` и prerequisite inspect с неизменённым later intent остаются free.
-
 Any PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.
+
+Процедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).

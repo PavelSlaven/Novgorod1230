@@ -19,24 +19,17 @@
 | 002 | `test/` | корневые тесты рядом с тестами пакетов | [#127](https://github.com/PavelSlaven/Novgorod1230/issues/127) |
 | 003 | `DOCUMENTS/`, `legacy/` | legacy-корпус и исходная система | [#127](https://github.com/PavelSlaven/Novgorod1230/issues/127) |
 | 004 | `corpus/DOCUMENTS/weapons_and_armor.txt`, `world_regions.txt` | legacy_mirror: байты неизменны | — |
-| 005 | `corpus-manifest.json`, `retrieval-policy.json`, `generated/knowledge-source/` | хеш-цепочка корпуса | [#125](https://github.com/PavelSlaven/Novgorod1230/issues/125) |
 | 006 | `retrieval-policy.json`, `KNOWLEDGE_SOURCE_POLICY.md` | `baseline_gap` против KSP «required_before_merge» | [#115](https://github.com/PavelSlaven/Novgorod1230/issues/115) |
 | 007 | `llm_documentation_navigation.md`, `development_rules.txt`, `map_g0_g4_workflow.txt` | ловушки в именах и статусах | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
 | 008 | `CONTRACT_INDEX.md`, `retrieval-policy.json`, шапки документов | три системы статусов | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
-| 009 | `CONTRACT_INDEX.md` §6, §10 | нормы внутри индекса | [#111](https://github.com/PavelSlaven/Novgorod1230/issues/111) |
+| 009 | `AGENTS.md` (роутер), `CONTRACT_INDEX.md` §6, §10 | роутер ссылается на §6/§10 после переноса норм | [#111](https://github.com/PavelSlaven/Novgorod1230/issues/111) |
 | 010 | `docs/work/temporal-world-v4/`, `docs/implementation/`, `docs/migration/` | evidence-пути, которые читают tools и тесты | — |
 | 011 | файлы с закреплённым digest | байты закреплены хешами | — |
 | 012 | `tools/spatial-v3/*`, `tools/docs-tools/test/*` | закрепления фраз в документах | [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126) |
-| 013 | `check-boundaries.mjs`, `tools/docs-tools/src/documentation.js` | двойной allowlist корневых .md | [#124](https://github.com/PavelSlaven/Novgorod1230/issues/124) |
 | 014 | `generated/generated-manifest.json` | `input_digest` меняется от любой зарегистрированной правки | — |
-| 015 | `package.json` | 212 npm-скриптов и висячие `npm run` | [#123](https://github.com/PavelSlaven/Novgorod1230/issues/123) |
 | 016 | `DOCUMENTS/`, `spatial_architecture_standard_g0_g6.md`, `docs/implementation/` | упоминания Graphify и `.github/AGENTS.md` | [#114](https://github.com/PavelSlaven/Novgorod1230/issues/114) |
-| 017 | `docs/domain/OWNERSHIP_MAP.md`, `docs/pipelines/temporal-advance.md` | v9-факты в текущих документах | [#120](https://github.com/PavelSlaven/Novgorod1230/issues/120) |
 | 018 | `**/MODULE.md` | разнобой формата MODULE.md | [#121](https://github.com/PavelSlaven/Novgorod1230/issues/121) |
-| 019 | `infra/world-base/SCHEMA_REFERENCE.md`, `schemas/party-db/` | документация БД | [#122](https://github.com/PavelSlaven/Novgorod1230/issues/122) |
 | 020 | `tools/local-play/`, `packages/llm-runtime/src/provider-config.js` | LLM по умолчанию | — |
-| 022 | `MapMaker/`, `docker-compose.yml`, `.github/workflows/bootstrap.yml` | инфра-гигиена | [#128](https://github.com/PavelSlaven/Novgorod1230/issues/128) |
-| 023 | `packages/knowledge-source/src/cli.js` | `knowledge:read` отдаёт документ целиком | [#116](https://github.com/PavelSlaven/Novgorod1230/issues/116) |
 | 024 | PR #98 | статус Runtime живёт в описании PR | — |
 | 025 | `.tmp.driveupload/` | синхронизация Google Drive в рабочей копии | — |
 
@@ -61,11 +54,6 @@
 - **Что.** 2 документа корпуса с `provenance_mode: legacy_mirror` (`weapons_and_armor.txt`, `world_regions.txt`) и файлы с `-whitespace` в `.gitattributes` байтово неизменны.
 - **Как жить.** Не править, не нормализовать переводы строк и пробелы.
 
-### LW-005 — хеш-цепочка корпуса
-- **Что.** Правка документа → sha256/bytes в `corpus-manifest.json` → `baseline_manifest_sha256` в `retrieval-policy.json` → `docs:generate`.
-- **Как жить.** Только по `docs/process/CORPUS_EDIT.md`; generated вручную не править и не сливать.
-- **Issue.** [#125](https://github.com/PavelSlaven/Novgorod1230/issues/125)
-
 ### LW-006 — `baseline_gap` и KSP
 - **Что.** `docs/architecture/KNOWLEDGE_SOURCE_POLICY.md` (раздел «RAG-готовность») требует `required_before_merge` для изменённого active-документа без нового embedding. Практика (PR #97) сохраняет `baseline_gap`: код правило не проверяет, а `required_before_merge` блокирует RAG readiness и роняет тест «no unacknowledged blocker».
 - **Как жить.** Следовать практике PR #97; расхождение не узаконено и ждёт решения владельца (вариант — выровнять текст KSP в DOC-02, #100).
@@ -81,9 +69,9 @@
 - **Как жить.** Нормативный статус — CONTRACT_INDEX; retrieval-статус влияет только на RAG-выдачу.
 - **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112)
 
-### LW-009 — нормы в §6/§10 CONTRACT_INDEX
-- **Что.** Индекс содержит нормы (World Knowledge, direct speech, правила изменения статусов), а не только навигацию; строки WK в scope matrix §8.1 нет.
-- **Как жить.** Для WK и direct speech читать §5, §6 и §10 индекса. Перенос норм к владельцам — backlog.
+### LW-009 — роутер ссылается на §6/§10 CONTRACT_INDEX
+- **Что.** Нормы World Knowledge и direct speech перенесены к владельцам, в §8.1 есть строка World Knowledge (#111), но роутер `AGENTS.md` всё ещё велит читать §6 и §10 индекса и строку маршрутизации «IDX §5, §6, §10».
+- **Как жить.** Для WK использовать строку §8.1 «World Knowledge»; §6/§10 теперь только навигация. Закрывается governance-PR (правка роутера по §1.1).
 - **Issue.** [#111](https://github.com/PavelSlaven/Novgorod1230/issues/111)
 
 ### LW-010 — evidence, которое читают tools
@@ -95,57 +83,27 @@
 - **Как жить.** Перед правкой: `git grep` по имени файла в `tools/`, `test/`, `*.json`; существующие миграции не править.
 
 ### LW-012 — закрепления фраз
-- **Что.** Проверки ищут точные фразы в документах (`tools/docs-tools/test/documentation-generation.test.js`, `tools/spatial-v3/check-*.mjs`, токены ADR-001 в `check-p25.mjs`, точный термин «versioned production activation cutover» в `check-production-activation-boundary.mjs`; sha256-пины ADR-001 и 17 документов корпуса — `docs/migration/spatial-v3/normative-freeze.json` и `data/contracts/spatial-v3/p05-reviewed-baseline.json`). Уже падают вне merge gate: `temporal-v4:check-docs` (2 конфликта в `llm_documentation_navigation.md`) и `spatial-v3:check-p04` («world: target/active boundary missing»).
+- **Что.** Проверки ищут точные фразы в документах (`tools/docs-tools/test/documentation-generation.test.js`, `tools/spatial-v3/check-*.mjs`, токены ADR-001 в `check-p25.mjs`, точный термин «versioned production activation cutover» в `check-production-activation-boundary.mjs`; sha256-пины ADR-001 и 17 документов корпуса — `docs/migration/spatial-v3/normative-freeze.json` и `data/contracts/spatial-v3/p05-reviewed-baseline.json`). На Windows вызовы `tar -xOf <абсолютный путь>` в `scripts/generate-p12-dependency-closure.mjs`, `tools/spatial-v3/p12-*.mjs`, `p10-build-legacy-edge-inventory.mjs` и `test/spatial-v3/p12-*.test.js` ещё падают (исправлен только bundle-путь). Уже падают вне merge gate: `temporal-v4:check-docs` (2 конфликта в `llm_documentation_navigation.md`) и `spatial-v3:check-p04` («world: target/active boundary missing»).
 - **Как жить.** Перед правкой текста — `rg` фразы по `tools/` и `test/`. Для non-gate проверок сравнивать с этим baseline.
 - **Issue.** [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126)
-
-### LW-013 — двойной allowlist корневых .md
-- **Что.** Разрешённые корневые .md заданы дважды: `tools/architecture/check-boundaries.mjs` (`allowedRootMarkdown`) и `tools/docs-tools/src/documentation.js`.
-- **Как жить.** Новые корневые .md не создавать; при изменении списка править оба места.
-- **Issue.** [#124](https://github.com/PavelSlaven/Novgorod1230/issues/124)
 
 ### LW-014 — `input_digest`
 - **Что.** `generated/generated-manifest.json` содержит `input_digest` по путям из `docs/migration/CANONICAL_PATHS.json`, всем `MODULE.md` и `package.json` в apps/packages/tools, `schemas/**` и файлам с экспортом `*SCHEMA` (`collectGeneratorInputs` в `tools/docs-tools/src/documentation.js`); любая их правка требует `docs:generate`, иначе падает `docs:check`, и даёт механический конфликт в параллельных ветках.
 - **Как жить.** Часто меняемые документы в CANONICAL_PATHS не регистрировать; при конфликте — `npm run docs:generate`, не ручное слияние.
-
-### LW-015 — npm-скрипты
-- **Что.** 212 скриптов в `package.json`; в документах и скриптах 37 висячих `npm run` (например `start:cli`, `repo-intel:*`, `release:*`, `world-db:seed-*`).
-- **Как жить.** Команды брать из `package.json` и `docs/context/TESTING.md`; упоминание скрипта в документе не доказывает его существование.
-- **Issue.** [#123](https://github.com/PavelSlaven/Novgorod1230/issues/123)
 
 ### LW-016 — Graphify и `.github/AGENTS.md`
 - **Что.** Graphify и repo-intel удалены, `.github/AGENTS.md` не существует, но упоминания остались в `DOCUMENTS/`, `MapMaker/scripts/compile-novgorod.mjs`, `spatial_architecture_standard_g0_g6.md` и `docs/implementation/*/README.md`.
 - **Как жить.** Не восстанавливать и не следовать этим инструкциям; навигация — codebase-memory-mcp и `rg`.
 - **Issue.** [#114](https://github.com/PavelSlaven/Novgorod1230/issues/114)
 
-### LW-017 — v9-факты
-- **Что.** `docs/domain/OWNERSHIP_MAP.md`, `docs/pipelines/temporal-advance.md`, `apps/game-server/MODULE.md` и планы lower-dvina содержат факты прежних версий (v9).
-- **Как жить.** Текущее поведение сверять с кодом и активными контрактами.
-- **Issue.** [#120](https://github.com/PavelSlaven/Novgorod1230/issues/120)
-
 ### LW-018 — разнобой MODULE.md
 - **Что.** MODULE.md пакетов различаются по структуре и объёму: от ~30 строк (`packages/contracts`) до 525 (`packages/turn`) и 679 (`apps/game-server`), где ответственность перемешана с историей target/activation.
 - **Как жить.** Брать из MODULE.md ответственность и public contract; журнал не считать контрактом.
 - **Issue.** [#121](https://github.com/PavelSlaven/Novgorod1230/issues/121)
 
-### LW-019 — документация БД
-- **Что.** `infra/world-base/SCHEMA_REFERENCE.md` (~559 КБ) описывает только world_base; единого справочника party_runtime нет; `infra/world-base/README.md` устарел («186 таблиц», «17 частей» при фактических 201 и 21).
-- **Как жить.** См. `docs/context/DB_SCHEMA.md`; по SCHEMA_REFERENCE искать `rg '^## '`.
-- **Issue.** [#122](https://github.com/PavelSlaven/Novgorod1230/issues/122)
-
 ### LW-020 — LLM по умолчанию
 - **Что.** Два разных «default»: `packages/llm-runtime/src/provider-config.js` — role defaults уровня окружения; gameplay-default `play:local` (managed Gemma) — `tools/local-play/*` и его MODULE.md. PR #98 меняет gameplay-default (vLLM endpoint), `provider-config.js` не трогает.
 - **Как жить.** В документах ссылаться на владельца, не на значение.
-
-### LW-022 — инфра-гигиена
-- **Что.** esbuild нужен только `MapMaker/` (не workspace); `docker-compose.yml` тянет `nocodb/nocodb:latest`; `.github/workflows/bootstrap.yml` — одноразовый импорт с `contents: write`.
-- **Как жить.** Не опираться на них в CI и runtime; чистка — отдельный issue.
-- **Issue.** [#128](https://github.com/PavelSlaven/Novgorod1230/issues/128)
-
-### LW-023 — `knowledge:read` целиком
-- **Что.** `npm run knowledge:read` отдаёт документ целиком, хотя KSP («Рабочий процесс агента разработки») после DOC-02 требует читать только найденные разделы.
-- **Как жить.** Искать `knowledge:query`, затем читать найденные разделы; целиком — только редактируемый документ.
-- **Issue.** [#116](https://github.com/PavelSlaven/Novgorod1230/issues/116)
 
 ### LW-024 — статус Runtime в описании PR
 - **Что.** Runtime_Plan M0–M8 живёт только в Draft PR #98; сводный статус — в описании PR (Runtime_Plan §7.2), этап явно не указан.

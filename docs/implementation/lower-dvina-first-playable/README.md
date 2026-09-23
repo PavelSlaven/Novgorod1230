@@ -1,5 +1,7 @@
 # Lower Dvina first playable v2
 
+> Исторический план: приведённые команды npm относятся к состоянию репозитория на момент работы. Актуальные команды — в [каталоге](../../../generated/npm-script-catalog.md).
+
 ## Readiness
 
 - Repository: `PavelSlaven/Novgorod1230`

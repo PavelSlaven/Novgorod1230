@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { basename } from 'node:path';
 import { deepFreeze, validateAliases, validateCorpusManifest } from '../domain/manifest.js';
 import { knowledgeSourceError } from '../errors.js';
 
@@ -62,13 +63,30 @@ async function getDocument(storage, input = {}, visibleStatuses = new Set(['acti
 }
 
 async function resolveSourceLocation(storage, input = {}, visibleStatuses = new Set(['active'])) {
-  const start = Number(input.start_line);
-  const end = Number(input.end_line);
-  if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) {
-    throw knowledgeSourceError('SOURCE_LOCATION_INVALID', 'Source location must use positive ordered line numbers.');
+  const section = input.section;
+  if (section != null && (typeof section !== 'string' || !section.trim() || input.start_line != null || input.end_line != null)) {
+    throw knowledgeSourceError('SOURCE_LOCATION_INVALID', 'Use a section or positive ordered line numbers.');
   }
   const document = await getDocument(storage, input, visibleStatuses);
   const lines = document.text.split(/\r?\n/u);
+  let start = Number(input.start_line);
+  let end = Number(input.end_line);
+  if (section != null) {
+    const headings = lines.flatMap((line, index) => {
+      const match = /^#{1,3}\s+(.+)$/u.exec(line);
+      return match ? [{ title: match[1].trim(), line: index + 1 }] : [];
+    });
+    const matches = headings.filter((heading) => heading.title === section.trim());
+    if (matches.length !== 1 && !(headings.length === 0 && section.trim() === basename(document.canonical_path))) {
+      throw knowledgeSourceError('SOURCE_LOCATION_INVALID', `Section is unknown or ambiguous: ${section}`);
+    }
+    start = matches[0]?.line ?? 1;
+    const next = headings.find((heading) => heading.line > start);
+    end = next ? next.line - 1 : lines.length - Number(lines.at(-1) === '');
+  }
+  if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) {
+    throw knowledgeSourceError('SOURCE_LOCATION_INVALID', 'Source location must use positive ordered line numbers.');
+  }
   if (end > lines.length) throw knowledgeSourceError('SOURCE_LOCATION_INVALID', `Line ${end} exceeds ${document.document_id} length ${lines.length}.`);
   return deepFreeze({
     schema_version: 'rus.knowledge_source_location.v1',

@@ -151,7 +151,7 @@ export async function checkFinalizedTemporalData(options) {
   }
   if (stale.length > 0) {
     throw new Error(
-      `Temporal approved data is stale; run npm run temporal-v4:finalize-data:\n- ${stale.join('\n- ')}`
+      `Temporal approved data is stale; run \`npm run temporal-v4:finalize-data\`:\n- ${stale.join('\n- ')}`
     );
   }
   return Object.freeze({

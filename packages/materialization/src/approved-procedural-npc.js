@@ -1,5 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
-import { materializeActorBaseAppearance } from './actor-base-appearance.js';
+import { materializeActorBaseAppearance, compileApprovedActorAppearanceEntries } from './actor-base-appearance.js';
 import { compileApprovedNpcRuntimeBasis } from './approved-npc-runtime-basis.js';
 import { materializeActorBaseAttributes } from './actor-base-attributes.js';
 import { deterministicInstanceId, MaterializationError } from './core.js';
@@ -26,6 +26,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
   const role = exact(bundle.roles, 'role_id', binding.role_ref);
   const occupation = exact(bundle.occupations, 'occupation_id',
     binding.occupation_ref);
+  const regionalContext = approvedRegionalContext(bundle, binding);
   const legal = exact(bundle.legal_status_archetypes, 'id',
     role.legal_status_archetype_id);
   const social = exact(bundle.social_position_archetypes, 'id',
@@ -37,9 +38,12 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
   const runtimeBasis = compileApprovedNpcRuntimeBasis({ role, occupation,
     season: environment.season, profile_level: binding.profile_level });
   const appearance = materializeActorBaseAppearance({ identity: {},
-    approved_entries: actorAppearanceEntries(bundle.actor_profiles, binding),
+    approved_entries: compileApprovedActorAppearanceEntries({ records: bundle.actor_profiles,
+      demographic_profile_ref: binding.demographic_profile_ref,
+      appearance_profile_ref: binding.appearance_profile_ref }),
     random, choice_key_prefix: `npc:${binding.actor_slot_ref}`,
     rule_id: binding.actor_profile_rule_ref });
+  const clothing = approvedClothing(bundle, binding, appearance.identity, environment.season);
   const attributes = materializeActorBaseAttributes({
     runtime_profile: binding.actor_base_attributes_runtime_profile,
     occupation_archetype_id: occupation.occupation_archetype_id,
@@ -58,7 +62,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
       'body_effect_profile', ref?.entity_ref?.entity_id));
   const equipmentRequired = activity.payload?.resource_requirements?.mode
     !== 'intrinsic_none' || binding.equipment_required === true;
-  const equipment = binding.initial_equipment_candidates ?? [];
+  const equipment = [...(binding.initial_equipment_candidates ?? []), ...clothing.candidates];
   const requiredEquipmentRefs = binding.activity_equipment_candidate_refs ?? [];
   if (equipmentRequired && (!Array.isArray(equipment)
       || !Array.isArray(requiredEquipmentRefs)
@@ -125,6 +129,7 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
         source: 'occupation_archetypes' }],
       behavior_basis: roleBehaviorBasis(role),
       approved_runtime_basis: runtimeBasis,
+      ...(regionalContext ? { regional_context: regionalContext } : {}),
       body_time_effect_profile_refs: bodyEffects.map((record) =>
         record.payload?.body_effect_profile_id) },
     relationships: [], skill_profile_snapshot: { approved_defaults: skills },
@@ -145,7 +150,104 @@ export function materializeApprovedProceduralNpc({ party_id: partyId,
     actor_candidate_instance_map: [{ actor_candidate_id: binding.actor_slot_ref,
       actor_instance_id: npcId, actor_kind: 'npc' }],
     initial_equipment_candidates:
-      structuredClone(binding.initial_equipment_candidates ?? []) });
+      structuredClone(equipment),
+    ...(clothing.profile_ref ? { clothing_binding: {
+      profile_ref: clothing.profile_ref, variant_id: clothing.variant_id,
+      required_clothing_slot_refs: clothing.required_clothing_slot_refs } } : {}) });
+}
+
+function approvedClothing(bundle, binding, identity, season) {
+  if (binding.clothing_profile_ref == null) return { candidates: [] };
+  const ref = binding.clothing_profile_ref;
+  const matches = (bundle.clothing_profiles ?? []).filter((row) => row.id === ref.id
+    && row.version === ref.version && row.status === 'approved');
+  const profile = matches[0];
+  if (!text(ref.id) || !Number.isSafeInteger(ref.version) || ref.version < 1
+    || matches.length !== 1 || profile.world_revision_id !== binding.world_revision_id
+    || !Array.isArray(profile.allowed_role_refs) || !profile.allowed_role_refs.includes(binding.role_ref)
+    || !Array.isArray(profile.allowed_occupation_refs) || !profile.allowed_occupation_refs.includes(binding.occupation_ref)
+    || !['owner', 'holder', 'controller'].every((key) => profile.property_binding?.[key] === 'actor')
+    || !text(profile.property_binding?.source_ref) || !Array.isArray(profile.variants)) {
+    gap('PROCEDURAL_NPC_CLOTHING_DATA_GAP');
+  }
+  const variants = (profile.variants ?? []).filter((variant) =>
+    Array.isArray(variant.sex_categories) && variant.sex_categories.includes(identity.sex_category)
+      && Array.isArray(variant.age_categories) && variant.age_categories.includes(identity.age_category)
+      && Array.isArray(variant.seasons) && variant.seasons.includes(season));
+  const variant = variants[0];
+  const slots = variant?.required_clothing_slot_refs;
+  const templates = variant?.equipment_templates;
+  if (variants.length !== 1 || !text(variant.id) || !Array.isArray(slots) || !slots.length
+    || slots.some((slot) => !text(slot)) || new Set(slots).size !== slots.length
+    || !Array.isArray(templates) || new Set(templates.map((row) => row.equipment_candidate_id)).size !== templates.length
+    || templates.some((row) => row.status !== 'approved' || !text(row.equipment_candidate_id)
+      || row.physical_position !== 'equipped' || !slots.includes(row.equipment_slot_category_id))
+    || slots.some((slot) => templates.filter((row) => row.equipment_slot_category_id === slot).length !== 1)) {
+    gap('PROCEDURAL_NPC_CLOTHING_DATA_GAP');
+  }
+  return { profile_ref: structuredClone(ref), variant_id: variant.id,
+    required_clothing_slot_refs: structuredClone(slots), candidates: templates.map((template) => ({
+      ...structuredClone(template), equipment_candidate_id: `${binding.actor_slot_ref}:${template.equipment_candidate_id}`,
+      target_actor_slot_ref: binding.actor_slot_ref, owner_ref: binding.actor_slot_ref,
+      holder_ref: binding.actor_slot_ref, controller_ref: binding.actor_slot_ref,
+      instance_key: `${binding.actor_slot_ref}:${template.equipment_candidate_id}` })) };
+}
+
+function approvedRegionalContext(bundle, binding) {
+  if (binding.regional_context_ref == null) return null;
+  const ref = binding.regional_context_ref;
+  const matches = (bundle.regional_context_profiles ?? []).filter((record) =>
+    record?.id === ref.id && record.version === ref.version
+      && record.status === 'approved');
+  if (!text(ref.id) || !Number.isSafeInteger(ref.version) || ref.version < 1
+      || matches.length !== 1) gap('PROCEDURAL_NPC_REGIONAL_CONTEXT_DATA_GAP');
+  const profile = matches[0];
+  const g4 = binding.g4_ref;
+  const canonical = binding.canonical_g5_ref;
+  const template = binding.generation_template_ref;
+  const siteSource = canonical ?? template;
+  if (profile.schema !== 'rus.npc_regional_context_profile.v1'
+      || profile.world_revision_id !== binding.world_revision_id
+      || g4?.world_revision_id !== binding.world_revision_id
+      || !text(g4?.id) || !Number.isSafeInteger(g4?.version) || g4.version < 1
+      || Boolean(canonical) === Boolean(template)
+      || !text(siteSource?.id) || !Number.isSafeInteger(siteSource?.version)
+      || siteSource.version < 1
+      || !Array.isArray(profile.allowed_role_refs)
+      || !profile.allowed_role_refs.includes(binding.role_ref)
+      || !Array.isArray(profile.allowed_occupation_refs)
+      || !profile.allowed_occupation_refs.includes(binding.occupation_ref)
+      || !Array.isArray(profile.applicability)
+      || !profile.applicability.some((row) =>
+        row.g4_ref?.world_revision_id === binding.world_revision_id
+          && row.g4_ref?.id === g4.id && row.g4_ref?.version === g4.version
+          && (canonical ? row.generation_template_ref == null
+            && row.canonical_g5_ref?.id === canonical.id && row.canonical_g5_ref?.version === canonical.version
+            : row.canonical_g5_ref == null && row.generation_template_ref?.id === template.id
+              && row.generation_template_ref?.version === template.version))
+      || !text(profile.origin?.label)
+      || !text(profile.origin?.directness)
+      || !text(profile.origin?.confidence)
+      || !Array.isArray(profile.origin?.source_refs)
+      || profile.origin.source_refs.length === 0
+      || !profile.origin.source_refs.every(text)
+      || !['unknown', 'authored'].includes(profile.language_status)
+      || (profile.language_status === 'unknown'
+        && profile.language_repertoire !== null)
+      || (profile.language_status === 'authored'
+        && (!Array.isArray(profile.language_repertoire)
+          || profile.language_repertoire.length === 0
+          || profile.language_repertoire.some((language) =>
+            !text(language.language_ref) || !text(language.proficiency_ref)
+              || !Array.isArray(language.source_refs)
+              || language.source_refs.length === 0
+              || !language.source_refs.every(text))))) {
+    gap('PROCEDURAL_NPC_REGIONAL_CONTEXT_DATA_GAP');
+  }
+  return { profile_ref: structuredClone(ref),
+    origin: structuredClone(profile.origin),
+    language_status: profile.language_status,
+    language_repertoire: structuredClone(profile.language_repertoire) };
 }
 
 function roleBehaviorBasis(role) {
@@ -155,30 +257,6 @@ function roleBehaviorBasis(role) {
     source_ref: `approved_social_roles:${role.role_id}:${field}`,
     field, value: role[field]
   }));
-}
-
-function actorAppearanceEntries(records = {}, binding) {
-  const profiles = [
-    exact(records.region_demographic_profiles, 'id',
-      binding.demographic_profile_ref),
-    exact(records.region_appearance_profiles, 'id',
-      binding.appearance_profile_ref)
-  ];
-  const profileIds = new Set(profiles.map(({ id }) => id));
-  const entries = [...(records.region_demographic_profile_entries ?? []),
-    ...(records.region_appearance_profile_entries ?? [])].filter((entry) =>
-    entry.status === 'approved'
-      && profileIds.has(entry.demographic_profile_id
-        ?? entry.appearance_profile_id));
-  return entries.map((entry) => {
-    const option = exact(records.region_category_options, 'id', entry.option_id);
-    const category = exact(records.universal_categories, 'id',
-      option.category_id);
-    return { entry_id: entry.id, facet: entry.facet,
-      option_value: category.stable_code ?? category.preferred_label,
-      weight: entry.weight, applicability: entry.applicability,
-      applicable: true, status: 'approved' };
-  });
 }
 
 function exactTemporalEntity(records, kind, id) {

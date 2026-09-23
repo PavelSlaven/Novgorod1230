@@ -14,7 +14,7 @@ import { approvedWeight, assertApplicableRecord, assertMaterializationInput, cho
 import { materializeNpcInstanceAppearances } from
   './actor-base-appearance.js';
 import { materializeAuthoredStartPartyInstance } from './authored-start.js';
-import { materializeActorBaseAppearance } from './actor-base-appearance.js';
+import { materializeActorBaseAppearance, compileApprovedActorAppearanceEntries } from './actor-base-appearance.js';
 import { compileApprovedNpcRuntimeBasis, compileProceduralSceneProfile,
   deriveApprovedInitialEnvironment, materializeApprovedProceduralNpc,
   validateProceduralSceneAuthoringCandidate } from './procedural-authoring.js';
@@ -44,6 +44,7 @@ import {
 } from './ordinary-materialization-foundation.js';
 import { materializeItemPlacement, materializeNpcPlacement } from './placement-materializers.js';
 import { materializeApprovedActorEquipment } from './approved-actor-equipment.js';
+import { compileGeneratedNpcBindings } from './generated-npc-bindings.js';
 import { resolveProceduralFunctionalAllocations } from
   './procedural-functional-allocation.js';
 import {
@@ -61,7 +62,7 @@ import {
 export {
   ACTOR_BASE_ATTRIBUTE_KEYS, AUTHORED_MATERIALIZER_VERSION, canonicalCandidateDigest,
   canonicalDigest, canonicalRequestDigest, completeAuthoredItemMechanics,
-  compileApprovedNpcRuntimeBasis, compileProceduralScenePartyPackages,
+  compileApprovedNpcRuntimeBasis, compileGeneratedNpcBindings, compileProceduralScenePartyPackages,
   compileProceduralSceneProfile, createOrdinaryAggregate, createOrdinaryCandidateKey,
   createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey,
   createOrdinaryResolutionRef, createPreparedGroupRef, createRandomSource, deriveSeed,
@@ -72,6 +73,7 @@ export {
   LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
   materializationResultDigest, attachActorBaseAttributesToNpcs,
   materializeActorBaseAppearance,
+  compileApprovedActorAppearanceEntries,
   materializeActorBaseAttributes, materializeApprovedActorEquipment,
   materializeApprovedProceduralNpc, materializeAuthoredStartPartyInstance,
   resolveProceduralFunctionalAllocations,

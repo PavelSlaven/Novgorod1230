@@ -30,10 +30,15 @@
     "scope": "Exact canonical entry and initial-state authoring proposal only",
     "excludes": "Player body, attribute and clothing applicability or transfer; import, canonical start runtime and release activation"
   },
+  "target_player_transfer_approval": {
+    "candidate_sha256": "48b0abdc41aee283b5403a336ec2ebac0710c31ba614283d3ecca01082730b2f",
+    "scope": "Exact new-player body, actor forest_hunting and three owned equipped summer garments for the target start scenario",
+    "excludes": "Historical party snapshots, appearance, skills, language, knowledge, import, runtime pins and release activation"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",
-    "NPC imported datasets and player transfer or canonical initial start runtime need separate approval.",
+    "NPC imported datasets and canonical initial start runtime need separate approval.",
     "Earlier Astra attestations remain historical records; this supplemental decision supersedes their reviewer choice for the listed M2c candidates."
   ],
   "activation_authorized": false

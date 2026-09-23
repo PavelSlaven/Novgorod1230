@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
-import { deriveApprovedInitialEnvironment } from '@rus/materialization';
+import { canonicalDigest, deriveApprovedInitialEnvironment } from '@rus/materialization';
 
 const root = resolve(import.meta.dirname, '../..');
 const path = 'data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json';
@@ -112,4 +112,35 @@ test('target initial time uses the existing approved environment owner and compa
   assert.ok(variant.age_categories.includes(candidate.player_inputs.age_category));
   assert.ok(clothing.allowed_role_refs.includes(candidate.player_inputs.role_ref));
   assert.ok(clothing.allowed_occupation_refs.includes(candidate.player_inputs.occupation_ref));
+});
+
+test('explicit player transfer matches the approved source metrics, attribute profile and clothing entries', async () => {
+  const transfer = await read('data/world-catalogs/novgorod/live-world-runtime-v17/player-transfer-candidate.json');
+  for (const source of [transfer.body_transfer, transfer.attribute_transfer, transfer.clothing_transfer]) {
+    assert.equal(createHash('sha256').update(await readFile(resolve(root, source.source_path))).digest('hex'), source.source_sha256);
+  }
+  assert.equal(createHash('sha256').update(await readFile(resolve(root, transfer.target_start.path))).digest('hex'), transfer.target_start.sha256);
+  const body = (await read(transfer.body_transfer.source_path)).character_candidate_sets.player_boatman.body_profile_candidates[0];
+  assert.equal(body.profile_id, transfer.body_transfer.profile_id);
+  assert.deepEqual(body.metrics, transfer.body_transfer.metrics);
+  assert.deepEqual(body.active_conditions, transfer.body_transfer.active_conditions);
+  const attributes = (await read(transfer.attribute_transfer.source_path)).profile;
+  assert.equal(canonicalDigest(attributes), transfer.attribute_transfer.profile_ref.digest);
+  assert.ok(attributes.occupation_archetype_priorities.some((row) =>
+    row.occupation_archetype_id === transfer.attribute_transfer.occupation_archetype_id));
+  const clothing = (await read(transfer.clothing_transfer.source_path)).clothing_profiles
+    .find(({ id }) => id === transfer.clothing_transfer.source_profile_id);
+  const variant = clothing.variants.find(({ id }) => id === transfer.clothing_transfer.source_variant_id);
+  assert.equal(transfer.clothing_transfer.equipment_entries.length, variant.equipment_templates.length);
+  for (const entry of transfer.clothing_transfer.equipment_entries) {
+    const source = variant.equipment_templates.find((row) => row.item_template_ref === entry.item_template_ref);
+    for (const [key, value] of Object.entries(entry)) assert.equal(source[key], value, key);
+  }
+  const approval = await read(transfer.clothing_transfer.source_approval_path);
+  assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(approval[transfer.clothing_transfer.source_approval_scope].candidate_sha256,
+    transfer.clothing_transfer.source_sha256);
+  assert.equal(transfer.applicability.actor_kind, 'player_character');
+  assert.equal(transfer.approved, false);
+  assert.equal(transfer.activation_authorized, false);
 });

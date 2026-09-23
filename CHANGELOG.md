@@ -5,7 +5,7 @@
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - docs(work): CURRENT_SPRINT — Runtime-трек начинается с M2c (#133) по решению владельца (#134)
-- docs(contracts): нормы World Knowledge и direct speech оставлены у профильных владельцев; индекс содержит навигацию и строку World Knowledge в матрице (#111) LW-009 closed
+- docs(contracts): нормы World Knowledge и direct speech оставлены у профильных владельцев; индекс содержит навигацию и строку World Knowledge в матрице (#111)
 - docs(archive): снятое правило вызова критика перенесено в архив, ссылка индекса обновлена (#113)
 - feat(knowledge-source): `knowledge:read` читает раздел или диапазон из `knowledge:query` (#116) LW-023 closed
 - docs(history): текущие release и revision сверены с v16; планы и отчёт перенесены в архив (#120) LW-017 closed

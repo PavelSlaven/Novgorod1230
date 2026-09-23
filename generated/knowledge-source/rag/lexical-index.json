@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "473fb76036012410f82db7bc2c0efe4ffc9aad428ba076dcb4b4d3143c54581c",
+  "corpus_hash": "b93fad3f833a206e6cdc8063b3dcc9040bf7e7ac7593e338471fc295972e4b84",
   "chunk_count": 2812,
   "chunks": [
     {
@@ -1574,9 +1574,9 @@
       "file": "CONTRACT_INDEX.md",
       "section": "10. Maintenance navigation",
       "line_start": 207,
-      "line_end": 209,
-      "text": "## CONTRACT_INDEX.md — 10. Maintenance navigation\n## 10. Maintenance navigation\n\nПравило обновления индекса — `AGENTS.md` §20; процедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).",
-      "char_count": 217
+      "line_end": 211,
+      "text": "## CONTRACT_INDEX.md — 10. Maintenance navigation\n## 10. Maintenance navigation\n\nAny PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.\n\nПроцедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).",
+      "char_count": 474
     },
     {
       "id": "development_rules.txt:18.1. Обязательная регистрация повторно используемых модулей:0",

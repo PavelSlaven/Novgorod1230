@@ -22,6 +22,7 @@
 | 006 | `retrieval-policy.json`, `KNOWLEDGE_SOURCE_POLICY.md` | `baseline_gap` против KSP «required_before_merge» | [#115](https://github.com/PavelSlaven/Novgorod1230/issues/115) |
 | 007 | `llm_documentation_navigation.md`, `development_rules.txt`, `map_g0_g4_workflow.txt` | ловушки в именах и статусах | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
 | 008 | `CONTRACT_INDEX.md`, `retrieval-policy.json`, шапки документов | три системы статусов | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
+| 009 | `AGENTS.md` (роутер), `CONTRACT_INDEX.md` §6, §10 | роутер ссылается на §6/§10 после переноса норм | [#111](https://github.com/PavelSlaven/Novgorod1230/issues/111) |
 | 010 | `docs/work/temporal-world-v4/`, `docs/implementation/`, `docs/migration/` | evidence-пути, которые читают tools и тесты | — |
 | 011 | файлы с закреплённым digest | байты закреплены хешами | — |
 | 012 | `tools/spatial-v3/*`, `tools/docs-tools/test/*` | закрепления фраз в документах | [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126) |
@@ -68,6 +69,11 @@
 - **Как жить.** Нормативный статус — CONTRACT_INDEX; retrieval-статус влияет только на RAG-выдачу.
 - **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112)
 
+### LW-009 — роутер ссылается на §6/§10 CONTRACT_INDEX
+- **Что.** Нормы World Knowledge и direct speech перенесены к владельцам, в §8.1 есть строка World Knowledge (#111), но роутер `AGENTS.md` всё ещё велит читать §6 и §10 индекса и строку маршрутизации «IDX §5, §6, §10».
+- **Как жить.** Для WK использовать строку §8.1 «World Knowledge»; §6/§10 теперь только навигация. Закрывается governance-PR (правка роутера по §1.1).
+- **Issue.** [#111](https://github.com/PavelSlaven/Novgorod1230/issues/111)
+
 ### LW-010 — evidence, которое читают tools
 - **Что.** `docs/work/temporal-world-v4/`, `docs/implementation/*`, `docs/migration/*` читаются тестами и скриптами (`test/spatial-v3/*`, `tools/spatial-v3/check-production-activation-boundary.mjs`, `generate-temporal-normative-freeze.mjs`, `scripts/*pr17*`, `packages/knowledge-source/test/rag-policy-repository.test.js`).
 - **Как жить.** Не переносить и не переименовывать эти файлы без правки читателей; перед переносом — `git grep` по пути.
@@ -77,7 +83,7 @@
 - **Как жить.** Перед правкой: `git grep` по имени файла в `tools/`, `test/`, `*.json`; существующие миграции не править.
 
 ### LW-012 — закрепления фраз
-- **Что.** Проверки ищут точные фразы в документах (`tools/docs-tools/test/documentation-generation.test.js`, `tools/spatial-v3/check-*.mjs`, токены ADR-001 в `check-p25.mjs`, точный термин «versioned production activation cutover» в `check-production-activation-boundary.mjs`; sha256-пины ADR-001 и 17 документов корпуса — `docs/migration/spatial-v3/normative-freeze.json` и `data/contracts/spatial-v3/p05-reviewed-baseline.json`). Уже падают вне merge gate: `temporal-v4:check-docs` (2 конфликта в `llm_documentation_navigation.md`) и `spatial-v3:check-p04` («world: target/active boundary missing»).
+- **Что.** Проверки ищут точные фразы в документах (`tools/docs-tools/test/documentation-generation.test.js`, `tools/spatial-v3/check-*.mjs`, токены ADR-001 в `check-p25.mjs`, точный термин «versioned production activation cutover» в `check-production-activation-boundary.mjs`; sha256-пины ADR-001 и 17 документов корпуса — `docs/migration/spatial-v3/normative-freeze.json` и `data/contracts/spatial-v3/p05-reviewed-baseline.json`). На Windows вызовы `tar -xOf <абсолютный путь>` в `scripts/generate-p12-dependency-closure.mjs`, `tools/spatial-v3/p12-*.mjs`, `p10-build-legacy-edge-inventory.mjs` и `test/spatial-v3/p12-*.test.js` ещё падают (исправлен только bundle-путь). Уже падают вне merge gate: `temporal-v4:check-docs` (2 конфликта в `llm_documentation_navigation.md`) и `spatial-v3:check-p04` («world: target/active boundary missing»).
 - **Как жить.** Перед правкой текста — `rg` фразы по `tools/` и `test/`. Для non-gate проверок сравнивать с этим baseline.
 - **Issue.** [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126)
 

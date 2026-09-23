@@ -206,4 +206,6 @@ An undeclared guide may still be relevant, but it must not silently override an 
 
 ## 10. Maintenance navigation
 
-Правило обновления индекса — `AGENTS.md` §20; процедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).
+Any PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.
+
+Процедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).

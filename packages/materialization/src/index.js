@@ -1,4 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
+export { G4_NATURAL_LAYERS, validateG4NaturalProfile, materializeG4NaturalBaseline } from './g4-natural-baseline.js';
 import { computeMaterializationResultDigest } from '@rus/contracts';
 import {
   canonicalDigest, createRandomSource, deriveSeed, deterministicInstanceId,

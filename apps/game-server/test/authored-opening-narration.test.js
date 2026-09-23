@@ -9,6 +9,8 @@ import { createAuthoredOpeningNarrationService } from
   '../src/runtime/authored-opening-narration.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { startLowerDvinaTrace } from '../src/runtime/lower-dvina-trace-public-start.js';
+import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 
 const checks = ['schema_and_structure', 'visible_context_compliance',
   'new_fact_check', 'npc_check', 'item_check', 'container_check',
@@ -168,7 +170,7 @@ test('opening bounds one semantic repair and final audit inside aggregate deadli
     assert.ok(now < 1_200_000);
   });
 
-function openingPackage() {
+function openingPackage({ raw = false } = {}) {
   const visible = { party_id: 'party:1', player: { name: 'Любава',
     social_status: { display_name: 'рыбачка' } }, position: { g4_id: 'g4',
     g5_node_id: 'g5', g5_anchor_id: 'anchor:start' },
@@ -202,13 +204,67 @@ function openingPackage() {
   items: [{ instance_id: 'item:rope', placement: {
     holder_character_id: 'player:1' },
     state: { display_name: 'верёвка' }, condition_state: 'serviceable' }] };
-  return buildAuthoredOpeningVisibleContext({ requestId: 'opening:1', visible,
+  const input = { requestId: 'opening:1', visible,
     internal, approvedProjection: { scenario_id: 'scenario',
       opening_projection: { place_label: 'рыбацкий стан',
         opening_prose: 'hint', visible_field_allowlist: ['party_id',
           'player.name', 'player.social_status', 'position', 'timestamp',
-          'body', 'environment'] } } });
+          'body', 'environment'] } } };
+  return raw ? input : buildAuthoredOpeningVisibleContext(input);
 }
+
+test('first screen receives natural perception after committed rehydrate without a gameplay turn', async () => {
+  for (const lighting of ['clear', 'none']) {
+    const { visible, internal, approvedProjection } = openingPackage({ raw: true });
+    internal.body = visible.body; internal.timestamp = visible.timestamp;
+    internal.position = { ...internal.position, position_id: 'position:inside' };
+    Object.assign(approvedProjection.opening_projection, { version: 1, schema: 'first_game_screen', calendar_label: 'Лето' });
+    const { perception } = await approvedNaturalPerceptionFixture();
+    for (const observation of perception.observations) {
+      if (observation.visual_conditions) observation.visual_conditions.lighting = lighting;
+    }
+    const surfaceText = perception.presentation_profile.layers.find((row) => row.layer === 'surface').clear_text;
+    let committed = false, session, narratorInput;
+    const order = [];
+    const result = await startLowerDvinaTrace({ requestId: 'opening:1', partyId: 'party:1',
+      creationIdentity: { scenario_id: 'scenario' },
+      release: { world_revision_id: 'world', world_catalog_digest: 'world-digest' },
+      publicationLoader: async () => ({ manifest_digest: 'manifest', public_projection: approvedProjection,
+        binding: { scenario_id: 'scenario', runtime_binding: { revision: 5 }, binding_id: 'binding', revision: 1,
+          binding_digest: 'binding-digest', materializer_binding_id: 'materializer',
+          world_compatibility: { production_world_revision_id: 'world', production_world_catalog_digest: 'world-digest' },
+          scenario_definition_ref: { revision: 1, digest: 'scenario-digest' },
+          phase_1a_manifest_ref: { digest: 'manifest' }, execution_identity: {
+            materializer_version: '1', rng_algorithm_id: 'test', seed_context: 'context', trigger: 'start', occurrence: 0 } } }),
+      traceStartAdapter: {
+        assertExecutionSupport() {},
+        async loadInternal() { if (committed) order.push('rehydrate'); return committed ? internal : null; },
+        async materialize(request) { internal.request_identity = request; committed = true; order.push('commit'); return { status: 'committed' }; },
+        async loadVisible() { return visible; },
+        async provisionInitialOrdinary() { order.push('provision'); },
+        async loadNaturalScenePerceptionInput() { order.push('perception'); return perception; }
+      },
+      authoredOpeningNarration: { async run(input) {
+        order.push('narrate'); narratorInput = input.visibleContextPackage;
+        const descriptions = narratorInput.visible_scene_facts.filter(({ fact_id }) => fact_id.startsWith('opening:natural:'));
+        return { prose: `Вы стоите у берега. ${descriptions.map(({ text }) => text).join(' ')}`,
+          flow: {}, original_stage23_audit: {} };
+      } },
+      traceOpeningProjector: buildLowerDvinaTraceOpeningScreen,
+      repository: {
+        async attachCommittedOpeningSession(input) { session = { screen: input.screen, delivery_attempt: input.deliveryAttempt }; },
+        async loadSession() { return session; }
+      }, validateSession: async () => {}
+    });
+    assert.ok(order.indexOf('commit') < order.indexOf('perception'));
+    assert.ok(order.lastIndexOf('rehydrate') < order.indexOf('perception'));
+    assert.ok(order.indexOf('perception') < order.indexOf('narrate'));
+    assert.equal(result.screen.main_prose.includes(surfaceText), lighting === 'clear');
+    assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), true);
+    assert.equal(JSON.stringify(narratorInput).includes('machine-only'), false);
+    assert.equal(JSON.stringify(result.screen).includes('payload_digest'), false);
+  }
+});
 
 function openingApproval(pkg) {
   const digest = computeVisibleContextPackageDigest(pkg);

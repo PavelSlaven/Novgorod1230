@@ -1,5 +1,5 @@
 import { validateFirstGameScreen } from '@rus/presentation';
-import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
+import { detectHiddenLeaks, validateVisibleContext } from '@rus/visibility-knowledge-memory';
 
 const FORBIDDEN_KEYS = new Set([
   'hidden_truth',
@@ -69,8 +69,16 @@ export function buildLowerDvinaTraceOpeningScreen({
 }
 
 export function buildAuthoredOpeningVisibleContext({ requestId, visible,
-  internal, approvedProjection } = {}) {
+  internal, approvedProjection, naturalScenePerception = null } = {}) {
   assertVisibleSource(visible, approvedProjection);
+  if (naturalScenePerception != null && (naturalScenePerception.ok !== true
+    || !validateVisibleContext(naturalScenePerception.visible_context).ok
+    || !Array.isArray(naturalScenePerception.perceived_facts)
+    || naturalScenePerception.perceived_facts.some((fact) =>
+      !naturalScenePerception.visible_context.sensory_details?.includes(fact.text)))) {
+    fail('NATURAL_SCENE_PERCEPTION_DATA_GAP', 'Approved natural scene perception is required.');
+  }
+  const naturalFacts = naturalScenePerception?.perceived_facts ?? [];
   const dossier = internal?.player?.dossier;
   const context = dossier?.opening_context;
   if (context?.schema !== 'rus.authored_start_opening_context.v1') {
@@ -116,7 +124,9 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
       source_refs: [local.interior_position_ref, ...local.movement_edge_refs] },
     ...visible.environment.facts.map((text, index) => ({
       fact_id: `opening:environment:${index + 1}`, text,
-      source_refs: [position.g5_anchor_id] }))
+      source_refs: [position.g5_anchor_id] })),
+    ...naturalFacts.map((fact, index) => ({ fact_id: `opening:natural:${index + 1}`,
+      text: fact.text, source_refs: [fact.source_position_id] }))
   ];
   const bodySummary = bodyStateSummary(visible.body);
   const mustInclude = [
@@ -127,7 +137,8 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
     ['current_event', knownFacts[0]],
     ['goal_stake', knownFacts[0]],
     ['surroundings', [context.foreground.text,
-      ...context.far_orientation.map(({ text }) => text), local.description].join(' ')],
+      ...context.far_orientation.map(({ text }) => text), local.description,
+      ...naturalFacts.map(({ text }) => text)].join(' ')],
     ['body', bodySummary],
     ['directions_interactions', `${local.name}; ${visibleNpcs.map(({ label }) => label).join('; ')}; ${visibleItems.map(({ label }) => label).join('; ')}`]
   ].map(([category, text]) => ({ category, text }));
@@ -160,8 +171,10 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
     visible_npcs: visibleNpcs,
     visible_items: visibleItems,
     visible_containers: [], visible_risks: [],
-    audible_context: visible.environment.facts.slice(1).map((text) => ({
+    audible_context: [...visible.environment.facts.slice(1).map((text) => ({
       text, source_ref: { anchor_id: position.g5_anchor_id } })),
+    ...naturalFacts.filter((fact) => fact.channel === 'acoustic').map((fact) => ({
+      text: fact.text, source_ref: { position_id: fact.source_position_id } }))],
     smell_context: [], touch_body_context: [{ text: bodySummary }],
     weather_light_context: visible.environment.facts.slice(0, 1).map((text) => ({ text })),
     known_context: knownFacts.map((text) => ({ text, basis_refs: [actorId] })),

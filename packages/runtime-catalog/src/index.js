@@ -35,6 +35,8 @@ export { loadApprovedProceduralActorTemporalBundle,
   loadApprovedProceduralCompiledCatalog,
   loadApprovedProceduralSceneRecordBundle } from
   './procedural-scene-records.js';
+export { loadApprovedG4NaturalCatalog } from './g4-natural-catalog.js';
+export { loadApprovedG4NaturalPresentationCatalog } from './g4-natural-presentation-catalog.js';
 
 export const RUNTIME_CATALOG_SCOPE = 'item_container_materialization_v2';
 

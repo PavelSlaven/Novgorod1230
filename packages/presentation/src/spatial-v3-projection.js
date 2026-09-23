@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 import { createMapPanel, createRoutePanel } from './read-models/panels.js';
+import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 
 const visibility = new Set(['clear', 'partial', 'none']);
 const knowledge = new Set(['visible', 'hidden', 'misidentified']);
@@ -131,4 +132,102 @@ export function createSpatialV3ProjectionPanels(projection) {
     map: createMapPanel({ scene_map: projection.scene_map, world_signals: projection.world_signals }),
     route: createRoutePanel({ movement: projection.movement })
   });
+}
+
+/** Select approved natural descriptions through the existing P22 perception
+ * resolvers. Inputs are rehydrated factual state; this function never persists
+ * a second scene or turns a machine class name into player-facing prose. */
+export function projectSpatialV3NaturalScene(input = {}) {
+  const gap = (reason) => sealed({ ok: false, error: {
+    code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP', reason } });
+  const { natural_baseline: baseline, presentation_profile: profile,
+    observer, scene, observations } = input;
+  if (baseline?.schema !== 'rus.g4_natural_baseline.v1'
+    || profile?.status !== 'approved' || !text(profile.id)
+    || !Number.isSafeInteger(profile.version) || profile.version < 1
+    || profile.natural_profile_ref?.id !== baseline.profile_ref?.id
+    || profile.natural_profile_ref?.version !== baseline.profile_ref?.version
+    || !text(profile.natural_profile_ref?.payload_digest)
+    || profile.natural_profile_ref.payload_digest !== baseline.profile_ref?.payload_digest
+    || !text(observer?.actor_id) || observer?.party_id !== scene?.party_id
+    || !text(scene?.party_id) || !text(scene.visible_scene)
+    || !visibility.has(observer.visual_capability) || !visibility.has(observer.hearing_capability)
+    || !Array.isArray(observations) || !Array.isArray(profile.layers)
+    || !Array.isArray(baseline.layers) || !Array.isArray(scene.positions)
+    || !Array.isArray(scene.g6) || !Array.isArray(scene.acoustic_profiles)
+    || !['id', 'version', 'world_revision_id'].every((key) =>
+      baseline.g4_ref?.[key] != null && baseline.g4_ref[key] === scene.g4_ref?.[key])
+    || !['id', 'version'].every((key) => baseline.scene_template_ref?.[key] != null
+      && baseline.scene_template_ref[key] === scene.scene_template_ref?.[key])) {
+    return gap('exact_baseline_descriptors_observer_and_scene_required');
+  }
+  const active = (row) => row?.party_id === scene.party_id && row.status === 'active';
+  if (scene.positions.some((row) => !active(row)) || scene.g6.some((row) => !active(row))) {
+    return gap('active_same_party_scene_required');
+  }
+  const position = scene.positions.find((row) => row.id === observer.position_id);
+  const observerG6 = scene.g6.find((row) => row.id === position?.g6_instance_id);
+  if (!position || !observerG6 || observerG6.scene_baseline_id !== scene.baseline_id
+    || scene.g6.some((row) => row.scene_baseline_id !== scene.baseline_id)) {
+    return gap('exact_current_position_and_baseline_required');
+  }
+  const ambient = scene.acoustic_profiles.filter((row) => row.g6_instance_id === observerG6.id);
+  if (ambient.length !== 1 || ambient[0].party_id !== scene.party_id
+    || !Number.isInteger(ambient[0].ambient_noise) || ambient[0].ambient_noise < 0) {
+    return gap('committed_observer_acoustic_baseline_required');
+  }
+  const facts = [];
+  try {
+    const visual = createSpatialV3VisibilityResolver({
+      positions: scene.positions.map((row) => ({ id: row.id, g6_id: row.g6_instance_id })),
+      g6: scene.g6, links: scene.visibility_links ?? [], portals: scene.portals ?? {} });
+    const acoustic = createSpatialV3AcousticResolver({ g6: scene.g6,
+      edges: scene.acoustic_edges ?? [], portals: scene.portals ?? {} });
+    for (const layer of baseline.layers) {
+      if (layer.applicability === 'not_applicable') continue;
+      if (layer.applicability !== 'present') return gap('resolved_layer_applicability_required');
+      const descriptors = profile.layers.filter((row) => row.layer === layer.layer);
+      if (descriptors.length !== 1) return gap('exact_layer_descriptor_required');
+      const descriptor = descriptors[0];
+      if (descriptor.channel === 'none' && descriptor.clear_text == null
+        && descriptor.partial_text == null) continue;
+      if (!['visual', 'acoustic'].includes(descriptor.channel) || !text(descriptor.clear_text)) {
+        return gap('approved_sensory_descriptor_required');
+      }
+      const sources = observations.filter((row) => row.layer === layer.layer);
+      if (sources.length !== 1) return gap('exact_layer_source_position_required');
+      const source = sources[0];
+      const sourcePosition = scene.positions.find((row) => row.id === source.source_position_id);
+      if (!sourcePosition) return gap('exact_layer_source_position_required');
+      if (source.active === false) continue;
+      let perception;
+      if (descriptor.channel === 'visual') {
+        perception = weakest(observer.visual_capability, visual.resolve({
+          ...source.visual_conditions, from_position_id: observer.position_id,
+          to_position_id: sourcePosition.id }).visibility);
+      } else {
+        if (!Number.isInteger(descriptor.loudness) || descriptor.loudness < 0) return gap('approved_sound_loudness_required');
+        const result = acoustic.resolve({ from_g6_id: sourcePosition.g6_instance_id,
+          to_g6_id: observerG6.id, loudness: descriptor.loudness,
+          target_ambient_noise: ambient[0].ambient_noise,
+          condition_losses: source.condition_losses ?? {} });
+        perception = weakest(observer.hearing_capability, result.audibility === 'clear'
+          ? 'clear' : result.audibility === 'indistinct' ? 'partial' : 'none');
+      }
+      const description = perception === 'clear' ? descriptor.clear_text
+        : perception === 'partial' ? descriptor.partial_text : null;
+      // Partial visibility never grants the fully resolved class description.
+      if (text(description)) facts.push({ layer: layer.layer,
+        channel: descriptor.channel, source_position_id: sourcePosition.id, text: description });
+    }
+  } catch (error) {
+    if (!(error instanceof TypeError)) throw error;
+    return gap('explicit_p22_perception_inputs_required');
+  }
+  const visible_context = { version: 1, schema: 'visible_context_package',
+    visible_scene: scene.visible_scene, sensory_details: facts.map((fact) => fact.text),
+    visible_changes: [], visible_npc: [], visible_objects: [], known_context: [],
+    uncertainties: [], allowed_tensions: [], do_not_imply: [] };
+  if (!validateVisibleContext(visible_context).ok) return gap('player_safe_descriptors_required');
+  return sealed({ ok: true, visible_context, perceived_facts: facts });
 }

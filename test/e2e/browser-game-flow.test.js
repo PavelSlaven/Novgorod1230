@@ -610,6 +610,8 @@ test('browser renders the PR82 scene-asset matrix and fallbacks', {
           '[data-screen-schema="lower_dvina_trace_turn_screen"]');
         const landscape = document.querySelector('[data-landscape]');
         const canvas = document.querySelector('[data-landscape-canvas]');
+        if (!document.querySelector('.scene-viewport-shell[data-scene-hydrated]')
+          || !document.querySelector('[data-turn-form] textarea:not([disabled])')) return false;
         if (!screen || !landscape?.classList.contains(`landscape--weather-${weather}`)
           || !landscape.classList.contains(`landscape--day-${dayPart}`)
           || !canvas || canvas.__e2ePreviousScene) return false;
@@ -618,8 +620,6 @@ test('browser renders the PR82 scene-asset matrix and fallbacks', {
       }, {
         weather: visual.weather ?? 'clear', dayPart: visual.day_part ?? 'day'
       });
-      if (abort) await page.unroute(abortPattern, abort);
-
       const landscape = page.locator('[data-landscape]');
       const classes = await landscape.getAttribute('class');
       assert.match(classes, new RegExp(`landscape--weather-${visual.weather ?? 'clear'}`));
@@ -647,6 +647,7 @@ test('browser renders the PR82 scene-asset matrix and fallbacks', {
           '/assets/landscape/lower-dvina/zhdanko-river-descent/day-clear.webp'
         ))), false, 'aborted authored landscape must not leave a stale draw');
       await assertPortraitCase(page, name, visual, emotion);
+      if (abort) await page.unroute(abortPattern, abort);
     }
   }
 });

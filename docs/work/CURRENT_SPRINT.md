@@ -1,6 +1,6 @@
 # Current sprint
 
-> **Производная выжимка.** Истина — GitHub Issues и milestones, для Runtime — описание Draft PR #98. Статусов, HEAD и CI здесь нет: «сделано» = issue закрыт. Проверено: 2026-09-23, commit 77891b3c.
+> **Производная выжимка.** Истина — GitHub Issues и milestones, для Runtime — описание Draft PR #98. Статусов, HEAD и CI здесь нет: «сделано» = issue закрыт. Проверено: 2026-09-23, commit 8d5047e1.
 
 ## Цели
 
@@ -22,9 +22,10 @@
 
 ### Backlog — сначала
 
-1. [#111](https://github.com/PavelSlaven/Novgorod1230/issues/111) — нормы из CONTRACT_INDEX §6/§10 к владельцам (снимает особый случай в правиле чтения индекса).
-2. [#113](https://github.com/PavelSlaven/Novgorod1230/issues/113) — архив `.github/Правило вызова агента-критика.txt`.
-3. [#115](https://github.com/PavelSlaven/Novgorod1230/issues/115) — решение владельца по KSP L39 (`decision:owner`).
+Приоритетные долги (#111, #113, #115) закрыты. Перед и во время M2c:
+
+1. [#135](https://github.com/PavelSlaven/Novgorod1230/issues/135), [#139](https://github.com/PavelSlaven/Novgorod1230/issues/139) — нестабильные тесты обязательного CI.
+2. [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126) — остаток non-gate проверок: устаревшие sha-пины p12 dependency-closure (перегенерация — утверждённый data-пакет), `spatial-v3:check-p04`, `temporal-v4:check-docs`.
 
 Остальное (`P3`) — по мере работы с затронутыми путями; ссылки на issue стоят у записей [LEGACY_WARNINGS](LEGACY_WARNINGS.md). После merge #98 разблокируются [#117](https://github.com/PavelSlaven/Novgorod1230/issues/117) и [#118](https://github.com/PavelSlaven/Novgorod1230/issues/118).
 

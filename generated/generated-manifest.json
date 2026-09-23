@@ -7,9 +7,9 @@
       "sha256": "3362fea61f6c166fbf530bc2b19acaea1db658975e71d3795698ef0b00840b2e"
     },
     {
-      "bytes": 7011,
+      "bytes": 7043,
       "path": "generated/npm-script-catalog.md",
-      "sha256": "511aed5ec4f284763d4df91eec02c4b191eccdf6f112cb3cf8e8157a51e55e0f"
+      "sha256": "bf2fcf83db77f3b76c2953bb88efe162941e3d92b9ade1e587361ce8f47d0922"
     },
     {
       "bytes": 40666,
@@ -28,7 +28,7 @@
     }
   ],
   "generator": "tools/docs-tools/src/cli.js",
-  "input_digest": "b137be603b39355fbcfd24d577315387117c33f80c1c93e12715dedb7169ff36",
+  "input_digest": "e422a837ec485efe41a04f78b06b464d363a82e2ebc2654ca3385d1fb25ae22f",
   "release": "0.23.0-migration.24",
   "schema_version": "rus.generated_manifest.v1"
 }

@@ -85,9 +85,11 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 ## Рабочий цикл
 
-Процедура — [WORKFLOW](docs/process/WORKFLOW.md): (1) одна задача = новая сессия, вход — issue/CR; (2) CR для нетривиальной задачи; (3) context pack по строке маршрутизации + `rg` по [LEGACY_WARNINGS](docs/work/LEGACY_WARNINGS.md); (4) короткие итерации с focused-тестами; (5) проверки и Contract Auditor по триггерам; (6) фиксация: CHANGELOG, LW, «Closes #N», отчёт WR §29.
+Процедура — [WORKFLOW](docs/process/WORKFLOW.md): (0) в начале спринта — проверка, синхронизация и использование CBM (WR §19); (1) одна задача = новая сессия, вход — issue/CR; (2) CR для нетривиальной задачи; (3) context pack по строке маршрутизации + `rg` по [LEGACY_WARNINGS](docs/work/LEGACY_WARNINGS.md); (4) короткие итерации с focused-тестами; (5) проверки и Contract Auditor по триггерам; (6) фиксация: CHANGELOG, LW, «Closes #N», отчёт WR §29.
 
 ## Процедуры (skills)
+
+Обязательные навыки: `caveman` (full) — во всех задачах, `ponytail` (full) — в задачах разработки; правила — WR §18.1.
 
 - `change-request` — [CHANGE_REQUEST](docs/process/CHANGE_REQUEST.md)
 - `context-dump` — [CONTEXT_DUMP](docs/process/CONTEXT_DUMP.md)

@@ -65,10 +65,15 @@
 2. Проверить живой статус:
 
    ```powershell
-   gh issue list --milestone "Docs & agent context 2026-09" --state open
+   gh issue list --state open --label P2
+   gh issue list --milestone "Runtime M3–M8" --state open
    ```
 
 3. Взять **одну** задачу — первую открытую по порядку CURRENT_SPRINT, у которой нет незакрытых зависимостей.
+   Если это первая задача после открытия нового milestone, выдачи нового этапа плана или смены трека — сначала старт спринта для CBM по
+   [AGENTS.md §19](../governance/WORKFLOW_RULES.md): подключение, `list_projects` / `index_status`, однократный
+   `index_repository`, результат — в отчёт задачи. Команды и разбор сбоев —
+   [CODEBASE_MEMORY_MCP](../setup/CODEBASE_MEMORY_MCP.md).
 4. Runtime-трек: следующий этап Runtime_Plan не начинается без решения владельца. Выдача владельцем нового
    этапа может служить приёмкой предыдущего только при условиях Runtime_Plan §7.4; без подтверждения следующий
    этап не начинается

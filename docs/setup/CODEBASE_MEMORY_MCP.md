@@ -19,6 +19,28 @@ Installer настраивает обнаруженные Codex, Cursor и VS Co
 
 На Windows храните checkout в ASCII-пути, например `C:\Users\name\Documents\Novgorod`: CBM 0.10.8 не запускается из рабочего каталога с кириллицей ([upstream issue #1715](https://github.com/DeusData/codebase-memory-mcp/issues/1715)).
 
+### Общий rendezvous-каталог (`CBM_RUNTIME_DIR`)
+
+Все клиенты делят один daemon CBM через rendezvous-каталог, по умолчанию `%LOCALAPPDATA%\cbm-daemon-<key>`. Codex desktop — упакованное (MSIX) приложение: Windows перенаправляет его записи в `%LOCALAPPDATA%` в `%LOCALAPPDATA%\Packages\OpenAI.Codex_…\LocalCache\Local`. Daemon, запущенный из Codex, держит lock-файлы в этой копии, остальные клиенты видят «живой daemon без захваченного marker» и получают отказ (`daemon-conflicts.ndjson`: `active_version: pre-cohort/unknown`). Поэтому rendezvous выносится из AppData для всех клиентов:
+
+```powershell
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.cbm-runtime"
+[Environment]::SetEnvironmentVariable('CBM_RUNTIME_DIR', "$env:USERPROFILE\.cbm-runtime", 'User')
+```
+
+Codex получает переменную через `env_vars` в своём `config.toml` (installer прописывает её сам), Cursor и VS Code наследуют её от окружения, Claude Code наследует её после перезапуска, а `--env` при регистрации сервера (ниже) делает значение явным. После установки переменной закройте все клиенты с CBM и запустите их заново.
+
+### Claude Code
+
+Если installer не подключил Claude Code, добавьте сервер в пользовательскую конфигурацию (вне репозитория) и проверьте подключение:
+
+```powershell
+claude mcp add codebase-memory-mcp --scope user --env "CBM_RUNTIME_DIR=$env:USERPROFILE\.cbm-runtime" -- "$env:LOCALAPPDATA/Programs/codebase-memory-mcp/codebase-memory-mcp.exe"
+claude mcp list
+```
+
+Инструменты появляются в новой сессии Claude Code.
+
 ## Индексация
 
 ```powershell
@@ -39,6 +61,21 @@ codebase-memory-mcp cli index_repository --repo-path "C:\path\to\Novgorod1230"
 - `index_status` — состояние индекса.
 
 Для нормативных вопросов используйте `npm run knowledge:query`. Любой вывод графа подтверждайте чтением соответствующих исходников; отсутствие результатов не доказывает отсутствие реализации без проверки coverage.
+
+## Начало спринта
+
+Обязательная проверка в первой задаче спринта (новый milestone, новый этап плана или смена трека в CURRENT_SPRINT) задана в AGENTS.md §19 ([WORKFLOW_RULES](../governance/WORKFLOW_RULES.md)). Из терминала:
+
+```powershell
+claude mcp list
+codebase-memory-mcp cli list_projects
+codebase-memory-mcp cli index_repository --repo-path "C:\path\to\Novgorod1230"
+codebase-memory-mcp cli index_status --project <имя проекта из list_projects>
+```
+
+## Сбои
+
+Если любой запуск CBM, включая `config list`, завершается сообщением `CBM daemon could not start` или «a pre-coordination or unverified CBM generation is active», новые клиенты не могут подключиться к общему daemon. Сначала проверьте, что у всех клиентов задан одинаковый `CBM_RUNTIME_DIR` (раздел выше); затем закройте все клиенты с CBM (Codex, Cursor, VS Code, Claude Code) либо, с разрешения администратора, завершите оставшиеся процессы `codebase-memory-mcp.exe`: следующий запуск поднимет новый daemon. Прерванные индексации могут оставить в каталоге кэша файлы `<проект>.db.stage.*`; их можно удалить, когда CBM остановлен.
 
 ## Обновление
 

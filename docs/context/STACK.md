@@ -70,7 +70,7 @@
 ## Навигация по коду для агентов
 
 - `codebase-memory-mcp` закреплён на release `v0.10.8`; официальный installer настраивает Codex, Cursor и VS Code
-  (Claude Code в списке не указан); индекс вне репозитория:
+  (Claude Code — автоматически или вручную, см. там же); индекс вне репозитория:
   [CODEBASE_MEMORY_MCP.md](../setup/CODEBASE_MEMORY_MCP.md). Порядок использования — AGENTS.md §19.
 - Удалены: Graphify (skills, cursor rule, CI-шаги, `.graphifyignore`) и repo-intel
   (`packages/repository-intelligence`) — commit `be24363a` (PR #94). Каталог
@@ -107,6 +107,7 @@
   после установки/обновления, версия ниже 2.1.277): личный gitignored `CLAUDE.local.md` с единственной строкой
   `@AGENTS.md` — свой в каждом worktree. Это не репозиторный источник истины и не новая норма.
 - Skills (процедуры): `.agents/skills/` (Codex, Cursor, Copilot) и `.claude/skills/` (Claude Code; Cursor и Copilot
-  тоже читают). Копии одинаковые и являются заглушками; канон указан в поле `metadata.canonical`
-  каждого `SKILL.md` (`docs/process/*`, `docs/work/LEGACY_WARNINGS.md` или AGENTS.md).
+  тоже читают). Копии одинаковые; канон указан в поле `metadata.canonical` каждого `SKILL.md`. Процедуры проекта —
+  заглушки на `docs/process/*`, `docs/work/LEGACY_WARNINGS.md` или governance; `caveman` и `ponytail` — полные копии
+  upstream (`metadata.source`), обязательны по AGENTS.md §18.1.
 - Документация инструментов — [LINKS.md](LINKS.md).

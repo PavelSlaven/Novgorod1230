@@ -59,6 +59,11 @@
       "spatial_v3_scene_movement_edge_templates"
     ],
     [
+      "spatial_v3_terminal_policies",
+      "spatial_v3_continuation_length_rules",
+      "spatial_v3_continuation_length_candidates"
+    ],
+    [
       "spatial_v3_g4_expansion_profiles",
       "spatial_v3_g5_generation_templates",
       "spatial_v3_expansion_profile_template_limits",

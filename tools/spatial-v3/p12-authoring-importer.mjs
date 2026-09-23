@@ -145,7 +145,7 @@ function validateReadiness(datasets, gaps, errors, bundleKind) {
   for (const [table, rows] of datasets) {
     if (table === 'spatial_v3_scene_endpoint_slots') unique(rows, (row) => `${row.scene_template_id}:${row.scene_template_version}:${row.slot_key}`, 'SCENE_SLOT_DUPLICATE', errors);
     if (table === 'spatial_v3_world_route_points') contiguous(rows, 'world_route_id', 'ordinal', 'ROUTE_CONTINUITY_GAP', errors);
-    if (table === 'spatial_v3_expansion_profile_template_limits') for (const row of rows) if (!Number.isInteger(row.max_instances) || row.max_instances < 1) errors.push(issue('CAPACITY_PROOF_FAILED', `${table}:${row.id}`));
+    if (table === 'spatial_v3_expansion_profile_template_limits') for (const row of rows) if (!Number.isInteger(row.max_count) || row.max_count < 1) errors.push(issue('CAPACITY_PROOF_FAILED', `${table}:${row.profile_id}:${row.template_id}`));
     if (table === 'spatial_v3_controlled_vocabulary_bindings') for (const row of rows) if (!/^[a-f0-9]{64}$/u.test(row.registry_digest ?? '')) errors.push(issue('CONTROLLED_VOCABULARY_GAP', `${table}:${row.id}`));
   }
   const required = bundleKind === 'dependency_closure'
@@ -164,9 +164,14 @@ function validateControlledVocabularyBindings(datasets, errors) {
 function validateCapacityProof(datasets, errors) {
   const slots = datasets.get('spatial_v3_expansion_slots') ?? []; const limits = datasets.get('spatial_v3_expansion_profile_template_limits') ?? []; const candidates = datasets.get('spatial_v3_expansion_slot_templates') ?? [];
   if (!slots.length && !limits.length && !candidates.length) return;
-  const allowed = new Map(slots.map((slot) => [`${slot.id}:${slot.version}`, candidates.filter((candidate) => candidate.slot_id === slot.id && candidate.slot_version === slot.version).map((candidate) => `${candidate.template_id}:${candidate.template_version}`)]));
-  const proof = proveExpansionCapacity({ slots: slots.map((slot) => ({ id: `${slot.id}:${slot.version}`, maxInstances: slot.max_instances })), limits: limits.map((limit) => ({ template: `${limit.template_id}:${limit.template_version}`, maxCount: limit.max_instances })), allowed });
-  if (!proof.ok) errors.push(issue('CAPACITY_PROOF_FAILED', proof.reason ?? 'expansion'));
+  const profiles = new Set([...slots, ...limits].map((row) => `${row.profile_id}:${row.profile_version}`));
+  for (const profile of profiles) {
+    const profileSlots = slots.filter((row) => `${row.profile_id}:${row.profile_version}` === profile);
+    const profileLimits = limits.filter((row) => `${row.profile_id}:${row.profile_version}` === profile);
+    const allowed = new Map(profileSlots.map((slot) => [`${slot.id}:${slot.version}`, candidates.filter((candidate) => candidate.slot_id === slot.id && candidate.slot_version === slot.version).map((candidate) => `${candidate.template_id}:${candidate.template_version}`)]));
+    const proof = proveExpansionCapacity({ slots: profileSlots.map((slot) => ({ id: `${slot.id}:${slot.version}`, maxInstances: slot.max_instances })), limits: profileLimits.map((limit) => ({ template: `${limit.template_id}:${limit.template_version}`, maxCount: limit.max_count })), allowed });
+    if (!proof.ok) errors.push(issue('CAPACITY_PROOF_FAILED', `${profile}:${proof.reason ?? proof.code}`));
+  }
 }
 
 function validateRouteTopology(datasets, errors) {

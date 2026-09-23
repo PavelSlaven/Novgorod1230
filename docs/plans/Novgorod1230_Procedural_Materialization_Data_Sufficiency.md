@@ -1,8 +1,69 @@
-# M3 procedural materialization data sufficiency
+# M2c / M3 procedural materialization data sufficiency
 
 Status: authoring/readiness input for PR #98. Source files, candidate bundles,
 approved records and records activated under the exact runtime pin are distinct.
 Only the last class is executable runtime data.
+
+## M2c — step 1: Data Sufficiency Report
+
+M2c authors the missing G4 expansion profiles and G5 generation templates,
+limits, slots, slot templates, terminal policies and continuation-length rules
+for the 32 approved G4 in the target catalog. Workflow step 6 and the owner's explicit task
+authorization classify this as an expected authoring step, not a blocking
+external data gap. Reusable profile families are selected from each G4's
+landscape × land-use × function data. The exact authoring pin is
+`novgorod_spatial_v3_target_contract_approval_001`: 32 G4 at version 1 with
+86 approved directional exits. The separate Spatial-v3 production-v6 candidate
+is a delta with different G4 versions and is supplementary source evidence,
+not the expansion pin. Canonical G0–G4, routes and exits stay
+fixed; generated G5 may attach only through existing directional exits.
+
+| Requirement | Source/catalog | Reader/compiler | Materializer | Persisted state | Projector | Sufficiency |
+|---|---|---|---|---|---|---|
+| G4 membership, topology, routes and directional exits | Exact target catalog `novgorod_spatial_v3_target_contract_approval_001`; `spatial_v3_nodes.json`, `spatial_v3_g4_directional_exits.json`, `spatial_v3_g4_traversal_profiles.json` | `spatial-v3-world-base-reader.js` reads pinned canonical nodes/routes; expansion closure is not yet exposed | `createFrontierTopologyResolver` consumes a supplied approved candidate set | Existing canonical `world_base` rows and party spatial tables | Existing spatial/perception readers | 32 G4@1 and 86 exits; preserve nodes, routes and exits unchanged; verify exact active pin at import |
+| Select expansion family from G4 landscape × land-use × function | `world_base` landscape, water, land-use and place templates plus regional bindings and exact target G4 refs; v6 is supplementary source only | No current Spatial-v3 expansion-family reader; `compileProceduralSceneProfile` is a separate scene-content compiler | Existing frontier resolver after an approved family is supplied | G4 expansion profile and generated G5 rows in existing world/party owners | Existing spatial/perception readers | Source vocabularies exist; G4 applicability and family binding need authoring, approval and import |
+| Generate G5 within limits and continue/terminate | M2c G5 templates, profile limits, slots, slot templates, terminal policies, continuation-length and successor-frontier rules | Spatial-v3 readback must load exact approved expansion closure | `createFrontierTopologyResolver` and existing atomic commit owner | Existing party G5 sites, expansion frontiers and capacity ledgers | Existing spatial/perception readers | Schema and proposal owner exist; authoring rows, reader wiring and execution checks remain |
+| Natural layers and seasonal state | Landscape/water/land-use bindings, scene profiles and Temporal v4 | `compileProceduralSceneProfile`; Temporal/environment readers | Materialization and environment owners | Existing scene/environment state | Perception and opening | Current compiler is authoring/readiness only; required local layer data and active pins remain incomplete |
+| Functional things and finite stocks | Item/container V5 and functional mapping candidates | `loadApprovedItemCatalog` only after active pin; procedural compiler | Stage 16, items-property and resource transition owners | Items, containers and `party_resource_nodes` | Player-safe item/scene projection | Authoring evidence exists; active catalog, committed source quantities and conservation checks remain |
+| NPC composition and equipment | Regional actor/appearance, role/occupation, Temporal and item profiles | `loadApprovedActorProfileCatalog` and procedural actor bundle | Actor materialization, Stage 16, NPC runtime | Existing actor/body/item/activity state | Player-safe people projection | Code basis exists; active clothing/tool mappings and applicable population data remain incomplete |
+| First-screen delivery | Persisted spatial, natural, item and NPC refs | Existing readback and visibility/knowledge owners | Opening Stage 22/23 and narration | Existing presentation delivery state | Player-visible opening | First-entry scene items reach `initial.visible_objects`; full M2c gameplay acceptance remains pending |
+
+Regional template-link source inventory (members inside
+`data/world-base-sources/rus13-base-v1.tar.gz`):
+
+| Regional type | Exact archive member | Rows | Source status | G4 applicability |
+|---|---|---:|---|---|
+| Landscape | `nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_landscape_templates.tsv` | 34 | all `draft` | none; allowed scales are G1–G3 |
+| Water body | `nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_water_body_templates.tsv` | 24 | all `draft` | none; allowed scales are G2–G3 |
+| Land use | `nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_land_use_templates.tsv` | 31 | all `draft` | none; allowed scales are G1–G3 |
+| Place | `nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_place_templates.tsv` | 39 | all `draft` | none; allowed scales are G3 |
+| **Total** |  | **128** | **all `draft`** | **0 G4-applicable bindings** |
+
+These archived regional TSV rows are source evidence, not approved or active
+runtime bindings. Current general `world_base` seed catalogs contain 70
+landscape, 41 water-body, 45 land-use and 64 place templates. Separately, the
+existing M3 regional-environment candidate proposes 33 landscape, 21 water,
+24 land-use and 37 place rows; those counts describe its audited intersection,
+not the full four-TSV source inventory and not G4 expansion profiles.
+
+| Data state | M2c status |
+|---|---|
+| Source | The approved target catalog has 32 G4@1 and 86 exits. Spatial-v3 v6 is separate supplementary evidence; world-base seed catalogs are available. The four regional-link TSVs above are in the tracked source archive and remain `draft`. |
+| Candidate | M3 has a distinct regional-environment candidate with the counts above. M2c G4 expansion profiles, G5 templates, limits, slots, slot templates and continuation/terminal rules still need authoring with provenance and directness. |
+| Approved | The target catalog's 32 G4@1 and 86 exits retain their approval state; the v6 candidate has its separate status. No M2c G4 expansion-profile family is approved yet; its independent `gpt-6-astra` high audit is a required next pass. |
+| Active | No M2c profile import/activation or runtime readback exists yet. Existing M3 activation states remain as reported below and are not advanced by this report. |
+
+Data-sufficiency decision: **proceed with M2c authoring** using the named
+sources and user-authorized reusable families. The missing G4-specific profiles
+are the intended authoring output, not a reason to stop. Import remains with
+the existing Spatial-v3 owner workflow and reader after the required independent
+approval and contract audit.
+
+## Earlier M3 authoring inventory
+
+The sections below record the earlier three-family authoring candidates and
+their original activation limits. They are not an M2c coverage or approval
+claim for all Novgorod place types.
 
 ## Owner map
 
@@ -13,7 +74,7 @@ Only the last class is executable runtime data.
 | work items/containers/finite stock | approved item-container-120 V5 normalized rows | runtime-catalog reader + compiler | Stage 16/items-property/resource nodes | authoring approval PASS; activation `not_requested`; runtime use forbidden |
 | ordinary NPC basis | approved enriched occupations/social roles/legal/social-position maps; approved demographic/appearance | actor/role/occupation readers + compiler | Stage 15/16, NPC runtime | schedules, knowledge, behavior/goals and appearance are usable; concrete clothing/tools still blocked by inactive item catalog |
 | light/weather/activity/body-time | approved Temporal v4 datasets | existing temporal/environment/body owners | existing temporal persistence | executable; derive current state, never author strings in scene profile |
-| presentation | committed entity/group/item/NPC refs | existing perception/opening projection | existing presentation owner | projector currently omits first-entry ordinary objects at state version 0 |
+| presentation | committed entity/group/item/NPC refs | existing perception/opening projection | existing presentation owner | Historical M3 finding resolved: first-entry scene items now reach `initial.visible_objects`; full M2c presentation acceptance remains pending |
 
 ## Compiler boundary
 

@@ -20,10 +20,15 @@
     "scope": "regional_context_sources, five regional_context_profiles, exact G4 applicability and unknown language only",
     "excludes": "Nonzero generation, count weights, clothing, body, activity, routine and target actor pin"
   },
+  "npc_runtime_raw_approval": {
+    "candidate_sha256": "50d3dd7e035f2cf5c4524e2bde4ca0915af2526af1da512cd0ac0c9425c39635",
+    "scope": "Body transfer, ordinary routine, nine activity references, four clothing variants, personal control and water-without-carrier zero count as authoring data only",
+    "excludes": "Imported status, equipment activation, current target actor/item/Temporal pins and NPC production"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",
-    "NPC runtime bindings and canonical initial start need separate independent Sol high data approval.",
+    "NPC imported datasets and canonical initial start need separate independent Sol high data approval.",
     "Earlier Astra attestations remain historical records; this supplemental decision supersedes their reviewer choice for the listed M2c candidates."
   ],
   "activation_authorized": false

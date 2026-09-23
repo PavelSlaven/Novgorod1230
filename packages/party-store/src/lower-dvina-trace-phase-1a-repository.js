@@ -186,6 +186,24 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         counts,
         payload
       });
+      let physicalPosition = {};
+      if (payload.initial_spatial_v3?.canonical_scene_proposal != null) {
+        const physical = (await query(`SELECT p.id AS position_id,p.g6_instance_id,
+            g.host_kind,g.host_id,g.scene_baseline_id
+          FROM party_runtime.party_journey_locations l
+          JOIN party_runtime.scene_position_nodes p ON p.party_id=l.party_id AND p.id=l.scene_position_id
+          JOIN party_runtime.party_g6_instances g ON g.party_id=p.party_id AND g.id=p.g6_instance_id
+          WHERE l.party_id=$1 AND l.owner_kind='actor' AND l.owner_id=$2 AND l.location_kind='scene'
+            AND p.status='active' AND g.status='active'`, [partyId, player.character_id])).rows;
+        const scene = payload.initial_spatial_v3.canonical_scene_proposal;
+        if (physical.length !== 1 || physical[0].position_id !== payload.initial_spatial_v3.selected_position_id
+          || physical[0].host_kind !== 'g5_site' || physical[0].host_id !== scene.site_id
+          || physical[0].scene_baseline_id !== scene.baseline_id) {
+          throw Object.assign(new Error('Committed canonical start physical position differs from the approved snapshot.'),
+            { code: 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE' });
+        }
+        physicalPosition = { position_id: physical[0].position_id, g6_instance_id: physical[0].g6_instance_id };
+      }
       const normalizedItems = items.map((item) => ({
         item_id: item.item_id,
         run_id: item.run_id,
@@ -264,7 +282,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
             base_attributes: structuredClone(player.attribute_profile_snapshot) })
         },
         body: { profile_ref: player.body_profile_ref, health: Number(player.health), energy: Number(player.energy), satiety: Number(player.satiety) },
-        position: { ...position, location_ref: startSpatial.node_state.location_profile_ref },
+        position: { ...position, ...physicalPosition, location_ref: startSpatial.node_state.location_profile_ref },
         prepared_scenes: payload.immediate.prepared_scenes ?? [],
         ...(payload.first_entry_preparation == null ? {} : {
           first_entry_preparation: {

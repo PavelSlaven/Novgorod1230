@@ -92,14 +92,19 @@ function parseSkillFrontmatter(text, relativePath) {
   assert.ok(match, `${relativePath}: missing frontmatter`);
   const fields = {};
   let section = null;
+  let folded = null;
   for (const line of match[1].split('\n')) {
     const nested = /^ {2}([a-z_]+):\s*(.*)$/u.exec(line);
-    const top = /^([a-z_]+):\s*(.*)$/u.exec(line);
+    const top = /^([a-z_-]+):\s*(.*)$/u.exec(line);
     const unquote = (value) => value.replace(/^"(.*)"$/u, '$1');
-    if (nested && section) fields[`${section}.${nested[1]}`] = unquote(nested[2]);
-    else if (top) {
+    if (folded && /^ {2}\S/u.test(line)) {
+      fields[folded] = `${fields[folded]} ${line.trim()}`.trim();
+    } else if (nested && section) {
+      fields[`${section}.${nested[1]}`] = unquote(nested[2]);
+    } else if (top) {
+      folded = /^[>|]-?$/u.test(top[2]) ? top[1] : null;
       section = top[2] === '' ? top[1] : null;
-      if (top[2] !== '') fields[top[1]] = unquote(top[2]);
+      if (top[2] !== '') fields[top[1]] = folded ? '' : unquote(top[2]);
     }
   }
   return fields;

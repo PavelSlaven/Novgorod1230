@@ -53,7 +53,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 ## Маршрутизация: задача → контекст
 
-Легенда: [GR](docs/governance/README.md) — преамбула, §1.2, карта §N; [PC](docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30; [AI](docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28; [WR](docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §29; [AR](docs/governance/AUDIT_RULES.md) — §25, §25.1; [GS](docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27; IDX — CONTRACT_INDEX; ctx — `docs/context/`.
+Легенда: [GR](docs/governance/README.md) — преамбула, §1.2, карта §N; [PC](docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30; [AI](docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28; [WR](docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §18.1, §24, §29; [AR](docs/governance/AUDIT_RULES.md) — §25, §25.1; [GS](docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27; IDX — CONTRACT_INDEX; ctx — `docs/context/`.
 
 - **Код:** WR §2, §18, §19, §21, §24, §29; AI §16; GS §26, §27.
 - **Docs:** WR §2, §18, §20, §24, §29; GS §26, §27.
@@ -87,6 +87,8 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 Процедура — [WORKFLOW](docs/process/WORKFLOW.md): (0) в начале спринта — проверка, синхронизация и использование CBM (WR §19); (1) одна задача = новая сессия, вход — issue/CR; (2) CR для нетривиальной задачи; (3) context pack по строке маршрутизации + `rg` по [LEGACY_WARNINGS](docs/work/LEGACY_WARNINGS.md); (4) короткие итерации с focused-тестами; (5) проверки и Contract Auditor по триггерам; (6) фиксация: CHANGELOG, LW, «Closes #N», отчёт WR §29.
 
 ## Процедуры (skills)
+
+Обязательные навыки: `caveman` (full) — во всех задачах, `ponytail` (full) — в задачах разработки; правила — WR §18.1.
 
 - `change-request` — [CHANGE_REQUEST](docs/process/CHANGE_REQUEST.md)
 - `context-dump` — [CONTEXT_DUMP](docs/process/CONTEXT_DUMP.md)

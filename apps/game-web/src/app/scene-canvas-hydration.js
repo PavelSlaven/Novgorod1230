@@ -34,6 +34,8 @@ export async function hydrateSceneCanvases(root, screen, {
 
   const weather = root?.querySelector?.('[data-scene-weather-canvas]');
   if (weather && landscapeResult?.model) renderWeather(weather, landscapeResult.model);
+  // Readiness marker for this exact frame: every re-render creates a new shell without it.
+  root?.querySelector?.('.scene-viewport-shell')?.setAttribute?.('data-scene-hydrated', '');
   return Object.freeze({ landscape: landscapeResult, portrait: portraitResult });
 }
 

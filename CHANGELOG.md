@@ -5,6 +5,7 @@
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - docs(work): CURRENT_SPRINT — Runtime-трек начинается с M2c (#133) по решению владельца (#134)
+- fix(game-web): маркер готовности `data-scene-hydrated` у текущего кадра; browser e2e ждёт его вместо устаревшего кадра (#139, PR #141)
 - fix(tooling): на Windows `tar` вызывается как System32 bsdtar в p10/p12-инструментах, тестах и staging-скриптах (#126, PR #140)
 - docs(policy): KSP L39 — изменённый существующий active-документ сохраняет `baseline_gap`, новый получает `required_before_merge` (#115, PR #140) LW-006 closed
 - chore(tooling): `npm run check:syntax` — детерминированная проверка синтаксиса изменённых JS/JSON (#138)

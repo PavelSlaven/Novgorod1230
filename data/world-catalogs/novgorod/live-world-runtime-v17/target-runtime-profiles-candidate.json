@@ -1,0 +1,1926 @@
+{
+  "schema": "rus.live_world_runtime.target_runtime_profiles_authoring_candidate.v1",
+  "candidate_id": "novgorod_target_runtime_profiles_v1",
+  "version": 1,
+  "status": "pending_independent_data_approval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_count": 32,
+    "generation_template_count": 25,
+    "canonical_initial_scene_count": 1,
+    "scope_rule": "Exact world revision + G4 id/version + exactly one generated-template or canonical-G5 selector. Canonical policy applies only to south_approach initial scene."
+  },
+  "provenance": {
+    "directness": "editorial_gameplay_profile_transfer",
+    "confidence": "high_for_exact_mechanical_transfer_only",
+    "historical_claim": false,
+    "authority": "Issue #133 M2c owner authoring authorization; target runtime applicability requested by root coordinator 2026-09-24.",
+    "limits": "Numeric turn rules and A1 permissions are authored game mechanics. NPC occupations and spatial scope retain approved exact references. No historical occurrence, resource abundance, ownership, stock, structure, language, ethnicity or route is asserted."
+  },
+  "source_set": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v1/ordinary-profiles.json",
+      "sha256": "cd194a25ee2c8f5bf4464fcbae2cb6661231f62632ea8f046ece30c7df7b59a9",
+      "use": "N1 restrictions only; fishing-camp S1 excluded"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json",
+      "sha256": "961acb6339d4b80734f15bb47d060bed9e99e350e6e0a81d8e02f3811280c2cd",
+      "use": "Exact generic turn mechanics; ordinary-result candidates remain empty"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m9-content/action-production-profile.json",
+      "sha256": "ba3a5feb6435f471347a8e0b868a2714f2fa59ae4c349a9acaf46285b60fa694",
+      "use": "A1 generic physical constraints only; target identity/context explicitly authored"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/canonical-initial/datasets/spatial_v3_g4_npc_composition_bindings.json",
+      "sha256": "8b7c3e33932bd566335dc05867331dd73b99d5545ebd2f19ea8d794f9451d0e5",
+      "use": "Exact approved 32 generated + 1 canonical NPC composition scope"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/canonical-initial/datasets/spatial_v3_npc_runtime_profiles.json",
+      "sha256": "738d89ba82eaa46d8d08ee2585c65006431843af8c9112eec1f16bb7816e7549",
+      "use": "Exact approved 12 NPC bindings, occupations, background level and regions"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+      "sha256": "d07eaf5abfa684c31c6493c553ae53404b3ed49658ceddcb6f2826db95f89f93",
+      "use": "Exact G4 classification and natural-profile identity only"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+      "sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
+      "use": "Exact canonical initial scene selector only"
+    }
+  ],
+  "applicability": [
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "archaeological_settlement"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_burial_area",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "burial_area"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_local_trader_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_foreign_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_landing",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "archaeological_area",
+        "land_use": "waterway_access",
+        "function": "local_landing"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_reed_backwater",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "backwater_wetland",
+        "land_use": "low_intensity_natural_use",
+        "function": "reed_backwater"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_old_channel_pool",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "backwater_wetland",
+        "land_use": "waterway_access",
+        "function": "old_channel"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_mixing_reach",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "estuary",
+        "land_use": "low_intensity_natural_use",
+        "function": "estuary_mixing"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_outer_exposed_approach",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "estuary",
+        "land_use": "waterway_access",
+        "function": "outer_exposed"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_flooded_interior_basin",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "floodplain_basin"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_island_ridge",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_ridge"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_forest_worker_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_hunter_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_wet_conifer_tract",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_forest_worker_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_hunter_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_pine_ridge",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "pine_ridge"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_channel_split_islet",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_large_island_head",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_floodplain_ridge_route",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "dry_ridge_route"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_local_trader_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_foreign_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_sheltered_landing_terrace",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "landing_terrace"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_forest_worker_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_forest_stream_route",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "forest_resource_use",
+        "function": "forest_stream"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_west_hidden_backwater",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "low_intensity_natural_use",
+        "function": "backwater"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__channel_split",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_central_current_split",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "channel_split"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_foreign_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_central_navigation_reach",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_foreign_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_north_exposed_turn",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_foreign_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_north_outflow_reach",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_foreign_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_sheltered_inner_reach",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__river_reach",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_foreign_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_south_entry_reach",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_east_flood_bypass",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_east_side_channel",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__side_channel",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_west_side_channel",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_tributary_mouth",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "tributary_mouth"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_forest_worker_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_hunter_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "settlement_landscape",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_local_trader_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_household_servant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_locality",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "settlement_landscape",
+        "land_use": "recurrent_settlement_use",
+        "function": "vikhtuy_locality"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_boatman_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_local_trader_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_visiting_merchant_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_foreign_merchant_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_river_approach",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "settlement_landscape",
+        "land_use": "waterway_access",
+        "function": "landing_terrace"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_driftwood_bar",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "driftwood_bar"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "version": 1
+      },
+      "generation_template_ref": {
+        "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_fisher_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_shifting_shoal_field",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "shoal_field"
+      }
+    },
+    {
+      "g4_ref": {
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1
+      },
+      "npc_composition_ref": {
+        "id": "m2c_g4_npc_composition_canonical_initial_south_approach_v1",
+        "version": 1
+      },
+      "eligible_npc_binding_refs": [
+        {
+          "id": "m2c_npc_canonical_initial_forest_worker_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_canonical_initial_hunter_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_canonical_initial_guide_v1",
+          "version": 1
+        }
+      ],
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_pine_ridge",
+        "version": 1
+      },
+      "classification": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "pine_ridge"
+      }
+    }
+  ],
+  "profiles": {
+    "turn_step": {
+      "schema": "rus.live_world_runtime.turn_step_owner_profiles.v1",
+      "profile_set_id": "novgorod_target_turn_step_owner_profiles_v1",
+      "revision": 1,
+      "status": "pending_independent_data_approval",
+      "fallback_policy": "forbidden",
+      "neutral_conversation_profile": {
+        "status": "pending_independent_data_approval",
+        "activity_profile_id": "novgorod_live_world_conversation_brief",
+        "duration_minutes": 5,
+        "access_policy_id": "live_world_visible_local_access",
+        "max_contributions_per_exchange": 8,
+        "interaction_kinds": [
+          "speech",
+          "gesture",
+          "offer",
+          "request",
+          "threat",
+          "aid",
+          "other"
+        ]
+      },
+      "semantic_activity_profile_namespace": "novgorod_live_world_semantic_activity",
+      "semantic_duration_profiles": [
+        {
+          "duration_class": "moment",
+          "duration_minutes": 1
+        },
+        {
+          "duration_class": "brief",
+          "duration_minutes": 5
+        },
+        {
+          "duration_class": "short",
+          "duration_minutes": 15
+        },
+        {
+          "duration_class": "extended",
+          "duration_minutes": 60
+        }
+      ],
+      "semantic_effort_profiles": [
+        {
+          "effort": "none",
+          "exact_deltas": {
+            "health": 0,
+            "satiety": 0,
+            "energy": 0
+          },
+          "condition_outcomes": []
+        },
+        {
+          "effort": "light",
+          "exact_deltas": {
+            "health": 0,
+            "satiety": 0,
+            "energy": -1
+          },
+          "condition_outcomes": []
+        },
+        {
+          "effort": "moderate",
+          "exact_deltas": {
+            "health": 0,
+            "satiety": -1,
+            "energy": -2
+          },
+          "condition_outcomes": []
+        },
+        {
+          "effort": "heavy",
+          "exact_deltas": {
+            "health": 0,
+            "satiety": -2,
+            "energy": -4
+          },
+          "condition_outcomes": []
+        },
+        {
+          "effort": "extreme",
+          "exact_deltas": {
+            "health": -1,
+            "satiety": -3,
+            "energy": -6
+          },
+          "condition_outcomes": []
+        }
+      ],
+      "direct_body_effect_profile_namespace": "novgorod_live_world_direct_body_event",
+      "direct_body_mechanism_profiles": [
+        {
+          "mechanism": "impact"
+        },
+        {
+          "mechanism": "cut"
+        },
+        {
+          "mechanism": "puncture"
+        },
+        {
+          "mechanism": "burn"
+        },
+        {
+          "mechanism": "strain"
+        },
+        {
+          "mechanism": "crush"
+        },
+        {
+          "mechanism": "fall"
+        },
+        {
+          "mechanism": "cold"
+        },
+        {
+          "mechanism": "heat"
+        },
+        {
+          "mechanism": "suffocation"
+        },
+        {
+          "mechanism": "poison"
+        },
+        {
+          "mechanism": "other"
+        }
+      ],
+      "direct_body_severity_profiles": [
+        {
+          "severity": "minor",
+          "exact_deltas": {
+            "health": -1,
+            "satiety": 0,
+            "energy": 0
+          },
+          "condition_outcomes": []
+        },
+        {
+          "severity": "moderate",
+          "exact_deltas": {
+            "health": -5,
+            "satiety": 0,
+            "energy": -1
+          },
+          "condition_outcomes": []
+        },
+        {
+          "severity": "severe",
+          "exact_deltas": {
+            "health": -15,
+            "satiety": 0,
+            "energy": -3
+          },
+          "condition_outcomes": []
+        },
+        {
+          "severity": "critical",
+          "exact_deltas": {
+            "health": -30,
+            "satiety": 0,
+            "energy": -6
+          },
+          "condition_outcomes": []
+        }
+      ],
+      "direct_body_part_policy": {
+        "null_allowed": true,
+        "allowed_body_part_refs": [
+          "head",
+          "neck",
+          "torso",
+          "chest",
+          "abdomen",
+          "back",
+          "left_arm",
+          "right_arm",
+          "left_hand",
+          "right_hand",
+          "left_leg",
+          "right_leg",
+          "left_foot",
+          "right_foot"
+        ]
+      },
+      "generic_check_modifier_policy": {
+        "profile_ref": "novgorod_live_world_generic_check_modifiers_v1",
+        "check_policy_ref": {
+          "entity_kind": "check_policy",
+          "entity_id": "novgorod_live_world_generic_check_modifiers_v1",
+          "authoring_version": "1"
+        },
+        "consequence_policy_ref": {
+          "entity_kind": "consequence_policy",
+          "entity_id": "novgorod_live_world_generic_check_five_band_v1",
+          "authoring_version": "1"
+        },
+        "state_relevance_by_attribute": {
+          "strength": [
+            "health",
+            "satiety",
+            "energy"
+          ],
+          "dexterity": [
+            "health",
+            "energy"
+          ],
+          "endurance": [
+            "health",
+            "satiety",
+            "energy"
+          ],
+          "reason": [
+            "health",
+            "energy"
+          ],
+          "attention": [
+            "health",
+            "energy"
+          ],
+          "influence": [
+            "health",
+            "energy"
+          ]
+        },
+        "load_category_modifiers": {
+          "light": 0,
+          "moderate": -1,
+          "heavy": -2,
+          "overloaded": -4
+        },
+        "circumstance_policy": "explicit_absence_yields_zero"
+      },
+      "ordinary_result_policy": {
+        "schema": "rus.items.ordinary_result_admission_policy.v1",
+        "version": 1,
+        "status": "pending_independent_data_approval",
+        "candidates": []
+      }
+    },
+    "n1": {
+      "schema": "rus.live_world_runtime.n1_loaded_profile.v1",
+      "profile": {
+        "schema": "rus.live_world_runtime.n1_profile.v1",
+        "profile_id": "novgorod_target_ordinary_background_n1_v1",
+        "revision": 1,
+        "status": "pending_independent_data_approval",
+        "eligible_participant_profiles": [
+          {
+            "profile_id": "nov_occ_boatman",
+            "revision": 1
+          },
+          {
+            "profile_id": "nov_occ_fisher",
+            "revision": 1
+          },
+          {
+            "profile_id": "nov_occ_forest_worker",
+            "revision": 1
+          },
+          {
+            "profile_id": "nov_occ_household_servant",
+            "revision": 1
+          },
+          {
+            "profile_id": "nov_occ_hunter_trapper",
+            "revision": 1
+          },
+          {
+            "profile_id": "nov_occ_local_trader",
+            "revision": 1
+          },
+          {
+            "profile_id": "nov_occ_long_distance_merchant",
+            "revision": 1
+          },
+          {
+            "profile_id": "nov_occ_route_guide",
+            "revision": 1
+          }
+        ],
+        "eligible_profile_levels": [
+          "background"
+        ],
+        "allowed_semantic_facets": [
+          "ordinary_descriptor",
+          "ordinary_activity"
+        ],
+        "forbidden_authority": [
+          "canonical_identity",
+          "authored_fact",
+          "hidden_fact",
+          "significant_status",
+          "route",
+          "ownership",
+          "law",
+          "exact_mechanics"
+        ],
+        "max_text_length": 240,
+        "fallback_policy": "forbidden"
+      }
+    },
+    "action_production": {
+      "schema": "rus.live_world_runtime.action_production_profile.v1",
+      "profile_id": "novgorod_target_open_physical_action_profile_v1",
+      "revision": 1,
+      "status": "pending_independent_data_approval",
+      "context_ref": "novgorod_target:a1:committed_accessible_sources",
+      "policy_ref": "novgorod_target:a1:ordinary_physical_action_v1",
+      "policy_version": 1,
+      "max_new_entities": 4,
+      "allowed_access_states": [
+        "immediate",
+        "quick"
+      ],
+      "allowed_identity_modes": [
+        "preserve_source",
+        "independent_outputs",
+        "no_useful_result"
+      ],
+      "allowed_origins": [
+        "direct_partition",
+        "crafted"
+      ],
+      "allowed_result_classes": [
+        "ordinary_physical_result",
+        "partial_transformation",
+        "nonworking_construction",
+        "waste",
+        "written_carrier",
+        "no_useful_result"
+      ],
+      "allowed_output_classes": [
+        "ordinary_mundane",
+        "weapon_capable",
+        "money_like_token",
+        "written_carrier"
+      ],
+      "source_policy": "one_to_many_visible_accessible_non_container_items",
+      "tool_policy": "zero_to_many_visible_accessible_non_container_items",
+      "execution_policy": "existing_turn_step_optional_check_and_activity",
+      "model_authority": "primary_turn_step_plan_qualitative_only",
+      "mechanics_owner": "@rus/items-property",
+      "persistence_owner": "P16_combined_atomic_committer",
+      "fallback_policy": "forbidden"
+    }
+  },
+  "n1_binding_basis": [
+    {
+      "binding_ref": {
+        "id": "m2c_npc_boatman_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_boatman",
+        "revision": 1
+      },
+      "role_ref": "nov_role_boatman",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_fisher_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_fisher",
+        "revision": 1
+      },
+      "role_ref": "nov_role_fisher",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_guide_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_route_guide",
+        "revision": 1
+      },
+      "role_ref": "nov_role_guide",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_regional_karelian_traveler_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_regional_ingrian_traveler_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_hunter_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_hunter_trapper",
+        "revision": 1
+      },
+      "role_ref": "nov_role_hunter",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_forest_worker_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_forest_worker",
+        "revision": 1
+      },
+      "role_ref": "nov_role_forest_promyslovik",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_local_trader_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_local_trader",
+        "revision": 1
+      },
+      "role_ref": "nov_role_trader",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_visiting_merchant_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_long_distance_merchant",
+        "revision": 1
+      },
+      "role_ref": "nov_role_merchant_guest",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_foreign_merchant_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_long_distance_merchant",
+        "revision": 1
+      },
+      "role_ref": "nov_role_foreign_guest",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_gotland_guest_v1",
+          "version": 1
+        },
+        {
+          "id": "m2c_npc_regional_german_baltic_guest_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_household_servant_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_household_servant",
+        "revision": 1
+      },
+      "role_ref": "nov_role_servant",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_land_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_canonical_initial_forest_worker_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_forest_worker",
+        "revision": 1
+      },
+      "role_ref": "nov_role_forest_promyslovik",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_canonical_initial_hunter_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_hunter_trapper",
+        "revision": 1
+      },
+      "role_ref": "nov_role_hunter",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "binding_ref": {
+        "id": "m2c_npc_canonical_initial_guide_v1",
+        "version": 1
+      },
+      "participant_profile": {
+        "profile_id": "nov_occ_route_guide",
+        "revision": 1
+      },
+      "role_ref": "nov_role_guide",
+      "profile_level": "background",
+      "regional_context_refs": [
+        {
+          "id": "m2c_npc_regional_novgorod_canonical_initial_v1",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "execution_requirements": {
+    "shared": [
+      "Independent data approval and exact approved active release pins are required before runtime use.",
+      "Use existing owner admission, committed snapshot and P16 transaction; no parallel persistence.",
+      "First-screen/start admission does not depend on an unrelated unsupported owner port. Omit that capability and return its typed gap if requested."
+    ],
+    "turn_step": [
+      "Keep all numeric durations/deltas/load modifiers and check-policy refs exactly as source.",
+      "Consequence/check-policy refs must resolve through approved target owner. This candidate does not activate them.",
+      "Empty ordinary-result candidates authorize no automatic output stock."
+    ],
+    "n1": [
+      "Exact applicable NPC composition/binding must establish eligibility; occupation alone is insufficient.",
+      "Only visible committed background NPC with materialized routine and actual current activity may receive ordinary_descriptor/ordinary_activity remainder.",
+      "Preserve canonical identity, appearance, region, skills, relationships, legal/property status, language and mechanics. Do not infer language/ethnicity.",
+      "Existing NPC owner must persist/read exact occupation profile revision and approved binding causal refs. Missing refs are a typed data gap."
+    ],
+    "action_production": [
+      "Existing items-property owner validates actual committed visible accessible non-container source/tool refs, access, ownership and causal affordance. Declared result class grants no stock or skill.",
+      "Unchanged source/tool policies require actual source refs; empty sources do not authorize creation.",
+      "No source existence, recipe, yield, currency value, document authority, weapon mechanics, ignition, fuel or quantity is supplied. Admission remains with existing owners.",
+      "Neutral schema/profile/context pins require existing-owner implementation and Contract Audit; historical Lower Dvina validator is not target acceptance evidence."
+    ]
+  },
+  "capability_gaps": [
+    {
+      "code": "M2C_TARGET_S1_ENVELOPE_DATA_GAP",
+      "owner": "Spatial S1",
+      "scope": "all33_authored_scopes",
+      "blocks": "New S1 structure or local natural reference only",
+      "reason": "Source S1 authors fishing-camp shelter, worksite property/function/environment and interior slot; target has no approved equivalent envelope in this package.",
+      "required_inputs": [
+        "Exact target approved envelope with property/function/environment refs and semantic context",
+        "Existing target position applicability and already authored topology for any interior/passage",
+        "Reviewed opening text and admitted mechanics grounded in exact natural/structure data"
+      ],
+      "profile": null
+    },
+    {
+      "code": "M2C_TARGET_O2A_AMBIENT_AUTHORITY_DATA_GAP",
+      "owner": "Ordinary O2a",
+      "scope": "all33_authored_scopes",
+      "blocks": "Unseeded ambient item/group materialization only",
+      "reason": "Historical context, density, clay stock and resource permissions are Lower Dvina-specific. M2c natural/NPC/item baseline owners do not imply generic O2a authority.",
+      "required_inputs": [
+        "Exact target ambient context/density/class/property authority",
+        "Approved item/group template, quantity, source, placement and ownership admission"
+      ],
+      "profile": null
+    },
+    {
+      "code": "M2C_TARGET_O2B_CONTAINER_BINDING_DATA_GAP",
+      "owner": "Ordinary O2b",
+      "scope": "all33_authored_scopes",
+      "blocks": "Undisclosed contents materialization only",
+      "reason": "No target existing-container binding or contents stock is supplied. No basket/contents inherited.",
+      "required_inputs": [
+        "Committed existing container ref and matching approved target contents/profile/property binding"
+      ],
+      "profile": null
+    },
+    {
+      "code": "M2C_TARGET_F1_SOURCE_BINDING_DATA_GAP",
+      "owner": "Local fire F1",
+      "scope": "all33_authored_scopes",
+      "blocks": "Fire materialization requiring missing authority only",
+      "reason": "No target ignition, fuel, water/fire or initial-fire stock authority is supplied.",
+      "required_inputs": [
+        "Exact target fire policy and committed ignition/fuel sources with owner-valid quantities and property access"
+      ],
+      "profile": null
+    }
+  ],
+  "consumer_gaps": [
+    {
+      "code": "M2C_TARGET_A1_PROFILE_CONSUMER_GAP",
+      "owner": "game-server A1 profile loader",
+      "required_change": "Admit reviewed neutral profile at existing A1 owner with exact release pin and unchanged source/access validation."
+    },
+    {
+      "code": "M2C_TARGET_N1_PROFILE_BINDING_CONSUMER_GAP",
+      "owner": "NPC materialization/read projection",
+      "required_change": "Read committed exact approved occupation profile revision and binding refs; no revision default."
+    }
+  ],
+  "promotion_rule": "Keep this immutable draft. Separate Sol high data verdict may authorize mapped approved artifact with exact candidate/source SHA. Author cannot self-approve. Runtime activation and Contract Audit remain separate."
+}

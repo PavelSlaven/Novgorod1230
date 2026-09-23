@@ -5,6 +5,8 @@ import { relative, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { canonicalJsonBytes, manifestDigest, validateCanonicalEntries } from './p12-canonical-manifest.mjs';
+// Windows: Git/MSYS GNU tar treats `C:\...` as a remote host and cannot read .zip; System32 bsdtar handles both.
+const TAR = process.platform === 'win32' ? `${process.env.SystemRoot ?? 'C:/Windows'}/System32/tar.exe` : 'tar';
 
 const ROOT = resolve(import.meta.dirname, '../..');
 const INDEX_PATH = 'data/world-catalogs/novgorod/spatial-v3/target-materialization-approval/index.v1_1.json';
@@ -44,13 +46,13 @@ const sha = (value) => typeof value === 'string' && /^[0-9a-f]{40}$/.test(value)
 const safeRepositoryPath = (value) => typeof value === 'string' && value.length > 0 && !value.startsWith('/') && !value.includes('\\') && !value.split('/').some((part) => !part || part === '.' || part === '..' || part.includes(':'));
 
 async function zipText(zip, member) {
-  const { stdout } = await execFile('tar', ['-xOf', zip, member], { encoding: 'buffer', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+  const { stdout } = await execFile(TAR, ['-xOf', zip, member], { encoding: 'buffer', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
   return Buffer.from(stdout);
 }
 
 async function verifyCanonicalZipPackage(zip, packageName, expectedManifestDigest) {
   const prefix = `${packageName}/`;
-  const { stdout } = await execFile('tar', ['-tf', zip], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
+  const { stdout } = await execFile(TAR, ['-tf', zip], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, windowsHide: true });
   const members = stdout.split(/\r?\n/u).filter(Boolean);
   const seen = new Set();
   for (const member of members) {

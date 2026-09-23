@@ -13,7 +13,7 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   const pool = new pg.Pool({ connectionString: backend.partyUrl });
   t.after(async () => { await pool.end(); await backend.close(); });
   for (const sql of SPATIAL_V3_TARGET_MIGRATIONS.slice(0, 4)) await pool.query(sql);
-  const { input } = await approvedNaturalPerceptionFixture();
+  const { input, sceneClosure, currentSourceState } = await approvedNaturalPerceptionFixture();
   const facts = input.currentFacts; const scene = facts.scene;
   const template = { entity_id: scene.scene_template_ref.id, authoring_version: String(scene.scene_template_ref.version) };
   await pool.query(`INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
@@ -23,22 +23,20 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   await pool.query(`INSERT INTO party_runtime.party_scene_baselines(id,party_id,host_kind,host_id,source_kind,scene_template_ref,materialization_trace_id,materializer_version,catalog_digest,status,state_version,created_change_set_id,updated_change_set_id)
     VALUES ('baseline','party:1','g5_site','site','canonical_template',$1,'trace','1','digest','active',1,'change','change')`, [template]);
   await pool.query(`INSERT INTO party_runtime.party_g6_instances(id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,host_kind,host_id,physical_class_id,primary_scene_role_id,vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,acoustic_uniformity,status,state_version,created_change_set_id,updated_change_set_id)
-    VALUES ('g6:inside','party:1','baseline',$1,'outside','g5_site','site','ground','outside','level','open','default_clear','local','uniform','active',1,'change','change')`, [template]);
+    VALUES ('g6:inside','party:1','baseline',$1,'main','g5_site','site','spatial.g6.open','outside','level','none','default_clear','local','uniform','active',1,'change','change')`, [template]);
   for (const position of scene.positions) await pool.query(`INSERT INTO party_runtime.scene_position_nodes(id,party_id,g6_instance_id,position_type_id,template_slot_key,template_instance_ordinal,capacity,access_class_id,status,state_version,created_change_set_id,updated_change_set_id)
     VALUES ($1,'party:1','g6:inside','ground',$2,0,3,'open','active',1,'change','change')`, [position.id, position.template_slot_key]);
   await pool.query(`INSERT INTO party_runtime.g6_acoustic_profiles(party_id,g6_instance_id,acoustic_uniformity,ambient_noise,state_version,updated_change_set_id)
     VALUES ('party:1','g6:inside','uniform',0,1,'change')`);
   await pool.query(`INSERT INTO party_runtime.party_journey_locations(id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id)
     VALUES ('location','party:1','actor','player:1','scene','position:inside',1,'change')`);
-  const conditions = { source_endpoint_slot_key: 'arrival', visible_scene: scene.visible_scene,
-    visual_capability: 'clear', hearing_capability: 'clear', current_environment: facts.current_environment,
-    layer_admissions: facts.layer_admissions };
+  const conditions = currentSourceState;
   const args = { transaction: pool, partyId: 'party:1', actorId: 'player:1',
     verifiedCatalog: input.verifiedCatalog, pin: input.pin,
     worldBaseReader: { async readPinnedSceneTemplateClosure(ref) {
       assert.deepEqual(ref, { ...scene.scene_template_ref, world_revision_id: scene.g4_ref.world_revision_id });
-      return { ok: true, value: { endpoint_slots: [facts.source_endpoint] } };
-    } }, readCurrentConditions: async ({ snapshot }) => {
+      return { ok: true, value: sceneClosure };
+    } }, readCurrentSourceState: async ({ snapshot }) => {
       assert.equal(snapshot.location.scene_position_id, 'position:inside'); return conditions;
     } };
   const read = async () => prepareG4NaturalScenePerceptionInput({ ...input,

@@ -1,15 +1,16 @@
-import { loadApprovedG4NaturalCatalog } from '@rus/runtime-catalog';
+import { loadApprovedG4NaturalCatalog, loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
+import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { serverError } from '../../errors.js';
 
 /** Read inside the caller's consistent read transaction. Temporal/actor/source
  * conditions remain with their current owner; this reader supplies no defaults. */
 export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
-  verifiedCatalog, pin, worldBaseReader, readCurrentConditions } = {}) {
+  verifiedCatalog, pin, worldBaseReader, readCurrentSourceState } = {}) {
   if (typeof transaction?.query !== 'function'
     || typeof worldBaseReader?.readPinnedSceneTemplateClosure !== 'function'
-    || typeof readCurrentConditions !== 'function') gap('current_perception_owner_required');
-  const result = await transaction.query(`SELECT party.world_revision_id,
+    || typeof readCurrentSourceState !== 'function') gap('current_perception_owner_required');
+  const result = await transaction.query(`SELECT party.world_revision_id,party.world_catalog_digest,
     to_jsonb(loc) AS location,to_jsonb(site) AS site,to_jsonb(baseline) AS baseline,
     (SELECT coalesce(jsonb_agg(b),'[]') FROM party_runtime.party_site_connection_endpoint_bindings b
       WHERE b.party_id=loc.party_id AND b.g5_site_id=site.id AND b.status='active') AS endpoint_bindings,
@@ -46,11 +47,45 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
   const closure = await worldBaseReader.readPinnedSceneTemplateClosure({ ...scene_template_ref,
     world_revision_id: snapshot.world_revision_id });
   if (!closure?.ok) gap('approved_scene_template_closure_required');
-  const conditions = await readCurrentConditions({ transaction, partyId, actorId,
+  const current = await readCurrentSourceState({ transaction, partyId, actorId,
     snapshot: structuredClone(snapshot), sceneClosure: closure.value,
     naturalProfile: profiles[0], verifiedCatalog, pin });
+  const conditions = resolveG4NaturalPerceptionConditions({ verifiedCatalog, pin,
+    snapshot, sceneClosure: closure.value, naturalProfile: profiles[0], current });
   const endpoint = closure.value.endpoint_slots.filter((row) => row.slot_key === conditions?.source_endpoint_slot_key);
   if (endpoint.length !== 1) gap('approved_scene_source_admission_required');
+  let canonical_source_binding = null;
+  const initial = current.canonical_initial_state;
+  if (initial != null) {
+    const approved = loadApprovedCanonicalNaturalInitialRule({ verifiedCatalog, pin, rule_ref: initial.rule_ref });
+    const rule = approved.rule;
+    const canonicalRef = snapshot.site.canonical_g5_ref;
+    if (initial.verified !== true || initial.party_id !== partyId || initial.actor_id !== actorId
+      || initial.position_id !== snapshot.location.scene_position_id
+      || initial.initial_request_identity?.party_id !== partyId
+      || initial.initial_request_identity?.scenario_id !== approved.scenario_id
+      || !initial.initial_request_identity?.idempotency_key
+      || initial.initial_snapshot_identity?.state_version !== 0
+      || !initial.initial_snapshot_identity?.state_digest
+      || initial.scenario_id !== approved.scenario_id
+      || snapshot.world_catalog_digest !== approved.world_pin.world_catalog_digest
+      || snapshot.site.origin !== 'canonical' || canonicalRef?.entity_id !== rule.canonical_g5_ref.id
+      || Number(canonicalRef.authoring_version) !== rule.canonical_g5_ref.version
+      || typeof worldBaseReader.readPinnedCanonicalG5SceneBinding !== 'function') gap('verified_canonical_initial_state_required');
+    const canonical = await worldBaseReader.readPinnedCanonicalG5SceneBinding({ ...rule.canonical_g5_ref,
+      world_revision_id: rule.world_revision_id });
+    if (!canonical?.ok || canonical.value.id !== rule.canonical_g5_ref.id
+      || canonical.value.version !== rule.canonical_g5_ref.version
+      || canonical.value.world_revision_id !== rule.world_revision_id
+      || canonical.value.parent_id !== rule.g4_ref.id || canonical.value.parent_version !== rule.g4_ref.version
+      || canonical.value.scene_template_id !== rule.scene_template_ref.id
+      || canonical.value.scene_template_version !== rule.scene_template_ref.version
+      || snapshot.site.parent_g4_id !== rule.g4_ref.id
+      || scene_template_ref.id !== rule.scene_template_ref.id || scene_template_ref.version !== rule.scene_template_ref.version
+      || closure.value.header.canonical_digest !== rule.scene_template_ref.canonical_digest) gap('canonical_initial_authoring_binding_required');
+    canonical_source_binding = { schema: 'rus.verified_canonical_initial_natural_source.v1',
+      ...structuredClone(initial), g5_site_id: snapshot.site.id, baseline_id: snapshot.baseline.id };
+  }
   // Relations need the exact P22 condition profile adapter. Raw portal state alone
   // never means transparent/inaudible, and missing profiles never mean clear.
   const conditionRef = (ref) => ref == null ? null
@@ -80,6 +115,7 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
   source_endpoint: { ...endpoint[0], scene_template_id: scene_template_ref.id,
     scene_template_version: scene_template_ref.version },
   source_bindings: snapshot.endpoint_bindings.filter((row) => row.source_slot_key === endpoint[0].slot_key),
+  canonical_source_binding,
   current_environment: conditions?.current_environment,
   layer_admissions: conditions?.layer_admissions };
   prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, currentFacts });

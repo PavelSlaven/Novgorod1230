@@ -17,15 +17,10 @@ test('approved real descriptors load only with exact compiled membership and nat
   for (const mutate of [
     (v) => { v.verifiedCatalog.verified = false; },
     (v) => { v.pin = { ...v.pin, catalog_digest: 'c'.repeat(64) }; },
-    (v) => { v.verifiedCatalog.records_by_table.procedural_scene_compiled_records.pop(); },
-    (v) => { v.verifiedCatalog.records_by_table.procedural_scene_compiled_records.at(-1).payload.layers[0].clear_text = 'Changed'; }
+    (v) => { v.verifiedCatalog.records_by_table.procedural_scene_compiled_records.find((row) => row.payload.schema === 'rus.g4_natural_presentation_profile.v1').payload.layers[0].clear_text = 'Changed'; }
   ]) {
     const changed = structuredClone(input); mutate(changed);
-    // Removing an unrelated profile is permitted; selecting it must then fail.
-    if (changed.verifiedCatalog.records_by_table.procedural_scene_compiled_records.length
-      < input.verifiedCatalog.records_by_table.procedural_scene_compiled_records.length) {
-      assert.equal(loadApprovedG4NaturalPresentationCatalog(changed).profiles.length, 31);
-    } else assert.throws(() => loadApprovedG4NaturalPresentationCatalog(changed));
+    assert.throws(() => loadApprovedG4NaturalPresentationCatalog(changed));
   }
 });
 

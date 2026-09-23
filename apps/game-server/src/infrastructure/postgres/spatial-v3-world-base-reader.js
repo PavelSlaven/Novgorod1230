@@ -131,7 +131,27 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
       });
     }
     const result = await query(
-      `SELECT t.${COLUMNS.template.replaceAll(',', ',t.')} FROM ${SOURCES.template} t JOIN world_base.spatial_v3_regional_scene_template_bases b ON b.id=t.regional_template_id AND b.version=t.regional_template_version AND b.world_revision_id=t.world_revision_id AND b.status='approved' JOIN world_base.spatial_v3_authoring_versions av ON av.entity_kind='regional_scene_template_basis' AND av.entity_id=b.id AND av.version=b.version AND av.world_revision_id=b.world_revision_id AND av.status='approved' AND av.canonical_digest=b.canonical_digest WHERE t.id=$1 AND t.version=$2 AND t.world_revision_id=$3 AND t.status='approved' AND t.canonical_digest=b.canonical_digest LIMIT 2`,
+      `WITH RECURSIVE revision_ancestry(id) AS (
+         SELECT $3::text
+         UNION
+         SELECT parent.parent_revision_id
+         FROM world_base.spatial_v3_world_revisions parent
+         JOIN revision_ancestry child ON parent.id=child.id
+         WHERE parent.parent_revision_id IS NOT NULL
+       )
+       SELECT t.${COLUMNS.template.replaceAll(',', ',t.')}
+       FROM ${SOURCES.template} t
+       JOIN world_base.spatial_v3_regional_scene_template_bases b
+         ON b.id=t.regional_template_id AND b.version=t.regional_template_version
+       JOIN revision_ancestry ancestry ON ancestry.id=b.world_revision_id
+       JOIN world_base.spatial_v3_authoring_versions av
+         ON av.entity_kind='regional_scene_template_basis' AND av.entity_id=b.id
+        AND av.version=b.version AND av.world_revision_id=b.world_revision_id
+       WHERE t.id=$1 AND t.version=$2 AND t.world_revision_id=$3
+         AND t.status='approved' AND b.status='approved' AND av.status='approved'
+         AND (b.world_revision_id<>t.world_revision_id
+           OR t.canonical_digest=b.canonical_digest)
+       LIMIT 2`,
       [id, version, world_revision_id]
     );
     if (!Array.isArray(result?.rows) || result.rows.length !== 1
@@ -383,19 +403,83 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
         scene_template: { ...scene_template }, world_revision_id }) });
   }
   async function readPinnedG4NpcCompositionClosure({ g4,
-    generation_template: generationTemplate } = {}) {
+    generation_template: generationTemplate, canonical_g5: canonicalG5 } = {}) {
     const invalid = (reason) => failure('authoring_dependency_pin_missing',
       'npc_composition', g4?.id, { reason });
-    if (!exact(g4) || !exact(generationTemplate)
-        || g4.world_revision_id !== generationTemplate.world_revision_id) {
-      return invalid('exact_g4_and_generation_template_pins_required');
+    const hasGenerationTemplate = generationTemplate !== undefined;
+    const hasCanonicalG5 = canonicalG5 !== undefined;
+    const target = hasGenerationTemplate ? generationTemplate : canonicalG5;
+    if (!exact(g4) || hasGenerationTemplate === hasCanonicalG5 || !exact(target)
+        || g4.world_revision_id !== target.world_revision_id) {
+      return invalid('exact_g4_and_one_same_revision_npc_target_pin_required');
     }
     if (typeof query !== 'function') {
       return failure('generated_schema_mismatch', 'npc_composition', g4.id,
         { reason: 'read-only query port is required' });
     }
     const revision = g4.world_revision_id;
-    const [nodeResult, templateResult, compositionResult] = await Promise.all([
+    const targetResultPromise = hasGenerationTemplate
+      ? query(`SELECT t.id,t.version,t.world_revision_id,t.g5_class_id,
+        t.regional_template_id,t.regional_template_version,t.scene_materialization_profile_id,
+        t.scene_materialization_profile_version,t.status,t.canonical_digest,
+        av.status AS authoring_status,av.canonical_digest AS authoring_digest
+        FROM world_base.spatial_v3_g5_generation_templates t
+        JOIN world_base.spatial_v3_authoring_versions av
+          ON av.entity_kind='g5_generation_template' AND av.entity_id=t.id
+         AND av.version=t.version AND av.world_revision_id=t.world_revision_id
+         AND av.status='approved' AND av.canonical_digest=t.canonical_digest
+        WHERE t.id=$1 AND t.version=$2 AND t.world_revision_id=$3
+          AND t.canonical_digest=$4 AND t.status='approved' LIMIT 2`,
+      [target.id, target.version, revision, target.canonical_digest])
+      : query(`SELECT n.id,n.version,n.world_revision_id,n.spatial_level,n.status,
+        n.canonical_digest,av.status AS authoring_status,
+        av.canonical_digest AS authoring_digest
+        FROM world_base.spatial_v3_nodes n
+        JOIN world_base.spatial_v3_node_parents parent
+          ON parent.child_id=n.id AND parent.child_version=n.version
+         AND parent.parent_id=$5 AND parent.parent_version=$6
+         AND parent.world_revision_id=n.world_revision_id
+        JOIN world_base.spatial_v3_authoring_versions av
+          ON av.entity_kind='spatial_node' AND av.entity_id=n.id
+         AND av.version=n.version AND av.world_revision_id=n.world_revision_id
+         AND av.status='approved' AND av.canonical_digest=n.canonical_digest
+        WHERE n.id=$1 AND n.version=$2 AND n.world_revision_id=$3
+          AND n.canonical_digest=$4 AND n.spatial_level='G5'
+          AND n.status='approved' LIMIT 2`,
+      [target.id, target.version, revision, target.canonical_digest,
+        g4.id, g4.version]);
+    const compositionResultPromise = hasGenerationTemplate
+      ? query(`SELECT c.entity_kind,c.id,c.version,c.world_revision_id,c.g4_id,
+        c.g4_version,c.generation_template_id,c.generation_template_version,
+        c.canonical_g5_id,c.canonical_g5_version,c.min_count,c.max_count,c.payload,
+        c.status,c.provenance_ref,c.directness,c.confidence,c.canonical_digest,
+        av.status AS authoring_status,av.canonical_digest AS authoring_digest
+        FROM world_base.spatial_v3_g4_npc_composition_bindings c
+        JOIN world_base.spatial_v3_authoring_versions av
+          ON av.entity_kind=c.entity_kind AND av.entity_id=c.id
+         AND av.version=c.version AND av.world_revision_id=c.world_revision_id
+         AND av.status='approved' AND av.canonical_digest=c.canonical_digest
+        WHERE c.world_revision_id=$1 AND c.g4_id=$2 AND c.g4_version=$3
+          AND c.generation_template_id=$4 AND c.generation_template_version=$5
+          AND c.canonical_g5_id IS NULL AND c.status='approved'
+        ORDER BY c.id,c.version LIMIT 2`,
+      [revision, g4.id, g4.version, target.id, target.version])
+      : query(`SELECT c.entity_kind,c.id,c.version,c.world_revision_id,c.g4_id,
+        c.g4_version,c.generation_template_id,c.generation_template_version,
+        c.canonical_g5_id,c.canonical_g5_version,c.min_count,c.max_count,c.payload,
+        c.status,c.provenance_ref,c.directness,c.confidence,c.canonical_digest,
+        av.status AS authoring_status,av.canonical_digest AS authoring_digest
+        FROM world_base.spatial_v3_g4_npc_composition_bindings c
+        JOIN world_base.spatial_v3_authoring_versions av
+          ON av.entity_kind=c.entity_kind AND av.entity_id=c.id
+         AND av.version=c.version AND av.world_revision_id=c.world_revision_id
+         AND av.status='approved' AND av.canonical_digest=c.canonical_digest
+        WHERE c.world_revision_id=$1 AND c.g4_id=$2 AND c.g4_version=$3
+          AND c.canonical_g5_id=$4 AND c.canonical_g5_version=$5
+          AND c.generation_template_id IS NULL AND c.status='approved'
+        ORDER BY c.id,c.version LIMIT 2`,
+      [revision, g4.id, g4.version, target.id, target.version]);
+    const [nodeResult, targetResult, compositionResult] = await Promise.all([
       query(`SELECT n.id,n.version,n.world_revision_id,n.spatial_level,n.status,
         n.canonical_digest,av.status AS authoring_status,
         av.canonical_digest AS authoring_digest
@@ -408,48 +492,37 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
           AND n.canonical_digest=$4 AND n.spatial_level='G4'
           AND n.status='approved' LIMIT 2`,
       [g4.id, g4.version, revision, g4.canonical_digest]),
-      query(`SELECT t.id,t.version,t.world_revision_id,t.g5_class_id,
-        t.regional_template_id,t.regional_template_version,t.scene_materialization_profile_id,
-        t.scene_materialization_profile_version,t.status,t.canonical_digest,
-        av.status AS authoring_status,av.canonical_digest AS authoring_digest
-        FROM world_base.spatial_v3_g5_generation_templates t
-        JOIN world_base.spatial_v3_authoring_versions av
-          ON av.entity_kind='g5_generation_template' AND av.entity_id=t.id
-         AND av.version=t.version AND av.world_revision_id=t.world_revision_id
-         AND av.status='approved' AND av.canonical_digest=t.canonical_digest
-        WHERE t.id=$1 AND t.version=$2 AND t.world_revision_id=$3
-          AND t.canonical_digest=$4 AND t.status='approved' LIMIT 2`,
-      [generationTemplate.id, generationTemplate.version, revision,
-        generationTemplate.canonical_digest]),
-      query(`SELECT c.entity_kind,c.id,c.version,c.world_revision_id,c.g4_id,
-        c.g4_version,c.generation_template_id,c.generation_template_version,
-        c.min_count,c.max_count,c.payload,c.status,c.provenance_ref,c.directness,
-        c.confidence,c.canonical_digest,av.status AS authoring_status,
-        av.canonical_digest AS authoring_digest
-        FROM world_base.spatial_v3_g4_npc_composition_bindings c
-        JOIN world_base.spatial_v3_authoring_versions av
-          ON av.entity_kind=c.entity_kind AND av.entity_id=c.id
-         AND av.version=c.version AND av.world_revision_id=c.world_revision_id
-         AND av.status='approved' AND av.canonical_digest=c.canonical_digest
-        WHERE c.world_revision_id=$1 AND c.g4_id=$2 AND c.g4_version=$3
-          AND c.generation_template_id=$4 AND c.generation_template_version=$5
-          AND c.status='approved' ORDER BY c.id,c.version LIMIT 2`,
-      [revision, g4.id, g4.version, generationTemplate.id,
-        generationTemplate.version])
+      targetResultPromise,
+      compositionResultPromise
     ]);
     const nodes = nodeResult?.rows;
-    const templates = templateResult?.rows;
+    const targets = targetResult?.rows;
     const compositions = compositionResult?.rows;
-    if (!Array.isArray(nodes) || nodes.length !== 1 || !Array.isArray(templates)
-        || templates.length !== 1 || !Array.isArray(compositions)
+    if (!Array.isArray(nodes) || nodes.length !== 1 || !Array.isArray(targets)
+        || targets.length !== 1 || !Array.isArray(compositions)
         || compositions.length !== 1) {
       return failure('route_plan_snapshot_missing', 'npc_composition', g4.id, {
         reason: nodes?.length !== 1 ? 'approved_exact_g4_missing_or_ambiguous'
-          : templates?.length !== 1 ? 'approved_exact_generation_template_missing_or_ambiguous'
+          : targets?.length !== 1 ? (hasGenerationTemplate
+            ? 'approved_exact_generation_template_missing_or_ambiguous'
+            : 'approved_exact_canonical_g5_missing_or_ambiguous')
             : compositions?.length > 1 ? 'ambiguous_approved_npc_composition'
               : 'approved_npc_composition_missing',
-        generation_template_id: generationTemplate.id,
-        generation_template_version: generationTemplate.version,
+        target_id: target.id, target_version: target.version,
+        target_kind: hasGenerationTemplate ? 'g5_generation_template' : 'canonical_g5',
+        world_revision_id: revision
+      });
+    }
+    const targetRow = targets[0];
+    if (targetRow.id !== target.id || targetRow.version !== target.version
+        || targetRow.world_revision_id !== revision || targetRow.status !== 'approved'
+        || targetRow.authoring_status !== 'approved'
+        || targetRow.canonical_digest !== target.canonical_digest
+        || targetRow.authoring_digest !== target.canonical_digest
+        || (hasCanonicalG5 && targetRow.spatial_level !== 'G5')) {
+      return failure('route_plan_snapshot_missing', 'npc_composition', g4.id, {
+        reason: 'approved_exact_npc_target_pin_mismatch',
+        target_id: target.id, target_version: target.version,
         world_revision_id: revision
       });
     }
@@ -462,8 +535,10 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
         && Number.isInteger(ref.version) && ref.version > 0);
     if (composition.entity_kind !== 'g4_npc_composition_binding'
         || composition.g4_id !== g4.id || composition.g4_version !== g4.version
-        || composition.generation_template_id !== generationTemplate.id
-        || composition.generation_template_version !== generationTemplate.version
+        || composition.generation_template_id !== (hasGenerationTemplate ? target.id : null)
+        || composition.generation_template_version !== (hasGenerationTemplate ? target.version : null)
+        || composition.canonical_g5_id !== (hasCanonicalG5 ? target.id : null)
+        || composition.canonical_g5_version !== (hasCanonicalG5 ? target.version : null)
         || composition.world_revision_id !== revision
         || composition.status !== 'approved'
         || composition.authoring_status !== 'approved'
@@ -580,11 +655,17 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
         reason: 'approved_npc_regional_context_closure_missing_or_invalid'
       });
     }
-    const exactApplicability = (row) => row.payload.applicability.some((item) =>
-      item.g4_ref?.world_revision_id === revision
-        && item.g4_ref?.id === g4.id && item.g4_ref?.version === g4.version
-        && item.generation_template_ref?.id === generationTemplate.id
-        && item.generation_template_ref?.version === generationTemplate.version);
+    const exactApplicability = (row) => row.payload.applicability.some((item) => {
+      const selectorIsExact = hasGenerationTemplate
+        ? item.generation_template_ref?.id === target.id
+          && item.generation_template_ref?.version === target.version
+          && item.canonical_g5_ref === undefined
+        : item.canonical_g5_ref?.id === target.id
+          && item.canonical_g5_ref?.version === target.version
+          && item.generation_template_ref === undefined;
+      return selectorIsExact && item.g4_ref?.world_revision_id === revision
+        && item.g4_ref?.id === g4.id && item.g4_ref?.version === g4.version;
+    });
     const applicableRegionalRefsByProfile = runtimeProfiles
       .filter((row) => row.profile_kind === 'npc_binding')
       .map((row) => ({ profile_id: row.id, profile_version: row.version,
@@ -599,15 +680,18 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
     const value = deepFreeze(structuredClone({
       schema: 'rus.m2c_npc_binding_bundle.v1', world_revision_id: revision,
       g4_ref: { id: g4.id, version: g4.version, world_revision_id: revision },
-      generation_template_ref: { id: generationTemplate.id,
-        version: generationTemplate.version },
+      ...(hasGenerationTemplate
+        ? { generation_template_ref: { id: target.id, version: target.version } }
+        : { canonical_g5_ref: { id: target.id, version: target.version } }),
       composition,
       runtime_profiles: runtimeProfiles,
       regional_context_profiles: regionalProfiles,
       applicable_regional_refs_by_profile: applicableRegionalRefsByProfile
     }));
     return Object.freeze({ ok: true, value,
-      ref: Object.freeze({ g4: { ...g4 }, generation_template: { ...generationTemplate } }) });
+      ref: Object.freeze({ g4: { ...g4 },
+        ...(hasGenerationTemplate ? { generation_template: { ...target } }
+          : { canonical_g5: { ...target } }) }) });
   }
   async function readPinnedCanonicalG5SceneBinding({ id, version,
     world_revision_id } = {}) {

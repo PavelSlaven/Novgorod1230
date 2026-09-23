@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 24 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `328bd4141ea526824e8a4d5551831a847def7110e8126e43019539a87a83105f`.
+- SHA-256 развёрнутого DDL: `ee4f82b6a35a52cb638710ecb6cac917855c368f9e30962f399624520aeeb377`.
 - Таблиц: 207.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -2648,6 +2648,7 @@ Spatial v3 version graph canonical world authoring; versioned production activat
 - `FOREIGN KEY (child_id, child_version, world_revision_id) REFERENCES world_base.spatial_v3_nodes(id, version, world_revision_id) ON DELETE RESTRICT`
 - `FOREIGN KEY (parent_id, parent_version, world_revision_id) REFERENCES world_base.spatial_v3_nodes(id, version, world_revision_id) ON DELETE RESTRICT`
 - `CHECK (child_id <> parent_id)`
+- `UNIQUE INDEX spatial_v3_node_parents_m2c_npc_exact_edge ( child_id, child_version, parent_id, parent_version, world_revision_id )`
 
 ### `world_base.spatial_v3_node_classes`
 
@@ -3536,7 +3537,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 
 ### `world_base.spatial_v3_g4_npc_composition_bindings`
 
-Точное approved авторское решение о допустимом составе NPC для G4 и G5 generation template; запись не создаёт NPC.
+Точное approved авторское решение о составе NPC для G4 и ровно одного G5 generation template либо canonical G5; запись не создаёт NPC.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
@@ -3546,8 +3547,10 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `g4_id` | `TEXT` | нет | — | — | `NOT NULL` | Точный G4 node ID в той же Spatial v3 revision. |
 | `g4_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (g4_version > 0)` | Описание отсутствует. |
-| `generation_template_id` | `TEXT` | нет | — | — | `NOT NULL` | Точный G5 generation template ID, выбранный authoring binding. |
-| `generation_template_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (generation_template_version > 0)` | Описание отсутствует. |
+| `generation_template_id` | `TEXT` | да | — | — | — | Nullable exact G5 generation template ID; задан ровно один G5 target selector. |
+| `generation_template_version` | `INTEGER` | да | — | — | `CHECK (generation_template_version > 0)` | Nullable точная версия generation template; парная с generation_template_id. |
+| `canonical_g5_id` | `TEXT` | да | — | — | — | Nullable exact canonical G5 node ID; задан ровно один G5 target selector. |
+| `canonical_g5_version` | `INTEGER` | да | — | — | `CHECK (canonical_g5_version > 0)` | Nullable точная версия canonical G5 node; парная с canonical_g5_id. |
 | `min_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (min_count >= 0)` | Нижняя граница авторского количества NPC. |
 | `max_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (max_count >= min_count)` | Верхняя граница авторского количества NPC. |
 | `payload` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | JSON: count weights и взвешенные exact refs переиспользуемых NPC bindings. |
@@ -3563,8 +3566,12 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 - `UNIQUE (id, version, world_revision_id)`
 - `FOREIGN KEY (entity_kind, id, version, world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind, entity_id, version, world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
 - `FOREIGN KEY (g4_id, g4_version, world_revision_id) REFERENCES world_base.spatial_v3_nodes(id, version, world_revision_id) ON DELETE RESTRICT`
+- `CHECK ( (generation_template_id IS NOT NULL AND generation_template_version IS NOT NULL AND canonical_g5_id IS NULL AND canonical_g5_version IS NULL) OR (generation_template_id IS NULL AND generation_template_version IS NULL AND canonical_g5_id IS NOT NULL AND canonical_g5_version IS NOT NULL) )`
 - `FOREIGN KEY (generation_template_id, generation_template_version, world_revision_id) REFERENCES world_base.spatial_v3_g5_generation_templates(id, version, world_revision_id) ON DELETE RESTRICT`
-- `UNIQUE INDEX spatial_v3_g4_npc_composition_active_g4 (world_revision_id, g4_id, g4_version) WHERE status = 'approved'`
+- `FOREIGN KEY (canonical_g5_id, canonical_g5_version, world_revision_id) REFERENCES world_base.spatial_v3_nodes(id, version, world_revision_id) ON DELETE RESTRICT`
+- `FOREIGN KEY (canonical_g5_id, canonical_g5_version, g4_id, g4_version, world_revision_id) REFERENCES world_base.spatial_v3_node_parents( child_id, child_version, parent_id, parent_version, world_revision_id ) ON DELETE RESTRICT`
+- `UNIQUE INDEX spatial_v3_g4_npc_composition_active_generated ( world_revision_id, g4_id, g4_version, generation_template_id ) WHERE status = 'approved' AND generation_template_id IS NOT NULL`
+- `UNIQUE INDEX spatial_v3_g4_npc_composition_active_canonical ( world_revision_id, g4_id, g4_version, canonical_g5_id ) WHERE status = 'approved' AND canonical_g5_id IS NOT NULL`
 
 ### `world_base.spatial_v3_npc_runtime_profiles`
 
@@ -3594,7 +3601,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 
 ### `world_base.spatial_v3_npc_regional_context_profiles`
 
-Утверждённый региональный контекст NPC с exact applicability по G4 и generation template.
+Утверждённый региональный контекст NPC с exact applicability по G4 и одному из G5 target refs.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
@@ -3602,7 +3609,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
 | `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
 | `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
-| `payload` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | JSON: regional origin/language claims and exact G4/template applicability tuples. |
+| `payload` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | JSON: regional origin/language claims and exact G4 plus one generation-template or canonical-G5 applicability tuple. |
 | `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `directness` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(directness)) > 0)` | Описание отсутствует. |

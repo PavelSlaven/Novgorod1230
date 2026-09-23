@@ -1,4 +1,9 @@
 -- Approved M2c NPC composition, reusable runtime profiles, and regional context.
+CREATE UNIQUE INDEX IF NOT EXISTS spatial_v3_node_parents_m2c_npc_exact_edge
+  ON world_base.spatial_v3_node_parents(
+    child_id, child_version, parent_id, parent_version, world_revision_id
+  );
+
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_g4_npc_composition_bindings (
   entity_kind TEXT NOT NULL DEFAULT 'g4_npc_composition_binding'
     CHECK (entity_kind = 'g4_npc_composition_binding'),
@@ -8,8 +13,10 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_g4_npc_composition_bindings (
     REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT,
   g4_id TEXT NOT NULL,
   g4_version INTEGER NOT NULL CHECK (g4_version > 0),
-  generation_template_id TEXT NOT NULL,
-  generation_template_version INTEGER NOT NULL CHECK (generation_template_version > 0),
+  generation_template_id TEXT,
+  generation_template_version INTEGER CHECK (generation_template_version > 0),
+  canonical_g5_id TEXT,
+  canonical_g5_version INTEGER CHECK (canonical_g5_version > 0),
   min_count INTEGER NOT NULL CHECK (min_count >= 0),
   max_count INTEGER NOT NULL CHECK (max_count >= min_count),
   payload JSONB NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
@@ -29,14 +36,34 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_v3_g4_npc_composition_bindings (
   FOREIGN KEY (g4_id, g4_version, world_revision_id)
     REFERENCES world_base.spatial_v3_nodes(id, version, world_revision_id)
     ON DELETE RESTRICT,
+  CHECK (
+    (generation_template_id IS NOT NULL AND generation_template_version IS NOT NULL
+      AND canonical_g5_id IS NULL AND canonical_g5_version IS NULL)
+    OR (generation_template_id IS NULL AND generation_template_version IS NULL
+      AND canonical_g5_id IS NOT NULL AND canonical_g5_version IS NOT NULL)
+  ),
   FOREIGN KEY (generation_template_id, generation_template_version, world_revision_id)
     REFERENCES world_base.spatial_v3_g5_generation_templates(id, version, world_revision_id)
+    ON DELETE RESTRICT,
+  FOREIGN KEY (canonical_g5_id, canonical_g5_version, world_revision_id)
+    REFERENCES world_base.spatial_v3_nodes(id, version, world_revision_id)
+    ON DELETE RESTRICT,
+  FOREIGN KEY (canonical_g5_id, canonical_g5_version,
+    g4_id, g4_version, world_revision_id)
+    REFERENCES world_base.spatial_v3_node_parents(
+      child_id, child_version, parent_id, parent_version, world_revision_id
+    )
     ON DELETE RESTRICT
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS spatial_v3_g4_npc_composition_active_g4
-  ON world_base.spatial_v3_g4_npc_composition_bindings(world_revision_id, g4_id, g4_version)
-  WHERE status = 'approved';
+CREATE UNIQUE INDEX IF NOT EXISTS spatial_v3_g4_npc_composition_active_generated
+  ON world_base.spatial_v3_g4_npc_composition_bindings(
+    world_revision_id, g4_id, g4_version, generation_template_id
+  ) WHERE status = 'approved' AND generation_template_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS spatial_v3_g4_npc_composition_active_canonical
+  ON world_base.spatial_v3_g4_npc_composition_bindings(
+    world_revision_id, g4_id, g4_version, canonical_g5_id
+  ) WHERE status = 'approved' AND canonical_g5_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS world_base.spatial_v3_npc_runtime_profiles (
   entity_kind TEXT NOT NULL DEFAULT 'npc_runtime_profile'

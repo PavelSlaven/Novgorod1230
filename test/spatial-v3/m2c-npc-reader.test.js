@@ -41,11 +41,43 @@ test('M2c NPC closure rejects absent approved source rows', async () => {
 
   assert.equal(result.ok, false);
   assert.equal(calls.length, 3);
-  assert.deepEqual(calls.map(({ params }) => params), [
+  assert.deepEqual(calls.map(({ params }) => params).sort((left, right) =>
+    JSON.stringify(left).localeCompare(JSON.stringify(right))), [
     [g4.id, g4.version, g4.world_revision_id, g4.canonical_digest],
     [generationTemplate.id, generationTemplate.version,
       generationTemplate.world_revision_id, generationTemplate.canonical_digest],
     [g4.world_revision_id, g4.id, g4.version, generationTemplate.id,
       generationTemplate.version]
   ]);
+});
+
+test('M2c NPC closure accepts one exact canonical G5 selector and rejects absent approval', async () => {
+  const canonicalG5 = { id: 'canonical-g5', version: 1,
+    world_revision_id: 'target', canonical_digest: digest };
+  const calls = [];
+  const reader = createSpatialV3WorldBaseReader({ query: async (sql, params) => {
+    calls.push({ sql, params });
+    return { rows: [] };
+  } });
+
+  assert.equal((await reader.readPinnedG4NpcCompositionClosure({ g4,
+    canonical_g5: canonicalG5 })).ok, false);
+  assert.equal(calls.length, 3);
+  const targetCall = calls.find(({ sql }) => /n\.spatial_level='G5'/u.test(sql));
+  const compositionCall = calls.find(({ sql }) => /c\.canonical_g5_id=\$4/u.test(sql));
+  assert.ok(targetCall);
+  assert.ok(compositionCall);
+  assert.deepEqual(targetCall.params, [canonicalG5.id, canonicalG5.version,
+    canonicalG5.world_revision_id, canonicalG5.canonical_digest,
+    g4.id, g4.version]);
+  assert.match(targetCall.sql, /parent\.parent_id=\$5 AND parent\.parent_version=\$6/u);
+  assert.deepEqual(compositionCall.params, [g4.world_revision_id, g4.id, g4.version,
+    canonicalG5.id, canonicalG5.version]);
+
+  calls.length = 0;
+  assert.equal((await reader.readPinnedG4NpcCompositionClosure({ g4,
+    generation_template: generationTemplate, canonical_g5: canonicalG5 })).ok, false);
+  assert.equal((await reader.readPinnedG4NpcCompositionClosure({ g4,
+    canonical_g5: { ...canonicalG5, world_revision_id: 'other' } })).ok, false);
+  assert.equal(calls.length, 0);
 });

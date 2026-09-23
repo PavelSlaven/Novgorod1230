@@ -115,6 +115,9 @@ test('P16 reader loads approved closure from one exact pinned template header', 
   });
   assert.deepEqual(calls[0].params, [ref.id, ref.version, ref.world_revision_id]);
   assert.match(calls[0].sql, /status='approved'/);
+  assert.match(calls[0].sql, /WITH RECURSIVE revision_ancestry/u);
+  assert.match(calls[0].sql, /ancestry\.id=b\.world_revision_id/u);
+  assert.doesNotMatch(calls[0].sql, /av\.canonical_digest=b\.canonical_digest/u);
   assert.ok(calls.slice(1).every(({ sql }) => !/SELECT \*/u.test(sql)));
   assert.ok(calls.slice(1).every(({ params }) =>
     params[0] === ref.id && params[1] === ref.version));

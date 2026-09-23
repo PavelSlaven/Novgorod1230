@@ -224,9 +224,9 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_scene_selection_rules: 'Закрытые versioned правила выбора scene template; P12 поддерживает только single_candidate.',
   spatial_v3_scene_applicability_rules: 'Закрытые versioned правила применимости scene candidate к точному source reference.',
   spatial_v3_g6_acoustic_baselines: 'Утверждённый ambient-noise baseline каждой G6 scene slot для точного canonical G5 либо G5 generation template и scene template.',
-  spatial_v3_g4_npc_composition_bindings: 'Точное approved авторское решение о допустимом составе NPC для G4 и G5 generation template; запись не создаёт NPC.',
+  spatial_v3_g4_npc_composition_bindings: 'Точное approved авторское решение о составе NPC для G4 и ровно одного G5 generation template либо canonical G5; запись не создаёт NPC.',
   spatial_v3_npc_runtime_profiles: 'Переиспользуемые утверждённые target NPC/runtime bindings с точными role, occupation, body, activity, routine, clothing и item refs.',
-  spatial_v3_npc_regional_context_profiles: 'Утверждённый региональный контекст NPC с exact applicability по G4 и generation template.',
+  spatial_v3_npc_regional_context_profiles: 'Утверждённый региональный контекст NPC с exact applicability по G4 и одному из G5 target refs.',
   spatial_v3_graph_node_migration_inventory: 'Review-only deterministic mapping legacy graph_nodes to v3 canonical entities; ambiguity/unreviewed row остаётся gap.',
   spatial_v3_orientation_reference_frames: 'Версионированные orientation frames с детерминированным millidegree offset и запрещёнными циклами.',
   spatial_v3_movement_orientation_profiles: 'Fixed/curved profiles движения и только явная reciprocal reverse relation.',
@@ -589,7 +589,10 @@ export const fields = {
   },
   spatial_v3_g4_npc_composition_bindings: {
     g4_id: 'Точный G4 node ID в той же Spatial v3 revision.',
-    generation_template_id: 'Точный G5 generation template ID, выбранный authoring binding.',
+    generation_template_id: 'Nullable exact G5 generation template ID; задан ровно один G5 target selector.',
+    generation_template_version: 'Nullable точная версия generation template; парная с generation_template_id.',
+    canonical_g5_id: 'Nullable exact canonical G5 node ID; задан ровно один G5 target selector.',
+    canonical_g5_version: 'Nullable точная версия canonical G5 node; парная с canonical_g5_id.',
     min_count: 'Нижняя граница авторского количества NPC.',
     max_count: 'Верхняя граница авторского количества NPC.',
     payload: 'JSON: count weights и взвешенные exact refs переиспользуемых NPC bindings.'
@@ -601,7 +604,7 @@ export const fields = {
     payload: 'JSON: source-backed runtime bindings and explicit exact profile refs.'
   },
   spatial_v3_npc_regional_context_profiles: {
-    payload: 'JSON: regional origin/language claims and exact G4/template applicability tuples.'
+    payload: 'JSON: regional origin/language claims and exact G4 plus one generation-template or canonical-G5 applicability tuple.'
   },
   spatial_v3_graph_node_migration_inventory: {
     legacy_graph_node_id: 'FK → legacy graph_nodes(id); mapping только по explicit source ID.',

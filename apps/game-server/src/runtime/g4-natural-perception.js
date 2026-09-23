@@ -1,11 +1,12 @@
 import { projectSpatialV3NaturalScene } from '@rus/presentation/spatial-v3-projection';
-import { loadApprovedG4NaturalPresentationCatalog } from '@rus/runtime-catalog';
+import { loadApprovedG4NaturalPresentationCatalog, loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
 import { prepareG4NaturalBaseline } from './g4-natural-baseline.js';
 import { serverError } from '../errors.js';
 
 /** Called with a current read-only owner snapshot, never player request facts. */
 export function prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, currentFacts } = {}) {
-  const { observer, scene, current_environment, source_endpoint, source_bindings, layer_admissions } = currentFacts ?? {};
+  const { observer, scene, current_environment, source_endpoint, source_bindings,
+    canonical_source_binding, layer_admissions } = currentFacts ?? {};
   const catalog = loadApprovedG4NaturalPresentationCatalog({ verifiedCatalog, pin });
   const baseline = prepareG4NaturalBaseline({ verifiedCatalog, pin,
     g4_ref: scene?.g4_ref, scene_template_ref: scene?.scene_template_ref, current_environment });
@@ -18,11 +19,31 @@ export function prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, cur
     || !['arrival', 'both'].includes(source_endpoint?.endpoint_role)
     || source_endpoint.scene_template_id !== scene?.scene_template_ref?.id
     || source_endpoint.scene_template_version !== scene?.scene_template_ref?.version
-    || !Array.isArray(source_bindings) || source_bindings.length === 0
+    || !Array.isArray(layer_admissions)) perceptionGap('exact_admitted_arrival_source_required');
+  if (canonical_source_binding != null) {
+    const binding = canonical_source_binding;
+    const approved = loadApprovedCanonicalNaturalInitialRule({ verifiedCatalog, pin, rule_ref: binding.rule_ref });
+    const rule = approved.rule;
+    const sourceG6 = scene.g6?.find((row) => row.id === positions[0].g6_instance_id);
+    if (binding.schema !== 'rus.verified_canonical_initial_natural_source.v1' || binding.verified !== true
+      || binding.party_id !== scene.party_id || binding.actor_id !== observer?.actor_id
+      || binding.position_id !== positions[0].id || binding.position_id !== observer.position_id
+      || binding.g5_site_id !== scene.site_id || binding.baseline_id !== scene.baseline_id
+      || binding.scenario_id !== approved.scenario_id
+      || binding.initial_request_identity?.party_id !== scene.party_id
+      || binding.initial_request_identity?.scenario_id !== approved.scenario_id
+      || !binding.initial_request_identity?.idempotency_key
+      || binding.initial_snapshot_identity?.state_version !== 0 || !binding.initial_snapshot_identity?.state_digest
+      || scene.g4_ref.id !== rule.g4_ref.id || scene.g4_ref.version !== rule.g4_ref.version
+      || scene.scene_template_ref.id !== rule.scene_template_ref.id || scene.scene_template_ref.version !== rule.scene_template_ref.version
+      || source_endpoint.slot_key !== rule.source_endpoint_slot_key
+      || sourceG6?.scene_slot_key !== rule.g6_scene_slot_key
+      || positions[0].template_slot_key !== rule.required_position_slot_key
+      || positions[0].template_instance_ordinal !== rule.required_position_instance_ordinal) perceptionGap('verified_canonical_initial_source_required');
+  } else if (!Array.isArray(source_bindings) || source_bindings.length === 0
     || source_bindings.some((row) => row.party_id !== scene.party_id || row.status !== 'active'
       || row.g5_site_id !== scene.site_id || row.source_slot_key !== source_endpoint.slot_key
-      || row.position_id !== positions[0].id)
-    || !Array.isArray(layer_admissions)) perceptionGap('exact_admitted_arrival_source_required');
+      || row.position_id !== positions[0].id)) perceptionGap('exact_committed_endpoint_binding_required');
   const profile = profiles[0]; const observations = [];
   for (const descriptor of profile.layers) {
     if (descriptor.channel === 'none'

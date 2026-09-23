@@ -38,6 +38,8 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
     WHERE loc.party_id=$1 AND loc.owner_kind='actor' AND loc.owner_id=$2 AND loc.location_kind='scene'`, [partyId, actorId]);
   if (result.rows.length !== 1) gap('committed_actor_scene_required');
   const snapshot = result.rows[0];
+  if (snapshot.world_revision_id !== pin?.compatible_world_revision_id
+    || snapshot.world_catalog_digest !== pin?.compatible_world_catalog_digest) gap('exact_current_world_pin_required');
   const catalog = loadApprovedG4NaturalCatalog({ verifiedCatalog, pin });
   const profiles = catalog.profiles.filter(({ payload }) => payload.g4_ref.id === snapshot.site.parent_g4_id
     && payload.g4_ref.world_revision_id === snapshot.world_revision_id);

@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`). История до этой секции не бэкфиллится.
 
-- docs(work): CURRENT_SPRINT — Runtime-трек начинается с M2c (#133) по решению владельца (#PR)
+- docs(work): CURRENT_SPRINT — Runtime-трек начинается с M2c (#133) по решению владельца (#134)
 - docs(governance): обязательные навыки `caveman` и `ponytail` (WR §18.1, роутер, копии в `.agents/skills` и `.claude/skills`); `CBM_RUNTIME_DIR` вне AppData для общего daemon CBM с MSIX-Codex (#131)
 - docs(governance): обязательная проверка, синхронизация и использование CBM в начале спринта (WR §19, роутер); подключение Claude Code и разбор зависшего daemon в CODEBASE_MEMORY_MCP (#130)
 - docs(work): ссылки на backlog-issues #105–#128 в LEGACY_WARNINGS, CURRENT_SPRINT после завершения трека Docs (#129)

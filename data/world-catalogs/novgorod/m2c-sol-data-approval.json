@@ -30,6 +30,12 @@
     "scope": "Exact approved-status mapped NPC authoring rows, provenance, references and P12 union; 32 composition, 36 runtime, five regional and 73 matching authoring-version rows",
     "excludes": "PostgreSQL import/readback, runtime use and production activation"
   },
+  "npc_canonical_postpromotion_approval": {
+    "candidate_sha256": "3eb2f231ab89b90776f28fcccc905500b014d2c3649687eafd0401dd6be7321b",
+    "import_manifest_sha256": "432dc9d1157385f72d1d141c157d3a89fb065f42ed02058355c5fad1029242ab",
+    "scope": "Exact canonical south_approach NPC authoring and approved-status P12 union: 33 composition, 39 runtime and six regional rows; explicit count zero to two and three editorial profiles",
+    "excludes": "PostgreSQL import/readback, runtime activation and historical population claims"
+  },
   "target_start_proposal_approval": {
     "candidate_sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
     "scope": "Exact canonical entry and initial-state authoring proposal only",

@@ -1,0 +1,31 @@
+{
+  "schema": "rus.authoring_data_approval.v1",
+  "subject": "novgorod_m2c_npc_canonical_initial_south_approach_v1",
+  "decision": "DRAFT_AUTHORING_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/m2c_contract_audit_sol",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "independent_from_author": true
+  },
+  "candidate_sha256": "3eb2f231ab89b90776f28fcccc905500b014d2c3649687eafd0401dd6be7321b",
+  "scope": "Exact canonical south_approach initial snapshot; zero to two forest worker, hunter or guide NPCs from existing approved families. Equal editorial weights are not historical population frequencies.",
+  "checks": [
+    "Exact canonical G5 and parent G4",
+    "Three separate canonical runtime profile bindings",
+    "Separate exact canonical regional applicability",
+    "Five exact authoring-version and provenance links",
+    "Existing body, clothing, routine and item components are reused"
+  ],
+  "authorized_next_step": "Mechanical promotion and package freeze for independent postpromotion review and isolated PostgreSQL verification.",
+  "runtime_activation_authorized": false,
+  "postpromotion_verification": {
+    "decision": "PASS",
+    "reviewer_agent": "/root/m2c_contract_audit_sol",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "manifest_sha256": "432dc9d1157385f72d1d141c157d3a89fb065f42ed02058355c5fad1029242ab",
+    "scope": "Exact six datasets, five new approved rows and AV links, unchanged generated rows and source unions; P12 validation passed.",
+    "runtime_activation_authorized": false
+  }
+}

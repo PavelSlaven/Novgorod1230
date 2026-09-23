@@ -65,7 +65,8 @@
 2. Проверить живой статус:
 
    ```powershell
-   gh issue list --milestone "Docs & agent context 2026-09" --state open
+   gh issue list --state open --label P2
+   gh issue list --milestone "Runtime M3–M8" --state open
    ```
 
 3. Взять **одну** задачу — первую открытую по порядку CURRENT_SPRINT, у которой нет незакрытых зависимостей.

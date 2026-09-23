@@ -4,6 +4,52 @@ import {
 
 function orderingParentKeys(write) {
   const parents = new Set(childParentKeys(write));
+  const record = write.record;
+  if (write.target_table === 'party_npcs' && record.run_id) {
+    parents.add(`party_runtime.party_materialization_runs:${record.run_id}`);
+  }
+  if (write.target_table === 'party_npc_spatial_schedules') {
+    parents.add(`party_runtime.party_npcs:${record.npc_id}`);
+  }
+  if (['party_ordinary_materialization_contexts', 'party_ordinary_materialization_basis_catalog', 'party_ordinary_materialization_enablements'].includes(write.target_table)) {
+    parents.add(`party_runtime.party_ordinary_materialization_aggregates:${record.party_id}:${record.scope_kind}:${record.scope_id}`);
+  }
+  if (write.target_table === 'party_ordinary_materialization_enablements') {
+    parents.add(`party_runtime.party_ordinary_materialization_contexts:${record.party_id}:${record.scope_kind}:${record.scope_id}`);
+  }
+  if (write.target_table === 'party_resource_nodes' && record.position_node_id) {
+    parents.add(`party_runtime.scene_position_nodes:${record.position_node_id}`);
+  }
+  if (write.target_table === 'party_materialization_runs') {
+    if (record.trace?.created_change_set_id) parents.add(`party_runtime.party_v3_change_sets:${record.trace.created_change_set_id}`);
+    if (record.supersedes_run_id) parents.add(`party_runtime.party_materialization_runs:${record.supersedes_run_id}`);
+  }
+  if (write.target_table === 'party_scene_baselines' && record.materialization_trace_id) {
+    parents.add(`party_runtime.party_materialization_runs:${record.materialization_trace_id}`);
+  }
+  if (write.target_table === 'expansion_frontiers') {
+    parents.add(`party_runtime.party_g5_sites:${record.source_g5_site_id}`);
+    if (record.continuation_chain_id) {
+      parents.add(`party_runtime.party_continuation_chains:${record.continuation_chain_id}`);
+    }
+  }
+  if (['expansion_capacity_reservations', 'scene_frontier_bindings'].includes(write.target_table)) {
+    parents.add(`party_runtime.expansion_frontiers:${record.frontier_id}`);
+  }
+  if (write.target_table === 'scene_frontier_bindings') {
+    parents.add(`party_runtime.scene_position_nodes:${record.position_id}`);
+    parents.add(`party_runtime.party_scene_baselines:${record.scene_baseline_id}`);
+  }
+  if (write.target_table === 'g5_site_connections') {
+    parents.add(`party_runtime.party_g5_sites:${record.from_site_id}`);
+    parents.add(`party_runtime.party_g5_sites:${record.to_site_id}`);
+    if (record.portal_entity_id) parents.add(`party_runtime.portal_entities:${record.portal_entity_id}`);
+  }
+  if (write.target_table === 'party_site_connection_endpoint_bindings') {
+    parents.add(`party_runtime.g5_site_connections:${record.site_connection_id}`);
+    parents.add(`party_runtime.party_g5_sites:${record.g5_site_id}`);
+    parents.add(`party_runtime.scene_position_nodes:${record.position_id}`);
+  }
   if (write?.target_table !== 'party_v3_change_sets') {
     for (const [field, value] of Object.entries(write?.record ?? {})) {
       if (field.endsWith('_change_set_id') && value) {

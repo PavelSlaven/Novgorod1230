@@ -28,14 +28,14 @@ New-Item -ItemType Directory -Force "$env:USERPROFILE\.cbm-runtime"
 [Environment]::SetEnvironmentVariable('CBM_RUNTIME_DIR', "$env:USERPROFILE\.cbm-runtime", 'User')
 ```
 
-Codex получает переменную через `env_vars` в своём `config.toml` (installer прописывает её сам), Cursor и VS Code наследуют её от окружения, Claude Code — через `--env` при регистрации сервера (ниже). После установки переменной закройте все клиенты с CBM и запустите их заново.
+Codex получает переменную через `env_vars` в своём `config.toml` (installer прописывает её сам), Cursor и VS Code наследуют её от окружения, Claude Code наследует её после перезапуска, а `--env` при регистрации сервера (ниже) делает значение явным. После установки переменной закройте все клиенты с CBM и запустите их заново.
 
 ### Claude Code
 
 Если installer не подключил Claude Code, добавьте сервер в пользовательскую конфигурацию (вне репозитория) и проверьте подключение:
 
 ```powershell
-claude mcp add codebase-memory-mcp --scope user --env "CBM_RUNTIME_DIR=$env:USERPROFILE/.cbm-runtime" -- "$env:LOCALAPPDATA/Programs/codebase-memory-mcp/codebase-memory-mcp.exe"
+claude mcp add codebase-memory-mcp --scope user --env "CBM_RUNTIME_DIR=$env:USERPROFILE\.cbm-runtime" -- "$env:LOCALAPPDATA/Programs/codebase-memory-mcp/codebase-memory-mcp.exe"
 claude mcp list
 ```
 

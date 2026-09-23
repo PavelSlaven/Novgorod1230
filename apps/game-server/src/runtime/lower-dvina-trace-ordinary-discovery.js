@@ -140,6 +140,8 @@ function selectDiscoveryContext({ execution, objective, targetRef, locationRef, 
   const selected = matches[0];
   const { context_bound_capabilities: _, ...baseExecution } = execution;
   return { execution: bindCommittedFiniteSource({ ...baseExecution,
+    mechanics_policy: selected.execution_context?.mechanics_policy
+      ?? baseExecution.mechanics_policy,
     candidate_context: selected.candidate_context,
     supporting_bases: selected.supporting_bases,
     context_bound_ordinary_profile:

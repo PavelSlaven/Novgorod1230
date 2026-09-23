@@ -65,6 +65,7 @@ source scope нельзя заменить отдельным caller ref.
   видимости остаётся результатом item owner, а не входным semantic write-state
 - `validateInventoryArchetypes` / `resolveInventoryProfile` — разворачивают переданный authoring archetype в точный immutable inventory-профиль до runtime
 - `createRuntimeInstanceMechanicsSnapshot` — строго валидирует и отделённо замораживает exact mechanics/provenance обычного direct-action экземпляра
+- Ordinary world admission принимает optional approved `mechanics_policy.mass_grams_per_quantity_unit`: total `mass_grams` должен равняться целому `quantity.value` × массе единицы. Без этого поля сохраняются прежние bounds; property precedence не меняется. P16 повторяет проверку по сохранённой policy выбранного source capability до списания конечного ресурса.
 - `createOrdinaryWorldRuntimeInstanceMechanicsSnapshot` — отдельный строгий reader committed O1 v2 snapshot с provenance `ordinary_world_materialization`; direct-action v1 contract не расширяет
 - `admitOrdinaryWorldMaterialization` — общий items-property owner для O1/O2a:
   принимает Phase 3 handoff и server-owned evidence; authority-sensitive O2a

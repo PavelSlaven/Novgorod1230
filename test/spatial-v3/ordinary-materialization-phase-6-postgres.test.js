@@ -164,12 +164,12 @@ async function bounded(promise) {
   } finally { clearTimeout(timer); }
 }
 
-test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and stale-safe', async (t) => {
+async function postgresFixture(t) {
   if (docker(['version']).status !== 0) return t.skip('Docker required for isolated PostgreSQL test');
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', container]);
+    docker(['rm', '-fv', container]);
   });
   const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',
@@ -187,6 +187,19 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   pool = new Pool({ host: '127.0.0.1', port, user: 'ordinary', password: 'ordinary', database: 'ordinary', max: 6, connectionTimeoutMillis: 5_000 });
   for (const file of migrations) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   await pool.query(await readFile('schemas/party-db/025_party_runtime_finite_resource_transitions.sql', 'utf8'));
+  return pool;
+}
+
+test('finite portions conserve fixed mass through P16 rejection, rollback, replay and reload', async (t) => {
+  const pool = await postgresFixture(t);
+  if (pool == null) return;
+  await assertFiniteSourceP16Integration(pool);
+  await assertFiniteResolverReloadLifecycle(pool);
+});
+
+test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and stale-safe', async (t) => {
+  const pool = await postgresFixture(t);
+  if (pool == null) return;
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ('party-a',2,'world','catalog','materializer','rng','commands','profiles')`);
@@ -415,8 +428,6 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   assert.equal(Number(p16After.rows[0].state_version), Number(p16Before.state_version) + 1,
     'ordinary helper must not independently double-bump party state');
   assert.equal(Number(p16After.rows[0].commits), Number(p16Before.commits) + 1);
-  await assertFiniteSourceP16Integration(pool);
-  await assertFiniteResolverReloadLifecycle(pool);
   await assertContextBoundO2aV2V3Integration(pool);
   await removePartyAnchor(pool, 'party-a');
   await pool.query(`DELETE FROM party_runtime.parties WHERE party_id='party-a'`);
@@ -801,6 +812,17 @@ async function assertFiniteResolverReloadLifecycle(pool) {
     permission_refs: [...permissions], basis_kind: 'finite_source' };
   const placement = finiteResolverPropertyContext(scope, sourceRef);
   const objective = finiteResolverObjective(scope, sourceRef, permissions, bounds);
+  const execution = objective.execution_context;
+  execution.context_bound_capabilities = [{ source_ref: sourceRef,
+    candidate_context: { ...execution.candidate_context, target_ref: sourceRef },
+    supporting_bases: [basis],
+    context_bound_ordinary_profile: null,
+    constrained_natural_resource_profile: execution.constrained_natural_resource_profile,
+    context_refs: objective.context_refs, policy_refs: objective.policy_refs,
+    execution_context: { mechanics_policy: structuredClone(execution.mechanics_policy) }
+  }];
+  execution.mechanics_policy = { ...execution.mechanics_policy, policy_ref: 'base-mechanics' };
+  delete execution.mechanics_policy.mass_grams_per_quantity_unit;
   const placementDigest = ordinaryWorldPropertyPlacementContextDigest({ ...placement,
     supporting_basis_ref: 'ordinary_enablement_context_digest',
     causal_basis_refs: ['ordinary_enablement_context_digest'],
@@ -851,11 +873,23 @@ async function assertFiniteResolverReloadLifecycle(pool) {
   const firstResult = await resolver(finiteResolverRequest('turn:finite:1',
     'взять первую порцию'));
   const first = firstResult.ordinary_materialization_atomic_write_plan;
+  assert.ok(first?.item, 'the committed finite capability must admit its output');
   assert.equal(first.item.item_proposal.semantic_descriptor.name,
     'обычная речная глина');
   assert.deepEqual(first.finite_resource_transition.before_quantity,
     { numerator: 2, denominator: 1, unit: 'item' });
   assert.equal(first.finite_resource_transition.expected_state_version, 8);
+  const { schema: fixedSchema, write_plan_digest: fixedDigest,
+    ...wrongMassInput } = structuredClone(first);
+  wrongMassInput.item.mechanics_snapshot.mechanics.mass_grams = 49;
+  const wrongMass = createOrdinaryMaterializationAtomicWritePlan(wrongMassInput);
+  await assert.rejects(() => commitFiniteInP16(pool, wrongMass,
+    'finite-reload-bad-mass', 0), { code: 'ORDINARY_PHASE6_MECHANICS_POLICY_INVALID' });
+  assert.deepEqual((await pool.query(`SELECT quantity_numerator,state_version
+    FROM party_runtime.party_resource_nodes WHERE party_id=$1`, [partyId])).rows,
+  [{ quantity_numerator: '2', state_version: '8' }]);
+  assert.equal((await pool.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_items WHERE party_id=$1`, [partyId])).rows[0].count, 0);
   await commitFiniteInP16(pool, first, 'finite-reload-change-1', 0);
   const secondResult = await resolver(finiteResolverRequest('turn:finite:2',
     'взять оставшуюся порцию'));
@@ -873,6 +907,11 @@ async function assertFiniteResolverReloadLifecycle(pool) {
   assert.deepEqual(persistedNames.rows, [
     { name: 'обычная речная глина' }, { name: 'обычная речная глина' }
   ]);
+  assert.deepEqual((await pool.query(`SELECT mechanics_snapshot->'mechanics'->>'mass_grams' AS mass,
+    mechanics_snapshot->'mechanics'->'quantity'->>'value' AS quantity
+    FROM party_runtime.party_ordinary_materialization_items WHERE party_id=$1
+    ORDER BY item_id`, [partyId])).rows,
+  [{ mass: '50', quantity: '1' }, { mass: '50', quantity: '1' }]);
   const exhausted = await pool.query(`SELECT state_version,lifecycle_state,
     quantity_numerator FROM party_runtime.party_resource_nodes
     WHERE party_id=$1 AND resource_node_id=$2`, [partyId, sourceRef]);
@@ -911,7 +950,7 @@ function finiteResolverObjective(scope, sourceRef, permissions, bounds) {
       mechanics_policy: { policy_ref: 'mechanics-reload', max_mass_grams: 1000,
         allowed_external_hand_costs: [0, 1, 2],
         allowed_carry_forms: ['compact', 'regular'], max_packing_slot_cost: 10,
-        max_quantity: 10 }, causal_ref: 'finite-reload-cause', source_refs: [sourceRef],
+        max_quantity: 10, mass_grams_per_quantity_unit: 50 }, causal_ref: 'finite-reload-cause', source_refs: [sourceRef],
       constrained_natural_resource_profile: {
         schema: 'rus.items.constrained_natural_resource_profile.v1', version: 1,
         profile_ref: permissions[0], state: 'committed', scope_ref: { ...scope },
@@ -945,7 +984,7 @@ function finiteResolverRequest(rootTurnId, query) {
   return { request: { root_turn_id: rootTurnId }, committed_state: { position: {
     g6_id: 'finite-reload-scope', g5_anchor_id: 'ordinary-anchor',
     position_id: 'position-reload' } },
-  operation: { target_refs: ['finite-reload-scope'], query }, working_projection: {} };
+  operation: { target_refs: ['finite-reload-node'], query }, working_projection: {} };
 }
 
 function finiteResolverModelPlan(request, sourceRef) {
@@ -960,7 +999,7 @@ function finiteResolverModelPlan(request, sourceRef) {
       causal_basis: { basis_kind: 'finite_source', basis_refs: [sourceRef] },
       property_basis_ref: 'property-reload', placement_proposal: {
         scope_ref: 'finite-reload-scope', position_ref: 'position-reload' },
-      mechanics_proposal: { mass_grams: 300, external_hand_cost: 1,
+      mechanics_proposal: { mass_grams: 50, external_hand_cost: 1,
         carry_form: 'regular', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };
 }

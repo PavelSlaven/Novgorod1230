@@ -205,13 +205,21 @@ function mechanicsInstruction(policy) {
   const bounds = mechanicsPolicyOf(policy);
   if (bounds == null) throw cutoverError(
     'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
-  return `Code-owned mechanics bounds: mass_grams is an integer from 1 to ${bounds.max_mass_grams}; external_hand_cost is exactly one of ${JSON.stringify(bounds.allowed_external_hand_costs)}; carry_form is exactly one of ${JSON.stringify(bounds.allowed_carry_forms)}; packing_slot_cost is an integer from 0 to ${bounds.max_packing_slot_cost}; quantity.value is an integer from 1 to ${bounds.max_quantity}; quantity.unit is "item"; container is null. Never invent another carry_form or exceed these bounds.`;
+  const fixedMass = bounds.mass_grams_per_quantity_unit === undefined ? ''
+    : ` mass_grams must equal quantity.value * ${bounds.mass_grams_per_quantity_unit}.`;
+  return `Code-owned mechanics bounds: mass_grams is an integer from 1 to ${bounds.max_mass_grams}; external_hand_cost is exactly one of ${JSON.stringify(bounds.allowed_external_hand_costs)}; carry_form is exactly one of ${JSON.stringify(bounds.allowed_carry_forms)}; packing_slot_cost is an integer from 0 to ${bounds.max_packing_slot_cost}; quantity.value is an integer from 1 to ${bounds.max_quantity}; quantity.unit is "item"; container is null.${fixedMass} Never invent another carry_form or exceed these bounds.`;
 }
 
 function mechanicsPolicyOf(value) {
   const keys = ['policy_ref', 'max_mass_grams',
     'allowed_external_hand_costs', 'allowed_carry_forms',
     'max_packing_slot_cost', 'max_quantity'];
+  if (Object.hasOwn(value ?? {}, 'mass_grams_per_quantity_unit')) {
+    keys.push('mass_grams_per_quantity_unit');
+    if (!Number.isSafeInteger(value.mass_grams_per_quantity_unit)
+        || value.mass_grams_per_quantity_unit < 1
+        || value.mass_grams_per_quantity_unit > value.max_mass_grams) return null;
+  }
   if (value == null || typeof value !== 'object' || Array.isArray(value)
       || Object.keys(value).length !== keys.length
       || keys.some((key) => !Object.hasOwn(value, key))

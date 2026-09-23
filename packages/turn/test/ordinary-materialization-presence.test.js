@@ -141,6 +141,26 @@ test('Stage B repairs a finite group that ignores the typed requested quantity',
   assert.equal(output.decision.repaired, true);
 });
 
+test('Stage B preserves fixed mass policy and repairs a mismatched portion mass', async () => {
+  const mechanicsPolicy = { policy_ref: 'mechanics', max_mass_grams: 1000,
+    allowed_external_hand_costs: [0, 1, 2], allowed_carry_forms: ['compact', 'regular', 'long'],
+    max_packing_slot_cost: 16, max_quantity: 16, mass_grams_per_quantity_unit: 50 };
+  const contexts = [];
+  const output = await resolveOrdinaryMaterializationPresence(input(async (_request, context) => {
+    contexts.push(context);
+    const plan = materialize();
+    plan.entities[0].mechanics_proposal.quantity.value = 2;
+    plan.entities[0].mechanics_proposal.mass_grams = contexts.length === 1 ? 99 : 100;
+    plan.entities[0].mechanics_proposal.carry_form = 'compact';
+    return plan;
+  }, { mechanicsPolicy, requiredQuantity: { value: 2, unit: 'item' } }));
+  assert.equal(contexts.length, 2);
+  assert.deepEqual(contexts[0].mechanics_policy, mechanicsPolicy);
+  assert.equal(contexts[1].repair.validation_errors[0].path,
+    'entities[0].mechanics_proposal.mass_grams');
+  assert.equal(output.pending_items_property_admission.proposed_item.mechanics_proposal.mass_grams, 100);
+});
+
 test('a code-owned authority gate records the negative resolution without invoking Stage B', async () => {
   let calls = 0;
   const output = await resolveOrdinaryMaterializationPresence(input(async () => {

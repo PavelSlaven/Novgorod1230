@@ -157,13 +157,32 @@ export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
     fail('ORDINARY_PHASE6_ENABLEMENT_PIN_REQUIRED');
   }
   if (plan.enablement_pin != null) {
-    const enabled = await client.query(`SELECT objective_digest,enabled
+    const enabled = await client.query(`SELECT objective_digest,enabled,objective_snapshot
       FROM party_runtime.party_ordinary_materialization_enablements
       WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3 FOR UPDATE`,
     [plan.party_id, plan.scope_ref.entity_kind, plan.scope_ref.entity_id]);
     if (enabled.rowCount !== 1 || enabled.rows[0].enabled !== true
         || enabled.rows[0].objective_digest !== plan.enablement_pin.objective_digest) {
       fail('ORDINARY_PHASE6_ENABLEMENT_STALE');
+    }
+    const execution = enabled.rows[0].objective_snapshot?.execution_context;
+    const sourceRef = plan.finite_resource_transition?.source_resource_node_id
+      ?? plan.item?.supporting_basis_ref;
+    const capabilities = (execution?.context_bound_capabilities ?? []).filter(
+      (entry) => entry.source_ref === sourceRef);
+    if (capabilities.length > 1) fail('ORDINARY_PHASE6_MECHANICS_POLICY_INVALID');
+    const policy = capabilities[0]?.execution_context?.mechanics_policy
+      ?? execution?.mechanics_policy;
+    if (plan.item != null && Object.hasOwn(policy ?? {}, 'mass_grams_per_quantity_unit')) {
+      const mechanics = plan.item.mechanics_snapshot.mechanics;
+      if (policy.policy_ref !== plan.item.mechanics_policy_ref
+          || !Number.isSafeInteger(policy.mass_grams_per_quantity_unit)
+          || policy.mass_grams_per_quantity_unit < 1
+          || policy.mass_grams_per_quantity_unit > policy.max_mass_grams
+          || mechanics.mass_grams !== mechanics.quantity.value
+            * policy.mass_grams_per_quantity_unit) {
+        fail('ORDINARY_PHASE6_MECHANICS_POLICY_INVALID');
+      }
     }
   }
   const current = await locked(client, plan), old = await client.query(`SELECT input_digest,transition_digest,write_plan_digest,to_ordinary_state_version FROM party_runtime.party_ordinary_materialization_commits WHERE party_id=$1 AND request_identity=$2 FOR UPDATE`, [plan.party_id,plan.request_identity]);

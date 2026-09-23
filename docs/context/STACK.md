@@ -70,7 +70,7 @@
 ## Навигация по коду для агентов
 
 - `codebase-memory-mcp` закреплён на release `v0.10.8`; официальный installer настраивает Codex, Cursor и VS Code
-  (Claude Code в списке не указан); индекс вне репозитория:
+  (Claude Code подключается вручную — там же); индекс вне репозитория:
   [CODEBASE_MEMORY_MCP.md](../setup/CODEBASE_MEMORY_MCP.md). Порядок использования — AGENTS.md §19.
 - Удалены: Graphify (skills, cursor rule, CI-шаги, `.graphifyignore`) и repo-intel
   (`packages/repository-intelligence`) — commit `be24363a` (PR #94). Каталог

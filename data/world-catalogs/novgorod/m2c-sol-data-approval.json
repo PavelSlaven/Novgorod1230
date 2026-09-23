@@ -88,6 +88,12 @@
     "excludes": "PostgreSQL import/readback, A1 and N1 consumer admission, runtime activation, historical claims and full release approval",
     "reviewed_on": "2026-09-24"
   },
+  "directional_exit_labels_candidate_approval": {
+    "candidate_sha256": "7e1ec1f6f7d5cda906b3fbb5666624e4769a26c84b4bc3c046fb950e461fff26",
+    "scope": "Exact 86 approved directional exits and contexts across 32 G4, with editorial orientation-family labels and per-G4 choice ordinals only",
+    "excludes": "Exit visibility or knowledge admission, traversal capability, compass bearing, distance, destination, spatial order, mapped import and release activation",
+    "reviewed_on": "2026-09-24"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",

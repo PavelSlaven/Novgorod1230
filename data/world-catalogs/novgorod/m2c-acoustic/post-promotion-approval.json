@@ -1,0 +1,12 @@
+{
+  "decision": "APPROVE_M2C_ACOUSTIC_POST_PROMOTION_IMPORT_V1",
+  "manifest_sha256": "2b621ff76a08198436440267a8b5d74704d780120d8a9b0409fbb16736c9b18a",
+  "approved_by": "gpt-6-astra/high — independent reviewer /root/m2c_data_approval",
+  "approved_on": "2026-09-24",
+  "approval_scope": "mechanical_promotion_and_isolated_import_readback_for_71_acoustic_baselines",
+  "source_issue": "Issue #133 §4",
+  "verified_generated_rows": 25,
+  "verified_canonical_rows": 46,
+  "isolated_postgres_import_readback_passed": true,
+  "production_activation_authorized": false
+}

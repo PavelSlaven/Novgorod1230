@@ -1,0 +1,15 @@
+{
+  "schema": "rus.m2c_authoring_approval.v1",
+  "status": "approved",
+  "decision": "APPROVE_M2C_CANONICAL_TERMINAL_ACOUSTIC_AUTHORING_V1",
+  "reviewer_role": "independent_data_approval",
+  "reviewer_agent": "/root/m2c_data_approval",
+  "reviewer_model": "gpt-6-astra",
+  "reasoning_effort": "high",
+  "reviewed_at": "2026-09-24",
+  "candidate_sha256": "5515c16aa9c7f2a56d2ffc940a0c2249f54c5a81ce62bd6d58ee5203847d5fe8",
+  "authoring_rows_sha256": "6adf1111615c12659d9338549d68af3dad349bdda9ea78486614762fb525709c",
+  "scope": "46 exact canonical terminal G5/scene/G6 rows covering 86 exits and 32 G4; independent data approval only.",
+  "limitations": "Analogical low-confidence persistent masking penalties. No historical measurement claims or production activation. Separate Contract Audit and import/readback required.",
+  "activation": false
+}

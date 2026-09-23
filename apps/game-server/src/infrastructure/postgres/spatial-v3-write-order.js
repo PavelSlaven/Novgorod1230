@@ -5,8 +5,21 @@ import {
 function orderingParentKeys(write) {
   const parents = new Set(childParentKeys(write));
   const record = write.record;
-  if (write.target_table === 'party_npcs' && record.run_id) {
+  if (['party_npcs', 'party_items', 'party_containers'].includes(write.target_table) && record.run_id) {
     parents.add(`party_runtime.party_materialization_runs:${record.run_id}`);
+  }
+  if (['party_item_placements', 'party_containers'].includes(write.target_table)) {
+    if (record.holder_npc_id) parents.add(`party_runtime.party_npcs:${record.holder_npc_id}`);
+    const containerId = write.target_table === 'party_containers'
+      ? record.parent_container_id : record.container_id;
+    if (containerId) {
+      parents.add(`party_runtime.party_containers:${containerId}`);
+    }
+  }
+  if (write.target_table === 'party_ownership') {
+    for (const npcId of [record.owner_npc_id, record.controller_npc_id]) {
+      if (npcId) parents.add(`party_runtime.party_npcs:${npcId}`);
+    }
   }
   if (write.target_table === 'party_npc_spatial_schedules') {
     parents.add(`party_runtime.party_npcs:${record.npc_id}`);
@@ -71,12 +84,6 @@ function orderingParentKeys(write) {
       && write.record?.route_plan_execution_id) {
     parents.add(
       `party_runtime.party_route_plan_executions:${write.record.route_plan_execution_id}`
-    );
-  }
-  if (write?.target_table === 'party_containers'
-      && write.record?.holder_npc_id) {
-    parents.add(
-      `party_runtime.party_npcs:${write.record.holder_npc_id}`
     );
   }
   if (write?.target_table === 'party_journey_locations'

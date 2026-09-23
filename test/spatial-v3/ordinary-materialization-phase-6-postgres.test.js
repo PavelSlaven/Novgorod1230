@@ -890,6 +890,32 @@ async function assertFiniteResolverReloadLifecycle(pool) {
   [{ quantity_numerator: '2', state_version: '8' }]);
   assert.equal((await pool.query(`SELECT count(*)::int AS count
     FROM party_runtime.party_items WHERE party_id=$1`, [partyId])).rows[0].count, 0);
+  for (const decision of ['deny', 'conditional']) {
+    const restricted = structuredClone(objective);
+    restricted.execution_context.context_bound_capabilities[0].access_decision = decision;
+    const restrictedDigest = canonicalDigest(restricted);
+    await pool.query(`UPDATE party_runtime.party_ordinary_materialization_enablements
+      SET objective_snapshot=$2::jsonb,objective_digest=$3 WHERE party_id=$1`,
+    [partyId, JSON.stringify(restricted), restrictedDigest]);
+    const callsBefore = modelCalls;
+    const denied = await resolver(finiteResolverRequest(`turn:finite:${decision}`,
+      'взять порцию из источника'));
+    assert.equal(modelCalls, callsBefore, 'restricted stock does not reach the model');
+    assert.equal(denied.ordinary_materialization_atomic_write_plan?.item ?? null, null);
+    const { schema: ignoredSchema, write_plan_digest: ignoredDigest,
+      ...restrictedInput } = structuredClone(first);
+    restrictedInput.enablement_pin.objective_digest = restrictedDigest;
+    await assert.rejects(() => commitFiniteInP16(pool,
+      createOrdinaryMaterializationAtomicWritePlan(restrictedInput),
+      `finite-reload-${decision}`, 0), { code: decision === 'deny'
+      ? 'ORDINARY_PHASE6_SOURCE_ACCESS_DENIED' : 'ORDINARY_PHASE6_SOURCE_ACCESS_UNRESOLVED' });
+    assert.deepEqual((await pool.query(`SELECT quantity_numerator,state_version
+      FROM party_runtime.party_resource_nodes WHERE party_id=$1`, [partyId])).rows,
+    [{ quantity_numerator: '2', state_version: '8' }]);
+  }
+  await pool.query(`UPDATE party_runtime.party_ordinary_materialization_enablements
+    SET objective_snapshot=$2::jsonb,objective_digest=$3 WHERE party_id=$1`,
+  [partyId, JSON.stringify(objective), canonicalDigest(objective)]);
   await commitFiniteInP16(pool, first, 'finite-reload-change-1', 0);
   const secondResult = await resolver(finiteResolverRequest('turn:finite:2',
     'взять оставшуюся порцию'));

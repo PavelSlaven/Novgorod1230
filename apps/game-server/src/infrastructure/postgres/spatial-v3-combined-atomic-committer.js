@@ -91,7 +91,7 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
   const values = columns.map((column) => serializePlanValue(record[column]));
   await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
-export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, now = () => new Date() } = {}) {
+export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, readNaturalSourceProperty = null, now = () => new Date() } = {}) {
   return Object.freeze({
     async prepareExpansion({ party_id, g4_id, idempotency_key,
       canonical_input_digest, prepare } = {}) {
@@ -139,7 +139,7 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         }
         const scoped = createSpatialV3CombinedAtomicCommitter({
           withTransaction: (work) => work(transaction), recheck, now,
-          ordinaryFirstEntryProvisioner
+          ordinaryFirstEntryProvisioner, readNaturalSourceProperty
         });
         return scoped.commit({ plan, recheck: prepared.recheck ?? recheck,
           created_at_turn: prepared.created_at_turn ?? 0 });
@@ -245,7 +245,8 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
             partyStateVersionAfter: plan.ordinary_materialization_atomic_write_plan
               .expected_versions.party_state_version + 1,
             requireEnablementPin: true,
-            p16ChangeSetId: plan.change_set_id
+            p16ChangeSetId: plan.change_set_id,
+            readNaturalSourceProperty
           });
         } catch (cause) {
           if (cause?.code === 'ORDINARY_PHASE6_ENABLEMENT_STALE'
@@ -347,11 +348,11 @@ function ordinaryOwnedVersionDelta(plan, write) {
     && write.id === ordinary.scope_ref.entity_id ? 1 : 0;
 }
 /** P16 owns the PostgreSQL transaction boundary for every target-v3 writer. */
-export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, ordinaryFirstEntryProvisioner, now } = {}) {
+export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, ordinaryFirstEntryProvisioner, readNaturalSourceProperty, now } = {}) {
   if (!pool?.connect) throw new TypeError('P16 PostgreSQL committer requires a pg pool');
   return createSpatialV3CombinedAtomicCommitter({
     now,
-    recheck, ordinaryFirstEntryProvisioner,
+    recheck, ordinaryFirstEntryProvisioner, readNaturalSourceProperty,
     withTransaction: (work, turnBudget = null) => !Number.isFinite(turnBudget?.remaining?.()?.deadline_ms)
       ? withPostgresTransaction(pool, work)
       : withTurnDeadlineTransaction(pool, turnBudget, work, {

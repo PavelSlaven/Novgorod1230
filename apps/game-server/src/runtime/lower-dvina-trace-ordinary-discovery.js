@@ -85,7 +85,9 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       const constrained = execution.constrained_natural_resource_profile == null
         ? { resolution: null, profile: null }
         : resolveConstrainedNaturalResourcePolicy(policyInput);
-      const codeOwnedResolution = contextBound.resolution
+      const codeOwnedResolution = execution.finite_source_access_decision != null
+          && execution.finite_source_access_decision !== 'allow' ? 'authority_required'
+        : contextBound.resolution
         ?? constrained.resolution ?? null;
       const genericFinite = resolveFiniteSourceAuthority({
         authority: execution.finite_source_authority,
@@ -126,6 +128,7 @@ function selectDiscoveryContext({ execution, objective, targetRef, locationRef, 
   if (execution.candidate_context.target_ref === targetRef
       || targetRef === locationRef
         && execution.candidate_context.target_ref === scopeRef?.entity_id) {
+    if (execution.scope_presence_enabled === false) return null;
     const basisRefs = new Set(execution.supporting_bases.map(({ basis_ref }) =>
       basis_ref));
     return { execution: bindCommittedFiniteSource(execution),
@@ -142,6 +145,7 @@ function selectDiscoveryContext({ execution, objective, targetRef, locationRef, 
   return { execution: bindCommittedFiniteSource({ ...baseExecution,
     mechanics_policy: selected.execution_context?.mechanics_policy
       ?? baseExecution.mechanics_policy,
+    finite_source_access_decision: selected.access_decision ?? null,
     candidate_context: selected.candidate_context,
     supporting_bases: selected.supporting_bases,
     context_bound_ordinary_profile:

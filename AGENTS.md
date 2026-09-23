@@ -47,7 +47,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 Затем открой [Канонический индекс контрактов](data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md), чтобы установить статусы документов, applicable active contracts, precedence и обязательные триггеры Contract Auditor.
 
-**Как открывать индекс.** «Открыть индекс» = прочитать §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки. Для World Knowledge и direct speech — также §6 и §10 (строки WK в §8.1 нет: WK = строка §5 + §6). Индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor.
+**Как открывать индекс.** «Открыть индекс» = прочитать §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки. Индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor.
 
 Остальные правила об источниках истины — WR §2.
 
@@ -72,7 +72,7 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 | spatial | Домен | AI §11; IDX «Spatial/map» | — |
 | time / processes | Домен | IDX «Time/activities/processes» | — |
 | items / materialization | Домен | AI §10, §12, §23; IDX «Ordinary items…» или «Authored materialization» | — |
-| World Knowledge | Домен | IDX §5, §6, §10 | — |
+| World Knowledge | Домен | IDX «World Knowledge» | — |
 | persistence / DB | Код | AI §14, §15, §17, §23; IDX «DB/persistence»; ctx DB_SCHEMA, STACK | PC |
 | UI | Код | IDX «Narration/UI»; ctx UI_KIT, ARCHITECTURE | AI §10–12 |
 | world-catalog | Домен | AI §10, §11; IDX «Historical/knowledge grounding» | — |

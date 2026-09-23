@@ -5,6 +5,8 @@ import { assertLowerDvinaTracePublicScreen } from
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 import { scenePresentationForLocation } from
   '../../runtime/lower-dvina-trace-scene-presentation.js';
+import { projectG4NaturalPerception } from '../../runtime/g4-natural-perception.js';
+import { serverError } from '../../errors.js';
 
 const ARRAY_FIELDS = [
   'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
@@ -15,7 +17,9 @@ export function phase2InitialCurrentVisibleContext({
   screen,
   openingScreenDigest,
   initialState,
-  scenePresentation = null
+  scenePresentation = null,
+  canonicalInitialState = false,
+  naturalScenePerceptionInput = null
 }) {
   try {
     assertLowerDvinaTracePublicScreen(screen);
@@ -24,6 +28,21 @@ export function phase2InitialCurrentVisibleContext({
   }
   if (canonicalDigest(screen) !== openingScreenDigest) {
     throw phase2IntegrityError();
+  }
+  if (canonicalInitialState) {
+    const binding = naturalScenePerceptionInput?.canonical_source_binding;
+    if (binding?.schema !== 'rus.verified_canonical_initial_natural_source.v1'
+      || binding.verified !== true || binding.party_id !== initialState.party_id
+      || binding.actor_id !== initialState.actor_id || binding.scenario_id !== initialState.scenario_id
+      || binding.position_id !== initialState.position?.position_id) {
+      throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
+        'Canonical initial turn projection requires exact current perception.',
+        { status: 409, details: { reason: 'canonical_initial_perception_required' } });
+    }
+    const perception = projectG4NaturalPerception({ input: naturalScenePerceptionInput,
+      partyId: initialState.party_id, actorId: initialState.actor_id,
+      positionId: initialState.position.position_id });
+    return requirePhase2CurrentVisibleContext(perception.visible_context);
   }
   const visibleContext = screen.visible_context;
   const presented = scenePresentation == null ? null : scenePresentationForLocation({

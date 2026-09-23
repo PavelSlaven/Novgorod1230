@@ -28,11 +28,13 @@ import { loadPhase2JourneyLocation, withJourneyLocation } from './lower-dvina-tr
 import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-context.js';
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
+import { serverError } from '../../errors.js';
 import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
 import { loadLowerDvinaTraceScenePresentation } from '../../internal/lower-dvina-trace-scene-presentation.js'; import { withLowerDvinaTracePostActionKnowledge } from './lower-dvina-trace-post-action-knowledge.js';
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
-  committer, authoredRuntimeBindingResolver = null } = {}) {
+  committer, authoredRuntimeBindingResolver = null,
+  loadInitialNaturalScenePerceptionInput = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -92,6 +94,15 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       const resolvedBinding = typeof authoredRuntimeBindingResolver === 'function'
         ? authoredRuntimeBindingResolver(row.stage26_result?.runtime_binding)
         : null;
+      const canonicalInitialState = row.state_payload?.schema === 'rus.authored_start_initial_party_snapshot.v3';
+      if (canonicalInitialState && resolvedBinding?.snapshot_schema !== row.state_payload.schema) {
+        throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
+          'Canonical initial turn runtime binding is unavailable.', { status: 409 });
+      }
+      if (canonicalInitialState && typeof loadInitialNaturalScenePerceptionInput !== 'function') {
+        throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
+          'Canonical initial turn perception loader is unavailable.', { status: 409 });
+      }
       const temporalSourceProof =
         await loadTracePhase2TemporalSourceProof(readPool, partyId);
       const initial = await loadInitialTracePhase2State({
@@ -99,15 +110,21 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         row,
         phase1A,
         partyPool: readPool,
-        temporalSourceProof
+        temporalSourceProof,
+        runtimeBinding: resolvedBinding
       });
+      const naturalScenePerceptionInput = canonicalInitialState
+        ? await loadInitialNaturalScenePerceptionInput({ partyId,
+          actorId: initial.actor_id, initialState: initial }) : null;
       const visible = withPhase2CurrentVisibleContext(
         initial,
         phase2InitialCurrentVisibleContext({
           screen: row.screen,
           openingScreenDigest: row.stage26_result.opening_screen_digest,
           initialState: initial,
-          scenePresentation: await loadLowerDvinaTraceScenePresentation({
+          canonicalInitialState,
+          naturalScenePerceptionInput,
+          scenePresentation: canonicalInitialState ? null : await loadLowerDvinaTraceScenePresentation({
             scenarioDefinitionRevision: initial.materialization_trace?.seed_context
               ?.scenario_definition_revision
           })

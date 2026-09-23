@@ -15,6 +15,8 @@ import { phase5PendingScreen } from
 import { createGameHttpServer, listen } from '../src/index.js';
 import { projectSharedSemanticExchange } from
   '../src/infrastructure/postgres/lower-dvina-trace-conversation-shared-projection.js';
+import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
+import { createLowerDvinaTracePhase2PostgresRepository } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 
 test('HTTP error never exposes an internal partial workflow checkpoint', async (t) => {
   const root = { submitTurn: async () => {
@@ -136,6 +138,60 @@ test('initial scene projects persisted items and NPC appearance/equipment', () =
     day_part: 'daylight', light_state: 'daylight',
     weather_state_id: 'clear'
   });
+});
+
+test('canonical initial turn uses current P22 without historical scene or raw entity disclosure', async () => {
+  const { perception } = await approvedNaturalPerceptionFixture({ canonical: true });
+  const screen = { version: 1, schema: 'first_game_screen', screen_status: 'ready',
+    party_id: 'party:1', main_prose: 'Старт.', visible_context: {
+      place: 'берег крушения', calendar: 'утро', environment: { facts: ['wet'] } } };
+  const initialState = { party_id: 'party:1', actor_id: 'player:1',
+    scenario_id: perception.canonical_source_binding.scenario_id,
+    position: { position_id: 'position:shore', g5_anchor_id: 'anchor', location_ref: 'shore' },
+    npcs: [{ instance_id: 'npc:raw', anchor_id: 'anchor', identity_state: { canonical_name: 'PRIVATE_NPC_NAME' } }],
+    items: [{ item_id: 'item:raw', placement: { anchor_id: 'anchor' }, state: { display_name: 'PRIVATE_ITEM_NAME' } }],
+    environment_snapshot: { schema: 'rus.approved_initial_environment.v1', season: 'summer',
+      light_state: 'daylight', weather_state: { weather_state_id: 'PRIVATE_WEATHER_STATE' } } };
+  const input = { screen, openingScreenDigest: canonicalDigest(screen), initialState,
+    canonicalInitialState: true, naturalScenePerceptionInput: perception,
+    scenePresentation: { locations: [{ location_ref: 'shore', display_name: 'берег крушения',
+      player_visible_physical_facts: ['PRIVATE_LEGACY_SCENE'] }] } };
+  const current = phase2InitialCurrentVisibleContext(input);
+  assert.equal(current.visible_scene, perception.scene.visible_scene);
+  assert.ok(current.sensory_details.length > 0);
+  assert.deepEqual(current.visible_npc, []);
+  assert.deepEqual(current.visible_objects, []);
+  assert.deepEqual(current.visible_changes, []);
+  assert.equal(/PRIVATE_|крушения|canonical_source_binding|payload_digest/u.test(JSON.stringify(current)), false);
+  const dark = structuredClone(perception);
+  dark.observer.visual_capability = 'none';
+  assert.deepEqual(phase2InitialCurrentVisibleContext({ ...input,
+    naturalScenePerceptionInput: dark }).sensory_details, []);
+  assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
+    naturalScenePerceptionInput: null }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  for (const key of ['party_id', 'actor_id', 'position_id', 'scenario_id']) {
+    const wrong = structuredClone(perception);
+    wrong.canonical_source_binding[key] = 'wrong';
+    assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
+      naturalScenePerceptionInput: wrong }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  }
+});
+
+test('canonical initial turn cannot fall back when its binding or perception callback is absent', async () => {
+  const schema = 'rus.authored_start_initial_party_snapshot.v3';
+  for (const resolver of [null, () => ({ snapshot_schema: schema })]) {
+    let reads = 0;
+    const repository = createLowerDvinaTracePhase2PostgresRepository({
+      partyPool: { async connect() { throw new Error('unexpected fallback'); },
+        async query() { reads += 1; return { rowCount: 1, rows: [{
+          delivery_ack_result: { pass: true }, party_state_version: 0,
+          state_payload: { schema }, stage26_result: {} }] }; } },
+      committer: { async commit() { throw new Error('unexpected write'); } },
+      authoredRuntimeBindingResolver: resolver
+    });
+    await assert.rejects(repository.loadPhase2State('party:1'), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+    assert.equal(reads, 1);
+  }
 });
 
 test('public Phase 2 check omits private RNG audit', () => {

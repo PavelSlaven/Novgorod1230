@@ -7,6 +7,8 @@ import test from 'node:test';
 import { promisify } from 'node:util';
 import { materializeP12ApprovedTarget } from '../../tools/spatial-v3/materialize-p12-approved-target.mjs';
 import { classifyP12DependencyEntityId, compileP12V11PhysicalRows, validateApprovedPhysicalSourceRows, validateP12ApprovedProjectionSource } from '../../tools/spatial-v3/p12-v1_1-physical-projection.mjs';
+// Windows: Git/MSYS GNU tar treats `C:\...` as a remote host and cannot read .zip; System32 bsdtar handles both.
+const TAR = process.platform === 'win32' ? `${process.env.SystemRoot ?? 'C:/Windows'}/System32/tar.exe` : 'tar';
 
 const checkedInRoot = join(process.cwd(), 'data/world-catalogs/novgorod/spatial-v3');
 const approvedSourceRoot = join(checkedInRoot, 'source-approval/p12_novgorod_source_approval_001/data');
@@ -14,7 +16,7 @@ const sourceRecords = async (file) => JSON.parse(await readFile(join(approvedSou
 const execFile = promisify(execFileCallback);
 const approvalZip = join(checkedInRoot, 'target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip');
 const approvedV11 = async () => ({ ok: true, materialization_authorized: false, p28_activation: 'not_authorized', errors: [] });
-const targetRecords = async (file) => JSON.parse((await execFile('tar', ['-xOf', approvalZip, `P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/${file}.json`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })).stdout).records;
+const targetRecords = async (file) => JSON.parse((await execFile(TAR, ['-xOf', approvalZip, `P12_TARGET_MATERIALIZATION_APPROVAL_V1_1/target/${file}.json`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })).stdout).records;
 const projectionFixture = async () => {
   const [approvedSourcePairs, connectionBindings, entryBindings, directRouteBindings, routeContextLinks, legacyMappings, retainedNodes, canonicalG5, sourceProfiles, sourceCandidates, assignments, families] = await Promise.all([
     sourceRecords('physical-exit-source-pairs.json'), targetRecords('canonical-g5-connection-bindings'), targetRecords('g4-entry-endpoint-bindings'),

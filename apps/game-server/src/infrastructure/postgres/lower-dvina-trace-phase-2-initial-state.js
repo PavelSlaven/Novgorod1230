@@ -16,7 +16,8 @@ export async function readInitialCanonicalNaturalSourceState({ transaction,
   const approved = loadApprovedCanonicalNaturalInitialRule({ verifiedCatalog, pin, rule_ref });
   if (typeof transaction?.query !== 'function') initialGap('initial_transaction_required');
   const result = await transaction.query(`SELECT p.world_revision_id,p.world_catalog_digest,
-    p.state_version AS party_state_version,s.state_version AS session_state_version,
+    p.state_version AS party_state_version,s.party_id AS session_party_id,
+    s.state_version AS session_state_version,
     s.turn_number,s.last_turn_id,s.stage26_result,
     initial.state_payload,initial.state_digest,to_jsonb(body) AS body,to_jsonb(clock) AS clock,
     (SELECT coalesce(jsonb_agg(c ORDER BY c.condition_id),'[]')
@@ -27,7 +28,7 @@ export async function readInitialCanonicalNaturalSourceState({ transaction,
     (SELECT coalesce(jsonb_agg(c),'[]') FROM party_runtime.party_v3_change_sets c
       WHERE c.party_id=p.party_id) AS change_sets
     FROM party_runtime.parties p
-    JOIN party_runtime.party_server_sessions s ON s.party_id=p.party_id
+    LEFT JOIN party_runtime.party_server_sessions s ON s.party_id=p.party_id
     JOIN party_runtime.party_state_snapshots initial ON initial.party_id=p.party_id AND initial.state_version=0
     JOIN party_runtime.party_actor_body_states body ON body.party_id=p.party_id
       AND body.actor_kind='player_character' AND body.actor_id=$2
@@ -39,9 +40,14 @@ export async function readInitialCanonicalNaturalSourceState({ transaction,
   const initialIds = payload?.initial_spatial_v3_runtime;
   const rule = approved.rule; const environment = payload?.immediate?.environment_snapshot;
   const timeInput = approved.initial_environment_inputs;
-  if (Number(row.party_state_version) !== 0 || Number(row.turn_number) !== 0
-    || row.last_turn_id != null || !Number.isSafeInteger(Number(row.session_state_version))
-    || Number(row.session_state_version) < 1
+  // Opening projects perception before attaching its first server session.
+  // Only an actual absent LEFT JOIN row skips the session-specific checks.
+  const sessionValid = row.session_party_id === null
+    ? ['session_state_version', 'turn_number', 'last_turn_id', 'stage26_result'].every((key) => row[key] === null)
+    : row.session_party_id === partyId && Number(row.turn_number) === 0
+      && row.last_turn_id == null && Number.isSafeInteger(Number(row.session_state_version))
+      && Number(row.session_state_version) >= 1 && row.stage26_result?.scenario_id === approved.scenario_id;
+  if (Number(row.party_state_version) !== 0 || !sessionValid
     || payload?.schema !== 'rus.authored_start_initial_party_snapshot.v3'
     || !row.state_digest || sha256(payload) !== row.state_digest
     || !expected || sha256(expected) !== payload.persisted_projection_digest
@@ -50,7 +56,7 @@ export async function readInitialCanonicalNaturalSourceState({ transaction,
     || !Array.isArray(payload.policy_profile_pins)
     || payload.policy_profile_pins.filter((value) => value?.key === rule.id
       && value.revision === rule.version && value.digest === approved.source_candidate_sha256).length !== 1
-    || !identity.idempotency_key || row.stage26_result?.scenario_id !== approved.scenario_id
+    || !identity.idempotency_key
     || identity.world_revision_id !== approved.world_pin.world_revision_id
     || identity.world_catalog_digest !== approved.world_pin.world_catalog_digest
     || row.world_revision_id !== identity.world_revision_id

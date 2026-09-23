@@ -92,13 +92,30 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   canonicalArgs.readCurrentSourceState = (request) => readInitialCanonicalNaturalSourceState({ ...request,
     rule_ref: { id: canonical.initialRule.rule.id, version: canonical.initialRule.rule.version } });
   const guarded = await readCurrentNaturalPerceptionFacts(canonicalArgs);
+  assert.equal((await pool.query(`SELECT count(*)::int AS n FROM party_runtime.party_server_sessions WHERE party_id='party:1'`)).rows[0].n, 0);
   assert.equal(guarded.canonical_source_binding.initial_snapshot_identity.state_version, 0);
   const projected = projectG4NaturalPerception({
     input: prepareG4NaturalScenePerceptionInput({ ...canonical.input, currentFacts: guarded }),
     partyId: 'party:1', actorId: 'player:1', positionId: 'position:shore' });
   assert.ok(projected.perceived_facts.length > 0);
   assert.ok(projected.perceived_facts.every((row) => row.channel === 'visual'));
-  await pool.query(`UPDATE party_runtime.party_clocks SET whole_minutes=whole_minutes+1,state_version=2 WHERE party_id='party:1'`);
+  await pool.query(`UPDATE party_runtime.party_actor_body_states SET energy=79 WHERE party_id='party:1'`);
+  await assert.rejects(readCurrentNaturalPerceptionFacts(canonicalArgs), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  await pool.query(`UPDATE party_runtime.party_actor_body_states SET energy=80 WHERE party_id='party:1'`);
+  const clockProbe = await pool.connect();
+  try {
+    await clockProbe.query('BEGIN');
+    await clockProbe.query(`UPDATE party_runtime.party_clocks SET whole_minutes=whole_minutes+1,state_version=2 WHERE party_id='party:1'`);
+    await assert.rejects(readCurrentNaturalPerceptionFacts({ ...canonicalArgs, transaction: clockProbe }),
+      { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  } finally {
+    await clockProbe.query('ROLLBACK');
+    clockProbe.release();
+  }
+  await pool.query(`INSERT INTO party_runtime.party_server_sessions(party_id,request_id,stage26_result,screen,turn_number,state_version)
+    VALUES ('party:1','request',$1,'{}',0,1)`, [{ scenario_id: canonical.initialRule.scenario_id }]);
+  assert.equal((await readCurrentNaturalPerceptionFacts(canonicalArgs)).canonical_source_binding.verified, true);
+  await pool.query(`UPDATE party_runtime.party_server_sessions SET turn_number=1 WHERE party_id='party:1'`);
   await assert.rejects(readCurrentNaturalPerceptionFacts(canonicalArgs), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
 });
 
@@ -125,8 +142,6 @@ async function insertInitialGuardState(pool, canonical) {
       calendar_date: time.calendar_date, local_minute_of_day: time.local_minute_of_day }, timestamp: time.game_timestamp },
     initial_spatial_v3_runtime: { g5: 'site', baseline: 'baseline', position: 'position:shore' },
     persisted_projection: expected, persisted_projection_digest: sha256(expected) };
-  await pool.query(`INSERT INTO party_runtime.party_server_sessions(party_id,request_id,stage26_result,screen,turn_number,state_version)
-    VALUES ('party:1','request',$1,'{}',0,1)`, [{ scenario_id: initialRule.scenario_id }]);
   await pool.query(`INSERT INTO party_runtime.party_state_snapshots(party_id,state_version,state_payload,state_digest)
     VALUES ('party:1',0,$1,$2)`, [payload, sha256(payload)]);
 }

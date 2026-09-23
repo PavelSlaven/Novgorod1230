@@ -30,7 +30,7 @@ async function fixture() {
     persisted_projection: expected, persisted_projection_digest: sha256(expected) };
   const row = { world_revision_id: initialRule.world_pin.world_revision_id,
     world_catalog_digest: initialRule.world_pin.world_catalog_digest,
-    party_state_version: 0, session_state_version: 1, turn_number: 0, last_turn_id: null,
+    party_state_version: 0, session_party_id: 'party:1', session_state_version: 1, turn_number: 0, last_turn_id: null,
     stage26_result: { scenario_id: initialRule.scenario_id }, state_payload: payload,
     state_digest: sha256(payload), body: structuredClone(expected.body), clock: structuredClone(expected.clock),
     conditions: [], body_history_count: 0, change_sets: [{ id: changeSet, operation_kind: 'new_game' }] };
@@ -63,11 +63,34 @@ test('initial supplier admits only exact committed initial sensory source and pi
   assert.ok(current.source_observations.every((value) => value.layer !== 'audible_context'));
 });
 
+test('first screen admits confirmed absent session while retaining every initial-state guard', async () => {
+  const withoutSession = (row) => {
+    for (const key of ['session_party_id', 'session_state_version', 'turn_number', 'last_turn_id', 'stage26_result']) row[key] = null;
+  };
+  const ready = await fixture(); withoutSession(ready.row);
+  assert.equal((await readInitialCanonicalNaturalSourceState(ready.args)).canonical_initial_state.verified, true);
+  for (const mutate of [
+    ({ row }) => { row.party_state_version = 1; },
+    ({ row }) => { row.body.energy -= 1; },
+    ({ row }) => { row.clock.state_version = 2; },
+    ({ row }) => { row.body_history_count = 1; },
+    ({ row }) => { row.change_sets.push({ id: 'later', operation_kind: 'materialization' }); },
+    ({ args }) => { args.snapshot.location.state_version = 2; },
+    ({ row }) => { row.state_digest = 'changed'; },
+    ({ row }) => { delete row.session_party_id; }
+  ]) {
+    const value = await fixture(); withoutSession(value.row); mutate(value);
+    await assert.rejects(readInitialCanonicalNaturalSourceState(value.args), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  }
+});
+
 test('wait, body change, scene change, different request and altered snapshot cannot reuse initial facts', async () => {
   const mutations = [
     ({ row }) => { row.party_state_version = 1; },
     ({ row }) => { row.turn_number = 1; },
     ({ row }) => { row.last_turn_id = 'turn'; },
+    ({ row }) => { row.session_state_version = 0; },
+    ({ row }) => { row.stage26_result.scenario_id = 'another-scenario'; },
     ({ row }) => { row.clock.whole_minutes = String(Number(row.clock.whole_minutes) + 1); },
     ({ row }) => { row.clock.state_version = 2; },
     ({ row }) => { row.body.energy -= 1; },

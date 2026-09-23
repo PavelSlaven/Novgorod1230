@@ -29,8 +29,12 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const runId = result.run_id;
   const { preparedScenes, preparedNpcs, preparedContainers } = phase3PreparedInputs(result);
   const identityNpcs = preparedNpcs;
+  assertNewActorBaseAttributes(player.base_attributes, `player:${playerId}.base_attributes`, player.attribute_generation_gate === 'active');
   identityNpcs.forEach((npc) => assertNewActorBaseAttributes(npc.base_attributes, `npc:${npc.instance_id}.base_attributes`, npc.attribute_generation_gate === 'active'));
-  assertActorBaseAttributesCatalogPin(party_creation_context, identityNpcs.some((npc) => npc.attribute_generation_gate === 'active'));
+  assertActorBaseAttributesCatalogPin(party_creation_context, player.base_attributes != null
+    || player.attribute_generation_gate === 'active'
+    || identityNpcs.some((npc) => npc.attribute_generation_gate === 'active'),
+    player.base_attributes == null ? null : result.trace.actor_base_attributes_catalog_pin ?? {});
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
@@ -240,6 +244,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     name_profile_snapshot: projectNameProfileSnapshot(player.dossier.identity),
     language_profile_snapshot: {},
     knowledge_profile_snapshot: player.dossier.knowledge,
+    ...(player.base_attributes == null ? {} : { attribute_profile_snapshot: structuredClone(player.base_attributes) }),
     profile_candidate_set_digest: result.trace.choices.find((choice) => choice.choice_key === 'player_profile').candidate_set_digest,
     state_version: 1,
     created_change_set_id: changeSetId,

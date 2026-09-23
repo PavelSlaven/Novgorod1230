@@ -254,7 +254,9 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
           dossier: player.profile,
           role_ref: player.role_ref,
           occupation_ref: player.occupation_ref,
-          skills: player.skill_profile_snapshot
+          skills: player.skill_profile_snapshot,
+          ...(player.attribute_profile_snapshot == null ? {} : {
+            base_attributes: structuredClone(player.attribute_profile_snapshot) })
         },
         body: { profile_ref: player.body_profile_ref, health: Number(player.health), energy: Number(player.energy), satiety: Number(player.satiety) },
         position: { ...position, location_ref: startSpatial.node_state.location_profile_ref },
@@ -389,6 +391,10 @@ function assertRoundTrip({
     'rus.authored_start_initial_party_snapshot.v3'].includes(payload.schema)
     || !player || !position || !startSpatial || !clock || !run || !counts || choices.length === 0 || items.length === 0
     || payload.immediate.player.instance_id !== player.character_id
+    || computeStage24ArtifactDigest(player.attribute_profile_snapshot ?? null)
+      !== computeStage24ArtifactDigest(payload.immediate.player.base_attributes ?? null)
+    || (payload.immediate.player.attribute_generation_gate === 'active'
+      && !validateActorBaseAttributes(player.attribute_profile_snapshot))
     || payload.immediate.spatial.position.g4_id !== position.g4_id
     || payload.immediate.spatial.node.instance_id !== startSpatial.g5_node_id
     || payload.immediate.spatial.anchor.instance_id !== startSpatial.anchor_id

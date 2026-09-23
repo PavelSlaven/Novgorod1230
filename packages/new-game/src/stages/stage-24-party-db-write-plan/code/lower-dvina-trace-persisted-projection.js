@@ -41,6 +41,7 @@ export function buildLowerDvinaTracePersistedProjection({
       name_profile_snapshot: projectNameProfileSnapshot(player.dossier.identity),
       language_profile_snapshot: {},
       knowledge_profile_snapshot: structuredClone(player.dossier.knowledge),
+      ...(player.base_attributes == null ? {} : { attribute_profile_snapshot: structuredClone(player.base_attributes) }),
       profile_candidate_set_digest: result.trace.choices
         .find((choice) => choice.choice_key === 'player_profile').candidate_set_digest,
       state_version: 1,

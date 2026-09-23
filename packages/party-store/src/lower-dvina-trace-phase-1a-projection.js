@@ -59,6 +59,8 @@ export function buildActualPersistedProjection({
       name_profile_snapshot: player.name_profile_snapshot,
       language_profile_snapshot: player.language_profile_snapshot,
       knowledge_profile_snapshot: player.knowledge_profile_snapshot,
+      ...(player.attribute_profile_snapshot == null ? {} : {
+        attribute_profile_snapshot: structuredClone(player.attribute_profile_snapshot) }),
       profile_candidate_set_digest: player.profile_candidate_set_digest,
       state_version: Number(player.profile_state_version),
       created_change_set_id: player.created_change_set_id,

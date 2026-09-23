@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import {
   MATERIALIZER_VERSION,
-  RNG_VERSION
+  RNG_VERSION,
+  canonicalDigest, materializeActorBaseAttributes
 } from '@rus/materialization';
 import { materializeInitialActorEquipment } from '@rus/new-game';
 import {
@@ -513,6 +515,62 @@ test('Stage 24 rejects an active NPC attribute gate without its snapshot', async
   assert.throws(() => buildLowerDvinaTracePhase1AWritePlan(input), {
     code: 'WRITE_PLAN_ACTOR_ATTRIBUTES_INCOMPLETE'
   });
+});
+
+test('Stage24 preserves supplied player attributes and rejects an active player without them', async () => {
+  const fixture = await stage24Fixture();
+  const artifacts = structuredClone(fixture.artifacts);
+  const result = artifacts.materialization_result;
+  const profile = JSON.parse(await readFile('data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/candidate.json', 'utf8')).profile;
+  result.immediate.player.base_attributes = materializeActorBaseAttributes({
+    runtime_profile: { schema: 'rus.actor_base_attributes_runtime_profile.v1',
+      catalog_scope: 'actor_base_attributes_v1', catalog_revision_id: 'test-attributes',
+      catalog_digest: 'a'.repeat(64), activation_event_id: 'test-activation', import_id: 'test-import',
+      import_audit_digest: 'b'.repeat(64), record_registry_digest: 'c'.repeat(64),
+      runtime_contract_digest: 'd'.repeat(64), profile_id: profile.profile_id,
+      profile_digest: canonicalDigest(profile), profile },
+    occupation_archetype_id: 'fishing_water', actor_slot_ref: 'player',
+    seed_basis: { world_revision_id: result.request_identity.world_revision_id,
+      world_catalog_digest: result.request_identity.world_catalog_digest,
+      parent_seed_digest: result.trace.seed_digest } });
+  const actorPin = { ...structuredClone(fixture.context.domain_catalog_pin),
+    schema: 'rus.runtime_catalog_pin.v2', catalog_scope: 'actor_base_attributes_v1',
+    catalog_revision_id: 'test-attributes', catalog_digest: 'a'.repeat(64),
+    activation_event_id: 'test-activation', import_id: 'test-import',
+    import_audit_digest: 'b'.repeat(64), record_registry_digest: 'c'.repeat(64),
+    runtime_contract_digest: 'd'.repeat(64) };
+  const context = { ...fixture.context, actor_base_attributes_catalog_pin: actorPin };
+  result.trace.actor_base_attributes_catalog_pin = Object.fromEntries(['catalog_scope',
+    'catalog_revision_id', 'catalog_digest', 'activation_event_id', 'import_id',
+    'import_audit_digest', 'record_registry_digest', 'runtime_contract_digest']
+    .map((key) => [key, actorPin[key]]));
+  const input = (partyContext = context) => {
+    result.trace.result_digest = computeMaterializationEnvelopeDigest(result);
+    artifacts.sealed_selection_closure.materialization_result_digest = result.trace.result_digest;
+    return phase1AStage24Input({ artifacts, context: partyContext, schema: fixture.schema });
+  };
+  const plan = buildLowerDvinaTracePhase1AWritePlan(input());
+  const binding = plan.write_batches.find((batch) => batch.target_table === 'party_actor_profile_bindings')
+    .records.find((record) => record.actor_kind === 'player_character');
+  assert.deepEqual(binding.attribute_profile_snapshot, result.immediate.player.base_attributes);
+  const snapshot = plan.write_batches.find((batch) => batch.target_table === 'party_state_snapshots').records[0].state_payload;
+  assert.deepEqual(snapshot.persisted_projection.player.attribute_profile_snapshot, result.immediate.player.base_attributes);
+  for (const wrongPin of [null, { ...actorPin, catalog_scope: 'item_container_materialization_v2' },
+    { ...actorPin, catalog_revision_id: 'wrong-attributes' },
+    { ...actorPin, catalog_digest: 'e'.repeat(64) },
+    { ...actorPin, activation_event_id: 'wrong-activation' },
+    { ...actorPin, compatible_world_revision_id: 'other-world' },
+    { ...actorPin, compatible_world_catalog_digest: '0'.repeat(64) }]) {
+    assert.throws(() => buildLowerDvinaTracePhase1AWritePlan(input({ ...context,
+      actor_base_attributes_catalog_pin: wrongPin })), { code: 'WRITE_PLAN_ACTOR_ATTRIBUTES_PIN_MISMATCH' });
+  }
+  const sourcePin = result.trace.actor_base_attributes_catalog_pin;
+  delete result.trace.actor_base_attributes_catalog_pin;
+  assert.throws(() => buildLowerDvinaTracePhase1AWritePlan(input()), { code: 'WRITE_PLAN_ACTOR_ATTRIBUTES_PIN_MISMATCH' });
+  result.trace.actor_base_attributes_catalog_pin = sourcePin;
+  result.immediate.player.base_attributes = null;
+  result.immediate.player.attribute_generation_gate = 'active';
+  assert.throws(() => buildLowerDvinaTracePhase1AWritePlan(input()), { code: 'WRITE_PLAN_ACTOR_ATTRIBUTES_INCOMPLETE' });
 });
 
 test('Stage 24 fails closed for missing, forged or world-incompatible domain pins', async () => {

@@ -5,6 +5,8 @@ export function addAuthoredStartSpatialV3Batches({ batches, result, partyId,
     return null;
   }
   if (!valid(spatial)) fail();
+  if (spatial.canonical_scene_proposal != null) return addCanonicalScene({
+    batches, result, spatial, partyId, playerId, changeSetId, sourceTrace, addBatch });
   const node = result.immediate.spatial.node;
   const ids = { g5: `g5:${spatial.node_id}`,
     baseline: `baseline:${spatial.node_id}`, g6: `g6:${spatial.anchor_id}`,
@@ -66,6 +68,61 @@ export function addAuthoredStartSpatialV3Batches({ batches, result, partyId,
     updated_change_set_id: changeSetId }],
   ['scene_position_nodes', 'party_player_characters'], sourceTrace);
   return { ...ids };
+}
+
+function addCanonicalScene({ batches, result, spatial, partyId, playerId,
+  changeSetId, sourceTrace, addBatch }) {
+  const proposal = spatial.canonical_scene_proposal;
+  const tables = ['party_scene_baselines', 'party_g6_instances',
+    'g6_acoustic_profiles', 'scene_position_nodes', 'scene_movement_edges'];
+  const rows = proposal?.rows;
+  if (!Array.isArray(rows) || !Array.isArray(proposal?.endpoints)
+    || proposal.party_id !== partyId || proposal.site_id !== `g5:${spatial.node_id}`
+    || proposal.baseline_id !== `baseline:${spatial.node_id}`
+    || rows.some((row) => !tables.includes(row.target_table)
+      || row.record?.party_id !== partyId)
+    || spatial.s1_topology != null || (spatial.s1_physical_writes ?? []).length) fail();
+  const baselines = rows.filter((row) => row.target_table === 'party_scene_baselines');
+  const baseline = baselines[0]?.record;
+  const arrivals = proposal.endpoints.filter((row) => ['arrival', 'both'].includes(row.endpoint_role));
+  const positions = rows.filter((row) => row.target_table === 'scene_position_nodes'
+    && row.id === arrivals[0]?.position_id);
+  const g6 = rows.find((row) => row.target_table === 'party_g6_instances'
+    && row.id === positions[0]?.record.g6_instance_id);
+  if (baselines.length !== 1 || baseline.id !== proposal.baseline_id
+    || baseline.host_kind !== 'g5_site' || baseline.host_id !== proposal.site_id
+    || baseline.source_kind !== 'canonical_template'
+    || baseline.scene_template_ref?.entity_id !== spatial.scene_template_ref.entity_ref.entity_id
+    || baseline.scene_template_ref?.authoring_version !== spatial.scene_template_ref.authoring_version
+    || baseline.materialization_trace_id !== result.run_id
+    || arrivals.length !== 1 || spatial.selected_position_id !== arrivals[0]?.position_id
+    || positions.length !== 1
+    || !g6 || g6.record.scene_baseline_id !== baseline.id
+    || g6.record.host_id !== proposal.site_id || g6.record.host_kind !== 'g5_site') fail();
+  const ids = { g5: proposal.site_id, baseline: proposal.baseline_id,
+    g6: g6.id, position: positions[0].id,
+    journey: `journey-location:${partyId}:${playerId}` };
+  addBatch(batches, 'party_g5_sites', [{ id: ids.g5, party_id: partyId,
+    origin: 'canonical', parent_g4_id: result.immediate.spatial.node.parent_g4_id,
+    canonical_g5_ref: { entity_id: spatial.canonical_g5_ref.entity_id,
+      authoring_version: spatial.canonical_g5_ref.authoring_version }, status: 'active',
+    state_version: 1, created_change_set_id: changeSetId,
+    updated_change_set_id: changeSetId }], ['parties', 'party_v3_change_sets'], sourceTrace);
+  for (const table of tables) {
+    const records = rows.filter((row) => row.target_table === table).map(({ record }) => ({
+      ...structuredClone(record),
+      ...('created_change_set_id' in record ? { created_change_set_id: changeSetId } : {}),
+      ...('updated_change_set_id' in record ? { updated_change_set_id: changeSetId } : {})
+    }));
+    addBatch(batches, table, records, ['party_g5_sites', ...tables.slice(0, tables.indexOf(table))], sourceTrace);
+  }
+  addBatch(batches, 'party_journey_locations', [{ id: ids.journey,
+    party_id: partyId, owner_kind: 'actor', owner_id: playerId,
+    location_kind: 'scene', scene_position_id: ids.position,
+    transit_anchor_id: null, travel_state_id: null, state_version: 1,
+    updated_change_set_id: changeSetId }],
+  ['scene_position_nodes', 'party_player_characters'], sourceTrace);
+  return ids;
 }
 
 function addS1TopologyBatches({ batches, spatial, partyId, changeSetId,

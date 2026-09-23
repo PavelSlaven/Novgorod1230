@@ -5,16 +5,16 @@
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - docs(work): CURRENT_SPRINT — Runtime-трек начинается с M2c (#133) по решению владельца (#134)
-- docs(contracts): нормы World Knowledge и direct speech оставлены у профильных владельцев; индекс содержит навигацию и строку World Knowledge в матрице (#111)
-- docs(archive): снятое правило вызова критика перенесено в архив, ссылка индекса обновлена (#113)
-- feat(knowledge-source): `knowledge:read` читает раздел или диапазон из `knowledge:query` (#116) LW-023 closed
-- docs(history): текущие release и revision сверены с v16; планы и отчёт перенесены в архив (#120) LW-017 closed
-- docs(db): генерируемый справочник миграций `party_runtime` и актуальные counts `world_base` (#122) LW-019 closed
-- fix(docs): каталог npm-команд и проверка висячих вызовов в действующих инструкциях (#123) LW-015 closed
-- refactor(tooling): единый allowlist корневых Markdown-файлов для docs и architecture (#124) LW-013 closed
-- feat(docs): `knowledge:repin` пересчитывает существующие pins корпуса и generated-файлы (#125) LW-005 closed
-- fix(world-catalog): `tar` получает относительный путь архива для Windows (#126)
-- chore(infra): NocoDB закреплён, сломанный bootstrap удалён, esbuild остался у MapMaker (#128) LW-022 closed
+- docs(contracts): нормы World Knowledge и direct speech оставлены у профильных владельцев; индекс содержит навигацию и строку World Knowledge в матрице (#111, PR #136)
+- docs(archive): снятое правило вызова критика перенесено в архив, ссылка индекса обновлена (#113, PR #136)
+- feat(knowledge-source): `knowledge:read` читает раздел или диапазон из `knowledge:query` (#116, PR #136) LW-023 closed
+- docs(history): текущие release и revision сверены с v16; планы и отчёт перенесены в архив (#120, PR #136) LW-017 closed
+- docs(db): генерируемый справочник миграций `party_runtime` и актуальные counts `world_base` (#122, PR #136) LW-019 closed
+- fix(docs): каталог npm-команд и проверка висячих вызовов в действующих инструкциях (#123, PR #136) LW-015 closed
+- refactor(tooling): единый allowlist корневых Markdown-файлов для docs и architecture (#124, PR #136) LW-013 closed
+- feat(docs): `knowledge:repin` пересчитывает существующие pins корпуса и generated-файлы (#125, PR #136) LW-005 closed
+- fix(world-catalog): `tar` получает относительный путь архива для Windows (#126, PR #136)
+- chore(infra): NocoDB закреплён, сломанный bootstrap удалён, esbuild остался у MapMaker (#128, PR #136) LW-022 closed
 - docs(governance): обязательные навыки `caveman` и `ponytail` (WR §18.1, роутер, копии в `.agents/skills` и `.claude/skills`); `CBM_RUNTIME_DIR` вне AppData для общего daemon CBM с MSIX-Codex (#131)
 - docs(governance): обязательная проверка, синхронизация и использование CBM в начале спринта (WR §19, роутер); подключение Claude Code и разбор зависшего daemon в CODEBASE_MEMORY_MCP (#130)
 - docs(work): ссылки на backlog-issues #105–#128 в LEGACY_WARNINGS, CURRENT_SPRINT после завершения трека Docs (#129)

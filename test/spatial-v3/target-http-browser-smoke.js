@@ -51,17 +51,18 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
           reason: 'Обзор ограничен уже предоставленными видимыми сведениями; новые факты не утверждаются.' };
       } else {
         const matches = turnStepOperationChoices(request).filter(({ operation }) =>
-          operation.op === 'request_movement' && operation.movement_kind === 'route'
+          operation.op === 'request_movement'
+          && ['local', 'route'].includes(operation.movement_kind)
           && operation.description === request.root_player_action);
-        assert.equal(matches.length, 1, 'enter exactly one offered directional exit label as free text');
+        assert.equal(matches.length, 1, 'enter exactly one currently offered movement label as free text');
         output = { interpretation: { player_goal: request.root_player_action,
             grounded_attempt: request.root_player_action, adaptation: 'literal' },
           resolution: 'domain_request', goal_result: 'pending',
           activity: { owner: 'domain', duration_class: null, effort: null },
           operation_family: 'request_movement', operation_choice: matches[0].choice_id,
           check: null, continuation: null, clarification: null,
-          direct_result_kind: null, reason_code: 'visible_directional_exit',
-          reason: 'Следую выбранному видимому выходу.' };
+          direct_result_kind: null, reason_code: 'visible_movement',
+          reason: 'Следую выбранному видимому пути.' };
       }
     } else if (system.startsWith('Return only {"prose"') && input.required_current_beat) {
       captured.role = 'gameplay_narrator';
@@ -123,13 +124,13 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   const url = `http://127.0.0.1:${server.address().port}`;
   await writeFile(join(tmpdir(), 'novgorod-target-http-smoke-ready.json'), JSON.stringify({ url, reportPath }));
   console.log(`Target HTTP browser fixture ready: ${url}; report: ${reportPath}`);
-  console.log(`Browser smoke: open ${url}, select the forest start, acknowledge opening, submit "${TARGET_SMOKE_INPUT}"; retry the same HTTP turn identity, then type the exact label of one displayed directional exit into "Действие" and submit. POST observed results to ${url}/__smoke/finish.`);
+  console.log(`Browser smoke: open ${url}, select the forest start, acknowledge opening, submit "${TARGET_SMOKE_INPUT}"; retry the same HTTP turn identity, reload, then at each step type the exact currently displayed approved local movement label into "Действие" and submit (arrival → focus → departure). Finally type the displayed directional exit label and submit. POST observed results to ${url}/__smoke/finish.`);
   const timeout = setTimeout(() => finish(), 15 * 60_000);
   try {
     await finished;
     assert.ok(report.browser, 'Chromium must finish the explicit smoke');
     const turns = report.calls.filter((entry) => entry.method === 'submitTurn');
-    assert.ok(turns.length >= 3, 'HTTP observation, identical retry and directional exit required');
+    assert.equal(turns.length, 5, 'HTTP observation, identical retry, two local moves and directional exit required');
     assert.equal(turns[0].args[1].raw_text, TARGET_SMOKE_INPUT);
     assert.deepEqual(turns[0].args, turns[1].args);
     assert.equal(turns[0].error, undefined, 'approved target observation must reach its existing owner');
@@ -145,12 +146,30 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     }
     assert.equal(turns[0].result.movement, null);
     assert.deepEqual(turns[0].result.screen.visible_context.visible_npc, []);
-    assert.equal(turns[2].error, undefined, 'visible directional exit must reach the production movement owner');
-    assert.notEqual(turns[2].result.movement, null);
-    assert.ok(Number(turns[2].after.sites) > Number(turns[2].before.sites),
-      'the official turn must commit a generated G5');
-    assert.notDeepEqual(turns[2].after.positions, turns[2].before.positions,
-      'the player must enter the generated G5');
+    assert.equal(turns[0].after.position_slot, 'arrival');
+    const replayIndex = report.calls.indexOf(turns[1]);
+    assert.ok(report.calls.slice(replayIndex + 1, report.calls.indexOf(turns[2]))
+      .some((entry) => entry.method === 'getPartyScreen'), 'reload must fetch current screen before movement');
+    for (let index = 2; index < 5; index += 1) {
+      const turn = turns[index];
+      const previous = turns[index - 1];
+      const kind = index === 4 ? 'directional_exit:' : 'local_scene_edge:';
+      const offered = previous.result.screen.action_panel.suggested_actions.filter((action) =>
+        action.option_id?.startsWith(kind) && action.label === turn.args[1].raw_text);
+      assert.equal(offered.length, 1, 'submit the exact currently displayed approved movement label');
+      assert.equal(turn.error, undefined, 'visible movement must reach the production movement owner');
+      assert.notEqual(turn.result.movement, null);
+      assert.notDeepEqual(turn.after.positions, turn.before.positions, 'movement must change committed position');
+      assert.equal(turn.after.party.state_version, turn.before.party.state_version + 1);
+      assert.equal(turn.before.position_slot, index === 2 ? 'arrival' : index === 3 ? 'focus' : 'departure');
+      if (index < 4) {
+        assert.equal(turn.after.position_slot, index === 2 ? 'focus' : 'departure');
+        assert.equal(Number(turn.after.sites), Number(turn.before.sites));
+      } else {
+        assert.equal(Number(turn.after.sites), Number(turn.before.sites) + 1,
+          'directional exit must commit exactly one generated G5');
+      }
+    }
     assert.ok(report.calls.find((entry) => entry.method === 'startNewGame')?.result);
     assert.ok(report.calls.find((entry) => entry.method === 'acknowledgeOpening')?.result);
     assert.ok(report.calls.some((entry) => entry.method === 'getPartyScreen'));
@@ -171,6 +190,10 @@ async function snapshot(pool, partyId) {
     (SELECT to_jsonb(c) FROM party_runtime.party_clocks c WHERE party_id=$1) AS clock,
     (SELECT jsonb_agg(to_jsonb(b) ORDER BY actor_id) FROM party_runtime.party_actor_body_states b WHERE party_id=$1) AS body,
     (SELECT jsonb_agg(to_jsonb(l) ORDER BY id) FROM party_runtime.party_journey_locations l WHERE party_id=$1) AS positions,
+    (SELECT n.template_slot_key FROM party_runtime.party_journey_locations l
+      JOIN party_runtime.scene_position_nodes n ON n.party_id=l.party_id AND n.id=l.scene_position_id
+      JOIN party_runtime.party_player_characters a ON a.party_id=l.party_id AND a.character_id=l.owner_id
+      WHERE l.party_id=$1 AND l.owner_kind='actor') AS position_slot,
     (SELECT count(*) FROM party_runtime.party_materialization_runs WHERE party_id=$1) AS materialization_runs,
     (SELECT count(*) FROM party_runtime.party_g5_sites WHERE party_id=$1) AS sites,
     (SELECT count(*) FROM party_runtime.party_state_snapshots WHERE party_id=$1) AS snapshots`, [partyId])).rows[0];

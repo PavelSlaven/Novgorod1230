@@ -100,6 +100,12 @@
     "excludes": "Target ordinary base context, policy, density, disclosure and Stage B authority; current resource nodes, quantities or property decisions; mapped import, runtime use and release activation",
     "reviewed_on": "2026-09-24"
   },
+  "scene_movement_edge_candidate_approval": {
+    "candidate_sha256": "34d653efa8f96f9ecb9e5a05447e9c5b24fecf4e10983ab8da80973f966880a9",
+    "scope": "Exact 68 reciprocal action edges across 17 approved scene templates, editorial edge capacity one, unchanged position capacity one, 32 generated G4 NPC placement joins and pinned canonical south-approach source",
+    "excludes": "Historical capacity or actual NPC occupancy, G0-G4 topology or exits, scene-edge import, player visibility admission, runtime movement and release activation",
+    "reviewed_on": "2026-09-24"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",

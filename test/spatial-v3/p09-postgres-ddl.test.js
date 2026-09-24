@@ -8,7 +8,7 @@ const name = `p09-ddl-${process.pid}`;
 
 test('P09 applies fresh, reapplies part 12, and rejects invalid deferred spatial-core mutations', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker is required for isolated PostgreSQL P09 DDL test');
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p09_local_only', '-e', 'POSTGRES_USER=p09', '-e', 'POSTGRES_DB=p09', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let attempt = 0; attempt < 30; attempt += 1) {

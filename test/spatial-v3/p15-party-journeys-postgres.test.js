@@ -28,7 +28,7 @@ test('P15 target-only journey, exact time and idempotency constraints are physic
     t.skip('Docker required for isolated PostgreSQL test');
     return;
   }
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p15_local', '-e', 'POSTGRES_USER=p15', '-e', 'POSTGRES_DB=p15', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-U', 'p15', '-d', 'p15']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-U', 'p15', '-d', 'p15']).status === 0) { ready = true; break; } } }

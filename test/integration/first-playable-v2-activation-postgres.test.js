@@ -55,8 +55,8 @@ test('approved Stage 3C rows activate for v2 and advance by CAS to the exact bou
       worldPool?.end(),
       partyPool?.end()
     ]);
-    docker(['rm', '-f', worldContainer]);
-    docker(['rm', '-f', partyContainer]);
+    docker(['rm', '-fv', worldContainer]);
+    docker(['rm', '-fv', partyContainer]);
   });
   const world = startPostgres({
     name: worldContainer,

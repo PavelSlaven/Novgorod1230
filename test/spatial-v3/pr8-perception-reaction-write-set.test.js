@@ -368,7 +368,7 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', containerName]);
+    docker(['rm', '-fv', containerName]);
   });
   assert.equal(docker([
     'run', '-d', '-p', '127.0.0.1::5432', '--name', containerName,

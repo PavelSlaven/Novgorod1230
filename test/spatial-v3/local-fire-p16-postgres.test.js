@@ -100,7 +100,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     if (docker(['version']).status !== 0) return t.skip('Docker required');
     let pool;
     t.after(async () => { if (pool) await pool.end();
-      docker(['rm','-f',container]); });
+      docker(['rm','-fv',container]); });
     const started = docker(['run','-d','--name',container,
       '-p','127.0.0.1::5432','-e','POSTGRES_PASSWORD=fire',
       '-e','POSTGRES_USER=fire','-e','POSTGRES_DB=fire','postgres:16-alpine']);

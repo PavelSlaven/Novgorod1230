@@ -42,7 +42,7 @@ test('production root provisions active O2b and S1 in the first-entry P16',
     let closed = false;
     t.after(async () => {
       if (pool && !closed) await pool.end();
-      docker(['rm','-f',containerName]);
+      docker(['rm','-fv',containerName]);
     });
     const started=docker(['run','-d','--name',containerName,
       '-p','127.0.0.1::5432','-e','POSTGRES_PASSWORD=ordinary',

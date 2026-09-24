@@ -152,7 +152,7 @@ export async function startLowerDvinaProductionAcceptanceEnv({
         await closeServer(server);
         await root?.close().catch(() => {});
         await llm.close().catch(() => {});
-        docker(['rm', '-f', postgresContainer]);
+        docker(['rm', '-fv', postgresContainer]);
       }
     });
   } catch (error) {
@@ -163,7 +163,7 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       partyPool?.end().catch(() => {}),
       llm.close().catch(() => {})
     ]);
-    docker(['rm', '-f', postgresContainer]);
+    docker(['rm', '-fv', postgresContainer]);
     throw error;
   }
 }

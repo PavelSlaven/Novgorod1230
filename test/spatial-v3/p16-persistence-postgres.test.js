@@ -7,7 +7,7 @@ const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'ut
 const name = `p16-persistence-${process.pid}`;
 test('P16 isolated PostgreSQL physical persistence invariants', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker required');
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p16', '-e', 'POSTGRES_USER=p16', '-e', 'POSTGRES_DB=p16', 'postgres:16-alpine']).status, 0);
   let ready = false; for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 300)); if (docker(['exec', name, 'pg_isready', '-U', 'p16', '-d', 'p16']).status === 0) { ready = true; break; } } assert.equal(ready, true); await new Promise((done) => setTimeout(done, 700));
   const psql = (sql) => docker(['exec', '-i', name, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'p16', '-d', 'p16'], sql);

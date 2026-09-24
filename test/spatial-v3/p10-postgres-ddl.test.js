@@ -8,7 +8,7 @@ const name = `p10-ddl-${process.pid}`;
 
 test('P10 applies fresh, reapplies part 13, and rejects route/orientation authoring violations', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker is required for isolated PostgreSQL P10 DDL test');
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p10_local_only', '-e', 'POSTGRES_USER=p10', '-e', 'POSTGRES_DB=p10', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let attempt = 0; attempt < 40; attempt += 1) {

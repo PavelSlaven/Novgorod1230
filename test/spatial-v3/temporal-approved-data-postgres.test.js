@@ -15,7 +15,7 @@ test('approved Temporal data imports atomically and idempotently in isolated Pos
   if (docker(['version']).status !== 0) {
     return t.skip('Docker required for isolated Temporal PostgreSQL test');
   }
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   const started = docker([
     'run',
     '-d',

@@ -28,7 +28,7 @@ test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback a
   if (docker(['version']).status !== 0) return t.skip('Docker is required for isolated Phase 5 PostgreSQL integration');
   const name = `lower-dvina-phase-5-${process.pid}`;
   let pool;
-  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
+  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
   const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase5', '-e', 'POSTGRES_DB=phase5', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   await waitForPostgres(name);

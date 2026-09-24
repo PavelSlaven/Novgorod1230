@@ -169,7 +169,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', container]);
+    docker(['rm', '-fv', container]);
   });
   const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',

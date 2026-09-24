@@ -36,7 +36,7 @@ test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks
   if (docker(['version']).status !== 0) return t.skip('Docker is required for isolated Phase 6 PostgreSQL integration');
   const name = `lower-dvina-phase-6-${process.pid}`;
   let pool;
-  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
+  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
   assert.equal(docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase6', '-e', 'POSTGRES_DB=phase6', 'postgres:16-alpine']).status, 0);
   await waitForPostgres(name, 'phase6');
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);

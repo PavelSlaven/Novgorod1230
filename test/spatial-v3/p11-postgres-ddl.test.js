@@ -6,7 +6,7 @@ const docker=(args,input)=>spawnSync('docker',args,{input,encoding:'utf8',timeou
 const name=`p11-ddl-${process.pid}`;
 test('P11 applies fresh, reapplies, and rejects malformed finite scene authoring', async(t)=>{
   if(docker(['version']).status!==0)t.skip('Docker required for isolated P11 PostgreSQL test');
-  t.after(()=>docker(['rm','-f',name]));
+  t.after(()=>docker(['rm','-fv',name]));
   assert.equal(docker(['run','-d','--name',name,'-e','POSTGRES_PASSWORD=p11_local_only','-e','POSTGRES_USER=p11','-e','POSTGRES_DB=p11','postgres:16-alpine']).status,0);
   let ready=false; for(let i=0;i<40;i+=1){await new Promise(r=>setTimeout(r,350));if(docker(['exec',name,'pg_isready','-U','p11','-d','p11']).status===0){await new Promise(r=>setTimeout(r,500));if(docker(['exec',name,'pg_isready','-U','p11','-d','p11']).status===0){ready=true;break;}}} assert.equal(ready,true);
   const sql=(await Promise.all(Array.from({length:14},(_,i)=>readFile(`infra/world-base/schema/${String(i+1).padStart(2,'0')}.sql`,'utf8')))).join('\n');

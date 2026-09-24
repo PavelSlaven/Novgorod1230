@@ -27,7 +27,7 @@ test('016 enforces one semantic trace per NPC and same-time batch',
     let pool;
     t.after(async () => {
       if (pool) await pool.end();
-      docker(['rm', '-f', conflictContainerName]);
+      docker(['rm', '-fv', conflictContainerName]);
     });
     const started = docker([
       'run', '-d', '--name', conflictContainerName,
@@ -130,7 +130,7 @@ test('017 is rolled back when the in-transaction readiness gate fails',
     let pool;
     t.after(async () => {
       if (pool) await pool.end();
-      docker(['rm', '-f', rollbackContainerName]);
+      docker(['rm', '-fv', rollbackContainerName]);
     });
     const started = docker([
       'run', '-d', '--name', rollbackContainerName,
@@ -180,7 +180,7 @@ test('011 applies to isolated PostgreSQL and permits transport departure without
     t.skip('Docker is required for the isolated PostgreSQL migration gate.');
     return;
   }
-  t.after(() => docker(['rm', '-f', containerName]));
+  t.after(() => docker(['rm', '-fv', containerName]));
   const started = docker([
     'run', '-d', '--name', containerName,
     '-e', 'POSTGRES_PASSWORD=first_playable_local',

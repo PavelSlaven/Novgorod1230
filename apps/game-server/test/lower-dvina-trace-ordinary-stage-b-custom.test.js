@@ -20,7 +20,7 @@ const finiteCandidateUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'live-world-runtime-v17/m2c-finite-only-ordinary-stage-b-successor-candidate.json',
 import.meta.url);
 
-test('finite Stage B qualification supplies exact committed mechanics and only calls the model for reachable sources', async () => {
+test('finite Stage B qualification uses pinned source data, not evaluator answers', async () => {
   const candidateProfile = JSON.parse(await readFile(finiteCandidateUrl, 'utf8'));
   const contract = candidateProfile.stage_b_classification_eval;
   const identity = { provider: 'test', model: 'finite', scope: 'turn_runtime',
@@ -46,6 +46,19 @@ test('finite Stage B qualification supplies exact committed mechanics and only c
       .map((probe) => probe.id).sort());
   assert.deepEqual(result.outputs.filter(({ id }) => id === 'owned-wood')
     .map(({ resolution }) => resolution), ['authority_required']);
+  const originalMessages = calls.map(({ messages }) => messages);
+  calls.length = 0;
+  const changed = structuredClone(contract);
+  for (const probe of changed.cases) {
+    if (probe.expected_entity != null) {
+      probe.expected_entity.semantic_type = 'wrong_grading_answer';
+      probe.expected_entity.mechanics_proposal.mass_grams = 999;
+      probe.expected_entity.mechanics_proposal.packing_slot_cost = 999;
+    }
+  }
+  await runOrdinaryMaterializationStageBQualification({ roleRunner,
+    evalContract: changed });
+  assert.deepEqual(calls.map(({ messages }) => messages), originalMessages);
 });
 
 test('O1 wire omits duplicate WK prose only when the full structured slice is present', () => {

@@ -15,24 +15,27 @@ const exact = (rows, ref, idKey = 'id', versionKey = 'version') => {
   return matches[0];
 };
 
-test('four additional starts select exact approved spatial closure without operational authority', async () => {
+test('six additional starts select exact approved spatial closure without operational authority', async () => {
   const candidate = await json(candidatePath);
   assert.equal(candidate.schema, 'rus.live_world_runtime.additional_starts_authoring_candidate.v1');
   assert.equal(candidate.status, 'pending_independent_data_approval');
   for (const field of ['approved', 'import_authorized', 'activation_authorized']) assert.equal(candidate[field], false);
   assert.equal(candidate.approval_request.approval_attestation, null);
   assert.equal(candidate.runtime_readiness.status, 'blocked');
-  assert.equal(candidate.starts.length, 4);
-  assert.equal(new Set(candidate.starts.map((start) => start.scenario_id)).size, 4);
+  assert.equal(candidate.starts.length, 6);
+  assert.equal(new Set(candidate.starts.map((start) => start.scenario_id)).size, 6);
   assert.deepEqual(candidate.starts.filter((start) => start.place_family).map((start) =>
     [start.place_family.kind, start.place_family.g3_class_id]), [
     ['economic_resource_site_approach', 'spatial.g3.resource_site'],
-    ['human_settlement_approach', 'spatial.g3.settlement']
+    ['human_settlement_approach', 'spatial.g3.settlement'],
+    ['working_economic_space', 'spatial.g3.recurrent_site'],
+    ['other_human_habitation_space', 'spatial.g3.recurrent_site']
   ]);
 
   for (const pin of candidate.source_pins) assert.equal(sha256(await bytes(pin.path)), pin.sha256, pin.path);
   const expansionPath = candidate.source_pins.find((pin) => pin.path.endsWith('/import-manifest.json')).path;
   const expansion = await json(expansionPath);
+  const authoring = await json(candidate.source_pins.find((pin) => pin.path.endsWith('/authoring-evidence.json')).path);
   assert.equal(expansion.world_revision_id, candidate.world_revision_id);
   const dataset = async (table) => {
     const [entry] = expansion.datasets.filter((row) => row.table === table);
@@ -82,12 +85,18 @@ test('four additional starts select exact approved spatial closure without opera
     assert.equal(start.authored_premise.historical_event_claim, false);
     assert.equal(start.authored_premise.new_historical_site_claim, false);
     assert.deepEqual(start.authored_premise.player_known_facts, []);
-    assert.equal(at.mode, 'canonical_g4_entry_initial_state');
+    assert.ok(['canonical_g4_entry_initial_state', 'canonical_g5_initial_state'].includes(at.mode));
     assert.equal(at.placement_cause, 'authored_initial_state');
     assert.equal(at.travel_time, null);
     assert.equal('initial_perception_rule' in start, false);
-    assert.equal(exact(nodes, at.g4_ref).spatial_level, 'G4');
-    assert.equal(exact(nodes, at.canonical_g5_ref).spatial_level, 'G5');
+    const g4 = exact(nodes, at.g4_ref);
+    const g5 = exact(nodes, at.canonical_g5_ref);
+    assert.equal(g4.spatial_level, 'G4');
+    assert.equal(g5.spatial_level, 'G5');
+    assert.equal(g4.status, 'approved');
+    assert.equal(g5.status, 'approved');
+    assert.equal(g4.world_revision_id, candidate.world_revision_id);
+    assert.equal(g5.world_revision_id, candidate.world_revision_id);
     if (start.place_family) {
       const g3 = exact(nodes, start.place_family.g3_ref);
       assert.equal(g3.primary_class_id, start.place_family.g3_class_id);
@@ -95,24 +104,38 @@ test('four additional starts select exact approved spatial closure without opera
       const g4Parent = exact(parents, at.g4_ref, 'child_id', 'child_version');
       assert.equal(g4Parent.parent_id, g3.id);
       assert.equal(g4Parent.parent_version, g3.version);
-      assert.equal(at.scene_template_ref.id, 'stfv3__g5_route_approach_v1');
+      if (at.mode === 'canonical_g4_entry_initial_state') {
+        assert.equal(at.scene_template_ref.id, 'stfv3__g5_route_approach_v1');
+      } else {
+        assert.equal(start.place_family.land_use, 'recurrent_settlement_use');
+        assert.ok(authoring.families.some((family) => family.family_id === 'm2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality'
+          && family.land_use === start.place_family.land_use));
+        assert.equal(at.scene_template_ref.id, start.place_family.kind === 'working_economic_space'
+          ? 'stfv3__g5_work_storage_social_v1' : 'stfv3__g5_habitation_v1');
+      }
     }
     const parent = exact(parents, at.canonical_g5_ref, 'child_id', 'child_version');
     assert.equal(parent.parent_id, at.g4_ref.id);
     assert.equal(parent.parent_version, at.g4_ref.version);
     assert.equal(parent.world_revision_id, candidate.world_revision_id);
-    const entry = exact(entries, at.entry_binding_ref);
-    assert.equal(entry.status, 'approved');
-    assert.equal(entry.g4_id, at.g4_ref.id);
-    assert.equal(entry.g4_version, at.g4_ref.version);
-    assert.equal(entry.canonical_g5_id, at.canonical_g5_ref.id);
-    assert.equal(entry.canonical_g5_version, at.canonical_g5_ref.version);
-    assert.equal(entry.arrival_scene_endpoint_slot_key, at.scene_endpoint_slot_key);
+    if (at.mode === 'canonical_g4_entry_initial_state') {
+      const entry = exact(entries, at.entry_binding_ref);
+      assert.equal(entry.status, 'approved');
+      assert.equal(entry.g4_id, at.g4_ref.id);
+      assert.equal(entry.g4_version, at.g4_ref.version);
+      assert.equal(entry.canonical_g5_id, at.canonical_g5_ref.id);
+      assert.equal(entry.canonical_g5_version, at.canonical_g5_ref.version);
+      assert.equal(entry.arrival_scene_endpoint_slot_key, at.scene_endpoint_slot_key);
+    } else {
+      assert.equal('entry_binding_ref' in at, false);
+    }
     const expansionProfile = exact(expansionProfiles, start.expansion_profile_ref);
     assert.equal(expansionProfile.g4_id, at.g4_ref.id);
     assert.equal(expansionProfile.world_revision_id, candidate.world_revision_id);
     const sceneProfile = exact(sceneProfiles, at.scene_materialization_profile_ref);
     assert.equal(sceneProfile.source_entity_id, at.canonical_g5_ref.id);
+    assert.equal(sceneProfile.source_kind, 'canonical_g5');
+    assert.equal(sceneProfile.status, 'approved');
     const selectedScenes = sceneCandidates.filter((row) => row.profile_id === sceneProfile.id && row.profile_version === sceneProfile.version);
     assert.equal(selectedScenes.length, 1);
     assert.equal(selectedScenes[0].scene_template_id, at.scene_template_ref.id);

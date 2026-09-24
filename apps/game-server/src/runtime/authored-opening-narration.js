@@ -20,12 +20,17 @@ action absent from supplied persisted sources.`;
 const AUDITOR = `Return only {"pass":<boolean>,"failed_checks":["<required check>"],
 "concerns":[{"code":"<allowed code>","severity":"warning|repairable|hard_block|upstream_block","message":"<reason>"}],"evidence":["<grounded evidence>"]}.
 Audit the opening
-against visible_context_package, not plausibility. Every required check must appear.
-Fail factual, hidden, coverage, technical or agency defects. A literary-only dossier,
-checklist or weak composition finding uses NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION
-and literary_composition_check=false but pass remains true when all blocking checks
+against visible_context_package, not plausibility. Assess every required check.
+Only these exact factual/technical names may appear in failed_checks: ${STAGE23_REQUIRED_CHECKS.filter((key) => key !== 'literary_composition_check').join(', ')}.
+List failed checks only, never checks that passed or requirement names.
+If only literary composition fails, return pass=true and failed_checks=[].
+Fail factual, hidden, coverage, technical or agency defects. For a literary-only
+dossier, checklist or weak composition finding, report
+NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION in concerns; the host derives
+literary_composition_check from that concern. Do not put literary_composition_check
+in failed_checks. Literary findings do not make pass false when all blocking checks
 pass. Evidence must be concise and nonempty. Do not rewrite prose or include private
-state. failed_checks names come only from output_contract.required_checks.`;
+state.`;
 
 export function createAuthoredOpeningNarrationService({ roleRunner,
   llmDiagnostics = null } = {}) {
@@ -52,10 +57,17 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
       [key, true])) });
   const writer = role('gameplay_narrator', WRITER, proseOutput);
   const auditOutput = (output, input) => {
-    const failed = new Set(Array.isArray(output.failed_checks)
-      ? output.failed_checks.filter((key) => STAGE23_REQUIRED_CHECKS.includes(key))
-      : []);
+    if (Array.isArray(output.failed_checks) && output.failed_checks.some((key) =>
+      !STAGE23_REQUIRED_CHECKS.includes(key))) openingError(
+        'AUTHORED_OPENING_AUDIT_INVALID', [{ code: 'STAGE23_AUDIT_CHECK_INVALID' }]);
+    const failed = new Set(Array.isArray(output.failed_checks) ? output.failed_checks : []);
     const concerns = Array.isArray(output.concerns) ? output.concerns : [];
+    if (concerns.some(({ code }) => code ===
+      'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION')) {
+      failed.add('literary_composition_check');
+    } else {
+      failed.delete('literary_composition_check');
+    }
     const blocking = concerns.some(({ code }) =>
       code !== 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION');
     const pass = output.pass === true && !blocking;

@@ -113,6 +113,33 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
   assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
 });
 
+test('opening derives literary check from concern and keeps factual checks fail closed', async () => {
+  const pkg = openingPackage(), approval = openingApproval(pkg);
+  const literary = { code: 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION',
+    severity: 'warning', message: 'Opening reads as a dossier.' };
+  const run = (audit) => createAuthoredOpeningNarrationService({ roleRunner: {
+    async run({ role_id }) {
+      if (role_id === 'gameplay_narrator' ||
+          role_id === 'gameplay_narrator_semantic_repair') return { output: { prose:
+        'Любава готовит стан с братом.\n\nПеред ней берег, навес и работа до вечера.' } };
+      return { output: { pass: true, failed_checks: [], concerns: [],
+        evidence: ['Grounded opening.'], ...audit } };
+    }
+  } }).run({ requestId: 'opening:1', visibleContextPackage: pkg,
+    visibleContextApproval: approval });
+
+  const withConcern = await run({ concerns: [literary] });
+  assert.equal(withConcern.literary_pass, false);
+  assert.equal(withConcern.stage23_result.pass, true);
+  const withFlagOnly = await run({ failed_checks: ['literary_composition_check'] });
+  assert.equal(withFlagOnly.literary_pass, true);
+  await assert.rejects(run({ failed_checks: ['require_must_not_include_compliance'] }),
+    { code: 'AUTHORED_OPENING_AUDIT_INVALID' });
+  await assert.rejects(run({ failed_checks: ['new_fact_check'], concerns: [{
+    code: 'NARRATOR_PROSE_ADDED_FACT', severity: 'repairable',
+    message: 'Unsupported fact.' }] }), { code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
+});
+
 test('opening bounds one semantic repair and final audit inside aggregate deadline',
   async () => {
     const pkg = openingPackage(), approval = openingApproval(pkg);

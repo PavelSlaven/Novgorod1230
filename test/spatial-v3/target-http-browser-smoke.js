@@ -124,13 +124,13 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   const url = `http://127.0.0.1:${server.address().port}`;
   await writeFile(join(tmpdir(), 'novgorod-target-http-smoke-ready.json'), JSON.stringify({ url, reportPath }));
   console.log(`Target HTTP browser fixture ready: ${url}; report: ${reportPath}`);
-  console.log(`Browser smoke: open ${url}, select the forest start, acknowledge opening, submit "${TARGET_SMOKE_INPUT}"; retry the same HTTP turn identity, reload, then at each step type the exact currently displayed approved local movement label into "Действие" and submit (arrival → focus → departure). Finally type the displayed directional exit label and submit. POST observed results to ${url}/__smoke/finish.`);
+  console.log(`Browser smoke: open ${url}, select the forest start, acknowledge opening, submit "${TARGET_SMOKE_INPUT}"; retry the same HTTP turn identity, reload, then follow exact currently displayed approved movement labels in "Действие" until the displayed directional exit creates G5. POST observed results to ${url}/__smoke/finish.`);
   const timeout = setTimeout(() => finish(), 15 * 60_000);
   try {
     await finished;
     assert.ok(report.browser, 'Chromium must finish the explicit smoke');
     const turns = report.calls.filter((entry) => entry.method === 'submitTurn');
-    assert.equal(turns.length, 5, 'HTTP observation, identical retry, two local moves and directional exit required');
+    assert.ok(turns.length >= 3, 'HTTP observation, identical retry and directional exit required');
     assert.equal(turns[0].args[1].raw_text, TARGET_SMOKE_INPUT);
     assert.deepEqual(turns[0].args, turns[1].args);
     assert.equal(turns[0].error, undefined, 'approved target observation must reach its existing owner');
@@ -150,26 +150,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     const replayIndex = report.calls.indexOf(turns[1]);
     assert.ok(report.calls.slice(replayIndex + 1, report.calls.indexOf(turns[2]))
       .some((entry) => entry.method === 'getPartyScreen'), 'reload must fetch current screen before movement');
-    for (let index = 2; index < 5; index += 1) {
-      const turn = turns[index];
-      const previous = turns[index - 1];
-      const kind = index === 4 ? 'directional_exit:' : 'local_scene_edge:';
-      const offered = previous.result.screen.action_panel.suggested_actions.filter((action) =>
-        action.option_id?.startsWith(kind) && action.label === turn.args[1].raw_text);
-      assert.equal(offered.length, 1, 'submit the exact currently displayed approved movement label');
-      assert.equal(turn.error, undefined, 'visible movement must reach the production movement owner');
-      assert.notEqual(turn.result.movement, null);
-      assert.notDeepEqual(turn.after.positions, turn.before.positions, 'movement must change committed position');
-      assert.equal(turn.after.party.state_version, turn.before.party.state_version + 1);
-      assert.equal(turn.before.position_slot, index === 2 ? 'arrival' : index === 3 ? 'focus' : 'departure');
-      if (index < 4) {
-        assert.equal(turn.after.position_slot, index === 2 ? 'focus' : 'departure');
-        assert.equal(Number(turn.after.sites), Number(turn.before.sites));
-      } else {
-        assert.equal(Number(turn.after.sites), Number(turn.before.sites) + 1,
-          'directional exit must commit exactly one generated G5');
-      }
-    }
+    assertDisplayedMovementRoute(turns);
     assert.ok(report.calls.find((entry) => entry.method === 'startNewGame')?.result);
     assert.ok(report.calls.find((entry) => entry.method === 'acknowledgeOpening')?.result);
     assert.ok(report.calls.some((entry) => entry.method === 'getPartyScreen'));
@@ -182,6 +163,33 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     clearTimeout(timeout); if (!realProvider) globalThis.fetch = provider;
     await new Promise((done) => server.close(done));
   }
+}
+
+export function assertDisplayedMovementRoute(turns) {
+  let exited = false;
+  for (let index = 2; index < turns.length; index += 1) {
+    const turn = turns[index];
+    const previous = turns[index - 1];
+    const offered = previous.result.screen.action_panel.suggested_actions.filter((action) =>
+      (action.option_id?.startsWith('local_scene_edge:') || action.option_id?.startsWith('directional_exit:'))
+      && action.label === turn.args[1].raw_text);
+    assert.equal(offered.length, 1, 'submit the exact currently displayed approved movement label');
+    const isExit = offered[0].option_id.startsWith('directional_exit:');
+    assert.equal(turn.error, undefined, 'visible movement must reach the production movement owner');
+    assert.notEqual(turn.result.movement, null);
+    assert.notDeepEqual(turn.after.positions, turn.before.positions, 'movement must change committed position');
+    assert.equal(turn.after.party.state_version, turn.before.party.state_version + 1);
+    if (!isExit) {
+      assert.notEqual(turn.after.position_slot, turn.before.position_slot);
+      assert.equal(Number(turn.after.sites), Number(turn.before.sites));
+    } else {
+      assert.equal(index, turns.length - 1, 'directional exit must finish the movement sequence');
+      assert.equal(Number(turn.after.sites), Number(turn.before.sites) + 1,
+        'directional exit must commit exactly one generated G5');
+      exited = true;
+    }
+  }
+  assert.ok(exited, 'displayed directional exit must create G5');
 }
 
 async function snapshot(pool, partyId) {

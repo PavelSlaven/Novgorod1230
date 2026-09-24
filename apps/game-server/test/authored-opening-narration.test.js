@@ -372,6 +372,13 @@ test('canonical empty-history package passes Stage 22/23 and rejects mismatched 
   input.internal.items.push({ instance_id: 'item:hidden', placement: { holder_character_id: 'player:1' },
     visibility_state: 'concealed', state: { display_name: 'невидимый предмет' } });
   const pkg = buildCanonicalOpeningVisibleContext(input);
+  const sceneBinding = { ...input.canonicalSourceBinding,
+    schema: 'rus.verified_canonical_scene_natural_source.v1', scenario_id: undefined };
+  assert.equal(buildCanonicalOpeningVisibleContext({ ...input,
+    canonicalSourceBinding: sceneBinding }).opening_reader_control.pass, true);
+  assert.throws(() => buildCanonicalOpeningVisibleContext({ ...input,
+    canonicalSourceBinding: { ...sceneBinding, position_id: 'wrong' } }),
+  { code: 'CANONICAL_OPENING_CONTEXT_INVALID' });
   const { assessments } = pkg.opening_reader_control;
   assert.equal(auditOpeningReaderAssessments({ assessments, facts: pkg.visible_scene_facts }).pass, true);
   assert.equal(auditOpeningReaderAssessments({ assessments: assessments.slice(1), facts: pkg.visible_scene_facts }).pass, false);

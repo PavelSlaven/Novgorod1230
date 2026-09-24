@@ -215,9 +215,12 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         try {
           await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
           const { domain_catalog: verifiedCatalog } = selectedStart.materialization_inputs;
-          const readCurrentEnvironment = selectedStart.initialRule == null
+          const factualContext = selectedStart.initialRule == null
             ? createTargetCurrentFactualContext({ partyPool, committer, runtime: selectedStart,
-              authoredRuntimeBindingResolver }).readCurrentEnvironment : null;
+              authoredRuntimeBindingResolver }) : null;
+          const readCurrentEnvironment = factualContext == null ? null
+            : internal == null ? factualContext.readCurrentEnvironment
+              : factualContext.readInitialEnvironment;
           const currentFacts = await readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
             verifiedCatalog, pin: runtimeCatalogPin, worldBaseReader: selectedStart.worldBaseReader,
             readCurrentSourceState: selectedStart.initialRule == null

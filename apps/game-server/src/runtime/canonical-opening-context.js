@@ -11,10 +11,12 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
   assertVisibleSource(visible, approvedProjection);
   const actorId = internal?.player?.instance_id; const position = internal?.position;
   const context = naturalScenePerception?.visible_context;
-  if (canonicalSourceBinding?.schema !== 'rus.verified_canonical_initial_natural_source.v1'
+  if (!['rus.verified_canonical_initial_natural_source.v1',
+    'rus.verified_canonical_scene_natural_source.v1'].includes(canonicalSourceBinding?.schema)
     || canonicalSourceBinding.verified !== true || canonicalSourceBinding.party_id !== visible.party_id
     || canonicalSourceBinding.actor_id !== actorId || canonicalSourceBinding.position_id !== position?.position_id
-    || canonicalSourceBinding.scenario_id !== approvedProjection.scenario_id
+    || (canonicalSourceBinding.schema === 'rus.verified_canonical_initial_natural_source.v1'
+      && canonicalSourceBinding.scenario_id !== approvedProjection.scenario_id)
     || naturalScenePerception?.ok !== true || !validateVisibleContext(context).ok
     || !Array.isArray(naturalScenePerception.perceived_facts)
     || naturalScenePerception.perceived_facts.some((fact) => !context.sensory_details.includes(fact.text))) gap();

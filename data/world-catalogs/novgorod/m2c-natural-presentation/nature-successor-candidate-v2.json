@@ -1,0 +1,4587 @@
+{
+  "artifact_type": "natural_presentation_successor_authoring_candidate",
+  "candidate_id": "novgorod_m2c_natural_presentation_g4_v2",
+  "version": 2,
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "source_pins": {
+    "natural": {
+      "path": "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+      "sha256": "d07eaf5abfa684c31c6493c553ae53404b3ed49658ceddcb6f2826db95f89f93"
+    },
+    "presentation": {
+      "path": "data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json",
+      "sha256": "b06baae3f8befa4468dfeef24c6bb5639f2d21a8c777aae67423a1ae2ee49e5c"
+    },
+    "richness": {
+      "path": "data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json",
+      "sha256": "a6bb9dc862ae9257c3f588776a10395769d06ef56744f7b9c8c55d18e6bbf4e6"
+    },
+    "phrases": {
+      "path": "data/world-catalogs/novgorod/m2c-natural/nature-successor-phrases-v1.json",
+      "sha256": "ad28ba256dba1ef2653ed0fececeba9839a2b89cda3fd84dac732fa6773638ce"
+    }
+  },
+  "limits": "Member phrases are candidates only; fauna is restricted to admitted static trace or ambient sound. No moving animal entity is authored. Existing 13-layer presentation runtime requires separate contract work.",
+  "presentation_profiles": [
+    {
+      "id": "m2c_natural_g4_central_current_split_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_central_current_split",
+        "version": 2,
+        "payload_digest": "5d1d519e9d3c38b0475cd4b8a3643864ada5e84955c935c43cc9ef415986cedd"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_central_navigation_reach_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_central_navigation_reach",
+        "version": 2,
+        "payload_digest": "e8528227a20cd08439b5f8d756ff49f5f91bd90046f7a16f765c61042d907a89"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_channel_split_islet_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_channel_split_islet",
+        "version": 2,
+        "payload_digest": "fef1cdd0516b14ac36e35aabc11e866cc8cb85dd2fdbf80be95ed02fd82c0471"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_2",
+              "channel": "visual",
+              "clear_text": "У воды различимы травы и осоки.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различимы ил и глина.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_driftwood_bar_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_driftwood_bar",
+        "version": 2,
+        "payload_digest": "8d905a8c565aca1d99ae35f3401bd585a552071499621aba9c2800cfca3d4d69"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности виден плавник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_dry_island_ridge_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_island_ridge",
+        "version": 2,
+        "payload_digest": "fffb20ef1b973be65f6ef8167eb0d8013ede39c8a8ff37409b5839e8302055c2"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта плотным грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Рельеф холмистый.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_1",
+              "channel": "visual",
+              "clear_text": "Среди деревьев различима берёза.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_2",
+              "channel": "visual",
+              "clear_text": "На земле различимы травы и кустарник.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и кустарника, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим плотный грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "На грунте различимы следы крупного копытного.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "Из зарослей доносится неясный хруст.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_dry_pine_ridge_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_pine_ridge",
+        "version": 2,
+        "payload_digest": "fffb47fc0041728f6391f64856005f2eef8d4a86bfe2144cee0e0494babe15d2"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На земле лежит хвойная подстилка, проступают корни.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "The approved class leaves the local relief unresolved; no definite shape is asserted.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны древесные кроны.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_1",
+              "channel": "visual",
+              "clear_text": "Среди деревьев различима сосна.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_2",
+              "channel": "visual",
+              "clear_text": "Среди деревьев различима ель.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "На земле лежит хвойная подстилка.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны хвоя, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим песчаный грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Seasonal floodwater does not establish current water presence or movement; no sound is asserted.",
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "На грунте различимы следы крупного копытного.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "Из зарослей доносится неясный хруст.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_east_flood_bypass_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_east_flood_bypass",
+        "version": 2,
+        "payload_digest": "dd9beadbff360a4a668eb54a4a36c0043dbc1d29c179e909e2e416ef23bc2771"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_east_side_channel_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_east_side_channel",
+        "version": 2,
+        "payload_digest": "b92fe6af0520185b5fa7b4ab29db2754484c7c594a7250ec885de4a8dfed3067"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_flooded_interior_basin_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_flooded_interior_basin",
+        "version": 2,
+        "payload_digest": "4c289116ba82674b55dde6cf67f34beae1525f08e25a5ee7dc9732ff7d63a274"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "The seasonal water class does not establish current visible water.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_2",
+              "channel": "visual",
+              "clear_text": "У воды различимы травы и осоки.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "Видна растительность влажных мест.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различимы ил и глина.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Seasonal floodwater does not establish current water presence or movement; no sound is asserted.",
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_floodplain_ridge_route_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_floodplain_ridge_route",
+        "version": 2,
+        "payload_digest": "3c434ae4f7897503622283382c3bb8db02b4b99ac209a7b9d0d11cf35258b6a1"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта плотным грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Рельеф холмистый.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_1",
+              "channel": "visual",
+              "clear_text": "Среди деревьев различима берёза.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_2",
+              "channel": "visual",
+              "clear_text": "На земле различимы травы и кустарник.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и кустарника, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим плотный грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "На грунте различимы следы крупного копытного.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "Из зарослей доносится неясный хруст.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_forest_stream_route_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_forest_stream_route",
+        "version": 2,
+        "payload_digest": "99b4e21c664b3d0cee624ed2f6873e8c975ed7884867150d5ca9db11ccedac8a"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Среди корней видна мокрая грязь.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден ручей.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны древесные кроны.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_1",
+              "channel": "visual",
+              "clear_text": "Среди деревьев различима ель.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны влажный лесной подлесок и подстилка.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_2",
+              "channel": "visual",
+              "clear_text": "На влажном грунте различим мох.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим влажный лесной грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "На грунте различимы следы крупного копытного.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "Из зарослей доносится неясный хруст.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_large_island_head_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_large_island_head",
+        "version": 2,
+        "payload_digest": "db7403800d30f79842436fc40d4b6711d7eba5c537adcfe02e214b53e306715f"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_2",
+              "channel": "visual",
+              "clear_text": "У воды различимы травы и осоки.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различимы ил и глина.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_mixing_reach_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_mixing_reach",
+        "version": 2,
+        "payload_digest": "912b1158bc0c597de65b7aff589372d2bab5d466c7b52c9b585986784ba298bd"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна вода речного устья.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_2",
+              "channel": "visual",
+              "clear_text": "У воды различимы травы и осоки.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различимы ил и глина.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_north_exposed_turn_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_north_exposed_turn",
+        "version": 2,
+        "payload_digest": "6225bd3c7483cd97e647337243a8a06022c75ba5f50b4b17051201db90ff503c"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_north_outflow_reach_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_north_outflow_reach",
+        "version": 2,
+        "payload_digest": "5acbb067f7035586d5c8611a88e2b9db8470fa8e43ea0cbada612eb889e6b1f6"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_old_channel_pool_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_old_channel_pool",
+        "version": 2,
+        "payload_digest": "307686fcaec3ad2d5d37afd89f463932403a0d41d49b7603337bb802abbcabbd"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности видны грязь и ил.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна заводь.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны осоки, тростниковая и болотная растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_2",
+              "channel": "visual",
+              "clear_text": "На влажной земле различимы хвощи и травы.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы стебли тростника.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки осок и тростника, остатки болотных трав.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим влажный наносный грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_outer_exposed_approach_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_outer_exposed_approach",
+        "version": 2,
+        "payload_digest": "2dfaf0037fbbe97ffc148795a2d1bf663388b8ab44e31ad8582be92f27c473d9"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна морская вода.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_2",
+              "channel": "visual",
+              "clear_text": "У воды различимы травы и осоки.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различимы ил и глина.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_reed_backwater_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_reed_backwater",
+        "version": 2,
+        "payload_digest": "f6613334918a9ccfa3721c92eed3eb1d1a3f6b7b584aa1e6a747f2a29301f9b4"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности видны грязь и ил.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна заводь.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны осоки, тростниковая и болотная растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_2",
+              "channel": "visual",
+              "clear_text": "На влажной земле различимы хвощи и травы.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы стебли тростника.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки осок и тростника, остатки болотных трав.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим влажный наносный грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_sheltered_inner_reach_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_sheltered_inner_reach",
+        "version": 2,
+        "payload_digest": "9ee79bb5e3bc13947a3ca28ab603f81fb2cdcc51f68646fb430f5ba2effe53d9"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_sheltered_landing_terrace_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_sheltered_landing_terrace",
+        "version": 2,
+        "payload_digest": "d3e4106f234d06249619602274e944cdb24d4974a42f6f228ae0d93fe919e255"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта плотным грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Рельеф холмистый.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_1",
+              "channel": "visual",
+              "clear_text": "Среди деревьев различима берёза.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_2",
+              "channel": "visual",
+              "clear_text": "На земле различимы травы и кустарник.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и кустарника, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим плотный грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "На грунте различимы следы крупного копытного.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "Из зарослей доносится неясный хруст.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_shifting_shoal_field_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_shifting_shoal_field",
+        "version": 2,
+        "payload_digest": "3e26b8bb0ba9dce0c17cf75f0cdd92aa454253dd020ba307ace79b94f70d6d23"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны наносы.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_south_entry_reach_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_south_entry_reach",
+        "version": 2,
+        "payload_digest": "d0612486f66457dddb39fdfc5899207bc60e125243b0b671352c95a88983d0c2"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_tributary_mouth_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_tributary_mouth",
+        "version": 2,
+        "payload_digest": "ba459285a0d09e26689d97e20ce0d2feffb59305cf31b9348f54612da7eb230d"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден ручей.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_locality_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_locality",
+        "version": 2,
+        "payload_digest": "30e074eae47768a4ca46b94bf7aca1b57562876a210bd4ce54616d53bb1d3771"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_2",
+              "channel": "visual",
+              "clear_text": "У воды различимы травы и осоки.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различимы ил и глина.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_resource_edge_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_resource_edge",
+        "version": 2,
+        "payload_digest": "13aba474db7b5248ad15ed868efbe598f429a8e0e837475f727e16ce8a80ccb1"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Среди корней видна мокрая грязь.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны древесные кроны.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_1",
+              "channel": "visual",
+              "clear_text": "Среди деревьев различима ель.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны влажный лесной подлесок и подстилка.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_2",
+              "channel": "visual",
+              "clear_text": "На влажном грунте различим мох.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим влажный лесной грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "На грунте различимы следы крупного копытного.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "Из зарослей доносится неясный хруст.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_river_approach_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_river_approach",
+        "version": 2,
+        "payload_digest": "2683d8dcca1fd79667c15dcd499b784b06483fa85f8ed21466ff418fe51737f4"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_west_hidden_backwater_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_west_hidden_backwater",
+        "version": 2,
+        "payload_digest": "bf3565d1a53a4b5fe6e7ec4a65953b60e0f623590cfa0669ba1d42076a5a6e61"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна заводь.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_west_side_channel_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_west_side_channel",
+        "version": 2,
+        "payload_digest": "27879ebec0dfecceea67b534a3bccf0e66e090a1c01d705574b7b17c053dc7ec"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_wet_conifer_tract_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_wet_conifer_tract",
+        "version": 2,
+        "payload_digest": "2f3d7294294f9ec6bc3820f8bf51c4d1e7e5ff4e5a61304b7dc5ea7c934e284b"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Среди корней видна мокрая грязь.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны древесные кроны.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_1",
+              "channel": "visual",
+              "clear_text": "Среди деревьев различима ель.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны влажный лесной подлесок и подстилка.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_2",
+              "channel": "visual",
+              "clear_text": "На влажном грунте различим мох.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": []
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различим влажный лесной грунт.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "На грунте различимы следы крупного копытного.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "Из зарослей доносится неясный хруст.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_zaostrovye_burial_area_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_burial_area",
+        "version": 2,
+        "payload_digest": "d2f6b2e4928c570f9cc6ec64046150234366e57ae9c1df17a6576494b0af9702"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "В илистом грунте проступают корни.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различима ольха.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Под кустами видна листовая подстилка.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "По влажному краю растёт растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_2",
+              "channel": "visual",
+              "clear_text": "У воды различимы травы и кустарник.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различимы ил и листовая подстилка.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Seasonal floodwater does not establish current water presence or movement; no sound is asserted.",
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_zaostrovye_landing_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_landing",
+        "version": 2,
+        "payload_digest": "faa433d90b8a88f70f68e40886fd65a9f846ab3d840d6051299b1b4bfc9de067"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": []
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различимы ивовые ветви.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing:nature_member_3",
+              "channel": "visual",
+              "clear_text": "Различимы песок и ил.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing:nature_member_2",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing:nature_member_2",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_zaostrovye_settlement_center_presentation",
+      "version": 2,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_settlement_center",
+        "version": 2,
+        "payload_digest": "845ad7f03fed97a47da36fd2acb38c0437dcffc52f4debf5e61e2e9f104a6cc3"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "В илистом грунте проступают корни.",
+          "member_phrases": []
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная.",
+          "member_phrases": []
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода.",
+          "member_phrases": []
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега.",
+          "member_phrases": []
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_1",
+              "channel": "visual",
+              "clear_text": "У воды различима ольха.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности.",
+          "member_phrases": []
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Под кустами видна листовая подстилка.",
+          "member_phrases": []
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_2",
+              "channel": "visual",
+              "clear_text": "У воды различимы травы и кустарник.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, древесные обломки.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_4",
+              "channel": "visual",
+              "clear_text": "Различимы ил и листовая подстилка.",
+              "admission": "exact_current_source_and_P22_perception_required"
+            }
+          ]
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim.",
+          "member_phrases": []
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1,
+          "member_phrases": []
+        },
+        {
+          "layer": "fauna",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "No current fauna presence follows from habitat compatibility.",
+          "member_phrases": [
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_3",
+              "channel": "visual",
+              "evidence": "committed_static_trace",
+              "clear_text": "У воды различимы погрызы на древесине.",
+              "admission": "exact_current_trace_source_and_P22_perception_required"
+            },
+            {
+              "member_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_3",
+              "channel": "acoustic",
+              "evidence": "committed_ambient_sound",
+              "clear_text": "У берега слышен отдельный всплеск.",
+              "admission": "exact_current_sound_source_and_P22_propagation_required"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

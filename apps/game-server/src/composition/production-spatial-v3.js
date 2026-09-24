@@ -28,10 +28,13 @@ import {
 import { createPostgresPools, probePostgresPool } from '../infrastructure/postgres/pools.js';
 import {
   loadSpatialV3RuntimeBindings, resolveSpatialV3ProductionBindingsModule,
-  validateSpatialV3RuntimeBindings
+  validateSpatialV3RuntimeBindings, SPATIAL_V3_TARGET_BINDINGS_MODULE
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
+import { loadSpatialV3TargetProductionRelease, loadTargetCatalogActivationApprovals } from './production-spatial-v3-release-v17.js';
+import { loadTargetRuntimeProfiles } from '../internal/target-runtime-profiles.js';
+import { createSpatialV3LocalSceneRuntime } from '../runtime/spatial-v3-local-scene-runtime.js';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
   SPATIAL_V3_PRODUCTION_RELEASE,
@@ -54,10 +57,20 @@ export async function createSpatialV3ProductionCompositionRoot({
 } = {}) {
   const pools = suppliedPools ?? createPostgresPools({ env, PoolClass });
   try {
-    const release = createSpatialV3ProductionRelease(
+    const selectedModule = resolveSpatialV3ProductionBindingsModule(config, env);
+    const targetContext = selectedModule === SPATIAL_V3_TARGET_BINDINGS_MODULE
+      ? await loadSpatialV3TargetProductionRelease({ worldPool: pools.worldPool,
+          ...await loadTargetCatalogActivationApprovals({ config, env }), rootDir: config.rootDir ?? process.cwd() }) : null;
+    const release = targetContext?.release ?? createSpatialV3ProductionRelease(
       config.runtimeCatalogPinManifestDigest
         ?? env.RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST
     );
+    if (targetContext != null && (config.runtimeCatalogPinManifestDigest
+        ?? env.RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST)
+      !== release.compatible_world_pin_manifest_digest) {
+      throw serverError('SPATIAL_V3_TARGET_RUNTIME_PIN_REQUIRED',
+        'Configured compatibility digest must match the issued target activation request.');
+    }
     if (SPATIAL_V3_TARGET_MIGRATIONS.length
         !== release.target_migration_count
       || SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST
@@ -69,27 +82,29 @@ export async function createSpatialV3ProductionCompositionRoot({
     }
     const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
+    const targetProfiles = targetContext == null ? null : await loadTargetRuntimeProfiles({
+      rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id });
     const [profiles, spatialSemanticProfile, scenePresentation,
       npcSemanticRemainderProfile, loadedWorldKnowledge,
       scenarioBundle] = await Promise.all([
-      loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
-      loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }),
-      loadLowerDvinaTraceScenePresentation({
+      targetProfiles?.materialization_profiles ?? loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
+      targetContext == null ? loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }) : null,
+      targetContext == null ? loadLowerDvinaTraceScenePresentation({
         rootDir: config.rootDir ?? process.cwd(),
         scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
-      }),
-      loadLowerDvinaTraceN1Profile({
+      }) : null,
+      targetContext == null ? loadLowerDvinaTraceN1Profile({
         rootDir: config.rootDir ?? process.cwd()
-      }),
+      }) : null,
       loadProductionWorldKnowledge({ rootDir: config.rootDir ?? process.cwd(),
         python: env.RUS_WORLD_KNOWLEDGE_PYTHON ?? 'python',
         requireEncoderReady: true,
         ...(worldKnowledgeEncoderFactory == null ? {}
           : { encoderFactory: worldKnowledgeEncoderFactory }) }),
-      loadLowerDvinaTraceMaterializationBundle({
+      targetContext == null ? loadLowerDvinaTraceMaterializationBundle({
         rootDir: config.rootDir ?? process.cwd(),
         scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
-      })
+      }) : { calendar_profile: targetContext.runtime.materialization_inputs.calendar_profile }
     ]);
     const worldKnowledge = Object.freeze({ ...loadedWorldKnowledge,
       calendar_profile: scenarioBundle.calendar_profile });
@@ -100,6 +115,8 @@ export async function createSpatialV3ProductionCompositionRoot({
       spatialSemanticProfile,
       npcSemanticRemainderProfile,
       worldKnowledge,
+      ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
+        spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool }) }),
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });
@@ -109,29 +126,33 @@ export async function createSpatialV3ProductionCompositionRoot({
           release
         )
       : await loadSpatialV3RuntimeBindings(
-          resolveSpatialV3ProductionBindingsModule(config, env),
+          selectedModule,
           bindingContext
         );
-    const ordinaryFirstEntryProvisioner = createOrdinaryMaterializationFirstEntryProvisioner({
+    const ordinaryFirstEntryProvisioner = targetContext == null ? createOrdinaryMaterializationFirstEntryProvisioner({
       profile: profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile
-    });
+    }) : null;
     const initialOrdinaryProvisioner =
-      createOrdinaryMaterializationFirstEntryProvisioner({
+      targetContext == null ? createOrdinaryMaterializationFirstEntryProvisioner({
         profile: profiles.ordinaryMaterializationProfile,
         includeContextBoundCapabilities: false,
         initialSceneSeed: ordinaryBackgroundSeedForLocation({ scenePresentation,
           locationRef: profiles.ordinaryMaterializationProfile
             .o2a_ambient.scope_binding.position_ref })
-      });
-    const spatialSemanticFirstEntryProvisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile });
+      }) : null;
+    const spatialSemanticFirstEntryProvisioner = targetContext == null
+      ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;
     const committer = createSpatialV3PostgresCombinedAtomicCommitter({
       pool: pools.partyPool, recheck: bindings.commitRecheck,
-      ordinaryFirstEntryProvisioner: { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }, now });
+      ordinaryFirstEntryProvisioner: targetContext == null
+        ? { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }
+        : null, now });
     const target = targetRootFactory({ ...bindings.targetCompositionPorts, committer });
     const activatedRelease = deriveActivatedReleaseFromReadback(
       release,
-      bindings.runtimeCatalogPin
+      targetContext?.readback.item_pin ?? bindings.runtimeCatalogPin,
+      targetContext?.readback ?? null
     );
     const publicRuntime = await bindings.createPublicRuntimeFacade({
       technicalCore: target,
@@ -206,7 +227,7 @@ export async function createSpatialV3ProductionCompositionRoot({
         status: 'ok',
         composition: 'spatial_v3_production',
         activation: 'sole_owner',
-        release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
+        release_id: release.release_id,
         release_status: activatedRelease.release_status,
         production_activation: activatedRelease.production_activation,
         runtime_selectable_in_canonical_production:
@@ -214,33 +235,34 @@ export async function createSpatialV3ProductionCompositionRoot({
         authoritative_reads: 'spatial_v3_only',
         authoritative_writes: 'spatial_v3_only',
         runtime_fallback: 'forbidden',
-        npc_conversation_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_conversation_capability,
-        npc_autonomous_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_autonomous_capability,
-        npc_combat_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_combat_capability,
+        npc_conversation_capability: release.npc_conversation_capability,
+        npc_autonomous_capability: release.npc_autonomous_capability,
+        npc_combat_capability: release.npc_combat_capability,
         temporal_contract_id:
-          SPATIAL_V3_PRODUCTION_RELEASE.temporal_contract_id,
+          release.temporal_contract_id,
         world_revision_id:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
+          release.world_revision_id,
         world_knowledge_pack_ref:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_ref,
+          release.world_knowledge_pack_ref,
         world_knowledge_pack_revision:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_revision,
+          release.world_knowledge_pack_revision,
         world_catalog_digest:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
+          release.world_catalog_digest,
         world_catalog_manifest_sha256:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_manifest_sha256,
+          release.world_catalog_manifest_sha256,
         dependency_pin_mode:
-          SPATIAL_V3_PRODUCTION_RELEASE.dependency_pin_mode,
+          release.dependency_pin_mode,
         runtime_catalog_pin_schema:
-          SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_pin_schema,
+          release.runtime_catalog_pin_schema,
         runtime_catalog_scope:
-          SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_scope,
+          release.runtime_catalog_scope,
         runtime_catalog_resolution:
-          SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_resolution,
+          release.runtime_catalog_resolution,
         compatible_world_pin_manifest_digest:
           release.compatible_world_pin_manifest_digest,
         runtime_catalog_pin:
           structuredClone(bindings.runtimeCatalogPin),
+        ...(targetProfiles == null ? {} : { target_capability_gaps: structuredClone(targetProfiles.capability_gaps) }),
         party_schema_version: release.party_schema_version,
         migration_count: migration.applied,
         migration_chain_digest: migration.chain_digest,

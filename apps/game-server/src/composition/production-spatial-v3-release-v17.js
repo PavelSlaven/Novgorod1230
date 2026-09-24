@@ -3,6 +3,9 @@ import { SPATIAL_V3_PRODUCTION_RELEASE as historicalRelease } from
 import { assertTargetCatalogActivationReadiness, withRuntimeCatalogActivationLock } from
   '../infrastructure/postgres/spatial-v3-production-readiness.js';
 import { serverError } from '../errors.js';
+import { loadTargetAuthoredStartRuntime } from '../infrastructure/postgres/target-authored-start-runtime.js';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 
 const { scenario_binding_id, scenario_profile_exact_pins,
   parent_release_exact_pins, ...sharedReleaseContract } = historicalRelease;
@@ -18,10 +21,23 @@ export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   actor_base_attributes_catalog_revision_id: 'actor_base_attributes_spatial_v3_target_001'
 });
 
+export async function loadTargetCatalogActivationApprovals({ config = {}, env = process.env } = {}) {
+  if (config.targetCatalogActivationApprovals != null) return config.targetCatalogActivationApprovals;
+  const path = config.targetCatalogActivationApprovalsPath ?? env.RUS_SPATIAL_V3_TARGET_ACTIVATION_APPROVALS_PATH;
+  if (!path) return {};
+  return JSON.parse(await readFile(resolve(config.rootDir ?? process.cwd(), path), 'utf8'));
+}
+
 // This factory is deliberately not the default release selector. All operational
 // evidence comes from the existing catalog owners and the supplied database.
 export async function createSpatialV3TargetProductionRelease({
-  worldPool, itemApproval, actorApproval
+  worldPool, itemApproval, actorApproval, rootDir = process.cwd()
+} = {}) {
+  return (await loadSpatialV3TargetProductionRelease({ worldPool, itemApproval, actorApproval, rootDir })).release;
+}
+
+export async function loadSpatialV3TargetProductionRelease({
+  worldPool, itemApproval, actorApproval, rootDir = process.cwd()
 } = {}) {
   const compatibleDigest = itemApproval?.request?.compatible_world_pin_manifest_digest;
   if (!/^[a-f0-9]{64}$/u.test(compatibleDigest ?? '') || !worldPool?.query) {
@@ -34,10 +50,18 @@ export async function createSpatialV3TargetProductionRelease({
     throw serverError('SPATIAL_V3_TARGET_ACTIVATION_APPROVAL_REQUIRED',
       'Target release requires both issued catalog activation attestations.');
   }
-  await withRuntimeCatalogActivationLock(worldPool, (client) =>
-    assertTargetCatalogActivationReadiness(client, {
+  return withRuntimeCatalogActivationLock(worldPool, async (client) => {
+    const readback = await assertTargetCatalogActivationReadiness(client, {
       release: candidate, itemApproval, actorApproval
-    }));
-  throw serverError('SPATIAL_V3_TARGET_START_BINDING_REQUIRED',
-    'Verified target catalogs require an independently approved target start/scenario binding before production composition.');
+    });
+    const start = await loadTargetAuthoredStartRuntime({ worldPool: client, itemPin: readback.item_pin,
+      actorBinding: readback.actor_binding, rootDir });
+    const release = Object.freeze({ ...candidate, scenario_binding_id: start.profile.scenario_id,
+      scenario_profile_exact_pins: Object.freeze({ scenario_definition_revision: 1,
+        scenario_definition_digest: start.profile.manifest_digest,
+        phase_1a_package_id: start.profile.canonical_start.start.candidate_id,
+        phase_1a_manifest_digest: start.profile.manifest_digest }),
+      target_start_source_pins: start.profile.canonical_start.policy_profile_pins });
+    return Object.freeze({ release, readback, runtime: start });
+  });
 }

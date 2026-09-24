@@ -3,6 +3,9 @@ import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
+import { buildCharacterAppearanceV1ImportSql, buildTargetAppearanceTransferImportSql } from '../../spatial-v3/character-appearance-v1-importer.mjs';
+import { buildApprovedTemporalImportSql } from '../../temporal-v4/import-approved-data.mjs';
+import { assertTargetCanonicalStartPostgres } from '../../../test/spatial-v3/target-canonical-start-postgres-acceptance.js';
 import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
 import { createSpatialV3TargetProductionRelease, SPATIAL_V3_TARGET_PRODUCTION_RELEASE } from
   '../../../apps/game-server/src/composition/production-spatial-v3-release-v17.js';
@@ -102,9 +105,16 @@ test('target item and actor successors preserve v6 parties through real PostgreS
       FROM world_base.runtime_catalog_activation_events`);
     const saved = await historicalSnapshot(pool);
     const worlds = await json('data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_world_revisions.json');
-    await pool.query(`INSERT INTO world_base.world_revisions
-      (id,title,catalog_digest,status) VALUES($1,'Approved target test fixture',$2,'approved')`,
-    [worlds[0].id, worlds[0].catalog_digest]);
+    for (let part = 21; part <= 24; part += 1) {
+      await pool.query(await readFile(`infra/world-base/schema/${part}.sql`, 'utf8'));
+    }
+    await pool.query(await buildCharacterAppearanceV1ImportSql({ tables: [
+      'universal_categories', 'region_category_options', 'region_demographic_profiles',
+      'region_demographic_profile_entries', 'region_appearance_profiles', 'region_appearance_profile_entries'] }));
+    const appearanceSql = await buildTargetAppearanceTransferImportSql();
+    await pool.query(appearanceSql);
+    await pool.query(appearanceSql); // Exact repeat is readback, never a historical row update.
+    await pool.query(await buildApprovedTemporalImportSql());
     const sources = await json('data/world-catalogs/novgorod/spatial-v3/datasets/source_records.json');
     const provenance = sources.find((row) => row.id === worlds[0].provenance_ref);
     assert.ok(provenance);
@@ -218,7 +228,7 @@ test('target item and actor successors preserve v6 parties through real PostgreS
       ...targetInputs, release: candidate });
     assert.equal(targetReadback.actor_binding.pin.activation_event_id, first.event_id);
     await assert.rejects(createSpatialV3TargetProductionRelease(targetInputs),
-      { code: 'SPATIAL_V3_TARGET_START_BINDING_REQUIRED' });
+      { code: 'SPATIAL_V3_TARGET_START_SCENE_REQUIRED' });
     const historicalReadiness = await assertPartyReleaseReadiness(pool, candidate);
     assert.equal(historicalReadiness.party_count, 1);
     assert.equal(historicalReadiness.historical_pin_count, 1);
@@ -246,6 +256,19 @@ test('target item and actor successors preserve v6 parties through real PostgreS
       'item_container_spatial_v3_target_001');
     assert.equal((await latest(pool, 'actor_base_attributes_v1')).catalog_revision_id,
       'actor_base_attributes_spatial_v3_target_001');
+    for (const file of partyFiles.slice(11)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+    await assertTargetCanonicalStartPostgres({ pool, itemPin: targetReadback.item_pin,
+      actorBinding: targetReadback.actor_binding, releaseInputs: targetInputs });
+    const targetRelease = await createSpatialV3TargetProductionRelease(targetInputs);
+    assert.equal(targetRelease.scenario_binding_id, 'novgorod_pine_ridge_approach_v1');
+    assert.equal(targetRelease.production_activation, false);
+    assert.equal(targetRelease.parent_release_exact_pins, undefined);
+    assert.equal(targetRelease.scenario_profile_exact_pins.phase_1a_package_id,
+      'novgorod_target_pine_ridge_start_v1');
+    const historicalAfterStart = await historicalSnapshot(pool);
+    assert.deepEqual(historicalAfterStart.parties.find((row) => row.party_id === 'historical'), saved.parties[0]);
+    assert.deepEqual(historicalAfterStart.pins.filter((row) => row.party_id === 'historical'), saved.pins);
+    assert.deepEqual(historicalAfterStart.v6, saved.v6);
   });
 
 function successorApproval(request, operation) {

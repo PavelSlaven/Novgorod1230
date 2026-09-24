@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
+import { planApprovedActorDestinationTransition } from '@rus/movement-routes';
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { promoteM2cOpenCapacity } from '../../scripts/promote-m2c-open-capacity-v2.mjs';
 import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
@@ -54,6 +55,43 @@ test('approved M2c open capacity successor imports through P12 without overwriti
     { scene_template_version: 1, n: 68, limited: 0 },
     { scene_template_version: 2, n: 68, limited: 0 },
   ]);
+  const movement = (await pool.query(`SELECT e.scene_template_version AS version,
+      e.edge_slot_key AS edge_id,e.reverse_edge_slot_key AS reverse_edge_id,
+      e.from_position_slot_key AS from_position_ref,
+      e.to_position_slot_key AS to_position_ref,e.cost_kind,e.action_units,
+      e.capacity AS edge_capacity,p.capacity AS destination_capacity
+    FROM world_base.spatial_v3_scene_movement_edge_templates e
+    JOIN world_base.spatial_v3_scene_position_templates p
+      ON p.scene_template_id=e.scene_template_id
+      AND p.scene_template_version=e.scene_template_version
+      AND p.position_slot_key=e.to_position_slot_key
+    WHERE e.scene_template_id='stfv3__g5_boundary_access_v1'
+      AND e.from_position_slot_key='arrival' AND e.to_position_slot_key='focus'
+    ORDER BY e.scene_template_version`)).rows;
+  assert.deepEqual(movement.map(({ version, edge_capacity, destination_capacity }) =>
+    ({ version, edge_capacity, destination_capacity })), [
+    { version: 1, edge_capacity: null, destination_capacity: 1 },
+    { version: 2, edge_capacity: null, destination_capacity: 7 },
+  ]);
+  const plan = (row, overrides = {}) => planApprovedActorDestinationTransition({
+    state_version: 1, expected_state_version: 1,
+    actor: { actor_ref: { entity_kind: 'player_character', entity_id: 'actor' },
+      location_ref: 'site', zone_ref: 'arrival' },
+    destination: { entity_ref: { entity_kind: 'scene_position', entity_id: 'focus' },
+      location_ref: 'site', zone_ref: 'focus' },
+    persisted_scene_movement_edge: { ...row, base_minutes: null,
+      transition_footprint_units: 1, destination_occupancy: 1,
+      edge_state_version: 1, reverse_edge_state_version: 1,
+      source_node_state_version: 1, destination_node_state_version: 1,
+      transition_environment_profile_ref: null,
+      movement_orientation_profile_ref: null, baseline_movement_method_id: null,
+      movement_method_cost_profile_ref: null, dynamic_recheck_policy_ref: null,
+      ...overrides }
+  });
+  assert.equal(plan(movement[1]).pass, true, 'NPC at focus permits open v2 arrival movement');
+  assert.equal(plan(movement[0]).pass, false, 'NPC fills v1 focus capacity');
+  assert.equal(plan(movement[1], { edge_capacity: 1,
+    transition_footprint_units: 2 }).pass, false, 'bounded edge rejects oversized footprint');
   const v2 = (await pool.query(`SELECT
     (SELECT count(*)::int FROM world_base.spatial_v3_scene_templates WHERE version=2) AS scenes,
     (SELECT count(*)::int FROM world_base.spatial_v3_scene_materialization_candidates WHERE scene_template_version=2) AS candidates,

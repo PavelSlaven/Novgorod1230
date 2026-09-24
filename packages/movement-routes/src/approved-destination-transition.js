@@ -37,7 +37,10 @@ function persistedSceneEdgeCandidates(edge, actor, destination, allowed = []) {
       || edge.from_position_ref !== actor.zone_ref
       || edge.to_position_ref !== destination.zone_ref
       || !allowedMovement(edge.edge_id, allowed)
-      || edge.transition_footprint_units > (edge.edge_capacity ?? edge.max_root_owners_per_transition)
+      || edge.edge_capacity !== null
+        && edge.transition_footprint_units > edge.edge_capacity
+      || edge.max_root_owners_per_transition != null
+        && edge.transition_footprint_units > edge.max_root_owners_per_transition
       || edge.destination_occupancy + edge.transition_footprint_units
         > edge.destination_capacity) return [];
   return [Object.freeze({ owner: '@rus/movement-routes',
@@ -166,7 +169,8 @@ function validPersistedSceneEdge(value) {
     && integer(value.source_node_state_version)
     && integer(value.destination_node_state_version)
     && (text(value.reverse_edge_id) && integer(value.reverse_edge_state_version)
-      && Number.isSafeInteger(value.edge_capacity) && value.edge_capacity > 0
+      && (value.edge_capacity === null
+        || Number.isSafeInteger(value.edge_capacity) && value.edge_capacity > 0)
       || validEligibilityAdjunct(value))
     && Number.isSafeInteger(value.destination_capacity) && value.destination_capacity > 0
     && value.transition_footprint_units === 1

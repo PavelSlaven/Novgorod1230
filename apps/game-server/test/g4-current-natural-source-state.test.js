@@ -3,9 +3,12 @@ import test from 'node:test';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 import { readCurrentNaturalSourceState } from
   '../src/infrastructure/postgres/g4-current-natural-source-state.js';
+import { resolveG4NaturalPerceptionConditions } from '../src/runtime/g4-natural-perception-conditions.js';
+import { prepareG4NaturalScenePerceptionInput, projectG4NaturalPerception } from
+  '../src/runtime/g4-natural-perception.js';
 
-async function fixture(canonical = true) {
-  const approved = await approvedNaturalPerceptionFixture({ canonical });
+async function fixture(canonical = true, profileId) {
+  const approved = await approvedNaturalPerceptionFixture({ canonical, profileId });
   const { input, placement, naturalProfile, sceneClosure } = approved;
   const scene = input.currentFacts.scene;
   const sourcePosition = scene.positions.find((row) =>
@@ -53,15 +56,41 @@ test('generated dry G5 uses the same current source owner', async () => {
   assert.equal(source.canonical_initial_state, undefined);
 });
 
-test('current source rejects nonempty visibility modifiers and missing acoustic cause', async () => {
+test('current source rejects nonempty visibility modifiers', async () => {
   const dry = await fixture();
-  dry.setModifiers([{ id: 'smoke', state_version: 2 }]);
+  dry.setModifiers([{ id: 'remote-smoke', state_version: 2, affected_scope_ref: {
+    spatial_kind: 'scene_position', spatial_id: 'remote-position' } }]);
+  assert.ok((await readCurrentNaturalSourceState(dry.args)).source_observations.length > 0);
+  dry.setModifiers([{ id: 'smoke', state_version: 2, affected_scope_ref: {
+    spatial_kind: 'scene_position', spatial_id: dry.sourcePosition.id } }]);
   await assert.rejects(readCurrentNaturalSourceState(dry.args), (error) =>
     error.code === 'NATURAL_SCENE_PERCEPTION_DATA_GAP'
     && error.details.reason === 'visibility_modifier_effect_policy_required');
-  const wet = await fixture(false);
+});
+
+test('floodplain water sound gap preserves admitted visual perception', async () => {
+  const profileId = 'm2c_natural_g4_floodplain_ridge_route';
+  const wet = await fixture(false, profileId);
   assert.ok(wet.placement.acoustic_layers.length > 0);
-  await assert.rejects(readCurrentNaturalSourceState(wet.args), (error) =>
-    error.code === 'NATURAL_SCENE_PERCEPTION_DATA_GAP'
-    && error.details.reason === 'current_water_source_state_required');
+  const source = await readCurrentNaturalSourceState(wet.args);
+  const acoustic = source.source_observations.filter((row) => wet.placement.acoustic_layers.includes(row.layer));
+  assert.ok(acoustic.every((row) => row.data_gap === 'current_water_source_state_required'
+    && row.source_state == null));
+  const conditions = resolveG4NaturalPerceptionConditions({
+    ...wet.args, current: source });
+  const admissions = conditions.layer_admissions;
+  assert.ok(admissions.some((row) => wet.placement.visual_layers.includes(row.layer)
+    && row.source_state === 'present'));
+  assert.ok(admissions.every((row) => !wet.placement.acoustic_layers.includes(row.layer)
+    || row.data_gap === 'current_water_source_state_required'));
+  const approved = await approvedNaturalPerceptionFixture({ canonical: false, profileId });
+  const currentFacts = { ...approved.input.currentFacts, layer_admissions: admissions };
+  const input = prepareG4NaturalScenePerceptionInput({ ...approved.input, currentFacts });
+  assert.ok(input.observations.some((row) => row.data_gap === 'current_water_source_state_required'
+    && row.active == null));
+  const result = projectG4NaturalPerception({ input, partyId: source.party_id,
+    actorId: source.actor_id, positionId: input.observer.position_id });
+  assert.ok(result.ok);
+  assert.ok(result.perceived_facts.some((row) => row.channel === 'visual'));
+  assert.ok(result.perceived_facts.every((row) => row.channel !== 'acoustic'));
 });

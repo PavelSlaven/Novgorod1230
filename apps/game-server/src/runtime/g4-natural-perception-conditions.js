@@ -61,6 +61,10 @@ export function resolveG4NaturalPerceptionConditions({ verifiedCatalog, pin, sna
   layer_admissions.push(...placement.unplaced_visual_layers.map((layer) => ({ layer, source_state: 'absent' })));
   for (const layer of placement.acoustic_layers) {
     const source = observation(layer);
+    if (source.data_gap === 'current_water_source_state_required') {
+      layer_admissions.push({ layer, data_gap: source.data_gap });
+      continue;
+    }
     const rule = catalog.acoustic_source_rules.find((row) => exact(row, placement.acoustic_source_rule_ref));
     const source_state = rule?.source_state_by_current_water?.[source.current_water_source_state];
     if (!['present', 'absent'].includes(source_state)) gap('current_causal_sound_evidence_required');

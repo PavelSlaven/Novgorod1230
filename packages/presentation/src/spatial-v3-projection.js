@@ -199,6 +199,9 @@ export function projectSpatialV3NaturalScene(input = {}) {
       const source = sources[0];
       const sourcePosition = scene.positions.find((row) => row.id === source.source_position_id);
       if (!sourcePosition) return gap('exact_layer_source_position_required');
+      if (source.data_gap === 'current_water_source_state_required'
+        && descriptor.channel === 'acoustic' && source.active == null) continue;
+      if (source.data_gap != null) return gap('current_layer_source_admission_required');
       if (source.active === false) continue;
       let perception;
       if (descriptor.channel === 'visual') {

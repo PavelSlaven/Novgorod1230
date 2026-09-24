@@ -6,7 +6,7 @@ import { buildTargetStartCompiledRecords } from '../../../tools/runtime-catalog-
 import { prepareG4NaturalScenePerceptionInput } from '../src/runtime/g4-natural-perception.js';
 
 /** Real approved immutable authoring; current observations are controlled test facts. */
-export async function approvedNaturalPerceptionFixture({ canonical = false } = {}) {
+export async function approvedNaturalPerceptionFixture({ canonical = false, profileId } = {}) {
   const read = async (path) => readFile(new URL(`../../../data/world-catalogs/novgorod/${path}`, import.meta.url), 'utf8');
   const natural = JSON.parse(await read('m2c-natural/candidate.json'));
   const candidateBytes = await read('m2c-natural-presentation/candidate.json');
@@ -22,7 +22,8 @@ export async function approvedNaturalPerceptionFixture({ canonical = false } = {
   const initialRule = canonicalRows[0]?.payload;
   const selected = presentationRows.find((row) => canonical
     ? row.payload.g4_ref.id === initialRule.rule.g4_ref.id
-    : row.payload.layers.some((layer) => layer.channel === 'acoustic'));
+    : profileId ? row.payload.natural_profile_ref.id === profileId
+      : row.payload.layers.some((layer) => layer.channel === 'acoustic'));
   const profile = naturalRows.find((row) => row.payload.profile_id === selected.payload.natural_profile_ref.id).payload;
   const layers = profile.natural_profile.layer_applicability;
   const placement = placementRows[0].payload.placements.find((row) => canonical

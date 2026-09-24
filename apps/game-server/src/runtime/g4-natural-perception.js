@@ -49,10 +49,17 @@ export function prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, cur
     if (descriptor.channel === 'none'
       || baseline.layers.find((row) => row.layer === descriptor.layer)?.applicability !== 'present') continue;
     const admissions = layer_admissions.filter((row) => row.layer === descriptor.layer);
-    if (admissions.length !== 1 || !['present', 'absent'].includes(admissions[0].source_state)) {
+    if (admissions.length !== 1 || !(descriptor.channel === 'acoustic'
+      && admissions[0].data_gap === 'current_water_source_state_required')
+      && !['present', 'absent'].includes(admissions[0].source_state)) {
       perceptionGap('current_layer_source_admission_required');
     }
     const admission = admissions[0];
+    if (admission.data_gap) {
+      observations.push({ layer: descriptor.layer, source_position_id: positions[0].id,
+        data_gap: admission.data_gap });
+      continue;
+    }
     observations.push({ layer: descriptor.layer, source_position_id: positions[0].id,
       active: admission.source_state === 'present',
       ...(descriptor.channel === 'visual' ? { visual_conditions: structuredClone(admission.visual_conditions) }

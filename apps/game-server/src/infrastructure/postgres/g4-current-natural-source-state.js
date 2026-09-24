@@ -52,7 +52,9 @@ export async function readCurrentNaturalSourceState({ transaction, partyId, acto
     source_state: baseline.layers.find((row) => row.layer === layer)?.applicability === 'present'
       ? 'present' : 'absent',
     stable_cover, dynamic_occlusion: 'clear', concealment: 'clear' }));
-  if (placement.acoustic_layers.length) gap('current_water_source_state_required');
+  source_observations.push(...placement.acoustic_layers.map((layer) => ({ layer,
+    source_position_id: sourcePositions[0].id,
+    data_gap: 'current_water_source_state_required' })));
   return { party_id: partyId, actor_id: actorId,
     position_id: snapshot.location.scene_position_id, current_environment,
     visual_capability: body.visual_capability, hearing_capability: body.hearing_capability,

@@ -6,6 +6,7 @@ import { serverError } from '../../errors.js';
 import { createHash } from 'node:crypto';
 import { canonicalDigest } from '@rus/materialization';
 import { readFileSync } from 'node:fs';
+import { currentSceneVisibilityModifiers } from './spatial-v3-current-visibility-inputs.js';
 
 const coverCandidateBytes = readFileSync(new URL('../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-candidate.json', import.meta.url));
 const coverCandidate = JSON.parse(coverCandidateBytes);
@@ -90,7 +91,8 @@ export async function readCurrentEntityVisibilityScene(args = {}) {
       || !positions.includes(row.from_position_id) || !positions.includes(row.to_position_id))) {
     gap('complete_current_visibility_required');
   }
-  return { ...snapshot, placements, movement_edges, modifier_set: { complete: true, rows: modifiers } };
+  return { ...snapshot, placements, movement_edges, modifier_set: { complete: true,
+    rows: currentSceneVisibilityModifiers(modifiers, snapshot) } };
 }
 
 /** Read inside the caller's consistent read transaction. Temporal/actor/source

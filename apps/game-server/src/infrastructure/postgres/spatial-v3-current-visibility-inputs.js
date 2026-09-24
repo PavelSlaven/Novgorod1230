@@ -4,6 +4,24 @@ import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { playerSafeHeardNpcIntroduction, safeVisualProfile } from
   '../../runtime/lower-dvina-trace-player-safe-npc-details.js';
 
+/** Exclude only scopes proven outside this exact scene; unknown wider scopes stay fail-closed. */
+export function currentSceneVisibilityModifiers(rows, scene) {
+  if (!Array.isArray(rows) || !scene?.site || !Array.isArray(scene.positions)
+    || !Array.isArray(scene.g6)) gap('complete_current_visibility_required');
+  return rows.filter((row) => {
+    const scope = row.affected_scope_ref;
+    if (!scope?.spatial_kind || !scope.spatial_id) gap('complete_current_visibility_required');
+    switch (scope.spatial_kind) {
+      case 'scene_position': return scene.positions.some((position) => position.id === scope.spatial_id);
+      case 'party_g6': return scene.g6.some((g6) => g6.id === scope.spatial_id);
+      case 'party_g5_site': return scene.site.id === scope.spatial_id;
+      case 'canonical_g5': return scene.site.canonical_g5_ref?.entity_id === scope.spatial_id;
+      case 'canonical_g4': return scene.site.parent_g4_id === scope.spatial_id;
+      default: return true;
+    }
+  });
+}
+
 /** Target conditions from the verified current scene and approved natural cover. */
 export async function readCurrentTargetConditions({ partyId, actorId, scene, natural, target } = {}) {
   const location = scene?.location;

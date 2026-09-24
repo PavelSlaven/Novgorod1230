@@ -68,16 +68,17 @@ test('missing complete read never means clear or empty modifiers', () => {
 
 test('current scene reader retains two placements at one position and complete empty modifiers', async () => {
   const queries = [];
+  const modifiers = [];
   const transaction = { async query(sql, params) {
     queries.push({ sql, params });
     if (queries.length % 2 === 1) return { rows: [{ world_revision_id: 'world',
-      world_catalog_digest: 'digest', baseline: { id: 'baseline' },
-      positions: [{ id: 'a' }, { id: 'b' }], location: { scene_position_id: 'a' },
+      world_catalog_digest: 'digest', baseline: { id: 'baseline' }, site: { id: 'site' },
+      positions: [{ id: 'a' }, { id: 'b' }], g6: [], location: { scene_position_id: 'a' },
       endpoint_bindings: [] }] };
     return { rows: [{ placements: [
       { party_id: 'party', entity_kind: 'npc', entity_id: 'one', position_node_id: 'b' },
       { party_id: 'party', entity_kind: 'npc', entity_id: 'two', position_node_id: 'b' }],
-    movement_edges: [], modifiers: [] }] };
+    movement_edges: [], modifiers }] };
   } };
   const args = { transaction, partyId: 'party', actorId: 'actor',
     pin: { compatible_world_revision_id: 'world', compatible_world_catalog_digest: 'digest' } };
@@ -87,4 +88,10 @@ test('current scene reader retains two placements at one position and complete e
   assert.deepEqual(queries[1].params, ['party', ['a', 'b'], 'baseline']);
   const replay = await readCurrentEntityVisibilityScene(args);
   assert.deepEqual(replay.placements, first.placements);
+  modifiers.push({ id: 'remote', affected_scope_ref: {
+    spatial_kind: 'scene_position', spatial_id: 'remote-position' } });
+  assert.deepEqual((await readCurrentEntityVisibilityScene(args)).modifier_set.rows, []);
+  modifiers.push({ id: 'local', affected_scope_ref: {
+    spatial_kind: 'scene_position', spatial_id: 'b' } });
+  assert.deepEqual((await readCurrentEntityVisibilityScene(args)).modifier_set.rows.map((row) => row.id), ['local']);
 });

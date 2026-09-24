@@ -2,6 +2,7 @@ import { loadApprovedG4NaturalPlacementCatalog } from '@rus/runtime-catalog';
 import { prepareG4NaturalBaseline } from '../../runtime/g4-natural-baseline.js';
 import { readCurrentActorBodyCapability } from './spatial-v3-current-movement-capability.js';
 import { approvedNaturalStableCover } from './g4-natural-perception-reader.js';
+import { currentSceneVisibilityModifiers } from './spatial-v3-current-visibility-inputs.js';
 import { serverError } from '../../errors.js';
 
 /** Current source facts for canonical or generated G5 scenes, read in the caller's snapshot. */
@@ -31,10 +32,12 @@ export async function readCurrentNaturalSourceState({ transaction, partyId, acto
   if (sourceG6.length !== 1 || sourcePositions.length !== 1) {
     gap('exact_current_source_geometry_required');
   }
-  const modifiers = await transaction.query(`SELECT id,state_version FROM party_runtime.visibility_modifiers
+  const modifiers = await transaction.query(`SELECT id,state_version,affected_scope_ref FROM party_runtime.visibility_modifiers
     WHERE party_id=$1`, [partyId]);
   if (!Array.isArray(modifiers?.rows)) gap('complete_current_visibility_required');
-  if (modifiers.rows.length) gap('visibility_modifier_effect_policy_required');
+  if (currentSceneVisibilityModifiers(modifiers.rows, snapshot).length) {
+    gap('visibility_modifier_effect_policy_required');
+  }
   if (snapshot.portals.length) gap('p22_relation_conditions_required');
   const current_environment = await readCurrentEnvironment({ transaction, partyId, actorId });
   const body = await readCurrentActorBodyCapability({ transaction, partyId, actorId,

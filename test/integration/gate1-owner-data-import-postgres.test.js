@@ -25,6 +25,21 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
       await managed.close();
       await rm(dataRoot, { recursive: true, force: true });
     });
+    const missing = spawnSync(process.execPath,
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play'], {
+        cwd: process.cwd(), encoding: 'utf8', timeout: 30_000,
+        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
+      });
+    assert.notEqual(missing.status, 0);
+    assert.match(missing.stderr, /PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED:/u);
+    const rejected = spawnSync(process.execPath,
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play',
+        '--expected-database', 'novgorod_world'], {
+        cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
+        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
+      });
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr, /PR17_LOCAL_PLAY_DATABASE_REQUIRED:/u);
     const applied = spawnSync(process.execPath,
       ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle',
         '--write-result', resultPath], {

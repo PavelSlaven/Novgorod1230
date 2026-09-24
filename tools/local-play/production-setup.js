@@ -69,7 +69,8 @@ export async function installActivatedRuntimeCatalog({
   }
   const lifecycle = spawnSync(
     process.execPath,
-    ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play'],
+    ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play',
+      '--expected-database', decodeURIComponent(new URL(worldUrl).pathname.slice(1))],
     {
       cwd: repositoryRoot,
       encoding: 'utf8',

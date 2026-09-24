@@ -36,6 +36,10 @@ const seedClosureAttestationRelative =
 const gate1Cache = { seedSql: null };
 assertAllowedArguments();
 const mode = argument('--mode', 'dry-run');
+const expectedDatabase = argument('--expected-database', null);
+if (mode === 'local-play' && !['novgorod_world', 'novgorod_world_v17'].includes(expectedDatabase)) {
+  throw new Error(`PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED:${expectedDatabase}`);
+}
 const attestationPath = resolve(argument('--attestation', resolve(evidenceRoot, 'FINAL_APPROVAL_ATTESTATION.json')));
 const gate1Artifacts = await buildGate1OwnerDataArtifacts();
 const gate1Attestation = readJson(resolve(gate1Root,
@@ -76,7 +80,7 @@ if (mode === 'dry-run') {
   const pool = new pg.Pool({ connectionString: databaseUrl, max: 1 });
   const client = await pool.connect();
   try {
-    const database = await assertDatabaseForMode(client, mode);
+    const database = await assertDatabaseForMode(client, mode, expectedDatabase);
     await initializeSchema(client);
     if (mode === 'fixture-bootstrap') {
       const first = await applyRevisionPromotionPlan({ plan,
@@ -151,11 +155,11 @@ function loadPromotionInput(path, gate1Plan) {
   };
 }
 
-async function assertDatabaseForMode(client, selectedMode) {
+async function assertDatabaseForMode(client, selectedMode, expectedDatabaseName) {
   const result = await client.query('SELECT current_database() AS database');
   const database = result.rows[0]?.database;
   const allowed = selectedMode === 'local-play'
-    ? database === 'novgorod_world'
+    ? database === expectedDatabaseName
     : /^pr17_[a-z0-9_]+$/u.test(String(database ?? ''));
   if (!allowed) throw new Error(`PR17_${selectedMode === 'local-play' ? 'LOCAL_PLAY' : 'ISOLATED'}_DATABASE_REQUIRED:${database}`);
   return database;
@@ -786,7 +790,7 @@ function importReadbackEvidence(result) {
 }
 function argument(name, fallback) { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : fallback; }
 function assertAllowedArguments() {
-  const allowed = new Set(['--mode', '--attestation', '--write-result']);
+  const allowed = new Set(['--mode', '--attestation', '--write-result', '--expected-database']);
   for (let index = 2; index < process.argv.length; index += 2) {
     const name = process.argv[index];
     if (!allowed.has(name) || process.argv[index + 1] === undefined) {

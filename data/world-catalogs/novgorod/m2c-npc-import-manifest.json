@@ -41,7 +41,7 @@
     {
       "table": "spatial_v3_authoring_versions",
       "file": "m2c-npc/import-datasets/spatial_v3_authoring_versions.json",
-      "sha256": "fa813a9f85d1f91495d373b9ec836964ca158aef64ac85d1d5271c00cba5f4cd",
+      "sha256": "b4f90a07628f601bbe04d2a94a15d6d82e107258c065b06b4ae5e23d6e549e5a",
       "status": "approved",
       "provenance_ref": "m2c_npc_editorial_001; existing approved expansion sources",
       "delete_policy": "forbid",
@@ -156,7 +156,7 @@
     {
       "table": "spatial_v3_canonical_g5_connection_profiles",
       "file": "spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_canonical_g5_connection_profiles.json",
-      "sha256": "4c8025f299dd5dc8845679d57b34eb85f14dcaea8601f3c1db655d0f484434c2",
+      "sha256": "9de3d2762bc13d2d7db4dad18f0e70ff9128aff4882657a5ce67a879c90898a8",
       "status": "approved",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/source-approval/index.json#p12_novgorod_source_approval_001+target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
       "delete_policy": "forbid",
@@ -258,7 +258,7 @@
     {
       "table": "spatial_v3_canonical_g5_connection_bindings",
       "file": "spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_canonical_g5_connection_bindings.json",
-      "sha256": "7ba48a00007a2c278394bdf6b2e9f56ce3843861fde92f92621faa2040cee21f",
+      "sha256": "4c3d2e21b6946682473caef80035282d7284597df4fe6b68fbc32d84f92a944e",
       "status": "approved",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/source-approval/index.json#p12_novgorod_source_approval_001+target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
       "delete_policy": "forbid",
@@ -551,7 +551,7 @@
     {
       "table": "spatial_v3_authoring_dependency_edges",
       "file": "spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_authoring_dependency_edges.json",
-      "sha256": "10b8fd0b6b5973fa8b39269a41a35f191d479029412abe62f91c42970c726f36",
+      "sha256": "aca679943f50bb9e2aacf7af49918649f3d48de896b5446949ec7774ff73d7fd",
       "status": "approved",
       "provenance_ref": "data/world-catalogs/novgorod/spatial-v3/source-approval/index.json#p12_novgorod_source_approval_001+target-materialization-approval/P12_TARGET_MATERIALIZATION_APPROVAL_V1_1.zip",
       "delete_policy": "forbid",

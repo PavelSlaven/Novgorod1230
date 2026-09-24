@@ -112,7 +112,8 @@ function validAdmission(value, check) {
   return value?.edge_id === check.movement_edge_ref && value.from_position_ref === check.from_position_ref
     && value.to_position_ref === check.to_position_ref && text(value.reverse_edge_id)
     && value.cost_kind === 'action' && integer(value.action_units) && value.action_units > 0
-    && value.base_minutes === null && integer(value.edge_capacity) && value.edge_capacity > 0
+    && value.base_minutes === null && (value.edge_capacity === null
+      || integer(value.edge_capacity) && value.edge_capacity > 0)
     && integer(value.destination_capacity) && value.destination_capacity > 0
     && value.transition_footprint_units === 1
     && ['edge_state_version', 'reverse_edge_state_version', 'source_node_state_version', 'destination_node_state_version']
@@ -133,7 +134,8 @@ function sameAdmission(actual, expected) {
     && actual?.cost_kind === expected.cost_kind
     && Number(actual?.action_units) === expected.action_units
     && actual?.base_minutes === expected.base_minutes
-    && Number(actual?.edge_capacity) === expected.edge_capacity
+    && (actual?.edge_capacity === null ? expected.edge_capacity === null
+      : Number(actual?.edge_capacity) === expected.edge_capacity)
     && Number(actual?.destination_capacity) === expected.destination_capacity
     && ['transition_environment_profile_ref', 'movement_orientation_profile_ref',
       'baseline_movement_method_id', 'movement_method_cost_profile_ref',

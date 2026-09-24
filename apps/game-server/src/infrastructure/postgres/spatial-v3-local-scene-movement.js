@@ -130,7 +130,8 @@ function validRow(row) {
       'destination_capacity', 'destination_occupancy']
       .every((key) => Number.isSafeInteger(Number(row[key])) && Number(row[key]) >= 0)
     && Number(row.action_units) > 0
-    && (text(row.reverse_edge_id) && Number.isSafeInteger(Number(row.edge_capacity)) && Number(row.edge_capacity) > 0
+    && (text(row.reverse_edge_id) && (row.edge_capacity === null
+      || Number.isSafeInteger(Number(row.edge_capacity)) && Number(row.edge_capacity) > 0)
       || row.reverse_edge_id === null && row.edge_capacity === null && row.eligibility?.pin
         && Number.isSafeInteger(row.eligibility.max_root_owners_per_transition)
         && row.eligibility.max_root_owners_per_transition >= 1)

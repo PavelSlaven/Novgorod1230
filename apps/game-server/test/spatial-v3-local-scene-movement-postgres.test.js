@@ -38,6 +38,12 @@ test('committed canonical scene edges move arrival→focus→departure with stal
       await db.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
     }
     await seed(db);
+    await db.query(`UPDATE party_runtime.scene_movement_edges SET capacity=NULL`);
+    await db.query(`UPDATE party_runtime.scene_position_nodes SET capacity=7 WHERE id='focus'`);
+    await db.query(`INSERT INTO party_runtime.entity_placements
+      (party_id,entity_kind,entity_id,placement_kind,position_node_id,
+        occupies_capacity_units,state_version,updated_change_set_id)
+      VALUES ('party','npc','resident','scene_position','focus',1,1,'seed')`);
     const runtime = createSpatialV3LocalSceneRuntime({ pool: db,
       readLocalEdgeDisclosure: async ({ state: current }) =>
         [['arrival', 'focus'], ['focus', 'arrival'], ['focus', 'departure'],
@@ -79,6 +85,7 @@ test('committed canonical scene edges move arrival→focus→departure with stal
     }
     assert.deepEqual((await runtime.listLocalOptions({ partyId: 'party', actorId: 'actor',
       state: source })).map(({ edge_id: id }) => id), ['departure:focus']);
+    await db.query(`UPDATE party_runtime.scene_movement_edges SET capacity=1`);
     await db.query(`UPDATE party_runtime.scene_position_nodes SET capacity=1
       WHERE id='focus'`);
     await db.query(`INSERT INTO party_runtime.entity_placements

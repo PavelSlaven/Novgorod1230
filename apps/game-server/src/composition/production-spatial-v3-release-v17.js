@@ -4,6 +4,7 @@ import { assertTargetCatalogActivationReadiness, withRuntimeCatalogActivationLoc
   '../infrastructure/postgres/spatial-v3-production-readiness.js';
 import { serverError } from '../errors.js';
 import { loadTargetAuthoredStartRuntime } from '../infrastructure/postgres/target-authored-start-runtime.js';
+import { createSpatialV3WorldBaseReader } from '../infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
@@ -62,6 +63,10 @@ export async function loadSpatialV3TargetProductionRelease({
         phase_1a_package_id: start.profile.canonical_start.start.candidate_id,
         phase_1a_manifest_digest: start.profile.manifest_digest }),
       target_start_source_pins: start.profile.canonical_start.policy_profile_pins });
-    return Object.freeze({ release, readback, runtime: start });
+    // Activation reads use the locked transaction. Later public reads must own
+    // their connection through the pool, never retain that released client.
+    const runtime = Object.freeze({ ...start, worldBaseReader: createSpatialV3WorldBaseReader({
+      query: worldPool.query.bind(worldPool) }) });
+    return Object.freeze({ release, readback, runtime });
   });
 }

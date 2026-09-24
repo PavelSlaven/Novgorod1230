@@ -3,12 +3,13 @@ import {
   plain,
   text
 } from './lower-dvina-trace-turn-step-runtime-common.js';
+import { canonicalDigest } from '@rus/materialization';
 
 const DURATION_CLASSES = ['moment', 'brief', 'short', 'extended'];
 const EFFORTS = ['none', 'light', 'moderate', 'heavy', 'extreme'];
 const BODY_METRICS = ['health', 'satiety', 'energy'];
 
-export function admitTurnStepOwnerProfiles(profiles, artifactPin) {
+export function admitTurnStepOwnerProfiles(profiles, artifactPin, selectedProfilePin) {
   const keys = [
     'schema', 'profile_set_id', 'revision', 'status', 'fallback_policy',
     ...(profiles?.schema ===
@@ -20,16 +21,25 @@ export function admitTurnStepOwnerProfiles(profiles, artifactPin) {
     'direct_body_part_policy', 'generic_check_modifier_policy',
     'ordinary_result_policy'
   ];
+  const selected = selectedProfilePin !== undefined;
+  const selectedMatches = selected && validArtifactPin(selectedProfilePin)
+    && text(selectedProfilePin.artifact_id)
+    && Number.isSafeInteger(selectedProfilePin.revision) && selectedProfilePin.revision > 0
+    && selectedProfilePin.artifact_id === profiles?.profile_set_id
+    && selectedProfilePin.revision === profiles?.revision
+    && selectedProfilePin.digest === canonicalDigest(profiles)
+    && plain(artifactPin) && samePin(selectedProfilePin, artifactPin);
   const liveWorld = profiles?.schema
     === 'rus.live_world_runtime.turn_step_owner_profiles.v1'
-    && profiles?.profile_set_id
-      === 'novgorod_live_world_turn_step_owner_profiles_v1';
+    && (selected ? selectedMatches : profiles?.profile_set_id
+      === 'novgorod_live_world_turn_step_owner_profiles_v1' && profiles?.revision === 2);
   const historical = profiles?.schema
     === 'rus.lower_dvina_trace_turn_step_owner_profiles.v1'
     && profiles?.profile_set_id === 'trace_ld_v1_turn_step_owner_profiles';
   if (!plain(profiles) || !exactKeys(profiles, keys)
       || (!liveWorld && !historical)
-      || profiles.revision !== (liveWorld ? 2 : 1)
+      || (selected && !selectedMatches)
+      || (historical && profiles.revision !== 1)
       || profiles.status !== 'approved'
       || profiles.fallback_policy !== 'forbidden'
       || !validArtifactPin(artifactPin)

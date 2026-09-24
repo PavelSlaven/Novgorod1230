@@ -21,6 +21,7 @@ import { readCurrentNaturalPerceptionFacts } from '../../apps/game-server/src/in
 import { readInitialCanonicalNaturalSourceState } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-initial-state.js';
 import { prepareG4NaturalScenePerceptionInput, projectG4NaturalPerception } from '../../apps/game-server/src/runtime/g4-natural-perception.js';
 import { createTargetCurrentFactualContext } from '../../apps/game-server/src/infrastructure/postgres/target-current-factual-context.js';
+import { serveTargetHttpBrowserSmoke } from './target-http-browser-smoke.js';
 
 /** Run after the isolated operator has issued, applied and read back exact target pins. */
 export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorBinding, releaseInputs }) {
@@ -160,7 +161,10 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
       runtimeCatalogPinManifestDigest: itemPin.compatible_world_pin_manifest_digest,
       targetCatalogActivationApprovals: { itemApproval: releaseInputs.itemApproval, actorApproval: releaseInputs.actorApproval },
       traceTurnDecisionSecret: 'isolated-target-acceptance-secret' },
-    pools: { worldPool: pool, partyPool: pool, async close() {} },
+    pools: { worldPool: { query: pool.query.bind(pool), async connect() {
+      const client = await pool.connect();
+      return { query: client.query.bind(client), release() { client.release(true); } };
+    } }, partyPool: pool, async close() {} },
     worldKnowledgeEncoderFactory: () => ({ async ready() {}, async encode() { return new Float32Array(1024); }, async close() {} }) });
   assert.equal(publicRuntime.health().release_id, release.release_id);
   assert.equal(publicRuntime.health().world_revision_id, release.world_revision_id);
@@ -214,6 +218,9 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
     await assert.rejects(factual.recheck({ transaction: factualTransaction }));
   } finally {
     await factualTransaction.query('ROLLBACK'); factualTransaction.release();
+  }
+  if (process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true') {
+    await serveTargetHttpBrowserSmoke({ root: publicRuntime, pool });
   }
   } finally {
     globalThis.fetch = previousFetch;

@@ -5,8 +5,40 @@ import { createTargetFiniteFirstEntryPorts } from '../src/infrastructure/postgre
 import { targetFiniteProfileCatalogFixture } from '../../../test/spatial-v3/target-finite-profile-fixture.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 import { validNeutralActionProductionProfile } from '../src/internal/lower-dvina-trace-a1-bundle.js';
+import { createLowerDvinaTraceTurnStepGenericOwners } from '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
+import { loadLiveWorldAuthoredStartCatalog } from '../src/internal/live-world-authored-starts.js';
 
 const worldRevisionId = 'novgorod_spatial_v3_target_contract_approval_001';
+
+test('historical v16 authored turn owners retain their approved revision without a target pin', async () => {
+  const { turn_profile: loaded } = await loadLiveWorldAuthoredStartCatalog();
+  assert.equal(loaded.profile.profile_set_id, 'novgorod_live_world_turn_step_owner_profiles_v1');
+  assert.equal(loaded.profile.revision, 2);
+  const owners = createLowerDvinaTraceTurnStepGenericOwners({ profiles: loaded.profile, artifactPin: loaded.pin });
+  assert.equal(owners.semanticActivityScheduleOwner.resolve({ activity: {
+    duration_class: 'moment', effort: 'none' } }).duration_minutes, 1);
+});
+
+test('target turn owners require the exact release-selected approved profile pin', async () => {
+  const { turn_profile: loaded } = await loadTargetRuntimeProfiles({ worldRevisionId });
+  const input = { profiles: loaded.profile, artifactPin: loaded.pin,
+    selectedProfilePin: loaded.selected_profile_pin };
+  const owners = createLowerDvinaTraceTurnStepGenericOwners(input);
+  assert.equal(owners.semanticActivityScheduleOwner.resolve({ activity: {
+    duration_class: 'moment', effort: 'none' } }).duration_minutes, 1);
+  const invalid = [undefined, null, {}, ...['artifact_id', 'revision', 'digest'].map((key) => ({
+    ...loaded.selected_profile_pin, [key]: key === 'revision' ? 999 : 'wrong' }))];
+  for (const selectedProfilePin of invalid) assert.throws(() =>
+    createLowerDvinaTraceTurnStepGenericOwners({ ...input, selectedProfilePin }),
+  { code: 'TRACE_TURN_STEP_OWNER_PROFILES_INVALID' });
+  const changed = structuredClone(input);
+  changed.profiles.semantic_duration_profiles[0].duration_minutes += 1;
+  assert.throws(() => createLowerDvinaTraceTurnStepGenericOwners(changed),
+    { code: 'TRACE_TURN_STEP_OWNER_PROFILES_INVALID' });
+  assert.throws(() => createLowerDvinaTraceTurnStepGenericOwners({ ...input,
+    artifactPin: { ...loaded.pin, digest: '0'.repeat(64) } }),
+  { code: 'TRACE_TURN_STEP_OWNER_PROFILES_INVALID' });
+});
 
 test('target mapped approval admits generic mechanics and preserves explicit missing owners', async () => {
   const loaded = await loadTargetRuntimeProfiles({ worldRevisionId });

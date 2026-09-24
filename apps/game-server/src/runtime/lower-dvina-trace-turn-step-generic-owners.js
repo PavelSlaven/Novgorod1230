@@ -45,9 +45,10 @@ const BODY_METRICS = ['health', 'satiety', 'energy'];
 
 export function createLowerDvinaTraceTurnStepGenericOwners({
   profiles,
-  artifactPin
+  artifactPin,
+  selectedProfilePin
 } = {}) {
-  const admitted = admitTurnStepOwnerProfiles(profiles, artifactPin);
+  const admitted = admitTurnStepOwnerProfiles(profiles, artifactPin, selectedProfilePin);
   const semanticActivityProfiles = expandActivityProfiles(admitted);
   const directBodyEventProfiles = expandDirectBodyProfiles(admitted);
   const activityByKey = new Map(semanticActivityProfiles.map(

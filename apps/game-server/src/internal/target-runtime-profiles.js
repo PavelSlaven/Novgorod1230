@@ -25,14 +25,15 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
     || data.profiles?.turn_step?.status !== 'approved'
     || !validNeutralActionProductionProfile(data.profiles.action_production)) gap();
   const turn = data.profiles.turn_step;
+  const turnPin = { artifact_id: turn.profile_set_id, revision: turn.revision, digest: canonicalDigest(turn) };
   const finiteFirstEntry = verifiedCatalog == null ? null
     : await loadTargetFiniteFirstEntryProfile({ rootDir, worldRevisionId, verifiedCatalog });
   return freeze({ schema: 'rus.live_world_runtime.target_runtime_profiles_loaded.v1',
     world_revision_id: worldRevisionId, candidate_sha256: manifest.source_candidate_sha256,
     manifest_sha256: pin.manifest_sha256,
     finite_first_entry: finiteFirstEntry,
-    turn_profile: Object.freeze({ profile: turn, pin: { artifact_id: turn.profile_set_id,
-      revision: turn.revision, digest: canonicalDigest(turn) } }),
+    // Supplied only after the release-selected mapped approval has been checked.
+    turn_profile: Object.freeze({ profile: turn, pin: turnPin, selected_profile_pin: { ...turnPin } }),
     ordinary_profiles: Object.freeze({ s1: null, n1: { ...data.profiles.n1,
       participant_binding_kind: 'approved_source_binding',
       target_applicability: { world_revision_id: worldRevisionId, applicability: data.applicability,

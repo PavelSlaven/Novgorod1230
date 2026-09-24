@@ -7,6 +7,8 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from '../src/runtime
 import { validNeutralActionProductionProfile } from '../src/internal/lower-dvina-trace-a1-bundle.js';
 import { createLowerDvinaTraceTurnStepGenericOwners } from '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
 import { loadLiveWorldAuthoredStartCatalog } from '../src/internal/live-world-authored-starts.js';
+import { validateLowerDvinaTraceOrdinaryStageBApproval } from
+  '../src/internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 
 const worldRevisionId = 'novgorod_spatial_v3_target_contract_approval_001';
 
@@ -60,12 +62,20 @@ test('target mapped approval admits generic mechanics and preserves explicit mis
     { code: 'SPATIAL_V3_TARGET_RUNTIME_PROFILE_APPROVAL_REQUIRED' });
 });
 
-test('finite-only profile is exact-approved and cannot enable ambient or Stage B', async () => {
+test('finite-only profile selects exactly approved Stage B without ambient', async () => {
   const verifiedCatalog = await targetFiniteProfileCatalogFixture();
   const loaded = await loadTargetFiniteFirstEntryProfile({ worldRevisionId, verifiedCatalog });
   assert.equal(loaded.candidate_sha256, 'fcd2b47ff318b79031dc309193c159afd71909418beab1f77e9a455c4160bacd');
   assert.deepEqual(loaded.profile.execution.allowed_disclosure_policy_refs, []);
-  assert.deepEqual(loaded.profile.stage_b_classification_eval.cases, []);
+  assert.equal(loaded.profile.stage_b_classification_eval.version, 2);
+  assert.equal(loaded.profile.stage_b_classification_eval.cases.length, 13);
+  assert.equal(loaded.stage_b_approval.model_identity.model,
+    'qwen3.8-27b-uncensored-w4a16-tp2');
+  assert.equal(validateLowerDvinaTraceOrdinaryStageBApproval(loaded.stage_b_approval,
+    loaded.profile.stage_b_classification_eval), true);
+  assert.equal(validateLowerDvinaTraceOrdinaryStageBApproval({ ...loaded.stage_b_approval,
+    model_identity: { ...loaded.stage_b_approval.model_identity, model: 'another-model' } },
+  loaded.profile.stage_b_classification_eval), false);
   assert.equal(Object.hasOwn(loaded.profile, 'o2a_ambient'), false);
   assert.equal(typeof createTargetFiniteFirstEntryPorts(loaded).prepareFirstEntry, 'function');
   for (const key of ['naturalSourceAuthoring', 'propertySourceAuthoring']) {

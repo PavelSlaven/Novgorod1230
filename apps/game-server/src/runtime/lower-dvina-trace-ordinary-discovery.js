@@ -85,14 +85,17 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       const constrained = execution.constrained_natural_resource_profile == null
         ? { resolution: null, profile: null }
         : resolveConstrainedNaturalResourcePolicy(policyInput);
-      const codeOwnedResolution = execution.finite_source_access_decision != null
-          && execution.finite_source_access_decision !== 'allow' ? 'authority_required'
-        : contextBound.resolution
-        ?? constrained.resolution ?? null;
       const genericFinite = resolveFiniteSourceAuthority({
         authority: execution.finite_source_authority,
         committed_source: execution.committed_finite_source
       });
+      const codeOwnedResolution = execution.finite_source_access_decision != null
+          && execution.finite_source_access_decision !== 'allow' ? 'authority_required'
+        : contextBound.resolution
+        ?? constrained.resolution
+        ?? (execution.finite_source_authority != null && genericFinite == null
+          ? 'absent' : null);
+      if (execution.finite_source_authority != null && codeOwnedResolution != null) return null;
       const finiteProfile = constrained.profile ?? genericFinite;
       const sourceRef = contextBound.profile?.source_basis_ref
         ?? constrained.profile?.source_basis_ref ?? null;
@@ -219,7 +222,8 @@ function validExecution(value) {
     && typeof value.candidate_context.semantic_type === 'string'
     && typeof value.candidate_context.functional_bucket === 'string'
     && (value.candidate_context.admission_class === 'common_mundane'
-      ? value.candidate_context.semantic_type === 'ordinary_object_candidate'
+      ? (value.candidate_context.semantic_type === 'ordinary_object_candidate'
+          || value.candidate_context.coverage_kind === 'finite_source')
         && value.candidate_context.functional_bucket === 'other_ordinary'
         && value.candidate_context.availability_class === 'common'
       : value.candidate_context.availability_class === 'context_bound')

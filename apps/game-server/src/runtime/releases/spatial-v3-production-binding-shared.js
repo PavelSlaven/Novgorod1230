@@ -149,7 +149,7 @@ export async function createSpatialV3ProductionBindings(
   const ordinaryStageBApproval = targetStartRuntime == null ?
     await loadLowerDvinaTraceOrdinaryStageBApproval({
       rootDir: config.rootDir ?? process.cwd()
-    }) : null;
+    }) : targetRuntimeProfiles?.finite_first_entry?.stage_b_approval ?? null;
   let publicRuntime = null;
   const targetCompositionPorts =
     createTargetCompositionPorts(

@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
 import { validNeutralActionProductionProfile } from './lower-dvina-trace-a1-bundle.js';
+import { validateLowerDvinaTraceOrdinaryStageBEval } from './lower-dvina-trace-ordinary-stage-b-eval.js';
 
 /** The separate mapped-data approval owns applicability; absent owners stay absent. */
 export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), worldRevisionId, verifiedCatalog } = {}) {
@@ -94,14 +95,59 @@ export async function loadTargetFiniteFirstEntryProfile({ rootDir = process.cwd(
     if (hash(bytes) !== pin.sha256) finiteGap();
     sources.set(pin.path, bytes);
   }
+  const stageB = await loadTargetFiniteStageB({ read, worldRevisionId, baseProfile: rows[0].payload.profile });
   return freeze({ schema: 'rus.live_world_runtime.target_finite_first_entry_profile.v1',
     world_revision_id: worldRevisionId, candidate_sha256: hash(baseBytes),
-    catalog_pin: verifiedCatalog.pin, profile: rows[0].payload.profile,
+    catalog_pin: verifiedCatalog.pin, profile: stageB.profile,
+    stage_b_approval: stageB.receipt,
     naturalSourceAuthoring: { candidateBytes: itemBytes,
       approval: JSON.parse(await read(`${root}/m2c-items/approval-attestation.json`)) },
     propertySourceAuthoring: { candidateBytes: propertyBytes,
       approval: JSON.parse(await read(`${root}/m2c-items/property-context-approval.json`)),
       sourceBytesByPath: Object.fromEntries(sources) } });
+}
+
+async function loadTargetFiniteStageB({ read, worldRevisionId, baseProfile }) {
+  const root = 'data/world-catalogs/novgorod/live-world-runtime-v17/';
+  const approval = JSON.parse(await read(`${root}m2c-finite-only-ordinary-stage-b-runtime-cutover-approval.json`));
+  const candidateBytes = await read(approval.candidate_path);
+  const sourceBytes = await read(approval.source_probe_path);
+  const reportBytes = await read(approval.qualification_report_path);
+  const candidate = JSON.parse(candidateBytes);
+  const report = JSON.parse(reportBytes);
+  const probes = JSON.parse(sourceBytes);
+  if (approval.schema !== 'rus.live_world_runtime.m2c_finite_stage_b_runtime_cutover_approval.v1'
+    || approval.decision !== 'APPROVE_RUNTIME_SELECTION' || approval.runtime_selection_authorized !== true
+    || approval.production_db_authorized !== false
+    || approval.candidate_path !== `${root}m2c-finite-only-ordinary-stage-b-successor-candidate.json`
+    || approval.source_probe_path !== `${root}m2c-stage-b-source-access-probes.json`
+    || approval.qualification_report_path !== 'data/model-evals/live-world-runtime-v17-finite-stage-b-qualification-pass.json'
+    || hash(candidateBytes) !== approval.candidate_sha256
+    || hash(sourceBytes) !== approval.source_probe_sha256
+    || hash(reportBytes) !== approval.qualification_report_sha256
+    || candidate.schema !== 'rus.live_world_runtime.m2c_finite_only_ordinary_stage_b_successor_candidate.v1'
+    || candidate.runtime_selectable !== false || candidate.revision !== 2
+    || candidate.supersedes_profile_id !== baseProfile.profile_id
+    || candidate.target_world_revision_id !== worldRevisionId
+    || !validateLowerDvinaTraceOrdinaryStageBEval(candidate.stage_b_classification_eval)
+    || candidate.stage_b_classification_eval.version !== 2
+    || probes.schema !== 'rus.live_world_runtime.m2c_stage_b_source_access_probes.v1'
+    || report.status !== 'PASS' || report.eval_candidate_sha256 !== approval.candidate_sha256
+    || report.committed_source_probe_sha256 !== approval.source_probe_sha256
+    || report.case_count !== candidate.stage_b_classification_eval.cases.length
+    || report.failed_case_ids?.length !== 0
+    || report.model_identity?.request_timeout_ms !== 120000
+    || Object.entries(approval.model_identity).some(([key, value]) =>
+      report.model_identity?.[key] !== value)) finiteGap();
+  const receipt = { schema: 'rus.ordinary_materialization_stage_b_approval_receipt.v1',
+    version: 1, profile_digest: approval.candidate_sha256,
+    eval_contract_digest: canonicalDigest(candidate.stage_b_classification_eval),
+    model_identity: approval.model_identity,
+    approved_case_ids: candidate.stage_b_classification_eval.cases.map(({ id }) => id).sort(),
+    result_digest: approval.qualification_report_sha256 };
+  return { profile: { ...baseProfile, profile_id: candidate.profile_id,
+    revision: candidate.revision,
+    stage_b_classification_eval: candidate.stage_b_classification_eval }, receipt };
 }
 
 function finiteGap() { throw serverError('SPATIAL_V3_TARGET_FINITE_PROFILE_APPROVAL_REQUIRED',

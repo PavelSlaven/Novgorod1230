@@ -141,7 +141,8 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
   assert.equal(generatedLoad.execution_context.context_bound_capabilities.length, 2);
   assert.equal(generatedLoad.execution_context.scope_presence_enabled, false);
   assert.deepEqual(generatedLoad.execution_context.allowed_disclosure_policy_refs, []);
-  assert.deepEqual(generatedLoad.execution_context.stage_b_classification_eval.cases, []);
+  assert.equal(generatedLoad.execution_context.stage_b_classification_eval.version, 2);
+  assert.equal(generatedLoad.execution_context.stage_b_classification_eval.cases.length, 13);
   assert.equal(generatedLoad.objective_context.context_refs.region_ref, targetProfile.profile.context_refs.region_ref);
   for (const cap of generatedLoad.execution_context.context_bound_capabilities) {
     assert.equal(cap.execution_context.mechanics_policy.mass_grams_per_quantity_unit, 50);
@@ -177,6 +178,12 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
   deniedCapability.access_decision = 'deny';
   await updateObjective(deniedObjective);
   assert.equal((await lookup()).explicit_rule.decision, 'deny', 'current explicit override wins');
+  const deniedTurn = await discover({ request: { root_turn_id: 'foreign-owned-source' },
+    operation: { target_refs: [generatedSource.source_resource_node_id],
+      query: 'взять дерево с чужого участка' },
+    committed_state: { position: { g6_id: 'g6:generated', position_id: 'pos:generated' } },
+    working_projection: {} });
+  assert.equal(deniedTurn.ordinary_materialization_atomic_write_plan, undefined);
   assert.equal((await load('generated')).execution_context.committed_finite_sources.find(
     (row) => row.source_resource_node_id === generatedSource.source_resource_node_id).quantity.numerator, 60);
   deniedObjective.execution_context.context_bound_capabilities.push(structuredClone(deniedCapability));
@@ -190,12 +197,13 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
     VALUES ('natural-journey','party-natural','actor','natural-actor','scene','pos:generated',1,'entry-generated')`);
   const sourceCap = objective.execution_context.context_bound_capabilities.find(
     (row) => row.source_ref === generatedSource.source_resource_node_id);
-  const extractionModel = async (request) => ({ schema: 'ordinary_materialization_plan_v1',
+  let extractionCalls = 0;
+  const extractionModel = async (request) => { extractionCalls += 1; return ({ schema: 'ordinary_materialization_plan_v1',
     request_id: request.request_id, resolution: request.mode === 'seed_scope' ? 'seeded' : 'materialize',
     density_band_proposal: request.mode === 'seed_scope' ? 'ordinary' : null,
     background_groups: [], presence_resolutions: [], reason_code: 'finite-natural-source',
     entities: request.mode === 'seed_scope' ? [] : [{ semantic_descriptor: {
-      semantic_type: 'ordinary_object_candidate', name: 'порция валежника', facts: [] },
+      semantic_type: sourceCap.candidate_context.semantic_type, name: 'порция валежника', facts: [] },
     authority_class: 'ordinary', admission_class: 'common_mundane', availability_class: 'common',
     functional_bucket: 'other_ordinary', presence_expectation: 'routine',
     supporting_basis_ref: sourceCap.source_ref,
@@ -203,7 +211,7 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
     property_basis_ref: sourceCap.context_refs.property_context_ref,
     placement_proposal: { scope_ref: 'g6:generated', position_ref: 'pos:generated' },
     mechanics_proposal: { mass_grams: 1000, external_hand_cost: 1, carry_form: 'regular',
-      packing_slot_cost: 4, quantity: { value: 20, unit: 'item' }, container: null } }] });
+      packing_slot_cost: 4, quantity: { value: 20, unit: 'item' }, container: null } }] }); };
   extractionModel.verifyStageBCutover = async () => true;
   const extract = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party-natural',
     inputDigest: 'generated-extraction', loadEnablement: (input) => repository.load(input),
@@ -252,6 +260,16 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
     (row) => row.source_resource_node_id === generatedSource.source_resource_node_id);
   assert.equal(replaySource.quantity.numerator, 0, 'P16 replay never refills generated source');
   assert.equal(replaySource.lifecycle_state, 'depleted');
+  const beforeAbsent = extractionCalls;
+  for (const [target, query] of [[sourceCap.source_ref, 'взять ещё валежника'],
+    ['berries-without-source', 'взять ягоды']]) {
+    const absent = await extract({ request: { root_turn_id: `absent:${target}` },
+      operation: { target_refs: [target], query },
+      committed_state: { position: { g6_id: 'g6:generated', position_id: 'pos:generated' } },
+      working_projection: {} });
+    assert.equal(absent.ordinary_materialization_atomic_write_plan, undefined);
+  }
+  assert.equal(extractionCalls, beforeAbsent, 'absent or depleted source does not call Stage B');
   assert.equal((await pool.query(`SELECT sum((mechanics_snapshot->'mechanics'->>'mass_grams')::int)::int grams
     FROM party_runtime.party_ordinary_materialization_items WHERE scope_id='g6:generated'`)).rows[0].grams, 3000);
   assert.equal((await pool.query(`SELECT count(*)::int n FROM party_runtime.party_resource_nodes

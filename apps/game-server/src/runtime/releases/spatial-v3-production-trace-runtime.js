@@ -105,7 +105,10 @@ export function createTraceTurnRuntime({
   const authoredOpeningNarration = createAuthoredOpeningNarrationService({
     roleRunner, llmDiagnostics
   });
-  const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
+  const ordinaryMaterializationModel = ordinaryStageBApproval == null
+    ? Object.assign(async () => { throw ordinaryStageBUnavailable(); }, {
+      verifyStageBCutover: async () => { throw ordinaryStageBUnavailable(); }
+    }) : createOrdinaryMaterializationModel({
     roleRunner, stageBApprovalReceipt: ordinaryStageBApproval,
     qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity,
     worldKnowledgeGrounder
@@ -267,6 +270,11 @@ export function createTraceTurnRuntime({
   });
   return Object.freeze({ ...runtime, llmDiagnostics,
     authoredOpeningNarration });
+}
+
+function ordinaryStageBUnavailable() {
+  return serverError('TRACE_ORDINARY_STAGE_B_EVAL_INPUT_INVALID',
+    'A separate exact Stage B qualification is required for ordinary generation.', { status: 503 });
 }
 
 export function createTraceRandomSourceFactory({ env = {} } = {}) {

@@ -62,7 +62,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   const reloaded = await createLowerDvinaTracePhase1ARepository({ query: pool.query.bind(pool) }).loadInternal(input.party_id);
   assert.deepEqual(reloaded, first.instance);
   await assertTargetNpcSemanticReadback({ pool, partyId: input.party_id, expectedNpcs: result.immediate.npcs });
-  const targetProfiles = await loadTargetRuntimeProfiles({ worldRevisionId: release.world_revision_id });
+  const targetProfiles = await loadTargetRuntimeProfiles({ worldRevisionId: release.world_revision_id, verifiedCatalog: domainCatalog });
   const a1 = createLowerDvinaTraceA1ProductionResolverFactory({ pool,
     loadedProfile: targetProfiles.materialization_profiles.actionProductionProfile })({ partyId: input.party_id });
   const garment = reloaded.items.find((item) => item.placement.holder_character_id === reloaded.player.instance_id);

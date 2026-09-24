@@ -19,6 +19,32 @@ import {
 } from './ordinary-materialization-first-entry-capability.js';
 import { buildFirstEntryNaturalCapabilities, readApprovedNaturalFirstEntryAuthoring }
   from './ordinary-materialization-first-entry-natural.js';
+import { createApprovedGeneratedNaturalPropertyReader } from './ordinary-materialization-natural-property.js';
+
+export function createTargetFiniteFirstEntryPorts(loaded) {
+  if (loaded?.schema !== 'rus.live_world_runtime.target_finite_first_entry_profile.v1'
+    || loaded.catalog_pin?.schema !== 'rus.runtime_catalog_pin.v2'
+    || loaded.catalog_pin.catalog_scope !== 'item_container_materialization_v2'
+    || loaded.catalog_pin.compatible_world_revision_id !== loaded.world_revision_id) {
+    throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
+  }
+  const readNaturalSourceProperty = createApprovedGeneratedNaturalPropertyReader(loaded.propertySourceAuthoring);
+  const prepare = createOrdinaryGeneratedFirstEntryProposal({ profile: loaded.profile,
+    naturalSourceAuthoring: loaded.naturalSourceAuthoring, readNaturalSourceProperty });
+  return Object.freeze({ readNaturalSourceProperty,
+    async prepareFirstEntry(input) {
+      const pin = loaded.catalog_pin;
+      const rows = (await input.transaction.query(`SELECT * FROM party_runtime.party_catalog_pins
+        WHERE party_id=$1 AND catalog_scope=$2 FOR SHARE`, [input.request.party_id, pin.catalog_scope])).rows;
+      const fields = ['catalog_scope','catalog_revision_id','catalog_digest','activation_event_id',
+        'import_id','import_audit_digest','record_registry_digest','runtime_contract_digest',
+        'compatible_world_revision_id','compatible_world_catalog_digest','compatible_world_pin_manifest_digest'];
+      if (rows.length !== 1 || fields.some((field) => !pin[field] || rows[0][field] !== pin[field])) {
+        throw code('ORDINARY_FINITE_CATALOG_PIN_MISMATCH');
+      }
+      return prepare(input);
+    } });
+}
 
 /** The existing first-entry owner proposes rows; Spatial P16 remains the writer. */
 export function createOrdinaryGeneratedFirstEntryProposal({ profile,

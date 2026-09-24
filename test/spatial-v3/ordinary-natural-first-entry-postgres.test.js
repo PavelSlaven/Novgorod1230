@@ -16,8 +16,10 @@ import { applyOrdinaryMaterializationAtomicWritePlanInTransaction,
   createOrdinaryMaterializationAtomicWritePlan } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-phase-6-commit.js';
 import { createOrdinaryMaterializationFirstEntryProvisioner,
-  createOrdinaryGeneratedFirstEntryProposal } from
+  createOrdinaryGeneratedFirstEntryProposal, createTargetFiniteFirstEntryPorts } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { loadTargetFiniteFirstEntryProfile } from '../../apps/game-server/src/internal/target-runtime-profiles.js';
+import { targetFiniteProfileCatalogFixture } from './target-finite-profile-fixture.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-enablement.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from
@@ -79,6 +81,7 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
   pool = new Pool({ host: '127.0.0.1', port, user: 'ordinary', password: 'ordinary',
     database: 'ordinary', connectionTimeoutMillis: 5000 });
   for (const sql of SPATIAL_V3_TARGET_MIGRATIONS) await pool.query(sql);
+  await pool.query(readFileSync(new URL('../../tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql', import.meta.url), 'utf8'));
   await seedParty(pool);
   for (const g5 of ['first', 'second', 'rights', 'unknown']) await seedScene(pool, g5);
   const legacy = createOrdinaryMaterializationFirstEntryProvisioner({ profile });
@@ -93,15 +96,24 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
   assert.equal((await load('first')).execution_context.context_bound_capabilities.length, 1);
   assert.equal((await pool.query('SELECT count(*)::int n FROM party_runtime.party_resource_nodes')).rows[0].n, 1);
   const proposal = await cloneSceneProposal(pool, 'first', 'generated');
-  const readProperty = propertyReader();
+  const verifiedCatalog = await targetFiniteProfileCatalogFixture();
+  const targetProfile = await loadTargetFiniteFirstEntryProfile({ worldRevisionId: candidate.target.world_revision_id, verifiedCatalog });
+  const targetPorts = createTargetFiniteFirstEntryPorts(targetProfile);
+  const readProperty = targetPorts.readNaturalSourceProperty;
   await assert.rejects(() => readProperty({ transaction: pool, partyId: 'party-natural',
     g5Id: 'unknown', g4Id: binding('unknown').g4_id,
     sourceRef: `m2c_finite_deadwood_v1:${canonicalDigest({ party_id: 'party-natural',
       generated_g5_id: 'unknown', profile_id: 'm2c_finite_deadwood_v1', version: 1 }).slice(0, 24)}`,
     profileId: 'm2c_finite_deadwood_v1', operation: 'gather_deadwood' }),
   { code: 'M2C_NATURAL_ACCESS_CONTEXT_UNRESOLVED' });
-  const prepare = createOrdinaryGeneratedFirstEntryProposal({ profile,
-    naturalSourceAuthoring: { candidateBytes, approval }, readNaturalSourceProperty: readProperty });
+  const prepare = targetPorts.prepareFirstEntry;
+  await assert.rejects(prepare({ transaction: pool, request: { party_id: 'party-natural' } }),
+    { code: 'ORDINARY_FINITE_CATALOG_PIN_MISMATCH' });
+  const { schema: _schema, ...catalogPin } = verifiedCatalog.pin;
+  const pinFields = ['party_id', ...Object.keys(catalogPin)];
+  await pool.query(`INSERT INTO party_runtime.party_catalog_pins (${pinFields.join(',')})
+    VALUES (${pinFields.map((_, index) => `$${index + 1}`).join(',')})`, ['party-natural', ...Object.values(catalogPin)]);
+  let failBeforeCommit = true;
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool,
     recheck: async () => ({ ok: true }) });
   const generate = () => committer.prepareExpansion({ party_id: 'party-natural',
@@ -112,13 +124,25 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
           world_revision_id: candidate.target.world_revision_id } },
         proposal, change_set_id: 'entry-generated' });
       const plan = await generatedPlan(proposal, admitted.approved_write_sets);
-      return { ok: true, plan, recheck: admitted.recheck, created_at_turn: 0 };
+      return { ok: true, plan, recheck: async (context) => {
+        const current = await admitted.recheck(context);
+        return failBeforeCommit ? { ok: false, code: 'state_version_conflict' } : current;
+      }, created_at_turn: 0 };
     } });
+  assert.equal((await generate()).ok, false);
+  assert.equal((await pool.query("SELECT count(*)::int n FROM party_runtime.party_g5_sites WHERE id='generated'")).rows[0].n, 0);
+  assert.equal((await pool.query('SELECT count(*)::int n FROM party_runtime.party_resource_nodes')).rows[0].n, 1);
+  assert.equal((await pool.query("SELECT count(*)::int n FROM party_runtime.party_command_idempotency WHERE idempotency_key='natural-generated'")).rows[0].n, 0);
+  failBeforeCommit = false;
   const generated = await generate();
   assert.equal(generated.ok, true, JSON.stringify(generated));
   const generatedLoad = await load('generated');
   assert.equal(generatedLoad.property_placement_context.item_kind, 'natural_resource_portion');
   assert.equal(generatedLoad.execution_context.context_bound_capabilities.length, 2);
+  assert.equal(generatedLoad.execution_context.scope_presence_enabled, false);
+  assert.deepEqual(generatedLoad.execution_context.allowed_disclosure_policy_refs, []);
+  assert.deepEqual(generatedLoad.execution_context.stage_b_classification_eval.cases, []);
+  assert.equal(generatedLoad.objective_context.context_refs.region_ref, targetProfile.profile.context_refs.region_ref);
   for (const cap of generatedLoad.execution_context.context_bound_capabilities) {
     assert.equal(cap.execution_context.mechanics_policy.mass_grams_per_quantity_unit, 50);
     assert.equal(cap.finite_source_authority.finite_source.quantity_unit_ref.id, 'item');

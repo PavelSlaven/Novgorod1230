@@ -41,6 +41,11 @@ import {
   WORLD_RUNTIME_CATALOG_MIGRATION_V3
 } from './forward-migrations.js';
 import { RECORD_ADAPTERS } from './record-adapters.generated.js';
+import { buildG4NaturalCompiledRecords } from './g4-natural-compiled-records.js';
+import { buildG4NaturalPresentationCompiledRecords } from './g4-natural-presentation-compiled-records.js';
+import { buildG4NaturalPlacementCompiledRecords } from './g4-natural-placement-compiled-records.js';
+import { buildTargetStartCompiledRecords } from './target-start-compiled-records.js';
+import { buildTargetFiniteCompiledRecords } from './target-finite-profile.js';
 
 const CATALOG_SCOPE = 'item_container_materialization_v2';
 const APPROVED_STAGE3C_REVISION =
@@ -98,6 +103,9 @@ export async function prepareSpatialV3TargetItemCatalog({ worldPool,
   const rows = await readRegisteredRows(worldPool);
   const membership = await readPromotedMembership({ candidateManifest,
     candidateRoot, allRowsByTable: rows });
+  const approvedTargetRows = await targetPresentationRows(root);
+  membership.procedural_scene_compiled_records = [
+    ...(membership.procedural_scene_compiled_records ?? []), ...approvedTargetRows];
   const baselineManifest = buildOperatorBaselineSnapshotManifest({
     schemaFingerprint: await readPostgresSchemaFingerprint(worldPool, 'world_base'),
     registry, rowsByTable: Object.fromEntries(Object.entries(rows)
@@ -119,14 +127,16 @@ export async function prepareSpatialV3TargetItemCatalog({ worldPool,
     dependencyLinks: [], g4Transitions: approvedG4Transitions(g4Approval,
       digestEnvelope(finalApproval))
   });
-  if (compiled.record_operations_by_table.some((table) => table.insert_count !== 0)) {
+  if (compiled.record_operations_by_table.some((table) => table.insert_count !== 0
+    && table.table_name !== 'procedural_scene_compiled_records')) {
     fail('FIRST_PLAYABLE_CATALOG_NOT_PROMOTED', 'Target membership must already be approved.');
   }
   const equivalence = { schema: 'rus.target_item_catalog_equivalence.v1',
     result: 'PASS', comparison: 'exact_promoted_rows_to_release_membership',
     stage3c_candidate_digest: candidateManifest.candidate_digest,
     compiled_semantic_payload_digest: compiled.semantic_payload_digest,
-    insert_count: 0 };
+    target_presentation_record_count: approvedTargetRows.length,
+    insert_count: compiled.record_operations_by_table.reduce((sum, table) => sum + table.insert_count, 0) };
   const candidate = finalizeOverlayCandidate({ compiledSemanticPayload: compiled,
     semanticEquivalenceReportDigest: digestEnvelope(equivalence) });
   const promotion = buildPromotionManifest({ compiledSemanticPayload: compiled, candidate });
@@ -151,6 +161,22 @@ export async function prepareSpatialV3TargetItemCatalog({ worldPool,
   });
 }
 
+async function targetPresentationRows(root) {
+  const base = resolve(root, 'data/world-catalogs/novgorod');
+  const approval = await readJson(resolve(base, 'm2c-sol-data-approval.json'));
+  const naturalBytes = await readFile(resolve(base, 'm2c-natural/candidate.json'));
+  if (approval.decision !== 'APPROVE_DATA_ONLY'
+    || createHash('sha256').update(naturalBytes).digest('hex') !== approval.approved_exact_candidates?.natural_baseline_sha256) {
+    fail('SPATIAL_V3_TARGET_PRESENTATION_APPROVAL_REQUIRED', 'Exact independently approved natural baseline is required.');
+  }
+  return [...buildG4NaturalCompiledRecords({ candidate: JSON.parse(naturalBytes) }),
+    ...buildG4NaturalPresentationCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-presentation/candidate.json'), 'utf8'), approval }),
+    ...buildG4NaturalPlacementCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8'), approval }),
+    ...buildTargetStartCompiledRecords({ candidateBytes: await readFile(resolve(base, 'live-world-runtime-v17/target-start-candidate.json'), 'utf8'), approval }),
+    ...buildTargetFiniteCompiledRecords({ mappedBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-approved.json'), 'utf8'),
+      manifestBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-manifest.json'), 'utf8'), approval })];
+}
+
 export function buildSpatialV3TargetItemImport({ preparation,
   baselineAttestation, overlayAttestation }) {
   const baseline = preparation.baseline_request;
@@ -172,7 +198,8 @@ export function buildSpatialV3TargetItemImport({ preparation,
       || digestEnvelope(expectedPromotion) !== digestEnvelope(preparation.promotion_manifest)
       || digestEnvelope(expectedBaseline) !== digestEnvelope(baseline)
       || compiled.target_revision_id !== preparation.source_request.target_revision_id
-      || compiled.record_operations_by_table.some((table) => table.insert_count !== 0)) {
+      || compiled.record_operations_by_table.some((table) => table.insert_count !== 0
+        && table.table_name !== 'procedural_scene_compiled_records')) {
     fail('TARGET_ITEM_PREPARATION_MISMATCH', 'Prepared membership changed after review.');
   }
   verifyDecisionAttestation({ attestation: baselineAttestation,

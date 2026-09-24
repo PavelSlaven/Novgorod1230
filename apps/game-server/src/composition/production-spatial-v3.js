@@ -1,6 +1,6 @@
 import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
-import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { createOrdinaryMaterializationFirstEntryProvisioner, createTargetFiniteFirstEntryPorts } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { loadLowerDvinaTraceScenePresentation } from
   '../internal/lower-dvina-trace-scene-presentation.js';
 import { ordinaryBackgroundSeedForLocation } from
@@ -83,7 +83,8 @@ export async function createSpatialV3ProductionCompositionRoot({
     const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
     const targetProfiles = targetContext == null ? null : await loadTargetRuntimeProfiles({
-      rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id });
+      rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id,
+      verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog });
     const [profiles, spatialSemanticProfile, scenePresentation,
       npcSemanticRemainderProfile, loadedWorldKnowledge,
       scenarioBundle] = await Promise.all([
@@ -108,6 +109,8 @@ export async function createSpatialV3ProductionCompositionRoot({
     ]);
     const worldKnowledge = Object.freeze({ ...loadedWorldKnowledge,
       calendar_profile: scenarioBundle.calendar_profile });
+    const targetFiniteFirstEntry = targetProfiles == null ? null
+      : createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry);
     const bindingContext = Object.freeze({ env, config,
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
@@ -116,7 +119,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       npcSemanticRemainderProfile,
       worldKnowledge,
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
-        spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool }) }),
+        spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool }), targetFiniteFirstEntry }),
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });
@@ -145,6 +148,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;
     const committer = createSpatialV3PostgresCombinedAtomicCommitter({
       pool: pools.partyPool, recheck: bindings.commitRecheck,
+      readNaturalSourceProperty: targetFiniteFirstEntry?.readNaturalSourceProperty ?? null,
       ordinaryFirstEntryProvisioner: targetContext == null
         ? { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }
         : null, now });

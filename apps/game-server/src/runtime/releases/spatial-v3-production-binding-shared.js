@@ -144,10 +144,10 @@ export async function createSpatialV3ProductionBindings(
       'active runtime catalog uses another exact runtime contract'
     );
   }
-  const ordinaryStageBApproval =
+  const ordinaryStageBApproval = targetStartRuntime == null ?
     await loadLowerDvinaTraceOrdinaryStageBApproval({
       rootDir: config.rootDir ?? process.cwd()
-    });
+    }) : null;
   let publicRuntime = null;
   const targetCompositionPorts =
     createTargetCompositionPorts(

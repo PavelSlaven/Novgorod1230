@@ -79,6 +79,9 @@ function orderingParentKeys(write) {
     parents.add(
       `party_runtime.party_route_plans:${write.record.route_plan_id}`
     );
+    parents.add(
+      `party_runtime.party_route_plan_steps:${write.record.route_plan_id}:0`
+    );
   }
   if (write?.target_table === 'traveller_travel_states'
       && write.record?.route_plan_execution_id) {

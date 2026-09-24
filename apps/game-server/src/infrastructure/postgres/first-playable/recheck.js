@@ -5,6 +5,7 @@ import { recheckTracePhase3PreparedLocationCapacity } from
 import { recheckLocalEvidenceSlot } from './recheck-local-evidence-slot.js';
 import { recheckPhase6TargetedAdmission } from './recheck-phase6-admission.js';
 import { recheckS1LocalMovement } from './recheck-s1-local-movement.js';
+import { recheckSiteConnectionTraversal } from './recheck-site-connection-traversal.js';
 import { recheckWorldRouteArrival } from './recheck-world-route-arrival.js';
 import { recheckSpatialV3PostgresFirstEntry } from '../spatial-v3-first-entry-recheck.js';
 
@@ -21,6 +22,9 @@ export async function firstPlayableCommitRecheck({ transaction, party_id: partyI
   }
   if (check.kind === 's1_local_movement') {
     return recheckS1LocalMovement({ transaction, partyId, check });
+  }
+  if (check.kind === 'site_connection_traversal') {
+    return recheckSiteConnectionTraversal({ transaction, partyId, check });
   }
   if (check.kind === 'resource_binding') {
     const result = await transaction.query(

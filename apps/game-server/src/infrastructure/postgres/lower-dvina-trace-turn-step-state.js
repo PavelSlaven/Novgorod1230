@@ -8,6 +8,7 @@ import { serverError } from '../../errors.js';
 import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
 import { assertSharedSemanticSnapshotSafe } from
   './lower-dvina-trace-conversation-state.js';
+import { SITE_TRAVERSAL_OWNER } from './spatial-v3-site-traversal-commit.js';
 
 export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
   partyId, turnNumber, nextVersion, changeSetId, idemId, envelope
@@ -217,8 +218,8 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
     writes.updates.push(row('party_positions', partyId, {
       party_id: partyId,
       g4_id: snapshot.position.g4_id,
-      g5_node_id: snapshot.position.g5_node_id,
-      g5_anchor_id: snapshot.position.g5_anchor_id
+      g5_node_id: snapshot.position.g5_node_id ?? null,
+      g5_anchor_id: snapshot.position.g5_anchor_id ?? null
     }));
   }
   if (envelope.body_update.applied) writes.updates.push(row(
@@ -249,7 +250,7 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
       }));
   }
   const transition = envelope.consequence?.position_transition;
-  if (transition?.owner === '@rus/movement-routes') writes.updates.push(row(
+  if (['@rus/movement-routes', SITE_TRAVERSAL_OWNER].includes(transition?.owner)) writes.updates.push(row(
     'party_journey_locations', state.journey_location.id, {
       id: state.journey_location.id, party_id: partyId, owner_kind: 'actor',
       owner_id: state.actor_id, location_kind: 'scene',

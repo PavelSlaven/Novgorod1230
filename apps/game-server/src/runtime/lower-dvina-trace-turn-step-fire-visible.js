@@ -31,6 +31,10 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
   return Object.freeze({
     async project(input) {
       const consequence = input?.consequence;
+      if (consequence?.position_transition?.owner
+          === '@rus/turn/spatial-v3-site-connection-traversal') {
+        return structuredClone(consequence.visible_seed?.destination_visible_context);
+      }
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
       if (!seedEntries.some(([key]) => key.startsWith(FIRE_SEED_PREFIX))) {

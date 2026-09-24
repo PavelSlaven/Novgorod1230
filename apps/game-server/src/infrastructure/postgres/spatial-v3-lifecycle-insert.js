@@ -62,12 +62,15 @@ async function insertTemporalEvent(tx, terminal) {
 }
 
 async function insertRouteExecution(tx, terminal) {
-  const source = (await tx.query(
-    `SELECT source_endpoint_snapshot
-     FROM party_runtime.party_route_plans
-     WHERE id=$1`,
+  const plan = (await tx.query(
+    `SELECT p.source_endpoint_snapshot, s.step_kind
+     FROM party_runtime.party_route_plans p
+     JOIN party_runtime.party_route_plan_steps s
+       ON s.route_plan_id=p.id AND s.ordinal=0
+     WHERE p.id=$1`,
     [terminal.route_plan_id]
-  )).rows[0]?.source_endpoint_snapshot;
+  )).rows[0];
+  const source = plan?.source_endpoint_snapshot;
   if (!source) {
     throw Object.assign(
       new Error('route plan source is unavailable for lifecycle insert'),
@@ -127,12 +130,14 @@ async function insertRouteExecution(tx, terminal) {
     await tx.query(
       `UPDATE party_runtime.party_route_plan_executions
      SET status='active',
-         current_endpoint_ref=NULL,
-         active_travel_state_id=$2,
-         started_at_turn=$3,
+         current_endpoint_ref=$2,
+         active_travel_state_id=$3,
+         started_at_turn=$4,
          state_version=2
      WHERE id=$1 AND status='planned' AND state_version=1`,
-      [terminal.id, activeTravelStateId, terminal.started_at_turn]
+      [terminal.id, plan.step_kind === 'immediate_action' ? source : null,
+        plan.step_kind === 'immediate_action' ? null : activeTravelStateId,
+        terminal.started_at_turn]
     );
     await tx.query(
       `UPDATE party_runtime.party_route_plan_executions

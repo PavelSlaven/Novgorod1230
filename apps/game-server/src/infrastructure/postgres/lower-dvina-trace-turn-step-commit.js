@@ -42,6 +42,8 @@ import {
   backgroundNpcPlanMatchesEnvelope,
   projectBackgroundNpcRemainder
 } from './lower-dvina-trace-turn-step-commit-projections.js';
+import { applySiteTraversalTransition, siteTraversalWrites } from
+  './spatial-v3-site-traversal-commit.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer,
@@ -161,6 +163,8 @@ export async function commitLowerDvinaTraceTurnStep({
     visibleContext:envelope.visible_context,ordinaryPlan,changeSetId });
   applyS1LocalPositionTransition({ snapshot: base.snapshot, state,
     transition: envelope.consequence.position_transition });
+  applySiteTraversalTransition({ snapshot: base.snapshot, state,
+    consequence: envelope.consequence });
   for (const plan of actionProductionPlans) {
     applyActionProductionProjection({ next: base.snapshot, plan });
   }
@@ -208,10 +212,18 @@ export async function commitLowerDvinaTraceTurnStep({
   if (spatialSemanticPlan != null) {
     writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
   }
+  const siteTraversal = siteTraversalWrites({ partyId, envelope,
+    changeSetId, idemId, turnNumber });
+  if (siteTraversal.writes != null) {
+    for (const key of ['inserts', 'updates', 'appends', 'deletes']) {
+      writes[key].push(...siteTraversal.writes[key]);
+    }
+  }
     const built = await buildLowerDvinaTraceTurnStepCommitPlan({
       partyId, state, envelope, inputDigest, visibleEnvelope, writes,
       turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
       localFirePlans, spatialSemanticPlan,
+      siteTraversalRechecks: siteTraversal.rechecks,
       temporalResults: envelope.time_update.temporal_results ?? []
     });
   const committed = await committer.commit({

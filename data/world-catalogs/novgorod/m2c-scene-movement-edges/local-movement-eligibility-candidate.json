@@ -34,7 +34,7 @@
     },
     {
       "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json",
-      "sha256": "1899e9b286dcd163b9879e90698fca5dd86899fc4e5c410a4d298f05304d49ce",
+      "sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133",
       "directness": "exact_approved_authoring",
       "confidence": "high"
     }

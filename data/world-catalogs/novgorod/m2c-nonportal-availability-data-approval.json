@@ -1,0 +1,31 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent data review; not the authoring or production-code author",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "Three immutable site_connection profile @2 successors with null availability_condition_set_ref, 454 exact directed canonical G5 binding @2 successors across 32 G4, 457 matching authoring versions, 1365 new dependency edges, 32 existing G4 expansion edges retargeted from local_passage@1 to @2, and the exact candidate import manifest. Existing @1 profile and binding rows and non-site-connection availability refs remain unchanged.",
+  "exact_candidate": {
+    "manifest_sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133",
+    "authoring_evidence_sha256": "a29676ad909bd1e082f1a8bc97d6e08a168b7cfb6e9e231eb9240b998c1163c6",
+    "connection_profiles_sha256": "9de3d2762bc13d2d7db4dad18f0e70ff9128aff4882657a5ce67a879c90898a8",
+    "connection_bindings_sha256": "4c3d2e21b6946682473caef80035282d7284597df4fe6b68fbc32d84f92a944e",
+    "authoring_versions_sha256": "b0e704ea2a4fa707d1592b3380cb121d69bba02e75db41cd0bb042ecfafe6c96",
+    "dependency_edges_sha256": "aca679943f50bb9e2aacf7af49918649f3d48de896b5446949ec7774ff73d7fd"
+  },
+  "profile_digests": {
+    "cprofv3__site_connection__alternate_local_passage@2": "429beacf2c42be5a55f324ac5f66656927a78a3b625ed985a3558f7fb2b86ee7",
+    "cprofv3__site_connection__local_cross_link@2": "8f2327405ade3f1883e8bb6338ce048d2aa1f6bdffe88daee82397b123ae2190",
+    "cprofv3__site_connection__local_passage@2": "acfbdead0d93d406a7face27210c27938e2503448d5e9f931b4dc858904157e0"
+  },
+  "source_pins": {
+    "approved_target_catalog_manifest_sha256": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e",
+    "approved_source_index_sha256": "f0f1e34c66836fd5981513623c291d3d211eac82814d707ff2861de6b29b5c89",
+    "prior_m2c_data_approval_sha256": "f9715b568647aab7c0e9062f0339f8f2cb38f7a1600d5b31db682f30afd4f33f"
+  },
+  "provenance_and_applicability": "Approved target catalog directly supports the unchanged site identities, directed endpoint relations, passage types, source pairs and G4 membership. The three null availability values are an editorial successor choice permitted for non-portal site connections by the active Spatial contract; they are not historical observations. The approved predecessor profiles and bindings remain byte-equivalent prefixes. Each @2 binding preserves its @1 endpoints and source pair, pins its reciprocal @2 binding and one @2 profile, and remains inside one G4.",
+  "checks": "All candidate dataset SHA-256 values match the manifest. P12 validateAuthoringBundle returned ok with no errors or data gaps. Independent source comparison, version/dependency counts, reciprocal directions, local membership and exact FK target checks passed. Existing @1 profile and binding rows are unchanged; the only prior dependency-edge changes are the 32 exact G4 expansion profile retargets.",
+  "dependent_pin_update_required": "The source_refs entry for the M2c import manifest in m2c-scene-movement-edges/local-movement-eligibility-candidate.json still pins 1899e9b286dcd163b9879e90698fca5dd86899fc4e5c410a4d298f05304d49ce; refresh it to 2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133. That changes the candidate SHA, so independently reapprove the exact candidate before updating m2c-sol-data-approval.json local_movement_eligibility_candidate_approval.candidate_sha256. Then refresh the mapped package source_records.json candidate_sha256 provenance, its manifest dataset/manifest hashes, and the separate local_movement_eligibility_mapped_approval source_candidate_sha256 and manifest_sha256 pins after independent mapped-data review. Do not silently rewrite either existing approval.",
+  "excludes": "Production activation, runtime/DDL/code review, actual portal-state behavior, world-route or other conditional availability, historical terrain claims, existing party migration, and reapproval of the local-movement-eligibility candidate.",
+  "activation_authorized": false
+}

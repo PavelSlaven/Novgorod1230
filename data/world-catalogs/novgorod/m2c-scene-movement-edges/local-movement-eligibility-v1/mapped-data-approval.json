@@ -1,0 +1,17 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent mapped-data review; not the candidate, mapping or production-code author",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "source_candidate_sha256": "a86de4fc70b0aaf02dbd0d8a6d9006dc3a4f9f489d601a59d97d5b09abac0dbb",
+  "source_repin_approval_sha256": "e0856ac34392d64a579015849a35db110db560688d46adafb4298244d910fe33",
+  "manifest_sha256": "685601caf54c05757d7b0934af0e0366fd912ca3cb38e19c2320ad4ab4222470",
+  "dataset_sha256": "3923773694dc364f8187eb81edddb2aefa14e6bd122e91e49c51cd4798f65c75",
+  "source_records_sha256": "77eb1583187d00b969ac815369af895e15269936425b6778db6119e327bf8e86",
+  "scope": "Exact approved-status mapping of 68 local movement eligibility adjuncts for 17 approved scene templates, 68 matching authoring versions and canonical digests, one repinned editorial source record, and 276 unchanged canonical node dependency rows. Every adjunct preserves its candidate facts and references one existing directed edge with a distinct authored opposing edge at swapped endpoints. The single-root transition limit is editorial mechanics; original null reverse and edge capacity, destination position capacity one, and current visibility and locked occupancy requirements remain unchanged.",
+  "checks": "Independently matched all candidate source_refs and repin approval SHA-256 values against current bytes; compared all 68 mapped records with the exact candidate, source scene templates, directed edge pairs and position slots; recomputed all 68 canonical digests and matching authoring versions; verified unchanged node inventory and all four manifest dataset SHA-256 values. P12 validateAuthoringBundle returned ok with no errors or data gaps.",
+  "excludes": "P12 import/readback, runtime or production activation, current visibility or occupancy admission, mutation of original edges or positions, historical party migration, runtime/DDL/code approval, and approval of the whole M2c milestone. Import and activation require a separate explicit operator gate.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

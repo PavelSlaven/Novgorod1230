@@ -107,6 +107,19 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
     }, transaction, observedPositionId);
   }
   const provider = Object.freeze({
+    async recheckLocalMovementVisibility({ transaction, partyId, actorId, edgeId,
+      positionId } = {}) {
+      if (typeof transaction?.query !== 'function') return { ok: false };
+      try {
+        const disclosed = await localDisclosure({ transaction, partyId, actorId,
+          state: { party_id: partyId, actor_id: actorId,
+            journey_location: { scene_position_id: positionId } } });
+        return { ok: disclosed.some((row) => row.edge_id === edgeId) };
+      } catch (error) {
+        if (error.details?.reason === 'current_local_edge_disclosure_required') return { ok: false };
+        throw error;
+      }
+    },
     async readVisibleLocalEdgeRefs(input) {
       return (await localDisclosure(input)).map((row) => row.edge_id);
     },

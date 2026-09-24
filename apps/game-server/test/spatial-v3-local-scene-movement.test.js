@@ -2,12 +2,23 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createSpatialV3LocalSceneRuntime } from
   '../src/runtime/spatial-v3-local-scene-runtime.js';
+import { loadApprovedLocalMovementEligibilityPins } from
+  '../src/infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
 import { createTraceLocalSceneCommands } from
   '../src/runtime/lower-dvina-trace-local-scene-commands.js';
 import { applyS1LocalPositionTransition } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-commit-projections.js';
 
 const positions = ['arrival', 'focus', 'departure'];
+
+test('production local movement uses exact approved 68 policy pins', () => {
+  const worldRevisionId = 'novgorod_spatial_v3_target_contract_approval_001';
+  const pins = loadApprovedLocalMovementEligibilityPins(worldRevisionId);
+  assert.equal(pins.length, 68);
+  assert.equal(new Set(pins.map((pin) => pin.id)).size, 68);
+  assert.throws(() => loadApprovedLocalMovementEligibilityPins('another-revision'),
+    { code: 'SPATIAL_V3_LOCAL_MOVEMENT_PINS_INVALID' });
+});
 const edges = positions.flatMap((from, index) => [index > 0
   ? [from, positions[index - 1]] : null,
 index < positions.length - 1 ? [from, positions[index + 1]] : null])
@@ -40,11 +51,12 @@ test('local movement follows only committed directed edges; P16 changes exact po
     return { rows: edges.filter(({ from_position_ref: from }) => from === positionId) };
   } };
   const runtime = createSpatialV3LocalSceneRuntime({ pool,
-    readVisibleLocalEdgeRefs: async ({ state: current }) => edges
+    readLocalEdgeDisclosure: async ({ state: current }) => edges
       .filter(({ from_position_ref: from }) => from === current.position.position_id)
-      .map(({ edge_id: id }) => id) });
+      .map(({ edge_id: id }) => ({ edge_id: id, display_label: `Проход ${id}` })) });
   const initial = await runtime.listLocalOptions({ partyId: 'party', actorId: 'actor', state: committed });
   assert.deepEqual(initial.map(({ edge_id: id }) => id), ['arrival:focus']);
+  assert.equal(initial[0].display_label, 'Проход arrival:focus');
   await assert.rejects(runtime.prepareLocalMovement({ partyId: 'party', actorId: 'actor',
     state: committed, edgeId: 'focus:departure', playerInput: {}, inputDigest: 'digest' }),
   { code: 'SPATIAL_V3_LOCAL_EDGE_UNAVAILABLE' });
@@ -102,7 +114,7 @@ test('full destination or changed journey version denies local movement', async 
   const pool = { async query() { return { rows: [{ ...edges.find((edge) =>
     edge.edge_id === 'arrival:focus'), destination_occupancy: occupied ? 2 : 0 }] }; } };
   const runtime = createSpatialV3LocalSceneRuntime({ pool,
-    readVisibleLocalEdgeRefs: async () => ['arrival:focus'] });
+    readLocalEdgeDisclosure: async () => [{ edge_id: 'arrival:focus', display_label: 'Проход 1' }] });
   const source = state('arrival');
   assert.deepEqual(await runtime.listLocalOptions({ partyId: 'party', actorId: 'actor',
     state: source }), []);

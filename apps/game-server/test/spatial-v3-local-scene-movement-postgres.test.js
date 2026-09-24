@@ -39,10 +39,11 @@ test('committed canonical scene edges move arrival→focus→departure with stal
     }
     await seed(db);
     const runtime = createSpatialV3LocalSceneRuntime({ pool: db,
-      readVisibleLocalEdgeRefs: async ({ state: current }) =>
+      readLocalEdgeDisclosure: async ({ state: current }) =>
         [['arrival', 'focus'], ['focus', 'arrival'], ['focus', 'departure'],
           ['departure', 'focus']].filter(([from]) =>
-          from === current.position.position_id).map(([from, to]) => `${from}:${to}`) });
+          from === current.position.position_id).map(([from, to]) => ({
+            edge_id: `${from}:${to}`, display_label: `Проход ${from}:${to}` })) });
     let source = state('arrival', 1);
     assert.deepEqual((await runtime.listLocalOptions({ partyId: 'party', actorId: 'actor',
       state: source })).map(({ edge_id: id }) => id), ['arrival:focus']);

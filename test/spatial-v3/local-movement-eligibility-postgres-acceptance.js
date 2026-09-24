@@ -39,13 +39,15 @@ export async function assertLocalMovementEligibilityPostgres(pool) {
     'canonical_digest'].map((key) => [key, row[key]])));
   const readLocalMovementEligibility = createSpatialV3LocalMovementEligibilityReader({ worldPool: pool, pins });
   // Visibility is an explicit test owner. This test does not authorize production disclosure.
-  const visible = async () => ['edge_1', 'edge_2', 'edge_3', 'edge_4'];
-  const runtime = createSpatialV3LocalSceneRuntime({ pool, readLocalMovementEligibility, readVisibleLocalEdgeRefs: visible });
+  const visible = async () => ['edge_1', 'edge_2', 'edge_3', 'edge_4'].map((edge_id) =>
+    ({ edge_id, display_label: `Проход ${edge_id}` }));
+  const runtime = createSpatialV3LocalSceneRuntime({ pool, readLocalMovementEligibility,
+    readLocalEdgeDisclosure: visible });
   const input = { partyId: 'adjunct-party', actorId: 'actor', state: state('arrival', 1) };
   assert.deepEqual(await createSpatialV3LocalSceneRuntime({ pool,
     readLocalMovementEligibility }).listLocalOptions(input), [], 'topology and policy grant no visibility');
   assert.deepEqual(await createSpatialV3LocalSceneRuntime({ pool,
-    readVisibleLocalEdgeRefs: visible }).listLocalOptions(input), [], 'one-way edges need explicit imported adjunct');
+    readLocalEdgeDisclosure: visible }).listLocalOptions(input), [], 'one-way edges need explicit imported adjunct');
   const prepared = await runtime.prepareLocalMovement({ ...input, edgeId: policy.edge_slot_key,
     playerInput: {}, inputDigest: 'adjunct-move' });
   const admission = prepared.position_transition.movement_admission;

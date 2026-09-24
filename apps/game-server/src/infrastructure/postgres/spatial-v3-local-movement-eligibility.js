@@ -1,4 +1,35 @@
 import { isDeepStrictEqual } from 'node:util';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { serverError } from '../../errors.js';
+
+export function loadApprovedLocalMovementEligibilityPins(worldRevisionId) {
+  const root = new URL('../../../../../data/world-catalogs/novgorod/m2c-scene-movement-edges/local-movement-eligibility-v1/', import.meta.url);
+  const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
+  try {
+    const approval = JSON.parse(readFileSync(new URL('mapped-repin-v2-data-approval.json', root)));
+    const manifestBytes = readFileSync(new URL('manifest.json', root));
+    const manifest = JSON.parse(manifestBytes);
+    const dataset = manifest.datasets.find((row) =>
+      row.table === 'spatial_v3_local_movement_eligibility_profiles');
+    if (approval.decision !== 'APPROVE_DATA_ONLY'
+        || digest(manifestBytes) !== approval.manifest_sha256
+        || dataset?.sha256 !== approval.dataset_sha256
+        || manifest.world_revision_id !== worldRevisionId) throw new Error('approval mismatch');
+    const policyBytes = readFileSync(new URL(dataset.file, root));
+    const policies = JSON.parse(policyBytes);
+    if (digest(policyBytes) !== approval.dataset_sha256
+        || !Array.isArray(policies) || policies.length !== 68
+        || policies.some((row) => row.world_revision_id !== worldRevisionId)) {
+      throw new Error('policy mismatch');
+    }
+    return policies.map((row) => ({ id: row.id, version: row.version,
+      world_revision_id: row.world_revision_id, canonical_digest: row.canonical_digest }));
+  } catch {
+    throw serverError('SPATIAL_V3_LOCAL_MOVEMENT_PINS_INVALID',
+      'Approved local movement eligibility pins are required.');
+  }
+}
 
 /** Reads only explicitly selected, imported Spatial adjunct versions. No latest-version selection. */
 export function createSpatialV3LocalMovementEligibilityReader({ worldPool, pins } = {}) {

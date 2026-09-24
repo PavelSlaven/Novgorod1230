@@ -93,3 +93,19 @@ test('supplied transaction remains caller-owned and stable cover follows approve
   assert.throws(() => approvedNaturalStableCover({ ...marsh, profile_id: 'unknown' }),
   (error) => error.details?.reason === 'approved_natural_stable_cover_required');
 });
+
+test('local movement recheck uses commit transaction and current source position', async () => {
+  const { provider, scene, natural, queries } = fixture();
+  const transaction = { async query(sql) { queries.push(sql); } };
+  const input = { transaction, partyId: 'party', actorId: 'actor',
+    positionId: 'a', edgeId: 'edge' };
+  assert.deepEqual(await provider.recheckLocalMovementVisibility(input), { ok: true });
+  assert.deepEqual(await provider.recheckLocalMovementVisibility({ ...input,
+    edgeId: 'another' }), { ok: false });
+  scene.location.scene_position_id = 'b';
+  natural.observer.position_id = 'b';
+  assert.deepEqual(await provider.recheckLocalMovementVisibility(input), { ok: false });
+  assert.deepEqual(await provider.recheckLocalMovementVisibility({ ...input,
+    transaction: null }), { ok: false });
+  assert.deepEqual(queries, []);
+});

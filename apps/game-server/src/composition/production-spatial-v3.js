@@ -35,6 +35,9 @@ import { deriveActivatedReleaseFromReadback } from './production-v2-activation-s
 import { loadSpatialV3TargetProductionRelease, loadTargetCatalogActivationApprovals } from './production-spatial-v3-release-v17.js';
 import { loadTargetRuntimeProfiles } from '../internal/target-runtime-profiles.js';
 import { createSpatialV3LocalSceneRuntime } from '../runtime/spatial-v3-local-scene-runtime.js';
+import { createSpatialV3LocalMovementEligibilityReader,
+  loadApprovedLocalMovementEligibilityPins } from
+  '../infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
 import { createSpatialV3CurrentMovementCapability } from
   '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import { createSpatialV3CurrentVisibilityProvider } from
@@ -165,6 +168,9 @@ export async function createSpatialV3ProductionCompositionRoot({
       });
     const siteTraversalCapability = targetContext == null ? null
       : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
+    const readLocalMovementEligibility = targetContext == null ? null
+      : createSpatialV3LocalMovementEligibilityReader({ worldPool: pools.worldPool,
+        pins: loadApprovedLocalMovementEligibilityPins(release.world_revision_id) });
     const projectDestination = targetContext == null ? null : async ({ transaction,
       partyId, actorId, context, destinationPosition, destinationSite,
       destinationPositionId, destinationSiteId, current } = {}) => {
@@ -239,7 +245,8 @@ export async function createSpatialV3ProductionCompositionRoot({
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
         spatialExpansionRuntime,
         spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
-          readVisibleLocalEdgeRefs: currentVisibility.readVisibleLocalEdgeRefs }),
+          readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
+          readLocalMovementEligibility }),
         readCurrentSources: currentVisibility.readCurrentSources, targetFiniteFirstEntry }),
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
@@ -271,7 +278,8 @@ export async function createSpatialV3ProductionCompositionRoot({
       pool: pools.partyPool, recheck: siteTraversalCapability == null
         ? bindings.commitRecheck
         : (input) => bindings.commitRecheck({ ...input, ...siteTraversalCapability,
-          projectDestination }),
+          projectDestination, readLocalMovementEligibility,
+          recheckLocalMovementVisibility: currentVisibility.recheckLocalMovementVisibility }),
       readNaturalSourceProperty: targetFiniteFirstEntry?.readNaturalSourceProperty ?? null,
       ordinaryFirstEntryProvisioner: targetContext == null
         ? { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }

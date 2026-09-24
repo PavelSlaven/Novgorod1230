@@ -1,0 +1,109 @@
+{
+  "schema": "rus.m2c_p12_live_schema_request.v2",
+  "request_id": "novgorod_m2c_p12_live_schema_002",
+  "status": "pending_independent_high_review",
+  "reviewed_head": "02e0c40850d9fb68ee0f446a8f95f0c88d0cc069",
+  "target": "designated_persistent_local_play_world_base_pre_beta_production",
+  "operation": "apply_exact_world_base_ddl",
+  "transaction": "single_atomic_transaction",
+  "supersedes_request_ref": "data/world-catalogs/novgorod/m2c-p12-live-schema-v1/request.json",
+  "part_21_fragment": {
+    "path": "infra/world-base/schema/21.sql",
+    "source_bytes": 10034,
+    "source_sha256": "35fe85394320d195077cabe7f1859f5bbb66475e67843884014a79191f28426d",
+    "first_line": 260,
+    "last_line": 282,
+    "fragment_bytes": 937,
+    "fragment_sha256": "602af9b55691709c554393cf967ea3e3df23374741673b3609aeccc3731cce80",
+    "scope": "CREATE TABLE world_base.procedural_scene_compiled_records and complete GRANT SELECT statement"
+  },
+  "ordered_full_files": [
+    {
+      "path": "infra/world-base/schema/22.sql",
+      "bytes": 2646,
+      "sha256": "6c58a6e3167581c8fddc135c719b2c8d1cd9ae4b5644087744f2ecba313e6acc"
+    },
+    {
+      "path": "infra/world-base/schema/23.sql",
+      "bytes": 3039,
+      "sha256": "6662724cbb979fd61dfee829ddf186839c81601870aef068e023087a9f940f46"
+    },
+    {
+      "path": "infra/world-base/schema/24.sql",
+      "bytes": 6046,
+      "sha256": "97bb116691658bf448d77b1459e14356be64384ab9a8e94ec53428db2dc2c225"
+    },
+    {
+      "path": "infra/world-base/schema/25.sql",
+      "bytes": 2794,
+      "sha256": "6cb1335cad47efe02cc9544881d3397b4a8d40b04ec11f16b797ac83ffbf8253"
+    },
+    {
+      "path": "infra/world-base/schema/26.sql",
+      "bytes": 431,
+      "sha256": "9ba49fee1b39831b0df2d67a4ea65919b8462dd536262090fb7eea74e6bac29b"
+    }
+  ],
+  "exact_sql": {
+    "path": "data/world-catalogs/novgorod/m2c-p12-live-schema-v2/exact-apply.sql",
+    "encoding": "raw_source_bytes_with_ascii_transaction_delimiters",
+    "prefix": "BEGIN;\n",
+    "between_parts": "",
+    "suffix": "COMMIT;\n",
+    "bytes": 15908,
+    "sha256": "9eda7de0c5600c8d168eb04c4467df4b49fa67e8d616359b35f1935ff545e46e"
+  },
+  "preconditions": [
+    "Independent high review approves this exact v2 request and SQL digest before any database write; v1 approval does not apply.",
+    "Operator reconfirms designated persistent local-play database identity and verified offline backup before any write.",
+    "World-base schema parts 18-20 and part 21 through line 259 are present; procedural_scene_compiled_records and the 22-26 objects are absent.",
+    "world_base.region_demographic_profile_entries and world_base.region_appearance_profile_entries exist; role world_reader exists.",
+    "world_base.spatial_v3_g4_expansion_profiles has zero rows before part 22 adds three foreign keys.",
+    "world_base.spatial_v3_node_parents has no duplicate exact edges before part 24 unique index.",
+    "No existing world_base.spatial_v3_canonical_g5_connection_profiles row violates the part 26 CHECK; availability_condition_set_ref remains NOT NULL before apply.",
+    "All source and exact SQL byte counts and SHA-256 hashes match this request."
+  ],
+  "expected_readback": {
+    "tables_present": [
+      "world_base.procedural_scene_compiled_records",
+      "world_base.spatial_v3_expansion_rule_sets",
+      "world_base.spatial_v3_g6_acoustic_baselines",
+      "world_base.spatial_v3_g4_npc_composition_bindings",
+      "world_base.spatial_v3_npc_runtime_profiles",
+      "world_base.spatial_v3_npc_regional_context_profiles",
+      "world_base.spatial_v3_local_movement_eligibility_profiles"
+    ],
+    "constraints_present": [
+      "spatial_v3_expansion_adjacency_rule_fk",
+      "spatial_v3_expansion_connectivity_rule_fk",
+      "spatial_v3_expansion_seed_rule_fk",
+      "spatial_v3_route_profile_requires_availability"
+    ],
+    "indexes_present": [
+      "spatial_v3_g6_acoustic_baselines_generated_unique",
+      "spatial_v3_g6_acoustic_baselines_canonical_unique",
+      "spatial_v3_node_parents_m2c_npc_exact_edge",
+      "spatial_v3_g4_npc_composition_active_generated",
+      "spatial_v3_g4_npc_composition_active_canonical"
+    ],
+    "function_present": "world_base.spatial_v3_local_movement_eligibility_immutable()",
+    "trigger_present": "spatial_v3_local_movement_eligibility_immutable on world_base.spatial_v3_local_movement_eligibility_profiles",
+    "column_nullable": "world_base.spatial_v3_canonical_g5_connection_profiles.availability_condition_set_ref",
+    "world_reader_select_on_procedural_scene_compiled_records": true,
+    "data_rows_changed": 0
+  },
+  "excludes": [
+    "P12 data import",
+    "runtime or release selection",
+    "production composition change",
+    "party migration",
+    "activation"
+  ],
+  "authority": {
+    "request_only": true,
+    "schema_write_authorized": false,
+    "import_authorized_by_this_request": false,
+    "activation_authorized": false,
+    "database_mutated": false
+  }
+}

@@ -1,5 +1,22 @@
 # M2c / M3 procedural materialization data sufficiency
 
+## M2c nature/material completeness benchmark (2026-09-24)
+
+Reproduce with `python tools/spatial-v3/report-m2c-nature-coverage.py --output data/world-catalogs/novgorod/m2c-nature-coverage.json`. The generated [coverage report](../../data/world-catalogs/novgorod/m2c-nature-coverage.json) records every one of the 128 archived regional template links, its exact seed-template source fields (normalized with Unicode NFKC, case folding and whitespace folding), regional source refs and status, exact G4 profile refs where present, admitted M2c layers, and the World Knowledge fauna concept→claim→source map. It is a benchmark, not an approved authoring bundle or runtime binding.
+
+| Regional type | Archive links | Exact M2c G4 template bindings | No exact M2c binding |
+|---|---:|---:|---:|
+| Landscape | 34 | 7 | 27 |
+| Water body | 24 | 4 | 20 |
+| Land use | 31 | 0 | 31 |
+| Place | 39 | 0 | 39 |
+
+The 7 bound landscapes cover all 32 exact G4 profiles; the 4 bound water types cover 28 profiles. Of the other 4 G4, 2 reference water types outside these Novgorod regional links (`wb_estuary`, `wb_nearshore_sea`) and 2 have no water-template ref. All archived regional links remain `draft` and permit G1–G3 scales only. Absence of an exact M2c binding for a regional type therefore is not evidence that an existing G4 is missing a layer. Land-use and place types have no exact key in the current natural profile; joining them by similar labels would invent applicability.
+
+The current 32 M2c natural profiles have 13 broad layers and no fauna layer. They carry zero taxon claims, including for trees. World Knowledge contains 42 explicitly named fauna concepts, 272 claims and 44 distinct cited source refs in this source map. All 272 claims have universal context scope; none is an exact regional template/G4 presence assertion. The benchmark therefore does not promote those facts into local species, animal sightings, sounds, traces or finite stocks. The archived seed fields supply normalized vegetation and soil/material descriptions but no complete per-type historical taxa reference. Flora claims beyond the fauna prefix are not yet indexed by this benchmark. Era correction and species-level source review are still needed before authoring.
+
+**Remaining typed gaps:** `m2c_nature_type_reference_required` (historically checked taxa/material incidence and season per applicable type); `m2c_nature_fauna_layer_authoring_required` (approved fauna presence/trace/acoustic descriptors through the existing natural baseline and presentation owners); `m2c_nature_exact_applicability_required` (source-backed land-use/place applicability to G4/G5). No production import or database write occurred in this benchmark.
+
 Status: authoring/readiness input for PR #98. Source files, candidate bundles,
 approved records and records activated under the exact runtime pin are distinct.
 Only the last class is executable runtime data.

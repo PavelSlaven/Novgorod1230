@@ -74,6 +74,12 @@ test('canonical initial composition requires its own exact applicability and doe
   data.closure.composition.generation_template_id = null;
   data.closure.composition.generation_template_version = null;
   assert.throws(() => compileGeneratedNpcBindings(data), (error) => error.code === 'NPC_COMPOSITION_REGIONAL_CONTEXT_GAP');
+  data.closure.composition.payload.canonical_initial_snapshot_only = true;
+  data.closure.composition.payload.canonical_source_generation_template_ref = ref('wrong');
+  assert.throws(() => compileGeneratedNpcBindings(data), (error) => error.code === 'NPC_COMPOSITION_REGIONAL_CONTEXT_GAP');
+  data.closure.composition.payload.canonical_source_generation_template_ref = ref('template');
+  assert.equal(compileGeneratedNpcBindings(data).npc_inputs.length, 2);
+  delete data.closure.composition.payload.canonical_source_generation_template_ref;
   const applicability = data.closure.regional_context_profiles[0].payload.applicability[0];
   applicability.canonical_g5_ref = canonical;
   delete applicability.generation_template_ref;

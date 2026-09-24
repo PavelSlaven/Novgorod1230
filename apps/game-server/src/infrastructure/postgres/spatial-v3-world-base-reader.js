@@ -660,9 +660,17 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
         ? item.generation_template_ref?.id === target.id
           && item.generation_template_ref?.version === target.version
           && item.canonical_g5_ref === undefined
-        : item.canonical_g5_ref?.id === target.id
+        : (item.canonical_g5_ref?.id === target.id
           && item.canonical_g5_ref?.version === target.version
-          && item.generation_template_ref === undefined;
+          && item.generation_template_ref === undefined)
+          || (composition.payload.canonical_initial_snapshot_only === true
+            && typeof composition.payload.canonical_source_generation_template_ref?.id === 'string'
+            && Number.isInteger(composition.payload.canonical_source_generation_template_ref?.version)
+            && item.generation_template_ref?.id
+              === composition.payload.canonical_source_generation_template_ref?.id
+            && item.generation_template_ref?.version
+              === composition.payload.canonical_source_generation_template_ref?.version
+            && item.canonical_g5_ref === undefined);
       return selectorIsExact && item.g4_ref?.world_revision_id === revision
         && item.g4_ref?.id === g4.id && item.g4_ref?.version === g4.version;
     });

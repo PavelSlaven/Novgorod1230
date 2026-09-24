@@ -127,6 +127,9 @@ export function compileGeneratedNpcBindings({ party_id: partyId, run_id: runId,
         equipment_activation: activation, activity_equipment_candidate_refs: tools.map((tool) => tool.equipment_candidate_id),
         clothing_profile_ref: payload.clothing_profile_ref, regional_context_ref: { id: region.id, version: region.version },
         g4_ref: { ...closure.g4_ref, world_revision_id: world },
+        ...(canonical && composition.payload.canonical_initial_snapshot_only === true
+          ? { canonical_source_generation_template_ref:
+            composition.payload.canonical_source_generation_template_ref } : {}),
         ...(canonical ? { canonical_g5_ref: canonical } : { generation_template_ref: template }) } });
   }
   const rows = [...usedRows.values()];
@@ -198,6 +201,12 @@ function weighted(entries, draw) {
 function applicable(profile, closure) {
   return Array.isArray(profile.applicability) && profile.applicability.some((entry) =>
     same(entry.g4_ref, closure.g4_ref) && (closure.canonical_g5_ref
-      ? entry.generation_template_ref == null && same(entry.canonical_g5_ref, closure.canonical_g5_ref)
+      ? (entry.generation_template_ref == null && same(entry.canonical_g5_ref, closure.canonical_g5_ref))
+        || (closure.composition?.payload?.canonical_initial_snapshot_only === true
+          && text(closure.composition.payload.canonical_source_generation_template_ref?.id)
+          && Number.isInteger(closure.composition.payload.canonical_source_generation_template_ref?.version)
+          && entry.canonical_g5_ref == null
+          && same(entry.generation_template_ref,
+            closure.composition.payload.canonical_source_generation_template_ref))
       : entry.canonical_g5_ref == null && same(entry.generation_template_ref, closure.generation_template_ref)));
 }

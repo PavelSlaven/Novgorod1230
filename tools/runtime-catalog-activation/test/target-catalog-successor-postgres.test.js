@@ -5,7 +5,10 @@ import test from 'node:test';
 import pg from 'pg';
 import { buildCharacterAppearanceV1ImportSql, buildTargetAppearanceTransferImportSql } from '../../spatial-v3/character-appearance-v1-importer.mjs';
 import { buildApprovedTemporalImportSql } from '../../temporal-v4/import-approved-data.mjs';
+import { buildTransactionalImportSql } from '../../spatial-v3/p12-authoring-importer.mjs';
 import { assertTargetCanonicalStartPostgres } from '../../../test/spatial-v3/target-canonical-start-postgres-acceptance.js';
+import { createSpatialV3WorldBaseReader } from '../../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
+import { importAdditionalStartOwnerRows } from '../../../scripts/bootstrap-live-world-v17.mjs';
 import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
 import { createSpatialV3TargetProductionRelease, SPATIAL_V3_TARGET_PRODUCTION_RELEASE } from
   '../../../apps/game-server/src/composition/production-spatial-v3-release-v17.js';
@@ -257,6 +260,41 @@ test('target item and actor successors preserve v6 parties through real PostgreS
     assert.equal((await latest(pool, 'actor_base_attributes_v1')).catalog_revision_id,
       'actor_base_attributes_spatial_v3_target_001');
     for (const file of partyFiles.slice(11)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+    const p12 = await json('data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1/request.json');
+    const parts = await Promise.all(p12.bundle_order.map((bundle) => buildTransactionalImportSql({
+      manifestPath: bundle.manifest_path, wrapTransaction: false,
+      temporaryTablePrefix: bundle.temporary_table_prefix })));
+    await pool.query(`${p12.sql_builder.concatenation.prefix}${parts.join('')}${p12.sql_builder.concatenation.suffix}`);
+    assert.deepEqual(await importAdditionalStartOwnerRows(pool),
+      { npc: 6, acoustic: 2, authoring: 8, rollback: 'pass', readback: 'exact' });
+    const ownerReader = createSpatialV3WorldBaseReader({ query: pool.query.bind(pool) });
+    const ownerStarts = (await json('data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json')).starts;
+    for (const start of ownerStarts) {
+      const place = start.initial_placement;
+      const revision = 'novgorod_spatial_v3_target_contract_approval_001';
+      const [g4, g5, scene] = await Promise.all([
+        pool.query('SELECT canonical_digest FROM world_base.spatial_v3_nodes WHERE id=$1 AND version=$2',
+          [place.g4_ref.id, place.g4_ref.version]),
+        pool.query('SELECT canonical_digest FROM world_base.spatial_v3_nodes WHERE id=$1 AND version=$2',
+          [place.canonical_g5_ref.id, place.canonical_g5_ref.version]),
+        pool.query('SELECT canonical_digest FROM world_base.spatial_v3_scene_templates WHERE id=$1 AND version=$2',
+          [place.scene_template_ref.id, place.scene_template_ref.version])
+      ]);
+      assert.equal(g4.rowCount, 1, start.scenario_id);
+      assert.equal(g5.rowCount, 1, start.scenario_id);
+      assert.equal(scene.rowCount, 1, start.scenario_id);
+      const canonical = { ...place.canonical_g5_ref, world_revision_id: revision,
+        canonical_digest: g5.rows[0].canonical_digest };
+      const npc = await ownerReader.readPinnedG4NpcCompositionClosure({
+        g4: { ...place.g4_ref, world_revision_id: revision, canonical_digest: g4.rows[0].canonical_digest },
+        canonical_g5: canonical });
+      assert.equal(npc.ok, true, `${start.scenario_id}: ${JSON.stringify(npc)}`);
+      const acoustic = await ownerReader.readPinnedCanonicalG5AcousticClosure({ canonical_g5: canonical,
+        scene_template: { ...place.scene_template_ref, world_revision_id: revision,
+          canonical_digest: scene.rows[0].canonical_digest },
+        world_revision_id: revision });
+      assert.equal(acoustic.ok, true, `${start.scenario_id}: ${JSON.stringify(acoustic)}`);
+    }
     await assertTargetCanonicalStartPostgres({ pool, itemPin: targetReadback.item_pin,
       actorBinding: targetReadback.actor_binding, releaseInputs: targetInputs });
     const targetRelease = await createSpatialV3TargetProductionRelease(targetInputs);

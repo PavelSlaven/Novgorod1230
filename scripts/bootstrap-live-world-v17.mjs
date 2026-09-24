@@ -28,6 +28,8 @@ import { WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
   PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
   ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP } from
   '../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { buildAdditionalStartOwnerRows } from
+  '../data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-import.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
@@ -111,6 +113,10 @@ export async function checkV17BootstrapInputs() {
       || sqlBytes !== request.sql_builder.combined_sql_bytes)
     throw new Error('V17_P12_COMBINED_SQL_MISMATCH');
   await exact(capacityManifest, capacityManifestSha256);
+  execFileSync(process.execPath,
+    [`${v17}/additional-start-artifacts/owner-coverage.mjs`, '--check'],
+    { cwd: root, encoding: 'utf8' });
+  await buildAdditionalStartOwnerRows();
 
   const appearance = await json(`${v17}/appearance-transfer-v3-v17-import-request.json`);
   const approved = appearance.approved_data;
@@ -141,6 +147,7 @@ export async function checkV17BootstrapInputs() {
     if (digest(approvedBytes) !== source.sha256) throw new Error(`V17_NATURE_APPROVAL_PIN_MISMATCH:${source.path}`);
   }
   return { schema: 'exact', catalog_ddl: 'exact', gate1: 'exact', p12: 'exact', appearance_v3: 'exact',
+    additional_start_owners: 'exact',
     nature_successor: 'exact', database_mutated: false };
 }
 
@@ -269,6 +276,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     if (digest(Buffer.from(p12Sql)) !== p12Request.sql_builder.combined_sql_sha256)
       throw new Error('V17_P12_COMBINED_SQL_MISMATCH');
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
+
     const afterP12Rollback = await tableCounts(world, Object.keys(beforeP12));
     assertAdded(beforeP12, afterP12Rollback,
       Object.fromEntries(Object.keys(beforeP12).map((name) => [name, 0])), 'P12_ROLLBACK');
@@ -279,6 +287,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       throw new Error('V17_P12_SOURCE_READBACK_MISMATCH');
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
+    const ownerImport = await importAdditionalStartOwnerRows(world);
 
     const capacity = await json(capacityManifest);
     const pinnedTables = ['spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles'];
@@ -464,6 +473,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       gate1: { status: gateReadback.status, digest: gate.first_state_digest },
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },
+      additional_start_owners: ownerImport,
       appearance_v3: { inserted_rows: appearanceRequest.expected_import_readback.inserted_rows,
         rollback: 'pass' }, capacity_v2: { manifest_sha256: capacityManifestSha256,
         runtime_record_digests: capacityDigests }, nature_successor: { inserted_rows: natureRecords.length,
@@ -496,6 +506,71 @@ async function rollbackProbe(pool, apply, table, stage) {
   } finally { client.release(); }
   const after = Number((await pool.query(`SELECT count(*) FROM world_base.${table}`)).rows[0].count);
   if (after !== before) throw new Error(`V17_${stage}_ROLLBACK_MISMATCH`);
+}
+
+export async function importAdditionalStartOwnerRows(pool) {
+  const ownerRows = await buildAdditionalStartOwnerRows();
+  for (const rollback of [true, false]) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query('SET CONSTRAINTS ALL DEFERRED');
+      for (const [table, rows] of [
+        ['source_records', ownerRows.sourceRecords],
+        ['spatial_v3_authoring_versions', ownerRows.authoring],
+        ['spatial_v3_g4_npc_composition_bindings', ownerRows.npc],
+        ['spatial_v3_g6_acoustic_baselines', ownerRows.acoustic]
+      ]) for (const row of rows) {
+        const id = row.entity_id ?? row.id;
+        const key = table === 'spatial_v3_authoring_versions' ? 'entity_id' : 'id';
+        const predicate = table === 'source_records' ? 'id=$1'
+          : `entity_kind=$1 AND ${key}=$2 AND version=$3`;
+        const keyValues = table === 'source_records' ? [id] : [row.entity_kind, id, row.version];
+        const existing = await client.query(`SELECT 1 FROM world_base.${table}
+          WHERE ${predicate}`, keyValues);
+        if (existing.rowCount && table !== 'source_records')
+          throw new Error(`V17_OWNER_ROW_ALREADY_EXISTS:${table}:${id}`);
+        if (!existing.rowCount) {
+          const columns = Object.keys(row);
+          if (!columns.every((name) => /^[a-z][a-z0-9_]*$/u.test(name)))
+            throw new Error(`V17_OWNER_COLUMN_INVALID:${table}`);
+          await client.query(`INSERT INTO world_base.${table} (${columns.join(', ')})
+            SELECT ${columns.join(', ')} FROM jsonb_populate_record(NULL::world_base.${table}, $1::jsonb)`,
+          [JSON.stringify(row)]);
+        }
+        const actual = await client.query(`SELECT (to_jsonb(actual) - 'created_at' - 'updated_at') =
+          (to_jsonb(jsonb_populate_record(NULL::world_base.${table},
+            $${keyValues.length + 1}::jsonb)) - 'created_at' - 'updated_at') AS exact
+          FROM world_base.${table} actual WHERE ${predicate}`,
+        [...keyValues, JSON.stringify(row)]);
+        if (actual.rowCount !== 1 || actual.rows[0].exact !== true)
+          throw new Error(`V17_OWNER_ROW_MISMATCH:${table}:${id}`);
+      }
+      await client.query(rollback ? 'ROLLBACK' : 'COMMIT');
+    } catch (error) { await client.query('ROLLBACK').catch(() => {}); throw error; }
+    finally { client.release(); }
+  }
+  for (const [table, rows] of [
+    ['source_records', ownerRows.sourceRecords],
+    ['spatial_v3_authoring_versions', ownerRows.authoring],
+    ['spatial_v3_g4_npc_composition_bindings', ownerRows.npc],
+    ['spatial_v3_g6_acoustic_baselines', ownerRows.acoustic]
+  ]) for (const row of rows) {
+    const id = row.entity_id ?? row.id;
+    const key = table === 'spatial_v3_authoring_versions' ? 'entity_id' : 'id';
+    const predicate = table === 'source_records' ? 'id=$1'
+      : `entity_kind=$1 AND ${key}=$2 AND version=$3`;
+    const keyValues = table === 'source_records' ? [id] : [row.entity_kind, id, row.version];
+    const actual = await pool.query(`SELECT (to_jsonb(actual) - 'created_at' - 'updated_at') =
+      (to_jsonb(jsonb_populate_record(NULL::world_base.${table},
+        $${keyValues.length + 1}::jsonb)) - 'created_at' - 'updated_at') AS exact
+      FROM world_base.${table} actual WHERE ${predicate}`,
+    [...keyValues, JSON.stringify(row)]);
+    if (actual.rowCount !== 1 || actual.rows[0].exact !== true)
+      throw new Error(`V17_OWNER_COMMITTED_ROW_MISMATCH:${table}:${id}`);
+  }
+  return { npc: ownerRows.npc.length, acoustic: ownerRows.acoustic.length,
+    authoring: ownerRows.authoring.length, rollback: 'pass', readback: 'exact' };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

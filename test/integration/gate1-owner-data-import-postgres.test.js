@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import test from 'node:test';
 import pg from 'pg';
 
+import { applyRevisionPromotionPlan } from
+  '../../tools/world-catalog-workflow/src/revision-promotion.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
 
@@ -163,9 +165,11 @@ test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
     for (let part = 1; part <= 26; part += 1) {
       await pool.query(await readFile(new URL(`../../infra/world-base/schema/${String(part).padStart(2, '0')}.sql`, import.meta.url), 'utf8'));
     }
+    const resultPath = join(dataRoot, 'v17-import-readback-result.json');
     const run = () => spawnSync(process.execPath,
       ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play',
-        '--expected-database', 'novgorod_world_v17'], {
+        '--expected-database', 'novgorod_world_v17',
+        '--write-result', resultPath], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
         env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
       });
@@ -173,13 +177,52 @@ test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
     assert.equal(applied.status, 0, applied.stderr);
     const result = JSON.parse(applied.stdout);
     assert.equal(result.rollback, 'pass');
-    assert.equal(result.repeat_clean_apply, false);
+    assert.equal(result.repeat_readback_status, 'exact_match');
+    assert.match(result.first_state_digest, /^[a-f0-9]{64}$/u);
+    assert.equal(result.repeated_state_digest, result.first_state_digest);
+    assert.equal(Object.hasOwn(result, 'repeat_clean_apply'), false);
+    const evidence = JSON.parse(await readFile(resultPath, 'utf8'));
+    assert.equal(evidence.repeat_readback_status, 'exact_match');
+    assert.equal(evidence.first_state_digest, result.first_state_digest);
+    assert.equal(evidence.repeated_state_digest, result.repeated_state_digest);
+    assert.equal(Object.hasOwn(evidence, 'repeat_clean_apply'), false);
     assert.equal(result.first_state.approved_item_template_count, 102);
     assert.equal(result.first_state.approved_container_template_count, 18);
     assert.equal(result.first_state.approved_g4_count, 9);
     assert.deepEqual(result.repeated_state, result.first_state);
     assert.equal(Number((await pool.query(`SELECT count(*) AS count
       FROM pg_catalog.pg_tables WHERE schemaname = 'world_base'`)).rows[0].count), 208);
+    const client = await pool.connect();
+    try {
+      const target = (await client.query(`SELECT id,parent_revision_id,status,catalog_digest
+        FROM world_base.world_revisions WHERE id=$1`,
+      [result.target_revision_id])).rows[0];
+      const counts = async () => (await client.query(`SELECT
+        (SELECT count(*) FROM world_base.item_templates WHERE world_revision_id=$1) AS items,
+        (SELECT count(*) FROM world_base.container_templates WHERE world_revision_id=$1) AS containers,
+        (SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname='world_base') AS tables`,
+      [result.target_revision_id])).rows[0];
+      const before = await counts();
+      await assert.rejects(() => applyRevisionPromotionPlan({
+        plan: { status: 'ready', manifest: { parent_revision_id:
+          target.parent_revision_id, world_revision_id: target.id } },
+        adapter: {
+          begin: () => client.query('BEGIN'),
+          commit: () => client.query('COMMIT'),
+          rollback: () => client.query('ROLLBACK'),
+          readRevision: async (id) => (await client.query(`SELECT id,status,catalog_digest
+            FROM world_base.world_revisions WHERE id=$1`, [id])).rows[0] ?? null,
+          insert() { throw new Error('unexpected insert on repeated promotion'); },
+          readback() { throw new Error('unexpected readback on repeated promotion'); }
+        }
+      }), /PROMOTION_TARGET_REVISION_ALREADY_EXISTS/u);
+      assert.deepEqual(await counts(), before);
+      assert.deepEqual((await client.query(`SELECT id,parent_revision_id,status,catalog_digest
+        FROM world_base.world_revisions WHERE id=$1`,
+      [result.target_revision_id])).rows[0], target);
+    } finally {
+      client.release();
+    }
     const repeated = run();
     assert.notEqual(repeated.status, 0);
     assert.match(repeated.stderr, /PR17_LOCAL_PLAY_DATABASE_NOT_EMPTY:/u);

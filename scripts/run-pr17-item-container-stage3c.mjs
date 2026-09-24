@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -99,13 +100,18 @@ if (mode === 'dry-run') {
       const firstState = await verifyPromotionState(client, plan, input, gate1);
       const runtimeE2e = await verifyPromotedRuntime(client, plan);
       if (mode !== 'local-play') await initializeSchema(client);
-      const repeated = mode === 'local-play'
-        ? { applied: false }
+      const repeated = mode === 'local-play' ? null
         : await applyRevisionPromotionPlan({ plan,
           adapter: createPostgresAdapter(client, gate1) });
       const repeatedState = await verifyPromotionState(client, plan, input, gate1);
+      if (mode === 'local-play') assert.deepEqual(repeatedState, firstState);
       const result = { ...summary({ mode, plan, applied: first.applied }),
-        database, rollback, repeat_clean_apply: repeated.applied,
+        database, rollback,
+        ...(mode === 'local-play'
+          ? { repeat_readback_status: 'exact_match',
+            first_state_digest: digestValue(firstState),
+            repeated_state_digest: digestValue(repeatedState) }
+          : { repeat_clean_apply: repeated.applied }),
         first_state: firstState, runtime_e2e: runtimeE2e,
         repeated_state: repeatedState };
       const resultPath = argument('--write-result', null);
@@ -815,7 +821,11 @@ function importReadbackEvidence(result) {
     target_revision_id: result.target_revision_id,
     target_catalog_digest: result.target_catalog_digest,
     rollback: result.rollback,
-    repeat_clean_apply: result.repeat_clean_apply,
+    ...(result.mode === 'local-play'
+      ? { repeat_readback_status: result.repeat_readback_status,
+        first_state_digest: result.first_state_digest,
+        repeated_state_digest: result.repeated_state_digest }
+      : { repeat_clean_apply: result.repeat_clean_apply }),
     first_state: result.first_state,
     repeated_state: result.repeated_state,
     activation_performed: false,

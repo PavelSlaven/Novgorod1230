@@ -10,7 +10,7 @@
     {
       "table": "source_records",
       "file": "datasets/source_records.json",
-      "sha256": "77eb1583187d00b969ac815369af895e15269936425b6778db6119e327bf8e86",
+      "sha256": "071bcc3db82014914fc9b0306c75d0821172ce3c04ed69a1566bc5ed32735529",
       "status": "approved",
       "provenance_ref": "m2c_local_movement_eligibility_editorial_v1",
       "delete_policy": "forbid",

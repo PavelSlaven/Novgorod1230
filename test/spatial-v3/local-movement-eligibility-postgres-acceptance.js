@@ -12,11 +12,13 @@ const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 /** Isolated DB only: existing approved expansion bundle must already be imported. */
 export async function assertLocalMovementEligibilityPostgres(pool) {
-  const approval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-sol-data-approval.json'));
+  const approval = JSON.parse(await readFile('data/world-catalogs/novgorod/m2c-scene-movement-edges/local-movement-eligibility-repin-v2-data-approval.json'));
+  const manifest = JSON.parse(await readFile(`${directory}/manifest.json`));
   const bytes = await readFile(`${directory}/datasets/spatial_v3_local_movement_eligibility_profiles.json`);
-  assert.equal(digest(bytes), approval.local_movement_eligibility_mapped_approval.dataset_sha256);
-  assert.equal(digest(await readFile(`${directory}/manifest.json`)),
-    approval.local_movement_eligibility_mapped_approval.manifest_sha256);
+  assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(digest(await readFile('data/world-catalogs/novgorod/m2c-scene-movement-edges/local-movement-eligibility-candidate.json')),
+    approval.exact_candidate.sha256);
+  assert.equal(digest(bytes), manifest.datasets.find((row) => row.table === 'spatial_v3_local_movement_eligibility_profiles').sha256);
   const policies = JSON.parse(bytes);
   const original = await pool.query('SELECT * FROM world_base.spatial_v3_scene_movement_edge_templates ORDER BY scene_template_id,edge_slot_key');
   const sql = await buildTransactionalImportSql({ manifestPath: `${directory}/manifest.json` });

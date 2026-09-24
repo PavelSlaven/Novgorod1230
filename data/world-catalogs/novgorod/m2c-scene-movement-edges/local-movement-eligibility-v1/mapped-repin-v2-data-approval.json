@@ -1,0 +1,19 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent mapped-data reviewer; did not author or modify candidate or mapped bundle bytes",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "source_candidate_sha256": "e893a85d73c21a0384d63b57d279dfe7325c2d2b35e39a941ed21a9bda9f8f4e",
+  "source_repin_approval_sha256": "27f3a45bc36d603f5a8e1fc5a765c9713b440de4a78f718f89414bc3ad3f7694",
+  "scene_movement_edge_candidate_sha256": "c4742a5b9642638b7e2ca3c440ffe344e724549abfa788ed39b8627314957356",
+  "scene_movement_edge_repin_approval_sha256": "e8e2eba89abf166d4c8b5dd3f91f0bf7b3c36869f4b00f719f581e2b386a4f16",
+  "manifest_sha256": "58e95543deec824bfda31abcd16c33814ae03b069c889618b2dd32c342c5b2e8",
+  "dataset_sha256": "3923773694dc364f8187eb81edddb2aefa14e6bd122e91e49c51cd4798f65c75",
+  "source_records_sha256": "071bcc3db82014914fc9b0306c75d0821172ce3c04ed69a1566bc5ed32735529",
+  "scope": "Exact approved-status mapping of 68 local movement eligibility adjuncts across 17 scene templates, 68 matching authoring versions and canonical digests, one repinned source record, and 276 unchanged canonical dependency nodes. The editorial single-root transition limit leaves original null reverse and edge capacity facts and position capacity one unchanged; current visibility and locked occupancy remain runtime admission requirements.",
+  "checks": "The mapped diff changes only the candidate SHA-256 in one source record and its manifest dataset SHA-256. Current bytes match the exact scene and local candidate approvals, all five candidate source refs, all 48 expansion source datasets, and all four mapped manifest dataset digests. The candidate differs from its prior approved bytes only by the scene candidate source pin, remains deterministic, and retains requirements, exclusions and authority flags. All 68 mapped rows match the candidate and canonical digests; all 68 authoring versions match their rows. P12 validateAuthoringBundle returned ok with no errors or data gaps.",
+  "excludes": "P12 import/readback, runtime or release activation, current visibility or occupancy admission, mutation of original edges or positions, historical party migration, runtime/DDL/code approval, and approval of the whole M2c milestone.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

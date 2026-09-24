@@ -95,9 +95,9 @@ export function buildLocalMovementEligibilityCandidate({ mechanics, scenes, edge
 export async function loadLocalMovementEligibilityCandidate({ root = process.cwd() } = {}) {
   const bytes = await Promise.all(paths.map((path) => readFile(resolve(root, path))));
   const [mechanics, scenes, edges, positions, manifest] = bytes.map((value) => JSON.parse(value));
-  const approval = JSON.parse(await readFile(resolve(root,
-    'data/world-catalogs/novgorod/m2c-sol-data-approval.json')));
-  assert.equal(approval.scene_movement_edge_candidate_approval?.candidate_sha256, hash(bytes[0]));
+  const approval = JSON.parse(await readFile(resolve(root, directory, 'repin-data-approval.json')));
+  assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(approval.candidate_sha256, hash(bytes[0]));
   assert.equal(manifest.status, 'approved');
   for (const index of [1, 2, 3]) {
     const table = paths[index].split('/').at(-1).replace('.json', '');
@@ -112,8 +112,14 @@ export async function loadLocalMovementEligibilityCandidate({ root = process.cwd
 export async function promoteLocalMovementEligibility({ root = process.cwd() } = {}) {
   const rawBytes = await readFile(resolve(root, directory, 'local-movement-eligibility-candidate.json'));
   const candidate = JSON.parse(rawBytes);
-  const approval = JSON.parse(await readFile(resolve(root, 'data/world-catalogs/novgorod/m2c-sol-data-approval.json')));
-  assert.equal(approval.local_movement_eligibility_candidate_approval?.candidate_sha256, hash(rawBytes));
+  const approval = JSON.parse(await readFile(resolve(root, directory,
+    'local-movement-eligibility-repin-v2-data-approval.json')));
+  const repinApproval = JSON.parse(await readFile(resolve(root, directory,
+    'local-movement-eligibility-repin-data-approval.json')));
+  assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(repinApproval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(approval.exact_candidate.previous_sha256, repinApproval.exact_candidate.sha256);
+  assert.equal(approval.exact_candidate.sha256, hash(rawBytes));
   assert.deepEqual(candidate, await loadLocalMovementEligibilityCandidate({ root }));
   const provenance = 'm2c_local_movement_eligibility_editorial_v1';
   const records = candidate.records.map((record) => {
@@ -127,7 +133,7 @@ export async function promoteLocalMovementEligibility({ root = process.cwd() } =
       page_or_section: `candidate_sha256:${hash(rawBytes)}`,
       summary: 'Editorial single-root action eligibility on two independently authored directed edges. Original reverse and capacity facts remain unchanged.',
       limitations: 'No historical capacity, visibility, occupancy, migration or activation authority.',
-      status: 'approved', confidence: 'high', checked_by: approval.local_movement_eligibility_candidate_approval.reviewer }]],
+      status: 'approved', confidence: 'high', checked_by: 'gpt-6-sol/high independent data review' }]],
     ['spatial_v3_authoring_versions', records.map((row) => ({ entity_kind: row.entity_kind,
       entity_id: row.id, version: row.version, world_revision_id: row.world_revision_id,
       canonical_digest: row.canonical_digest, status: row.status, provenance_ref: provenance }))],

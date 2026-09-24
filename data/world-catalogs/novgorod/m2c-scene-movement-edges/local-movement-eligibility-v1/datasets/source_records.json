@@ -4,7 +4,7 @@
     "title": "M2c local movement eligibility adjunct",
     "source_type": "project_note",
     "file_reference": "data/world-catalogs/novgorod/m2c-scene-movement-edges/local-movement-eligibility-candidate.json",
-    "page_or_section": "candidate_sha256:a86de4fc70b0aaf02dbd0d8a6d9006dc3a4f9f489d601a59d97d5b09abac0dbb",
+    "page_or_section": "candidate_sha256:e893a85d73c21a0384d63b57d279dfe7325c2d2b35e39a941ed21a9bda9f8f4e",
     "summary": "Editorial single-root action eligibility on two independently authored directed edges. Original reverse and capacity facts remain unchanged.",
     "limitations": "No historical capacity, visibility, occupancy, migration or activation authority.",
     "status": "approved",

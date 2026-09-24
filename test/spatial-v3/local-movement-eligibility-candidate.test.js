@@ -56,8 +56,11 @@ test('mapped adjunct preserves raw facts with exact independently reviewed bytes
   const base = 'm2c-scene-movement-edges/local-movement-eligibility-v1';
   const manifestBytes = await readFile(`${root}/${base}/manifest.json`);
   const manifest = JSON.parse(manifestBytes);
-  const approval = (await read('m2c-sol-data-approval.json')).local_movement_eligibility_mapped_approval;
-  assert.equal(createHash('sha256').update(manifestBytes).digest('hex'), approval.manifest_sha256);
+  const candidateBytes = await readFile(`${root}/m2c-scene-movement-edges/local-movement-eligibility-candidate.json`);
+  const repinApproval = await read('m2c-scene-movement-edges/local-movement-eligibility-repin-v2-data-approval.json');
+  assert.equal(createHash('sha256').update(candidateBytes).digest('hex'), repinApproval.exact_candidate.sha256);
+  const source = await read(`${base}/datasets/source_records.json`);
+  assert.equal(source[0].page_or_section, `candidate_sha256:${repinApproval.exact_candidate.sha256}`);
   for (const dataset of manifest.datasets) {
     const bytes = await readFile(`${root}/${base}/${dataset.file}`);
     assert.equal(createHash('sha256').update(bytes).digest('hex'), dataset.sha256);

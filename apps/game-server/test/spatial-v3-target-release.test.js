@@ -5,6 +5,7 @@ import { createSpatialV3TargetProductionRelease,
 import { createSpatialV3ProductionRelease } from '../src/composition/production-spatial-v3-release-v16.js';
 import { deriveActivatedReleaseFromReadback } from '../src/composition/production-v2-activation-state.js';
 import { createSpatialV3ProductionCompositionRoot } from '../src/composition/production-spatial-v3.js';
+import { createTargetAuthoredStartCatalog } from '../src/internal/target-authored-start-catalog.js';
 import { resolveSpatialV3ProductionBindingsModule } from '../src/runtime/load-spatial-v3-bindings.js';
 import { readServerConfig, assertModularStartupConfig } from '../src/config.js';
 
@@ -48,4 +49,26 @@ test('target selection is explicit and the official root rejects absent operator
   { code: 'SPATIAL_V3_TARGET_ACTIVATION_APPROVAL_REQUIRED' });
   assert.equal(queries, 0);
   assert.equal(closes, 1);
+});
+
+test('target initial runtime binding resolves only against exact approved start pins', () => {
+  const naturalPin = { key: 'natural-rule', revision: 1, digest: 'a'.repeat(64) };
+  const profile = { scenario_id: 'target-scenario', manifest_digest: 'b'.repeat(64),
+    public_metadata: { title: 'Target' }, actor_catalog: {},
+    canonical_start: { policy_profile_pins: [naturalPin], start: {
+      world_pin: { world_revision_id: 'target-world', world_catalog_digest: 'c'.repeat(64) },
+      initial_perception_rule: { id: naturalPin.key, version: naturalPin.revision },
+      initial_environment_inputs: { calendar_date: { year: 1230, month: 1, day: 1 } }
+    } } };
+  const release = { scenario_binding_id: profile.scenario_id,
+    world_revision_id: profile.canonical_start.start.world_pin.world_revision_id,
+    world_catalog_digest: profile.canonical_start.start.world_pin.world_catalog_digest,
+    scenario_profile_exact_pins: { phase_1a_manifest_digest: profile.manifest_digest,
+      scenario_definition_revision: 1 } };
+  const catalog = createTargetAuthoredStartCatalog({ runtime: { profile }, release });
+  const binding = catalog.resolveRuntimeBinding(catalog.runtime_binding);
+  assert.equal(binding.snapshot_schema, 'rus.authored_start_initial_party_snapshot.v3');
+  assert.deepEqual(binding.initial_natural_perception_rule_pin, naturalPin);
+  assert.equal(catalog.resolveRuntimeBinding({ ...catalog.runtime_binding, revision: 2 }), null);
+  assert.equal(catalog.resolveRuntimeBinding({ catalog_id: 'historical', revision: 1 }), null);
 });

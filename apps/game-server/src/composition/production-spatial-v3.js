@@ -45,6 +45,7 @@ import { readCommittedEntityExterior, readPlayerKnowledge } from
   '../infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
 import { createTargetCurrentFactualContext } from
   '../infrastructure/postgres/target-current-factual-context.js';
+import { createTargetAuthoredStartCatalog } from '../internal/target-authored-start-catalog.js';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
   SPATIAL_V3_PRODUCTION_RELEASE,
@@ -121,11 +122,14 @@ export async function createSpatialV3ProductionCompositionRoot({
       calendar_profile: scenarioBundle.calendar_profile });
     const targetFiniteFirstEntry = targetProfiles == null ? null
       : createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry);
+    const authoredRuntimeBindingResolver = targetContext == null ? null
+      : createTargetAuthoredStartCatalog({ runtime: targetContext.runtime, release }).resolveRuntimeBinding;
     let committer;
     const factualContext = targetContext == null ? null : createTargetCurrentFactualContext({
       partyPool: pools.partyPool,
       committer: { commit: (...args) => committer.commit(...args) },
-      runtime: targetContext.runtime
+      runtime: targetContext.runtime,
+      authoredRuntimeBindingResolver
     });
     const currentVisibility = targetContext == null ? null
       : createSpatialV3CurrentVisibilityProvider({

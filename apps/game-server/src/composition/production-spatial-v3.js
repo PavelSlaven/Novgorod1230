@@ -37,6 +37,14 @@ import { loadTargetRuntimeProfiles } from '../internal/target-runtime-profiles.j
 import { createSpatialV3LocalSceneRuntime } from '../runtime/spatial-v3-local-scene-runtime.js';
 import { createSpatialV3CurrentMovementCapability } from
   '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
+import { createSpatialV3CurrentVisibilityProvider } from
+  '../infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { readCurrentNaturalSourceState } from
+  '../infrastructure/postgres/g4-current-natural-source-state.js';
+import { readCommittedEntityExterior, readPlayerKnowledge } from
+  '../infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
+import { createTargetCurrentFactualContext } from
+  '../infrastructure/postgres/target-current-factual-context.js';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
   SPATIAL_V3_PRODUCTION_RELEASE,
@@ -113,6 +121,24 @@ export async function createSpatialV3ProductionCompositionRoot({
       calendar_profile: scenarioBundle.calendar_profile });
     const targetFiniteFirstEntry = targetProfiles == null ? null
       : createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry);
+    let committer;
+    const factualContext = targetContext == null ? null : createTargetCurrentFactualContext({
+      partyPool: pools.partyPool,
+      committer: { commit: (...args) => committer.commit(...args) },
+      runtime: targetContext.runtime
+    });
+    const currentVisibility = targetContext == null ? null
+      : createSpatialV3CurrentVisibilityProvider({
+        pool: pools.partyPool,
+        verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
+        pin: targetContext.runtime.itemPin,
+        worldBaseReader: targetContext.runtime.worldBaseReader,
+        readCurrentEnvironment: factualContext.readCurrentEnvironment,
+        readCurrentSourceState: (args) => readCurrentNaturalSourceState({
+          ...args, readCurrentEnvironment: factualContext.readCurrentEnvironment }),
+        readEntityExterior: readCommittedEntityExterior,
+        readPlayerKnowledge
+      });
     const bindingContext = Object.freeze({ env, config,
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
@@ -121,7 +147,9 @@ export async function createSpatialV3ProductionCompositionRoot({
       npcSemanticRemainderProfile,
       worldKnowledge,
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
-        spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool }), targetFiniteFirstEntry }),
+        spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
+          readVisibleLocalEdgeRefs: currentVisibility.readVisibleLocalEdgeRefs }),
+        readCurrentSources: currentVisibility.readCurrentSources, targetFiniteFirstEntry }),
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });
@@ -150,7 +178,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;
     const siteTraversalCapability = targetContext == null ? null
       : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
-    const committer = createSpatialV3PostgresCombinedAtomicCommitter({
+    committer = createSpatialV3PostgresCombinedAtomicCommitter({
       pool: pools.partyPool, recheck: siteTraversalCapability == null
         ? bindings.commitRecheck
         : (input) => bindings.commitRecheck({ ...input, ...siteTraversalCapability }),
@@ -158,7 +186,8 @@ export async function createSpatialV3ProductionCompositionRoot({
       ordinaryFirstEntryProvisioner: targetContext == null
         ? { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }
         : null, now });
-    const target = targetRootFactory({ ...bindings.targetCompositionPorts, committer });
+    const target = targetRootFactory({ ...bindings.targetCompositionPorts, committer,
+      ...(currentVisibility == null ? {} : { readCurrentSources: currentVisibility.readCurrentSources }) });
     const activatedRelease = deriveActivatedReleaseFromReadback(
       release,
       targetContext?.readback.item_pin ?? bindings.runtimeCatalogPin,

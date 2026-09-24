@@ -39,6 +39,10 @@ import { createSpatialV3CurrentMovementCapability } from
   '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { createSpatialV3ExpansionContextReader } from
+  '../infrastructure/postgres/spatial-v3-expansion-context.js';
+import { createSpatialV3ExpansionRuntime } from
+  '../runtime/spatial-v3-expansion-runtime.js';
 import { readCurrentNaturalSourceState } from
   '../infrastructure/postgres/g4-current-natural-source-state.js';
 import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKnowledge } from
@@ -144,6 +148,13 @@ export async function createSpatialV3ProductionCompositionRoot({
         readEntityExterior: readCommittedEntityExterior,
         readPlayerKnowledge
       });
+    const spatialExpansionRuntime = targetContext == null ? null
+      : createSpatialV3ExpansionRuntime({
+        readContext: createSpatialV3ExpansionContextReader({
+          partyPool: pools.partyPool, worldBaseReader: targetContext.runtime.worldBaseReader,
+          release }),
+        readExitDisclosure: currentVisibility.readExitDisclosure
+      });
     const bindingContext = Object.freeze({ env, config,
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
@@ -152,6 +163,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       npcSemanticRemainderProfile,
       worldKnowledge,
       ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
+        spatialExpansionRuntime,
         spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
           readVisibleLocalEdgeRefs: currentVisibility.readVisibleLocalEdgeRefs }),
         readCurrentSources: currentVisibility.readCurrentSources, targetFiniteFirstEntry }),

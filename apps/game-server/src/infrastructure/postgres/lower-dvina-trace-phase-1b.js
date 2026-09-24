@@ -197,9 +197,15 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     loadInternal: (partyId) => repository.loadInternal(partyId),
     loadVisible: (partyId) => repository.loadVisible(partyId),
     ...(targetStartRuntime == null ? {} : {
-      async loadNaturalScenePerceptionInput({ partyId, actorId, internal }) {
+      async loadNaturalScenePerceptionInput({ partyId, actorId, internal, initialState }) {
+        const committedScenarioId = internal?.request_identity?.scenario_id ?? initialState?.scenario_id;
+        if ((internal != null && internal.request_identity?.party_id !== partyId)
+          || (initialState != null && (initialState.party_id !== partyId
+            || (internal != null && initialState.scenario_id !== committedScenarioId)))) {
+          fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Committed target start identity is inconsistent.');
+        }
         const selectedStart = targetStarts.find(({ profile }) =>
-          profile.scenario_id === internal?.request_identity?.scenario_id);
+          profile.scenario_id === committedScenarioId);
         if (!selectedStart) fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Committed target start is not loaded.');
         const transaction = await partyPool.connect();
         try {

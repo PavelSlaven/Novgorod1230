@@ -106,6 +106,12 @@
     "excludes": "Historical capacity or actual NPC occupancy, G0-G4 topology or exits, scene-edge import, player visibility admission, runtime movement and release activation",
     "reviewed_on": "2026-09-24"
   },
+  "finite_only_ordinary_base_candidate_approval": {
+    "candidate_sha256": "fcd2b47ff318b79031dc309193c159afd71909418beab1f77e9a455c4160bacd",
+    "scope": "Exact target generated-G5 finite-source ordinary request base with editorial symbolic context, zero background density, no disclosure or generic presence, and a mechanics envelope bounded by the union and maxima of four approved finite source profiles",
+    "excludes": "Canonical initial G5, current source or property readback, ordinary background or ambient seeding, Stage B qualification, per-source mechanics bypass, mapped import, runtime use, historical claims and release activation",
+    "reviewed_on": "2026-09-24"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",

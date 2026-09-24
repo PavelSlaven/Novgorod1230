@@ -29,7 +29,7 @@ fixed; generated G5 may attach only through existing directional exits.
 | NPC composition and equipment | Approved regional/canonical NPC composition, runtime profiles, appearance and applicable item/Temporal data | Exact NPC, actor and appearance readers | Actor materialization, Stage 16 and NPC runtime | Actor/body/item/activity/clock state | P12/P22 people projection | Canonical NPC materialization and real PostgreSQL start pass; source-specific visibility/recognition remains unresolved, so co-location alone cannot project a person |
 | First-screen delivery | Committed spatial, natural, item and NPC refs | Current factual reader and visibility/knowledge owners | Opening Stage 22/23 and narration | Presentation delivery state | Player-visible opening | Direct official-root start/replay/ACK and isolated public HTTP+Chromium start/ACK/one free observation/replay/reload passed. Generated-G5 entry and rich current entity/exit visibility remain unaccepted. |
 
-Current production visibility is partial. The generated-G5 path is not yet wired into production; UI, Contract Audit and CI acceptance remain pending.
+Current production visibility is partial. The generated-G5 adapter and saved-connection traversal are wired into v17 composition; ordinary UI, Contract Audit and final CI acceptance remain pending.
 
 Regional template-link source inventory (members inside
 `data/world-base-sources/rus13-base-v1.tar.gz`):
@@ -54,20 +54,23 @@ not the full four-TSV source inventory and not G4 expansion profiles.
 | Source | The approved target catalog has 32 G4@1 and 86 exits. Spatial-v3 v6 is separate supplementary evidence; world-base seed catalogs are available. The four regional-link TSVs above are in the tracked source archive and remain `draft`. |
 | Candidate | M2c expansion, natural, item/property, NPC, appearance, target-start, target-runtime, scene-edge and finite-only ordinary-base bundles are authored with provenance and exact scope. Route condition sets and current entity perception inputs remain unresolved. |
 | Approved | `m2c-sol-data-approval.json` records independent `gpt-6-sol/high` approval for exact expansion, natural, item/property, NPC, appearance, start, runtime and scene-edge candidates. Separate high review approved the exact landscape openness→stable-cover candidate SHA above and three nonportal site-connection `@2` profiles with null availability; these are data approvals with stated exclusions. |
-| Active | Isolated PostgreSQL import/readback and direct official-root start have passed for bounded target fixtures. Live schema v2 was applied and read back; P12 data dry-run rolled back after finding 939 existing primary-key conflicts (907 identical rows), with 10,513 candidate rows absent. Immutable successor owner decision is pending. No P12 data import or M2c runtime activation occurred. |
+| Active | Isolated PostgreSQL import/readback and direct official-root start have passed for bounded target fixtures. The old live schema v2 was applied and read back; its P12 data dry-run rolled back after finding 939 conflicting primary keys. Separate v17 world/party databases were created and their full schemas read back. P12 dry-run on the new empty world database passed and rolled back; no P12 COMMIT or M2c runtime activation occurred. Gate1 bootstrap must precede a newly approved P12 request. |
 
-For the immutable successor, the pending [fresh v17 schema request](../../data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md)
-targets new `novgorod_world_v17` and `novgorod_party_v17` databases in the same
-managed local-play cluster. It pins full world DDL 01–26 and party migrations
-001–036. The request is not an approval or readback; existing v16 databases
-remain untouched. P12 import requires a later request bound to the new schema
-readback and independent approval.
+The owner rejected an immutable successor over occupied v16 keys and approved a
+separate v17 database pair in the same managed cluster. The [fresh schema
+request](../../data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md)
+has an independent approval and [execution readback](../../data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-execution-attestation.json):
+208 empty world tables, 208 `world_reader` grants, 36 party migrations and no
+parties; old database row counts were unchanged. The approved P12 request for
+an empty database was not committed. Gate1's approved full-table seed closure
+requires Gate1 import first; P12 then needs a new request bound to Gate1
+readback and a new independent approval.
 
 Data-sufficiency decision: **continue M2c integration** using the approved
 authoring and existing owners. Missing G4 profiles were the intended authoring
 output and are now independently reviewed by Sol high. Production import and
 activation require the remaining current-state suppliers, complete traversal,
-an immutable resolution of live P12 row-key conflicts, operational approval/readback
+the approved separate v17 databases, Gate1 and P12 operational approval/readback
 and Contract Audit; fixture success and live DDL alone are not production activation.
 
 The approved 68-edge scene-movement candidate is a mechanical authoring input,

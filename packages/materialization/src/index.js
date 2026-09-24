@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
-export { G4_NATURAL_LAYERS, validateG4NaturalProfile, materializeG4NaturalBaseline } from './g4-natural-baseline.js';
+export { G4_NATURAL_LAYERS, validateG4NaturalProfile, materializeG4NaturalBaseline,
+  selectG4NaturalMembers } from './g4-natural-baseline.js';
 export { projectApprovedCurrentEnvironment } from './approved-initial-environment.js';
 import { computeMaterializationResultDigest } from '@rus/contracts';
 import {

@@ -1,5 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
-import { MaterializationError } from './core.js';
+import { canonicalDigest, createRandomSource, deriveSeed, MaterializationError } from './core.js';
 
 export const G4_NATURAL_LAYERS = Object.freeze(['surface', 'relief', 'water_body',
   'bank_structure', 'tree_layer', 'shrub_layer', 'ground_cover', 'riparian_vegetation',
@@ -80,6 +80,78 @@ export function materializeG4NaturalBaseline({ catalog, g4_ref, scene_template_r
       record_id: record.record_id, payload_digest: record.payload_digest },
     g4_ref: structuredClone(g4_ref), scene_template_ref: structuredClone(scene_template_ref),
     layers, gameplay_materialization_llm_calls: 0 });
+}
+
+/** Pure choice over members already admitted by the current source-state owner. */
+export function selectG4NaturalMembers({ profile, frequency_weight_policy: policy, party_id,
+  g5_site_id, season, eligible_member_refs = [] } = {}) {
+  if (!text(party_id) || !text(g5_site_id) || !text(season)
+    || !text(profile?.profile_id) || !positive(profile.profile_version)
+    || !text(profile.g4_ref?.world_revision_id) || !positive(policy?.version)
+    || !object(policy.weights) || !Array.isArray(eligible_member_refs)
+    || !eligible_member_refs.every(text)) gap('MEMBER_SELECTION_INPUT_INVALID');
+  const matrix = profile.natural_profile?.season_matrix?.[season];
+  if (!object(matrix)) gap('SEASON_MATRIX_MISSING');
+  const identity = { world_revision_id: profile.g4_ref.world_revision_id,
+    profile_id: profile.profile_id, profile_version: profile.profile_version,
+    party_id, g5_site_id, season, weight_policy_version: policy.version };
+  const eligible = new Set(eligible_member_refs);
+  const layers = [];
+  for (const layer of Object.keys(matrix).sort()) {
+    const row = matrix[layer];
+    const seed = deriveSeed({ ...identity, layer });
+    const random = createRandomSource({ seed: seed.uint32, version: 'mulberry32_v1' });
+    if (!Array.isArray(row?.members) || !Array.isArray(row.mandatory_member_refs)
+      || !Array.isArray(row.excluded_candidate_refs)
+      || !Array.isArray(row.incompatibility?.member_refs)
+      || row.incompatibility.status !== 'resolved') gap('MEMBER_RULES_UNRESOLVED');
+    const byRef = new Map(row.members.map((member) => [member.member_ref, member]));
+    if (byRef.size !== row.members.length || row.members.some((member) => !text(member.member_ref))) {
+      gap('MEMBER_RULES_INVALID');
+    }
+    const mandatory = new Set(row.mandatory_member_refs);
+    for (const member of row.members) {
+      if (member.frequency_category === 'dominant' && eligible.has(member.member_ref)) {
+        if (member.editorial_weight !== policy.weights.dominant || !positive(policy.weights.dominant)) {
+          gap('MEMBER_WEIGHT_INVALID');
+        }
+        mandatory.add(member.member_ref);
+      }
+    }
+    const excluded = new Set(row.excluded_candidate_refs);
+    if ([...mandatory].some((ref) => !byRef.has(ref) || excluded.has(ref)
+      || (byRef.get(ref).eligibility !== 'approved_broad_context' && !eligible.has(ref)))) {
+      gap('MANDATORY_MEMBER_UNAVAILABLE');
+    }
+    const conflicts = row.incompatibility.member_refs;
+    if (conflicts.some((group) => !Array.isArray(group) || group.length < 2
+      || group.some((ref) => !byRef.has(ref)))) gap('MEMBER_RULES_INVALID');
+    const incompatible = (ref, selected) => conflicts.some((group) =>
+      group.includes(ref) && group.some((other) => other !== ref && selected.has(other)));
+    if ([...mandatory].some((ref) => incompatible(ref, mandatory))) gap('MANDATORY_MEMBER_INCOMPATIBLE');
+    const choices = row.members.filter((member) => eligible.has(member.member_ref)
+      && !mandatory.has(member.member_ref) && !excluded.has(member.member_ref)
+      && !incompatible(member.member_ref, mandatory));
+    let total = 0;
+    const weights = choices.map((member) => {
+      const weight = policy.weights[member.frequency_category];
+      if (!positive(weight) || member.editorial_weight !== weight) gap('MEMBER_WEIGHT_INVALID');
+      total += weight;
+      return weight;
+    });
+    const selected = [...mandatory];
+    if (total) {
+      let draw = random.nextUint32() % total;
+      for (let index = 0; index < choices.length; index += 1) {
+        draw -= weights[index];
+        if (draw < 0) { selected.push(choices[index].member_ref); break; }
+      }
+    }
+    layers.push({ layer, seed_digest: seed.digest, member_refs: selected.sort() });
+  }
+  const result = { schema: 'rus.g4_natural_member_selection.v1', identity,
+    algorithm: 'mulberry32_v1', layers };
+  return deepFreeze({ ...result, selection_digest: canonicalDigest(result) });
 }
 
 function positive(value) { return Number.isSafeInteger(value) && value > 0; }

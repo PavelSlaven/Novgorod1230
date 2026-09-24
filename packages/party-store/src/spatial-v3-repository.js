@@ -69,6 +69,9 @@ export function createSpatialV3PartyRepository({ transaction } = {}) {
         FROM party_runtime.scene_movement_edges r JOIN baselines b ON b.id=r.scene_baseline_id
         WHERE r.party_id=$1), '[]'::jsonb) AS movement_edges,
       COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.visibility_modifiers r
+        WHERE r.party_id=$1), '[]'::jsonb) AS visibility_modifiers,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
         FROM party_runtime.visibility_links r JOIN baselines b ON b.id=r.scene_baseline_id
         WHERE r.party_id=$1), '[]'::jsonb) AS visibility_links,
       COALESCE((SELECT jsonb_agg(r ORDER BY r.g6_instance_id)

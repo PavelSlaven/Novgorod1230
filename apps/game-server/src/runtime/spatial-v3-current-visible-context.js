@@ -3,6 +3,10 @@ import { projectG4NaturalPerception } from './g4-natural-perception.js';
 import { serverError } from '../errors.js';
 
 const text = (value) => typeof value === 'string' && value.trim() === value && value.length > 0;
+export const SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF = Object.freeze({
+  entity_ref: Object.freeze({ entity_kind: 'visibility_modifier', entity_id: 'spatial_v3_current_visible_context_v1' }),
+  authoring_version: '1'
+});
 
 /** The P16 caller supplies its transaction; source readers must use that same client. */
 export async function readAndProjectSpatialV3CurrentVisibleContext({ transaction, partyId,

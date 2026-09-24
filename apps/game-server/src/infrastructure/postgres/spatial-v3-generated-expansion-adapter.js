@@ -5,6 +5,7 @@ import { createSpatialV3Repository } from '@rus/party-store/spatial-v3';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { computeSpatialV3CanonicalDigest as digest,
   createSpatialV3TypedError, validateSpatialV3Contract } from '@rus/contracts/spatial-v3/registry';
+import { SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF as projectionPolicyRef } from '../../runtime/spatial-v3-current-visible-context.js';
 
 const ref = (entity_id, version) => ({ entity_id, authoring_version: String(version) });
 const exact = (row, pin) => row?.id === pin?.id && row.version === pin.version;
@@ -15,7 +16,7 @@ const semanticRows = (rows) => rows.map(({ target_table, id, record }) => ({ tar
 
 /** Server-only composition: exact reads and proposals share the existing P16 lock/transaction. */
 export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, committer,
-  writePlanBuilder, admitGeneration, projectVisible, projectionPolicyRef,
+  writePlanBuilder, admitGeneration, projectVisible,
   prepareFirstEntry, now = () => Date.now() } = {}) {
   async function prepareExpansion(request) {
     const { party_id, g4, profile, slot_ref, directional_exit, candidate_ordinal,
@@ -252,7 +253,8 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         const envelopeInput = { party_id, turn_id: change_set_id,
           committed_state_version: String(current.rows[0].state_version),
           change_set_id, package_id: `visible:${change_set_id}`,
-          idempotency_record_id: `idem:${change_set_id}`, dependency_pins };
+          idempotency_record_id: `idem:${change_set_id}`, dependency_pins,
+          projection_policy_ref: projectionPolicyRef };
         const visible = await projectVisible({ transaction, request, closure, snapshot, proposal, firstEntry,
           factual_writes: factualWrites, expected_state_versions, dependency_pins,
           current_state_version: envelopeInput.committed_state_version,
@@ -262,8 +264,6 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
           idempotency_record_id: envelopeInput.idempotency_record_id });
         if (!visible?.ok) return visible?.error ? visible : reject('visible_projection_required');
         if (!visible.envelope?.projection_policy_ref
-          || !projectionPolicyRef?.entity_ref?.entity_id
-          || !projectionPolicyRef.authoring_version
           || canonicalDigest(visible.envelope?.projection_policy_ref) !== canonicalDigest(projectionPolicyRef)) {
           return reject('approved_projection_policy_ref_required', 'visible_package_persistence_gap');
         }

@@ -10,6 +10,9 @@ import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { readSpatialV3ExpansionContext } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-expansion-context.js';
 import { createSpatialV3ExpansionRuntime } from '../../apps/game-server/src/runtime/spatial-v3-expansion-runtime.js';
+import { SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF } from '../../apps/game-server/src/runtime/spatial-v3-current-visible-context.js';
+import { projectSpatialV3ProposedVisiblePackage } from '../../apps/game-server/src/runtime/spatial-v3-proposed-visible-context.js';
+import { approvedNaturalPerceptionFixture } from '../../apps/game-server/test/g4-natural-perception-fixture.js';
 
 const hash = 'a'.repeat(64);
 const profile = { id: 'profile', version: 1, world_revision_id: 'world', status: 'approved', canonical_digest: hash };
@@ -105,6 +108,9 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ('p',3,'world','catalog','materializer','rng','commands','profiles')`);
+  await pool.query(`UPDATE party_runtime.parties SET state_version=1 WHERE party_id='p'`);
+  await pool.query(`INSERT INTO party_runtime.party_state_snapshots
+    (party_id,state_version,state_payload,state_digest) VALUES ('p',1,'{}','seed')`);
   for (const site of ['source']) {
     await pool.query(`INSERT INTO party_runtime.party_g5_sites
       (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,created_change_set_id,updated_change_set_id)
@@ -122,6 +128,19 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
   let admissionCount = 0;
   let missingTerminalScene = false;
   let ambiguousTerminalScene = false;
+  const { perception } = await approvedNaturalPerceptionFixture();
+  const readSources = async ({ overlay }) => ({ naturalInput: { ...perception,
+    observer: { ...perception.observer, party_id: 'p', actor_id: 'test-actor', position_id: overlay.position.id },
+    scene: { ...perception.scene, party_id: 'p', site_id: overlay.site.id,
+      baseline_id: overlay.baseline.id, positions: overlay.scene_positions.filter((row) =>
+        row.g6_instance_id === overlay.g6.id), g6: [overlay.g6],
+      acoustic_profiles: overlay.acoustic_profiles.filter((row) => row.g6_instance_id === overlay.g6.id) },
+    observations: perception.observations.map((row) => ({ ...row,
+      source_position_id: overlay.position.id })),
+    source_bindings: overlay.endpoint_bindings.filter((row) => row.g5_site_id === overlay.site.id
+      && row.position_id === overlay.position.id) },
+  partyId: 'p', actorId: 'test-actor', positionId: overlay.position.id,
+  entityObservations: [], localEdges: [], directionalExits: [] });
   const adapter = createSpatialV3GeneratedExpansionAdapter({
     worldBaseReader: { readPinnedG4ExpansionClosure: async () => ({ ok: true, value: currentClosure }),
       readPinnedSceneTemplateClosure: async ({ id }) => id === 'terminal-scene' && missingTerminalScene
@@ -145,15 +164,9 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
       scene_template_ref: { id: 'scene', version: 1 }, validation_report: { status: 'pass', digest: digest('test-admission') },
       commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].map((kind) => ({ kind, digest: digest(kind) })),
       recheck: async () => ({ ok: !failCommit }) }; },
-    projectVisible: async ({ change_set_id, idempotency_record_id }) => {
-      const payload = { schema: 'temporal_visible_package.v1', perceived_scene: 'Местность.', perceived_changes: [],
-        sensory_details: [], visible_npcs: [], visible_objects: [], known_context: [], uncertainties: [], hypotheses: [],
-        player_safe_interruption: null, allowed_action_affordances: [] };
-      return { ok: true, envelope: { package_id: `visible:${change_set_id}`, party_id: 'p', turn_id: change_set_id,
-        committed_state_version: '1', change_set_id, package_digest: digest(payload), visible_payload: payload,
-        presentation_status: 'pending', projection_policy_ref: { entity_ref: { entity_kind: 'visibility_modifier', entity_id: 'projection' },
-          authoring_version: '1' }, dependency_pins, idempotency_record_id } };
-    }
+    projectVisible: ({ transaction, snapshot, proposal, firstEntry, envelopeInput }) =>
+      projectSpatialV3ProposedVisiblePackage({ transaction, snapshot, proposal, firstEntry,
+        readSources, envelopeInput })
   });
   const request = { party_id: 'p', g4: { id: 'g4', version: 1, world_revision_id: 'world', canonical_digest: hash },
     profile: { id: 'profile', version: 1, canonical_digest: hash }, slot_ref: { id: 'slot', version: 1 },
@@ -161,6 +174,41 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
     candidate_ordinal: 0, source_site_id: 'source', source_position_id: 'base:source:position:departure:0', materializer_version: 'm2c' };
   const repository = createSpatialV3Repository({ transaction: pool });
   const state = async () => (await repository.loadExpansionState({ party_id: 'p', g4_id: 'g4' })).snapshot;
+  const assertCommittedVisibleDigest = async (result) => {
+    const committed = await state();
+    const connection = committed.site_connections.find((row) => row.id === result.connection_id);
+    const binding = committed.endpoint_bindings.find((row) => row.site_connection_id === connection.id
+      && row.endpoint_role === 'to');
+    const persisted = (await pool.query(`SELECT package_id,party_id,turn_id,committed_state_version,
+      change_set_id,package_digest,projection_policy_ref,dependency_pins,idempotency_record_id
+      FROM party_runtime.party_visible_packages WHERE change_set_id=$1`, [result.change_set_id])).rows[0];
+    assert.ok(persisted);
+    assert.deepEqual(persisted.projection_policy_ref, SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF);
+    assert.equal(persisted.dependency_pins.canonical_digest,
+      digest(persisted.dependency_pins.pins).slice(7));
+    const versions = (await pool.query(`SELECT expected_state_version_set
+      FROM party_runtime.party_v3_change_sets WHERE id=$1`, [result.change_set_id])).rows[0]
+      .expected_state_version_set;
+    const byTable = { party_g4_expansion_ledgers: committed.ledgers,
+      party_continuation_chains: committed.chains, expansion_frontiers: committed.frontiers,
+      expansion_capacity_reservations: committed.reservations,
+      scene_frontier_bindings: committed.bindings };
+    assert.equal(new Set(versions.map(({ target_table, id }) => `${target_table}:${id}`)).size,
+      versions.length);
+    for (const { target_table, id, state_version } of versions) {
+      const row = target_table === 'party_g4_expansion_ledgers'
+        ? committed.ledgers.find((row) => id === `p:${row.g4_id}:${row.profile_ref_id}`)
+        : byTable[target_table]?.find((item) => item.id === id);
+      assert.equal(row?.state_version,
+        state_version + 1);
+    }
+    const { package_digest, ...envelopeInput } = persisted;
+    const projected = await projectSpatialV3ProposedVisiblePackage({ transaction: pool,
+      snapshot: committed, proposal: { target_site_id: connection.to_site_id,
+        target_position_id: binding.position_id, inserts: [], updates: [] },
+      firstEntry: { approved_write_sets: [] }, readSources, envelopeInput });
+    assert.equal(package_digest, projected.envelope.package_digest);
+  };
   if (terminalOrdinal === 0) {
     for (const gap of ['missing', 'ambiguous', 'commit']) {
       missingTerminalScene = gap === 'missing'; ambiguousTerminalScene = gap === 'ambiguous'; failCommit = gap === 'commit';
@@ -172,6 +220,7 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
     missingTerminalScene = false; ambiguousTerminalScene = false; failCommit = false;
     const result = await adapter.prepareExpansion(request);
     assert.equal(result.ok, true, JSON.stringify(result));
+    await assertCommittedVisibleDigest(result);
     const target = (await state()).sites.find((row) => row.canonical_g5_ref?.entity_id === 'canonical-terminal');
     assert.ok(target);
     assert.equal((await state()).sites.filter((row) => row.origin === 'generated').length, 0);
@@ -195,6 +244,7 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
   const concurrent = await Promise.all([adapter.prepareExpansion(request), adapter.prepareExpansion(request)]);
   assert.equal(concurrent.every((result) => result.ok), true, JSON.stringify(concurrent));
   assert.equal(concurrent.filter((result) => result.replay).length, 1);
+  await assertCommittedVisibleDigest(concurrent[0]);
   const generated = await state();
   assert.equal(generated.sites.filter((row) => row.origin === 'generated').length, 1);
   assert.equal(generated.frontiers.length, 2);
@@ -211,6 +261,7 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
   const terminal = await adapter.prepareExpansion({ ...request, candidate_ordinal: 1,
     source_site_id: open.source_g5_site_id, source_position_id: bound.position_id });
   assert.equal(terminal.ok, true, JSON.stringify(terminal));
+  await assertCommittedVisibleDigest(terminal);
   assert.equal((await state()).frontiers.filter((row) => row.status === 'open').length, 0);
   assert.equal((await state()).chains[0].status, 'terminal_resolved');
   assert.equal((await state()).site_connections.length, 2);

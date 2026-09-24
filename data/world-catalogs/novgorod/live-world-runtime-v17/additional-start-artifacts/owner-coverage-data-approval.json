@@ -51,6 +51,7 @@
   },
   "scope": "Exact four canonical G5 NPC compositions and one work-storage G6 acoustic main baseline above, with values and source weights pinned by the candidate and reviewed approved source datasets. The riverbank and household NPC bindings and household acoustic binding are mechanical derivations requiring exact owner readback.",
   "limitations": "Low-confidence editorial presence and masking choices, not historical frequency or acoustic measurements. No NPC is guaranteed because count zero is approved. No new boat, resource stock, property, occupation fact or spatial access is authorized.",
+  "authorized_next_step": "Author exact canonical owner rows from these decisions, then validate and import/read back through the existing NPC and acoustic owners before runtime admission.",
   "import_authorized": false,
   "activation_authorized": false
 }

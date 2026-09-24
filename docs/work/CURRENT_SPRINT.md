@@ -25,7 +25,7 @@
 Приоритетные долги (#111, #113, #115) закрыты. Перед и во время M2c:
 
 1. [#135](https://github.com/PavelSlaven/Novgorod1230/issues/135), [#139](https://github.com/PavelSlaven/Novgorod1230/issues/139) — нестабильные тесты обязательного CI.
-2. [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126) — остаток non-gate проверок: устаревшие sha-пины p12 dependency-closure (перегенерация — утверждённый data-пакет), `spatial-v3:check-p04`, `temporal-v4:check-docs`.
+2. [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126) — остаток non-gate проверок: устаревшие sha-пины p12 dependency-closure (перегенерация — утверждённый data-пакет), `spatial-v3:check-p02`.
 
 Остальное (`P3`) — по мере работы с затронутыми путями; ссылки на issue стоят у записей [LEGACY_WARNINGS](LEGACY_WARNINGS.md). После merge #98 разблокируются [#117](https://github.com/PavelSlaven/Novgorod1230/issues/117) и [#118](https://github.com/PavelSlaven/Novgorod1230/issues/118).
 

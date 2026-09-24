@@ -92,14 +92,15 @@ CI (`test.yml`, один job `full-npm-test`, профиль `full` для pull_
 | hidden info / visible context | `test:hidden-boundary`, `test:visible-context` | |
 | bugfix | regression test у owner, затем профильный набор | AGENTS §22 |
 
-## 5. Non-gate проверки с известными падениями (baseline c5501419)
+## 5. Non-gate проверки с известными падениями (baseline 21bd0938)
 
 Не входят в `npm test`; сравнивайте с baseline, а не с «зелёным»:
 
-- `temporal-v4:check-docs` — `conflict_count: 2`, оба в `data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md`
-  (запуск 2026-09-22, exit 0);
-- `spatial-v3:check-p04` — падает с исключением в `tools/spatial-v3/check-p04.mjs` (по плану — «world:
-  target/active boundary missing»).
+- `spatial-v3:check-p02` — падает с исключением в `tools/spatial-v3/check-p02.mjs` («architecture: active owner does
+  not route to its target supplement»).
+
+Зелёные на baseline: `temporal-v4:check-docs` (`conflict_count: 0`), `spatial-v3:check-p01`, `check-p03`, `check-p04`,
+`spatial-v3:test-p12*` (отслеживаемые файлы не меняются).
 
 Реестр подобных долгов — [LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md).
 

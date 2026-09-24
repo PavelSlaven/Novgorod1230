@@ -11,7 +11,7 @@ const ROOT = 'data/world-catalogs/novgorod/live-world-runtime-v1';
 export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
   worldBaseReferenceSnapshot, domainCatalog } = {}) {
   const target = 'data/world-catalogs/novgorod/live-world-runtime-v17';
-  const approval = await readJson(rootDir, 'data/world-catalogs/novgorod/m2c-sol-data-approval.json');
+  const approval = await readJson(rootDir, 'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json');
   const definitions = [
     ['target-start-candidate.json', 'target_start_proposal_approval'],
     ['player-transfer-candidate.json', 'target_player_transfer_approval'],

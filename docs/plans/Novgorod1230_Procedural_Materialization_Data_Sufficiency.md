@@ -23,11 +23,13 @@ fixed; generated G5 may attach only through existing directional exits.
 | G4 membership, topology, routes and directional exits | Exact target catalog `novgorod_spatial_v3_target_contract_approval_001`; `spatial_v3_nodes.json`, `spatial_v3_g4_directional_exits.json`, `spatial_v3_g4_traversal_profiles.json` | Pinned Spatial-v3 reader plus exact G4→expansion-profile binding reader | Existing frontier resolver | Canonical `world_base` rows and party spatial tables | Existing spatial/perception readers | 32 G4@1 and 86 exits retained unchanged; exact active production readback pending |
 | Select expansion family from G4 landscape × land-use × function | Approved M2c expansion bundle: 25 reusable families, 32 exact G4 bindings, 86 exit slots | Exact approved closure reader | Existing frontier resolver | Existing Spatial-v3 catalog and party G5 owners | Existing spatial/perception readers | Sol high independently approved exact authoring SHA; isolated PostgreSQL import/readback passed; production import pending |
 | Generate G5 within limits and continue/terminate | Approved M2c G5 templates, limits, slots, terminal, continuation and successor rules | Exact closure and scene-rule readers | Generated first-entry composer and P16 atomic commit owner | Party G5, G6, position, frontier and capacity rows | Generated destination factual projection | First-entry and rollback/replay tests pass; public traversal, conditional availability and destination factual supplier remain incomplete |
-| Natural layers, season, night, light and weather | Approved M2c natural baseline, presentation and placement; Temporal v4 | Exact natural/Temporal readers | Spatial scene materialization and environment owners | Scene baseline, natural and environment rows | Canonical initial P22 natural projection | Canonical start PostgreSQL acceptance passes; generated destination current P22 and entity visibility still need authoritative inputs |
+| Natural layers, season, night, light and weather | Approved M2c natural baseline, presentation and placement; Temporal v4 | Exact natural/Temporal readers | Spatial scene materialization and environment owners | Scene baseline, natural and environment rows | Canonical initial P22 natural projection | Canonical start PostgreSQL acceptance passes. Landscape openness→stable-cover candidate is data-approved at exact SHA `5b2fc71f25042e64ea5de8b3256caa33f264baeac4712af49207982a7f1ae41b`, without current source presence or activation. Generated destination current P22 and entity visibility still need authoritative inputs. |
 | Current visibility modifiers | No current `visibility_modifier` writer in P16 or another owner; no M2c effect policy | Current visibility reader | Existing visibility/perception owners | Verified current modifier set | Player-safe current projection | Verified empty active set means no modifiers; a nonempty set requires the typed `visibility_modifier_effect_policy_required` gap. M2c acceptance remains applicable to current scenes without modifiers. |
 | Functional things and finite stocks | Approved M2c item/property authoring, finite capability scopes and finite-only ordinary base | Exact item/property readers and natural first-entry owner | Stage 16, ordinary first-entry and finite-resource transition owners | Items, containers and `party_resource_nodes` | Player-safe item/scene projection | Four finite source classes scoped to five G4; Sol high approved the finite-only base data separately. Isolated successor item-catalog activation/readback and first-entry/P16 PostgreSQL checks passed; live production import remains pending. No stock is invented for other G4. |
 | NPC composition and equipment | Approved regional/canonical NPC composition, runtime profiles, appearance and applicable item/Temporal data | Exact NPC, actor and appearance readers | Actor materialization, Stage 16 and NPC runtime | Actor/body/item/activity/clock state | P12/P22 people projection | Canonical NPC materialization and real PostgreSQL start pass; source-specific visibility/recognition remains unresolved, so co-location alone cannot project a person |
 | First-screen delivery | Committed spatial, natural, item and NPC refs | Current factual reader and visibility/knowledge owners | Opening Stage 22/23 and narration | Presentation delivery state | Player-visible opening | Direct official-root start/replay/ACK and isolated public HTTP+Chromium start/ACK/one free observation/replay/reload passed. Generated-G5 entry and rich current entity/exit visibility remain unaccepted. |
+
+Current production visibility is partial. The generated-G5 path is not yet wired into production; UI, Contract Audit and CI acceptance remain pending.
 
 Regional template-link source inventory (members inside
 `data/world-base-sources/rus13-base-v1.tar.gz`):
@@ -50,16 +52,16 @@ not the full four-TSV source inventory and not G4 expansion profiles.
 | Data state | M2c status |
 |---|---|
 | Source | The approved target catalog has 32 G4@1 and 86 exits. Spatial-v3 v6 is separate supplementary evidence; world-base seed catalogs are available. The four regional-link TSVs above are in the tracked source archive and remain `draft`. |
-| Candidate | M2c expansion, natural, item/property, NPC, appearance, target-start, target-runtime, scene-edge and finite-only ordinary-base bundles are authored with provenance and exact scope. Conditional connection availability and current entity perception inputs remain unresolved. |
-| Approved | `m2c-sol-data-approval.json` records independent `gpt-6-sol/high` approval for exact expansion, natural, item/property, NPC, appearance, start, runtime and scene-edge candidates. This is data approval; each entry states its exclusions. |
-| Active | Isolated PostgreSQL import/readback and direct official-root start have passed for bounded target fixtures. No production operator import/activation or exact live readback has been performed for the complete M2c closure. |
+| Candidate | M2c expansion, natural, item/property, NPC, appearance, target-start, target-runtime, scene-edge and finite-only ordinary-base bundles are authored with provenance and exact scope. Route condition sets and current entity perception inputs remain unresolved. |
+| Approved | `m2c-sol-data-approval.json` records independent `gpt-6-sol/high` approval for exact expansion, natural, item/property, NPC, appearance, start, runtime and scene-edge candidates. Separate high review approved the exact landscape openness→stable-cover candidate SHA above and three nonportal site-connection `@2` profiles with null availability; these are data approvals with stated exclusions. |
+| Active | Isolated PostgreSQL import/readback and direct official-root start have passed for bounded target fixtures. Live schema v2 was applied and read back; P12 data dry-run rolled back after finding 939 existing primary-key conflicts (907 identical rows), with 10,513 candidate rows absent. Immutable successor owner decision is pending. No P12 data import or M2c runtime activation occurred. |
 
 Data-sufficiency decision: **continue M2c integration** using the approved
 authoring and existing owners. Missing G4 profiles were the intended authoring
 output and are now independently reviewed by Sol high. Production import and
 activation require the remaining current-state suppliers, complete traversal,
-operational approval/readback and Contract Audit; fixture success alone is not
-production activation.
+an immutable resolution of live P12 row-key conflicts, operational approval/readback
+and Contract Audit; fixture success and live DDL alone are not production activation.
 
 The approved 68-edge scene-movement candidate is a mechanical authoring input,
 not an imported replacement. P12 is append-only by exact row key, while the
@@ -80,7 +82,7 @@ DATA GAP: visibility_modifier_effect_policy_required
 required capability: apply a nonempty active visibility_modifier set to current visibility
 correct owner: first visibility_modifier writer (smoke, cover or concealment by action) and the visibility/perception reader
 missing authoring data: independently Sol high approved versioned effect policy for that writer's modifiers
-existing nearest data: current reader can verify an empty active set; night, light and weather are supplied through Temporal/light/weather; current source-water state and stable-cover policy remain owner-pending
+existing nearest data: current reader verifies an empty active set; night, light and weather are supplied through Temporal/light/weather; landscape-level stable natural-source cover has data-only approval, while current source presence remains owner-pending
 why it is insufficient: no owner currently writes visibility_modifier, so no effect semantics can be inferred for a nonempty set
 minimum data delta: introduce the first writer together with its independently approved versioned effect policy; do not create a policy in M2c before a writer exists
 affected acceptance test: current visibility when an active modifier first exists; present M2c scenes have no modifiers and remain in scope
@@ -91,20 +93,30 @@ DATA GAP
 required capability: player-safe initial/current NPC, ground-item and exit visibility in canonical and generated G5
 correct owner: Spatial-v3 perception/P22 current factual reader and exact entity source authoring
 missing authoring data: per-entity stable cover, dynamic occlusion, concealment and recognition evidence; current visible-exit disclosure
-existing nearest data: approved scene geometry and NPC placement; target initial natural visual state; m2c-initial-entity-perception/candidate.json records their limits
+existing nearest data: approved scene geometry and NPC placement; target initial natural visual state; data-approved landscape-level stable-cover candidate; m2c-initial-entity-perception/candidate.json records their limits
 why it is insufficient: co-location, clear air and an active edge do not establish each entity's observed state or player knowledge
 minimum data delta: approved exact initial/current source conditions and owner-backed observation rules, with transactional current-state readback
 affected acceptance test: rich first screen; local departure and generated destination player-safe projection
 ```
 
 ```text
+DATA GAP: current_water_source_state_owner_required
+required capability: decide acoustic water-source presence for each natural layer from committed current state
+correct owner: current water-source state writer and acoustic/perception reader
+existing nearest data: approved acoustic baseline and natural visual projection
+why it is insufficient: authored water context alone cannot establish a current audible source for each layer; visual water remains available independently
+minimum data delta: owner-backed current source state and per-layer acoustic readback
+affected acceptance test: current acoustic projection without suppressing valid visual water
+```
+
+```text
 DATA GAP
 required capability: evaluate generated G5 site-connection availability before selection and again in P16
 correct owner: Spatial-v3 condition-set authoring and current-state availability evaluator
-missing authoring data: body, applicability and state dependencies for availability.local_state_conditional@1
-existing nearest data: three approved canonical G5 connection profiles carry only the opaque versioned ref
-why it is insufficient: a ref alone cannot decide or recheck whether a specific committed passage is open
-minimum data delta: independently approved condition set with exact three-profile scope and an evaluator over committed state
+missing authoring data: applicable route condition sets and their committed-state dependencies for `ground_flood_snow`, `water_ice`, `wetland` and `shore`
+existing nearest data: three data-approved nonportal site-connection `@2` successors use null availability; route segments still carry conditional refs
+why it is insufficient: null removes the unsupported condition from those three nonportal profiles, but route refs alone cannot decide or recheck whether a passage is open
+minimum data delta: independently approved route condition sets and an evaluator over committed state
 affected acceptance test: generated G5 cross-site movement, rollback on changed availability and replay
 ```
 

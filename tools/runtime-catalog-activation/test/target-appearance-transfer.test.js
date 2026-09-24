@@ -3,8 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { compileApprovedActorAppearanceEntries } from '@rus/materialization';
-import { buildTargetAppearanceTransferImportSql } from '../../spatial-v3/character-appearance-v1-importer.mjs';
-import { buildTargetAppearanceTransferCandidate, buildTargetAppearanceTransferImportArtifacts, buildTargetAppearanceTransferV3Candidate } from '../src/target-appearance-transfer.js';
+import { buildTargetAppearanceTransferImportSql, buildTargetAppearanceTransferV3ImportSql } from '../../spatial-v3/character-appearance-v1-importer.mjs';
+import { buildTargetAppearanceTransferCandidate, buildTargetAppearanceTransferImportArtifacts, buildTargetAppearanceTransferV3Candidate, buildTargetAppearanceTransferV3ImportArtifacts } from '../src/target-appearance-transfer.js';
 
 test('v3 carries exact approved v4 dependencies before target options', async () => {
   const candidate = await buildTargetAppearanceTransferV3Candidate();
@@ -54,6 +54,30 @@ test('v3 carries exact approved v4 dependencies before target options', async ()
     candidate.proposed_insert_rows.region_demographic_profiles.some((profile) => profile.id === row.demographic_profile_id)));
   assert.ok(candidate.proposed_insert_rows.region_appearance_profile_entries.every((row) =>
     candidate.proposed_insert_rows.region_appearance_profiles.some((profile) => profile.id === row.appearance_profile_id)));
+});
+
+test('v3 import mapping has 129 exact approved inserts and a rollback SQL path', async () => {
+  const base = 'data/world-catalogs/novgorod/live-world-runtime-v17/';
+  const { manifest, datasets } = await buildTargetAppearanceTransferV3ImportArtifacts();
+  assert.equal(await readFile(`${base}appearance-transfer-v3-import-manifest.json`, 'utf8'),
+    `${JSON.stringify(manifest, null, 2)}\n`);
+  assert.equal(manifest.datasets.reduce((count, item) => count + datasets[item.table].length, 0), 129);
+  for (const item of manifest.datasets) {
+    const bytes = await readFile(`${base}${item.file}`);
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), item.sha256);
+    assert.ok(datasets[item.table].every((row) => row.status === 'approved'));
+  }
+  const sql = await buildTargetAppearanceTransferV3ImportSql({ rollback: true });
+  assert.equal((sql.match(/INSERT INTO world_base\./g) ?? []).length, 129);
+  assert.match(sql, /INSERT INTO world_base\.universal_categories/);
+  const optionOffset = sql.indexOf('INSERT INTO world_base.region_category_options');
+  for (const table of ['world_revisions', 'universal_categories',
+    'region_demographic_profiles', 'region_appearance_profiles'])
+    assert.ok(sql.indexOf(`INSERT INTO world_base.${table}`) < optionOffset, table);
+  for (const table of ['region_demographic_profile_entries', 'region_appearance_profile_entries'])
+    assert.ok(sql.indexOf(`INSERT INTO world_base.${table}`) > optionOffset, table);
+  assert.match(sql, /ROLLBACK;\n$/);
+  assert.doesNotMatch(sql, /CHARACTER_APPEARANCE_DEPENDENCY_READBACK_MISMATCH/);
 });
 
 test('target appearance transfer preserves approved option semantics and creates only new target IDs', async () => {

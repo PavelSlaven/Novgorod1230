@@ -165,3 +165,44 @@ export async function buildTargetAppearanceTransferImportArtifacts({ repositoryR
   }
   return { manifest, datasets };
 }
+
+/** Reviewable v3 mapping; import still requires separate operational approval. */
+export async function buildTargetAppearanceTransferV3ImportArtifacts({ repositoryRoot = process.cwd() } = {}) {
+  const directory = 'data/world-catalogs/novgorod/live-world-runtime-v17';
+  const candidatePath = `${directory}/appearance-transfer-v3-candidate.json`;
+  const bytes = await readFile(resolve(repositoryRoot, candidatePath));
+  const candidate = JSON.parse(bytes);
+  const approval = JSON.parse(await readFile(resolve(repositoryRoot,
+    `${directory}/appearance-transfer-v3-data-approval.json`)));
+  if (approval.decision !== 'APPROVE_DATA_ONLY'
+    || approval.candidate_sha256 !== digest(bytes)
+    || JSON.stringify(candidate) !== JSON.stringify(await buildTargetAppearanceTransferV3Candidate({ repositoryRoot }))) {
+    throw new Error('TARGET_APPEARANCE_V3_EXACT_DATA_APPROVAL_REQUIRED');
+  }
+  const datasets = Object.fromEntries(Object.entries(candidate.proposed_insert_rows).map(([table, rows]) =>
+    [table, rows.map((row) => ({ ...row, status: 'approved' }))]));
+  const dependencies = {
+    world_revisions: [], universal_categories: ['world_revisions'],
+    region_demographic_profiles: ['world_revisions'], region_appearance_profiles: ['world_revisions'],
+    region_category_options: ['universal_categories', 'region_demographic_profiles', 'region_appearance_profiles'],
+    region_demographic_profile_entries: ['region_demographic_profiles', 'region_category_options'],
+    region_appearance_profile_entries: ['region_appearance_profiles', 'region_category_options']
+  };
+  const manifest = {
+    schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v2',
+    bundle_id: 'novgorod-target-actor-appearance-transfer-v3',
+    status: 'approved', release_status: 'validated_candidate_not_active',
+    production_activation: false, canonical_head_changed: false, operator_db_touched: false,
+    runtime_selectable_in_canonical_production: false, delete_policy: 'forbid',
+    world_revision_id: candidate.target_world.world_revision_id,
+    catalog_digest: candidate.target_world.world_catalog_digest,
+    source_candidate_path: candidatePath, source_candidate_sha256: digest(bytes),
+    datasets: Object.entries(datasets).map(([table, rows]) => ({ table,
+      file: `appearance-transfer-v3-datasets/${table}.json`,
+      sha256: digest(`${JSON.stringify(rows, null, 2)}\n`), status: 'approved',
+      delete_policy: 'forbid', depends_on: dependencies[table] })),
+    existing_dependencies: {},
+    authority: { data_mapping_only: true, import_approval_required: true, activation_authorized: false }
+  };
+  return { manifest, datasets };
+}

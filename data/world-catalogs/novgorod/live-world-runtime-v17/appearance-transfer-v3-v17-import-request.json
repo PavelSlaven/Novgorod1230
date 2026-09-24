@@ -1,0 +1,90 @@
+{
+  "schema": "rus.target_appearance_transfer_v17_import_request.v1",
+  "request_id": "novgorod_target_appearance_transfer_v3_v17_import_001",
+  "status": "pending_live_preflight_rollback_probe_and_independent_high_review",
+  "source_data_head": "01672d59f3dc2d308f8317d70096cf1cc76bfc51",
+  "supersedes_blocked_request": "appearance-transfer-v2-v17-import-request.json",
+  "target": {
+    "cluster_system_identifier": "7683141184713630856",
+    "postgres_version": "16.14",
+    "database": "novgorod_world_v17",
+    "owner": "world_operator",
+    "schema": "world_base",
+    "old_databases": ["novgorod_world", "novgorod_party"],
+    "old_database_operation": "none"
+  },
+  "prior_p12_execution": {
+    "path": "data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1/import-execution-attestation.json",
+    "sha256": "1fd6cde1d781b13d63bf562c3c9868527230c20b62b38d9438661d7aa2fbdaac",
+    "status": "committed_exact_readback_verified",
+    "world_base_tables": 208,
+    "pinned_rows": 12359,
+    "source_records_after_import": 217,
+    "legacy_world_revisions_after_import": 8
+  },
+  "approved_data": {
+    "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v3-candidate.json",
+    "candidate_sha256": "ec6e9386c0fdc1b4108bd932d4225c641e5164f9a7c06bae0bde2fca94723d56",
+    "data_approval_path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v3-data-approval.json",
+    "data_approval_sha256": "7d21724911fc81c0ecdf83561eec4ff512c21af71487065028ff6ac1e3954a95",
+    "manifest_path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v3-import-manifest.json",
+    "manifest_sha256": "26c0a900f75e5dca18aaa287ee2017dfdf20d169b87f61e3872cdb663ad21580",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "source_basis_sha256": "7a5c9f76a28e9aa6a5820ff83a60a17ebb467a3b48841d0798d3588e3c3e65e1",
+    "source_start_sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+    "dataset_order": [
+      {"table": "world_revisions", "sha256": "2220761b2b747037ebfc123c730bd9b9b1869e133b928671668fcc9a9df8fa63", "rows": 1},
+      {"table": "universal_categories", "sha256": "539b555f9b1e025fa69d2816ec4f4171c7814862321a75c7ec8ca5e60a9f29cc", "rows": 42},
+      {"table": "region_demographic_profiles", "sha256": "9a7fffa8f4e00db21363b2b67c227ca81b460f5803322e32da0a0709bf21c0cd", "rows": 1},
+      {"table": "region_appearance_profiles", "sha256": "b1d2f8a5129de7f2a7e71cc3f3d4dc33e702eaf301398b6b8df059e302ac5cd1", "rows": 1},
+      {"table": "region_category_options", "sha256": "6d1fc6a1b7d90964b02be20a3613d5cffb122fadda40dd6aa485bcb3d3d6ace2", "rows": 42},
+      {"table": "region_demographic_profile_entries", "sha256": "8084b217c608f956c3c7b40e543ebe4b889c9e6fb19eddc282891be3aba03cce", "rows": 6},
+      {"table": "region_appearance_profile_entries", "sha256": "969af82c61a7c1d5a7d2588571a051328949c82a0479b1c3556326cac0df4f8f", "rows": 36}
+    ]
+  },
+  "sql": {
+    "builder_path": "tools/spatial-v3/character-appearance-v1-importer.mjs",
+    "builder_sha256": "64bf287bcbb0fe2ca32f9238da2e5ff7351841e2d25a52ea5761dd03c3a6bef2",
+    "mapping_builder_path": "tools/runtime-catalog-activation/src/target-appearance-transfer.js",
+    "mapping_builder_sha256": "6d7bc02b191780f31630dd2a2ca305f9ce8643dce040e1d7c2ac5945c801f50e",
+    "schema_generator_path": "scripts/generate-world-base-schema-reference.mjs",
+    "schema_generator_sha256": "18f33300a26746d668f8dfca55a7212f9dac4e99c91eb512bc30f217488074c1",
+    "function": "buildTargetAppearanceTransferV3ImportSql",
+    "commit_options": {"root": "repository root", "rollback": false},
+    "commit_bytes": 158278,
+    "commit_sha256": "230b47315d516ee2034b1081314d12c2618de1f7e1bb0341e2f20fd0b133e432",
+    "rollback_options": {"root": "repository root", "rollback": true},
+    "rollback_bytes": 158280,
+    "rollback_sha256": "15ec53c4abdda8e9c4e093a225440fae3e49fc1e9c81e3b39f65fa0703244917",
+    "operation": "insert_only",
+    "transaction": "single_world_base_transaction_with_commit"
+  },
+  "current_live_preflight": {
+    "status": "not_verified_from_this_checkout",
+    "local_docker_cluster_system_identifier": "7656105013506273318",
+    "local_docker_cluster_matches_target": false,
+    "live_candidate_primary_key_collisions": null,
+    "live_p12_readback_drift": null,
+    "live_rollback_probe": "pending"
+  },
+  "expected_import_readback": {
+    "inserted_rows": 129,
+    "by_table": {"world_revisions": 1, "universal_categories": 42, "region_demographic_profiles": 1, "region_appearance_profiles": 1, "region_category_options": 42, "region_demographic_profile_entries": 6, "region_appearance_profile_entries": 36},
+    "full_row_equality_required": true,
+    "preexisting_rows_preserved": true,
+    "old_databases_unchanged": true
+  },
+  "preconditions": [
+    "Obtain independent Sol high review and approval of this exact request digest, mapping manifest and seven dataset digests; DATA approval alone does not authorize import.",
+    "On the live target cluster, verify exact database identity, owner, schema, offline backup and all 208 world_base table counts against committed P12 readback.",
+    "Confirm all 129 candidate primary keys are absent in their respective live tables, including the 44 carried v4 rows, and no preexisting P12 row has drifted.",
+    "Regenerate the pinned SQL from the pinned code and datasets; verify bytes and SHA-256, then execute the rollback SQL to completion with zero errors and unchanged table counts."
+  ],
+  "execution_after_approval": [
+    "Capture pre-import full-row snapshot and counts for all 208 target world_base tables and old database counts.",
+    "Execute only the pinned COMMIT SQL in novgorod_world_v17.world_base after every precondition passes.",
+    "Read back all 129 candidate primary keys with full-row equality, preserve every preexisting row, verify old databases unchanged and record a separate execution attestation."
+  ],
+  "authority": {"request_only": true, "import_authorized": false, "activation_authorized": false, "party_migration_authorized": false, "database_mutated_by_this_request": false},
+  "independent_import_approval": null
+}

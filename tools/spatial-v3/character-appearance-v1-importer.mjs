@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
-import { buildTargetAppearanceTransferImportArtifacts } from '../runtime-catalog-activation/src/target-appearance-transfer.js';
+import { buildTargetAppearanceTransferImportArtifacts, buildTargetAppearanceTransferV3ImportArtifacts } from '../runtime-catalog-activation/src/target-appearance-transfer.js';
 
 import { buildWorldBaseSchemaReference } from '../../scripts/generate-world-base-schema-reference.mjs';
 import {
@@ -93,6 +93,27 @@ export async function buildTargetAppearanceTransferImportSql({ root = process.cw
     requiredExistingRows: manifest.existing_dependencies });
 }
 
+/** SQL for the independently data-approved 129-row v3 mapping; no DB connection. */
+export async function buildTargetAppearanceTransferV3ImportSql({ root = process.cwd(), rollback = false } = {}) {
+  const { manifest: expectedManifest, datasets: expectedRows } =
+    await buildTargetAppearanceTransferV3ImportArtifacts({ repositoryRoot: root });
+  const candidateRoot = resolve(root, 'data/world-catalogs/novgorod/live-world-runtime-v17');
+  const manifest = JSON.parse(await readFile(resolve(candidateRoot, 'appearance-transfer-v3-import-manifest.json')));
+  if (JSON.stringify(manifest) !== JSON.stringify(expectedManifest)) {
+    throw new Error('TARGET_APPEARANCE_V3_IMPORT_MAPPING_MISMATCH');
+  }
+  const rowsByTable = new Map();
+  for (const item of manifest.datasets) {
+    const content = await readFile(resolve(candidateRoot, item.file));
+    const rows = JSON.parse(content);
+    if (sha256(content) !== item.sha256 || JSON.stringify(rows) !== JSON.stringify(expectedRows[item.table])) {
+      throw new Error('TARGET_APPEARANCE_V3_IMPORT_DATASET_MISMATCH');
+    }
+    rowsByTable.set(item.table, rows);
+  }
+  return buildAppearanceRowsSql({ root, rollback, datasets: manifest.datasets, rowsByTable });
+}
+
 async function buildAppearanceRowsSql({ root, rollback, datasets, rowsByTable, requiredExistingRows = {} }) {
   const ddl = await buildWorldBaseSchemaReference({ root });
   const schemas = new Map(ddl.schema.tables.map((table) => [table.name, table]));
@@ -151,8 +172,10 @@ function dependencyOrder(datasets = []) {
 
 async function main() {
   const rootArgument = process.argv.slice(2).find((argument) => !argument.startsWith('--'));
-  const build = process.argv.includes('--target-transfer')
-    ? buildTargetAppearanceTransferImportSql : buildCharacterAppearanceV1ImportSql;
+  const build = process.argv.includes('--target-transfer-v3')
+    ? buildTargetAppearanceTransferV3ImportSql
+    : process.argv.includes('--target-transfer')
+      ? buildTargetAppearanceTransferImportSql : buildCharacterAppearanceV1ImportSql;
   process.stdout.write(await build({
     root: resolve(rootArgument ?? process.cwd()),
     rollback: process.argv.includes('--rollback')

@@ -53,6 +53,12 @@ approved v4 appearance dependencies, DDL21 и exact supplemental mapping approva
 оператор использует штатное подключение World Base. SQL проверяет совпадение
 каждой уже существующей строки и никогда не выполняет UPDATE.
 
+`--target-transfer-v3` выдаёт отдельный SQL для 129 строк одобренного по DATA
+v3 candidate: 44 точных v4 rows вставляются перед 85 target rows. Генератор
+проверяет exact candidate, DATA approval, manifest и семь datasets. Команда не
+подключается к БД; COMMIT требует отдельного независимого import approval,
+live preflight и успешной rollback-пробы.
+
 Machine-readable artifacts описаны
 `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json`.
 Forward-migration contracts находятся в

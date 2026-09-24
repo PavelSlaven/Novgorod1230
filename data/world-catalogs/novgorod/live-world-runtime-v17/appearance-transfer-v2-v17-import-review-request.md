@@ -1,5 +1,7 @@
 # Appearance transfer v2 into v17: independent import review request
 
+**Superseded by [the v3 request](appearance-transfer-v3-v17-import-review-request.md); this v2 request remains blocked and must not be executed.**
+
 Review [the exact request](appearance-transfer-v2-v17-import-request.json), SHA-256 `da64498f8a0b488ab11ab8b4e11b7cd2897f7f4ab901a5101e9c7bfc9bbaa281`, independently at `gpt-6-sol` high. Its status is **blocked**: all 44 required existing rows are absent from `novgorod_world_v17.world_base` after committed P12. The reviewed bundle imports 85 rows in four tables; it does not import these two profile rows or 42 actor categories. They require their own approved import and readback before this request can proceed. No import or activation is authorized here.
 
 The approved manifest SHA-256 is `3fe1a37e5bb3bd75b8cfb4955de21804cde27f4deb2b618e99544027fa31fb60`; the exact data approval is `m2c-appearance-repin-data-approval.json`, SHA-256 `8ade66f9fa9754783037934e58c3e2e71d8b1a6be99ccf415c38f94420ccab1a`. All four dataset bytes match their pins: one target `world_revisions` row, 42 regional options, six demographic entries, 36 appearance entries. The target world revision is absent; all 85 candidate primary keys are absent. P12's actual committed readback records 208 tables, 12,359 imported rows, 217 `source_records`, eight legacy `world_revisions`, and unchanged old database counts. Live cluster ID `7683141184713630856`, target database `novgorod_world_v17`, owner `world_operator`, 208 tables and all P12 table counts were rechecked.

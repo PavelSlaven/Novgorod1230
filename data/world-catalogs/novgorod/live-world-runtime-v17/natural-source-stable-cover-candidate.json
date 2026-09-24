@@ -1,0 +1,33 @@
+{
+  "schema": "rus.live_world_runtime.natural_source_stable_cover_candidate.v1",
+  "candidate_id": "novgorod_natural_source_stable_cover_v1",
+  "version": 1,
+  "status": "pending_independent_data_approval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "scene_template_manifest_path": "data/world-catalogs/novgorod/spatial-v3/manifest.json",
+  "scene_template_manifest_sha256": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e",
+  "directness": "editorial_stable_natural_source_condition",
+  "scope": "Stable cover for a natural source in the exact G6 scene-template slot; independent of observer, turn, weather and temporary occlusion. Current source presence and other visibility conditions remain with their existing owners.",
+  "rows": [
+    { "scene_template_id": "stfv3__g5_boundary_access_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_dry_route_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_exploration_concealment_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_general_hazard_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_habitation_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_landing_transition_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_observation_orientation_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_resource_hazard_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_resource_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_route_approach_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "partial" },
+    { "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_shelter_rest_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_water_hazard_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_water_navigation_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_wetland_flood_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" },
+    { "scene_template_id": "stfv3__g5_work_storage_social_v1", "scene_template_version": 1, "scene_slot_key": "main", "stable_cover": "clear" }
+  ]
+}

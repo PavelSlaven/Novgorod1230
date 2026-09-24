@@ -30,17 +30,17 @@ test('inactive manifest pins the original and six additional starts', async () =
   assert.equal(manifest.starts[0].scenario_id, 'novgorod_pine_ridge_approach_v1');
 });
 
-test('basis-only approval cannot make nonforest starts runtime selectable', async () => {
+test('nonforest starts require both exact independently approved scopes', async () => {
   const manifest = await json(manifestPath);
   for (const artifacts of manifest.starts.filter(({ scenario_id }) =>
     ['novgorod_riverbank_approach_v1', 'novgorod_reed_backwater_entrance_v1',
       'novgorod_zaostrovye_settlement_approach_v1'].includes(scenario_id))) {
     await assert.rejects(loadTargetAuthoredStartProfile({ rootDir: root, artifacts }),
-      { code: 'SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED' });
+      { code: 'SPATIAL_V3_TARGET_START_RUNTIME_PIN_REQUIRED' });
   }
 });
 
-test('six exact starts have deterministic pins; nonforest basis approval stays scoped', async () => {
+test('six exact starts have deterministic pins and scoped approvals', async () => {
   const candidate = await json(candidatePath);
   const manifest = await json(manifestPath);
   const { files, artifacts } = await buildStartArtifacts();
@@ -76,8 +76,12 @@ test('six exact starts have deterministic pins; nonforest basis approval stays s
       assert.ok(artifact.basis && artifact.approval);
       const approval = await json(artifact.approval.path);
       assert.equal(approval.target_player_basis_approval.candidate_sha256, artifact.basis.sha256);
-      assert.equal(Object.hasOwn(approval, 'target_player_transfer_approval'), false);
-      assert.equal(Object.hasOwn(approval, 'target_start_proposal_approval'), false);
+      assert.equal(approval.decision, 'DERIVED_FROM_APPROVED_SCOPES');
+      assert.equal(approval.target_player_transfer_approval.candidate_sha256, artifact.transfer.sha256);
+      assert.equal(approval.target_start_proposal_approval.candidate_sha256, artifact.start.sha256);
+      for (const key of ['basis_approval', 'applicability_approval']) {
+        assert.equal(sha256(await bytes(approval[key].path)), approval[key].sha256);
+      }
       assert.equal(transfer.requested_approval_scope[1].includes('forest_hunting'), false);
       assert.ok(transfer.requested_approval_scope[1].includes(source.player_inputs.occupation_archetype_id));
     }

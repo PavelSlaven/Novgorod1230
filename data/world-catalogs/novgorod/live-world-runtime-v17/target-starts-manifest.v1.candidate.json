@@ -59,7 +59,7 @@
       },
       "approval": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.approval.json",
-        "sha256": "bc5243049ef278c3c64f8832a90aa2f5e62c91f09e2f600e8563ecc7785cf97c"
+        "sha256": "007420250621ec85576aab065b2db2fd66f51d258bfca5ef1c4cad9e5b9b566d"
       }
     },
     {
@@ -83,7 +83,7 @@
       },
       "approval": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.approval.json",
-        "sha256": "b5ace9590c3e51993026c32ae7330ceedb738d8d17fffc95e1bd795caaf70bb6"
+        "sha256": "b9cca9d249000b1e45f1cea410a9395c121ef6c4d9beacd147464a3f7b8ddae3"
       }
     },
     {
@@ -131,7 +131,7 @@
       },
       "approval": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.approval.json",
-        "sha256": "6affef23228ab59f9ecb3ce9841d9061cb8a3e8fd2918bf5fb730c34341e8675"
+        "sha256": "90f3f104f88a23869a5a0e4d8996faa97cbb8c2f4657a23547b949b4844dd9c3"
       }
     },
     {

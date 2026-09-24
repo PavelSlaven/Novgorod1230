@@ -14,6 +14,35 @@ export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
   const approval = artifacts == null
     ? await readJson(rootDir, 'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json')
     : JSON.parse(await readPinnedArtifact(rootDir, artifacts.approval));
+  if (approval.decision === 'DERIVED_FROM_APPROVED_SCOPES') {
+    const [basisApproval, applicabilityApproval] = await Promise.all([
+      readPinnedArtifact(rootDir, approval.basis_approval).then(JSON.parse),
+      readPinnedArtifact(rootDir, approval.applicability_approval).then(JSON.parse)
+    ]);
+    const [basisCandidate, applicabilityCandidate] = await Promise.all([
+      readPinnedArtifact(rootDir, { path: basisApproval.candidate_path,
+        sha256: basisApproval.candidate_sha256 }).then(JSON.parse),
+      readPinnedArtifact(rootDir, { path: applicabilityApproval.candidate_path,
+        sha256: applicabilityApproval.candidate_sha256 }).then(JSON.parse)
+    ]);
+    const basisEntry = basisCandidate.starts?.find(({ scenario_id }) => scenario_id === artifacts.scenario_id);
+    const applicabilityEntry = applicabilityCandidate.starts?.find(({ scenario_id }) => scenario_id === artifacts.scenario_id);
+    if (basisApproval.decision !== 'APPROVE_DATA_ONLY'
+      || applicabilityApproval.decision !== 'APPROVE_DATA_ONLY'
+      || basisEntry?.start?.sha256 !== artifacts.start.sha256
+      || basisEntry?.transfer?.sha256 !== artifacts.transfer.sha256
+      || basisEntry?.basis?.sha256 !== artifacts.basis.sha256
+      || applicabilityEntry?.start?.sha256 !== artifacts.start.sha256
+      || applicabilityEntry?.transfer?.sha256 !== artifacts.transfer.sha256) {
+      fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+    }
+    const transfer = JSON.parse(await readPinnedArtifact(rootDir, artifacts.transfer));
+    if (canonicalDigest(applicabilityEntry.applicability?.body_transfer) !== canonicalDigest(transfer.body_transfer)
+      || canonicalDigest(applicabilityEntry.applicability?.attribute_transfer) !== canonicalDigest(transfer.attribute_transfer)
+      || canonicalDigest(applicabilityEntry.applicability?.clothing_transfer) !== canonicalDigest(transfer.clothing_transfer)) {
+      fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+    }
+  }
   const definitions = [
     [artifacts?.start, 'target-start-candidate.json', 'target_start_proposal_approval'],
     [artifacts?.transfer, 'player-transfer-candidate.json', 'target_player_transfer_approval'],
@@ -23,7 +52,7 @@ export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
     const bytes = artifact == null ? await readFile(resolve(rootDir, target, file))
       : await readPinnedArtifact(rootDir, artifact);
     const digest = createHash('sha256').update(bytes).digest('hex');
-    if (approval.decision !== 'APPROVE_DATA_ONLY'
+    if (!['APPROVE_DATA_ONLY', 'DERIVED_FROM_APPROVED_SCOPES'].includes(approval.decision)
       || approval[scope]?.candidate_sha256 !== digest) fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
     return { value: JSON.parse(bytes), digest };
   }));

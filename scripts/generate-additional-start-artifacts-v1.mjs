@@ -15,6 +15,8 @@ const pin = (path, bytes) => ({ path, sha256: sha256(bytes) });
 export async function buildStartArtifacts() {
   const originalApprovalPath = 'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json';
   const nonforestApprovalPath = `${output}/nonforest-basis-data-approval.json`;
+  const applicabilityPath = `${output}/nonforest-applicability-candidate-v1.json`;
+  const applicabilityApprovalPath = `${output}/nonforest-applicability-data-approval.json`;
   const [additionalBytes, additionalApprovalBytes, originalApprovalBytes, originalStart,
     originalTransfer, originalBasis] = await Promise.all([
     read(`${base}/additional-starts-candidate.json`),
@@ -37,6 +39,14 @@ export async function buildStartArtifacts() {
   ]) assert.equal(originalApproval[scope].candidate_sha256, sha256(await read(`${base}/${file}`)), file);
   const nonforestApprovalBytes = await read(nonforestApprovalPath);
   const nonforestApproval = JSON.parse(nonforestApprovalBytes);
+  const applicabilityBytes = await read(applicabilityPath);
+  const applicability = JSON.parse(applicabilityBytes);
+  const applicabilityApprovalBytes = await read(applicabilityApprovalPath);
+  const applicabilityApproval = JSON.parse(applicabilityApprovalBytes);
+  assert.equal(applicabilityApproval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(applicabilityApproval.candidate_path, applicabilityPath);
+  assert.equal(applicabilityApproval.candidate_sha256, sha256(applicabilityBytes));
+  assert.equal(applicabilityApproval.activation_authorized, false);
   const files = new Map();
   const artifacts = [];
   const pendingBasis = [];
@@ -168,14 +178,24 @@ export async function buildStartArtifacts() {
   assert.equal(nonforestApproval.activation_authorized, false);
   files.set(nonforestReviewPath, nonforestReviewBytes);
   for (const pending of pendingBasis) {
+    const applicable = applicability.starts.find(({ scenario_id }) => scenario_id === pending.scenario_id);
+    assert.ok(applicable, pending.scenario_id);
+    assert.deepEqual(applicable.start, pending.start);
+    assert.deepEqual(applicable.transfer, pending.transfer);
+    assert.deepEqual(applicable.applicability.body_transfer,
+      JSON.parse(files.get(pending.transfer.path)).body_transfer);
+    assert.deepEqual(applicable.applicability.attribute_transfer,
+      JSON.parse(files.get(pending.transfer.path)).attribute_transfer);
+    assert.deepEqual(applicable.applicability.clothing_transfer,
+      JSON.parse(files.get(pending.transfer.path)).clothing_transfer);
     const approval = {
-      schema: 'rus.m2c_supplemental_data_approval.v1',
-      decision: 'APPROVE_DATA_ONLY',
-      source_approvals: [pin(`${base}/additional-starts-data-approval.json`, additionalApprovalBytes),
-        pin(nonforestApprovalPath, nonforestApprovalBytes)],
-      scope: 'Exact new-player appearance, survival primary +2, ordinary speech and empty specific knowledge approved for this boatman or fisher start.',
-      excludes: 'No body, attribute or clothing transfer approval; no watercraft skill, boat, ferry capability, equipment, route knowledge, biography, import or activation.',
+      schema: 'rus.m2c_start_approval_binding.v1',
+      decision: 'DERIVED_FROM_APPROVED_SCOPES',
+      basis_approval: pin(nonforestApprovalPath, nonforestApprovalBytes),
+      applicability_approval: pin(applicabilityApprovalPath, applicabilityApprovalBytes),
       target_player_basis_approval: { candidate_sha256: pending.basis.sha256 },
+      target_start_proposal_approval: { candidate_sha256: pending.start.sha256 },
+      target_player_transfer_approval: { candidate_sha256: pending.transfer.sha256 },
       activation_authorized: false
     };
     const approvalPath = `${output}/${pending.scenario_id}.approval.json`;

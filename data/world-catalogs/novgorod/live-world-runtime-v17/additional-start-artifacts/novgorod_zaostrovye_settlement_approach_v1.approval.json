@@ -1,20 +1,22 @@
 {
-  "schema": "rus.m2c_supplemental_data_approval.v1",
-  "decision": "APPROVE_DATA_ONLY",
-  "source_approvals": [
-    {
-      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-data-approval.json",
-      "sha256": "dfc1f300c20b25bc6234ab084dc29ca9300f0a2216d298f7a1b12b5b06e1d496"
-    },
-    {
-      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-basis-data-approval.json",
-      "sha256": "ba20c685ef9b7c83d00c4aec6e10b96987af2c587ef0e9c160a24a069bb5a022"
-    }
-  ],
-  "scope": "Exact new-player appearance, survival primary +2, ordinary speech and empty specific knowledge approved for this boatman or fisher start.",
-  "excludes": "No body, attribute or clothing transfer approval; no watercraft skill, boat, ferry capability, equipment, route knowledge, biography, import or activation.",
+  "schema": "rus.m2c_start_approval_binding.v1",
+  "decision": "DERIVED_FROM_APPROVED_SCOPES",
+  "basis_approval": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-basis-data-approval.json",
+    "sha256": "ba20c685ef9b7c83d00c4aec6e10b96987af2c587ef0e9c160a24a069bb5a022"
+  },
+  "applicability_approval": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-applicability-data-approval.json",
+    "sha256": "92d86db31d0a72f0503c52c064ebe7f1f32b24ede81f380fbc1a5123b4441391"
+  },
   "target_player_basis_approval": {
     "candidate_sha256": "2d0b9c0f95435c03d5e99042e1cdd5cd649b08deb9245c1d0058abd6b4000060"
+  },
+  "target_start_proposal_approval": {
+    "candidate_sha256": "ee9ba3079a3ef4dde548d3670518598c9ce0ec09e4f24f420144ed1f8d9659ad"
+  },
+  "target_player_transfer_approval": {
+    "candidate_sha256": "91668c256b9b41a43c0cde8d7163b0397356a4ac97bc8e8fcf8b6e711fbde506"
   },
   "activation_authorized": false
 }

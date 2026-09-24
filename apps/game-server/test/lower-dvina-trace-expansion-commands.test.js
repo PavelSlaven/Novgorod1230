@@ -126,6 +126,53 @@ for (const status of ['restrained', 'incapacitated']) test(
       can_attempt: false, reasons: ['actor_movement_blocked'], check_requests: [] });
   });
 
+test('restrained free-text movement commits a blocked zero-minute turn', async () => {
+  const bundle = await loadScenarioBundle(13);
+  const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
+  const current = structuredClone(seed.state);
+  current.scenario_id = 'authored:unseen-woodland';
+  current.combat_sessions = [{ combat_id: 'combat:restrained',
+    status: 'paused_for_player', scope_ref: { entity_kind: 'location',
+      entity_id: current.position.location_ref },
+    participant_refs: [{ entity_kind: 'player_character',
+      entity_id: current.actor_id }], exchange_ordinal: 0,
+    player_response_required: true,
+    participant_states: [{ actor_ref: { entity_kind: 'player_character',
+      entity_id: current.actor_id }, combat_status: 'restrained' }] }];
+  const f = fixture({ committedState: current,
+    authoredTurnProfile: { profile: LIVE_WORLD_TURN_PROFILE, pin: {
+      artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
+      revision: LIVE_WORLD_TURN_PROFILE.revision,
+      digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
+    } },
+    spatialExpansionRuntime: { listExpansionOptions: async () => [candidate] },
+    turnStepModel(request) {
+      return { schema: 'turn_step_plan_v1', request_id: request.request_id,
+        committed_state_version: request.committed_state_version,
+        working_revision: request.working_revision, step_index: request.step_index,
+        interpretation: { player_goal: 'Иду по тропе',
+          grounded_attempt: 'Иду по тропе', adaptation: 'literal' },
+        resolution: 'direct', goal_result: 'not_achieved',
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+        operations: [], check: null, continuation: null, clarification: null,
+        direct_result_kind: null, reason_code: 'actor_movement_blocked',
+        reason: 'Actor cannot move while restrained.' };
+    }
+  });
+  const beforeClock = structuredClone(f.state.clock);
+  const beforePosition = structuredClone(f.state.position);
+  await f.runtime.submitTurn({ partyId: f.partyId,
+    input: { request_id: 'restrained:walk', raw_text: 'Иду по тропе.' } });
+  const consequence = f.lastWritePlan().turn_step_commit.consequence;
+  assert.equal(consequence.status, 'blocked');
+  assert.equal(consequence.duration_minutes, 0);
+  assert.deepEqual(consequence.state_changes, []);
+  assert.equal(f.state.last_turn.consequence.status, 'blocked');
+  assert.deepEqual(f.narratorInput().context.outcome, { movement_blocked: true });
+  assert.deepEqual(f.state.clock, beforeClock);
+  assert.deepEqual(f.state.position, beforePosition);
+});
+
 test('official exit action reports known movement denial without moving or advancing time',
   async () => {
     const bundle = await loadScenarioBundle(13);

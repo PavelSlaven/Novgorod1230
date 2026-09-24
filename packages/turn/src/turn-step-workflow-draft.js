@@ -90,7 +90,7 @@ export function buildTurnStepPreparedDomainConsequence(draft) {
 export function buildTurnStepDraftConsequence(draft) {
   const fragments = draft?.loop_result?.consequence_fragments ?? [];
   const status = draft.loop_result.status === 'resolved'
-    ? 'resolved'
+    ? draft.loop_result.blocked_plan === true ? 'blocked' : 'resolved'
     : 'partial';
   const consequence = {
     version: 1,

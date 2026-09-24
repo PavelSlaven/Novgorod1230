@@ -7,6 +7,8 @@ import { canonicalDigest } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { projectActorPortraitSpecV1 } from '@rus/visibility-knowledge-memory';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { createCombatSession } from '@rus/turn';
+import { createGameHttpServer, listen } from '@rus/game-server';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import {
@@ -558,7 +560,92 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     release,
     runtimeCatalogPin,
   });
+  await t.test('restrained movement returns HTTP 200 with committed blocked consequence',
+    () => assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }));
 });
+
+async function assertRestrainedBlockedPublicTurn({ pool, release, runtimeCatalogPin }) {
+  const setupRuntime = buildRuntime({ pool, release, runtimeCatalogPin });
+  const runtime = buildRuntime({ pool, release, runtimeCatalogPin,
+    turnStepModel: (request) => ({
+      schema: 'turn_step_plan_v1', request_id: request.request_id,
+      committed_state_version: request.committed_state_version,
+      working_revision: request.working_revision, step_index: request.step_index,
+      interpretation: { player_goal: 'Иду по тропе',
+        grounded_attempt: 'Иду по тропе', adaptation: 'literal' },
+      resolution: 'direct', goal_result: 'not_achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      operations: [], check: null, continuation: null, clarification: null,
+      direct_result_kind: null, reason_code: 'actor_movement_blocked',
+      reason: 'Персонаж удерживается и не может идти.'
+    }),
+    narrationService: { async run(request) {
+      assert.deepEqual(request.context.outcome, { movement_blocked: true });
+      const narration = approvedNarration(request);
+      narration.approved_output.prose = 'Вы удерживаетесь на месте и не можете идти.';
+      return narration;
+    } }
+  });
+  const opened = await setupRuntime.startNewGame({ scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'restrained-http-party' });
+  await setupRuntime.acknowledgeOpening(opened.party_id, { client_ack_id: 'restrained-ack' });
+  await setupRuntime.submitTurn(opened.party_id, {
+    request_id: 'restrained-setup-turn', idempotency_key: 'restrained-setup-turn',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  });
+  const before = await phase2Repository(pool).loadPhase2State(opened.party_id);
+  const changeSetId = (await pool.query(`SELECT id FROM party_runtime.party_v3_change_sets
+    WHERE party_id=$1 ORDER BY id DESC LIMIT 1`, [opened.party_id])).rows[0].id;
+  const player = { entity_kind: 'player_character', entity_id: before.actor_id };
+  const npc = { entity_kind: 'npc', entity_id: before.npcs[0].instance_id };
+  const session = structuredClone(createCombatSession({ combat_id: 'combat:restrained-http',
+    started_at: before.clock, scope_ref: { entity_kind: 'location',
+      entity_id: before.position.location_ref }, participant_refs: [player, npc] }));
+  session.status = 'paused_for_player';
+  session.player_response_required = true;
+  session.participant_states[0].combat_status = 'restrained';
+  session.last_change_set_ref = { entity_kind: 'party_change_set', entity_id: changeSetId };
+  await pool.query(`INSERT INTO party_runtime.party_combat_sessions
+    (combat_id,party_id,state_version,status,started_at,scope_ref,
+     participant_refs,participant_states,exchange_ordinal,last_exchange_ref,
+     player_response_required,last_change_set_id,canonical_digest,session_schema)
+    VALUES($1,$2,1,$3,$4::jsonb,$5::jsonb,$6::jsonb,$7::jsonb,0,NULL,true,$8,$9,$10)`,
+  [session.combat_id, opened.party_id, session.status,
+    JSON.stringify(session.started_at), JSON.stringify(session.scope_ref),
+    JSON.stringify(session.participant_refs), JSON.stringify(session.participant_states),
+    changeSetId, canonicalDigest(session), session.schema]);
+  const snapshotRow = (await pool.query(`SELECT state_version,state_payload
+    FROM party_runtime.party_state_snapshots WHERE party_id=$1
+    ORDER BY state_version DESC LIMIT 1`, [opened.party_id])).rows[0];
+  const snapshot = snapshotRow.state_payload;
+  snapshot.combat_sessions = [session];
+  await pool.query(`UPDATE party_runtime.party_state_snapshots
+    SET state_payload=$2::jsonb,state_digest=$3 WHERE party_id=$1 AND state_version=$4`,
+  [opened.party_id, JSON.stringify(snapshot), canonicalDigest(snapshot),
+    snapshotRow.state_version]);
+  assert.equal((await phase2Repository(pool).loadPhase2State(opened.party_id))
+    .combat_sessions[0].participant_states[0].combat_status, 'restrained');
+  const server = createGameHttpServer({ root: runtime });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  try {
+    const response = await fetch(`http://127.0.0.1:${address.port}/api/v1/parties/${
+      encodeURIComponent(opened.party_id)}/turns`, { method: 'POST',
+      headers: { 'content-type': 'application/json' }, body: JSON.stringify({
+        request_id: 'restrained-http-turn', idempotency_key: 'restrained-http-turn',
+        raw_text: 'Иду по тропе.' }) });
+    assert.equal(response.status, 200);
+    const publicResult = await response.json();
+    assert.match(JSON.stringify(publicResult), /не можете идти/u);
+    const after = await phase2Repository(pool).loadPhase2State(opened.party_id);
+    assert.equal(after.last_turn.consequence.status, 'blocked');
+    assert.equal(after.last_turn.consequence.duration_minutes, 0);
+    assert.deepEqual(after.last_turn.consequence.state_changes, []);
+    assert.deepEqual(after.clock, before.clock);
+    assert.deepEqual(after.position, before.position);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+}
 
 test('active A1 partial authored result survives reload, retry and reuse',
   async (t) => {

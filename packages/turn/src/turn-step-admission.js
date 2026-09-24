@@ -295,6 +295,7 @@ export async function resolveBoundTurnStepCommand({
     maxInternalSteps: 8
   }, {
     turnStepModel: services.turnStepModel,
+    blockPlan: services.turnStepBlockPlan,
     executionRegistry,
     preparedEffectContext: services.turnStepPreparedEffectContext,
     preparedEffectTimeOwner: services.turnStepPreparedEffectTimeOwner,

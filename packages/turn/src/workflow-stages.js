@@ -93,7 +93,9 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
         commandRegistry: services.commandRegistry
       });
       if (consequence.status === 'repair_required'
-          || consequence.status === 'blocked') {
+          || (consequence.status === 'blocked'
+            && getTurnStepWorkflowDraft(state.modeResolution)?.loop_result
+              ?.blocked_plan !== true)) {
         return { status: consequence.status, artifact: consequence };
       }
       return approved(next(state, 'consequence', consequence, context));

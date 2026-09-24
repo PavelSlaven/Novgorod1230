@@ -12,6 +12,7 @@ import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
   './lower-dvina-trace-phase-2-player-safe.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { createLowerDvinaTracePhase2StateReader } from './lower-dvina-trace-phase-2-state-reader.js';
+import { actorMovementBlocked } from './lower-dvina-trace-phase-3-command-shared.js';
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt, scenarioId,
@@ -128,6 +129,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
       idempotencyKey, state, projectCurrentScene, turnBudget }),
     semanticResolver,
     ...(turnStepModel ? { turnStepModel } : {}),
+    turnStepBlockPlan: ({ plan, request }) => request.step_index === 1
+      && actorMovementBlocked(state)
+      && plan.resolution === 'direct'
+      && plan.goal_result === 'not_achieved'
+      && plan.reason_code === 'actor_movement_blocked'
+      && plan.operations.length === 0,
     ...(turnStepSemanticGroundingValidator ? {
       turnStepSemanticGroundingValidator
     } : {}),

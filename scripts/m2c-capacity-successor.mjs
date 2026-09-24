@@ -10,7 +10,19 @@ const sources = {
   positions: [`${directory}/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json`, 'd729ec63d6d7aef8921eb30019265096320de6c9f7fbab39c60b9c1793f21a04'],
   g6_slots: [`${directory}/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json`, '6f63f52c3be0293e8d365f66fc0ee996b0edced2b468fc40d22d449c36f7708e'],
   group_reference: [`${directory}/spatial-v3/candidates/spatial-v3-production-v6/datasets/spatial_v3_scene_position_templates.json`, '4cc8beab358cc8bbd5c933048d6c447cd3c6fdfd586c47eaddb3bbd60d58c093'],
+  scene_profiles: [`${directory}/spatial-v3/source-approval/p12_novgorod_source_approval_001/data/approved-scene-profile-families.json`, '685d3a998979f9b9c00f0ab331ddb17929a0e8e9432a1d85a11ce05d46dae493'],
   spatial_contract: ['data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md', '2f4d7b3c8359061a203224620e39f6709891833c8e08c6255507630a82bfc52a'],
+};
+
+// The approved work role spans distinct physical places; it is not a Spatial position type.
+const focusTypes = {
+  burial_ritual_buffer: 'scene_position.boundary_edge', // ritual/burial buffer and respect-distance boundary
+  habitation: 'scene_position.central', // open household activity zone, no fixed work fixture
+  landing_transition: 'scene_position.boundary_edge', // transition at the water/land edge
+  resource_hazard: 'scene_position.hazard_boundary', // safe work point beside the hazard core
+  resource: 'scene_position.central', // resource patch; no fixed work fixture
+  shelter_rest: 'scene_position.central', // sheltered resting patch; maintenance only if caused
+  work_storage_social: 'scene_position.central', // work surface or contact point, no assured fixed fixture
 };
 
 function readPinned(key) {
@@ -25,6 +37,7 @@ export function buildM2cCapacitySuccessor() {
   const positions = readPinned('positions');
   const slots = readPinned('g6_slots');
   const reference = readPinned('group_reference');
+  const profiles = readPinned('scene_profiles');
   const contract = readPinned('spatial_contract');
   assert.match(contract, /capacity: required positive_integer/);
   assert.match(contract, /Null capacity означает отсутствие именно механического лимита relation/);
@@ -37,6 +50,21 @@ export function buildM2cCapacitySuccessor() {
     && row.overhead_cover_id === 'none' && row.enclosing_structure_slot_key === null));
   assert.ok(positions.every((row) => row.capacity === 1));
   assert.ok(approved.scene_movement_edge_templates.every((row) => row.capacity === 1 && !row.portal_template_ref));
+  assert.ok(profiles.records.filter((row) => row.status === 'approved'
+    && Object.hasOwn(focusTypes, row.profile_id.replace(/^g5_|_v1$/g, ''))).length === 7);
+
+  const sceneClass = new Map(slots.map((row) => [row.scene_template_id, row.physical_class_id]));
+  const successorPositions = positions.map((row) => {
+    const family = row.scene_template_id.replace(/^stfv3__g5_|_v1$/g, '');
+    const position_type_id = row.position_type_id === 'work'
+      ? focusTypes[family]
+      : sceneClass.get(row.scene_template_id) === 'spatial.g6.water'
+        ? 'scene_position.water_reach'
+        : 'scene_position.passage';
+    assert.ok(position_type_id, `unmapped position type: ${row.scene_template_id}/${row.position_slot_key}`);
+    assert.ok(row.position_type_id === 'work' || row.position_type_id === 'passage');
+    return { ...row, scene_template_version: 2, position_type_id, capacity: 7 };
+  });
 
   return {
     artifact_type: 'spatial_v3_m2c_open_capacity_successor_candidate',
@@ -58,7 +86,7 @@ export function buildM2cCapacitySuccessor() {
       narrow_point_rule: 'A smaller capacity requires an explicit physical source for the exact position or edge.',
       dependency_repin_required_before_import: true,
     },
-    scene_position_templates: positions.map((row) => ({ ...row, scene_template_version: 2, capacity: 7 })),
+    scene_position_templates: successorPositions,
     scene_movement_edge_templates: approved.scene_movement_edge_templates.map((row) => ({
       ...row, scene_template_version: 2, capacity: null,
     })),

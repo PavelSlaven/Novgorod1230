@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,11 +9,37 @@ import pg from 'pg';
 import { runSpatialV3TargetMigrations } from '../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { buildTransactionalImportSql } from '../tools/spatial-v3/p12-authoring-importer.mjs';
 import { buildTargetAppearanceTransferV3ImportSql } from '../tools/spatial-v3/character-appearance-v1-importer.mjs';
+import { prepareSpatialV3TargetItemCatalog, buildSpatialV3TargetItemImport } from
+  '../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
+import { registerCatalogBaseline, importApprovedCatalog } from
+  '../tools/runtime-catalog-activation/src/operator-executors.js';
+import { activateApprovedCatalog } from
+  '../tools/runtime-catalog-activation/src/operator-executors.js';
+import { buildActorBaseAttributesSuccessorImportRequest } from
+  '../tools/runtime-catalog-activation/src/actor-base-attributes-successor.js';
+import { importApprovedActorBaseAttributes, readActorBaseAttributesImport } from
+  '../tools/runtime-catalog-activation/src/actor-base-attributes-import.js';
+import { buildActivationPartyPreflight, buildActivationRequest, digestEnvelope } from
+  '../tools/runtime-catalog-activation/src/artifact-contracts.js';
 
 const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
 const gate1 = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
 const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1';
+const catalogDdl = {
+  world: [
+    ['tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql',
+      '07c225e7bc746003aa38607d30763053328acb2bf204d246ea244ffdde649d06'],
+    ['tools/runtime-catalog-activation/migrations/world/002_actor_base_attributes_owner.sql',
+      'e0062c00471f231167487a3d414b443666b2d6f8f83f2b5b15b26b3e85d8e178']
+  ],
+  party: [
+    ['tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql',
+      'bb5cf1f0b56412a54e219f201b78f744cf4b3699eada88258914d3c3544e6938'],
+    ['tools/runtime-catalog-activation/migrations/party/002_actor_base_attributes_pins.sql',
+      '1b2c10675e1d2bcf9ac4d420b670c30fcef7c7a9f20ff951a7c8aa65187138fa']
+  ]
+};
 
 function digest(bytes) { return createHash('sha256').update(bytes).digest('hex'); }
 
@@ -33,6 +59,8 @@ export async function checkV17BootstrapInputs() {
     ...schema.party_schema.ordered_migrations]) {
     await exact(source.path, source.sha256, source.bytes);
   }
+  for (const [path, sha256] of [...catalogDdl.world, ...catalogDdl.party])
+    await exact(path, sha256);
 
   const gate = await json(`${gate1}/v17-bootstrap-import-request.json`);
   for (const source of gate.approved_sources) await exact(source.path, source.sha256);
@@ -81,7 +109,7 @@ export async function checkV17BootstrapInputs() {
         || sql.length !== appearance.sql[`${kind}_bytes`])
       throw new Error(`V17_APPEARANCE_SQL_MISMATCH:${kind}`);
   }
-  return { schema: 'exact', gate1: 'exact', p12: 'exact', appearance_v3: 'exact',
+  return { schema: 'exact', catalog_ddl: 'exact', gate1: 'exact', p12: 'exact', appearance_v3: 'exact',
     database_mutated: false };
 }
 
@@ -113,8 +141,31 @@ function assertAdded(before, after, expected, stage) {
   }
 }
 
-export async function bootstrapV17Imports({ adminUrl }) {
+async function applyCatalogDdl(pool, schema, migrations, tables) {
+  const client = await pool.connect();
+  try {
+    for (const commit of [false, true]) {
+      await client.query('BEGIN');
+      try {
+        for (const [path, sha256] of migrations)
+          await client.query((await exact(path, sha256)).toString());
+        await client.query(commit ? 'COMMIT' : 'ROLLBACK');
+      } catch (error) {
+        await client.query('ROLLBACK').catch(() => {});
+        throw error;
+      }
+      const found = (await client.query(`SELECT count(*)::int AS count
+        FROM pg_catalog.pg_tables WHERE schemaname = $1 AND tablename = ANY($2::text[])`,
+      [schema, tables])).rows[0].count;
+      if (found !== (commit ? tables.length : 0))
+        throw new Error(`V17_CATALOG_DDL_${commit ? 'READBACK' : 'ROLLBACK'}_MISMATCH:${schema}`);
+    }
+  } finally { client.release(); }
+}
+
+export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest = null }) {
   if (!adminUrl) throw new Error('V17_ADMIN_URL_REQUIRED');
+  if (typeof attest !== 'function') throw new Error('V17_INDEPENDENT_ATTESTATIONS_REQUIRED');
   await checkV17BootstrapInputs();
   const schema = await json(`${v17}/fresh-schema-request.json`);
   const p12Request = await json(`${p12}/request.json`);
@@ -126,6 +177,7 @@ export async function bootstrapV17Imports({ adminUrl }) {
   const admin = new pg.Pool({ connectionString: adminUrl, max: 1 });
   let world;
   let party;
+  let importer;
   const work = await mkdtemp(join(tmpdir(), 'novgorod-v17-bootstrap-'));
   try {
     const identity = (await admin.query(`SELECT current_database() AS database,
@@ -144,6 +196,8 @@ export async function bootstrapV17Imports({ adminUrl }) {
     await admin.query(`CREATE DATABASE ${partyName} OWNER ${schema.target.party_owner}`);
     world = new pg.Pool({ connectionString: databaseUrl(adminUrl, worldName), max: 1 });
     party = new pg.Pool({ connectionString: databaseUrl(adminUrl, partyName), max: 1 });
+    importer = new pg.Pool({ connectionString: databaseUrl(adminUrl, worldName),
+      options: '-c role=runtime_catalog_importer', max: 1 });
     if (await countTables(world, 'world_base') || await countTables(party, 'party_runtime'))
       throw new Error('V17_NEW_DATABASE_NOT_EMPTY');
 
@@ -228,20 +282,163 @@ export async function bootstrapV17Imports({ adminUrl }) {
           throw new Error(`V17_APPEARANCE_ROW_MISMATCH:${dataset.table}:${row.id}`);
       }
     }
+    const graphCheck = (await world.query(`SELECT pg_get_constraintdef(c.oid) AS definition
+      FROM pg_catalog.pg_constraint c
+      JOIN pg_catalog.pg_class t ON t.oid = c.conrelid
+      JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace
+      WHERE n.nspname = 'world_base' AND t.relname = 'graph_nodes'
+        AND c.conname = 'graph_nodes_scale_level_check'`)).rows;
+    if (graphCheck.length !== 1) throw new Error('V17_GRAPH_NODES_CHECK_MISSING');
+    if (!graphCheck[0].definition.includes("ARRAY['G0'::text, 'G1'::text, 'G2'::text, 'G3'::text, 'G4'::text]")) {
+      const finalize = 'tools/runtime-catalog-activation/migrations/world/000_legacy_world_bridge_finalize.sql';
+      await world.query((await exact(finalize,
+        'd23d16cba41b66b3071febe8058d4ced1d606995b97faaaa94674ef670017a60')).toString());
+    }
+    await applyCatalogDdl(world, 'world_base', catalogDdl.world,
+      ['schema_migrations', 'catalog_baseline_registrations', 'domain_catalog_revisions',
+        'catalog_import_records', 'catalog_import_dependency_assertions',
+        'runtime_catalog_activation_events', 'actor_base_attribute_profiles']);
+    await applyCatalogDdl(party, 'party_runtime', catalogDdl.party,
+      ['schema_migrations', 'party_catalog_pins', 'party_materialization_run_catalog_pins']);
+    const subjectCommit = execFileSync('git', ['rev-parse', 'HEAD'],
+      { cwd: root, encoding: 'utf8' }).trim();
+    const preparation = await prepareSpatialV3TargetItemCatalog({
+      worldPool: world, repositoryRoot: root, gitCommitSha: subjectCommit
+    });
+    const baselineAttestation = await requireAttestation('item_baseline',
+      preparation.baseline_request, attest, onRequest);
+    const overlayAttestation = await requireAttestation('item_import',
+      preparation.approval_request, attest, onRequest);
+    const baselineArgs = { request: preparation.baseline_request,
+      attestation: baselineAttestation, baselineManifest: preparation.baseline_manifest,
+      compatibilityManifest: preparation.compatibility_manifest,
+      runtimeConfigurationTuple: preparation.runtime_configuration_tuple };
+    const item = buildSpatialV3TargetItemImport({ preparation,
+      baselineAttestation, overlayAttestation });
+    const itemArgs = { ledger: item.ledger, domainRevision: item.domain_revision,
+      approvalAttestation: item.approval_attestation };
+    await rollbackProbe(world, (client) => registerCatalogBaseline({
+      ...baselineArgs, pool: world, client
+    }), 'catalog_baseline_registrations', 'ITEM_BASELINE');
+    await registerCatalogBaseline({ ...baselineArgs, pool: world });
+    await rollbackProbe(world, (client) => importApprovedCatalog({
+      ...itemArgs, pool: world, client
+    }), 'catalog_imports', 'ITEM_IMPORT');
+    const itemImport = await importApprovedCatalog({ ...itemArgs, pool: world });
+    if (itemImport.status !== 'applied'
+      || (await importApprovedCatalog({ ...itemArgs, pool: world })).status !== 'already_applied')
+      throw new Error('V17_ITEM_IMPORT_READBACK_MISMATCH');
+    const itemReadback = { verified: true, import_id: item.ledger.root.import_id,
+      import_audit_digest: item.ledger.root.import_audit_digest,
+      catalog_revision_id: item.ledger.root.target_revision_id,
+      catalog_digest: item.ledger.root.target_catalog_digest };
+    const partyCounts = (await party.query(`SELECT
+      (SELECT count(*)::int FROM party_runtime.parties) AS party_count,
+      (SELECT count(*)::int FROM party_runtime.party_catalog_pins) AS pinned_party_count,
+      (SELECT count(*)::int FROM party_runtime.commit_idempotency
+        WHERE status IN ('reserved','transaction_committed')) AS inflight_count`)).rows[0];
+    const runtimeReleaseId = digestEnvelope('spatial-v3-production-v17');
+    const preflight = buildActivationPartyPreflight({
+      activationScope: 'new_production_parties_only',
+      partyCount: partyCounts.party_count,
+      pinnedPartyCount: partyCounts.pinned_party_count,
+      missingDomainPinCount: 0, inflightStage24Stage25Count: partyCounts.inflight_count,
+      runtimeReleaseId, runtimeContractDigest: item.domain_revision.runtime_contract_digest
+    });
+    const { schema: ignoredSchema, catalog_scope: ignoredScope, ...activationFields } =
+      item.ledger.root;
+    const itemActivationRequest = buildActivationRequest({ partyPreflight: preflight,
+      fields: { ...activationFields,
+        runtime_contract_digest: item.domain_revision.runtime_contract_digest,
+        runtime_release_id: runtimeReleaseId,
+        activation_scope: 'new_production_parties_only',
+        expected_previous_event_id: null } });
+    const itemActivationAttestation = await requireAttestation('item_activation',
+      itemActivationRequest, attest, onRequest);
+    const itemActivationArgs = { worldPool: world, partyPool: party,
+      request: itemActivationRequest, attestation: itemActivationAttestation };
+    await rollbackProbe(world, (client) => activateApprovedCatalog({
+      ...itemActivationArgs, client
+    }), 'runtime_catalog_activation_events', 'ITEM_ACTIVATION');
+    const itemActivation = await activateApprovedCatalog(itemActivationArgs);
+    if (itemActivation.status !== 'activated'
+      || (await activateApprovedCatalog(itemActivationArgs)).status !== 'already_active')
+      throw new Error('V17_ITEM_ACTIVATION_READBACK_MISMATCH');
+    const actorRequest = buildActorBaseAttributesSuccessorImportRequest({
+      subjectCommit, parentCatalog: {
+        catalog_scope: item.ledger.root.catalog_scope,
+        catalog_revision_id: item.ledger.root.target_revision_id,
+        catalog_digest: item.ledger.root.target_catalog_digest,
+        import_readback_ref: 'v17-bootstrap:item-import',
+        import_readback_digest: digestEnvelope(itemReadback),
+        compatible_world_pin_manifest_digest:
+          item.ledger.root.compatible_world_pin_manifest_digest
+      }
+    });
+    const actorAttestation = await requireAttestation('actor_import',
+      actorRequest, attest, onRequest);
+    const actorImport = await importApprovedActorBaseAttributes({
+      pool: importer, request: actorRequest, attestation: actorAttestation
+    });
+    const actorReadback = await readActorBaseAttributesImport(importer, {
+      request: actorRequest, attestation: actorAttestation
+    });
+    assert.deepEqual(actorReadback, actorImport);
     return { database: worldName, party_database: partyName,
       schema: { world_tables: 208, party_migrations: partyMigration.applied },
       gate1: { status: gateReadback.status, digest: gate.first_state_digest },
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },
       appearance_v3: { inserted_rows: appearanceRequest.expected_import_readback.inserted_rows,
-        rollback: 'pass' }, activation_performed: false };
+        rollback: 'pass' }, item_import: itemReadback,
+      item_activation: itemActivation, actor_import: actorReadback,
+      activation_performed: false };
   } finally {
-    await Promise.all([world?.end(), party?.end(), admin.end()]);
+    await Promise.all([world?.end(), party?.end(), importer?.end(), admin.end()]);
     await rm(work, { recursive: true, force: true });
   }
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url))
-  process.stdout.write(`${JSON.stringify(process.argv.includes('--run')
-    ? await bootstrapV17Imports({ adminUrl: process.env.V17_BOOTSTRAP_ADMIN_URL })
-    : await checkV17BootstrapInputs())}\n`);
+async function requireAttestation(stage, request, attest, onRequest) {
+  await onRequest?.({ stage, request });
+  const attestation = await attest?.({ stage, request });
+  if (!attestation) throw new Error(`V17_INDEPENDENT_ATTESTATION_REQUIRED:${stage}`);
+  return attestation;
+}
+
+async function rollbackProbe(pool, apply, table, stage) {
+  const before = Number((await pool.query(`SELECT count(*) FROM world_base.${table}`)).rows[0].count);
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await apply(client);
+    await client.query('ROLLBACK');
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally { client.release(); }
+  const after = Number((await pool.query(`SELECT count(*) FROM world_base.${table}`)).rows[0].count);
+  if (after !== before) throw new Error(`V17_${stage}_ROLLBACK_MISMATCH`);
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  let result;
+  if (process.argv.includes('--run')) {
+    const directory = process.env.V17_BOOTSTRAP_ATTESTATION_DIR;
+    if (!directory) throw new Error('V17_INDEPENDENT_ATTESTATIONS_REQUIRED');
+    const stages = ['item_baseline', 'item_import', 'item_activation', 'actor_import'];
+    const attestations = Object.fromEntries(await Promise.all(stages.map(async (stage) =>
+      [stage, JSON.parse(await readFile(join(directory, `${stage}.json`), 'utf8'))])));
+    result = await bootstrapV17Imports({ adminUrl: process.env.V17_BOOTSTRAP_ADMIN_URL,
+      attest: ({ stage }) => attestations[stage],
+      onRequest: async ({ stage, request }) => {
+        const output = process.env.V17_BOOTSTRAP_REQUEST_DIR;
+        if (output) {
+          await mkdir(output, { recursive: true });
+          await writeFile(join(output, `${stage}.json`),
+            `${JSON.stringify(request, null, 2)}\n`);
+        }
+      } });
+  } else result = await checkV17BootstrapInputs();
+  process.stdout.write(`${JSON.stringify(result)}\n`);
+}

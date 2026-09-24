@@ -9,6 +9,10 @@ import { createTraceLocalSceneCommands } from
   '../src/runtime/lower-dvina-trace-local-scene-commands.js';
 import { applyS1LocalPositionTransition } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-commit-projections.js';
+import { createTracePhase3TemporalAdvance, createTracePhase3VisibleProjector } from
+  '../src/runtime/lower-dvina-trace-phase-3-effects.js';
+import { createTraceRouteBodyEffect } from
+  '../src/runtime/lower-dvina-trace-route-body-effects.js';
 
 const positions = ['arrival', 'focus', 'departure'];
 
@@ -74,6 +78,79 @@ test('local movement follows only committed directed edges; P16 changes exact po
   }
   assert.deepEqual((await runtime.listLocalOptions({ partyId: 'party', actorId: 'actor',
     state: committed })).map(({ edge_id: id }) => id), ['departure:focus']);
+});
+
+test('local action movement keeps exact clock; route traversal owns its elapsed time', async () => {
+  const clock = { whole_minutes: '10', subminute_numerator: '0',
+    subminute_denominator: '1' };
+  const advance = createTracePhase3TemporalAdvance({ phase2Advance() {
+    throw new Error('movement must not delegate its clock');
+  } });
+  const local = { clock_before: clock, relevant_state: {
+    temporal_boundary_candidates: [] }, exact_elapsed: {
+    exact_minutes: { numerator: '0', denominator: '1' } }, consequence: {
+    phase3_kind: 'movement', duration_minutes: 0,
+    position_transition: { owner: '@rus/movement-routes' }
+  } };
+  const localResult = await advance(local);
+  assert.deepEqual(localResult.clock_after, clock);
+  assert.equal(localResult.boundary_trace.owner, 'movement_route_owner');
+  const directional = { ...local, consequence: {
+    phase3_kind: 'movement', duration_minutes: 0,
+    movement: { status: 'completed', cost_kind: 'action', action_units: 1 },
+    position_transition: {
+      owner: '@rus/turn/spatial-v3-site-connection-traversal'
+    }
+  } };
+  assert.deepEqual((await advance(directional)).clock_after, clock);
+  await assert.rejects(advance({ ...local, exact_elapsed: {
+    exact_minutes: { numerator: '1', denominator: '1' } } }),
+  { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' });
+  const route = { ...local, exact_elapsed: {
+    exact_minutes: { numerator: '8', denominator: '1' } }, consequence: {
+    phase3_kind: 'movement', duration_minutes: 8, movement: { traversal: {
+      clock_before: clock, clock_update: { world_time_after: {
+        ...clock, whole_minutes: '18' } }, interval_result: {
+        clock_commit_mode: 'direct_party_clock', actual_time_numerator: '8',
+        actual_time_denominator: '1' }
+    } }
+  } };
+  assert.equal((await advance(route)).clock_after.whole_minutes, '18');
+  await assert.rejects(advance({ ...route, consequence: {
+    ...route.consequence, movement: { traversal: {
+      ...route.consequence.movement.traversal, clock_update: null
+    } }
+  } }), { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' });
+});
+
+test('local movement preserves current scene projection without route destination', async () => {
+  const visible = { version: 1, schema: 'visible_context_package',
+    visible_scene: 'Окрестности.', visible_changes: [], sensory_details: [],
+    visible_npc: [], visible_objects: [], known_context: [],
+    uncertainties: [], allowed_tensions: [], do_not_imply: [] };
+  const projector = createTracePhase3VisibleProjector({
+    phase2Projector: { project() { throw new Error('wrong owner'); } },
+    contracts: {}, scenePresentation: {}
+  });
+  assert.deepEqual(await projector.project({ consequence: {
+    phase3_kind: 'movement', position_transition: { owner: '@rus/movement-routes' }
+  }, retrieved_state: { current_visible_context: visible } }), visible);
+});
+
+test('local movement does not consume route body effect', () => {
+  const body = { health: 100, satiety: 70, energy: 80,
+    active_conditions: [] };
+  const owner = createTraceRouteBodyEffect({
+    phase2BodyEffect: { apply() { throw new Error('wrong owner'); } },
+    phase3Contracts: { routeBodyEffect: { elapsed_minutes: 8 } }
+  });
+  assert.deepEqual(owner.apply({ committed_state: { body_state: body },
+    consequence: { phase3_kind: 'movement', duration_minutes: 0,
+      position_transition: { owner: '@rus/movement-routes' } },
+    time_update: { exact_elapsed: { exact_minutes: {
+      numerator: '0', denominator: '1' } } }
+  }), { owner: '@rus/body-state', applied: false, proposal: null,
+    state_after: body });
 });
 
 test('local command binds exact current edge and rejects stale state', async () => {

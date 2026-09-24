@@ -36,7 +36,7 @@ export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
   loadInitialNaturalScenePerceptionInput = null,
-  readLocalEdgeDisclosure = null } = {}) {
+  readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -148,7 +148,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         readPool, partyId, initial.actor_id);
       const current = await withPhase2CurrentLocalEdges(
         withJourneyLocation(visible, journeyLocation),
-        includeCurrentVisibleContext ? readLocalEdgeDisclosure : null);
+        includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
+        includeCurrentVisibleContext ? readCurrentExitDisclosure : null);
       return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, hydrateNpcRoutineState({ ...current,
         npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime) })));
@@ -193,7 +194,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));
     const current = await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
-      includeCurrentVisibleContext ? readLocalEdgeDisclosure : null);
+      includeCurrentVisibleContext ? readLocalEdgeDisclosure : null,
+      includeCurrentVisibleContext ? readCurrentExitDisclosure : null);
     return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, hydrateNpcRoutineState({
       ...current,
       world_identity: {

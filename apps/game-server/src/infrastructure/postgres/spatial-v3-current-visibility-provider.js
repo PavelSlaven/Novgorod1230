@@ -124,6 +124,23 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       return (await localDisclosure(input)).map((row) => row.edge_id);
     },
     readLocalEdgeDisclosure: localDisclosure,
+    async readCurrentExitDisclosure({ partyId, actorId, transaction } = {}) {
+      return withCurrent(partyId, actorId, async (current) => {
+        const binding = await worldBaseReader?.readG4ExpansionBinding?.({
+          g4_id: current.scene.site.parent_g4_id,
+          world_revision_id: current.scene.world_revision_id });
+        if (!binding?.ok) gap('approved_g4_expansion_binding_required');
+        const closure = await worldBaseReader.readPinnedG4ExpansionClosure(binding.value);
+        if (!closure?.ok || !Array.isArray(closure.value?.directional_exits)) {
+          gap('approved_g4_expansion_closure_required');
+        }
+        const exits = closure.value.directional_exits.filter((row) =>
+          row.exit_canonical_g5_id === current.scene.site.canonical_g5_ref?.entity_id);
+        return provider.readExitDisclosure({ transaction: current.transaction, partyId,
+          actorId, position: { id: current.scene.location.scene_position_id },
+          site: current.scene.site, directional_exits: exits });
+      }, transaction);
+    },
     async readExitDisclosure(context = {}) {
       return withCurrent(context.partyId, context.actorId, async (current) => {
         if (!approvedLabels || !Array.isArray(context.directional_exits)

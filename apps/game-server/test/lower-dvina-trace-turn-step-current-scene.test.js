@@ -33,6 +33,18 @@ test('current scene carries disclosed local edge into turn visible package', () 
       && row.entity_ref.entity_id === 'edge'), true);
 });
 
+test('current scene carries approved directional exit after first turn', () => {
+  const state = committedState();
+  state.current_visible_context.visible_objects.push({
+    entity_ref: { entity_kind: 'g4_directional_exit', entity_id: 'pine-exit' },
+    display_label: 'Продолжить путь — выход 2', recognition: 'known' });
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.equal(current.current_visible_context.visible_objects.some((row) =>
+    row.entity_ref?.entity_kind === 'g4_directional_exit'
+      && row.entity_ref.entity_id === 'pine-exit'), true);
+});
+
 test('direct sustained activity exposes the performed attempt without elapsed-time prose', () => {
   const changes = projectDirectSeedChanges({
     input: { consequence: { visible_seed: { turn_step_1: {

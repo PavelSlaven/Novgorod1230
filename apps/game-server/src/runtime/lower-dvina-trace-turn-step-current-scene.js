@@ -69,7 +69,8 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     visible_npc: sceneNpcs,
     visible_objects: uniqueLowerDvinaTraceVisibleObjects([
       ...(initial?.visible_objects ?? []).filter((row) =>
-        row?.entity_ref?.entity_kind === 'scene_movement_edge'),
+        ['scene_movement_edge', 'g4_directional_exit'].includes(
+          row?.entity_ref?.entity_kind)),
       ...sceneItems.map(({ visibleObject }) => visibleObject)]),
     known_context: [profile.display_name, ...selfKnowledge],
     uncertainties: [],

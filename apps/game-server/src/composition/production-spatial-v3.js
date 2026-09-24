@@ -248,6 +248,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
           readLocalMovementEligibility }),
         readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
+        readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
         readCurrentSources: currentVisibility.readCurrentSources, targetFiniteFirstEntry }),
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release

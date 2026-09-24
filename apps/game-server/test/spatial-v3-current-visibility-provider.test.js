@@ -17,7 +17,7 @@ const localLabel = JSON.parse(readFileSync(new URL(
 const naturalProfiles = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-natural/candidate.json', import.meta.url))).natural_profiles;
 const g4 = label.g4_ref.id;
-function fixture({ mode = 'default_clear', modifiers = [] } = {}) {
+function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
     site: { parent_g4_id: g4 }, baseline: { id: 'baseline' },
@@ -37,6 +37,7 @@ function fixture({ mode = 'default_clear', modifiers = [] } = {}) {
   const queries = [];
   const pool = { async connect() { return { async query(sql) { queries.push(sql); }, release() {} }; } };
   const provider = createSpatialV3CurrentVisibilityProvider({ pool,
+    worldBaseReader,
     readScene: async () => scene, readNatural: async () => natural,
     readTargetConditions: readCurrentTargetConditions,
     readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id }),
@@ -64,6 +65,47 @@ test('current snapshot admits committed identities, edges and approved exit labe
     direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
     display_label: label.display_label }]);
   assert.equal(queries.filter((sql) => sql.startsWith('BEGIN')).length, 4);
+});
+
+test('P12 pine arrival discloses its approved G4 exit before local topology exists', async () => {
+  const start = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json',
+    import.meta.url)));
+  const rows = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g4_directional_exits.json',
+    import.meta.url)));
+  const expected = rows.filter((row) => row.g4_id === start.initial_placement.g4_ref.id
+    && row.exit_canonical_g5_id === start.initial_placement.canonical_g5_ref.id);
+  assert.equal(expected.length, 1);
+  const worldBaseReader = {
+    async readG4ExpansionBinding() { return { ok: true, value: { id: 'approved-pine-binding' } }; },
+    async readPinnedG4ExpansionClosure() { return { ok: true, value: {
+      directional_exits: rows.filter((row) => row.g4_id === start.initial_placement.g4_ref.id) } }; }
+  };
+  const { provider, scene, natural } = fixture({ worldBaseReader });
+  scene.world_revision_id = start.world_pin.world_revision_id;
+  scene.site = { id: 'pine-site', parent_g4_id: start.initial_placement.g4_ref.id,
+    canonical_g5_ref: { entity_id: start.initial_placement.canonical_g5_ref.id } };
+  scene.movement_edges = [];
+  natural.scene.g4_ref.id = start.initial_placement.g4_ref.id;
+  natural.ambient_visibility.stable_cover = 'partial';
+  const disclosed = await provider.readCurrentExitDisclosure({ partyId: 'party', actorId: 'actor' });
+  const approved = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url)))
+    .labels.find((row) => row.directional_exit_ref.id === expected[0].id);
+  assert.deepEqual(disclosed.map(({ directional_exit_id, display_label }) =>
+    ({ directional_exit_id, display_label })), [{
+    directional_exit_id: expected[0].id, display_label: approved.display_label }]);
+  const state = { party_id: 'party', actor_id: 'actor', journey_location: {
+    scene_position_id: 'a' }, current_visible_context: {
+    version: 1, schema: 'visible_context_package', visible_scene: 'Лес',
+    visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
+    known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [] } };
+  const current = await withPhase2CurrentLocalEdges(state,
+    provider.readLocalEdgeDisclosure, provider.readCurrentExitDisclosure);
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'g4_directional_exit', entity_id: expected[0].id },
+    display_label: approved.display_label, recognition: 'known' }]);
 });
 
 test('current approved local edge reaches the turn visible context', async () => {

@@ -144,17 +144,25 @@ export function withPhase2CurrentVisibleContext(state, currentVisibleContext) {
   };
 }
 
-export async function withPhase2CurrentLocalEdges(state, readLocalEdgeDisclosure) {
-  if (typeof readLocalEdgeDisclosure !== 'function') return state;
-  const disclosed = await readLocalEdgeDisclosure({ partyId: state.party_id,
-    actorId: state.actor_id, state });
+export async function withPhase2CurrentLocalEdges(state, readLocalEdgeDisclosure,
+  readCurrentExitDisclosure = null) {
+  if (typeof readLocalEdgeDisclosure !== 'function'
+    && typeof readCurrentExitDisclosure !== 'function') return state;
+  const input = { partyId: state.party_id, actorId: state.actor_id, state };
+  const disclosed = typeof readLocalEdgeDisclosure === 'function'
+    ? await readLocalEdgeDisclosure(input) : [];
+  const exits = typeof readCurrentExitDisclosure === 'function'
+    ? await readCurrentExitDisclosure(input) : [];
   const context = requirePhase2CurrentVisibleContext(state.current_visible_context);
   return withPhase2CurrentVisibleContext(state, { ...context,
     visible_objects: [
       ...context.visible_objects.filter((row) =>
-        row?.entity_ref?.entity_kind !== 'scene_movement_edge'),
+        !['scene_movement_edge', 'g4_directional_exit'].includes(row?.entity_ref?.entity_kind)),
       ...disclosed.map(({ edge_id, display_label }) => ({
         entity_ref: { entity_kind: 'scene_movement_edge', entity_id: edge_id },
+        display_label, recognition: 'known' })),
+      ...exits.map(({ directional_exit_id, display_label }) => ({
+        entity_ref: { entity_kind: 'g4_directional_exit', entity_id: directional_exit_id },
         display_label, recognition: 'known' }))
     ] });
 }

@@ -77,6 +77,7 @@ export function createTraceTurnRuntime({
   spatialExpansionRuntime = null,
   spatialLocalSceneRuntime = null,
   readLocalEdgeDisclosure = null,
+  readCurrentExitDisclosure = null,
   loadInitialNaturalScenePerceptionInput = null,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts
@@ -195,7 +196,7 @@ export function createTraceTurnRuntime({
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
-      readLocalEdgeDisclosure
+      readLocalEdgeDisclosure, readCurrentExitDisclosure
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,

@@ -22,6 +22,23 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     model_calls: [], calls: [], browser: null };
   const reportPath = join(tmpdir(), `novgorod-target-http-smoke-${process.pid}.json`);
   const save = () => writeFile(reportPath, JSON.stringify(report, null, 2));
+  if (realProvider) globalThis.fetch = async (url, init) => {
+    const call = JSON.parse(init.body);
+    const system = call.messages?.[0]?.content ?? '';
+    if (!system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+      return provider(url, init);
+    }
+    const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
+    const request = input.request ?? input;
+    const response = await provider(url, init);
+    report.model_calls.push({ role: 'turn_step_planner',
+      root_player_action: request.root_player_action,
+      movement_choices: turnStepOperationChoices(request).filter(({ operation }) =>
+        operation.op === 'request_movement').map(({ choice_id, operation }) => ({ choice_id, operation })),
+      output: (await response.clone().json()).choices?.[0]?.message?.content ?? null });
+    await save();
+    return response;
+  };
   if (!realProvider) globalThis.fetch = async (url, init) => {
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');

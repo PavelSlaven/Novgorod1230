@@ -1,0 +1,75 @@
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
+import test from 'node:test';
+import pg from 'pg';
+import { promoteM2cOpenCapacity } from '../../scripts/promote-m2c-open-capacity-v2.mjs';
+import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+
+const manifestPath = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
+const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 120_000 });
+
+test('approved M2c open capacity successor imports through P12 without overwriting version 1', async (t) => {
+  await promoteM2cOpenCapacity({ check: true });
+  const validation = await validateAuthoringBundle({ manifestPath });
+  assert.equal(validation.ok, true, JSON.stringify(validation.errors));
+  if (docker(['version']).status !== 0) return t.skip('Docker required');
+  const container = `m2c-capacity-import-${process.pid}`;
+  let pool;
+  t.after(async () => { await pool?.end(); docker(['rm', '-fv', container]); });
+  const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+    '-e', 'POSTGRES_PASSWORD=m2c', '-e', 'POSTGRES_USER=m2c', '-e', 'POSTGRES_DB=m2c', 'postgres:16-alpine']);
+  assert.equal(started.status, 0, started.stderr);
+  let ready = false;
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    if (docker(['exec', container, 'pg_isready', '-U', 'm2c']).status === 0) { ready = true; break; }
+    await new Promise((done) => setTimeout(done, 250));
+  }
+  assert.equal(ready, true);
+  const port = Number(docker(['port', container, '5432']).stdout.match(/:(\d+)/)[1]);
+  pool = new pg.Pool({ host: '127.0.0.1', port, user: 'm2c', password: 'm2c', database: 'm2c' });
+  const entrypoint = await readFile('infra/world-base/schema.sql', 'utf8');
+  for (const match of entrypoint.matchAll(/^\\ir\s+schema\/([^\s]+\.sql)\s*$/gmu))
+    await pool.query(await readFile(`infra/world-base/schema/${match[1]}`, 'utf8'));
+  await pool.query(await buildTransactionalImportSql({
+    manifestPath: 'data/world-catalogs/novgorod/m2c-acoustic-import-manifest.json' }));
+  const sql = await buildTransactionalImportSql({ manifestPath });
+  await pool.query(sql);
+  await pool.query(sql);
+  const rows = (await pool.query(`SELECT scene_template_version, count(*)::int AS n,
+    min(capacity)::int AS minimum, max(capacity)::int AS maximum
+    FROM world_base.spatial_v3_scene_position_templates
+    WHERE scene_template_id LIKE 'stfv3__g5_%_v1'
+    GROUP BY scene_template_version ORDER BY scene_template_version`)).rows;
+  assert.deepEqual(rows, [
+    { scene_template_version: 1, n: 51, minimum: 1, maximum: 1 },
+    { scene_template_version: 2, n: 51, minimum: 7, maximum: 7 },
+  ]);
+  const edges = (await pool.query(`SELECT scene_template_version, count(*)::int AS n,
+    count(capacity)::int AS limited FROM world_base.spatial_v3_scene_movement_edge_templates
+    WHERE scene_template_id LIKE 'stfv3__g5_%_v1'
+    GROUP BY scene_template_version ORDER BY scene_template_version`)).rows;
+  assert.deepEqual(edges, [
+    { scene_template_version: 1, n: 68, limited: 0 },
+    { scene_template_version: 2, n: 68, limited: 0 },
+  ]);
+  const v2 = (await pool.query(`SELECT
+    (SELECT count(*)::int FROM world_base.spatial_v3_scene_templates WHERE version=2) AS scenes,
+    (SELECT count(*)::int FROM world_base.spatial_v3_scene_materialization_candidates WHERE scene_template_version=2) AS candidates,
+    (SELECT count(*)::int FROM world_base.spatial_v3_g6_acoustic_baselines WHERE scene_template_version=2) AS acoustics,
+    (SELECT count(*)::int FROM world_base.spatial_v3_local_movement_eligibility_profiles WHERE scene_template_version=2) AS movement`)).rows[0];
+  assert.deepEqual(v2, { scenes: 17, candidates: 220, acoustics: 71, movement: 68 });
+  const proposed = JSON.parse(await readFile(
+    'data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-candidate.json'));
+  for (const [table, expected] of [
+    ['spatial_v3_scene_position_templates', proposed.scene_position_templates],
+    ['spatial_v3_scene_movement_edge_templates', proposed.scene_movement_edge_templates],
+  ]) {
+    const actual = (await pool.query(`SELECT to_jsonb(r) AS row FROM world_base.${table} r
+      WHERE scene_template_version=2`)).rows.map(({ row }) => row);
+    assert.equal(actual.length, expected.length);
+    for (const row of expected) assert.ok(actual.some((stored) =>
+      Object.keys(row).every((key) => JSON.stringify(stored[key]) === JSON.stringify(row[key]))),
+    `${table}: ${row.scene_template_id}/${row.position_slot_key ?? row.edge_slot_key}`);
+  }
+});

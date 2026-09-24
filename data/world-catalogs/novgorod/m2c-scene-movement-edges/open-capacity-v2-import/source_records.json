@@ -1,0 +1,26 @@
+[
+  {
+    "id": "m2c_local_movement_eligibility_editorial_v1",
+    "title": "M2c local movement eligibility adjunct",
+    "source_type": "project_note",
+    "file_reference": "data/world-catalogs/novgorod/m2c-scene-movement-edges/local-movement-eligibility-candidate.json",
+    "page_or_section": "candidate_sha256:e893a85d73c21a0384d63b57d279dfe7325c2d2b35e39a941ed21a9bda9f8f4e",
+    "summary": "Editorial single-root action eligibility on two independently authored directed edges. Original reverse and capacity facts remain unchanged.",
+    "limitations": "No historical capacity, visibility, occupancy, migration or activation authority.",
+    "status": "approved",
+    "confidence": "high",
+    "checked_by": "gpt-6-sol/high independent data review"
+  },
+  {
+    "id": "m2c_open_capacity_v2_approved",
+    "title": "M2c open capacity successor",
+    "source_type": "project_note",
+    "file_reference": "data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-candidate.json",
+    "page_or_section": "candidate_sha256:8d29ed5d03b3cd6571d85aaaa6341f7ca64b01190a63349d1248c463b887ba19",
+    "summary": "Approved open G6 positions and nonportal local edges with mechanical capacity successor.",
+    "limitations": "No historical occupancy claim or committed scene migration.",
+    "status": "approved",
+    "confidence": "high",
+    "checked_by": "gpt-6-sol/high independent data reviewer /root/m2c_capacity_data_reapproval; did not author or modify candidate bytes"
+  }
+]

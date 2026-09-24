@@ -4,7 +4,7 @@ import pg from 'pg';
 import { sha256 } from '@rus/kernel';
 import { createPostgresTestBackend } from '../fixtures/postgres-test-backend.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
-import { readCurrentNaturalPerceptionFacts } from '../../apps/game-server/src/infrastructure/postgres/g4-natural-perception-reader.js';
+import { approvedNaturalStableCover, readCurrentNaturalPerceptionFacts } from '../../apps/game-server/src/infrastructure/postgres/g4-natural-perception-reader.js';
 import { approvedNaturalPerceptionFixture } from '../../apps/game-server/test/g4-natural-perception-fixture.js';
 import { prepareG4NaturalScenePerceptionInput, projectG4NaturalPerception } from '../../apps/game-server/src/runtime/g4-natural-perception.js';
 import { readInitialCanonicalNaturalSourceState } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-initial-state.js';
@@ -15,7 +15,7 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   const pool = new pg.Pool({ connectionString: backend.partyUrl });
   t.after(async () => { await pool.end(); await backend.close(); });
   for (const sql of SPATIAL_V3_TARGET_MIGRATIONS.slice(0, 11)) await pool.query(sql);
-  const { input, sceneClosure, currentSourceState } = await approvedNaturalPerceptionFixture();
+  const { input, sceneClosure, currentSourceState, naturalProfile } = await approvedNaturalPerceptionFixture();
   const facts = input.currentFacts; const scene = facts.scene;
   const template = { entity_id: scene.scene_template_ref.id, authoring_version: String(scene.scene_template_ref.version) };
   await pool.query(`INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
@@ -33,6 +33,7 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   await pool.query(`INSERT INTO party_runtime.party_journey_locations(id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id)
     VALUES ('location','party:1','actor','player:1','scene','position:inside',1,'change')`);
   const conditions = currentSourceState;
+  for (const row of conditions.source_observations) row.stable_cover = approvedNaturalStableCover(naturalProfile.payload);
   const args = { transaction: pool, partyId: 'party:1', actorId: 'player:1',
     verifiedCatalog: input.verifiedCatalog, pin: input.pin,
     worldBaseReader: { async readPinnedSceneTemplateClosure(ref) {
@@ -66,6 +67,9 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   assert.equal((await read()).scene.portals.door.state, 'open');
   await assert.rejects(readCurrentNaturalPerceptionFacts({ ...args, actorId: 'another-player' }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
   const canonical = await approvedNaturalPerceptionFixture({ canonical: true });
+  for (const row of canonical.currentSourceState.source_observations) {
+    row.stable_cover = approvedNaturalStableCover(canonical.naturalProfile.payload);
+  }
   await pool.query(`DELETE FROM party_runtime.party_site_connection_endpoint_bindings WHERE party_id='party:1'`);
   await pool.query(`DELETE FROM party_runtime.portal_entities WHERE party_id='party:1'`);
   await pool.query(`UPDATE party_runtime.parties SET world_catalog_digest=$1 WHERE party_id='party:1'`, [canonical.initialRule.world_pin.world_catalog_digest]);
@@ -86,6 +90,17 @@ test('natural reader uses committed actor/scene/portal state with real approved 
   assert.deepEqual(initial.source_bindings, []);
   assert.equal(initial.canonical_source_binding.position_id, 'position:shore');
   assert.equal(prepareG4NaturalScenePerceptionInput({ ...canonical.input, currentFacts: initial }).observer.position_id, 'position:shore');
+  const currentCanonicalArgs = { ...canonicalArgs, readCurrentSourceState: async () => ({
+    ...canonical.currentSourceState, canonical_initial_state: undefined }) };
+  const currentCanonical = await readCurrentNaturalPerceptionFacts(currentCanonicalArgs);
+  assert.deepEqual(currentCanonical.source_bindings, []);
+  assert.equal(currentCanonical.canonical_source_binding.schema, 'rus.verified_canonical_scene_natural_source.v1');
+  assert.equal(prepareG4NaturalScenePerceptionInput({ ...canonical.input,
+    currentFacts: currentCanonical }).observer.position_id, 'position:shore');
+  await assert.rejects(readCurrentNaturalPerceptionFacts({ ...currentCanonicalArgs,
+    worldBaseReader: { ...currentCanonicalArgs.worldBaseReader,
+      readPinnedCanonicalG5SceneBinding: async () => ({ ok: false }) } }),
+  { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
   canonical.currentSourceState.canonical_initial_state.initial_snapshot_identity.state_version = 1;
   await assert.rejects(readCurrentNaturalPerceptionFacts(canonicalArgs), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
   await insertInitialGuardState(pool, canonical);

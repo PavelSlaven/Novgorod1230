@@ -3,7 +3,28 @@ import { serverError } from '../errors.js';
 
 /** Publish the exact loaded target start through the existing authored-start API. */
 export function createTargetAuthoredStartCatalog({ runtime, release, historicalCatalog = null,
-  turnProfile = null, ordinaryProfiles = null } = {}) {
+  turnProfile = null, ordinaryProfiles = null, bindingRevision = 1 } = {}) {
+  if (Array.isArray(runtime?.starts)) {
+    const catalogs = runtime.starts.map((startRuntime) => createTargetAuthoredStartCatalog({
+      runtime: startRuntime,
+      release: { ...release, scenario_binding_id: startRuntime.profile.scenario_id,
+        scenario_profile_exact_pins: release.scenario_profile_exact_pins_by_id?.[startRuntime.profile.scenario_id] },
+      turnProfile, ordinaryProfiles, bindingRevision: startRuntime.bindingRevision ?? 1 }));
+    const byId = new Map(runtime.starts.map((startRuntime, index) =>
+      [startRuntime.profile.scenario_id, catalogs[index]]));
+    const bindings = new Map(catalogs.map((catalog) => [catalog.runtime_binding.revision,
+      catalog.resolveRuntimeBinding(catalog.runtime_binding)]));
+    return Object.freeze({ actor_catalog: runtime.starts[0].profile.actor_catalog,
+      turn_profile: turnProfile, ordinary_profiles: ordinaryProfiles,
+      runtime_binding: catalogs[0].runtime_binding,
+      listPublic: () => catalogs.flatMap((catalog) => catalog.listPublic()),
+      hasScenario: (id) => byId.get(id)?.hasScenario(id) ?? false,
+      resolveProfile: (id) => byId.get(id)?.resolveProfile(id) ?? historicalCatalog?.resolveProfile(id) ?? null,
+      loadPublication: (id, options) => byId.get(id)?.loadPublication(id, options)
+        ?? historicalCatalog?.loadPublication(id, options) ?? null,
+      resolveRuntimeBinding: (ref) => ref?.catalog_id === 'novgorod_live_world_runtime_v17'
+        ? bindings.get(ref.revision) ?? null : historicalCatalog?.resolveRuntimeBinding(ref) ?? null });
+  }
   const profile = runtime?.profile; const start = profile?.canonical_start?.start;
   if (!start || release?.scenario_binding_id !== profile.scenario_id
     || release.world_revision_id !== start.world_pin.world_revision_id
@@ -12,7 +33,7 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
     || release.scenario_profile_exact_pins?.scenario_definition_revision !== 1) {
     throw serverError('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Exact target start publication pins are required.');
   }
-  const runtimeBinding = Object.freeze({ catalog_id: 'novgorod_live_world_runtime_v17', revision: 1,
+  const runtimeBinding = Object.freeze({ catalog_id: 'novgorod_live_world_runtime_v17', revision: bindingRevision,
     status: 'approved', scenario_id: profile.scenario_id, materializer_binding_id: 'target_canonical_authored_start_v1',
     materializer_version: 'code_materializer_v3', snapshot_schema: 'rus.authored_start_initial_party_snapshot.v3',
     initial_natural_perception_rule_pin: profile.canonical_start.policy_profile_pins.find((pin) =>
@@ -21,7 +42,7 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
     available: release.production_activation === true && release.runtime_selectable_in_canonical_production === true });
   const world = start.world_pin;
   const binding = Object.freeze({ schema: 'rus.live_world_runtime.authored_start_binding.v1',
-    binding_id: `${profile.scenario_id}@1`, revision: 1, status: 'approved', scenario_id: profile.scenario_id,
+    binding_id: `${profile.scenario_id}@${bindingRevision}`, revision: bindingRevision, status: 'approved', scenario_id: profile.scenario_id,
     publication_availability: 'public', fallback_policy: 'forbidden', public_metadata: metadata,
     materializer_binding_id: runtimeBinding.materializer_binding_id,
     phase_1a_manifest_ref: { digest: profile.manifest_digest },
@@ -45,8 +66,8 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
     listPublic: () => [{ scenario_id: profile.scenario_id, ...metadata }],
     hasScenario: (scenarioId) => metadata.available && scenarioId === profile.scenario_id,
     resolveProfile: (scenarioId) => scenarioId === profile.scenario_id ? profile : historicalCatalog?.resolveProfile(scenarioId) ?? null,
-    loadPublication: async (scenarioId, { bindingRevision = 1 } = {}) => {
-      if (scenarioId === profile.scenario_id) return bindingRevision == null || bindingRevision === 1 ? publication : null;
+    loadPublication: async (scenarioId, { bindingRevision: requestedRevision = 1 } = {}) => {
+      if (scenarioId === profile.scenario_id) return requestedRevision == null || requestedRevision === 1 ? publication : null;
       return historicalCatalog?.loadPublication(scenarioId, { bindingRevision }) ?? null;
     },
     resolveRuntimeBinding: (ref) => ref?.catalog_id === runtimeBinding.catalog_id && ref.revision === runtimeBinding.revision

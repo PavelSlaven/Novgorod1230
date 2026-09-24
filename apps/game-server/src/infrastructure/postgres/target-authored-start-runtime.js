@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 import { createRuntimeCatalogLoader, loadApprovedActorProfileCatalog,
   loadApprovedProceduralActorTemporalBundle, loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
 import { canonicalDigest } from '@rus/materialization';
@@ -9,13 +10,47 @@ import { createSpatialV3WorldBaseReader } from './spatial-v3-world-base-reader.j
 import { serverError } from '../../errors.js';
 
 /** Read existing approved owners only. Activation approval is checked by the release caller. */
+export async function loadTargetAuthoredStartRuntimes(options = {}) {
+  const rootDir = options.rootDir ?? process.cwd();
+  let manifest;
+  try {
+    manifest = JSON.parse(await readFile(resolve(rootDir,
+      'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json'), 'utf8'));
+  } catch (error) {
+    if (error.code === 'ENOENT') return [Object.freeze({ ...await loadTargetAuthoredStartRuntime(options), bindingRevision: 1 })];
+    throw error;
+  }
+  if (manifest.schema !== 'rus.live_world_runtime.target_starts_manifest.v1'
+    || manifest.version !== 1 || manifest.status !== 'approved'
+    || !Array.isArray(manifest.starts) || manifest.starts.length === 0) {
+    gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+  }
+  const runtimes = [];
+  if (new Set(manifest.starts.map(({ binding_revision }) => binding_revision)).size !== manifest.starts.length) {
+    gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+  }
+  for (const artifacts of manifest.starts) {
+    if (!Number.isSafeInteger(artifacts.binding_revision) || artifacts.binding_revision < 1
+      || !['start', 'transfer', 'basis', 'approval'].every((key) => artifacts?.[key])) {
+      gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+    }
+    runtimes.push(Object.freeze({ ...await loadTargetAuthoredStartRuntime({ ...options, artifacts }),
+      bindingRevision: artifacts.binding_revision }));
+  }
+  if (new Set(runtimes.map(({ profile }) => profile.scenario_id)).size !== runtimes.length) {
+    gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+  }
+  return Object.freeze(runtimes);
+}
+
 export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actorBinding,
-  rootDir = process.cwd() } = {}) {
+  rootDir = process.cwd(), artifacts = null } = {}) {
   if (!worldPool?.query || !itemPin?.activation_event_id || !actorBinding?.pin?.activation_event_id) {
     gap('SPATIAL_V3_TARGET_RUNTIME_PIN_REQUIRED');
   }
-  const start = JSON.parse(await readFile(resolve(rootDir,
-    'data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json'), 'utf8'));
+  const start = JSON.parse(artifacts == null ? await readFile(resolve(rootDir,
+    'data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json'))
+    : await readPinnedArtifact(rootDir, artifacts.start));
   const worldPin = start.world_pin; const place = start.initial_placement;
   const actorPin = actorBinding.pin;
   if (actorPin.catalog_revision_id !== start.new_game_stage_bindings.actor_catalog_revision_id
@@ -51,7 +86,8 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
     allowed_region_ids: [], allowed_graph_node_ids: [], allowed_graph_edge_ids: [], allowed_place_template_ids: [],
     allowed_npc_candidate_ids: [], allowed_item_profile_ids: [], allowed_container_profile_ids: [],
     allowed_property_rule_ids: [], allowed_source_ids: [], canonical_g5_scene_bindings: [canonical], scene_template_closures: [scene] };
-  const profile = await loadTargetAuthoredStartProfile({ rootDir, worldBaseReferenceSnapshot: snapshot, domainCatalog: catalog });
+  const profile = await loadTargetAuthoredStartProfile({ rootDir, worldBaseReferenceSnapshot: snapshot,
+    domainCatalog: catalog, artifacts });
   const [npc, acoustic, actorProfiles, temporal] = await Promise.all([
     reader.readPinnedG4NpcCompositionClosure({ g4, canonical_g5: canonical }),
     reader.readPinnedCanonicalG5AcousticClosure({ canonical_g5: canonical, scene_template: scene.header,
@@ -78,6 +114,18 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
       actor_base_attributes_runtime_profile: actorBinding.runtime_profile,
       actor_equipment_activation: { status: 'active', event_id: itemPin.activation_event_id },
       calendar_profile: buildCalendarProjectionProfile(calendar) }) });
+}
+
+async function readPinnedArtifact(rootDir, artifact) {
+  if (typeof artifact?.path !== 'string' || !artifact.path.startsWith('data/')
+    || artifact.path.includes('..') || !/^[a-f0-9]{64}$/u.test(artifact.sha256)) {
+    gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+  }
+  const bytes = await readFile(resolve(rootDir, artifact.path));
+  if (createHash('sha256').update(bytes).digest('hex') !== artifact.sha256) {
+    gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+  }
+  return bytes;
 }
 
 function dateString(date) {

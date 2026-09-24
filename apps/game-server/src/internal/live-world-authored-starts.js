@@ -9,16 +9,19 @@ const ROOT = 'data/world-catalogs/novgorod/live-world-runtime-v1';
 
 /** Load independently approved target authoring. Operational activation remains the release owner's gate. */
 export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
-  worldBaseReferenceSnapshot, domainCatalog } = {}) {
+  worldBaseReferenceSnapshot, domainCatalog, artifacts = null } = {}) {
   const target = 'data/world-catalogs/novgorod/live-world-runtime-v17';
-  const approval = await readJson(rootDir, 'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json');
+  const approval = artifacts == null
+    ? await readJson(rootDir, 'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json')
+    : JSON.parse(await readPinnedArtifact(rootDir, artifacts.approval));
   const definitions = [
-    ['target-start-candidate.json', 'target_start_proposal_approval'],
-    ['player-transfer-candidate.json', 'target_player_transfer_approval'],
-    ['player-basis-candidate.json', 'target_player_basis_approval']
+    [artifacts?.start, 'target-start-candidate.json', 'target_start_proposal_approval'],
+    [artifacts?.transfer, 'player-transfer-candidate.json', 'target_player_transfer_approval'],
+    [artifacts?.basis, 'player-basis-candidate.json', 'target_player_basis_approval']
   ];
-  const loaded = await Promise.all(definitions.map(async ([file, scope]) => {
-    const bytes = await readFile(resolve(rootDir, target, file));
+  const loaded = await Promise.all(definitions.map(async ([artifact, file, scope]) => {
+    const bytes = artifact == null ? await readFile(resolve(rootDir, target, file))
+      : await readPinnedArtifact(rootDir, artifact);
     const digest = createHash('sha256').update(bytes).digest('hex');
     if (approval.decision !== 'APPROVE_DATA_ONLY'
       || approval[scope]?.candidate_sha256 !== digest) fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
@@ -73,6 +76,18 @@ export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
     other_places: [] },
     canonical_start: { approved: true, start, player_transfer: transfer, player_basis: basis,
       policy_profile_pins: policies } });
+}
+
+async function readPinnedArtifact(rootDir, artifact) {
+  if (typeof artifact?.path !== 'string' || !artifact.path.startsWith('data/')
+    || artifact.path.includes('..') || !/^[a-f0-9]{64}$/u.test(artifact.sha256)) {
+    fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+  }
+  const bytes = await readFile(resolve(rootDir, artifact.path));
+  if (createHash('sha256').update(bytes).digest('hex') !== artifact.sha256) {
+    fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+  }
+  return bytes;
 }
 
 export async function loadLiveWorldAuthoredStartCatalog({

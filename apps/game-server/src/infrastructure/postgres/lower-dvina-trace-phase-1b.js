@@ -37,9 +37,11 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   requirePool(partyPool, 'partyPool');
   requirePool(worldPool, 'worldPool');
   assertProductionPin(release, runtimeCatalogPin);
-  if (targetStartRuntime != null && (targetStartRuntime.itemPin?.activation_event_id !== runtimeCatalogPin.activation_event_id
-    || targetStartRuntime.profile?.scenario_id !== release.scenario_binding_id
-    || targetStartRuntime.profile?.manifest_digest !== release.scenario_profile_exact_pins?.phase_1a_manifest_digest)) {
+  const targetStarts = targetStartRuntime?.starts ?? (targetStartRuntime == null ? [] : [targetStartRuntime]);
+  if (targetStarts.some((start) => start.itemPin?.activation_event_id !== runtimeCatalogPin.activation_event_id
+    || !((release.scenario_binding_ids ?? [release.scenario_binding_id]).includes(start.profile?.scenario_id))
+    || start.profile?.manifest_digest !== (release.scenario_profile_exact_pins_by_id?.[start.profile.scenario_id]
+      ?? release.scenario_profile_exact_pins)?.phase_1a_manifest_digest)) {
     fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Target start runtime must match the exact release and catalog event.');
   }
   const repository = createLowerDvinaTracePhase1ARepository({
@@ -64,6 +66,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
       const authoredProfile = await authoredStartResolver?.(
         request.scenario_id
       ) ?? null;
+      const selectedStart = targetStarts.find(({ profile }) => profile.scenario_id === request.scenario_id) ?? null;
       const catalogLoader = runtimeCatalogLoader ?? createRuntimeCatalogLoader({
           worldBaseReader: createPostgresWorldBaseReader({ pool: worldPool }),
           supportedRuntimeContractDigests: [
@@ -74,7 +77,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         domainCatalog] =
         await Promise.all([
           readPartyDatabaseSchemaSnapshot(partyPool),
-          targetStartRuntime ? targetStartRuntime.materialization_inputs.world_base_reference_snapshot : readWorldBaseReferenceSnapshot(
+          selectedStart ? selectedStart.materialization_inputs.world_base_reference_snapshot : readWorldBaseReferenceSnapshot(
             worldPool,
             request.world_compatibility
           ),
@@ -109,13 +112,13 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         worldBaseReferenceSnapshot,
         domainCatalog,
         actorBaseAttributesBinding,
-        approvedActorCatalog,
+        approvedActorCatalog: selectedStart?.profile.actor_catalog ?? approvedActorCatalog,
         verified_procedural_compiled_catalog: verifiedProceduralCatalog,
         repository,
         stage25Ports,
         worldKnowledge,
         ...(authoredProfile == null ? {} : {
-          scenarioBundleLoader: async () => targetStartRuntime ? authoredProfile : ({
+          scenarioBundleLoader: async () => selectedStart ? authoredProfile : ({
             ...structuredClone(authoredProfile),
             definition: {
               schema: 'rus.live_world_runtime.authored_start_definition.v1',
@@ -123,7 +126,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             }
           }),
           materializePartyInstance: (input) => materializeAuthoredStartPartyInstance({
-            ...(targetStartRuntime?.materialization_inputs ?? {}), ...input }),
+            ...(selectedStart?.materialization_inputs ?? {}), ...input }),
           validatePlayerDossier: (result) => result.validation_report
         }),
         rootDir
@@ -194,15 +197,18 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     loadInternal: (partyId) => repository.loadInternal(partyId),
     loadVisible: (partyId) => repository.loadVisible(partyId),
     ...(targetStartRuntime == null ? {} : {
-      async loadNaturalScenePerceptionInput({ partyId, actorId }) {
+      async loadNaturalScenePerceptionInput({ partyId, actorId, internal }) {
+        const selectedStart = targetStarts.find(({ profile }) =>
+          profile.scenario_id === internal?.request_identity?.scenario_id);
+        if (!selectedStart) fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Committed target start is not loaded.');
         const transaction = await partyPool.connect();
         try {
           await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
-          const { domain_catalog: verifiedCatalog } = targetStartRuntime.materialization_inputs;
+          const { domain_catalog: verifiedCatalog } = selectedStart.materialization_inputs;
           const currentFacts = await readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
-            verifiedCatalog, pin: runtimeCatalogPin, worldBaseReader: targetStartRuntime.worldBaseReader,
+            verifiedCatalog, pin: runtimeCatalogPin, worldBaseReader: selectedStart.worldBaseReader,
             readCurrentSourceState: (request) => readInitialCanonicalNaturalSourceState({ ...request,
-              rule_ref: { id: targetStartRuntime.initialRule.rule.id, version: targetStartRuntime.initialRule.rule.version } }) });
+              rule_ref: { id: selectedStart.initialRule.rule.id, version: selectedStart.initialRule.rule.version } }) });
           const input = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin: runtimeCatalogPin, currentFacts });
           await transaction.query('COMMIT');
           return input;

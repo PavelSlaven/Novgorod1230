@@ -3,7 +3,7 @@ import { SPATIAL_V3_PRODUCTION_RELEASE as historicalRelease } from
 import { assertTargetCatalogActivationReadiness, withRuntimeCatalogActivationLock } from
   '../infrastructure/postgres/spatial-v3-production-readiness.js';
 import { serverError } from '../errors.js';
-import { loadTargetAuthoredStartRuntime } from '../infrastructure/postgres/target-authored-start-runtime.js';
+import { loadTargetAuthoredStartRuntimes } from '../infrastructure/postgres/target-authored-start-runtime.js';
 import { createSpatialV3WorldBaseReader } from '../infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -55,18 +55,23 @@ export async function loadSpatialV3TargetProductionRelease({
     const readback = await assertTargetCatalogActivationReadiness(client, {
       release: candidate, itemApproval, actorApproval
     });
-    const start = await loadTargetAuthoredStartRuntime({ worldPool: client, itemPin: readback.item_pin,
+    const starts = await loadTargetAuthoredStartRuntimes({ worldPool: client, itemPin: readback.item_pin,
       actorBinding: readback.actor_binding, rootDir });
-    const release = Object.freeze({ ...candidate, scenario_binding_id: start.profile.scenario_id,
-      scenario_profile_exact_pins: Object.freeze({ scenario_definition_revision: 1,
-        scenario_definition_digest: start.profile.manifest_digest,
-        phase_1a_package_id: start.profile.canonical_start.start.candidate_id,
-        phase_1a_manifest_digest: start.profile.manifest_digest }),
-      target_start_source_pins: start.profile.canonical_start.policy_profile_pins });
+    const pins = Object.fromEntries(starts.map(({ profile }) => [profile.scenario_id,
+      Object.freeze({ scenario_definition_revision: 1,
+        scenario_definition_digest: profile.manifest_digest,
+        phase_1a_package_id: profile.canonical_start.start.candidate_id,
+        phase_1a_manifest_digest: profile.manifest_digest })]));
+    const release = Object.freeze({ ...candidate, scenario_binding_id: starts[0].profile.scenario_id,
+      scenario_binding_ids: Object.freeze(starts.map(({ profile }) => profile.scenario_id)),
+      scenario_profile_exact_pins: pins[starts[0].profile.scenario_id],
+      scenario_profile_exact_pins_by_id: Object.freeze(pins),
+      target_start_source_pins: starts[0].profile.canonical_start.policy_profile_pins });
     // Activation reads use the locked transaction. Later public reads must own
     // their connection through the pool, never retain that released client.
-    const runtime = Object.freeze({ ...start, worldBaseReader: createSpatialV3WorldBaseReader({
-      query: worldPool.query.bind(worldPool) }) });
+    const runtime = Object.freeze({ ...starts[0], starts: Object.freeze(starts.map((start) => Object.freeze({
+      ...start, worldBaseReader: createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) }) }))),
+      worldBaseReader: createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) }) });
     return Object.freeze({ release, readback, runtime });
   });
 }

@@ -6,8 +6,12 @@ import { serverError } from '../../errors.js';
 export function createSpatialV3RuntimeBindings(context = {}) {
   const { release, targetStartRuntime: runtime, targetRuntimeProfiles: profiles, worldKnowledge } = context;
   if (release?.release_id !== 'spatial-v3-production-v17'
-    || release.scenario_binding_id !== runtime?.profile?.scenario_id
-    || release.scenario_profile_exact_pins?.phase_1a_manifest_digest !== runtime?.profile?.manifest_digest
+    || !runtime?.starts?.length
+    || release.scenario_binding_id !== runtime.starts[0].profile.scenario_id
+    || release.scenario_binding_ids?.length !== runtime.starts.length
+    || runtime.starts.some((start, index) => release.scenario_binding_ids[index] !== start.profile.scenario_id
+      || release.scenario_profile_exact_pins_by_id?.[start.profile.scenario_id]?.phase_1a_manifest_digest
+        !== start.profile.manifest_digest)
     || runtime?.itemPin?.compatible_world_revision_id !== release.world_revision_id
     || runtime?.itemPin?.compatible_world_catalog_digest !== release.world_catalog_digest) {
     throw serverError('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Exact loaded target start and release pins are required.');

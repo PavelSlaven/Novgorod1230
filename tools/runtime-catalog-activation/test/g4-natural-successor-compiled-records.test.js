@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { buildG4NaturalCompiledRecords, reportNaturalSuccessorRows } from '../src/g4-natural-compiled-records.js';
 import { buildG4NaturalPresentationCompiledRecords } from '../src/g4-natural-presentation-compiled-records.js';
+import { buildG4NaturalPlacementCompiledRecords } from '../src/g4-natural-placement-compiled-records.js';
 
 const root = resolve(import.meta.dirname, '../../..');
 const base = 'data/world-catalogs/novgorod/';
@@ -47,6 +48,25 @@ test('derived import carries exact source and layer-season evidence; typed gaps 
     approvedNaturalCandidateBytes: approvedNaturalBytes, approval, naturalRecords: natural });
   assert.equal(natural.length, 32);
   assert.equal(presentation.length, 32);
+  const placement = buildG4NaturalPlacementCompiledRecords({
+    candidateBytes: readFileSync(resolve(root, `${base}m2c-natural-placement/candidate.json`), 'utf8'),
+    approval: JSON.parse(readFileSync(resolve(root, `${base}m2c-sol-data-approval.json`))),
+    naturalRecords: natural, presentationRecords: presentation
+  })[0];
+  assert.equal(placement.version, 2);
+  for (const row of placement.payload.placements) {
+    const source = natural.find((record) => record.payload.profile_id === row.natural_profile_ref.id);
+    const descriptor = presentation.find((record) => record.payload.id === row.presentation_profile_ref.id);
+    assert.deepEqual(row.natural_profile_ref, { id: source.payload.profile_id,
+      version: 2, payload_digest: source.payload_digest });
+    assert.deepEqual(row.presentation_profile_ref, { id: descriptor.payload.id, version: 2 });
+    assert.ok(row.unprojected_layers.includes('fauna'));
+    for (const layer of descriptor.payload.layers) {
+      const group = layer.channel === 'visual' ? ['visual_layers', 'unplaced_visual_layers']
+        : [layer.channel === 'acoustic' ? 'acoustic_layers' : 'unprojected_layers'];
+      assert.equal(group.flatMap((key) => row[key]).filter((name) => name === layer.layer).length, 1);
+    }
+  }
   for (const record of natural) {
     for (const [season, rows] of Object.entries(record.payload.natural_profile.season_matrix)) {
       assert.equal(rows.fauna, undefined);

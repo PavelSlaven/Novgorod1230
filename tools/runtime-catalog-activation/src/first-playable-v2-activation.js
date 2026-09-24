@@ -186,7 +186,8 @@ async function targetPresentationRows(root) {
   return [...buildG4NaturalCompiledRecords({ candidate: JSON.parse(naturalBytes) }),
     ...buildG4NaturalPresentationCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-presentation/candidate.json'), 'utf8'), approval }),
     ...naturalSuccessors, ...presentationSuccessors,
-    ...buildG4NaturalPlacementCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8'), approval }),
+    ...buildG4NaturalPlacementCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8'),
+      approval, naturalRecords: naturalSuccessors, presentationRecords: presentationSuccessors }),
     ...buildTargetStartCompiledRecords({ candidateBytes: await readFile(resolve(base, 'live-world-runtime-v17/target-start-candidate.json'), 'utf8'), approval: startApproval }),
     ...buildTargetFiniteCompiledRecords({ mappedBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-approved.json'), 'utf8'),
       manifestBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-manifest.json'), 'utf8'), approval })];

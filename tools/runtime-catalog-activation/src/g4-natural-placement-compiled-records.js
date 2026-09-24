@@ -2,7 +2,8 @@ import { createHash } from 'node:crypto';
 import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
 
 /** Pure compilation; the existing catalog workflow owns import and activation. */
-export function buildG4NaturalPlacementCompiledRecords({ candidateBytes, approval } = {}) {
+export function buildG4NaturalPlacementCompiledRecords({ candidateBytes, approval,
+  naturalRecords, presentationRecords } = {}) {
   if (typeof candidateBytes !== 'string'
     || approval?.schema !== 'rus.m2c_supplemental_data_approval.v1'
     || approval.decision !== 'APPROVE_DATA_ONLY'
@@ -22,7 +23,30 @@ export function buildG4NaturalPlacementCompiledRecords({ candidateBytes, approva
     condition_policies: structuredClone(candidate.condition_policies),
     acoustic_source_rules: structuredClone(candidate.acoustic_source_rules),
     placements: candidate.placements.map(({ status: _status, ...row }) => structuredClone(row)) };
-  return [{ record_id: `profile:${candidate.candidate_id}`, version: candidate.version,
+  if (naturalRecords || presentationRecords) {
+    if (naturalRecords?.length !== 32 || presentationRecords?.length !== 32) {
+      throw new TypeError('Complete compiled natural successors are required.');
+    }
+    payload.version = candidate.version + 1;
+    for (const placement of payload.placements) {
+      const natural = naturalRecords.find((row) => row.payload.profile_id === placement.natural_profile_ref.id);
+      const presentation = presentationRecords.find((row) => row.payload.id === placement.presentation_profile_ref.id);
+      if (!natural || !presentation || natural.version !== payload.version || presentation.version !== payload.version
+        || natural.payload.g4_ref.id !== placement.g4_ref.id
+        || presentation.payload.g4_ref.id !== placement.g4_ref.id
+        || presentation.payload.natural_profile_ref.payload_digest !== natural.payload_digest) {
+        throw new TypeError('Exact compiled natural successor placement refs are required.');
+      }
+      placement.natural_profile_ref = { id: natural.payload.profile_id,
+        version: natural.version, payload_digest: natural.payload_digest };
+      placement.presentation_profile_ref = { id: presentation.payload.id, version: presentation.version };
+      for (const layer of presentation.payload.layers) {
+        if (layer.channel === 'none' && !['unprojected_layers', 'unplaced_visual_layers'].some((group) =>
+          placement[group].includes(layer.layer))) placement.unprojected_layers.push(layer.layer);
+      }
+    }
+  }
+  return [{ record_id: `profile:${candidate.candidate_id}`, version: payload.version,
     record_kind: 'profile', family_candidate_ref: null, payload,
     payload_digest: digest(payload), source_pack_digest: digest(candidate),
     status: 'approved_authoring_not_runtime_selectable' }];

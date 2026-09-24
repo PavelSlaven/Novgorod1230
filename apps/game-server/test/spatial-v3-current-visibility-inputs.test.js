@@ -3,15 +3,57 @@ import assert from 'node:assert/strict';
 import { readCommittedEntityExterior, readPlayerKnowledge } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
 
-test('exterior excludes committed hidden identity', async () => {
-  const transaction = { async query(_sql, params) {
+test('NPC exterior exposes committed appearance and visible Stage 16 gear without identity', async () => {
+  const appearance = { build: 'stocky', skin_tone: 'light', face_shape: 'broad',
+    hair: { color: 'dark_brown', length: 'short', style: 'straight', facial_hair: 'short_beard' },
+    eyes: { color: 'gray' } };
+  const visual = { schema: 'item_visual_profile_snapshot_v1', version: 1,
+    equipment_slot: 'outer_garment', neckline: 'high_closed', sleeve_form: 'narrow',
+    outer_form: 'wrap', visible_fabric: 'wool', trim: null,
+    main_visible_color: 'dark_blue', secondary_visible_color: null, headwear_kind: 'none' };
+  let gear = [{ state: { visual_profile_snapshot: { ...visual, secret_origin: 'hidden' } },
+    condition_state: 'serviceable', physical_position: 'equipped',
+    equipment_slot_category_id: 'outer_garment' },
+  { state: { visual_profile_snapshot: visual, visibility_state: 'concealed' },
+    condition_state: 'serviceable', physical_position: 'equipped',
+    equipment_slot_category_id: 'outer_garment' }];
+  const transaction = { async query(sql, params) {
     assert.deepEqual(params, ['party', 'npc']);
-    return { rows: [{ identity_state: { canonical_name: 'hidden', public_role_label: 'путник',
-      appearance: { coat: 'grey' } } }] };
+    if (sql.includes('FROM party_runtime.party_npcs')) return { rows: [{ identity_state: {
+      canonical_name: 'hidden', public_role_label: 'путник', origin: 'hidden',
+      occupation: 'hidden', sex_category: 'male', age_category: 'young_adult', appearance
+    } }] };
+    assert.match(sql, /FROM party_runtime.party_item_placements p/u);
+    return { rows: gear };
   } };
-  assert.deepEqual(await readCommittedEntityExterior({ transaction, partyId: 'party',
-    placement: { entity_kind: 'npc', entity_id: 'npc' } }),
-  { public_role_label: 'путник', appearance: { coat: 'grey' } });
+  const input = { transaction, partyId: 'party',
+    placement: { entity_kind: 'npc', entity_id: 'npc' } };
+  assert.deepEqual(await readCommittedEntityExterior(input), {
+    sex_category: 'male', age_category: 'young_adult', appearance,
+    visible_equipment: [{ physical_position: 'equipped',
+      equipment_slot_category_id: 'outer_garment',
+      visual_profile_snapshot: visual }]
+  });
+  gear = [{ ...gear[0], state: {} }];
+  await assert.rejects(readCommittedEntityExterior(input),
+    (error) => error.details?.reason === 'committed_entity_exterior_required');
+});
+
+test('ground item exterior requires its committed ground placement and excludes contents', async () => {
+  let row = { state: { contents: ['hidden'] }, condition_state: 'serviceable', anchor_id: null,
+  scene_position_id: 'position', container_id: null, holder_npc_id: null,
+  holder_character_id: null };
+  const transaction = { async query(sql, params) {
+    assert.match(sql, /JOIN party_runtime.party_item_placements p/u);
+    assert.deepEqual(params, ['party', 'item']);
+    return { rows: [row] };
+  } };
+  const input = { transaction, partyId: 'party', placement: { entity_kind: 'item',
+    entity_id: 'item', placement_kind: 'scene_position', position_node_id: 'position' } };
+  assert.deepEqual(await readCommittedEntityExterior(input), { condition_state: 'serviceable' });
+  row = { ...row, holder_npc_id: 'npc', scene_position_id: null };
+  await assert.rejects(readCommittedEntityExterior(input),
+    (error) => error.details?.reason === 'committed_entity_exterior_required');
 });
 
 test('NPC name requires exact committed self-introduction heard in full by this player', async () => {

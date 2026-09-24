@@ -1,5 +1,8 @@
 import { serverError } from '../../errors.js';
-import { playerSafeHeardNpcIntroduction } from '../../runtime/lower-dvina-trace-player-safe-npc-details.js';
+import { validateActorBaseAppearance } from '@rus/actors';
+import { runtimeItemRecordIsConcealed } from '@rus/items-property';
+import { playerSafeHeardNpcIntroduction, safeVisualProfile } from
+  '../../runtime/lower-dvina-trace-player-safe-npc-details.js';
 
 /** Only outward fields from the committed entity; identity stays with knowledge. */
 export async function readCommittedEntityExterior({ transaction, partyId, placement } = {}) {
@@ -11,18 +14,51 @@ export async function readCommittedEntityExterior({ transaction, partyId, placem
       WHERE party_id=$1 AND npc_id=$2`, [partyId, placement.entity_id]);
     if (result.rows.length !== 1) gap('committed_entity_exterior_required');
     const identity = result.rows[0].identity_state;
-    const exterior = Object.fromEntries(['public_role_label', 'sex_category', 'age_category', 'appearance']
-      .filter((key) => identity?.[key] != null).map((key) => [key, identity[key]]));
-    if (!Object.keys(exterior).length) gap('committed_entity_exterior_required');
-    return exterior;
+    if (!validateActorBaseAppearance(identity, { requireComplete: true }).ok) {
+      gap('committed_entity_exterior_required');
+    }
+    const gear = await transaction.query(`SELECT i.state,i.condition_state,
+        p.physical_position,p.equipment_slot_category_id
+      FROM party_runtime.party_item_placements p
+      JOIN party_runtime.party_items i ON i.party_id=p.party_id AND i.item_id=p.item_id
+      WHERE p.party_id=$1 AND p.holder_npc_id=$2
+        AND p.physical_position IN ('worn','equipped') ORDER BY p.item_id`,
+    [partyId, placement.entity_id]);
+    if (!Array.isArray(gear.rows)) gap('committed_entity_exterior_required');
+    const visible_equipment = [];
+    for (const row of gear.rows) {
+      if (runtimeItemRecordIsConcealed(row, { includeAccess: false })) continue;
+      const visual_profile_snapshot = safeVisualProfile(row.state?.visual_profile_snapshot);
+      if (!visual_profile_snapshot) gap('committed_entity_exterior_required');
+      visible_equipment.push({ physical_position: row.physical_position,
+        equipment_slot_category_id: row.equipment_slot_category_id,
+        visual_profile_snapshot });
+    }
+    return { sex_category: identity.sex_category, age_category: identity.age_category,
+      appearance: structuredClone(identity.appearance), visible_equipment };
   }
   if (placement.entity_kind === 'item') {
-    const result = await transaction.query(`SELECT state,condition_state FROM party_runtime.party_items
-      WHERE party_id=$1 AND item_id=$2`, [partyId, placement.entity_id]);
+    const result = await transaction.query(`SELECT i.state,i.condition_state,
+        p.anchor_id,p.scene_position_id,p.container_id,p.holder_npc_id,p.holder_character_id
+      FROM party_runtime.party_items i
+      JOIN party_runtime.party_item_placements p ON p.party_id=i.party_id AND p.item_id=i.item_id
+      WHERE i.party_id=$1 AND i.item_id=$2`, [partyId, placement.entity_id]);
     if (result.rows.length !== 1) gap('committed_entity_exterior_required');
-    return { condition_state: result.rows[0].condition_state,
-      ...(result.rows[0].state?.visual_profile_snapshot == null ? {} : {
-        visual_profile_snapshot: result.rows[0].state.visual_profile_snapshot }) };
+    const row = result.rows[0];
+    if (placement.placement_kind !== 'scene_position'
+      || row.container_id != null || row.holder_npc_id != null
+      || row.holder_character_id != null
+      || row.scene_position_id != null
+        && row.scene_position_id !== placement.position_node_id
+      || row.scene_position_id == null && row.anchor_id == null
+      || runtimeItemRecordIsConcealed(row, { includeAccess: false })) {
+      gap('committed_entity_exterior_required');
+    }
+    const snapshot = row.state?.visual_profile_snapshot;
+    const visual_profile_snapshot = snapshot == null ? null : safeVisualProfile(snapshot);
+    if (snapshot != null && !visual_profile_snapshot) gap('committed_entity_exterior_required');
+    return { condition_state: row.condition_state,
+      ...(visual_profile_snapshot == null ? {} : { visual_profile_snapshot }) };
   }
   gap('committed_entity_exterior_required');
 }

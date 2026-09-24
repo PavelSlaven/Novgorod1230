@@ -33,7 +33,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_central_current_split",
         "version": 2,
-        "payload_digest": "5d1d519e9d3c38b0475cd4b8a3643864ada5e84955c935c43cc9ef415986cedd"
+        "payload_digest": "f6bd2f2c5715b4da7494b5a7230685bfa74257bcd60acf2b00d14eab30b14699"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -172,7 +172,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_central_navigation_reach",
         "version": 2,
-        "payload_digest": "e8528227a20cd08439b5f8d756ff49f5f91bd90046f7a16f765c61042d907a89"
+        "payload_digest": "7f9f4588cd2c500a796593aa8874de7ae5538fe14714960e55da2a9a9612d4dc"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -311,7 +311,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_channel_split_islet",
         "version": 2,
-        "payload_digest": "fef1cdd0516b14ac36e35aabc11e866cc8cb85dd2fdbf80be95ed02fd82c0471"
+        "payload_digest": "8369b4774e76f90d27e5083669c8fb3a6fec21c99115d993f6a7b69b1c7a649f"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -457,7 +457,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_driftwood_bar",
         "version": 2,
-        "payload_digest": "8d905a8c565aca1d99ae35f3401bd585a552071499621aba9c2800cfca3d4d69"
+        "payload_digest": "a23b1e2c8fdb9ffd6ceb9b2c58d51da04e65026acf0409d3cb9707eb99267619"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -592,7 +592,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_dry_island_ridge",
         "version": 2,
-        "payload_digest": "fffb20ef1b973be65f6ef8167eb0d8013ede39c8a8ff37409b5839e8302055c2"
+        "payload_digest": "f1dbadf26c1329d208d6145b101a9e4357870df5dc4972974f033bed4b2b66b8"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -738,7 +738,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_dry_pine_ridge",
         "version": 2,
-        "payload_digest": "fffb47fc0041728f6391f64856005f2eef8d4a86bfe2144cee0e0494babe15d2"
+        "payload_digest": "c1903fbe716b5ee955d0ecc4b14c879dd693941395dd0805084c35187c7acd03"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -884,7 +884,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_east_flood_bypass",
         "version": 2,
-        "payload_digest": "dd9beadbff360a4a668eb54a4a36c0043dbc1d29c179e909e2e416ef23bc2771"
+        "payload_digest": "869faac68bea7d8a8fd0fea32c543209802a6a8b55c5b8864516c47b06348d0f"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -1023,7 +1023,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_east_side_channel",
         "version": 2,
-        "payload_digest": "b92fe6af0520185b5fa7b4ab29db2754484c7c594a7250ec885de4a8dfed3067"
+        "payload_digest": "93dfda3fcb8210b1187eb974c090f383a01587fa4a31a8df2714d6271843171b"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -1162,7 +1162,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_flooded_interior_basin",
         "version": 2,
-        "payload_digest": "4c289116ba82674b55dde6cf67f34beae1525f08e25a5ee7dc9732ff7d63a274"
+        "payload_digest": "0f14249e338a5e7550d900bc66680e67eba6053266a91c0cf94b80370059f35f"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -1307,7 +1307,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_floodplain_ridge_route",
         "version": 2,
-        "payload_digest": "3c434ae4f7897503622283382c3bb8db02b4b99ac209a7b9d0d11cf35258b6a1"
+        "payload_digest": "d6297ceb867e1166f301b4ad4b11468fed8c7060115f987e5bade571f7c145e0"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -1453,7 +1453,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_forest_stream_route",
         "version": 2,
-        "payload_digest": "99b4e21c664b3d0cee624ed2f6873e8c975ed7884867150d5ca9db11ccedac8a"
+        "payload_digest": "8a98de7735917af0c8a6a212438147a5dd338c1844b83d1acc5a2000692cbfb8"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -1599,7 +1599,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_large_island_head",
         "version": 2,
-        "payload_digest": "db7403800d30f79842436fc40d4b6711d7eba5c537adcfe02e214b53e306715f"
+        "payload_digest": "d3fc0bfb49cee53de0326d5d4078ce993da739e3a8982a87045b31f44e44ee52"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -1745,7 +1745,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_mixing_reach",
         "version": 2,
-        "payload_digest": "912b1158bc0c597de65b7aff589372d2bab5d466c7b52c9b585986784ba298bd"
+        "payload_digest": "9a2410dc1220ec1e0fdec19cefa653eca16488812996a33e70ac8e130d86d82e"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -1891,7 +1891,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_north_exposed_turn",
         "version": 2,
-        "payload_digest": "6225bd3c7483cd97e647337243a8a06022c75ba5f50b4b17051201db90ff503c"
+        "payload_digest": "e18dd335e98af31899a06c8e0304100b922b194b50ab2eb2b5ee19d79566f3a5"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -2030,7 +2030,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_north_outflow_reach",
         "version": 2,
-        "payload_digest": "5acbb067f7035586d5c8611a88e2b9db8470fa8e43ea0cbada612eb889e6b1f6"
+        "payload_digest": "6ab3a78f14dc34dc5b702f115a0ee8230f5ae6006252f0fd5266f1bd333c23d6"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -2169,7 +2169,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_old_channel_pool",
         "version": 2,
-        "payload_digest": "307686fcaec3ad2d5d37afd89f463932403a0d41d49b7603337bb802abbcabbd"
+        "payload_digest": "e8b7e85edd03009adea24c645ecbbe586ec4e3c7585d35071a3f32a526cba911"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -2315,7 +2315,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_outer_exposed_approach",
         "version": 2,
-        "payload_digest": "2dfaf0037fbbe97ffc148795a2d1bf663388b8ab44e31ad8582be92f27c473d9"
+        "payload_digest": "7602cb5fb6307638239880afa08a9319ed0d50892227619c7ac06f61a5034887"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -2461,7 +2461,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_reed_backwater",
         "version": 2,
-        "payload_digest": "f6613334918a9ccfa3721c92eed3eb1d1a3f6b7b584aa1e6a747f2a29301f9b4"
+        "payload_digest": "5e99ed0d26d9de9a24351f08e3f4bcd64ef4e8185a14554af6592c87c004543b"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -2607,7 +2607,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_sheltered_inner_reach",
         "version": 2,
-        "payload_digest": "9ee79bb5e3bc13947a3ca28ab603f81fb2cdcc51f68646fb430f5ba2effe53d9"
+        "payload_digest": "b3d679d21c1433ec53a01892e51537ac098a3ac3920f70bd0c098e0becfa7795"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -2746,7 +2746,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_sheltered_landing_terrace",
         "version": 2,
-        "payload_digest": "d3e4106f234d06249619602274e944cdb24d4974a42f6f228ae0d93fe919e255"
+        "payload_digest": "2f945fde4858c8fed9d3cd6a2a762ecad44afab5da26d3ba47447901d8a37245"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -2892,7 +2892,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_shifting_shoal_field",
         "version": 2,
-        "payload_digest": "3e26b8bb0ba9dce0c17cf75f0cdd92aa454253dd020ba307ace79b94f70d6d23"
+        "payload_digest": "2ce8ba8dfc13c37f8ab91542ea90d86290cc6c8f971f387974434cf68cad26e4"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -3027,7 +3027,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_south_entry_reach",
         "version": 2,
-        "payload_digest": "d0612486f66457dddb39fdfc5899207bc60e125243b0b671352c95a88983d0c2"
+        "payload_digest": "9923196e95c2e68c6825396576554f3da3bd959f523e2fcf152526877b4c4c6f"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -3166,7 +3166,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_tributary_mouth",
         "version": 2,
-        "payload_digest": "ba459285a0d09e26689d97e20ce0d2feffb59305cf31b9348f54612da7eb230d"
+        "payload_digest": "5c57bb4155876a075efc6f9f4bb3b1754dd63ef630df1a622bed9c063630eb20"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -3305,7 +3305,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_vikhtuy_locality",
         "version": 2,
-        "payload_digest": "30e074eae47768a4ca46b94bf7aca1b57562876a210bd4ce54616d53bb1d3771"
+        "payload_digest": "37df64db0b41bd07f2522539a7807dd90f6a158a9746e1531cb29068fe821fc9"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -3451,7 +3451,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_vikhtuy_resource_edge",
         "version": 2,
-        "payload_digest": "13aba474db7b5248ad15ed868efbe598f429a8e0e837475f727e16ce8a80ccb1"
+        "payload_digest": "da9773f9d7159ae5371167777c7c0ef40e4195f948e4408a17e82e7568f8c8c9"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -3597,7 +3597,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_vikhtuy_river_approach",
         "version": 2,
-        "payload_digest": "2683d8dcca1fd79667c15dcd499b784b06483fa85f8ed21466ff418fe51737f4"
+        "payload_digest": "1f7d8d4b1241430322cc96b5a7c8c38b1c8004529ca605288b2ef4c5aeefdf98"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -3736,7 +3736,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_west_hidden_backwater",
         "version": 2,
-        "payload_digest": "bf3565d1a53a4b5fe6e7ec4a65953b60e0f623590cfa0669ba1d42076a5a6e61"
+        "payload_digest": "4a2528a1a7a99b08c8f4e4ad946177f3736e66e7d413d8ab4deb9dd3ae4b9407"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -3875,7 +3875,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_west_side_channel",
         "version": 2,
-        "payload_digest": "27879ebec0dfecceea67b534a3bccf0e66e090a1c01d705574b7b17c053dc7ec"
+        "payload_digest": "104b317d5ce964cb5fe5b8393f6e0d9d6f0cc1c3e6e219526a16a1d784d42fa3"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -4014,7 +4014,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_wet_conifer_tract",
         "version": 2,
-        "payload_digest": "2f3d7294294f9ec6bc3820f8bf51c4d1e7e5ff4e5a61304b7dc5ea7c934e284b"
+        "payload_digest": "d03e2259230230e7aeb4070743cbf49acaee9882d8b1a52df98d96e1b0314f10"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -4160,7 +4160,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_zaostrovye_burial_area",
         "version": 2,
-        "payload_digest": "d2f6b2e4928c570f9cc6ec64046150234366e57ae9c1df17a6576494b0af9702"
+        "payload_digest": "3e3f0741e95cdfbf20620abf2aa059aac59b626c3b590ccafc7767d4a7b3a7a6"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -4305,7 +4305,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_zaostrovye_landing",
         "version": 2,
-        "payload_digest": "faa433d90b8a88f70f68e40886fd65a9f846ab3d840d6051299b1b4bfc9de067"
+        "payload_digest": "0c16874ca8be4e3e17aeb454cf02262eb8a709883123aa4ee5c0ee9a764b97f2"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
@@ -4444,7 +4444,7 @@
       "natural_profile_ref": {
         "id": "m2c_natural_g4_zaostrovye_settlement_center",
         "version": 2,
-        "payload_digest": "845ad7f03fed97a47da36fd2acb38c0437dcffc52f4debf5e61e2e9f104a6cc3"
+        "payload_digest": "d46d7d007d14f6b3c2f64a492399beb2bfcde364626dcdff5e9c8772fe69659e"
       },
       "g4_ref": {
         "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",

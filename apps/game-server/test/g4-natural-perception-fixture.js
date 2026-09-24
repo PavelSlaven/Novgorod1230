@@ -15,8 +15,10 @@ export async function approvedNaturalPerceptionFixture({ canonical = false } = {
   const presentationRows = buildG4NaturalPresentationCompiledRecords({ candidateBytes, approval });
   const placementBytes = await read('m2c-natural-placement/candidate.json');
   const placementRows = buildG4NaturalPlacementCompiledRecords({ candidateBytes: placementBytes, approval });
+  const startApproval = canonical
+    ? JSON.parse(await read('m2c-expansion-repin-data-approval.json')) : null;
   const canonicalRows = canonical ? buildTargetStartCompiledRecords({
-    candidateBytes: await read('live-world-runtime-v17/target-start-candidate.json'), approval }) : [];
+    candidateBytes: await read('live-world-runtime-v17/target-start-candidate.json'), approval: startApproval }) : [];
   const initialRule = canonicalRows[0]?.payload;
   const selected = presentationRows.find((row) => canonical
     ? row.payload.g4_ref.id === initialRule.rule.g4_ref.id

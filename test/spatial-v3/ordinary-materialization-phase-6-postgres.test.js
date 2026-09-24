@@ -272,7 +272,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
     property_version: '1', placement_version: '1', supporting_basis_catalog_version: '1',
     supporting_basis_catalog_digest: positive.next_supporting_basis_catalog_digest
   });
-  assert.equal(positive.next_aggregate.remaining_identity_budget, 3);
+  assert.equal(positive.next_aggregate.remaining_identity_budget, positive.next_aggregate.identity_budget);
   assert.equal(positive.next_aggregate.background_groups.length, 1, 'candidate-free Stage A group is committed with the resolution');
   const persistedBasis = await pool.query(`SELECT basis_ref,origin_request_identity,basis_snapshot
     FROM party_runtime.party_ordinary_materialization_basis_catalog
@@ -301,7 +301,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   assert.equal(negative.transitions.length, 1, 'an already seeded aggregate uses exactly one resolution transition');
   assert.deepEqual(await bounded(committer.commit(negative)), { status: 'committed', replay: false, state_version: 3 });
   assert.equal((await pool.query(`SELECT count(*)::int AS count FROM party_runtime.party_ordinary_materialization_items WHERE party_id='party-a'`)).rows[0].count, 1);
-  assert.equal(negative.next_aggregate.remaining_identity_budget, 3, 'negative result must not decrement budget');
+  assert.equal(negative.next_aggregate.remaining_identity_budget, positive.next_aggregate.remaining_identity_budget, 'negative result must not decrement budget');
   assert.deepEqual((await pool.query(`SELECT transition_count,from_ordinary_state_version,to_ordinary_state_version FROM party_runtime.party_ordinary_materialization_commits WHERE party_id='party-a' AND request_identity='negative-a'`)).rows[0], { transition_count: 1, from_ordinary_state_version: '2', to_ordinary_state_version: '3' });
 
   const staleParty = plan({ aggregate: negative.next_aggregate, party_state_version: 2,
@@ -768,19 +768,32 @@ async function assertFiniteSourceP16Integration(pool) {
   assert.equal((await pool.query(`SELECT count(*)::int AS count FROM
     party_runtime.party_resource_node_decrements WHERE party_id=$1
       AND causal_transition_identity='finite-rollback'`, [partyId])).rows[0].count, 0);
-  const exhausted = finitePlan({ partyId, scope: finiteScope,
-    aggregate: second.next_aggregate, partyStateVersion: 2, sourceStateVersion: 4,
-    before: { numerator: 1, denominator: 1, unit: 'item' },
-    decrement: { numerator: 1, denominator: 1, unit: 'item' },
-    requestIdentity: 'finite-exhausted', sourceResourceNodeId: 'finite-source-node',
-    initialize: false, sourceBasis, placement });
-  await commitFiniteInP16(pool, exhausted, 'finite-change-3', 2);
+  const contenders = ['finite-race-a', 'finite-race-b'].map((requestIdentity) =>
+    finitePlan({ partyId, scope: finiteScope,
+      aggregate: second.next_aggregate, partyStateVersion: 2, sourceStateVersion: 4,
+      before: { numerator: 1, denominator: 1, unit: 'item' },
+      decrement: { numerator: 1, denominator: 1, unit: 'item' },
+      requestIdentity, sourceResourceNodeId: 'finite-source-node',
+      initialize: false, sourceBasis, placement }));
+  const outcomes = await Promise.allSettled(contenders.map((candidate, index) =>
+    commitFiniteInP16(pool, candidate, `finite-race-change-${index}`, 2)));
+  assert.equal(outcomes.filter((outcome) => outcome.status === 'fulfilled').length, 1);
+  assert.deepEqual(outcomes.filter((outcome) => outcome.status === 'rejected')
+    .map((outcome) => outcome.reason.code), ['ORDINARY_PHASE6_PARTY_STATE_OWNER_INVALID']);
+  const winner = outcomes.findIndex((outcome) => outcome.status === 'fulfilled');
   const retired = await pool.query(`SELECT lifecycle_state,quantity_numerator,
     retired_by_causal_identity,updated_change_set_id FROM party_runtime.party_resource_nodes
     WHERE party_id=$1 AND resource_node_id='finite-source-node'`, [partyId]);
   assert.deepEqual(retired.rows[0], { lifecycle_state: 'depleted',
-    quantity_numerator: '0', retired_by_causal_identity: 'finite-exhausted',
-    updated_change_set_id: 'finite-change-3' });
+    quantity_numerator: '0', retired_by_causal_identity: contenders[winner].request_identity,
+    updated_change_set_id: `finite-race-change-${winner}` });
+  for (const table of ['party_resource_node_decrements',
+    'party_ordinary_materialization_commits', 'party_ordinary_materialization_items',
+    'party_items', 'party_v3_change_sets']) {
+    const rows = await pool.query(`SELECT count(*)::int AS count FROM party_runtime.${table}
+      WHERE party_id=$1`, [partyId]);
+    assert.equal(rows.rows[0].count, table === 'party_v3_change_sets' ? 4 : 3, table);
+  }
   await pool.query(`DELETE FROM party_runtime.party_resource_node_decrements
     WHERE party_id=$1`, [partyId]);
   await removePartyAnchor(pool, partyId);
@@ -943,6 +956,16 @@ async function assertFiniteResolverReloadLifecycle(pool) {
     WHERE party_id=$1 AND resource_node_id=$2`, [partyId, sourceRef]);
   assert.deepEqual(exhausted.rows[0], { state_version: '10',
     lifecycle_state: 'depleted', quantity_numerator: '0' });
+  const afterDepletion = await resolver(finiteResolverRequest('turn:finite:3',
+    'взять еще одну порцию глины'));
+  assert.equal(afterDepletion.ordinary_materialization_atomic_write_plan?.item ?? null,
+    null, 'a new request cannot materialize from depleted stock');
+  assert.equal((await pool.query(`SELECT count(*)::int AS count
+    FROM party_runtime.party_items WHERE party_id=$1`, [partyId])).rows[0].count, 2);
+  assert.deepEqual((await pool.query(`SELECT state_version,lifecycle_state,
+    quantity_numerator FROM party_runtime.party_resource_nodes
+    WHERE party_id=$1 AND resource_node_id=$2`, [partyId, sourceRef])).rows[0],
+  exhausted.rows[0]);
   await pool.query(`DELETE FROM party_runtime.party_resource_node_decrements
     WHERE party_id=$1`, [partyId]);
   await removePartyAnchor(pool, partyId);

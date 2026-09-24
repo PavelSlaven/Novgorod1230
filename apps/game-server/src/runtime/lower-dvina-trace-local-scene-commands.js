@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
-import { available, mode, phase3WriteTargets } from
+import { actorMovementBlocked, available, mode, phase3WriteTargets } from
   './lower-dvina-trace-phase-3-command-shared.js';
 import { serverError } from '../errors.js';
 
@@ -41,8 +41,11 @@ export async function createTraceLocalSceneCommands({ state, inputDigest,
         operation: 'request_movement', operation_dto: operation,
         matches: ({ operation: selected }) => isDeepStrictEqual(selected, operation) },
       availability({ committed_state: current, retrievedState }) {
-        const admitted = currentSource(current ?? retrievedState);
-        return available(admitted, [], admitted ? [] : ['local_scene_source_stale']);
+        const state = current ?? retrievedState;
+        const sourceReady = currentSource(state);
+        const blocked = sourceReady && actorMovementBlocked(state);
+        return available(sourceReady && !blocked, [], !sourceReady
+          ? ['local_scene_source_stale'] : blocked ? ['actor_movement_blocked'] : []);
       },
       async consequence({ retrievedState: current, playerInput }) {
         if (!currentSource(current)) fail('SPATIAL_V3_LOCAL_SOURCE_STALE');

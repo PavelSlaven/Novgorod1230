@@ -115,6 +115,17 @@ test('missing or ambiguous approved exit identity is a typed data gap', async ()
   assert.deepEqual(await commands(null), []);
 });
 
+for (const status of ['restrained', 'incapacitated']) test(
+  `exit while ${status} has blocked command availability`, async () => {
+    const current = { ...state, combat_sessions: [{ status: 'paused_for_player',
+      participant_states: [{ actor_ref: { entity_kind: 'player_character',
+        entity_id: state.actor_id }, combat_status: status }] }] };
+    const [command] = await commands({ listExpansionOptions: async () => [candidate] }, current);
+    assert.deepEqual(command.availability({ committed_state: current }), {
+      version: 1, schema: 'turn_availability_decision', status: 'blocked',
+      can_attempt: false, reasons: ['actor_movement_blocked'], check_requests: [] });
+  });
+
 test('official exit action reports known movement denial without moving or advancing time',
   async () => {
     const bundle = await loadScenarioBundle(13);

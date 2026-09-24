@@ -80,6 +80,23 @@ test('local command binds exact current edge and rejects stale state', async () 
     { code: 'SPATIAL_V3_LOCAL_SOURCE_STALE' });
 });
 
+for (const status of ['restrained', 'incapacitated']) test(
+  `local edge while ${status} has blocked command availability`, async () => {
+    const committed = { ...state('arrival'), combat_sessions: [{
+      status: 'paused_for_player', participant_states: [{
+        actor_ref: { entity_kind: 'player_character', entity_id: 'actor' },
+        combat_status: status }] }] };
+    const [command] = await createTraceLocalSceneCommands({ state: committed,
+      inputDigest: 'digest', spatialLocalSceneRuntime: {
+        listLocalOptions: async () => [{ edge_id: 'arrival:focus',
+          display_label: 'Перейти к соседнему месту', action_units: 1 }],
+        prepareLocalMovement: async () => { throw new Error('must not prepare'); }
+      } });
+    assert.deepEqual(command.availability({ committed_state: committed }), {
+      version: 1, schema: 'turn_availability_decision', status: 'blocked',
+      can_attempt: false, reasons: ['actor_movement_blocked'], check_requests: [] });
+  });
+
 test('full destination or changed journey version denies local movement', async () => {
   let occupied = true;
   const pool = { async query() { return { rows: [{ ...edges.find((edge) =>

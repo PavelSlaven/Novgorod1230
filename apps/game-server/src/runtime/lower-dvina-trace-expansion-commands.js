@@ -1,7 +1,7 @@
 import { isDeepStrictEqual } from 'node:util';
 import { validateConsequencePackage } from '@rus/turn';
 import { serverError } from '../errors.js';
-import { available, mode, phase3WriteTargets } from
+import { actorMovementBlocked, available, mode, phase3WriteTargets } from
   './lower-dvina-trace-phase-3-command-shared.js';
 
 export async function createTraceExpansionCommands({ state, requestId,
@@ -49,8 +49,11 @@ export async function createTraceExpansionCommands({ state, requestId,
         matches: ({ operation: selected }) => isDeepStrictEqual(selected, operation)
       },
       availability({ committed_state: current, retrievedState }) {
-        const admitted = currentSource(current ?? retrievedState);
-        return available(admitted, [], admitted ? [] : ['directional_exit_stale']);
+        const state = current ?? retrievedState;
+        const sourceReady = currentSource(state);
+        const blocked = sourceReady && actorMovementBlocked(state);
+        return available(sourceReady && !blocked, [], !sourceReady
+          ? ['directional_exit_stale'] : blocked ? ['actor_movement_blocked'] : []);
       },
       async consequence({ retrievedState: current, playerInput }) {
         if (!currentSource(current)) fail('LIVE_WORLD_EXPANSION_SOURCE_STALE');

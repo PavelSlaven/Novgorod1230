@@ -267,6 +267,17 @@ test('target item and actor successors preserve v6 parties through real PostgreS
     await pool.query(`${p12.sql_builder.concatenation.prefix}${parts.join('')}${p12.sql_builder.concatenation.suffix}`);
     assert.deepEqual(await importAdditionalStartOwnerRows(pool),
       { npc: 6, acoustic: 2, authoring: 8, rollback: 'pass', readback: 'exact' });
+    const capacityManifestPath = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
+    const capacity = await json(capacityManifestPath);
+    await pool.query(await buildTransactionalImportSql({ manifestPath: capacityManifestPath,
+      temporaryTablePrefix: 'm2c_capacity_v2' }));
+    for (const table of ['spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles']) {
+      const dataset = capacity.datasets.find((entry) => entry.table === table);
+      const expected = await json(`data/world-catalogs/novgorod/${dataset.file}`);
+      const actual = (await pool.query(`SELECT to_jsonb(r) AS row FROM world_base.${table} r
+        WHERE version=2 ORDER BY id`)).rows.map(({ row }) => row);
+      assert.deepEqual(actual, expected.toSorted((a, b) => a.id.localeCompare(b.id)));
+    }
     const ownerReader = createSpatialV3WorldBaseReader({ query: pool.query.bind(pool) });
     const ownerStarts = (await json('data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json')).starts;
     for (const start of ownerStarts) {

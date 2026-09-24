@@ -1,5 +1,5 @@
 {
-  "schema": "m2c_nature_coverage_report_v1",
+  "schema": "m2c_nature_coverage_report_v2",
   "scope": "archived Novgorod regional template links versus exact M2c G4 natural profiles",
   "source_status_warning": "Regional links are draft G1-G3 evidence; this report does not approve type presence at G4 or infer taxa from universal claims.",
   "inputs": [
@@ -28,14 +28,14 @@
   "m2c_g4_count": 32,
   "m2c_g4_without_fauna_layer": 32,
   "world_knowledge_fauna_concepts": 42,
-  "world_knowledge_fauna_claims": 272,
+  "world_knowledge_fauna_claims": 136,
   "world_knowledge_context_scopes": {
-    "universal": 272
+    "universal": 136
   },
   "world_knowledge_source_map": [
     {
       "concept_ref": "wk:biology_physiology:fauna-amphibian",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-naturescot-herptiles",
         "source:fauna-naturescot-tadpoles"
@@ -43,42 +43,42 @@
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-animal-communication",
-      "claim_count": 2,
+      "claim_count": 1,
       "source_refs": [
         "source:fauna-openstax-behavior"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-animal-learning",
-      "claim_count": 4,
-      "source_refs": [
-        "source:fauna-openstax-behavior"
-      ]
-    },
-    {
-      "concept_ref": "wk:biology_physiology:fauna-animal-movement",
       "claim_count": 2,
       "source_refs": [
         "source:fauna-openstax-behavior"
       ]
     },
     {
+      "concept_ref": "wk:biology_physiology:fauna-animal-movement",
+      "claim_count": 1,
+      "source_refs": [
+        "source:fauna-openstax-behavior"
+      ]
+    },
+    {
       "concept_ref": "wk:biology_physiology:fauna-atlantic-salmon",
-      "claim_count": 8,
+      "claim_count": 4,
       "source_refs": [
         "source:fauna-noaa-salmon"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-bird-migration",
-      "claim_count": 8,
+      "claim_count": 4,
       "source_refs": [
         "source:fauna-cornell-migration"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-brown-bear",
-      "claim_count": 12,
+      "claim_count": 6,
       "source_refs": [
         "source:fauna-brown-bear",
         "source:fauna-nps-bear-denning"
@@ -86,7 +86,7 @@
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-common-adder",
-      "claim_count": 12,
+      "claim_count": 6,
       "source_refs": [
         "source:fauna-adw-adder",
         "source:fauna-naturescot-adder"
@@ -94,7 +94,7 @@
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-common-frog",
-      "claim_count": 10,
+      "claim_count": 5,
       "source_refs": [
         "source:fauna-adw-frog",
         "source:fauna-transport-scotland-amphibian"
@@ -102,7 +102,7 @@
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-common-toad",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-naturescot-tadpoles",
         "source:fauna-naturescot-toad"
@@ -110,224 +110,224 @@
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-cross-spider",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-adw-cross-spider"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-culex-mosquito",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-cdc-culex"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-domestic-cattle",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-domestic-cattle"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-domestic-dog",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-domestic-dog"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-domestic-goat",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-merck-goat"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-domestic-horse",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-domestic-horse"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-domestic-pig",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-domestic-pig"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-domestic-sheep",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-merck-sheep"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-dragonfly",
-      "claim_count": 10,
+      "claim_count": 5,
       "source_refs": [
         "source:fauna-bds-dragonfly"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-earthworm",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-nrcs-earthworm"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-eurasian-beaver",
-      "claim_count": 12,
+      "claim_count": 6,
       "source_refs": [
         "source:fauna-eurasian-beaver"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-eurasian-lynx",
-      "claim_count": 10,
+      "claim_count": 5,
       "source_refs": [
         "source:fauna-eurasian-lynx"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-eurasian-perch",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-slu-perch"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-european-eel",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-naturescot-eel"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-european-otter",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-european-otter"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-fish-oxygen",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-usgs-fish-oxygen"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-fish-senses",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-noaa-fish-senses"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-great-tit",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-bto-great-tit"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-honeybee",
-      "claim_count": 10,
+      "claim_count": 5,
       "source_refs": [
         "source:fauna-adw-honeybee"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-mallard",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-adw-mallard"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-moose",
-      "claim_count": 10,
+      "claim_count": 5,
       "source_refs": [
         "source:fauna-moose"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-mountain-hare",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-mountain-hare"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-northern-pike",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-adw-pike"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-pearl-mussel",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-naturescot-mussel"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-red-fox",
-      "claim_count": 12,
+      "claim_count": 6,
       "source_refs": [
         "source:fauna-red-fox"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-red-squirrel",
-      "claim_count": 8,
+      "claim_count": 4,
       "source_refs": [
         "source:fauna-red-squirrel"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-roe-deer",
-      "claim_count": 4,
+      "claim_count": 2,
       "source_refs": [
         "source:fauna-roe-deer"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-ruminant-grazing-selection",
-      "claim_count": 2,
+      "claim_count": 1,
       "source_refs": [
         "source:fauna-ruminant-grazing-selection"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-tawny-owl",
-      "claim_count": 8,
+      "claim_count": 4,
       "source_refs": [
         "source:fauna-adw-tawny-owl"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-tick",
-      "claim_count": 6,
+      "claim_count": 3,
       "source_refs": [
         "source:fauna-cdc-ticks"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-wild-boar",
-      "claim_count": 8,
+      "claim_count": 4,
       "source_refs": [
         "source:fauna-wild-boar"
       ]
     },
     {
       "concept_ref": "wk:biology_physiology:fauna-wolf",
-      "claim_count": 10,
+      "claim_count": 5,
       "source_refs": [
         "source:fauna-wolf"
       ]
@@ -337,6 +337,1953 @@
     "fauna-ecology.json",
     "fauna-mammals.json",
     "runtime-bundle.json"
+  ],
+  "historical_flora_context": [
+    {
+      "claim_ref": "claim:troitsky-nonwood-plant-remains-probably-local",
+      "source_refs": [
+        "source:monk-johnston-2012"
+      ],
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "found_in"
+          }
+        ]
+      }
+    },
+    {
+      "claim_ref": "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+      "source_refs": [
+        "source:monk-johnston-2012"
+      ],
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "found_in"
+          }
+        ]
+      }
+    },
+    {
+      "claim_ref": "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
+      "source_refs": [
+        "source:monk-johnston-2012"
+      ],
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "found_in"
+          }
+        ]
+      }
+    }
+  ],
+  "world_knowledge_nature_shards": {
+    "flora_fungi": {
+      "files": [
+        "wild-flora.json",
+        "gameplay-flora-ecology-v3.json"
+      ],
+      "claim_count": 9,
+      "concept_refs": [
+        "wk:biology_physiology:bearberry-lingonberry-identification",
+        "wk:biology_physiology:fungal-mycelium-nutrition",
+        "wk:biology_physiology:mezereon-toxicity",
+        "wk:biology_physiology:wild-mushroom-identification",
+        "wk:environment:candidate-deciduous-tree-leaf-flower-sequence",
+        "wk:environment:candidate-flood-woody-debris-transport-retention",
+        "wk:environment:candidate-nettle-bast-fibre-extraction",
+        "wk:environment:candidate-water-circulation-oxygen"
+      ],
+      "source_refs": [
+        "source:candidate-gougherty-2018-tree-phenology",
+        "source:candidate-jacobson-1999-woody-debris",
+        "source:candidate-usgs-fish-oxygen-circulation",
+        "source:candidate-viotti-2022-nettle-fibre",
+        "source:valday-flora",
+        "source:valday-similar-berries"
+      ],
+      "context_scopes": {
+        "universal": 9
+      }
+    },
+    "soil_geology_materials": {
+      "files": [
+        "terrain.json",
+        "gameplay-granular-materials-v3.json"
+      ],
+      "claim_count": 4,
+      "concept_refs": [
+        "wk:environment:regional-quaternary-deposits",
+        "wk:physics_material_science:partially-saturated-granular-deformation",
+        "wk:physics_material_science:wet-granular-capillary-cohesion"
+      ],
+      "source_refs": [
+        "source:dmitruk-druzhnova-2020-soils",
+        "source:milatz-2021-partially-saturated-granular-compression",
+        "source:scheel-2008-liquid-distribution-wet-granular"
+      ],
+      "context_scopes": {
+        "universal": 2,
+        "unspecified": 2
+      }
+    },
+    "medieval_regional_context": {
+      "files": [
+        "environment-ecology.json"
+      ],
+      "claim_count": 14,
+      "concept_refs": [
+        "wk:environment:animal-pollination",
+        "wk:environment:fluvial-sediment-transport",
+        "wk:environment:medieval-novgorod-domestic-food-base",
+        "wk:environment:medieval-novgorod-fishing-context",
+        "wk:environment:medieval-novgorod-landscape",
+        "wk:environment:medieval-novgorod-wild-mammal-evidence",
+        "wk:environment:northern-heath-bilberry-context",
+        "wk:environment:novgorod-pre1300-cold-extremes",
+        "wk:environment:poozerie-cereal-millet-source",
+        "wk:environment:seasonal-bird-migration",
+        "wk:environment:soil-texture-infiltration",
+        "wk:environment:southern-deciduous-gathered-plants",
+        "wk:environment:troitsky-local-plant-remains",
+        "wk:environment:wetland-hydric-soil"
+      ],
+      "source_refs": [
+        "source:hamilton-dyer-2017-novgorod",
+        "source:helama-2017-utrecht",
+        "source:monk-johnston-2012",
+        "source:novgorod-museum-fishing",
+        "source:nrcs-infiltration",
+        "source:nrcs-pollinators",
+        "source:stanford-bird-migration",
+        "source:usgs-hydric-soil",
+        "source:usgs-river-sediment-dynamics"
+      ],
+      "context_scopes": {
+        "universal": 5,
+        "unspecified": 9
+      }
+    }
+  },
+  "exact_g4_profile_comparison": [
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, осока, кустарник, местами деревья",
+        "soil_ground_type": "alluvial_silt_clay"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_clay",
+            "ambient_materials": [
+              "alluvial_silt_clay",
+              "grass_sedge_litter",
+              "shrub_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "inferred"
+        },
+        "riparian_vegetation": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "driftwood",
+              "alluvial_silt_mud"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "landscape_template_id": "lt_gentle_hills",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, кустарник, местами лес",
+        "soil_ground_type": "firm_soil"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "firm_soil",
+            "ambient_materials": [
+              "firm_soil",
+              "grass_shrub_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "landscape_template_id": "lt_temperate_coniferous_forest",
+      "water_body_template_id": null,
+      "reference_landscape": {
+        "dominant_vegetation": "сосна, ель, пихта или другие хвойные",
+        "forest_type": "temperate_coniferous",
+        "soil_ground_type": "needle_litter_roots"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "woodland_canopy",
+            "structure": "coniferous_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "needle_litter_groundcover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "needle_litter_roots",
+            "ambient_materials": [
+              "rooted_forest_soil",
+              "needle_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "water_body_template_id": "wb_floodwater",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, осока, кустарник, местами деревья",
+        "soil_ground_type": "alluvial_silt_clay"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_clay",
+            "ambient_materials": [
+              "alluvial_silt_clay",
+              "grass_sedge_litter",
+              "shrub_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "landscape_template_id": "lt_gentle_hills",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, кустарник, местами лес",
+        "soil_ground_type": "firm_soil"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "firm_soil",
+            "ambient_materials": [
+              "firm_soil",
+              "grass_shrub_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "water_body_template_id": "wb_brook",
+      "reference_landscape": {
+        "dominant_vegetation": "ольха, берёза, ель, ива, кустарник",
+        "forest_type": "wet_lowland",
+        "soil_ground_type": "wet_roots_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "woodland_canopy",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "wet_forest_understory_and_litter_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "wet_roots_mud",
+            "ambient_materials": [
+              "wet_roots_mud",
+              "leaf_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, осока, кустарник, местами деревья",
+        "soil_ground_type": "alluvial_silt_clay"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_clay",
+            "ambient_materials": [
+              "alluvial_silt_clay",
+              "grass_sedge_litter",
+              "shrub_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "water_body_template_id": "wb_estuary",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, осока, кустарник, местами деревья",
+        "soil_ground_type": "alluvial_silt_clay"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_clay",
+            "ambient_materials": [
+              "alluvial_silt_clay",
+              "grass_sedge_litter",
+              "shrub_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "landscape_template_id": "lt_freshwater_marsh",
+      "water_body_template_id": "wb_backwater",
+      "reference_landscape": {
+        "dominant_vegetation": "осока, тростник, камыш, водно-болотное разнотравье",
+        "soil_ground_type": "mineral_mud_silt"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "sedge_reed_and_wetland_herb_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "mineral_mud_silt",
+            "ambient_materials": [
+              "mineral_mud_silt",
+              "sedge_reed_litter",
+              "wetland_herb_litter"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "water_body_template_id": "wb_nearshore_sea",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, осока, кустарник, местами деревья",
+        "soil_ground_type": "alluvial_silt_clay"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_clay",
+            "ambient_materials": [
+              "alluvial_silt_clay",
+              "grass_sedge_litter",
+              "shrub_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "landscape_template_id": "lt_freshwater_marsh",
+      "water_body_template_id": "wb_backwater",
+      "reference_landscape": {
+        "dominant_vegetation": "осока, тростник, камыш, водно-болотное разнотравье",
+        "soil_ground_type": "mineral_mud_silt"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "sedge_reed_and_wetland_herb_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "mineral_mud_silt",
+            "ambient_materials": [
+              "mineral_mud_silt",
+              "sedge_reed_litter",
+              "wetland_herb_litter"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "landscape_template_id": "lt_gentle_hills",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, кустарник, местами лес",
+        "soil_ground_type": "firm_soil"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "firm_soil",
+            "ambient_materials": [
+              "firm_soil",
+              "grass_shrub_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "inferred"
+        },
+        "riparian_vegetation": {
+          "applicability": "not_applicable",
+          "value": null,
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "water_sorted_sediment"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_brook",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, осока, кустарник, местами деревья",
+        "soil_ground_type": "alluvial_silt_clay"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_clay",
+            "ambient_materials": [
+              "alluvial_silt_clay",
+              "grass_sedge_litter",
+              "shrub_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "ольха, берёза, ель, ива, кустарник",
+        "forest_type": "wet_lowland",
+        "soil_ground_type": "wet_roots_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "woodland_canopy",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "wet_forest_understory_and_litter_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "wet_roots_mud",
+            "ambient_materials": [
+              "wet_roots_mud",
+              "leaf_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_backwater",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "ольха, берёза, ель, ива, кустарник",
+        "forest_type": "wet_lowland",
+        "soil_ground_type": "wet_roots_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "woodland_canopy",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "wet_forest_understory_and_litter_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "wet_roots_mud",
+            "ambient_materials": [
+              "wet_roots_mud",
+              "leaf_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "landscape_template_id": "lt_wooded_floodplain",
+      "water_body_template_id": null,
+      "reference_landscape": {
+        "dominant_vegetation": "ива, ольха, тополь, кустарник",
+        "forest_type": "floodplain_forest",
+        "soil_ground_type": "alluvial_mud_roots"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_and_leaf_litter_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_wet_edge_vegetation"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_mud_roots",
+            "ambient_materials": [
+              "alluvial_mud_roots",
+              "leaf_litter",
+              "woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "grass_sedge_and_shrub_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_silt_mud",
+            "ambient_materials": [
+              "alluvial_silt_mud",
+              "grass_sedge_litter",
+              "small_woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "landscape_template_id": "lt_wooded_floodplain",
+      "water_body_template_id": "wb_river_channel",
+      "reference_landscape": {
+        "dominant_vegetation": "ива, ольха, тополь, кустарник",
+        "forest_type": "floodplain_forest",
+        "soil_ground_type": "alluvial_mud_roots"
+      },
+      "authored_flora_material_layers": {
+        "tree_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "scattered_tree_cover",
+            "structure": "scattered_or_mixed_canopy",
+            "taxon_claims": []
+          },
+          "directness": "analogical"
+        },
+        "shrub_layer": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_or_understory"
+          },
+          "directness": "analogical"
+        },
+        "ground_cover": {
+          "applicability": "present",
+          "value": {
+            "class": "shrub_and_leaf_litter_cover"
+          },
+          "directness": "analogical"
+        },
+        "riparian_vegetation": {
+          "applicability": "present",
+          "value": {
+            "class": "generic_riparian_or_wetland_cover"
+          },
+          "directness": "analogical"
+        },
+        "natural_materials": {
+          "applicability": "present",
+          "value": {
+            "substrate": "alluvial_mud_roots",
+            "ambient_materials": [
+              "alluvial_mud_roots",
+              "leaf_litter",
+              "woody_debris"
+            ],
+            "finite_stock_created": false
+          },
+          "directness": "analogical"
+        }
+      },
+      "authored_fauna_layer": false,
+      "authored_taxon_claim_count": 0,
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+    }
   ],
   "entries": [
     {
@@ -361,7 +2308,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -384,7 +2333,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -407,7 +2358,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -430,7 +2383,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -454,7 +2409,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -476,7 +2433,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -499,7 +2458,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -522,7 +2483,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -545,7 +2508,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -567,7 +2532,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -592,7 +2559,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -616,7 +2585,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -641,7 +2612,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -665,7 +2638,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -690,7 +2665,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -712,7 +2689,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -735,7 +2714,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -757,7 +2738,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -780,7 +2763,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -805,7 +2790,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -829,7 +2816,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -852,7 +2841,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -874,7 +2865,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -897,7 +2890,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -922,7 +2917,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -945,7 +2942,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -970,7 +2969,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -994,7 +2995,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -1016,7 +3019,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -1040,7 +3045,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "land_use",
@@ -1063,7 +3070,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1110,7 +3119,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "landscape",
@@ -1137,7 +3148,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1164,7 +3177,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1190,7 +3205,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1213,7 +3230,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1236,7 +3255,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1261,7 +3282,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1287,7 +3310,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1328,7 +3353,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "landscape",
@@ -1371,7 +3398,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "landscape",
@@ -1425,7 +3454,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "landscape",
@@ -1448,7 +3479,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1473,7 +3506,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1499,7 +3534,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1524,7 +3561,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1547,7 +3586,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1570,7 +3611,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1594,7 +3637,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1617,7 +3662,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1640,7 +3687,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1663,7 +3712,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1688,7 +3739,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1713,7 +3766,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1738,7 +3793,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1761,7 +3818,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1784,7 +3843,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1811,7 +3872,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1850,7 +3913,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "landscape",
@@ -1894,7 +3959,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "landscape",
@@ -1920,7 +3987,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1944,7 +4013,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -1987,7 +4058,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "landscape",
@@ -2013,7 +4086,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "landscape",
@@ -2039,7 +4114,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2061,7 +4138,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2084,7 +4163,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2106,7 +4187,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2128,7 +4211,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2150,7 +4235,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2172,7 +4259,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2195,7 +4284,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2217,7 +4308,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2240,7 +4333,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2262,7 +4357,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2284,7 +4381,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2307,7 +4406,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2329,7 +4430,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2351,7 +4454,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2374,7 +4479,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2396,7 +4503,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2419,7 +4528,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2441,7 +4552,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2463,7 +4576,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2486,7 +4601,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2508,7 +4625,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2530,7 +4649,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2552,7 +4673,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2574,7 +4697,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2596,7 +4721,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2618,7 +4745,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2641,7 +4770,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2664,7 +4795,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2686,7 +4819,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2709,7 +4844,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2731,7 +4868,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2753,7 +4892,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2776,7 +4917,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2799,7 +4942,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2821,7 +4966,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2845,7 +4992,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2867,7 +5016,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2889,7 +5040,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "place",
@@ -2911,7 +5064,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -2953,7 +5108,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "water_body",
@@ -2977,7 +5134,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3001,7 +5160,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3044,7 +5205,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "water_body",
@@ -3067,7 +5230,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3092,7 +5257,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3134,7 +5301,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "water_body",
@@ -3158,7 +5327,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3185,7 +5356,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3212,7 +5385,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3236,7 +5411,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3260,7 +5437,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3287,7 +5466,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3310,7 +5491,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3333,7 +5516,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3357,7 +5542,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3381,7 +5568,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3405,7 +5594,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3466,7 +5657,9 @@
         "weather"
       ],
       "m2c_taxon_claim_count": 0,
-      "coverage": "exact_g4_profile"
+      "coverage": "exact_g4_profile",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "exact_g4_template_ref"
     },
     {
       "kind": "water_body",
@@ -3490,7 +5683,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3514,7 +5709,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3540,7 +5737,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3566,7 +5765,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     },
     {
       "kind": "water_body",
@@ -3590,7 +5791,9 @@
       "exact_m2c_g4": [],
       "m2c_layers": [],
       "m2c_taxon_claim_count": 0,
-      "coverage": "no_exact_m2c_binding"
+      "coverage": "no_exact_m2c_binding",
+      "species_materialization": "typed_gap_exact_type_reference_required",
+      "exact_applicability": "unresolved_for_m2c_g4"
     }
   ]
 }

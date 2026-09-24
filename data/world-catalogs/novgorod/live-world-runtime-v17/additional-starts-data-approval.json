@@ -3,11 +3,11 @@
   "decision": "APPROVE_DATA_ONLY",
   "reviewer": "gpt-6-sol/high independent data review",
   "reviewed_on": "2026-09-24",
-  "reviewed_repository_head": "3224f492dff9f17cd805ceddbf936783936f674d",
+  "reviewed_repository_head": "acce409c1298d5404e8389260f2883f21dd3672d",
   "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json",
-  "candidate_sha256": "8ed911fc02e1a4024dc4e46767d222a0d9cdb61ff9af85d140977d152c234a40",
-  "scope": "Exact riverbank boatman and reed-backwater fisher authoring: approved canonical G4 entry to G5 arrival closure, matching landscape and natural placement, region-period role/occupation pairs, and explicitly editorial free adult player premises. All 11 source pins match current bytes. Neither premise transfers a boat, tackle, rights, travel history, specific knowledge, resources or pine-specific initial perception.",
-  "exclusions": "No player body, attributes, appearance, skills, language or clothing applicability approval; no initial observer/source-state or entity-perception approval; no current scene, water, visibility, sound, stock or access assertion; no import, PostgreSQL readback, runtime or release activation. These two natural starts do not satisfy the M2c acceptance matrix's separate economic and other human-place families.",
+  "candidate_sha256": "06736d31eb0c828aec7f35b2ee13ea148c4039e6ca884aee0d39b3953f35b3b0",
+  "scope": "All four starts: exact approved G4 entry to canonical G5 arrival closure, matching landscape and candidate natural placement, approved region-period role/occupation pairs, and explicitly editorial free adult player premises. Vykhtuy's approved resource-site G3 and Zaostrovye's approved settlement G3 support economic and human approach context; their arrival G5 scenes are river approaches. All 11 source pins match current bytes. No boat, tackle, work, dwelling, rights, prior journey, specific knowledge, stock or initial perception is transferred.",
+  "exclusions": "No player body, attributes, appearance, skills, language or clothing applicability approval; no independent natural-placement activation or initial observer/source-state and entity-perception approval; no current scene, water, visibility, sound, stock or access assertion; no import, PostgreSQL readback, runtime or release activation. Four route-approach G5 starts do not satisfy M2c's separate economic working-place and other human-place scene-family acceptance rows; those require tests in actual applicable work and habitation scenes.",
   "import_authorized": false,
   "activation_authorized": false
 }

@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import pg from 'pg';
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
-import { createCombinedWritePlanBuilder } from '@rus/turn/spatial-v3';
 import { createSpatialV3Repository } from '@rus/party-store/spatial-v3';
 import { materializeSpatialV3GeneratedScene } from '@rus/materialization/spatial-v3-materialization';
 import { createSpatialV3GeneratedExpansionAdapter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-generated-expansion-adapter.js';
@@ -138,7 +137,6 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
           canonical_g5_version: 1, scene_template_id: 'terminal-scene' }] } }),
       readPinnedG5AcousticClosure: async () => ({ ok: true, value: { rows: missingAmbient ? [] : [acoustic] } }) },
     committer: createSpatialV3PostgresCombinedAtomicCommitter({ pool }),
-    writePlanBuilder: createCombinedWritePlanBuilder({ verifyApproval: async () => ({ ok: true }) }),
     prepareFirstEntry: async () => ({ ok: true, approved_write_sets: [],
       materialization_trace: { selection: { count: 0, choices: [{ choice_key: 'npc_count',
         rng_draw: 1, selected_id: '0', candidate_set_digest: hash }] }, choices: [], attribute_traces: [] } }),

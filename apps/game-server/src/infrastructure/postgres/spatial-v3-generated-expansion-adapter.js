@@ -2,6 +2,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { materializeSpatialV3Expansion, materializeSpatialV3GeneratedScene,
   selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
 import { createSpatialV3Repository } from '@rus/party-store/spatial-v3';
+import { createCombinedWritePlanBuilder } from '@rus/turn/spatial-v3';
 import { computeSpatialV3CanonicalDigest as digest,
   createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
 
@@ -36,7 +37,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
     if (![party_id, source_site_id, source_position_id, materializer_version].every((s) => typeof s === 'string' && s.trim())
       || !Number.isSafeInteger(candidate_ordinal) || candidate_ordinal < 0
       || !g4 || !profile || !slot_ref || !directional_exit) return reject('exact_expansion_request_required');
-    if (typeof committer?.prepareExpansion !== 'function' || typeof writePlanBuilder?.build !== 'function'
+    if (typeof committer?.prepareExpansion !== 'function'
       || typeof admitGeneration !== 'function' || typeof projectVisible !== 'function') {
       return reject('generation_admission_projection_and_p16_owners_required');
     }
@@ -240,12 +241,21 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         if (!visible?.ok) return visible?.error ? visible : reject('visible_projection_required');
         const change = { target_table: 'party_v3_change_sets', id: change_set_id,
           record: { id: change_set_id, party_id, operation_kind: 'resolve_frontier', idempotency_record_id: `idem:${change_set_id}` } };
-        const built = await writePlanBuilder.build({ plan_id: `plan:${change_set_id}`, party_id,
+        const approvedWriteSets = [{ inserts: proposal.inserts, updates: proposal.updates, appends: [change, ...traceWrites] }, ...firstEntry.approved_write_sets];
+        const builder = writePlanBuilder ?? createCombinedWritePlanBuilder({
+          verifyApproval: async (candidate) => ({ ok: candidate.party_id === party_id
+            && candidate.operation_kind === 'resolve_frontier'
+            && candidate.canonical_input_digest === canonical_input_digest
+            && canonicalDigest(candidate.validation_report) === canonicalDigest(admitted.validation_report)
+            && canonicalDigest(candidate.approved_write_sets) === canonicalDigest(approvedWriteSets)
+            && canonicalDigest(candidate.visible_package_envelope) === canonicalDigest(visible.envelope) })
+        });
+        const built = await builder.build({ plan_id: `plan:${change_set_id}`, party_id,
           write_plan_kind: 'semantic_commit', operation_kind: 'resolve_frontier', canonical_input_digest,
           expected_state_versions: [...proposal.expected_state_versions, ...(firstEntry.expected_state_versions ?? [])], validation_report: admitted.validation_report,
           idempotency: { id: `idem:${change_set_id}`, key: idempotency_key }, change_set: { id: change_set_id },
           visible_package_envelope: visible.envelope,
-          approved_write_sets: [{ inserts: proposal.inserts, updates: proposal.updates, appends: [change, ...traceWrites] }, ...firstEntry.approved_write_sets],
+          approved_write_sets: approvedWriteSets,
           lock_context: { owner_keys: [], execution_keys: [], g4_keys: [`${party_id}:${g4.id}`],
             physical_keys: [...proposal.inserts, ...proposal.updates, ...firstEntryWrites, change, ...traceWrites].map((row) => `party_runtime.${row.target_table}:${row.id}`) },
           commit_rechecks: [...admitted.commit_rechecks, ...(firstEntry.commit_rechecks ?? [])] });

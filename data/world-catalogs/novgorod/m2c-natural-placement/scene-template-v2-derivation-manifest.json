@@ -1,0 +1,31 @@
+{
+  "schema": "rus.m2c_natural_placement_scene_template_v2_derivation_manifest.v1",
+  "status": "deterministically_derived",
+  "source": {
+    "path": "data/world-catalogs/novgorod/m2c-natural-placement/candidate.json",
+    "sha256": "71de9afaeb73825fd32db2e57cf9ad7c5390b427c6b6c7892e81777740429099"
+  },
+  "approved_start": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_pine_ridge_approach_v1.start.json",
+    "sha256": "dc00497652882322b3232f5882fc870ed88be15f981fd5b490caf2f08e980f2a"
+  },
+  "start_approval": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
+    "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
+  },
+  "approved_scene_templates": {
+    "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_scene_templates.json",
+    "sha256": "2d224ae80f3ac18d9a4d0c09293fb04025f4096a475d084a932c1f1ac7186857"
+  },
+  "candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-natural-placement/scene-template-v2-successor-candidate.json",
+    "sha256": "b5afca3cdad30ab8658dbbff0ece7da7bda904ed75bd44405b1ce17579862f42"
+  },
+  "exact_change": {
+    "placement_id": "m2c_natural_g4_dry_pine_ridge__stfv3__g5_route_approach_v1__arrival",
+    "field": "scene_template_ref.version",
+    "from": 1,
+    "to": 2,
+    "all_other_fields_unchanged": true
+  }
+}

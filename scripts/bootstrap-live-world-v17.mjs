@@ -144,6 +144,8 @@ export async function checkV17BootstrapInputs() {
   await exact(`${nature}/nature-successor-data-approval.json`, naturePins.approval);
   execFileSync(process.execPath, ['scripts/generate-m2c-nature-successors.mjs', '--check'],
     { cwd: root, encoding: 'utf8' });
+  execFileSync(process.execPath, ['scripts/generate-m2c-natural-placement-v2-successor.mjs', '--check'],
+    { cwd: root, encoding: 'utf8' });
   const natureApproval = await json(`${nature}/nature-successor-data-approval.json`);
   for (const source of Object.values(natureApproval.candidates)) {
     const approvedBytes = execFileSync('git', ['show', `ae212e78:${source.path}`],

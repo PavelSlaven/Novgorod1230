@@ -165,7 +165,8 @@ export async function prepareSpatialV3TargetItemCatalog({ worldPool,
 async function targetPresentationRows(root) {
   const base = resolve(root, 'data/world-catalogs/novgorod');
   const approval = await readJson(resolve(base, 'm2c-sol-data-approval.json'));
-  const startApproval = await readJson(resolve(base, 'm2c-expansion-repin-data-approval.json'));
+  const capacityStartApproval = await readJson(resolve(base,
+    'live-world-runtime-v17/capacity-v2-start-successors/data-approval.json'));
   const naturalBytes = await readFile(resolve(base, 'm2c-natural/candidate.json'));
   if (approval.decision !== 'APPROVE_DATA_ONLY'
     || createHash('sha256').update(naturalBytes).digest('hex') !== approval.approved_exact_candidates?.natural_baseline_sha256) {
@@ -183,12 +184,25 @@ async function targetPresentationRows(root) {
     naturalCandidateBytes: naturalSuccessorBytes,
     approvedNaturalCandidateBytes: approvedBytes(successorApproval.candidates.natural.path),
     approval: successorApproval, naturalRecords: naturalSuccessors });
+  const placementPath = 'm2c-natural-placement/scene-template-v2-successor-candidate.json';
+  const placementSuccessor = buildG4NaturalPlacementCompiledRecords({
+    candidateBytes: await readFile(resolve(base, placementPath), 'utf8'),
+    sourceCandidateBytes: await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8'),
+    approvedStartBytes: await readFile(resolve(base,
+      'live-world-runtime-v17/capacity-v2-start-successors/novgorod_pine_ridge_approach_v1.start.json'), 'utf8'),
+    sceneTemplateBytes: await readFile(resolve(base,
+      'm2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_scene_templates.json'), 'utf8'),
+    capacityApproval: capacityStartApproval, approval,
+    naturalRecords: naturalSuccessors, presentationRecords: presentationSuccessors });
   return [...buildG4NaturalCompiledRecords({ candidate: JSON.parse(naturalBytes) }),
     ...buildG4NaturalPresentationCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-presentation/candidate.json'), 'utf8'), approval }),
     ...naturalSuccessors, ...presentationSuccessors,
-    ...buildG4NaturalPlacementCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8'),
-      approval, naturalRecords: naturalSuccessors, presentationRecords: presentationSuccessors }),
-    ...buildTargetStartCompiledRecords({ candidateBytes: await readFile(resolve(base, 'live-world-runtime-v17/target-start-candidate.json'), 'utf8'), approval: startApproval }),
+    ...placementSuccessor,
+    ...buildTargetStartCompiledRecords({ candidateBytes: await readFile(resolve(base,
+      'live-world-runtime-v17/capacity-v2-start-successors/novgorod_pine_ridge_approach_v1.start.json'), 'utf8'),
+    approval: capacityStartApproval, placementSuccessor: {
+      path: `data/world-catalogs/novgorod/${placementPath}`, record: placementSuccessor[0],
+      sourceApproval: approval } }),
     ...buildTargetFiniteCompiledRecords({ mappedBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-approved.json'), 'utf8'),
       manifestBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-manifest.json'), 'utf8'), approval })];
 }

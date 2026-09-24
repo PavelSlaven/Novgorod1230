@@ -10,7 +10,7 @@
   "source_refs": [
     {
       "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/candidate.json",
-      "sha256": "34d653efa8f96f9ecb9e5a05447e9c5b24fecf4e10983ab8da80973f966880a9",
+      "sha256": "c4742a5b9642638b7e2ca3c440ffe344e724549abfa788ed39b8627314957356",
       "directness": "independently_approved_editorial_mechanics",
       "confidence": "high"
     },

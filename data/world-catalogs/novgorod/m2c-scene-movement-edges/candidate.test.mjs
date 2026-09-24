@@ -24,7 +24,7 @@ function sha256(path) {
 
 test('M2c scene movement candidate pins reciprocal local edges without changing slots', () => {
   const candidateBytes = readFileSync(resolve(root, candidatePath));
-  assert.equal(createHash('sha256').update(candidateBytes).digest('hex'), '34d653efa8f96f9ecb9e5a05447e9c5b24fecf4e10983ab8da80973f966880a9');
+  assert.equal(createHash('sha256').update(candidateBytes).digest('hex'), 'c4742a5b9642638b7e2ca3c440ffe344e724549abfa788ed39b8627314957356');
 
   const candidate = JSON.parse(candidateBytes);
   const source = read(sourcePath);
@@ -41,7 +41,7 @@ test('M2c scene movement candidate pins reciprocal local edges without changing 
     [npcPath, '8b7c3e33932bd566335dc05867331dd73b99d5545ebd2f19ea8d794f9451d0e5'],
     [generatedNpcPath, '8fc54aa348c9132b75fe65e742c9c6129cb5254e4c27ab05ba0fc321e8801013'],
     [evidencePath, 'a29676ad909bd1e082f1a8bc97d6e08a168b7cfb6e9e231eb9240b998c1163c6'],
-    [startPath, 'd6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f']]) {
+    [startPath, 'fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412']]) {
     assert.equal(refs.get(path), expected);
     assert.equal(sha256(path), expected);
   }

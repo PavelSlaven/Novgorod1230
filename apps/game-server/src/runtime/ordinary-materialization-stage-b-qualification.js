@@ -105,6 +105,7 @@ function contractRequest(request) {
 }
 function presenceRequest(probe) {
   const { id, query } = probe;
+  const finite = Object.hasOwn(probe, 'expected_entity');
   const scope_ref = { entity_kind: 'g6', entity_id: 'stage-b-qualification' };
   const request = buildOrdinaryMaterializationPresenceRequest({ objective_context: {
     request_id: `llm-settings:ordinary-stage-b:${id}`, scope_ref: { ...scope_ref },
@@ -119,7 +120,8 @@ function presenceRequest(probe) {
       background_groups: [], presence_resolutions: [], closed_observation_scopes: [] },
     technical_limits: { max_new_entities: 1, max_new_background_groups: 1,
       max_resolution_records: 4 }, ordinary_state_version: 1,
-    property_placement_context: { scope_ref: { ...scope_ref }, item_kind: 'man_made',
+    property_placement_context: { scope_ref: { ...scope_ref }, item_kind: finite
+      ? 'natural_resource_portion' : 'man_made',
       property_catalog_version_ref: 'stage-b', placement_catalog_version_ref: 'stage-b',
       personal_communal_refs: [], occupied_site_refs: ['stage-b'], unowned_cause_refs: [],
       placement_context_refs: ['stage-b'], property_catalog: [{ property_basis_ref: 'stage-b',
@@ -128,10 +130,12 @@ function presenceRequest(probe) {
         position_ref: 'stage-b', state: 'committed', scope_ref: { ...scope_ref }, g6_ref: 'stage-b',
         containment_depth: 1, placement_context_ref: 'stage-b' }] }
   }, candidate_context: { normalized_candidate_ref: `stage-b-qualification:${id}`,
-    normalizer_version: 'stage-b', semantic_type: 'ordinary_object_candidate',
+    normalizer_version: 'stage-b', semantic_type: probe.expected_entity?.semantic_type
+      ?? 'ordinary_object_candidate',
     candidate_hint: query, functional_bucket: 'other_ordinary',
     admission_class: 'common_mundane', availability_class: 'common',
-    coverage_kind: 'visible_surface', coverage_ref: `stage-b:${id}`, policy_version: 'stage-b' },
+    coverage_kind: finite ? 'finite_source' : 'visible_surface',
+    coverage_ref: `stage-b:${id}`, policy_version: 'stage-b' },
   selected_supporting_basis_ref: 'stage-b' }).request;
   if (typeof probe.risk_class !== 'string') return request;
   const claimRef = `stage-b-hard-constraint:${id}`;

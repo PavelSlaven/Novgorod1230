@@ -17,8 +17,12 @@ import { activateApprovedCatalog } from
   '../tools/runtime-catalog-activation/src/operator-executors.js';
 import { buildActorBaseAttributesSuccessorImportRequest } from
   '../tools/runtime-catalog-activation/src/actor-base-attributes-successor.js';
+import { buildActorBaseAttributesSuccessorActivationRequest } from
+  '../tools/runtime-catalog-activation/src/actor-base-attributes-successor.js';
 import { importApprovedActorBaseAttributes, readActorBaseAttributesImport } from
   '../tools/runtime-catalog-activation/src/actor-base-attributes-import.js';
+import { activateActorBaseAttributes, validateActorBaseAttributesActivationResult } from
+  '../tools/runtime-catalog-activation/src/actor-base-attributes-activation.js';
 import { buildActivationPartyPreflight, buildActivationRequest, digestEnvelope } from
   '../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { runForwardMigration } from
@@ -204,6 +208,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
   let world;
   let party;
   let importer;
+  let activator;
   const work = await mkdtemp(join(tmpdir(), 'novgorod-v17-bootstrap-'));
   try {
     const identity = (await admin.query(`SELECT current_database() AS database,
@@ -224,6 +229,8 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     party = new pg.Pool({ connectionString: databaseUrl(adminUrl, partyName), max: 1 });
     importer = new pg.Pool({ connectionString: databaseUrl(adminUrl, worldName),
       options: '-c role=runtime_catalog_importer', max: 1 });
+    activator = new pg.Pool({ connectionString: databaseUrl(adminUrl, worldName),
+      options: '-c role=runtime_catalog_activator', max: 1 });
     if (await countTables(world, 'world_base') || await countTables(party, 'party_runtime'))
       throw new Error('V17_NEW_DATABASE_NOT_EMPTY');
 
@@ -468,6 +475,68 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       request: actorRequest, attestation: actorAttestation
     });
     assert.deepEqual(actorReadback, actorImport);
+    const actorPartyCounts = (await party.query(`SELECT
+      (SELECT count(*)::int FROM party_runtime.parties) AS party_count,
+      (SELECT count(DISTINCT party_id)::int FROM party_runtime.party_catalog_pins
+        WHERE catalog_scope='actor_base_attributes_v1') AS pinned_party_count,
+      (SELECT count(*)::int FROM party_runtime.parties p
+        WHERE NOT EXISTS (SELECT 1 FROM party_runtime.party_catalog_pins c
+          WHERE c.party_id=p.party_id AND c.catalog_scope='actor_base_attributes_v1'))
+        AS missing_domain_pin_count,
+      (SELECT count(*)::int FROM party_runtime.commit_idempotency
+        WHERE status IN ('reserved','transaction_committed')) AS inflight_count`)).rows[0];
+    if (actorPartyCounts.party_count !== 0) throw new Error('V17_ACTOR_PARTIES_NOT_EMPTY');
+    const activeItem = (await world.query(`SELECT catalog_revision_id,catalog_digest
+      FROM world_base.runtime_catalog_activation_events
+      WHERE catalog_scope='item_container_materialization_v2'
+      ORDER BY event_sequence DESC LIMIT 1`)).rows[0];
+    if (activeItem?.catalog_revision_id !== actorRequest.parent_catalog.catalog_revision_id
+        || activeItem?.catalog_digest !== actorRequest.parent_catalog.catalog_digest)
+      throw new Error('V17_ACTOR_ITEM_PARENT_MISMATCH');
+    const actorActivationRequest = buildActorBaseAttributesSuccessorActivationRequest({
+      importRequest: actorRequest, importResult: actorReadback,
+      previousEvent: null, partyPreflight: actorPartyCounts
+    });
+    const actorActivationAttestation = await requireAttestation('actor_activation',
+      actorActivationRequest, attest, onRequest);
+    const actorActivationArgs = { readPool: importer, activationPool: activator,
+      request: actorActivationRequest, attestation: actorActivationAttestation,
+      importApproval: { request: actorRequest, attestation: actorAttestation },
+      importResult: actorReadback, partyPool: party };
+    const beforeActorEvents = Number((await world.query(`SELECT count(*) FROM
+      world_base.runtime_catalog_activation_events
+      WHERE catalog_scope='actor_base_attributes_v1'`)).rows[0].count);
+    const rollbackPool = { connect: async () => {
+      const client = await activator.connect();
+      return { query: (sql, values) => client.query(sql === 'COMMIT' ? 'ROLLBACK' : sql, values),
+        release: () => client.release() };
+    } };
+    const dryRun = await activateActorBaseAttributes({ ...actorActivationArgs,
+      activationPool: rollbackPool });
+    if (Number((await world.query(`SELECT count(*) FROM
+      world_base.runtime_catalog_activation_events
+      WHERE catalog_scope='actor_base_attributes_v1'`)).rows[0].count) !== beforeActorEvents)
+      throw new Error('V17_ACTOR_ACTIVATION_ROLLBACK_MISMATCH');
+    const actorActivation = await activateActorBaseAttributes(actorActivationArgs);
+    assert.deepEqual(actorActivation, dryRun);
+    assert.equal(validateActorBaseAttributesActivationResult({ result: actorActivation,
+      request: actorActivationRequest, attestation: actorActivationAttestation }), true);
+    assert.deepEqual(await activateActorBaseAttributes(actorActivationArgs), actorActivation);
+    const actorEvents = (await world.query(`SELECT event_id,event_sequence,event_digest,
+      request_digest,attestation_digest,catalog_revision_id,catalog_digest,
+      expected_previous_event_id FROM world_base.runtime_catalog_activation_events
+      WHERE catalog_scope='actor_base_attributes_v1'`)).rows;
+    assert.equal(actorEvents.length, 1);
+    assert.deepEqual({ ...actorEvents[0], event_sequence: Number(actorEvents[0].event_sequence) }, {
+      event_id: actorActivation.event_id,
+      event_sequence: actorActivation.event_sequence,
+      event_digest: actorActivation.event_digest,
+      request_digest: actorActivationRequest.request_digest,
+      attestation_digest: actorActivationAttestation.attestation_digest,
+      catalog_revision_id: actorActivation.catalog_revision_id,
+      catalog_digest: actorActivation.catalog_digest,
+      expected_previous_event_id: null
+    });
     return { database: worldName, party_database: partyName,
       schema: { world_tables: 208, party_migrations: partyMigration.applied },
       gate1: { status: gateReadback.status, digest: gate.first_state_digest },
@@ -479,9 +548,9 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
         runtime_record_digests: capacityDigests }, nature_successor: { inserted_rows: natureRecords.length,
         runtime_record_digests: natureDigests }, item_import: itemReadback,
       item_activation: itemActivation, actor_import: actorReadback,
-      activation_performed: false };
+      actor_activation: actorActivation, activation_performed: true };
   } finally {
-    await Promise.all([world?.end(), party?.end(), importer?.end(), admin.end()]);
+    await Promise.all([world?.end(), party?.end(), importer?.end(), activator?.end(), admin.end()]);
     await rm(work, { recursive: true, force: true });
   }
 }
@@ -578,7 +647,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (process.argv.includes('--run')) {
     const directory = process.env.V17_BOOTSTRAP_ATTESTATION_DIR;
     if (!directory) throw new Error('V17_INDEPENDENT_ATTESTATIONS_REQUIRED');
-    const stages = ['item_baseline', 'item_import', 'item_activation', 'actor_import'];
+    const stages = ['item_baseline', 'item_import', 'item_activation', 'actor_import',
+      'actor_activation'];
     const attestations = Object.fromEntries(await Promise.all(stages.map(async (stage) =>
       [stage, JSON.parse(await readFile(join(directory, `${stage}.json`), 'utf8'))])));
     result = await bootstrapV17Imports({ adminUrl: process.env.V17_BOOTSTRAP_ADMIN_URL,

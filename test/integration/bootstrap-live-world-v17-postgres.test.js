@@ -9,7 +9,7 @@ import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs'
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from '../../tools/local-play/local-postgres.js';
 
-test('v17 bootstrap imports schema, Gate1, P12 and appearance into a fresh isolated pair',
+test('v17 bootstrap imports and activates item and actor catalogs in a fresh isolated pair',
   { timeout: 1_200_000 }, async (t) => {
     const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-v17-bootstrap-test-'));
     const settings = { ...LOCAL_POSTGRES,
@@ -76,6 +76,17 @@ test('v17 bootstrap imports schema, Gate1, P12 and appearance into a fresh isola
             production_authorized: false, existing_party_migration_authorized: false,
             old_save_rematerialization_authorized: false }
         });
+        if (stage === 'actor_activation') return fixtureApproval({
+          schema: 'rus.actor_base_attributes_successor_activation_attestation.v1',
+          request_digest: request.request_digest,
+          decision: 'approve_exact_actor_base_attributes_new_production_activation',
+          reviewed_repository_head: request.subject_commit,
+          independence_basis: 'Test-only approval fixture',
+          database_mutated: false,
+          authority: { import_authorized: false, activation_authorized: true,
+            production_authorized: true, existing_party_migration_authorized: false,
+            old_save_rematerialization_authorized: false }
+        });
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
     assert.equal(result.schema.world_tables, 208);
@@ -99,7 +110,10 @@ test('v17 bootstrap imports schema, Gate1, P12 and appearance into a fresh isola
     assert.equal(result.item_import.verified, true);
     assert.equal(result.item_activation.status, 'activated');
     assert.equal(result.actor_import.status, 'imported_exact_readback_verified');
-    assert.equal(result.activation_performed, false);
+    assert.equal(result.actor_activation.status, 'activated_exact_readback_verified');
+    assert.equal(result.actor_activation.production_authorized, true);
+    assert.equal(result.actor_activation.event_sequence, 1);
+    assert.equal(result.activation_performed, true);
     const admin = new pg.Pool({ connectionString: adminUrl.href, max: 1 });
     try {
       const rows = (await admin.query(`SELECT datname FROM pg_database

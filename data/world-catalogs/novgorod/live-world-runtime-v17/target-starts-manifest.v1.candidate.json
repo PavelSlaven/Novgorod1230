@@ -1,0 +1,66 @@
+{
+  "schema": "rus.live_world_runtime.target_starts_manifest.v1",
+  "version": 1,
+  "status": "candidate",
+  "activation_authorized": false,
+  "source_artifacts": {
+    "candidate": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json",
+      "sha256": "d6ba8f795f5a84434bc682b23122c77188596bda3e0e3714832c5000c3571dfd"
+    },
+    "approval": {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-data-approval.json",
+      "sha256": "dfc1f300c20b25bc6234ab084dc29ca9300f0a2216d298f7a1b12b5b06e1d496"
+    }
+  },
+  "starts": [
+    {
+      "binding_revision": 1,
+      "scenario_id": "novgorod_riverbank_approach_v1",
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+        "version": 1
+      }
+    },
+    {
+      "binding_revision": 2,
+      "scenario_id": "novgorod_reed_backwater_entrance_v1",
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+        "version": 1
+      }
+    },
+    {
+      "binding_revision": 3,
+      "scenario_id": "novgorod_vikhtuy_resource_edge_approach_v1",
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+        "version": 1
+      }
+    },
+    {
+      "binding_revision": 4,
+      "scenario_id": "novgorod_zaostrovye_settlement_approach_v1",
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+        "version": 1
+      }
+    },
+    {
+      "binding_revision": 5,
+      "scenario_id": "novgorod_vikhtuy_work_storage_v1",
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+        "version": 1
+      }
+    },
+    {
+      "binding_revision": 6,
+      "scenario_id": "novgorod_vikhtuy_household_cluster_v1",
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+        "version": 1
+      }
+    }
+  ]
+}

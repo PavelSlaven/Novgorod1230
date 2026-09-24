@@ -3,9 +3,11 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
+import { buildManifest } from '../../../../scripts/generate-target-starts-manifest-v1.mjs';
 
 const root = resolve(import.meta.dirname, '../../../..');
 const candidatePath = 'data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json';
+const manifestPath = 'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.candidate.json';
 const bytes = (path) => readFile(resolve(root, path));
 const json = async (path) => JSON.parse(await bytes(path));
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
@@ -14,6 +16,15 @@ const exact = (rows, ref, idKey = 'id', versionKey = 'version') => {
   assert.equal(matches.length, 1, `exact ${ref.id}@${ref.version}`);
   return matches[0];
 };
+
+test('inactive manifest pins exactly the independently approved six-start artifact', async () => {
+  const manifest = await json(manifestPath);
+  assert.deepEqual(manifest, await buildManifest());
+  assert.equal(manifest.status, 'candidate');
+  assert.equal(manifest.activation_authorized, false);
+  assert.equal(manifest.starts.length, 6);
+  assert.equal(new Set(manifest.starts.map((start) => start.scenario_id)).size, 6);
+});
 
 test('six additional starts select exact approved spatial closure without operational authority', async () => {
   const candidate = await json(candidatePath);

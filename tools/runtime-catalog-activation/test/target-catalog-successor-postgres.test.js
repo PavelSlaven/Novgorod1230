@@ -265,12 +265,12 @@ test('target item and actor successors preserve v6 parties through real PostgreS
       manifestPath: bundle.manifest_path, wrapTransaction: false,
       temporaryTablePrefix: bundle.temporary_table_prefix })));
     await pool.query(`${p12.sql_builder.concatenation.prefix}${parts.join('')}${p12.sql_builder.concatenation.suffix}`);
-    assert.deepEqual(await importAdditionalStartOwnerRows(pool),
-      { npc: 6, acoustic: 2, authoring: 8, rollback: 'pass', readback: 'exact' });
     const capacityManifestPath = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
     const capacity = await json(capacityManifestPath);
     await pool.query(await buildTransactionalImportSql({ manifestPath: capacityManifestPath,
       temporaryTablePrefix: 'm2c_capacity_v2' }));
+    assert.deepEqual(await importAdditionalStartOwnerRows(pool),
+      { npc: 6, acoustic: 4, authoring: 10, rollback: 'pass', readback: 'exact' });
     for (const table of ['spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles']) {
       const dataset = capacity.datasets.find((entry) => entry.table === table);
       const expected = await json(`data/world-catalogs/novgorod/${dataset.file}`);

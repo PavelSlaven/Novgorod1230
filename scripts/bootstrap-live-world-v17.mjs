@@ -294,8 +294,6 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       throw new Error('V17_P12_SOURCE_READBACK_MISMATCH');
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
-    const ownerImport = await importAdditionalStartOwnerRows(world);
-
     const capacity = await json(capacityManifest);
     const pinnedTables = ['spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles'];
     const previous = {};
@@ -318,6 +316,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       capacityDigests[table] = digestEnvelope(rows.map((row) =>
         [row.id, row.version, row.canonical_digest]).sort((a, b) => a[0].localeCompare(b[0])));
     }
+    const ownerImport = await importAdditionalStartOwnerRows(world);
 
     const appearanceCounts = appearanceRequest.expected_import_readback.by_table;
     const beforeAppearance = await tableCounts(world, Object.keys(appearanceCounts));

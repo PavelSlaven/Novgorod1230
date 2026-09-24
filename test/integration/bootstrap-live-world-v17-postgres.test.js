@@ -94,7 +94,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     assert.equal(result.p12.inserted_rows, 12359);
     assert.deepEqual(result.additional_start_owners,
-      { npc: 6, acoustic: 2, authoring: 8, rollback: 'pass', readback: 'exact' });
+      { npc: 6, acoustic: 4, authoring: 10, rollback: 'pass', readback: 'exact' });
     assert.equal(result.appearance_v3.inserted_rows, 129);
     assert.equal(result.capacity_v2.manifest_sha256,
       '80d3c420583307197c8118a4c07b86fe0cea47eb5486a4e09d38429a1bd7e20d');

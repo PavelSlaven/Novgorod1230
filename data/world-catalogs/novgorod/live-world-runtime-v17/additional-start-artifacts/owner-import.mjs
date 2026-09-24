@@ -81,9 +81,42 @@ export async function buildAdditionalStartOwnerRows() {
         confidence: 'low', status: 'approved',
         provenance_ref: 'm2c_canonical_acoustic_editorial_001' });
     });
+  const capacityApproval = await json(`${base}/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json`);
+  assert.equal(capacityApproval.decision, 'APPROVE_DATA_ONLY');
+  for (const source of ['capacity_candidate', 'capacity_approval', 'scene_templates']
+    .map((key) => capacityApproval.source_pins[key]))
+    assert.equal(sha(await read(source.path)), source.sha256, source.path);
+  const capacityManifest = await json(`${base}/m2c-open-capacity-v2-import-manifest.json`);
+  const acousticManifest = await json(`${base}/m2c-acoustic-import-manifest.json`);
+  const dataset = async (manifest, table) => {
+    const entry = one(manifest.datasets.filter((row) => row.table === table), table);
+    const path = `${base}/${entry.file}`;
+    const bytes = await read(path);
+    assert.equal(sha(bytes), entry.sha256, path);
+    return JSON.parse(bytes);
+  };
+  const [oldScenes, newScenes, oldSlots, newSlots] = await Promise.all([
+    dataset(acousticManifest, 'spatial_v3_scene_templates'),
+    dataset(capacityManifest, 'spatial_v3_scene_templates'),
+    dataset(acousticManifest, 'spatial_v3_g6_template_slots'),
+    dataset(capacityManifest, 'spatial_v3_g6_template_slots')
+  ]);
+  const acousticSuccessors = acoustic.map((row) => {
+    const oldScene = one(oldScenes.filter((scene) => scene.id === row.scene_template_id && scene.version === 1), row.id);
+    const newScene = one(newScenes.filter((scene) => scene.id === row.scene_template_id && scene.version === 2), row.id);
+    assert.deepEqual(newScene, { ...oldScene, version: 2 });
+    const oldSlot = one(oldSlots.filter((slot) => slot.scene_template_id === row.scene_template_id
+      && slot.scene_template_version === 1 && slot.scene_slot_key === row.g6_scene_slot_key), row.id);
+    const newSlot = one(newSlots.filter((slot) => slot.scene_template_id === row.scene_template_id
+      && slot.scene_template_version === 2 && slot.scene_slot_key === row.g6_scene_slot_key), row.id);
+    assert.deepEqual(newSlot, { ...oldSlot, scene_template_version: 2 });
+    const { canonical_digest: ignoredDigest, ...fields } = row;
+    return withDigest({ ...fields, version: 2, scene_template_version: 2 });
+  });
+  acoustic.push(...acousticSuccessors);
   assert.equal(approval.semantic_npc_approval.length, 4);
   assert.equal(npc.length, 6);
-  assert.equal(acoustic.length, 2);
+  assert.equal(acoustic.length, 4);
   const authoring = [...npc, ...acoustic].map((row) => ({ entity_kind: row.entity_kind,
     entity_id: row.id, version: row.version, world_revision_id: row.world_revision_id,
     status: row.status, canonical_digest: row.canonical_digest,

@@ -37,6 +37,14 @@ export async function buildStartArtifacts() {
   const files = new Map();
   const artifacts = [];
   const pendingBasis = [];
+  const skillDefaultsPath = 'data/world-base-seeds/occupation_skill_defaults_v1.csv';
+  const skillDefaultsBytes = await read(skillDefaultsPath);
+  const rows = skillDefaultsBytes.toString('utf8').split(/\r?\n/u);
+  const skillDefaults = Object.fromEntries(['transport_guiding', 'fishing_water'].map((archetype) => {
+    const matches = rows.filter((row) => row.startsWith(`${archetype},`));
+    assert.equal(matches.length, 1, archetype);
+    return [archetype, matches[0]];
+  }));
   for (const candidate of additional.starts) {
     const id = candidate.scenario_id;
     const start = structuredClone(originalStart);
@@ -70,6 +78,9 @@ export async function buildStartArtifacts() {
     transfer.applicability.role_ref = candidate.player_inputs.role_ref;
     transfer.applicability.occupation_ref = candidate.player_inputs.occupation_ref;
     transfer.attribute_transfer.occupation_archetype_id = candidate.player_inputs.occupation_archetype_id;
+    if (candidate.player_inputs.occupation_ref !== 'nov_occ_forest_worker') {
+      transfer.requested_approval_scope[1] = `Exact new player-character applicability of the existing ordinary actor attribute profile and ${candidate.player_inputs.occupation_archetype_id} mapping through its existing seeded owner.`;
+    }
     const transferPath = `${output}/${id}.transfer.json`;
     const transferBytes = encode(transfer);
     files.set(transferPath, transferBytes);
@@ -77,10 +88,30 @@ export async function buildStartArtifacts() {
     if (candidate.player_inputs.occupation_ref !== 'nov_occ_forest_worker') {
       artifacts.push({ scenario_id: id, canonical_g5_ref: candidate.initial_placement.canonical_g5_ref,
         start: pin(startPath, startBytes), transfer: pin(transferPath, transferBytes) });
+      const basis = structuredClone(originalBasis);
+      basis.candidate_id = `${id}_player_basis_v1`;
+      basis.target_start = { ...basis.target_start, path: startPath,
+        sha256: sha256(startBytes), scenario_id: id, player_transfer_sha256: sha256(transferBytes) };
+      const archetype = candidate.player_inputs.occupation_archetype_id;
+      assert.ok(Object.hasOwn(skillDefaults, archetype), archetype);
+      basis.skills.source_context = `${skillDefaultsPath}#${archetype}`;
+      basis.skills.source_context_sha256 = sha256(skillDefaultsBytes);
+      basis.skills.directness = 'approved_occupation_primary_to_editorial_player_skill_mapping';
+      for (const skill of Object.keys(basis.skills.values)) {
+        basis.skills.values[skill] = skill === 'survival'
+          ? { level: 'skilled', bonus: 2, basis: `Approved ${archetype} occupation primary survival +2; exact new-player applicability remains pending independent approval.` }
+          : { level: 'no_experience', bonus: 0, absence_basis: 'No approved new-player skill bonus for this mechanic; ordinary attempts remain possible.' };
+      }
+      basis.skills.limits = 'Only survival primary +2 is proposed from the approved occupation default. Secondary +1 requires a biography and is not assigned. travel_transport has no equivalent in the current player skill schema; riding means horseback and remains neutral. Typed gap: player_watercraft_skill_missing. No boat or ferry capability, equipment, route knowledge or biography is granted.';
+      basis.approval_request.scope = 'exact_new_player_appearance_applicability_survival_primary_only_language_transfer_and_empty_specific_knowledge';
+      const basisPath = `${output}/${id}.basis.json`;
+      const basisBytes = encode(basis);
+      files.set(basisPath, basisBytes);
       pendingBasis.push({ scenario_id: id, role_ref: candidate.player_inputs.role_ref,
         occupation_ref: candidate.player_inputs.occupation_ref,
         occupation_archetype_id: candidate.player_inputs.occupation_archetype_id,
-        start: pin(startPath, startBytes), transfer: pin(transferPath, transferBytes) });
+        start: pin(startPath, startBytes), transfer: pin(transferPath, transferBytes),
+        basis: pin(basisPath, basisBytes) });
       continue;
     }
     assert.equal(candidate.player_inputs.occupation_archetype_id, 'forest_hunting');
@@ -116,18 +147,10 @@ export async function buildStartArtifacts() {
   }
   assert.equal(artifacts.length, 6);
   assert.equal(pendingBasis.length, 3);
-  const skillDefaultsPath = 'data/world-base-seeds/occupation_skill_defaults_v1.csv';
-  const skillDefaultsBytes = await read(skillDefaultsPath);
-  const rows = skillDefaultsBytes.toString('utf8').split(/\r?\n/u);
-  const skillDefaults = Object.fromEntries(['transport_guiding', 'fishing_water'].map((archetype) => {
-    const matches = rows.filter((row) => row.startsWith(`${archetype},`));
-    assert.equal(matches.length, 1, archetype);
-    return [archetype, matches[0]];
-  }));
   files.set(`${output}/nonforest-basis-review-candidate.json`, encode({
     schema: 'rus.m2c_additional_start_nonforest_basis_review_candidate.v1',
     status: 'pending_independent_data_approval',
-    required_review: 'Occupation to archetype mapping and player applicability for three boatman/fisher starts; translate approved raw occupation skill defaults to the current 12-skill player schema without borrowing forest-worker skills.',
+    required_review: 'Independently approve occupation-to-archetype mapping and exact new-player applicability for three boatman/fisher starts. Proposed 12-skill basis maps only approved survival primary +2; secondary +1 needs biography. travel_transport is unmapped (player_watercraft_skill_missing), never riding.',
     source_pins: [pin(skillDefaultsPath, skillDefaultsBytes),
       pin(`${base}/additional-starts-candidate.json`, additionalBytes),
       pin(`${base}/additional-starts-data-approval.json`, additionalApprovalBytes)],

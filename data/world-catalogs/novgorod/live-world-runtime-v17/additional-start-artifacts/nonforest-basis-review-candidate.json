@@ -1,7 +1,7 @@
 {
   "schema": "rus.m2c_additional_start_nonforest_basis_review_candidate.v1",
   "status": "pending_independent_data_approval",
-  "required_review": "Occupation to archetype mapping and player applicability for three boatman/fisher starts; translate approved raw occupation skill defaults to the current 12-skill player schema without borrowing forest-worker skills.",
+  "required_review": "Independently approve occupation-to-archetype mapping and exact new-player applicability for three boatman/fisher starts. Proposed 12-skill basis maps only approved survival primary +2; secondary +1 needs biography. travel_transport is unmapped (player_watercraft_skill_missing), never riding.",
   "source_pins": [
     {
       "path": "data/world-base-seeds/occupation_skill_defaults_v1.csv",
@@ -32,7 +32,11 @@
       },
       "transfer": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.transfer.json",
-        "sha256": "17acf0d10d81ad2acaa7abeeb2c7aae6e99d493a053fa8c988272f454e78fb02"
+        "sha256": "aa54810cf17a81ffd4e15ab22f3d7cd93bb0273d7dca0e996e105fa1b0c2d93a"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.basis.json",
+        "sha256": "a24d51b96dc7b432a10d19207a942ff106b35a744e72c87bacb4e578cce55b84"
       }
     },
     {
@@ -46,7 +50,11 @@
       },
       "transfer": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.transfer.json",
-        "sha256": "0d598771b7281d7cb4bc5ba2d3db5346cdddf483fc27051ec097fce1ce6be4bb"
+        "sha256": "e9bd6b6d144b51c587dde5e1ad439c4146e1f8af8c171aa5a9c53d80674d67fc"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.basis.json",
+        "sha256": "5f44b2427bac1021052e26e54e33790ab798af0b1effe9b3a86f2005c4ef4812"
       }
     },
     {
@@ -60,7 +68,11 @@
       },
       "transfer": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.transfer.json",
-        "sha256": "e6f24a73ac29a1bc832ee09032c8bd853af4062275e078ddf2d0232f01492918"
+        "sha256": "91668c256b9b41a43c0cde8d7163b0397356a4ac97bc8e8fcf8b6e711fbde506"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.basis.json",
+        "sha256": "2d0b9c0f95435c03d5e99042e1cdd5cd649b08deb9245c1d0058abd6b4000060"
       }
     }
   ],

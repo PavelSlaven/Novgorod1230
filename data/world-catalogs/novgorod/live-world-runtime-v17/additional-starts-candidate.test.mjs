@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { buildManifest } from '../../../../scripts/generate-target-starts-manifest-v1.mjs';
 import { buildStartArtifacts } from '../../../../scripts/generate-additional-start-artifacts-v1.mjs';
+import { TRACE_SKILL_IDS } from '../../../../packages/new-game/src/stages/stage-11-player-character/trace-policy.js';
 
 const root = resolve(import.meta.dirname, '../../../..');
 const candidatePath = 'data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json';
@@ -31,7 +32,7 @@ test('six exact starts have deterministic pins; only forest-worker player basis 
   const candidate = await json(candidatePath);
   const manifest = await json(manifestPath);
   const { files, artifacts } = await buildStartArtifacts();
-  assert.equal(files.size, 19); // Six starts and transfers, three forest bases and approvals, one review candidate.
+  assert.equal(files.size, 22); // Six starts, transfers and bases; three forest approvals; one review candidate.
   for (const [path, expected] of files) assert.deepEqual(await bytes(path), expected, path);
   for (const artifact of artifacts) {
     const source = candidate.starts.find(({ scenario_id }) => scenario_id === artifact.scenario_id);
@@ -62,6 +63,8 @@ test('six exact starts have deterministic pins; only forest-worker player basis 
     } else {
       assert.equal(Object.hasOwn(artifact, 'basis'), false);
       assert.equal(Object.hasOwn(artifact, 'approval'), false);
+      assert.equal(transfer.requested_approval_scope[1].includes('forest_hunting'), false);
+      assert.ok(transfer.requested_approval_scope[1].includes(source.player_inputs.occupation_archetype_id));
     }
   }
   const review = await json('data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-basis-review-candidate.json');
@@ -69,6 +72,20 @@ test('six exact starts have deterministic pins; only forest-worker player basis 
   assert.deepEqual(review.starts.map(({ scenario_id }) => scenario_id), candidate.starts
     .filter(({ player_inputs }) => player_inputs.occupation_ref !== 'nov_occ_forest_worker')
     .map(({ scenario_id }) => scenario_id));
+  for (const start of review.starts) {
+    assert.equal(sha256(await bytes(start.basis.path)), start.basis.sha256);
+    const basis = await json(start.basis.path);
+    assert.equal(basis.target_start.sha256, start.start.sha256);
+    assert.equal(basis.target_start.player_transfer_sha256, start.transfer.sha256);
+    assert.equal(basis.skills.source_context, `data/world-base-seeds/occupation_skill_defaults_v1.csv#${start.occupation_archetype_id}`);
+    assert.equal(basis.skills.source_context_sha256, review.source_pins[0].sha256);
+    assert.deepEqual(Object.keys(basis.skills.values), TRACE_SKILL_IDS);
+    assert.deepEqual(Object.entries(basis.skills.values).filter(([, value]) => value.bonus > 0)
+      .map(([skill, value]) => [skill, value.level, value.bonus]), [['survival', 'skilled', 2]]);
+    assert.equal(basis.skills.values.riding.bonus, 0);
+    assert.match(basis.skills.limits, /player_watercraft_skill_missing/);
+    assert.equal(basis.approval_request.approval_attestation, null);
+  }
 });
 
 test('six additional starts select exact approved spatial closure without operational authority', async () => {

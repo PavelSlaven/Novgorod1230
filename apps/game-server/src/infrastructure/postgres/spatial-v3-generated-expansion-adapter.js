@@ -4,7 +4,7 @@ import { materializeSpatialV3Expansion, materializeSpatialV3GeneratedScene,
 import { createSpatialV3Repository } from '@rus/party-store/spatial-v3';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { computeSpatialV3CanonicalDigest as digest,
-  createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
+  createSpatialV3TypedError, validateSpatialV3Contract } from '@rus/contracts/spatial-v3/registry';
 
 const ref = (entity_id, version) => ({ entity_id, authoring_version: String(version) });
 const exact = (row, pin) => row?.id === pin?.id && row.version === pin.version;
@@ -15,7 +15,8 @@ const semanticRows = (rows) => rows.map(({ target_table, id, record }) => ({ tar
 
 /** Server-only composition: exact reads and proposals share the existing P16 lock/transaction. */
 export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, committer,
-  writePlanBuilder, admitGeneration, projectVisible, prepareFirstEntry, now = () => Date.now() } = {}) {
+  writePlanBuilder, admitGeneration, projectVisible, projectionPolicyRef,
+  prepareFirstEntry, now = () => Date.now() } = {}) {
   async function prepareExpansion(request) {
     const { party_id, g4, profile, slot_ref, directional_exit, candidate_ordinal,
       source_site_id, source_position_id, entry_binding, materializer_version } = request ?? {};
@@ -245,13 +246,36 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
             created_refs: [...proposal.inserts, ...firstEntryWrites].map((row) => ({ table: row.target_table, id: row.id })) } },
         ...selection.choices.map((choice) => ({ target_table: 'party_materialization_choices',
           id: `${run_id}:${choice.choice_ordinal}`, record: { party_id, run_id, ...choice } }))];
+        const factualWrites = [...proposal.inserts, ...proposal.updates, ...firstEntryWrites];
+        const expected_state_versions = [...proposal.expected_state_versions,
+          ...(firstEntry.expected_state_versions ?? [])];
+        const envelopeInput = { party_id, turn_id: change_set_id,
+          committed_state_version: String(current.rows[0].state_version),
+          change_set_id, package_id: `visible:${change_set_id}`,
+          idempotency_record_id: `idem:${change_set_id}`, dependency_pins };
         const visible = await projectVisible({ transaction, request, closure, snapshot, proposal, firstEntry,
-          dependency_pins, current_state_version: String(current.rows[0].state_version),
-          current_turn_id: current.rows[0].last_turn_id, package_id: `visible:${change_set_id}`,
-          idempotency_key, change_set_id, idempotency_record_id: `idem:${change_set_id}` });
+          factual_writes: factualWrites, expected_state_versions, dependency_pins,
+          current_state_version: envelopeInput.committed_state_version,
+          current_turn_id: current.rows[0].last_turn_id, envelopeInput,
+          projection_policy_ref: projectionPolicyRef,
+          package_id: envelopeInput.package_id, idempotency_key, change_set_id,
+          idempotency_record_id: envelopeInput.idempotency_record_id });
         if (!visible?.ok) return visible?.error ? visible : reject('visible_projection_required');
-        if (!visible.envelope?.projection_policy_ref) {
+        if (!visible.envelope?.projection_policy_ref
+          || !projectionPolicyRef?.entity_ref?.entity_id
+          || !projectionPolicyRef.authoring_version
+          || canonicalDigest(visible.envelope?.projection_policy_ref) !== canonicalDigest(projectionPolicyRef)) {
           return reject('approved_projection_policy_ref_required', 'visible_package_persistence_gap');
+        }
+        if (Object.entries(envelopeInput).some(([key, value]) => key === 'dependency_pins'
+          ? !visible.envelope.dependency_pins
+            || canonicalDigest(visible.envelope.dependency_pins) !== canonicalDigest(value)
+          : visible.envelope[key] !== value)
+          || visible.envelope.presentation_status !== 'pending'
+          || !visible.envelope.visible_payload || typeof visible.envelope.visible_payload !== 'object'
+          || visible.envelope.package_digest !== digest(visible.envelope.visible_payload)
+          || validateSpatialV3Contract('visible_package_persistence_envelope', visible.envelope).length) {
+          return reject('visible_envelope_identity_or_digest_mismatch', 'visible_package_persistence_gap');
         }
         const change = { target_table: 'party_v3_change_sets', id: change_set_id,
           record: { id: change_set_id, party_id, operation_kind: 'resolve_frontier', idempotency_record_id: `idem:${change_set_id}` } };
@@ -266,7 +290,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         });
         const built = await builder.build({ plan_id: `plan:${change_set_id}`, party_id,
           write_plan_kind: 'semantic_commit', operation_kind: 'resolve_frontier', canonical_input_digest,
-          expected_state_versions: [...proposal.expected_state_versions, ...(firstEntry.expected_state_versions ?? [])], validation_report: admitted.validation_report,
+          expected_state_versions, validation_report: admitted.validation_report,
           idempotency: { id: `idem:${change_set_id}`, key: idempotency_key }, change_set: { id: change_set_id },
           visible_package_envelope: visible.envelope,
           approved_write_sets: approvedWriteSets,

@@ -80,6 +80,7 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
   const transaction = { query: async (sql) => String(sql).includes('WITH sites')
     ? { rows: [snapshot] } : { rows: [{ state_version: '6', last_turn_id: 'turn-5' }] } };
   let visibleInput;
+  let visibleEnvelope = {};
   const adapter = createSpatialV3GeneratedExpansionAdapter({
     worldBaseReader: {
       readPinnedG4ExpansionClosure: async () => ({ ok: true, value: closure }),
@@ -90,9 +91,11 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
           : [{ slot_key: 'in', endpoint_role: 'arrival', required_position_slot_key: 'arrival',
             required_position_instance_ordinal: 0 }] } }) },
     committer: { prepareExpansion: async ({ prepare }) => prepare({ transaction }) },
+    projectionPolicyRef: { entity_ref: {
+      entity_kind: 'visibility_modifier', entity_id: 'test-only' }, authoring_version: '1' },
     admitGeneration: async () => ({ ok: true, validation_report: { status: 'pass' },
       commit_rechecks: [], recheck: async () => ({ ok: true }) }),
-    projectVisible: async (input) => { visibleInput = input; return { ok: true, envelope: {} }; }
+    projectVisible: async (input) => { visibleInput = input; return { ok: true, envelope: visibleEnvelope }; }
   });
   const result = await adapter.prepareExpansion({ party_id: 'party', g4, profile,
     slot_ref: { id: slot.id, version: slot.version },
@@ -107,7 +110,24 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
   assert.equal(visibleInput.current_state_version, '6');
   assert.equal(visibleInput.current_turn_id, 'turn-5');
   assert.equal(visibleInput.firstEntry.ok, true);
+  assert.equal(visibleInput.envelopeInput.turn_id, visibleInput.change_set_id);
+  assert.equal(visibleInput.envelopeInput.committed_state_version, '6');
+  assert.equal(visibleInput.envelopeInput.idempotency_record_id,
+    `idem:${visibleInput.change_set_id}`);
+  assert.deepEqual(visibleInput.envelopeInput.dependency_pins, visibleInput.dependency_pins);
+  assert.deepEqual(visibleInput.expected_state_versions, visibleInput.proposal.expected_state_versions);
+  assert.deepEqual(visibleInput.factual_writes,
+    [...visibleInput.proposal.inserts, ...visibleInput.proposal.updates]);
   assert.ok(visibleInput.dependency_pins.pins.some((pin) =>
     pin.entity_ref.entity_kind === 'expansion_terminal_policy'));
   assert.equal(visibleInput.package_id, `visible:${visibleInput.change_set_id}`);
+  visibleEnvelope = { projection_policy_ref: { entity_ref: {
+    entity_kind: 'visibility_modifier', entity_id: 'test-only' }, authoring_version: '1' } };
+  const malformed = await adapter.prepareExpansion({ party_id: 'party', g4, profile,
+    slot_ref: { id: slot.id, version: slot.version },
+    directional_exit: { id: exit.id, version: exit.version }, candidate_ordinal: 0,
+    entry_binding: { id: 'entry', version: 1 }, source_site_id: 'source-site',
+    source_position_id: 'source-position', materializer_version: 'v1' });
+  assert.equal(malformed.error.code, 'visible_package_persistence_gap');
+  assert.equal(malformed.error.diagnostics.reason, 'visible_envelope_identity_or_digest_mismatch');
 });

@@ -1,8 +1,10 @@
 # Target start authoring candidate
 
 `target-start-candidate.json` proposes one start in the approved Novgorod target
-catalog. It is pending independent GPT-6 Sol high data approval. It grants no
-import or activation authority and is not a runtime start profile.
+catalog. GPT-6 Sol high approved its exact SHA as an initial-state proposal in
+`../m2c-sol-data-approval.json`; player basis, appearance and target runtime
+profiles have separate scoped approvals there. These data decisions alone grant
+no production import or activation authority.
 
 The player starts at the exact approved dry-pine-ridge canonical south approach.
 The initial placement is an authored initial condition, not an executed journey.
@@ -27,37 +29,29 @@ Source pin checks and approved topology closure checks run with:
 node --test test/spatial-v3/target-start-candidate.test.js
 ```
 
-## Remaining runtime work
+## Current runtime boundary
 
-The existing authored-start loader/materializer requires fixed people, resources,
-a second orientation place and an S1 structure. It needs an explicit canonical
-scene path through its current owner; inventing those facts to satisfy the old
-profile shape is not allowed. Stage 24/25 must validate and persist the resulting
-canonical site, exact scene closure, player, inventory and Temporal inputs.
+The exact canonical scene, player, inventory, NPC and Temporal inputs now pass
+isolated PostgreSQL start/replay/screen/ACK tests through the official v17 root.
+The first screen and its limits are recorded in `docs/playtests/`. These tests
+use fixture-issued activation approvals; live operator import/activation and
+exact production readback remain separate.
 
-Current supplier boundaries:
-
-- `deriveApprovedInitialEnvironment` supplies the initial environment using the
-  approved calendar/weather records and existing seeded random stream.
-- Spatial's pinned canonical reader and committed site/baseline/position rows
-  supply geometry. A canonical initial endpoint does not have a site connection;
-  the perception reader needs the separately approved exact canonical rule.
-- Initial actor faculties, cover, occlusion, concealment and source presence are
-  editorial inputs awaiting approval and an initial-state supplier. They are not
-  current DB facts merely because this candidate exists.
-- Later observations require current body, Temporal, visibility and source
-  owners. Missing state is a typed gap. The initial rule cannot fill that gap.
-- NPC composition and appearance, player appearance/attributes/clothing,
-  compiled natural/presentation/placement records and exact runtime catalog pins
-  still require their own approved applicability and import/readback.
+Spatial's pinned canonical reader and committed site/baseline/position rows
+supply geometry. Current per-entity cover, occlusion, concealment, recognition
+and ground-item visibility still need an authoritative supplier or approved
+initial authoring. A canonical endpoint, same scene or NPC placement alone does
+not establish what the player sees. Generated destination perception, local
+visible exits and conditional connection availability also remain gated.
 
 ## Operations
 
 Follow `../runtime-catalog/spatial-v3-target-v1/README.md` for the existing
 operator preparation, baseline/import, party-preserving preflight and activation
 sequence. Import approval and operational activation approval are separate.
-The v17 factory stays at `SPATIAL_V3_TARGET_START_BINDING_REQUIRED` until a
-complete approved runtime start binding and all exact readbacks are available.
+The v17 factory has a tested target start binding for isolated fixture pins.
+It still requires actual issued production approvals, exact live readbacks and
+the remaining M2c runtime suppliers before operator activation.
 
 `tools/local-play/local-play.js` currently starts the historical v16 Lower Dvina
 composition and provisions its managed local database. It is not a v17 operator

@@ -6,6 +6,7 @@ import test from 'node:test';
 import { buildManifest } from '../../../../scripts/generate-target-starts-manifest-v1.mjs';
 import { buildStartArtifacts } from '../../../../scripts/generate-additional-start-artifacts-v1.mjs';
 import { TRACE_SKILL_IDS } from '../../../../packages/new-game/src/stages/stage-11-player-character/trace-policy.js';
+import { loadTargetAuthoredStartProfile } from '../../../../apps/game-server/src/internal/live-world-authored-starts.js';
 
 const root = resolve(import.meta.dirname, '../../../..');
 const candidatePath = 'data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json';
@@ -19,26 +20,37 @@ const exact = (rows, ref, idKey = 'id', versionKey = 'version') => {
   return matches[0];
 };
 
-test('inactive manifest pins exactly the independently approved six-start artifact', async () => {
+test('inactive manifest pins the original and six additional starts', async () => {
   const manifest = await json(manifestPath);
   assert.deepEqual(manifest, await buildManifest());
   assert.equal(manifest.status, 'candidate');
   assert.equal(manifest.activation_authorized, false);
-  assert.equal(manifest.starts.length, 6);
-  assert.equal(new Set(manifest.starts.map((start) => start.scenario_id)).size, 6);
+  assert.equal(manifest.starts.length, 7);
+  assert.equal(new Set(manifest.starts.map((start) => start.scenario_id)).size, 7);
+  assert.equal(manifest.starts[0].scenario_id, 'novgorod_pine_ridge_approach_v1');
 });
 
-test('six exact starts have deterministic pins; only forest-worker player basis is transferable', async () => {
+test('basis-only approval cannot make nonforest starts runtime selectable', async () => {
+  const manifest = await json(manifestPath);
+  for (const artifacts of manifest.starts.filter(({ scenario_id }) =>
+    ['novgorod_riverbank_approach_v1', 'novgorod_reed_backwater_entrance_v1',
+      'novgorod_zaostrovye_settlement_approach_v1'].includes(scenario_id))) {
+    await assert.rejects(loadTargetAuthoredStartProfile({ rootDir: root, artifacts }),
+      { code: 'SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED' });
+  }
+});
+
+test('six exact starts have deterministic pins; nonforest basis approval stays scoped', async () => {
   const candidate = await json(candidatePath);
   const manifest = await json(manifestPath);
   const { files, artifacts } = await buildStartArtifacts();
-  assert.equal(files.size, 22); // Six starts, transfers and bases; three forest approvals; one review candidate.
+  assert.equal(files.size, 25); // Six starts, transfers, bases and approvals; one review candidate.
   for (const [path, expected] of files) assert.deepEqual(await bytes(path), expected, path);
   for (const artifact of artifacts) {
     const source = candidate.starts.find(({ scenario_id }) => scenario_id === artifact.scenario_id);
     const entry = manifest.starts.find(({ scenario_id }) => scenario_id === artifact.scenario_id);
     assert.equal(source.initial_placement.canonical_g5_ref.id, artifact.canonical_g5_ref.id);
-    assert.deepEqual(entry, { binding_revision: candidate.starts.indexOf(source) + 1, ...artifact });
+    assert.deepEqual(entry, { binding_revision: candidate.starts.indexOf(source) + 2, ...artifact });
     for (const kind of ['start', 'transfer', 'basis', 'approval']) {
       if (!artifact[kind]) continue;
       assert.equal(sha256(await bytes(artifact[kind].path)), artifact[kind].sha256, `${artifact.scenario_id}:${kind}`);
@@ -61,8 +73,11 @@ test('six exact starts have deterministic pins; only forest-worker player basis 
       assert.equal(approval.target_player_transfer_approval.candidate_sha256, artifact.transfer.sha256);
       assert.equal(approval.target_player_basis_approval.candidate_sha256, artifact.basis.sha256);
     } else {
-      assert.equal(Object.hasOwn(artifact, 'basis'), false);
-      assert.equal(Object.hasOwn(artifact, 'approval'), false);
+      assert.ok(artifact.basis && artifact.approval);
+      const approval = await json(artifact.approval.path);
+      assert.equal(approval.target_player_basis_approval.candidate_sha256, artifact.basis.sha256);
+      assert.equal(Object.hasOwn(approval, 'target_player_transfer_approval'), false);
+      assert.equal(Object.hasOwn(approval, 'target_start_proposal_approval'), false);
       assert.equal(transfer.requested_approval_scope[1].includes('forest_hunting'), false);
       assert.ok(transfer.requested_approval_scope[1].includes(source.player_inputs.occupation_archetype_id));
     }

@@ -14,6 +14,7 @@ const pin = (path, bytes) => ({ path, sha256: sha256(bytes) });
 
 export async function buildStartArtifacts() {
   const originalApprovalPath = 'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json';
+  const nonforestApprovalPath = `${output}/nonforest-basis-data-approval.json`;
   const [additionalBytes, additionalApprovalBytes, originalApprovalBytes, originalStart,
     originalTransfer, originalBasis] = await Promise.all([
     read(`${base}/additional-starts-candidate.json`),
@@ -34,6 +35,8 @@ export async function buildStartArtifacts() {
     ['player-transfer-candidate.json', 'target_player_transfer_approval'],
     ['player-basis-candidate.json', 'target_player_basis_approval']
   ]) assert.equal(originalApproval[scope].candidate_sha256, sha256(await read(`${base}/${file}`)), file);
+  const nonforestApprovalBytes = await read(nonforestApprovalPath);
+  const nonforestApproval = JSON.parse(nonforestApprovalBytes);
   const files = new Map();
   const artifacts = [];
   const pendingBasis = [];
@@ -147,7 +150,8 @@ export async function buildStartArtifacts() {
   }
   assert.equal(artifacts.length, 6);
   assert.equal(pendingBasis.length, 3);
-  files.set(`${output}/nonforest-basis-review-candidate.json`, encode({
+  const nonforestReviewPath = `${output}/nonforest-basis-review-candidate.json`;
+  const nonforestReviewBytes = encode({
     schema: 'rus.m2c_additional_start_nonforest_basis_review_candidate.v1',
     status: 'pending_independent_data_approval',
     required_review: 'Independently approve occupation-to-archetype mapping and exact new-player applicability for three boatman/fisher starts. Proposed 12-skill basis maps only approved survival primary +2; secondary +1 needs biography. travel_transport is unmapped (player_watercraft_skill_missing), never riding.',
@@ -157,7 +161,30 @@ export async function buildStartArtifacts() {
     approved_skill_default_source_rows: skillDefaults,
     starts: pendingBasis,
     activation_authorized: false
-  }));
+  });
+  assert.equal(nonforestApproval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(nonforestApproval.candidate_path, nonforestReviewPath);
+  assert.equal(nonforestApproval.candidate_sha256, sha256(nonforestReviewBytes));
+  assert.equal(nonforestApproval.activation_authorized, false);
+  files.set(nonforestReviewPath, nonforestReviewBytes);
+  for (const pending of pendingBasis) {
+    const approval = {
+      schema: 'rus.m2c_supplemental_data_approval.v1',
+      decision: 'APPROVE_DATA_ONLY',
+      source_approvals: [pin(`${base}/additional-starts-data-approval.json`, additionalApprovalBytes),
+        pin(nonforestApprovalPath, nonforestApprovalBytes)],
+      scope: 'Exact new-player appearance, survival primary +2, ordinary speech and empty specific knowledge approved for this boatman or fisher start.',
+      excludes: 'No body, attribute or clothing transfer approval; no watercraft skill, boat, ferry capability, equipment, route knowledge, biography, import or activation.',
+      target_player_basis_approval: { candidate_sha256: pending.basis.sha256 },
+      activation_authorized: false
+    };
+    const approvalPath = `${output}/${pending.scenario_id}.approval.json`;
+    const approvalBytes = encode(approval);
+    files.set(approvalPath, approvalBytes);
+    const artifact = artifacts.find(({ scenario_id }) => scenario_id === pending.scenario_id);
+    artifact.basis = pending.basis;
+    artifact.approval = pin(approvalPath, approvalBytes);
+  }
   return { files, artifacts };
 }
 

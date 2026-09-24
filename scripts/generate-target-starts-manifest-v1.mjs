@@ -26,6 +26,21 @@ export async function buildManifest() {
   for (const pin of candidate.source_pins) assert.equal(sha256(await bytes(pin.path)), pin.sha256, pin.path);
   const generated = await buildStartArtifacts();
   for (const [path, expected] of generated.files) assert.deepEqual(await bytes(path), expected, path);
+  const originalApprovalPath = 'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json';
+  const originalApprovalBytes = await bytes(originalApprovalPath);
+  const originalApproval = JSON.parse(originalApprovalBytes);
+  const original = {};
+  for (const [key, file, scope] of [
+    ['start', 'target-start-candidate.json', 'target_start_proposal_approval'],
+    ['transfer', 'player-transfer-candidate.json', 'target_player_transfer_approval'],
+    ['basis', 'player-basis-candidate.json', 'target_player_basis_approval']
+  ]) {
+    const path = `${base}/${file}`;
+    original[key] = { path, sha256: sha256(await bytes(path)) };
+    assert.equal(originalApproval[scope].candidate_sha256, original[key].sha256);
+  }
+  original.approval = { path: originalApprovalPath, sha256: sha256(originalApprovalBytes) };
+  const originalStart = JSON.parse(await bytes(original.start.path));
   return {
     schema: 'rus.live_world_runtime.target_starts_manifest.v1',
     version: 1,
@@ -35,12 +50,14 @@ export async function buildManifest() {
       candidate: { path: candidatePath, sha256: sha256(candidateBytes) },
       approval: { path: approvalPath, sha256: sha256(approvalBytes) }
     },
-    starts: candidate.starts.map((start, index) => ({
-      binding_revision: index + 1,
+    starts: [{ binding_revision: 1, scenario_id: originalStart.scenario_id,
+      canonical_g5_ref: originalStart.initial_placement.canonical_g5_ref, ...original },
+    ...candidate.starts.map((start, index) => ({
+      binding_revision: index + 2,
       scenario_id: start.scenario_id,
       canonical_g5_ref: start.initial_placement.canonical_g5_ref,
       ...generated.artifacts.find(({ scenario_id }) => scenario_id === start.scenario_id)
-    }))
+    }))]
   };
 }
 

@@ -16,6 +16,30 @@
   "starts": [
     {
       "binding_revision": 1,
+      "scenario_id": "novgorod_pine_ridge_approach_v1",
+      "canonical_g5_ref": {
+        "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+        "version": 1
+      },
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+        "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/player-transfer-candidate.json",
+        "sha256": "e01496e772e9eb8b624491b181c915441da8930c87521723d9c4e3a7b5042c37"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/player-basis-candidate.json",
+        "sha256": "7a5c9f76a28e9aa6a5820ff83a60a17ebb467a3b48841d0798d3588e3c3e65e1"
+      },
+      "approval": {
+        "path": "data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json",
+        "sha256": "df5c36fff70a0a5935dea3bc26523edeb87e898ad99606e709106d6a09db3b4f"
+      }
+    },
+    {
+      "binding_revision": 2,
       "scenario_id": "novgorod_riverbank_approach_v1",
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
@@ -27,11 +51,19 @@
       },
       "transfer": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.transfer.json",
-        "sha256": "17acf0d10d81ad2acaa7abeeb2c7aae6e99d493a053fa8c988272f454e78fb02"
+        "sha256": "aa54810cf17a81ffd4e15ab22f3d7cd93bb0273d7dca0e996e105fa1b0c2d93a"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.basis.json",
+        "sha256": "a24d51b96dc7b432a10d19207a942ff106b35a744e72c87bacb4e578cce55b84"
+      },
+      "approval": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.approval.json",
+        "sha256": "bc5243049ef278c3c64f8832a90aa2f5e62c91f09e2f600e8563ecc7785cf97c"
       }
     },
     {
-      "binding_revision": 2,
+      "binding_revision": 3,
       "scenario_id": "novgorod_reed_backwater_entrance_v1",
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
@@ -43,11 +75,19 @@
       },
       "transfer": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.transfer.json",
-        "sha256": "0d598771b7281d7cb4bc5ba2d3db5346cdddf483fc27051ec097fce1ce6be4bb"
+        "sha256": "e9bd6b6d144b51c587dde5e1ad439c4146e1f8af8c171aa5a9c53d80674d67fc"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.basis.json",
+        "sha256": "5f44b2427bac1021052e26e54e33790ab798af0b1effe9b3a86f2005c4ef4812"
+      },
+      "approval": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.approval.json",
+        "sha256": "b5ace9590c3e51993026c32ae7330ceedb738d8d17fffc95e1bd795caaf70bb6"
       }
     },
     {
-      "binding_revision": 3,
+      "binding_revision": 4,
       "scenario_id": "novgorod_vikhtuy_resource_edge_approach_v1",
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
@@ -71,7 +111,7 @@
       }
     },
     {
-      "binding_revision": 4,
+      "binding_revision": 5,
       "scenario_id": "novgorod_zaostrovye_settlement_approach_v1",
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
@@ -83,11 +123,19 @@
       },
       "transfer": {
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.transfer.json",
-        "sha256": "e6f24a73ac29a1bc832ee09032c8bd853af4062275e078ddf2d0232f01492918"
+        "sha256": "91668c256b9b41a43c0cde8d7163b0397356a4ac97bc8e8fcf8b6e711fbde506"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.basis.json",
+        "sha256": "2d0b9c0f95435c03d5e99042e1cdd5cd649b08deb9245c1d0058abd6b4000060"
+      },
+      "approval": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.approval.json",
+        "sha256": "6affef23228ab59f9ecb3ce9841d9061cb8a3e8fd2918bf5fb730c34341e8675"
       }
     },
     {
-      "binding_revision": 5,
+      "binding_revision": 6,
       "scenario_id": "novgorod_vikhtuy_work_storage_v1",
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
@@ -111,7 +159,7 @@
       }
     },
     {
-      "binding_revision": 6,
+      "binding_revision": 7,
       "scenario_id": "novgorod_vikhtuy_household_cluster_v1",
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",

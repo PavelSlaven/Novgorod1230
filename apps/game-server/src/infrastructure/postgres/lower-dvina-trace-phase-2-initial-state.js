@@ -144,10 +144,13 @@ export async function loadInitialTracePhase2State({
   row,
   phase1A,
   partyPool,
-  temporalSourceProof
+  temporalSourceProof,
+  runtimeBinding = null
 }) {
   const initial = await phase1A.loadInternal(partyId);
   if (!initial) throw phase2IntegrityError();
+  if (runtimeBinding?.snapshot_schema === 'rus.authored_start_initial_party_snapshot.v3'
+    && !initial.position?.location_ref) throw phase2IntegrityError();
   const actorId = initial.player.instance_id;
   const [activeConditions, bodyEffectHistory] = await Promise.all([
     loadPhase2Conditions(partyPool, partyId, actorId),

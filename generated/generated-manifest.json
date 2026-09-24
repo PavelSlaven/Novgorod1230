@@ -2,9 +2,9 @@
   "command": "npm run docs:generate",
   "files": [
     {
-      "bytes": 50469,
+      "bytes": 50904,
       "path": "generated/module-index.json",
-      "sha256": "aba591d1d91c2ecf974d6dae528f0315902f4f2f7a190948f357c152df9f5aa3"
+      "sha256": "f4bb6380945c301160f5f4ecd965e07091b463969ab70c9afb812d8e9391d95b"
     },
     {
       "bytes": 7247,
@@ -12,23 +12,23 @@
       "sha256": "bffbaf00965d511421624b4e4641fc19b53d3b2008f5fa2aca945a3597bd9ffd"
     },
     {
-      "bytes": 40881,
+      "bytes": 41098,
       "path": "generated/schema-reference.json",
-      "sha256": "84dfd838b0cc54e010cb94b7d3d9760e69014f9b797fc0ab0350aa75ddf74c4c"
+      "sha256": "feebaffc04379522f4605ae08f15bc5bc2ad256292664f425a9ce92bc0d793c1"
     },
     {
-      "bytes": 28164,
+      "bytes": 28314,
       "path": "generated/schema-reference.md",
-      "sha256": "333d0a94005b0f966f0b336d0055cef2afce0c6151e2ecb7280e6ff004589e6c"
+      "sha256": "b5c82bb830330d4c46336c85388e4aa9b87cab4a23ac8fa52252fca0faf34e0f"
     },
     {
-      "bytes": 14941,
+      "bytes": 15282,
       "path": "MODULE_INDEX.md",
-      "sha256": "66d8bbb7273baa0151f74a3b17fe77ad5ce6352e71a5ebcacf62e5be88bb5661"
+      "sha256": "b217cdcd814433d6c2fb805025acb1812989b6bce91bce2a9b93ccf6cb2712e6"
     }
   ],
   "generator": "tools/docs-tools/src/cli.js",
-  "input_digest": "5473f7946d7abdaad9fc0e9322492bc008887006a626bad267cd8f0f6655601e",
+  "input_digest": "d7b036bf0c692ae9e562c2919316ec74245c04a35e1e2d00600e04a16048c181",
   "release": "0.23.0-migration.24",
   "schema_version": "rus.generated_manifest.v1"
 }

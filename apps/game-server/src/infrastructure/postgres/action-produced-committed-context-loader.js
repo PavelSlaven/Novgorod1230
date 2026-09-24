@@ -26,6 +26,27 @@ const INPUT_KEYS = ['party_id', 'actor_ref', 'root_turn_id', 'action_ref',
 const PREPARED_INPUT_KEYS = [...INPUT_KEYS, 'prepared_ordinary_plan',
   'prepared_action_plans', 'change_set_id'];
 
+export async function assertActionProducedTargetApplicability(pool, partyId, positionId, applicability) {
+  const result = await pool.query(`SELECT party.world_revision_id,site.parent_g4_id,
+    site.canonical_g5_ref,site.generated_template_ref
+    FROM party_runtime.parties party JOIN party_runtime.scene_position_nodes position
+      ON position.party_id=party.party_id AND position.id=$2 AND position.status='active'
+    JOIN party_runtime.party_g6_instances scene ON scene.party_id=party.party_id
+      AND scene.id=position.g6_instance_id AND scene.host_kind='g5_site' AND scene.status='active'
+    JOIN party_runtime.party_g5_sites site ON site.party_id=party.party_id
+      AND site.id=scene.host_id AND site.status='active' WHERE party.party_id=$1`, [partyId, positionId]);
+  const row = result.rows[0];
+  const sameRef = (actual, expected) => expected != null && actual?.entity_id === expected.id
+    && String(actual.authoring_version) === String(expected.version);
+  if (result.rows.length !== 1 || row.world_revision_id !== applicability.world_revision_id
+    || !applicability.applicability.some((scope) => scope.g4_ref.id === row.parent_g4_id
+      && (scope.canonical_g5_ref != null
+        ? sameRef(row.canonical_g5_ref, scope.canonical_g5_ref)
+        : sameRef(row.generated_template_ref, scope.generation_template_ref)))) {
+    fail('M2C_TARGET_A1_APPLICABILITY_DATA_GAP');
+  }
+}
+
 export async function loadActionProducedCommittedContext(client, rawInput) {
   const input = snapshot(rawInput);
   if (input === INVALID_ACTION_PRODUCED_DATA

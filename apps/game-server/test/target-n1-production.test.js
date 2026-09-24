@@ -6,14 +6,32 @@ import { createLowerDvinaTraceN1ProductionResolverFactory, resolveNpcOrdinarySem
   '../src/runtime/releases/lower-dvina-trace-n1-production.js';
 import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from '../src/runtime/lower-dvina-trace-phase-2-player-safe.js';
 import { applyBackgroundNpcSemanticPlan } from '../src/infrastructure/postgres/background-npc-semantic-atomic-write-plan.js';
+import { loadLiveWorldAuthoredStartCatalog } from '../src/internal/live-world-authored-starts.js';
 
 const root = new URL('../../../', import.meta.url);
 const read = (path) => JSON.parse(readFileSync(new URL(path, root)));
 const data = read('data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-approved.json');
 const runtimeRows = read('data/world-catalogs/novgorod/m2c-npc/canonical-initial/datasets/spatial_v3_npc_runtime_profiles.json');
-const loadedProfile = { ...data.profiles.n1, target_applicability: {
+const loadedProfile = { ...data.profiles.n1, participant_binding_kind: 'approved_source_binding', target_applicability: {
   world_revision_id: data.target.world_revision_id, applicability: data.applicability, n1_binding_basis: data.n1_binding_basis } };
 const same = (a, b) => a.id === b.id && a.version === b.version;
+
+test('historical authored N1 uses explicit persisted-profile admission while target remains source-bound', async () => {
+  const historical = (await loadLiveWorldAuthoredStartCatalog()).ordinary_profiles.n1;
+  assert.equal(historical.participant_binding_kind, 'persisted_profile_revision');
+  const npc = { profile_level: 'background', profile_set_id: 'nov_occ_fisher', profile_revision: 1,
+    machine_state: { schedule_state: 'working', current_activity: { activity_ref: 'fishing',
+      status: 'active', summary: 'Чинит сети.', can_continue_automatically: true } },
+    schedule_records: [{ schedule_profile_id: 'fishing', time_band: 'day', g5_node_id: 'camp' }] };
+  assert.deepEqual(resolveNpcOrdinarySemanticParticipant({ npc, loadedProfile: historical }),
+    { profile_id: 'nov_occ_fisher', revision: 1, current_activity: 'Чинит сети.' });
+  for (const kind of [undefined, 'unknown', 'approved_source_binding']) {
+    assert.equal(resolveNpcOrdinarySemanticParticipant({ npc,
+      loadedProfile: { ...historical, participant_binding_kind: kind } }), null);
+  }
+  assert.equal(resolveNpcOrdinarySemanticParticipant({ npc: { ...npc,
+    semantic_state: { source_binding: {} } }, loadedProfile: historical }), null);
+});
 
 test('target N1 resolves all twelve exact bindings to eight occupations and preserves formal state', async () => {
   const occupations = new Set();

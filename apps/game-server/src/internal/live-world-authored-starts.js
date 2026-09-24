@@ -7,6 +7,74 @@ import { loadLowerDvinaTracePhase1BPublication } from
 
 const ROOT = 'data/world-catalogs/novgorod/live-world-runtime-v1';
 
+/** Load independently approved target authoring. Operational activation remains the release owner's gate. */
+export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
+  worldBaseReferenceSnapshot, domainCatalog } = {}) {
+  const target = 'data/world-catalogs/novgorod/live-world-runtime-v17';
+  const approval = await readJson(rootDir, 'data/world-catalogs/novgorod/m2c-sol-data-approval.json');
+  const definitions = [
+    ['target-start-candidate.json', 'target_start_proposal_approval'],
+    ['player-transfer-candidate.json', 'target_player_transfer_approval'],
+    ['player-basis-candidate.json', 'target_player_basis_approval']
+  ];
+  const loaded = await Promise.all(definitions.map(async ([file, scope]) => {
+    const bytes = await readFile(resolve(rootDir, target, file));
+    const digest = createHash('sha256').update(bytes).digest('hex');
+    if (approval.decision !== 'APPROVE_DATA_ONLY'
+      || approval[scope]?.candidate_sha256 !== digest) fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+    return { value: JSON.parse(bytes), digest };
+  }));
+  const [start, transfer, basis] = loaded.map(({ value }) => value);
+  const pin = domainCatalog?.pin;
+  if (domainCatalog?.schema !== 'rus.verified_item_catalog.v2' || domainCatalog.verified !== true
+    || pin?.catalog_revision_id !== start.new_game_stage_bindings.item_catalog_revision_id
+    || pin.compatible_world_revision_id !== start.world_pin.world_revision_id
+    || pin.compatible_world_catalog_digest !== start.world_pin.world_catalog_digest
+    || transfer.target_start.sha256 !== loaded[0].digest
+    || basis.target_start.sha256 !== loaded[0].digest
+    || basis.target_start.player_transfer_sha256 !== loaded[1].digest) {
+    fail('SPATIAL_V3_TARGET_START_RUNTIME_PIN_REQUIRED');
+  }
+  const p = start.initial_placement;
+  const closure = worldBaseReferenceSnapshot?.scene_template_closures?.find(({ header }) =>
+    header.id === p.scene_template_ref.id && header.version === p.scene_template_ref.version);
+  const position = closure?.position_slots?.find((row) => row.position_slot_key === p.position_slot_key);
+  if (!position || closure.header.canonical_digest !== start.initial_perception_rule.scene_template_ref.canonical_digest) {
+    fail('SPATIAL_V3_TARGET_START_SCENE_REQUIRED');
+  }
+  const actorCatalog = await loadActorCatalog(rootDir, { version: 1, region_id: 'region_novgorod_land',
+    roles: { path: start.source_catalogs[0].path, digest: start.source_catalogs[0].sha256 },
+    occupations: { path: start.source_catalogs[1].path, digest: start.source_catalogs[1].sha256 } });
+  const role = actorCatalog.roles.find((row) => row.role_id === start.player_inputs.role_ref);
+  if (!role) fail('LIVE_WORLD_ACTOR_CATALOG_INVALID');
+  const resources = transfer.clothing_transfer.equipment_entries.map((entry, index) => {
+    const template = domainCatalog.records_by_table.item_templates.find((row) => row.id === entry.item_template_ref);
+    if (template?.status !== 'approved') fail('SPATIAL_V3_TARGET_START_RUNTIME_PIN_REQUIRED');
+    return { resource_key: `player_clothing_${index}`, item_template_id: entry.item_template_ref,
+      inventory_profile_id: entry.inventory_profile_ref, quantity_profile_id: entry.quantity_profile_ref,
+      category_id: template.category_id, quantity: 1, holder: 'player' };
+  });
+  const policies = loaded.map(({ value, digest }) => ({ key: value.candidate_id, revision: value.version, digest }));
+  policies.push({ key: start.initial_perception_rule.id, revision: start.initial_perception_rule.version,
+    digest: loaded[0].digest });
+  const definition = { schema: 'rus.live_world_runtime.canonical_start_profile.v1',
+    scenario_id: start.scenario_id, status: 'approved', policy_profile_pins: policies };
+  return freezeDeep({ schema: 'rus.live_world_runtime.canonical_start_profile.v1', status: 'approved',
+    definition, manifest_digest: canonicalDigest(definition),
+    scenario_id: start.scenario_id, public_metadata: structuredClone(start.public_metadata),
+    player: { name: start.player_inputs.name.display_name, role_id: start.player_inputs.role_ref,
+      occupation_id: start.player_inputs.occupation_ref, role_label: role.role_title, known_fact_refs: [] },
+    actor_catalog: actorCatalog, approved_player_known_facts: [], people: [], resources,
+    geometry: { start: { g4_id: p.g4_ref.id, canonical_g5_id: p.canonical_g5_ref.id,
+      canonical_g5_version: p.canonical_g5_ref.version, node_template_id: p.scene_template_ref.id,
+      node_template_version: p.scene_template_ref.version, location_profile_id: p.scene_materialization_profile_ref.id,
+      slot_key: 'canonical_initial', anchor_slot_key: p.position_slot_key, anchor_template_id: position.position_type_id,
+      capacities: { npc: Number(position.capacity), item: Number(position.capacity), container: Number(position.capacity) } },
+    other_places: [] },
+    canonical_start: { approved: true, start, player_transfer: transfer, player_basis: basis,
+      policy_profile_pins: policies } });
+}
+
 export async function loadLiveWorldAuthoredStartCatalog({
   rootDir = process.cwd(),
   phase1AManifestDigest = null,
@@ -36,6 +104,8 @@ export async function loadLiveWorldAuthoredStartCatalog({
       ordinaryProfileRef.profile_set_id)) {
     fail('LIVE_WORLD_AUTHORED_START_CATALOG_INVALID');
   }
+  ordinaryProfiles.n1 = { ...ordinaryProfiles.n1,
+    participant_binding_kind: 'persisted_profile_revision' };
   const actorCatalog = await loadActorCatalog(rootDir, starts.actor_catalog);
   const facts = new Map(starts.player_known_facts.map((fact) => [
     fact.fact_id, freezeDeep(structuredClone(fact))

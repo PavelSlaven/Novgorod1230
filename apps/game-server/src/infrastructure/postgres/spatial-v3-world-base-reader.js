@@ -731,10 +731,7 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
        AND candidate.profile_version=profile.version
       JOIN world_base.spatial_v3_authoring_versions nav
         ON nav.entity_kind='spatial_node' AND nav.entity_id=n.id AND nav.version=n.version
-       AND nav.world_revision_id=n.world_revision_id AND nav.status='approved' AND nav.canonical_digest=n.canonical_digest
-      JOIN world_base.spatial_v3_authoring_versions pav
-        ON pav.entity_kind='scene_materialization_profile' AND pav.entity_id=profile.id AND pav.version=profile.version
-       AND pav.world_revision_id=profile.world_revision_id AND pav.status='approved' AND pav.canonical_digest=profile.canonical_digest
+       AND nav.world_revision_id=n.world_revision_id AND nav.status='approved'
       WHERE n.id=$1 AND n.version=$2 AND n.world_revision_id=$3
         AND n.spatial_level='G5' AND n.status='approved' LIMIT 2`,
     [id, version, world_revision_id]);
@@ -745,7 +742,9 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
           : 'canonical_g5_scene_binding_missing', version, world_revision_id
       });
     }
-    const rules = await readSceneRulePins(result.rows, world_revision_id);
+    // The approved S1 importer pins typed profiles and inherited rules; its
+    // authoring-version digests identify registrations, not typed-row payloads.
+    const rules = await readSceneRulePins(result.rows, world_revision_id, true);
     if (!rules.ok) return rules;
     return Object.freeze({ ok: true,
       value: deepFreeze(structuredClone({ ...result.rows[0], scene_rules: rules.value })) });
@@ -1009,7 +1008,7 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
       entry_scene_endpoints: entryScenes, entry_slot_rules: entryRules }));
     return Object.freeze({ ok: true, value, ref: Object.freeze({ g4: { ...g4 }, profile: { ...profile } }) });
   }
-  async function readSceneRulePins(sources, revision) {
+  async function readSceneRulePins(sources, revision, inherited = false) {
     const requested = sources.flatMap((row) => [
       { entity_kind: 'scene_selection_rule', id: row.selection_rule_id, version: row.selection_rule_version },
       { entity_kind: 'scene_applicability_rule', id: row.applicability_rule_id, version: row.applicability_rule_version }
@@ -1018,15 +1017,31 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
       { reason: 'approved_exact_scene_rule_required' });
     if (requested.some((row) => !row.id || !Number.isSafeInteger(row.version) || row.version < 1)) return invalid();
     const unique = [...new Map(requested.map((row) => [`${row.entity_kind}:${row.id}:${row.version}`, row])).values()];
-    const result = await query(`SELECT av.entity_kind,av.entity_id AS id,av.version,av.world_revision_id,av.status,av.canonical_digest
+    const ancestry = inherited ? `WITH RECURSIVE revision_ancestry(id) AS (
+      SELECT id FROM world_base.spatial_v3_world_revisions WHERE id=$4 AND status='approved'
+      UNION
+      SELECT parent.id FROM world_base.spatial_v3_world_revisions child
+      JOIN revision_ancestry current ON current.id=child.id
+      JOIN world_base.spatial_v3_world_revisions parent ON parent.id=child.parent_revision_id
+      WHERE parent.status='approved'
+    ), typed_rules AS (
+      SELECT entity_kind,id,version,world_revision_id,status FROM world_base.spatial_v3_scene_selection_rules
+      UNION ALL
+      SELECT entity_kind,id,version,world_revision_id,status FROM world_base.spatial_v3_scene_applicability_rules
+    )` : '';
+    const result = await query(`${ancestry} SELECT av.entity_kind,av.entity_id AS id,av.version,av.world_revision_id,av.status,av.canonical_digest
       FROM unnest($1::text[],$2::text[],$3::int[]) AS wanted(entity_kind,id,version)
       JOIN world_base.spatial_v3_authoring_versions av ON av.entity_kind=wanted.entity_kind
         AND av.entity_id=wanted.id AND av.version=wanted.version
-      WHERE av.world_revision_id=$4 AND av.status='approved' ORDER BY av.entity_kind,av.entity_id,av.version`,
+      ${inherited ? `JOIN revision_ancestry ancestry ON ancestry.id=av.world_revision_id
+      JOIN typed_rules rule ON rule.entity_kind=av.entity_kind AND rule.id=av.entity_id
+        AND rule.version=av.version AND rule.world_revision_id=av.world_revision_id AND rule.status='approved'
+      WHERE av.status='approved'` : "WHERE av.world_revision_id=$4 AND av.status='approved'"}
+      ORDER BY av.entity_kind,av.entity_id,av.version`,
     [unique.map((row) => row.entity_kind), unique.map((row) => row.id), unique.map((row) => row.version), revision]);
     if (!Array.isArray(result?.rows) || result.rows.length !== unique.length || unique.some((pin) =>
       result.rows.filter((row) => row.entity_kind === pin.entity_kind && row.id === pin.id
-        && row.version === pin.version && row.world_revision_id === revision && row.status === 'approved'
+        && row.version === pin.version && (inherited || row.world_revision_id === revision) && row.status === 'approved'
         && /^[a-f0-9]{64}$/u.test(row.canonical_digest ?? '')).length !== 1)) return invalid();
     return { ok: true, value: result.rows };
   }

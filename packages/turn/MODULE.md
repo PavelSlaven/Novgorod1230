@@ -529,3 +529,12 @@ transient_item_use получает «в течение N … выполняли
 удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
 Narrator переводит evidence wording в естественную речь и конкретное движение,
 не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.
+
+`prepareSpatialV3SiteConnectionTraversal` (`@rus/turn/spatial-v3-execution`)
+собирает proposal перехода по одной сохранённой направленной G5 connection через
+существующие P18/P19 movement owners. Вход содержит approved action-cost
+connection/profile, exact party scene/position/endpoint state, footprint rule и
+capacity. Порты `validateCapability`, `loadCurrentState`, `recheckActivation`
+обязательны: без них admission запрещён. Результат включает dependency pins и
+expected state versions для общего atomic commit; функция сама не меняет БД,
+позицию актёра или время. Action units не преобразуются в минуты.

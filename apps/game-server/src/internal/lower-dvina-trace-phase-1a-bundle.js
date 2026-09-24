@@ -255,7 +255,7 @@ export function validateDefinitionPins(bundle) {
     if (bundle.definition.resolved_policy_refs[key].digest !== bundle.artifact_pins[key]?.digest) fail('TRACE_DEFINITION_PIN_MISMATCH', `Policy pin ${key} is stale.`);
   }
 }
-function buildCalendarProjectionProfile(record) {
+export function buildCalendarProjectionProfile(record) {
   const payload = record.payload;
   const epoch = payload.epoch_reference;
   return {

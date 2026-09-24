@@ -15,7 +15,40 @@ Gap Auditor работает отдельно в authoring workflow; в runtime 
 
 ## Назначение
 
+`prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16
+equipment and Stage 24 body/routine projections for an exact generated scene.
+It returns one P16 write set, validation and deterministic choice traces;
+it neither commits nor reads catalogs. The caller supplies verified actor,
+Temporal, equipment and routine inputs. NPC schedules bind the generated
+position directly and retain the existing `@rus/npc-runtime` transition state.
+Every generated NPC requires exact regional and clothing profile bindings;
+clothing belonging to another NPC cannot satisfy its requirements.
+
+The optional target-release natural baseline boundary
+`prepareG4NaturalBaseline` validates exact catalog/G4/scene/Temporal
+inputs and returns a machine baseline separate from visible context. Baseline
+readiness grants no perception: the visibility owner must admit an actor/G6
+subset before any natural fact reaches narration or `sensory_details`. Static
+ecology remains in immutable compiled world-base records.
+Historical authored screens are unchanged. Production adoption requires the
+target release to call this boundary with its approved catalog and current
+Temporal state and route perceived facts through the visibility owner before
+publishing the first screen.
+
 Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
+
+The generated expansion adapter reads exact G4/profile/scene/acoustic closures
+and the normalized party snapshot inside the existing P16 expansion lock.
+It delegates selection and row proposals to `@rus/materialization`, then uses
+the existing combined write-plan builder and committer. Generation admission,
+candidate applicability, visible projection and commit rechecks remain required
+owner ports; missing ports or authoring return a typed gap. It does not activate
+a release. The same structural operation key replays before materialization;
+topology preparation changes neither traveller placement nor the party clock.
+An unvisited canonical terminal is prepared in that same transaction from its
+exact scene binding and acoustic closure. Generated first-entry domain owners
+may contribute admitted write sets and rechecks through `prepareFirstEntry`;
+P16 persists those rows with topology and the selection trace.
 
 Spatial semantic materialization hands the server one validated formal proposal.
 Exact physical topology comes from the exact Spatial catalog closure through
@@ -251,6 +284,21 @@ Domain-command ledger contracts сохраняются.
 Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
 
 ## Public API и контракты
+
+The P16 committer's internal `prepareExpansion` holds the existing party-clock
+and G4 transaction locks while server code reads normalized state and prepares
+one sealed `resolve_frontier` write plan. It checks durable replay before
+preparation and commits through the same P16 writer. The plan has no owner or
+execution locks and exactly the previously locked G4; physical/change-set locks
+retain their established order. Expansion ledgers, continuation chains,
+frontiers, reservations, site connections and endpoint bindings use the existing
+DDL, physical-key locks, CAS, idempotency and atomic rollback. This internal
+method does not accept client topology and does not activate a production profile.
+Existing `party_materialization_runs` and `party_materialization_choices` are
+append-only members of that same sealed plan. Choice rows require their run in
+the plan; scene baselines are ordered after their materialization run. Trace,
+topology and command idempotency roll back together, and committed replay
+does not append another run or repeat a choice.
 
 - `.` exports the activated Spatial-v3 composition root, adapters, HTTP server/handler/static resolver and startup config validation.
 - `./production-spatial-v3` exports the sole production composition.
@@ -548,6 +596,18 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
+The separately callable v17 target release factory remains outside the default
+selector. It requires the exact issued item and actor successor approvals,
+committed activation events, approved Spatial revision, and verified catalog
+membership through the existing production readiness owner. Missing evidence
+fails with `SPATIAL_V3_TARGET_ACTIVATION_APPROVAL_REQUIRED`. This catalog gate
+does not establish complete M2c gameplay readiness or deploy a release.
+After successful catalog checks, the factory still rejects composition with
+`SPATIAL_V3_TARGET_START_BINDING_REQUIRED` until an independently approved
+target start/scenario bundle exists. It inherits no Lower Dvina scenario pins.
+The actor profile loader can resolve an exact persisted pin after a successor
+activation, checking its predecessor and immutable import membership.
+
 The current versioned production activation cutover is `spatial-v3-production-v16`.
 The server and config expose only
 `builtin:production-spatial-v3`; v2 has no runtime selector or public
@@ -751,3 +811,90 @@ single transient_item_use получает два соседних atomic curren
 удаляется перед финальной сборкой; search передаёт только выполненное действие и результат.
 Narrator переводит evidence wording в естественную речь и конкретное движение,
 не копирует служебные слова step/attempt и не добавляет минуты.
+
+Opening и arrival могут передать exact natural perception input действующему
+`@rus/presentation/spatial-v3-projection.projectSpatialV3NaturalScene` через
+`projectG4NaturalPerception`. Opening загружает его через optional
+`traceStartAdapter.loadNaturalScenePerceptionInput` только после committed
+rehydrate и до narrator. Turn projection принимает transient
+`natural_scene_perception_input` и сверяет его с итоговой actor position.
+Оба пути раскрывают только approved descriptor text, допущенный P22
+visibility/acoustic resolver; raw natural baseline, stock, rights и class codes
+не передаются narrator. Неполный descriptor catalog, source position либо
+perception context дают `NATURAL_SCENE_PERCEPTION_DATA_GAP`.
+Input loader обязан поставить фактические current sensory sources и условия,
+включая causal basis текущего звука; размещение descriptor на template само по
+себе не доказывает звучание. Эти hooks не активируют data pack и не создают
+второй persistence owner; production readiness требует отдельного approved
+catalog и реального runtime wiring.
+
+`prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, currentFacts })`
+joins exact compiled natural/presentation membership with the current owner
+snapshot. `readCurrentNaturalPerceptionFacts` supplies that snapshot through
+a read-only PostgreSQL query for the actor's committed scene position, G6,
+baseline, acoustic baseline, links and portal states. It resolves the source
+from an approved arrival endpoint and the committed template-position binding,
+then requires matching active `party_site_connection_endpoint_bindings` rows;
+it never uses the actor position as a fallback source. Call it in the caller's
+consistent read transaction. The required `readCurrentSourceState` port owns
+current Temporal state, actor senses, visual source presence/cover/occlusion and
+causal sound state. `resolveG4NaturalPerceptionConditions` applies the verified
+placement pack, exact scene physical pins and approved light/weather mappings
+to those current facts. Missing input fails closed; an explicitly absent source contributes
+no fact. The adapter does not infer moving water from a static descriptor or
+clear visibility from an outdoor G6. Actor-carrier and in-transit positions
+require their existing position owner; they produce a typed gap here.
+
+An approved canonical initial rule may bind its source through the exact
+canonical G5/scene/arrival position instead of a site connection. The reader
+checks verified compiled rule membership, `readPinnedCanonicalG5SceneBinding`,
+the committed world/site/baseline/G6/position and the initial owner proof from
+`readCurrentSourceState`. That proof binds the actual persisted request identity
+and initial snapshot to the actor and position; its owner must reject applied
+gameplay, time, body or scene changes. The reader creates no connection and no
+persisted endpoint binding for this case. Generated arrival continues to require
+the real committed site connection endpoint binding.
+
+Initial perception may run before the first server session is attached. The
+initial-state owner accepts an absent session only when a LEFT JOIN confirms
+its absence and every committed snapshot/body/clock/history/scene guard still
+passes. An existing session must match the scenario, have no turn and retain
+its valid version; missing session data is not replaced with default values.
+
+Canonical opening carries the verified initial source binding privately through
+`prepareG4NaturalScenePerceptionInput`. `startLowerDvinaTrace` selects
+`buildCanonicalOpeningVisibleContext` from this proof after rehydrate and P22
+projection. This opening requires identity/body and supplies only admitted
+natural facts, known carried items through the existing item projector, and
+explicit safe perceptual entity facts. Raw NPC rows and ground items are not
+perception evidence. Empty history, goals and local structures stay empty;
+missing observations do not mean that the place is empty or silent. The same
+Stage 22/23 narration service covers the supplied `must_include` entries and
+does not add fictional reader-control facts. The independent code-owned reader
+assesses all eight opening questions before Stage 21 approval. Unsupported
+questions remain `unknown` with no fact refs and `answered: false`; reader pass
+means source-boundary and question-coverage validation, not an invented answer.
+Missing assessments or unsupported fact references block the writer. The initial
+source-binding proof never reaches narration.
+
+Opening source validation accepts the historical environment profile/facts or
+the committed `rus.approved_initial_environment.v1` with versioned calendar and
+weather refs and its actual date/time/light/weather state. The latter needs no
+invented aggregate environment profile. Screen environment facts contain only
+supplied values from the existing screen vocabulary; an absent list remains
+empty and does not assert weather or silence. P22 supplies sensory prose.
+
+The initial Phase 2 read identifies the canonical v3 snapshot and requires its
+matching runtime binding plus `loadInitialNaturalScenePerceptionInput({ partyId,
+actorId, initialState })`. That callback returns the same prepared current P22
+input used by opening. `phase2InitialCurrentVisibleContext` verifies the exact
+canonical party/actor/scenario/position proof and uses only its safe projection;
+it does not load historical scene presentation or disclose raw colocated NPCs,
+items or weather metadata. Missing target binding/input is a typed perception
+gap. The historical initial read retains its existing projection path.
+
+`loadTargetAuthoredStartProfile` загружает отдельный canonical start только при
+совпадении трёх immutable authoring SHA с independent data approval и exact
+verified target item/world tuple. Manifest digest связывает все policy pins;
+он не равен raw SHA initial-perception candidate. Loader не выдаёт operational
+approval, не меняет default release и сохраняет historical authored catalog.

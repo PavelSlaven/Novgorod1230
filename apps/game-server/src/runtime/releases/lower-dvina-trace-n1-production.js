@@ -174,8 +174,12 @@ function hasMaterializedSchedule(npc) {
 /** Shared admission for projection and execution; target identity is recovered from approved bindings. */
 export function resolveNpcOrdinarySemanticParticipant({ npc, loadedProfile, committedState }) {
   if (loadedProfile?.profile?.status !== 'approved' || npc?.profile_level !== 'background') return null;
-  const isTarget = loadedProfile.schema === 'rus.live_world_runtime.n1_loaded_profile.v1';
-  if (!isTarget && loadedProfile.schema !== 'rus.lower_dvina_trace_n1_loaded_profile.v1') return null;
+  const neutral = loadedProfile.schema === 'rus.live_world_runtime.n1_loaded_profile.v1';
+  if (!neutral && loadedProfile.schema !== 'rus.lower_dvina_trace_n1_loaded_profile.v1') return null;
+  if (neutral && !['persisted_profile_revision', 'approved_source_binding']
+    .includes(loadedProfile.participant_binding_kind)) return null;
+  const isTarget = neutral && loadedProfile.participant_binding_kind === 'approved_source_binding';
+  if (!isTarget && (loadedProfile.target_applicability != null || npc.semantic_state?.source_binding != null)) return null;
   const target = isTarget ? loadedProfile.target_applicability : null;
   if (isTarget && !validTargetApplicability(target)) return null;
   let participant;

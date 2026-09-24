@@ -22,6 +22,12 @@
 
 `NEW_GAME_STAGE_CATALOG`, `runNewGamePipeline`, orchestrator exports и версионированные stage subpaths.
 
+Stage 24 exports `approvedNpcBodyRows`, `approvedNpcConditionRows` and
+`initialNpcRoutineRecords` for reuse by generated first-entry P16 composition.
+These pure projections retain the canonical body and routine row formats.
+A supplied `npc.position_id` binds a routine directly to its materialized
+Spatial v3 position; existing prepared-scene/legacy bindings remain deferred.
+
 ## Контракты
 
 Phase 1A internal materialization принимает как historical Lower Dvina result,
@@ -32,6 +38,19 @@ world/domain closure digests и resolved refs; одного `pass` boolean не�
 Current authored binding v3 сохраняет из approved closure один initial
 Spatial-v3 baseline/G6/position и actor journey location в той же new-game
 transaction; route либо local topology этим не синтезируются.
+When the authored result carries an exact `canonical_scene_proposal`, Stage 24
+serializes its complete approved scene rows and selects the unique arrival
+endpoint for the player journey. It retains authored acoustic values and
+returns the actual G5/baseline/G6/position IDs; no S1 topology is added.
+Supplied player base attributes persist in the actor profile binding and
+persisted projection. Every supplied snapshot requires the actor attribute
+catalog pin matching its materialization trace and compatible world; an active
+player attribute gate also requires a complete snapshot. The selected initial
+position must match the unique authored arrival endpoint.
+Canonical-start NPCs retain the initial scene's compatibility anchor for the
+legacy foreign key. Their exact Spatial v3 position is serialized separately
+through the existing `entity_placements` owner and routine schedule; every
+position must exist in the same approved canonical scene proposal.
 Для явно активированного new-development runtime Stage 24 сохраняет exact
 `actor_base_attributes_v1` party pin и полные snapshots шести характеристик
 в той же Stage 24/25 transaction. Reload, retry и profile promotion используют

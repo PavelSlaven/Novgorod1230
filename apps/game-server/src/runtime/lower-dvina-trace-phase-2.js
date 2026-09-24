@@ -24,6 +24,7 @@ import { createSemanticConversationCommand } from
   './lower-dvina-trace-phase-3-conversation-command.js';
 import { createTraceExpansionCommands } from
   './lower-dvina-trace-expansion-commands.js';
+import { createTraceLocalSceneCommands } from './lower-dvina-trace-local-scene-commands.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   turnStepSemanticGroundingValidator = null, playerConversationModel = null,
@@ -62,6 +63,7 @@ export function createLowerDvinaTracePhase2Runtime({
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
   authoredTurnProfile = null,
   spatialExpansionRuntime = null,
+  spatialLocalSceneRuntime = null,
 } = {}) {
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
   const executeRequest = createTraceTurnRequestExecutor();
@@ -224,7 +226,7 @@ export function createLowerDvinaTracePhase2Runtime({
           phase8Contracts,
         });
         const registry = authored ? await liveWorldTurnRegistry({ state,
-          requestId, spatialExpansionRuntime,
+          requestId, spatialExpansionRuntime, spatialLocalSceneRuntime,
           inputDigest, authoredTurnProfile, playerConversationModel,
           npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
           : buildTracePhase2Registry({
@@ -382,6 +384,7 @@ async function liveWorldTurnRegistry(context) {
     consequence: blocked,
     writeTargets: () => []
   }, ...liveWorldConversationCommands(context),
+  ...await createTraceLocalSceneCommands(context),
   ...await createTraceExpansionCommands(context)]);
 }
 

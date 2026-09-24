@@ -165,6 +165,18 @@ test('player basis pins source appearance sets and completes an adult male throu
   assert.equal(actor.identity.age_category, 'adult');
   assert.ok(actor.identity.appearance.hair.color);
   assert.ok(actor.identity.appearance.eyes.color);
+  for (const sex_category of ['male', 'female']) for (const age_category of entries.filter((row) => row.facet === 'age_category').map((row) => row.option_value)) {
+    const sampled = materializeActorBaseAppearance({ identity: { sex_category, age_category },
+      approved_entries: entries, random: createRandomSource({ seed: 17 }), choice_key_prefix: 'source-regression' });
+    assert.equal(sampled.identity.sex_category, sex_category);
+    assert.equal(sampled.identity.age_category, age_category);
+    for (const choice of sampled.choices) {
+      const selected = entries.find((entry) => entry.entry_id === choice.selected_id);
+      for (const [key, allowed] of Object.entries(selected.applicability ?? {})) {
+        if (allowed !== 'all') assert.ok(allowed.includes(sampled.identity[key]), `${key} source applicability`);
+      }
+    }
+  }
   const sourceLanguage = (await read(basis.language.source_path))
     .character_candidate_sets.player_boatman.language_profile_candidates[0];
   for (const [key, value] of Object.entries(sourceLanguage)) assert.deepEqual(basis.language[key], value);

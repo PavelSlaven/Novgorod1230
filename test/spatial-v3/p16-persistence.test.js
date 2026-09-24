@@ -130,17 +130,39 @@ test('P16 reader resolves one exact canonical G5 scene binding', async () => {
     canonical_digest: digest, parent_id: 'g4', parent_version: 4,
     materialization_profile_id: 'profile', materialization_profile_version: 1,
     materialization_profile_digest: digest, scene_template_id: 'scene',
-    scene_template_version: 1
+    scene_template_version: 1, selection_rule_id: 'select', selection_rule_version: 1,
+    applicability_rule_id: 'apply', applicability_rule_version: 1
   };
+  const scene_rules = [
+    { entity_kind: 'scene_selection_rule', id: 'select', version: 1, status: 'approved', world_revision_id: 'revision', canonical_digest: digest },
+    { entity_kind: 'scene_applicability_rule', id: 'apply', version: 1, status: 'approved', world_revision_id: 'revision', canonical_digest: digest }
+  ];
   const calls = [];
   const reader = createSpatialV3WorldBaseReader({ query: async (sql, params) => {
-    calls.push({ sql, params }); return { rows: [row] };
+    calls.push({ sql, params }); return { rows: sql.includes('AS wanted(entity_kind,id,version)') ? scene_rules : [row] };
   } });
   assert.deepEqual((await reader.readPinnedCanonicalG5SceneBinding({
     id: 'g5', version: 1, world_revision_id: 'revision'
-  })).value, row);
+  })).value, { ...row, scene_rules });
   assert.deepEqual(calls[0].params, ['g5', 1, 'revision']);
   assert.match(calls[0].sql, /source_kind='canonical_g5'/u);
+  assert.match(calls[0].sql, /nav.status='approved'/u);
+  assert.doesNotMatch(calls[0].sql, /nav\.canonical_digest=n\.canonical_digest/u);
+  assert.doesNotMatch(calls[0].sql, /scene_materialization_profile' AND pav/u);
+  assert.match(calls[1].sql, /JOIN revision_ancestry ancestry ON ancestry.id=av.world_revision_id/u);
+  assert.match(calls[1].sql, /rule.status='approved'/u);
+  const inheritedRules = scene_rules.map((rule) => ({ ...rule,
+    world_revision_id: 'approved-ancestor' }));
+  const inherited = createSpatialV3WorldBaseReader({ query: async (sql) => ({
+    rows: sql.includes('AS wanted(entity_kind,id,version)') ? inheritedRules : [row]
+  }) });
+  assert.deepEqual((await inherited.readPinnedCanonicalG5SceneBinding({
+    id: 'g5', version: 1, world_revision_id: 'revision'
+  })).value.scene_rules, inheritedRules);
+  const missingRule = createSpatialV3WorldBaseReader({ query: async (sql) => ({
+    rows: sql.includes('AS wanted(entity_kind,id,version)') ? [] : [row]
+  }) });
+  assert.equal((await missingRule.readPinnedCanonicalG5SceneBinding({ id: 'g5', version: 1, world_revision_id: 'revision' })).ok, false);
   const ambiguous = createSpatialV3WorldBaseReader({ query: async () => ({
     rows: [row, row]
   }) });

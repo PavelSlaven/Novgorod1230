@@ -10,12 +10,16 @@ import { compileApprovedNpcRuntimeBasis } from
 import { compileProceduralScenePartyPackages } from
   './procedural-scene-party-packages.js';
 import { attachActorBaseAttributesToNpcs } from './actor-base-attributes.js';
+import { materializeCanonicalAuthoredStart } from './authored-start-canonical.js';
 
 export function materializeAuthoredStartPartyInstance(input) {
   const profile = input?.scenario_bundle;
   assertInput(input, profile);
   const admission = resolveAuthoritativeAdmission(input, profile);
   const identity = requestIdentity(input);
+  if (profile.canonical_start != null) {
+    return materializeCanonicalAuthoredStart({ input, profile, admission, identity });
+  }
   const seed = deriveSeed(identity);
   const runId = `authored_${seed.digest.slice(0, 24)}`;
   const id = (kind, key, ordinal = 0) => deterministicInstanceId(
@@ -333,6 +337,18 @@ function anchor(place, instanceId, nodeId) {
 }
 
 function assertInput(input, profile) {
+  if (profile?.canonical_start != null) {
+    if (profile.schema !== 'rus.live_world_runtime.canonical_start_profile.v1'
+      || profile.status !== 'approved' || profile.scenario_id !== input?.scenario_id
+      || input.materializer_version !== AUTHORED_MATERIALIZER_VERSION
+      || !input.domain_catalog_pin?.catalog_digest
+      || !Array.isArray(profile.people) || profile.people.length !== 0
+      || !Array.isArray(profile.resources) || profile.resources.length === 0
+      || !Array.isArray(profile.geometry?.other_places) || profile.geometry.other_places.length !== 0
+      || !Array.isArray(profile.player?.known_fact_refs)
+      || profile.player.known_fact_refs.length !== 0) invalid();
+    return;
+  }
   const people = profile?.people;
   const resources = profile?.resources;
   const places = profile?.geometry?.other_places;
@@ -386,7 +402,8 @@ function resolveAuthoritativeAdmission(input, profile) {
   const environmentProfiles = new Set(spatialRefs.flatMap(({ closure }) =>
     closure.movement_edges.map(({ transition_environment_profile_id: id }) => id)
       .filter(Boolean)));
-  if (!environmentProfiles.has(profile.environment.profile_id)) invalid();
+  if (profile.canonical_start == null
+    && !environmentProfiles.has(profile.environment.profile_id)) invalid();
   const resourceRefs = profile.resources.map((resource) =>
     resolveAuthoredStartResource(domain.records_by_table, resource));
   const actorRefs = resolveActors(profile);

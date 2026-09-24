@@ -60,6 +60,8 @@ import { buildS1AuthoringV6ImportSql } from
   '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 import { TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST } from
   '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
+import { createSpatialV3WorldBaseReader } from
+  '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 
 const openingChecks = ['schema_and_structure', 'visible_context_compliance',
   'new_fact_check', 'npc_check', 'item_check', 'container_check',
@@ -1011,6 +1013,17 @@ async function installActivatedRuntimeCatalog({ worldPool, partyPool,
   await worldPool.query(await buildCharacterAppearanceV1ImportSql());
   await seedSpatialV5Revision(worldPool);
   await worldPool.query(await buildS1AuthoringV6ImportSql());
+  const reader = createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) });
+  for (const suffix of ['wreck_shore', 'fishing_camp', 'old_drying_shed']) {
+    const pin = { id: `trace_ld_v1_g5_${suffix}`, version: 1,
+      world_revision_id: 'novgorod_spatial_v3_production_v6_candidate_001' };
+    const closure = await reader.readPinnedCanonicalG5SceneBinding(pin);
+    assert.equal(closure.ok, true, JSON.stringify(closure.error));
+    assert.equal(closure.value.scene_rules.length, 2);
+    assert.ok(closure.value.scene_rules.every((rule) => rule.version === 3
+      && rule.world_revision_id === 'novgorod_spatial_v3_production_v3_candidate_001'));
+    assert.equal((await reader.readPinnedCanonicalG5SceneBinding({ ...pin, version: 2 })).ok, false);
+  }
   const worldMigration = await runWorldRuntimeCatalogMigration(worldPool);
   assert.equal(worldMigration.status, 'applied');
   const activation = await activateGate1RuntimeCatalog({ worldPool,

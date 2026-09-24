@@ -34,6 +34,7 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
     turn_profile: Object.freeze({ profile: turn, pin: { artifact_id: turn.profile_set_id,
       revision: turn.revision, digest: canonicalDigest(turn) } }),
     ordinary_profiles: Object.freeze({ s1: null, n1: { ...data.profiles.n1,
+      participant_binding_kind: 'approved_source_binding',
       target_applicability: { world_revision_id: worldRevisionId, applicability: data.applicability,
         n1_binding_basis: data.n1_binding_basis } } }),
     materialization_profiles: Object.freeze({ ordinaryMaterializationProfile: null,

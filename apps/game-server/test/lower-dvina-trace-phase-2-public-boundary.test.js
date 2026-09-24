@@ -179,13 +179,17 @@ test('canonical initial turn uses current P22 without historical scene or raw en
 
 test('canonical initial turn cannot fall back when its binding or perception callback is absent', async () => {
   const schema = 'rus.authored_start_initial_party_snapshot.v3';
-  for (const resolver of [null, () => ({ snapshot_schema: schema })]) {
+  const pin = { key: 'initial-natural-rule', revision: 1, digest: 'a'.repeat(64) };
+  for (const resolver of [null, () => ({ snapshot_schema: schema }),
+    () => ({ snapshot_schema: schema, initial_natural_perception_rule_pin: pin }),
+    () => ({ snapshot_schema: schema, initial_natural_perception_rule_pin: { ...pin, revision: 2 } })]) {
     let reads = 0;
     const repository = createLowerDvinaTracePhase2PostgresRepository({
       partyPool: { async connect() { throw new Error('unexpected fallback'); },
         async query() { reads += 1; return { rowCount: 1, rows: [{
           delivery_ack_result: { pass: true }, party_state_version: 0,
-          state_payload: { schema }, stage26_result: {} }] }; } },
+          state_payload: { schema, initial_spatial_v3: { canonical_scene_proposal: {} },
+            policy_profile_pins: [pin] }, stage26_result: {} }] }; } },
       committer: { async commit() { throw new Error('unexpected write'); } },
       authoredRuntimeBindingResolver: resolver
     });

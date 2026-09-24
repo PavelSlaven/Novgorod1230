@@ -24,7 +24,7 @@ fixed; generated G5 may attach only through existing directional exits.
 | Select expansion family from G4 landscape × land-use × function | Approved M2c expansion bundle: 25 reusable families, 32 exact G4 bindings, 86 exit slots | Exact approved closure reader | Existing frontier resolver | Existing Spatial-v3 catalog and party G5 owners | Existing spatial/perception readers | Sol high independently approved exact authoring SHA; isolated PostgreSQL import/readback passed; production import pending |
 | Generate G5 within limits and continue/terminate | Approved M2c G5 templates, limits, slots, terminal, continuation and successor rules | Exact closure and scene-rule readers | Generated first-entry composer and P16 atomic commit owner | Party G5, G6, position, frontier and capacity rows | Generated destination factual projection | First-entry and rollback/replay tests pass; public traversal, conditional availability and destination factual supplier remain incomplete |
 | Natural layers and seasonal state | Approved M2c natural baseline, presentation and placement; Temporal v4 | Exact natural/Temporal readers | Spatial scene materialization and environment owners | Scene baseline, natural and environment rows | Canonical initial P22 natural projection | Canonical start PostgreSQL acceptance passes; generated destination current P22 and entity visibility still need authoritative inputs |
-| Functional things and finite stocks | Approved M2c item/property authoring, finite capability scopes and finite-only ordinary base | Exact item/property readers and natural first-entry owner | Stage 16, ordinary first-entry and finite-resource transition owners | Items, containers and `party_resource_nodes` | Player-safe item/scene projection | Four finite source classes scoped to five G4; Sol high approved the finite-only base data separately. Runtime integration, production import/readback and decrement acceptance remain pending; no stock invented for other G4 |
+| Functional things and finite stocks | Approved M2c item/property authoring, finite capability scopes and finite-only ordinary base | Exact item/property readers and natural first-entry owner | Stage 16, ordinary first-entry and finite-resource transition owners | Items, containers and `party_resource_nodes` | Player-safe item/scene projection | Four finite source classes scoped to five G4; Sol high approved the finite-only base data separately. Isolated successor item-catalog activation/readback and first-entry/P16 PostgreSQL checks passed; live production import remains pending. No stock is invented for other G4. |
 | NPC composition and equipment | Approved regional/canonical NPC composition, runtime profiles, appearance and applicable item/Temporal data | Exact NPC, actor and appearance readers | Actor materialization, Stage 16 and NPC runtime | Actor/body/item/activity/clock state | P12/P22 people projection | Canonical NPC materialization and real PostgreSQL start pass; source-specific visibility/recognition remains unresolved, so co-location alone cannot project a person |
 | First-screen delivery | Committed spatial, natural, item and NPC refs | Current factual reader and visibility/knowledge owners | Opening Stage 22/23 and narration | Presentation delivery state | Player-visible opening | Direct official-root start/replay/ACK PostgreSQL acceptance passed; first-screen gameplay report and full generated-G5 acceptance pending |
 
@@ -62,12 +62,14 @@ production activation.
 
 The approved 68-edge scene-movement candidate is a mechanical authoring input,
 not an imported replacement. P12 is append-only by exact row key, while the
-existing 17 scene templates already have version-1 edge keys. Applying capacity
-and reverse refs requires new complete scene-template versions and repinned
-scene materialization candidates/profiles. The canonical target start must use
-its version-aware owner; the historical S1 first-entry path remains pinned to
-version 1. Until that closure is independently approved, imported and read
-back, local movement cannot use the candidate rows.
+existing 17 scene templates already have version-1 edge keys. Those keys cannot
+be rewritten with capacity and reverse refs. A full new scene-template closure
+would require repinning many dependent profiles; an independently approved,
+versioned eligibility/capacity adjunct under the Spatial owner may instead
+check two existing directed edges without changing their semantics. Neither
+path has been authored, imported or activated. The historical S1 first-entry
+path remains pinned to version 1. Local movement remains closed without the
+approved current edge policy and visibility evidence.
 
 ### Open typed data gaps
 

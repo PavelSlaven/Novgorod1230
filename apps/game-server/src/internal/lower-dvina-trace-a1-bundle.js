@@ -114,6 +114,13 @@ export function validLowerDvinaTraceActionProductionProfile(value) {
   return validProfile(value);
 }
 
+export function validNeutralActionProductionProfile(value) {
+  return value?.schema === 'rus.live_world_runtime.action_production_profile.v1'
+    && [value.profile_id, value.context_ref, value.policy_ref].every((entry) =>
+      typeof entry === 'string' && entry.trim().length > 0)
+    && validProfileMechanics(value);
+}
+
 export function validLowerDvinaTraceActionProductionPlanProfile(value) {
   const proposal = value?.transition_proposal;
   return proposal?.context_pin?.context_ref
@@ -139,14 +146,18 @@ export function validLowerDvinaTraceActionProductionPlanProfile(value) {
 }
 
 function validProfile(value) {
+  return value?.schema === 'rus.lower_dvina_trace_action_production_profile.v1'
+    && value.profile_id === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
+    && validProfileMechanics(value);
+}
+
+function validProfileMechanics(value) {
   return exact(value, ['schema', 'profile_id', 'revision', 'status',
     'context_ref', 'policy_ref', 'policy_version', 'max_new_entities',
     'allowed_access_states', 'allowed_identity_modes', 'allowed_origins',
     'allowed_result_classes', 'allowed_output_classes', 'source_policy',
     'tool_policy', 'execution_policy', 'model_authority',
     'mechanics_owner', 'persistence_owner', 'fallback_policy'])
-    && value.schema === 'rus.lower_dvina_trace_action_production_profile.v1'
-    && value.profile_id === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
     && value.revision === 1 && value.status === 'approved'
     && value.policy_version === 1 && value.max_new_entities === 4
     && same(value.allowed_access_states, ['immediate', 'quick'])

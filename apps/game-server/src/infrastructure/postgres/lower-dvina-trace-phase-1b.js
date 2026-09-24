@@ -12,6 +12,9 @@ import {
 import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
 import { createRuntimeCatalogLoader, loadApprovedProceduralCompiledCatalog } from '@rus/runtime-catalog';
 import { createPostgresWorldBaseReader } from './world-base.js';
+import { readCurrentNaturalPerceptionFacts } from './g4-natural-perception-reader.js';
+import { readInitialCanonicalNaturalSourceState } from './lower-dvina-trace-phase-2-initial-state.js';
+import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 export {
   readPartyDatabaseSchemaSnapshot,
   readWorldBaseReferenceSnapshot
@@ -28,11 +31,17 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   approvedActorCatalog = null,
   actorBaseAttributesBinding = null,
   runtimeCatalogLoader = null,
+  targetStartRuntime = null,
   rootDir = process.cwd()
 } = {}) {
   requirePool(partyPool, 'partyPool');
   requirePool(worldPool, 'worldPool');
   assertProductionPin(release, runtimeCatalogPin);
+  if (targetStartRuntime != null && (targetStartRuntime.itemPin?.activation_event_id !== runtimeCatalogPin.activation_event_id
+    || targetStartRuntime.profile?.scenario_id !== release.scenario_binding_id
+    || targetStartRuntime.profile?.manifest_digest !== release.scenario_profile_exact_pins?.phase_1a_manifest_digest)) {
+    fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Target start runtime must match the exact release and catalog event.');
+  }
   const repository = createLowerDvinaTracePhase1ARepository({
     query: partyPool.query.bind(partyPool)
   });
@@ -65,7 +74,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         domainCatalog] =
         await Promise.all([
           readPartyDatabaseSchemaSnapshot(partyPool),
-          readWorldBaseReferenceSnapshot(
+          targetStartRuntime ? targetStartRuntime.materialization_inputs.world_base_reference_snapshot : readWorldBaseReferenceSnapshot(
             worldPool,
             request.world_compatibility
           ),
@@ -106,14 +115,15 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         stage25Ports,
         worldKnowledge,
         ...(authoredProfile == null ? {} : {
-          scenarioBundleLoader: async () => ({
+          scenarioBundleLoader: async () => targetStartRuntime ? authoredProfile : ({
             ...structuredClone(authoredProfile),
             definition: {
               schema: 'rus.live_world_runtime.authored_start_definition.v1',
               ...structuredClone(authoredProfile)
             }
           }),
-          materializePartyInstance: materializeAuthoredStartPartyInstance,
+          materializePartyInstance: (input) => materializeAuthoredStartPartyInstance({
+            ...(targetStartRuntime?.materialization_inputs ?? {}), ...input }),
           validatePlayerDossier: (result) => result.validation_report
         }),
         rootDir
@@ -182,7 +192,26 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
       }
     }),
     loadInternal: (partyId) => repository.loadInternal(partyId),
-    loadVisible: (partyId) => repository.loadVisible(partyId)
+    loadVisible: (partyId) => repository.loadVisible(partyId),
+    ...(targetStartRuntime == null ? {} : {
+      async loadNaturalScenePerceptionInput({ partyId, actorId }) {
+        const transaction = await partyPool.connect();
+        try {
+          await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          const { domain_catalog: verifiedCatalog } = targetStartRuntime.materialization_inputs;
+          const currentFacts = await readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
+            verifiedCatalog, pin: runtimeCatalogPin, worldBaseReader: targetStartRuntime.worldBaseReader,
+            readCurrentSourceState: (request) => readInitialCanonicalNaturalSourceState({ ...request,
+              rule_ref: { id: targetStartRuntime.initialRule.rule.id, version: targetStartRuntime.initialRule.rule.version } }) });
+          const input = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin: runtimeCatalogPin, currentFacts });
+          await transaction.query('COMMIT');
+          return input;
+        } catch (error) {
+          await transaction.query('ROLLBACK');
+          throw error;
+        } finally { transaction.release(); }
+      }
+    })
   });
 }
 

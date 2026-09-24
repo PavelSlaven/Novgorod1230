@@ -28,6 +28,12 @@ deprecated bindings v1/v2 читаются по собственным persisted
   and never owns SQL or a transaction.
 - `./spatial-v3`: `createSpatialV3Repository`, `createCombinedWritePlanCommitter`; `./spatial-v3-domain-integration`: placement integrator/mutation service.
 
+Spatial repository `loadExpansionState({party_id, g4_id})` reads the normalized
+G4 ledgers, sites, continuation chains, frontiers, reservations, scene topology,
+site connections, endpoint bindings and scene journey locations in one PostgreSQL statement. The result is immutable and scoped to
+one party and G4. The caller owns the transaction and P16 locks; the repository
+does not compute capacity, select templates or write expansion state.
+
 The target repository exposes explicit-column reads for perception replay,
 reaction consequence, knowledge merge result and target-only knowledge state.
 It never combines legacy rows with the `4.4.0-target.1` branch and remains

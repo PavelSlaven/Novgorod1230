@@ -13,6 +13,8 @@ import { buildAuthoredOpeningVisibleContext } from
   './lower-dvina-trace-opening.js';
 import { buildVisibleContextAuditApproval,
   computeVisibleContextPackageDigest } from '@rus/contracts';
+import { projectG4NaturalPerception } from './g4-natural-perception.js';
+import { buildCanonicalOpeningVisibleContext } from './canonical-opening-context.js';
 
 export async function startLowerDvinaTrace({
   requestId,
@@ -131,10 +133,25 @@ export async function startLowerDvinaTrace({
       throw serverError('AUTHORED_OPENING_NARRATOR_MISSING',
         'Authored opening narration is unavailable.', { status: 503 });
     }
-    const openingPackage = buildAuthoredOpeningVisibleContext({
+    let naturalScenePerception = null;
+    let canonicalSourceBinding = null;
+    if (typeof traceStartAdapter.loadNaturalScenePerceptionInput === 'function') {
+      const perceptionInput = await traceStartAdapter.loadNaturalScenePerceptionInput({
+        partyId, actorId: internal.player.instance_id, internal, visible });
+      naturalScenePerception = projectG4NaturalPerception({ input: perceptionInput,
+        partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id });
+      canonicalSourceBinding = perceptionInput.canonical_source_binding ?? null;
+    }
+    const buildOpeningContext = canonicalSourceBinding == null
+      ? buildAuthoredOpeningVisibleContext : buildCanonicalOpeningVisibleContext;
+    const openingPackage = buildOpeningContext({
       requestId: requestId, visible, internal,
-      approvedProjection: publication.public_projection
+      approvedProjection: publication.public_projection, naturalScenePerception, canonicalSourceBinding
     });
+    if (openingPackage.opening_reader_control?.pass !== true) {
+      throw serverError('AUTHORED_OPENING_CONTEXT_INCOMPLETE',
+        'Opening reader control must pass before narrator approval.', { status: 409 });
+    }
     const openingDigest = computeVisibleContextPackageDigest(openingPackage);
     const approval = buildVisibleContextAuditApproval({
       request_id: requestId, pass: true,

@@ -95,10 +95,20 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       const resolvedBinding = typeof authoredRuntimeBindingResolver === 'function'
         ? authoredRuntimeBindingResolver(row.stage26_result?.runtime_binding)
         : null;
-      const canonicalInitialState = row.state_payload?.schema === 'rus.authored_start_initial_party_snapshot.v3';
-      if (canonicalInitialState && resolvedBinding?.snapshot_schema !== row.state_payload.schema) {
+      const authoredInitialState = row.state_payload?.schema === 'rus.authored_start_initial_party_snapshot.v3';
+      const naturalPin = resolvedBinding?.initial_natural_perception_rule_pin;
+      const canonicalInitialState = naturalPin != null
+        || row.state_payload?.initial_spatial_v3?.canonical_scene_proposal != null;
+      if (authoredInitialState && resolvedBinding?.snapshot_schema !== row.state_payload.schema) {
         throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
           'Canonical initial turn runtime binding is unavailable.', { status: 409 });
+      }
+      if (canonicalInitialState && (!authoredInitialState || !naturalPin
+        || !Array.isArray(row.state_payload.policy_profile_pins)
+        || row.state_payload.policy_profile_pins.filter((pin) => pin.key === naturalPin.key
+          && pin.revision === naturalPin.revision && pin.digest === naturalPin.digest).length !== 1)) {
+        throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
+          'Canonical initial turn perception rule pin is unavailable.', { status: 409 });
       }
       if (includeCurrentVisibleContext && canonicalInitialState
         && typeof loadInitialNaturalScenePerceptionInput !== 'function') {

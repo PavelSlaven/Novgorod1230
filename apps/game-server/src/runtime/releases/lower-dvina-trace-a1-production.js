@@ -6,13 +6,14 @@ import { actionProducedResultSemanticContract } from
   '@rus/items-property/action-produced-result';
 import { createActionProducedAtomicWritePlan } from
   '../../infrastructure/postgres/action-produced-atomic-write-plan.js';
-import { loadActionProducedCommittedContext } from
+import { loadActionProducedCommittedContext, assertActionProducedTargetApplicability } from
   '../../infrastructure/postgres/action-produced-committed-context-loader.js';
 import { INVALID_ACTION_PRODUCED_DATA,
   snapshotActionProducedPersistenceData as snapshot } from
   '../../infrastructure/postgres/action-produced-persistence-boundary.js';
 import { admitA1PreAttempt, contextForA1Operation,
   resolveA1OperationScope } from './lower-dvina-trace-a1-pre-attempt.js';
+import { validNeutralActionProductionProfile } from '../../internal/lower-dvina-trace-a1-bundle.js';
 
 export function createLowerDvinaTraceA1ProductionResolverFactory({
   pool, loadedProfile
@@ -21,6 +22,14 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
   if (!pool?.query) {
     throw new TypeError('A1 production resolver dependencies are required.');
   }
+  const loadCommittedContext = async (input) => {
+    const loaded = await loadActionProducedCommittedContext(pool, input);
+    if (loadedProfile.target_applicability != null) {
+      await assertActionProducedTargetApplicability(pool, input.party_id, loaded.output_destination_pin?.scene_position_id,
+        loadedProfile.target_applicability);
+    }
+    return loaded;
+  };
   const actionProductionContract = Object.freeze({
     ...actionProducedResultSemanticContract(),
     max_new_entities: profile.max_new_entities,
@@ -40,7 +49,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         envelope, envelope.operation, profile, requireEvidence);
       const changeSetId = resolveChangeSetId({ envelope, partyId, rootTurnId,
         turnNumber });
-      const loaded = await loadActionProducedCommittedContext(pool, {
+      const loaded = await loadCommittedContext({
         party_id: partyId, actor_ref: actorRef, root_turn_id: rootTurnId,
         action_ref: actionRef, step_index: stepIndex,
         context_ref: profile.context_ref,
@@ -62,7 +71,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       async referencesApplicable(rawInput) {
         const input = referenceApplicabilityInput(rawInput, partyId, profile);
         try {
-          await loadActionProducedCommittedContext(pool, input);
+          await loadCommittedContext(input);
           return true;
         } catch (error) {
           if (['ACTION_PRODUCED_ITEM_ACCESS_DENIED',
@@ -72,7 +81,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       },
       async actionProductionCapability(rawInput) {
         const input = referenceApplicabilityInput(rawInput, partyId, profile);
-        const loaded = await loadActionProducedCommittedContext(pool, input);
+        const loaded = await loadCommittedContext(input);
         const source = loaded.source_snapshots[0];
         const item = loaded.row_pins.find(({ item_id: id }) =>
           id === source.entity_ref)?.item;
@@ -87,7 +96,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         }
         const input = referenceApplicabilityInput(rawInput, partyId, profile);
         try {
-          const loaded = await loadActionProducedCommittedContext(pool, input);
+          const loaded = await loadCommittedContext(input);
           selectActionProducedPropertySource(loaded.source_snapshots);
           return true;
         } catch (error) {
@@ -233,6 +242,11 @@ function resolveChangeSetId({ envelope, partyId, rootTurnId, turnNumber }) {
 }
 
 function validateLoadedProfile(value) {
+  if (value?.schema === 'rus.live_world_runtime.a1_loaded_profile.v1'
+    && validNeutralActionProductionProfile(value.profile)
+    && /^[a-f0-9]{64}$/u.test(value.artifact_digest ?? '')
+    && typeof value.target_applicability?.world_revision_id === 'string'
+    && Array.isArray(value.target_applicability.applicability)) return value.profile;
   const profile = value?.schema === 'rus.lower_dvina_trace_a1_loaded_profile.v1'
     ? value.profile : null;
   if (profile?.schema

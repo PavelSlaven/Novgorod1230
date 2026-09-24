@@ -41,6 +41,28 @@ NewGame транзакции; подготовленный G6 при этом н
 
 ## Публичный API
 
+`compileGeneratedNpcBindings` принимает exact P12 NPC closure и scene proposal.
+Closure содержит ровно один exact selector: generated template либо canonical G5.
+Версионированный RNG выбирает количество, профиль и применимый regional context
+по утверждённым весам; затем собираются входы существующих NPC/Stage 16 owners.
+Позиции определяет утверждённая placement policy. Arrival резервируется для
+входящего игрока; water G6 без существующего carrier-supported position имеет
+явно authored пустой baseline. Missing profile/variant/position — typed data gap.
+Выбор сохраняется в selection trace; компилятор не читает БД и не коммитит.
+Caller связывает exact target runtime item authority до вызова: отдельный
+`equipment_catalog_digest` передаётся Stage 16, а `world_catalog_digest`
+сохраняет смысл world pin для actor generation. Один active marker не
+подменяет проверку каталога, release pin и activation readback у caller.
+
+`materializeApprovedProceduralNpc` допускает exact approved
+`regional_context_ref` при наличии `g4_ref` и ровно одного
+`generation_template_ref` либо `canonical_g5_ref`.
+Перед RNG проверяются world revision, G4/site-source versions, role/occupation
+и provenance. Regional context сохраняется в `semantic_state`; внешность и
+языки из происхождения не выводятся, неизвестный language repertoire остаётся
+`null`. Это не perception-проекция. Historical callers без regional binding
+сохраняют прежний результат; draft authoring не принимается.
+
 `materializeAuthoredStartPartyInstance` детерминированно материализует уже
 утверждённый authored-start profile: actors, relations, finite resources,
 geometry, body/time/environment и player-known facts. Функция не читает каталог,
@@ -100,6 +122,19 @@ schedule/current activity and private behavior/knowledge basis. Names remain
 absent without exact authored basis; required tools/clothing hard-block unless
 an active exact equipment mapping is supplied.
 
+An exact `clothing_profile_ref` resolves one approved sex/age/season variant
+after the existing appearance draw. Its required slots and explicit personal
+property binding produce actor-bound garment candidates for Stage 16. Missing
+or ambiguous variants block; the owner never changes the selected demographic
+or draws appearance again to fit available clothing.
+
+`materializeApprovedActorEquipment` uses the same Stage 16 placement owner for
+NPC/player garments and carried functional items. Equipped slot names come from
+an exact approved item visual profile, including footwear. Carried candidates
+use an approved `hands`, `external` or `external_load` placement without a
+garment slot or visual profile. Every item retains its exact actor owner,
+holder and controller. NPC-only materialization does not require a player row.
+
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не
 читает БД, не выполняет commit и не активирует production O1 route. Он только
 валидирует code-owned inputs и возвращает immutable logical state/result.
@@ -150,6 +185,52 @@ environment берутся из committed party state при построени�
 
 ## Контракты
 
+`materializeG4NaturalBaseline` selects all 13 natural layers from one exact
+G4/version/world and compatible scene template in a verified natural catalog.
+It resolves seasonal state, light and weather from the existing approved
+Temporal environment with exact source record IDs and versions from the
+compiled profile. Missing applicability or source state fails. The machine
+baseline is not player-visible; the visibility owner must establish the
+perceived subset. No family fallback, LLM or party writes occur.
+
+`deriveSpatialV3ExpansionCapacity` in `./spatial-v3-materialization` computes
+committed and reservable capacity with deterministic bipartite max-flow over
+the exact slot/template limits and normalized party rows. Committed generated
+sites consume capacity even after destruction; only live, unexpired technical
+reservations reduce reservable capacity. Candidate filtering preserves the
+remaining feasible allocation. No capacity counter or alternate ledger is
+persisted; the caller supplies the lease clock and locks the read/commit scope.
+
+`selectSpatialV3Expansion` consumes the exact approved expansion rule set
+projection from P12. Supported machine strategies preserve one selected
+directional exit (`through_same_exit`, `existing_exit_reachable`) and use the
+existing `mulberry32_v1` owner. Its structural operation identity contains
+`party_id`, `world_revision_id`, `g4_profile_id`, `g4_profile_version`,
+`expansion_slot_key` (`id@version`) and `candidate_ordinal`. The P16 key is
+`resolve_frontier:` plus the canonical digest of that identity; the seed adds
+this key as `idempotency_basis`. Request text and wall clock are not seed inputs.
+Ordinal zero draws the approved terminal length, then the capacity-compatible
+template; later ordinals use the committed terminal length and draw a template.
+The immutable `choices` projection records each actual RNG draw, ordered
+candidate IDs and digest, selected ID and slot key for the existing
+materialization choice table. Producing this trace consumes no extra draws.
+This pure selection boundary does not activate a production release or commit
+topology. The production caller must supply the locked snapshot, preserve the
+terminal ordinal in its continuation chain and compose all required domains
+through the existing P20/P16 owners.
+
+`materializeSpatialV3GeneratedScene` maps exact approved scene G6/position/
+movement slots and exact generated or canonical G5 acoustic baselines to immutable
+normalized row proposals. Missing ambient authoring never becomes zero.
+Unsupported portal/structure/visibility/acoustic-relation materialization
+returns a typed gap before any rows are committed. `materializeSpatialV3Expansion`
+composes the initial entry binding, finite continuation chain, generated G5,
+connection endpoints, consumed reservation and successor frontier under the
+caller-supplied locked snapshot. Terminal resolution reuses the exact canonical
+exit G5 scene or includes its exact missing site, scene and endpoint rows in the
+same proposal, using the canonical source binding and approved acoustic pins. These functions never
+move a traveller, advance time, approve authoring or write to a database.
+
 Принимает `world_materialization_request_v2` либо stage-specific approved bundle. Authoring candidates ссылаются на будущие экземпляры через однозначные `slot_key`, которые код разрешает после deterministic selection. Generic result содержит стартовую позицию и исполняемый, но не записанный materializer-ом `proposed_write_set` для нормализованных таблиц `party_runtime`. Profile/layout/slot/template refs, capacities, access, visibility, quantity, condition, legal status, causal basis и property policy обязательны; пропуск завершает операцию typed failure.
 
 ## Допустимые зависимости
@@ -196,6 +277,13 @@ materialization boundary; значимая география, люди и hidde
 соответствующей authority. Narration не восполняет отсутствующий источник.
 
 ## Ошибки
+
+`materializeAuthoredStartPartyInstance` также принимает отдельно загруженный
+canonical start profile. Эта ветка использует точную canonical scene closure,
+утверждённые player transfer/basis, существующие appearance/attributes/Temporal,
+NPC composition и Stage 16 owners. Она не создаёт S1, вторую локацию или
+фиксированного NPC. Runtime item/actor pins и operational activation проверяет
+composition до вызова; результат остаётся proposal для Stage 24/25.
 
 `MaterializationError` с машиночитаемым code и immutable details.
 

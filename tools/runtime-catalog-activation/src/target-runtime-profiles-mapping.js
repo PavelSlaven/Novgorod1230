@@ -11,8 +11,9 @@ export async function buildTargetRuntimeProfilesMapping({ repositoryRoot = proce
   const bytes = await readFile(resolve(repositoryRoot, candidatePath));
   const candidate = JSON.parse(bytes);
   const approval = JSON.parse(await readFile(resolve(repositoryRoot,
-    'data/world-catalogs/novgorod/m2c-sol-data-approval.json'), 'utf8'));
-  if (approval.decision !== 'APPROVE_DATA_ONLY'
+    'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json'), 'utf8'));
+  if (approval.schema !== 'rus.m2c_supplemental_data_approval.v1'
+      || approval.decision !== 'APPROVE_DATA_ONLY'
       || approval.target_runtime_profiles_candidate_approval?.candidate_sha256 !== digest(bytes)
       || candidate.schema !== 'rus.live_world_runtime.target_runtime_profiles_authoring_candidate.v1'
       || candidate.status !== 'pending_independent_data_approval'

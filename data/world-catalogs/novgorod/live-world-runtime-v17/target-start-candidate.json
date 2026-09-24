@@ -44,7 +44,7 @@
   },
   "expansion_binding": {
     "manifest_path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json",
-    "manifest_sha256": "1899e9b286dcd163b9879e90698fca5dd86899fc4e5c410a4d298f05304d49ce",
+    "manifest_sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133",
     "profile_ref": { "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge", "version": 1 },
     "eligible_generated_template_ref": { "id": "m2c_g5_forest__forest_resource_use__pine_ridge", "version": 1 },
     "generation_owner": "@rus/materialization",

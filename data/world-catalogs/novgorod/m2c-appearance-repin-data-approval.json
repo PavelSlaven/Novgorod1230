@@ -1,0 +1,29 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent exact-data review",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "upstream_approval_path": "data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json",
+  "target_start_candidate_sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+  "target_player_basis_candidate_sha256": "7a5c9f76a28e9aa6a5820ff83a60a17ebb467a3b48841d0798d3588e3c3e65e1",
+  "target_appearance_transfer_approval": {
+    "candidate_sha256": "081e57ca0600dc886c082a7ddb1c8dcd42a0ddfaadbff190f1e68dcb5ee4d049",
+    "scope": "Exact insert-only target world revision and 84 carried appearance rows from approved v4; only the independently approved player basis and target start SHA pins changed",
+    "excludes": "PostgreSQL import/readback, player or NPC runtime binding, historical actor changes and release activation"
+  },
+  "target_appearance_mapped_approval": {
+    "source_candidate_sha256": "081e57ca0600dc886c082a7ddb1c8dcd42a0ddfaadbff190f1e68dcb5ee4d049",
+    "import_manifest_sha256": "3fe1a37e5bb3bd75b8cfb4955de21804cde27f4deb2b618e99544027fa31fb60",
+    "dataset_sha256": {
+      "world_revisions": "2220761b2b747037ebfc123c730bd9b9b1869e133b928671668fcc9a9df8fa63",
+      "region_category_options": "6d1fc6a1b7d90964b02be20a3613d5cffb122fadda40dd6aa485bcb3d3d6ace2",
+      "region_demographic_profile_entries": "8084b217c608f956c3c7b40e543ebe4b889c9e6fb19eddc282891be3aba03cce",
+      "region_appearance_profile_entries": "969af82c61a7c1d5a7d2588571a051328949c82a0479b1c3556326cac0df4f8f"
+    },
+    "scope": "Exact approved-status mapping of one target world revision, 42 region options, six demographic entries and 36 appearance entries; unchanged dependencies, foreign-key order, limits and dataset bytes",
+    "excludes": "PostgreSQL import/readback, player or NPC runtime binding, historical population claims and release activation"
+  },
+  "historical_approval_path": "data/world-catalogs/novgorod/m2c-sol-data-approval.json",
+  "activation_authorized": false
+}

@@ -12,8 +12,8 @@
     "manifest_path": "data/world-catalogs/novgorod/spatial-v3/manifest.json",
     "manifest_sha256": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e"
   },
-  "source_basis_sha256": "62b5f1e2dc09f75671d74756d8ca3c0f0bcd9c8bf2d0332abb252a377d8b9658",
-  "source_start_sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
+  "source_basis_sha256": "7a5c9f76a28e9aa6a5820ff83a60a17ebb467a3b48841d0798d3588e3c3e65e1",
+  "source_start_sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
   "source_directory": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets",
   "source_tables": [
     {

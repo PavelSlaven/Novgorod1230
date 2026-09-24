@@ -1,11 +1,11 @@
 {
   "schema": "rus.live_world_runtime.target_runtime_profiles_mapping_manifest.v1",
   "source_candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-runtime-profiles-candidate.json",
-  "source_candidate_sha256": "8a5e2659008c83668f8f37723580aac78e04df20b35a40500449e426c1eab439",
+  "source_candidate_sha256": "b92313c0bf625f7413ef09e62df9960e76aed09c82bd8c4d9534e8e3c99b7506",
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
   "dataset": {
     "path": "target-runtime-profiles-approved.json",
-    "sha256": "0dbf387fba464ce024cb686a2ed0252ea807f93798f6f63daa7b512ee12365ca"
+    "sha256": "ed1f27c48bdf4c496c4c70588701ac13f9ae340b16e7cb1a61a50489111eccdb"
   },
   "authority": {
     "data_mapping_only": true,

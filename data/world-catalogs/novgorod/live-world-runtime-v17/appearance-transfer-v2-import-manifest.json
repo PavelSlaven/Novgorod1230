@@ -11,7 +11,7 @@
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
   "catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
   "source_candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v2-candidate.json",
-  "source_candidate_sha256": "d870b05b973e1403d008ec7809438bfc3ab754a49f247fb8476e846d802ded66",
+  "source_candidate_sha256": "081e57ca0600dc886c082a7ddb1c8dcd42a0ddfaadbff190f1e68dcb5ee4d049",
   "datasets": [
     {
       "table": "world_revisions",

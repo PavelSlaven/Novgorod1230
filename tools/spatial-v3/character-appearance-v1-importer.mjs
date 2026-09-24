@@ -74,7 +74,7 @@ export async function buildTargetAppearanceTransferImportSql({ root = process.cw
   const bytes = await readFile(resolve(candidateRoot, 'appearance-transfer-v2-import-manifest.json'));
   const manifest = JSON.parse(bytes);
   const approval = JSON.parse(await readFile(resolve(root,
-    'data/world-catalogs/novgorod/m2c-sol-data-approval.json')));
+    'data/world-catalogs/novgorod/m2c-appearance-repin-data-approval.json')));
   if (approval.decision !== 'APPROVE_DATA_ONLY'
     || approval.target_appearance_mapped_approval?.import_manifest_sha256 !== sha256(bytes)
     || JSON.stringify(manifest) !== JSON.stringify(expectedManifest)) {

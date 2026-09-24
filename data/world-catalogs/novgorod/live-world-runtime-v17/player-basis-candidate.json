@@ -8,10 +8,10 @@
   "activation_authorized": false,
   "target_start": {
     "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
-    "sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
+    "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
     "scenario_id": "novgorod_pine_ridge_approach_v1",
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
-    "player_transfer_sha256": "48b0abdc41aee283b5403a336ec2ebac0710c31ba614283d3ecca01082730b2f"
+    "player_transfer_sha256": "e01496e772e9eb8b624491b181c915441da8930c87521723d9c4e3a7b5042c37"
   },
   "applicability": { "actor_kind": "player_character", "actor_slot_ref": "player", "new_game_only": true, "existing_players": "preserve_committed_snapshot" },
   "appearance": {

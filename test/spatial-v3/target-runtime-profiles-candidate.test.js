@@ -79,7 +79,19 @@ test('target runtime authoring preserves mechanics and makes unsupported authori
 
 test('reviewable approved mapping reproduces frozen bytes and changes only explicit statuses', async () => {
   const mapping = await buildTargetRuntimeProfilesMapping({ repositoryRoot: fileURLToPath(root) });
+  const approval = read('data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json');
   const base = 'data/world-catalogs/novgorod/live-world-runtime-v17/';
+  assert.equal(approval.decision, 'APPROVE_DATA_ONLY');
+  assert.equal(approval.target_runtime_profiles_candidate_approval.candidate_sha256,
+    createHash('sha256').update(readFileSync(new URL(`${base}target-runtime-profiles-candidate.json`, root)))
+      .digest('hex'));
+  assert.equal(approval.target_runtime_profiles_mapped_approval.source_candidate_sha256,
+    approval.target_runtime_profiles_candidate_approval.candidate_sha256);
+  assert.equal(approval.target_runtime_profiles_mapped_approval.manifest_sha256,
+    createHash('sha256').update(readFileSync(new URL(`${base}target-runtime-profiles-manifest.json`, root)))
+      .digest('hex'));
+  assert.equal(approval.target_runtime_profiles_mapped_approval.dataset_sha256,
+    mapping.manifest.dataset.sha256);
   assert.equal(readFileSync(new URL(`${base}target-runtime-profiles-manifest.json`, root), 'utf8'),
     `${JSON.stringify(mapping.manifest, null, 2)}\n`);
   const mappedBytes = readFileSync(new URL(`${base}${mapping.manifest.dataset.path}`, root));

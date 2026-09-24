@@ -8,10 +8,10 @@ export async function buildTargetAppearanceTransferCandidate({ repositoryRoot = 
   const basisBytes = await readFile(resolve(base, 'live-world-runtime-v17/player-basis-candidate.json'));
   const startBytes = await readFile(resolve(base, 'live-world-runtime-v17/target-start-candidate.json'));
   const basis = JSON.parse(basisBytes); const start = JSON.parse(startBytes);
-  const approval = JSON.parse(await readFile(resolve(base, 'm2c-sol-data-approval.json'), 'utf8'));
+  const approval = JSON.parse(await readFile(resolve(base, 'm2c-appearance-repin-data-approval.json'), 'utf8'));
   if (approval.decision !== 'APPROVE_DATA_ONLY'
-    || approval.target_player_basis_approval?.candidate_sha256 !== digest(basisBytes)
-    || approval.target_start_proposal_approval?.candidate_sha256 !== digest(startBytes)) {
+    || approval.target_player_basis_candidate_sha256 !== digest(basisBytes)
+    || approval.target_start_candidate_sha256 !== digest(startBytes)) {
     throw new Error('TARGET_APPEARANCE_SOURCE_APPROVAL_REQUIRED');
   }
   const source = {};
@@ -94,9 +94,10 @@ export async function buildTargetAppearanceTransferImportArtifacts({ repositoryR
   const bytes = await readFile(resolve(repositoryRoot, candidatePath));
   const candidate = JSON.parse(bytes);
   const approval = JSON.parse(await readFile(resolve(repositoryRoot,
-    'data/world-catalogs/novgorod/m2c-sol-data-approval.json'), 'utf8'));
+    'data/world-catalogs/novgorod/m2c-appearance-repin-data-approval.json'), 'utf8'));
   if (approval.decision !== 'APPROVE_DATA_ONLY'
     || approval.target_appearance_transfer_approval?.candidate_sha256 !== digest(bytes)
+    || approval.target_appearance_mapped_approval?.source_candidate_sha256 !== digest(bytes)
     || JSON.stringify(candidate) !== JSON.stringify(await buildTargetAppearanceTransferCandidate({ repositoryRoot }))) {
     throw new Error('TARGET_APPEARANCE_EXACT_DATA_APPROVAL_REQUIRED');
   }
@@ -120,5 +121,9 @@ export async function buildTargetAppearanceTransferImportArtifacts({ repositoryR
     existing_dependencies: candidate.existing_dependencies,
     authority: { data_mapping_only: true, import_approval_required: true, activation_authorized: false }
   };
+  if (approval.target_appearance_mapped_approval?.import_manifest_sha256 !== digest(`${JSON.stringify(manifest, null, 2)}\n`)
+    || manifest.datasets.some(({ table, sha256 }) => approval.target_appearance_mapped_approval?.dataset_sha256?.[table] !== sha256)) {
+    throw new Error('TARGET_APPEARANCE_EXACT_IMPORT_MAPPING_APPROVAL_REQUIRED');
+  }
   return { manifest, datasets };
 }

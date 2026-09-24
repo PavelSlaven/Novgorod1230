@@ -8,7 +8,7 @@
   "activation_authorized": false,
   "target_start": {
     "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
-    "sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
+    "sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
     "scenario_id": "novgorod_pine_ridge_approach_v1",
     "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e"

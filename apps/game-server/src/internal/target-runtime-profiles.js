@@ -9,9 +9,11 @@ import { validNeutralActionProductionProfile } from './lower-dvina-trace-a1-bund
 export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), worldRevisionId, verifiedCatalog } = {}) {
   const root = 'data/world-catalogs/novgorod/live-world-runtime-v17';
   const approval = JSON.parse(await readFile(resolve(rootDir,
-    'data/world-catalogs/novgorod/m2c-sol-data-approval.json'), 'utf8'));
+    'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json'), 'utf8'));
   const pin = approval.target_runtime_profiles_mapped_approval;
-  if (!pin?.manifest_sha256) gap();
+  if (approval.schema !== 'rus.m2c_supplemental_data_approval.v1'
+    || approval.decision !== 'APPROVE_DATA_ONLY' || !pin?.manifest_sha256
+    || pin.source_candidate_sha256 !== approval.target_runtime_profiles_candidate_approval?.candidate_sha256) gap();
   const manifestBytes = await readFile(resolve(rootDir, root, 'target-runtime-profiles-manifest.json'));
   const manifest = JSON.parse(manifestBytes);
   if (hash(manifestBytes) !== pin.manifest_sha256
@@ -19,7 +21,7 @@ export async function loadTargetRuntimeProfiles({ rootDir = process.cwd(), world
     || manifest.world_revision_id !== worldRevisionId
     || manifest.dataset?.path !== 'target-runtime-profiles-approved.json') gap();
   const bytes = await readFile(resolve(rootDir, root, manifest.dataset.path));
-  if (hash(bytes) !== manifest.dataset.sha256) gap();
+  if (hash(bytes) !== manifest.dataset.sha256 || hash(bytes) !== pin.dataset_sha256) gap();
   const data = JSON.parse(bytes);
   if (data.status !== 'approved' || data.target?.world_revision_id !== worldRevisionId
     || data.profiles?.turn_step?.status !== 'approved'

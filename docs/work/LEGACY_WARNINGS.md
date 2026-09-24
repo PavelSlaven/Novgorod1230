@@ -20,7 +20,7 @@
 | 003 | `DOCUMENTS/`, `legacy/` | legacy-корпус и исходная система | [#127](https://github.com/PavelSlaven/Novgorod1230/issues/127) |
 | 004 | `corpus/DOCUMENTS/weapons_and_armor.txt`, `world_regions.txt` | legacy_mirror: байты неизменны | — |
 | 007 | `llm_documentation_navigation.md`, `development_rules.txt`, `map_g0_g4_workflow.txt` | ловушки в именах и статусах | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
-| 008 | `CONTRACT_INDEX.md`, `retrieval-policy.json`, шапки документов | три системы статусов | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
+| 008 | `CONTRACT_INDEX.md`, `corpus-manifest.json`, шапки документов | три системы статусов | [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112) |
 | 010 | `docs/work/temporal-world-v4/`, `docs/implementation/`, `docs/migration/` | evidence-пути, которые читают tools и тесты | — |
 | 011 | файлы с закреплённым digest | байты закреплены хешами | — |
 | 012 | `tools/spatial-v3/*`, `tools/docs-tools/test/*` | закрепления фраз в документах | [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126) |
@@ -58,7 +58,7 @@
 - **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112)
 
 ### LW-008 — три системы статусов
-- **Что.** Метки CONTRACT_INDEX §2, статусы `active/proposed/deprecated` в `retrieval-policy.json` и строки «Status:» в шапках документов.
+- **Что.** Метки CONTRACT_INDEX §2, поле `status` (`active/proposed/deprecated`) записей `data/knowledge-source/corpus-manifest.json` (фильтр RAG — `default_statuses` в `retrieval-policy.json`) и строки «Status:» в шапках документов корпуса и ADR.
 - **Как жить.** Нормативный статус — CONTRACT_INDEX; retrieval-статус влияет только на RAG-выдачу.
 - **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112)
 

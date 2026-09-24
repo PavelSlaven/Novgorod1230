@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { compileApprovedActorAppearanceEntries } from '@rus/materialization';
+import { buildTargetAppearanceTransferImportSql } from '../../spatial-v3/character-appearance-v1-importer.mjs';
 import { buildTargetAppearanceTransferCandidate, buildTargetAppearanceTransferImportArtifacts } from '../src/target-appearance-transfer.js';
 
 test('target appearance transfer preserves approved option semantics and creates only new target IDs', async () => {
@@ -48,4 +49,7 @@ test('reviewed target appearance mapping promotes only the exact approved candid
   }
   assert.equal(manifest.production_activation, false);
   assert.equal(manifest.authority.import_approval_required, true);
+  const sql = await buildTargetAppearanceTransferImportSql({ rollback: true });
+  assert.match(sql, /INSERT INTO world_base\.world_revisions/);
+  assert.match(sql, /ROLLBACK;\n$/);
 });

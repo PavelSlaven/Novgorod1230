@@ -86,14 +86,31 @@ export async function activateActorBaseAttributes({ readPool, activationPool,
     let previousEvent = null;
     const replay = latest?.request_digest === request.request_digest;
     if (successor) {
-      previousEvent = replay ? (await client.query(
-        `SELECT event_id,event_sequence FROM world_base.runtime_catalog_activation_events
-          WHERE event_id=$1 AND catalog_scope=$2`,
-        [request.expected_previous_event.event_id,
-          request.target_binding.catalog_scope])).rows[0] ?? null : latest;
-      if (!previousEvent || previousEvent.event_id !== request.expected_previous_event.event_id
-          || Number(previousEvent.event_sequence) !== request.expected_previous_event.event_sequence) {
-        fail('ACTIVATION_PREVIOUS_EVENT_STALE', 'Actor successor predecessor changed.');
+      if (request.expected_previous_event == null) {
+        if (latest && !replay) {
+          fail('ACTIVATION_PREVIOUS_EVENT_STALE', 'Actor successor predecessor changed.');
+        }
+        const item = (await client.query(
+          `SELECT catalog_revision_id,catalog_digest
+             FROM world_base.runtime_catalog_activation_events
+            WHERE catalog_scope='item_container_materialization_v2'
+            ORDER BY event_sequence DESC LIMIT 1`)).rows[0];
+        if (request.party_preflight.party_count !== 0
+            || item?.catalog_revision_id !== request.import_request.parent_catalog.catalog_revision_id
+            || item?.catalog_digest !== request.import_request.parent_catalog.catalog_digest) {
+          fail('ACTOR_SUCCESSOR_FIRST_ACTIVATION_BLOCKED',
+            'First actor activation requires no parties and the active parent item catalog.');
+        }
+      } else {
+        previousEvent = replay ? (await client.query(
+          `SELECT event_id,event_sequence FROM world_base.runtime_catalog_activation_events
+            WHERE event_id=$1 AND catalog_scope=$2`,
+          [request.expected_previous_event.event_id,
+            request.target_binding.catalog_scope])).rows[0] ?? null : latest;
+        if (!previousEvent || previousEvent.event_id !== request.expected_previous_event.event_id
+            || Number(previousEvent.event_sequence) !== request.expected_previous_event.event_sequence) {
+          fail('ACTIVATION_PREVIOUS_EVENT_STALE', 'Actor successor predecessor changed.');
+        }
       }
     }
     const event = buildActivationEventFromVerifiedAttestation({

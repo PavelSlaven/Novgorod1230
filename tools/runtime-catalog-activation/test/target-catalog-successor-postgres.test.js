@@ -269,6 +269,17 @@ test('target item and actor successors preserve v6 parties through real PostgreS
     assert.deepEqual(historicalAfterStart.parties.find((row) => row.party_id === 'historical'), saved.parties[0]);
     assert.deepEqual(historicalAfterStart.pins.filter((row) => row.party_id === 'historical'), saved.pins);
     assert.deepEqual(historicalAfterStart.v6, saved.v6);
+    const noPredecessorRequest = buildActorBaseAttributesSuccessorActivationRequest({
+      importRequest, importResult, previousEvent: null,
+      partyPreflight: { party_count: 0, pinned_party_count: 0,
+        missing_domain_pin_count: 0, inflight_count: 0 }
+    });
+    await assert.rejects(activateActorBaseAttributes({ ...args,
+      request: noPredecessorRequest,
+      attestation: successorApproval(noPredecessorRequest, 'activation'),
+      partyPool: { query: async () => ({ rows: [{ party_count: 0,
+        pinned_party_count: 0, missing_domain_pin_count: 0, inflight_count: 0 }] }) }
+    }), { code: 'ACTIVATION_PREVIOUS_EVENT_STALE' });
   });
 
 function successorApproval(request, operation) {

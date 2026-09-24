@@ -112,10 +112,11 @@ export function buildActorBaseAttributesSuccessorActivationRequest({
   assert.equal(importResult.request_digest, importRequest.request_digest);
   assert.equal(importResult.target_catalog_digest, importRequest.target_catalog_digest);
   assert.equal(importResult.target_revision_id, importRequest.target_revision_id);
-  assert.ok(previousEvent?.event_id && Number.isSafeInteger(previousEvent.event_sequence)
-    && previousEvent.event_sequence > 0, 'ACTOR_SUCCESSOR_PREDECESSOR_REQUIRED');
   const row = importRequest.owner_rows[0].row;
   const preflight = buildActorBaseAttributesSuccessorPreflight(partyPreflight);
+  assert.ok(previousEvent == null ? preflight.party_count === 0
+    : previousEvent.event_id && Number.isSafeInteger(previousEvent.event_sequence)
+      && previousEvent.event_sequence > 0, 'ACTOR_SUCCESSOR_PREDECESSOR_REQUIRED');
   return seal({
     schema: ACTIVATION_SCHEMA, version: 2,
     status: 'pending_independent_runtime_approval',
@@ -124,8 +125,8 @@ export function buildActorBaseAttributesSuccessorActivationRequest({
     runtime_capability: 'actor_base_attributes_runtime_selection',
     import_request: importRequest,
     completed_import_readback: importResult,
-    expected_previous_event: { event_id: previousEvent.event_id,
-      event_sequence: previousEvent.event_sequence },
+    expected_previous_event: previousEvent == null ? null : {
+      event_id: previousEvent.event_id, event_sequence: previousEvent.event_sequence },
     party_preflight: preflight,
     target_binding: {
       catalog_scope: importRequest.catalog_scope,

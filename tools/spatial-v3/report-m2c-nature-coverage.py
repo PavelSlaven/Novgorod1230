@@ -24,6 +24,11 @@ KINDS = {
     "land_use": ("land_use_template_id", "land_use_templates", ("land_use_kind", "seasonal_pattern")),
     "place": ("place_template_id", "place_templates", ("place_kind", "summary")),
 }
+NATURE_SHARDS = {
+    "flora_fungi": ("wild-flora.json", "gameplay-flora-ecology-v3.json"),
+    "soil_geology_materials": ("terrain.json", "gameplay-granular-materials-v3.json"),
+    "medieval_regional_context": ("environment-ecology.json",),
+}
 
 
 def normalized(value):
@@ -44,10 +49,12 @@ def main():
                 by_template[(kind, template_id)].append(profile)
 
     entries = []
+    seed_by_kind = {}
     with tarfile.open(ARCHIVE, "r:gz") as archive:
         for kind, (id_key, seed_name, fields) in KINDS.items():
             seed_path = f"infra/world-base/{seed_name}.seed.json"
             seed = {row["id"]: row for row in read_json(ROOT / seed_path)}
+            seed_by_kind[kind] = seed
             member = f"{MEMBER_BASE}/novgorod_region_{seed_name}.tsv"
             stream = io.TextIOWrapper(archive.extractfile(member), encoding="utf-8-sig", newline="")
             for row in csv.DictReader(stream, delimiter="\t"):
@@ -76,8 +83,41 @@ def main():
                         for value in profile["natural_profile"]["layer_applicability"].values()
                     ),
                     "coverage": "exact_g4_profile" if matched else "no_exact_m2c_binding",
+                    "species_materialization": "typed_gap_exact_type_reference_required",
+                    "exact_applicability": "exact_g4_template_ref" if matched else "unresolved_for_m2c_g4",
                 })
 
+    profile_comparison = []
+    for profile in profiles:
+        layers = profile["natural_profile"]["layer_applicability"]
+        refs = profile["template_refs"]
+        landscape_id = refs["landscape_template_id"]
+        water_id = refs.get("water_body_template_id")
+        profile_comparison.append({
+            "g4_id": profile["g4_ref"]["id"],
+            "landscape_template_id": landscape_id,
+            "water_body_template_id": water_id,
+            "reference_landscape": {
+                field: normalized(seed_by_kind["landscape"][landscape_id][field])
+                for field in KINDS["landscape"][2]
+                if seed_by_kind["landscape"][landscape_id].get(field)
+            },
+            "authored_flora_material_layers": {
+                layer: {
+                    "applicability": layers[layer]["applicability"],
+                    "value": layers[layer].get("value"),
+                    "directness": layers[layer].get("directness"),
+                }
+                for layer in ("tree_layer", "shrub_layer", "ground_cover", "riparian_vegetation", "natural_materials")
+            },
+            "authored_fauna_layer": "fauna" in layers,
+            "authored_taxon_claim_count": sum(
+                len((value.get("value") or {}).get("taxon_claims", [])) for value in layers.values()
+            ),
+            "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+        })
+
+    # runtime-bundle.json repeats source-shard claims; count claim identities once.
     fragments = [(path, read_json(path)) for path in sorted(KNOWLEDGE.glob("*.json"))]
     concepts = {concept["concept_ref"] for _, data in fragments for concept in data.get("concepts", [])
                 if ":fauna-" in concept["concept_ref"]}
@@ -85,20 +125,64 @@ def main():
     concept_claims = Counter()
     context_scopes = Counter()
     relevant_files = set()
+    seen_claims = set()
     for path, data in fragments:
         evidence_sources = {e["evidence_ref"]: e["source_ref"] for e in data.get("evidence", [])}
         for claim in data.get("claims", []):
             if claim["subject_ref"] in concepts:
                 relevant_files.add(path.name)
+                if claim["claim_ref"] in seen_claims:
+                    continue
+                seen_claims.add(claim["claim_ref"])
                 concept_claims[claim["subject_ref"]] += 1
                 context_scopes[claim.get("applicability", {}).get("context_scope", "unspecified")] += 1
                 concept_sources[claim["subject_ref"]].update(
                     evidence_sources[ref] for ref in claim.get("evidence_refs", []) if ref in evidence_sources
                 )
 
+    ecology = read_json(KNOWLEDGE / "environment-ecology.json")
+    ecology_sources = {e["evidence_ref"]: e["source_ref"] for e in ecology["evidence"]}
+    historical_flora_context = [
+        {
+            "claim_ref": claim["claim_ref"],
+            "source_refs": sorted({ecology_sources[ref] for ref in claim["evidence_refs"]}),
+            "applicability": claim["applicability"],
+        }
+        for claim in ecology["claims"]
+        if claim["claim_ref"] in {
+            "claim:troitsky-nonwood-plant-remains-probably-local",
+            "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+            "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
+        }
+    ]
+    nature_shards = {}
+    for topic, names in NATURE_SHARDS.items():
+        shard_data = [read_json(KNOWLEDGE / name) for name in names]
+        claims = {
+            claim["claim_ref"]: claim
+            for data in shard_data
+            for claim in data.get("claims", [])
+        }
+        evidence = {
+            row["evidence_ref"]: row["source_ref"]
+            for data in shard_data for row in data.get("evidence", [])
+        }
+        nature_shards[topic] = {
+            "files": list(names),
+            "claim_count": len(claims),
+            "concept_refs": sorted({claim["subject_ref"] for claim in claims.values()}),
+            "source_refs": sorted({
+                evidence[ref] for claim in claims.values()
+                for ref in claim.get("evidence_refs", []) if ref in evidence
+            }),
+            "context_scopes": dict(sorted(Counter(
+                claim.get("applicability", {}).get("context_scope", "unspecified")
+                for claim in claims.values()
+            ).items())),
+        }
     counts = Counter((entry["kind"], entry["coverage"]) for entry in entries)
     result = {
-        "schema": "m2c_nature_coverage_report_v1",
+        "schema": "m2c_nature_coverage_report_v2",
         "scope": "archived Novgorod regional template links versus exact M2c G4 natural profiles",
         "source_status_warning": "Regional links are draft G1-G3 evidence; this report does not approve type presence at G4 or infer taxa from universal claims.",
         "inputs": [str(ARCHIVE.relative_to(ROOT)).replace("\\", "/"), str(NATURAL.relative_to(ROOT)).replace("\\", "/"), str(KNOWLEDGE.relative_to(ROOT)).replace("\\", "/")],
@@ -113,6 +197,9 @@ def main():
             for ref, sources in sorted(concept_sources.items())
         ],
         "world_knowledge_files": sorted(relevant_files),
+        "historical_flora_context": historical_flora_context,
+        "world_knowledge_nature_shards": nature_shards,
+        "exact_g4_profile_comparison": sorted(profile_comparison, key=lambda entry: entry["g4_id"]),
         "entries": sorted(entries, key=lambda entry: (entry["kind"], entry["template_id"])),
     }
     rendered = json.dumps(result, ensure_ascii=False, indent=2) + "\n"

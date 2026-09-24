@@ -5,11 +5,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createHttpHandler } from '../../apps/game-server/src/http/handler.js';
 import { createStaticAssetResolver } from '../../apps/game-server/src/http/static-assets.js';
+import { turnStepOperationChoices } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
 
 export const TARGET_SMOKE_INPUT = 'Осматриваюсь вокруг, оставаясь на месте.';
 
 /** Opt-in isolated browser fixture. Never started by a production entrypoint.
- * Run target-catalog-successor-postgres.test.js with RUS_TARGET_HTTP_BROWSER_SMOKE=true;
+ * Run target-canonical-start-postgres acceptance with RUS_TARGET_HTTP_BROWSER_SMOKE=true;
  * use the printed local URL, then POST browser observations to /__smoke/finish.
  * Deterministic model responses test delivery/mechanics, not prose quality.
  */
@@ -31,7 +32,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     let output;
     if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
       captured.role = 'world_knowledge_query_planner';
-      assert.equal((input.request ?? input).semantic_input, TARGET_SMOKE_INPUT);
+      assert.equal(typeof (input.request ?? input).semantic_input, 'string');
       output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
         domains: [], focus_refs: [], requested_predicates: [], search_hints: [] };
     } else if (system.startsWith('Resolve the raw Russian player text')) {
@@ -39,15 +40,29 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
       captured.role = 'turn_step_planner';
       const request = input.request ?? input;
-      assert.equal(request.root_player_action, TARGET_SMOKE_INPUT);
-      assert.ok(system.includes('visible_general_look'), 'only the supplied current plan mapping may be used');
-      assert.notEqual(request.player_safe_state?.ordinary_resolution?.scene_seed_available, true);
-      output = { operation_choice: null, interpretation: { adaptation: 'literal' },
-        resolution: 'direct', goal_result: 'achieved',
-        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-        operations: [], check: null, continuation: null, clarification: null,
-        direct_result_kind: 'player_safe_observation', reason_code: 'review_supplied_visible_surroundings',
-        reason: 'Обзор ограничен уже предоставленными видимыми сведениями; новые факты не утверждаются.' };
+      if (request.root_player_action === TARGET_SMOKE_INPUT) {
+        assert.ok(system.includes('visible_general_look'), 'only the supplied current plan mapping may be used');
+        assert.notEqual(request.player_safe_state?.ordinary_resolution?.scene_seed_available, true);
+        output = { operation_choice: null, interpretation: { adaptation: 'literal' },
+          resolution: 'direct', goal_result: 'achieved',
+          activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+          operations: [], check: null, continuation: null, clarification: null,
+          direct_result_kind: 'player_safe_observation', reason_code: 'review_supplied_visible_surroundings',
+          reason: 'Обзор ограничен уже предоставленными видимыми сведениями; новые факты не утверждаются.' };
+      } else {
+        const matches = turnStepOperationChoices(request).filter(({ operation }) =>
+          operation.op === 'request_movement' && operation.movement_kind === 'route'
+          && operation.description === request.root_player_action);
+        assert.equal(matches.length, 1, 'enter exactly one offered directional exit label as free text');
+        output = { interpretation: { player_goal: request.root_player_action,
+            grounded_attempt: request.root_player_action, adaptation: 'literal' },
+          resolution: 'domain_request', goal_result: 'pending',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operation_family: 'request_movement', operation_choice: matches[0].choice_id,
+          check: null, continuation: null, clarification: null,
+          direct_result_kind: null, reason_code: 'visible_directional_exit',
+          reason: 'Следую выбранному видимому выходу.' };
+      }
     } else if (system.startsWith('Return only {"prose"') && input.required_current_beat) {
       captured.role = 'gameplay_narrator';
       const sources = [...input.required_current_beat.changes, ...input.required_current_beat.uncertainties];
@@ -108,12 +123,13 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   const url = `http://127.0.0.1:${server.address().port}`;
   await writeFile(join(tmpdir(), 'novgorod-target-http-smoke-ready.json'), JSON.stringify({ url, reportPath }));
   console.log(`Target HTTP browser fixture ready: ${url}; report: ${reportPath}`);
+  console.log(`Browser smoke: open ${url}, select the forest start, acknowledge opening, submit "${TARGET_SMOKE_INPUT}"; retry the same HTTP turn identity, then type the exact label of one displayed directional exit into "Действие" and submit. POST observed results to ${url}/__smoke/finish.`);
   const timeout = setTimeout(() => finish(), 15 * 60_000);
   try {
     await finished;
     assert.ok(report.browser, 'Chromium must finish the explicit smoke');
     const turns = report.calls.filter((entry) => entry.method === 'submitTurn');
-    assert.ok(turns.length >= 2, 'HTTP first turn and identical retry required');
+    assert.ok(turns.length >= 3, 'HTTP observation, identical retry and directional exit required');
     assert.equal(turns[0].args[1].raw_text, TARGET_SMOKE_INPUT);
     assert.deepEqual(turns[0].args, turns[1].args);
     assert.equal(turns[0].error, undefined, 'approved target observation must reach its existing owner');
@@ -129,6 +145,12 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     }
     assert.equal(turns[0].result.movement, null);
     assert.deepEqual(turns[0].result.screen.visible_context.visible_npc, []);
+    assert.equal(turns[2].error, undefined, 'visible directional exit must reach the production movement owner');
+    assert.notEqual(turns[2].result.movement, null);
+    assert.ok(Number(turns[2].after.sites) > Number(turns[2].before.sites),
+      'the official turn must commit a generated G5');
+    assert.notDeepEqual(turns[2].after.positions, turns[2].before.positions,
+      'the player must enter the generated G5');
     assert.ok(report.calls.find((entry) => entry.method === 'startNewGame')?.result);
     assert.ok(report.calls.find((entry) => entry.method === 'acknowledgeOpening')?.result);
     assert.ok(report.calls.some((entry) => entry.method === 'getPartyScreen'));

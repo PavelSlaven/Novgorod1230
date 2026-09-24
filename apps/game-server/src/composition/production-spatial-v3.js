@@ -41,7 +41,7 @@ import { createSpatialV3CurrentVisibilityProvider } from
   '../infrastructure/postgres/spatial-v3-current-visibility-provider.js';
 import { readCurrentNaturalSourceState } from
   '../infrastructure/postgres/g4-current-natural-source-state.js';
-import { readCommittedEntityExterior, readPlayerKnowledge } from
+import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKnowledge } from
   '../infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
 import { createTargetCurrentFactualContext } from
   '../infrastructure/postgres/target-current-factual-context.js';
@@ -140,6 +140,7 @@ export async function createSpatialV3ProductionCompositionRoot({
         readCurrentEnvironment: factualContext.readCurrentEnvironment,
         readCurrentSourceState: (args) => readCurrentNaturalSourceState({
           ...args, readCurrentEnvironment: factualContext.readCurrentEnvironment }),
+        readTargetConditions: readCurrentTargetConditions,
         readEntityExterior: readCommittedEntityExterior,
         readPlayerKnowledge
       });

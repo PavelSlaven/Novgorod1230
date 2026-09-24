@@ -43,7 +43,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   }
   async function loadPhase2State(
     partyId,
-    { presentationIdempotencyKey = null, turnBudget = null } = {}
+    { presentationIdempotencyKey = null, turnBudget = null,
+      includeCurrentVisibleContext = true } = {}
   ) {
     const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
     const phase1A = createLowerDvinaTracePhase1ARepository({
@@ -99,7 +100,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
           'Canonical initial turn runtime binding is unavailable.', { status: 409 });
       }
-      if (canonicalInitialState && typeof loadInitialNaturalScenePerceptionInput !== 'function') {
+      if (includeCurrentVisibleContext && canonicalInitialState
+        && typeof loadInitialNaturalScenePerceptionInput !== 'function') {
         throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
           'Canonical initial turn perception loader is unavailable.', { status: 409 });
       }
@@ -113,10 +115,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         temporalSourceProof,
         runtimeBinding: resolvedBinding
       });
-      const naturalScenePerceptionInput = canonicalInitialState
+      const naturalScenePerceptionInput = includeCurrentVisibleContext && canonicalInitialState
         ? await loadInitialNaturalScenePerceptionInput({ partyId,
           actorId: initial.actor_id, initialState: initial }) : null;
-      const visible = withPhase2CurrentVisibleContext(
+      const visible = !includeCurrentVisibleContext ? initial : withPhase2CurrentVisibleContext(
         initial,
         phase2InitialCurrentVisibleContext({
           screen: row.screen,
@@ -171,7 +173,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     withJourneyLocation(loadedPayload, journeyLocation);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    const loadedWithCurrentVisible = withPhase2CurrentVisibleContext(
+    const loadedWithCurrentVisible = !includeCurrentVisibleContext ? loadedPayload : withPhase2CurrentVisibleContext(
       loadedPayload, await loadPhase2VisibleContext(partyPool, {
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));

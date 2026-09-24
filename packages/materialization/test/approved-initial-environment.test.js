@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createRandomSource, deriveApprovedInitialEnvironment } from '../src/index.js';
+import { createRandomSource, deriveApprovedInitialEnvironment, projectApprovedCurrentEnvironment } from '../src/index.js';
 
 const calendar = { family_id: 'calendar_daylight_light_profiles',
   status: 'approved', payload: { calendar_profile_id: 'calendar',
@@ -43,4 +43,22 @@ test('initial environment fails closed outside approved daylight coverage', () =
     weather_record: weather, calendar_date: { year: 1234, month: 8, day: 20 },
     local_minute_of_day: 420, random: createRandomSource({ seed: 1 }) }),
   { code: 'INITIAL_ENVIRONMENT_DAYLIGHT_DATA_GAP' });
+});
+
+test('current calendar projection preserves exact committed weather without a new draw', () => {
+  const calendar_record = { ...calendar, record_id: 'calendar-record', version: 1 };
+  const weather_record = { ...weather, record_id: 'weather-record', version: 1 };
+  const args = { calendar_record, weather_record, calendar_date: { year: 1230, month: 8, day: 20 } };
+  const initial = deriveApprovedInitialEnvironment({ ...args, local_minute_of_day: 420,
+    random: createRandomSource({ seed: 4 }) });
+  const projected = projectApprovedCurrentEnvironment({ ...args, current_environment: initial, local_minute_of_day: 1200 });
+  assert.equal(projected.light_state, 'night');
+  assert.equal(initial.light_state, 'daylight');
+  assert.deepEqual(projected.weather_state, initial.weather_state);
+  assert.equal(projected.rng_draw, initial.rng_draw);
+  for (const current_environment of [null, { ...initial, weather_record_ref: { id: 'foreign', version: 1 } },
+    { ...initial, weather_state: { ...initial.weather_state, sky: 'invented' } }]) {
+    assert.throws(() => projectApprovedCurrentEnvironment({ ...args, current_environment, local_minute_of_day: 1200 }),
+      { code: 'CURRENT_ENVIRONMENT_OWNER_DATA_GAP' });
+  }
 });

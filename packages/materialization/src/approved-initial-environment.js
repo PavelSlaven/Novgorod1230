@@ -1,10 +1,51 @@
 import { deepFreeze } from '@rus/kernel';
-import { MaterializationError } from './core.js';
+import { canonicalDigest, MaterializationError } from './core.js';
 import { weightedCandidate } from './world-validation.js';
 
 export function deriveApprovedInitialEnvironment({ calendar_record: calendar,
   weather_record: weather, calendar_date: date, local_minute_of_day: minute,
   random } = {}) {
+  const resolved = resolveCalendarEnvironment({ calendar, weather, date, minute });
+  const { season } = resolved;
+  const candidates = weather.payload?.transition_rules?.seasonal_candidates?.[season];
+  if (!Array.isArray(candidates) || candidates.length === 0
+      || typeof random?.nextUint32 !== 'function') gap('INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
+  const normalized = candidates.map((candidate) => ({ ...candidate,
+    weight: Number(candidate.weight) })).sort((a, b) =>
+    a.weather_state_id.localeCompare(b.weather_state_id));
+  if (normalized.some(({ weight }) => !Number.isSafeInteger(weight)
+      || weight <= 0)) gap('INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
+  const draw = random.nextUint32();
+  const selected = weightedCandidate(normalized, draw);
+  const state = weather.payload.weather_states?.find(({ weather_state_id: id }) =>
+    id === selected.weather_state_id);
+  if (!state) gap('INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
+  return deepFreeze({ ...resolved, weather_state: structuredClone(state),
+    weather_candidate_ref: structuredClone(selected.weather_state_ref), rng_draw: draw });
+}
+
+/** Calendar projection of current committed weather; this never advances weather. */
+export function projectApprovedCurrentEnvironment({ calendar_record: calendar,
+  weather_record: weather, current_environment: current,
+  calendar_date: date, local_minute_of_day: minute } = {}) {
+  if (current?.schema !== 'rus.approved_initial_environment.v1' || current.version !== 1
+    || !calendar?.record_id || !weather?.record_id
+    || current.calendar_record_ref?.id !== calendar.record_id
+    || String(current.calendar_record_ref?.version) !== String(calendar.version)
+    || current.weather_record_ref?.id !== weather.record_id
+    || String(current.weather_record_ref?.version) !== String(weather.version)) {
+    gap('CURRENT_ENVIRONMENT_OWNER_DATA_GAP');
+  }
+  const states = weather.payload?.weather_states?.filter((state) =>
+    state.weather_state_id === current.weather_state?.weather_state_id) ?? [];
+  if (states.length !== 1 || canonicalDigest(states[0]) !== canonicalDigest(current.weather_state)) {
+    gap('CURRENT_ENVIRONMENT_OWNER_DATA_GAP');
+  }
+  return deepFreeze({ ...structuredClone(current),
+    ...resolveCalendarEnvironment({ calendar, weather, date, minute }) });
+}
+
+function resolveCalendarEnvironment({ calendar, weather, date, minute }) {
   if (calendar?.status !== 'approved' || weather?.status !== 'approved'
       || calendar.family_id !== 'calendar_daylight_light_profiles'
       || weather.family_id !== 'weather_transition_profiles_processes'
@@ -38,30 +79,17 @@ export function deriveApprovedInitialEnvironment({ calendar_record: calendar,
     gap('INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
   }
   const [season] = calendarMatches[0];
-  const candidates = weather.payload?.transition_rules
-    ?.seasonal_candidates?.[season];
-  if (!Array.isArray(candidates) || candidates.length === 0
-      || typeof random?.nextUint32 !== 'function') gap(
-    'INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
-  const normalized = candidates.map((candidate) => ({ ...candidate,
-    weight: Number(candidate.weight) })).sort((a, b) =>
-    a.weather_state_id.localeCompare(b.weather_state_id));
-  if (normalized.some(({ weight }) => !Number.isSafeInteger(weight)
-      || weight <= 0)) gap('INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
-  const draw = random.nextUint32();
-  const selected = weightedCandidate(normalized, draw);
-  const state = weather.payload.weather_states?.find(({ weather_state_id: id }) =>
-    id === selected.weather_state_id);
-  if (!state) gap('INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
-  return deepFreeze({ schema: 'rus.approved_initial_environment.v1', version: 1,
+  return { schema: 'rus.approved_initial_environment.v1', version: 1,
+    ...(calendar.record_id == null ? {} : { calendar_record_ref: {
+      id: calendar.record_id, version: String(calendar.version) } }),
+    ...(weather.record_id == null ? {} : { weather_record_ref: {
+      id: weather.record_id, version: String(weather.version) } }),
     calendar_profile_ref: calendar.payload.calendar_profile_id,
     daylight_profile_ref: calendar.payload.daylight_profile_id,
     weather_profile_ref: weather.payload.weather_profile_id,
     calendar_date: structuredClone(date), local_minute_of_day: minute,
     season, day_part: lightState, light_state: lightState,
-    daylight_boundary: structuredClone(boundary),
-    weather_state: structuredClone(state), weather_candidate_ref:
-      structuredClone(selected.weather_state_ref), rng_draw: draw });
+    daylight_boundary: structuredClone(boundary) };
 }
 
 function pad(value) { return String(value).padStart(2, '0'); }

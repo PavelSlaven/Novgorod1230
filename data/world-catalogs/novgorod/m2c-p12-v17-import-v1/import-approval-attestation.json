@@ -1,0 +1,48 @@
+{
+  "schema": "rus.m2c_p12_v17_import_approval_attestation.v1",
+  "status": "approved_transactional_import_readback_only",
+  "decision": "APPROVE_EXACT_P12_V17_IMPORT_READBACK",
+  "auditor_ref": "/root/v17_p12_approval",
+  "independence_basis": "Independent Sol high review separate from request and data authoring; no database write. Recomputed request and schema-execution-attestation digests, all five manifest and approval pins, dataset pins, importer and effective DDL pins, validated all bundles with zero errors and gaps, regenerated five SQL parts and combined digest, compared cross-bundle primary keys and full rows, and inspected the insert-only mismatch guard and execution boundary.",
+  "reviewed_on": "2026-09-24",
+  "reviewed_repository_head": "1fff3e24b8601d1afc66d5ce1a28801bfda55836",
+  "source_head": "42b0a5444f0d4066a0e6723207ea10b784dfaaa1",
+  "request_ref": "data/world-catalogs/novgorod/m2c-p12-v17-import-v1/request.json",
+  "request_digest": "1f19ab21dabcd1cb42a565de6cf5ab079192ff9751377ca6e721ee992ed1b5c4",
+  "schema_execution_attestation_ref": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-execution-attestation.json",
+  "schema_execution_attestation_digest": "04416a846ae1dbbacd3797bed5d1a82bc399cc98fca0d3f49076b66f796091ed",
+  "scope": {
+    "cluster_system_identifier": "7683141184713630856",
+    "database": "novgorod_world_v17",
+    "schema": "world_base",
+    "operation": "insert_only",
+    "transaction": "single_world_base_transaction",
+    "bundle_order": ["expansion", "npc_mapped", "npc_canonical", "acoustic", "local_movement"],
+    "combined_sql_bytes": 109935306,
+    "combined_sql_sha256": "bfa0b6960fcf545a1ae637c3043f5c15e48f8b94b772a445108abb821974ba48",
+    "distinct_pinned_rows": 12359,
+    "table_count": 53,
+    "activation": "none"
+  },
+  "execution_preconditions": [
+    "Operator rechecks current cluster and database identity, world_operator ownership, pinned effective DDL, 208 world_base tables, zero world_base data rows, and available offline backup; stop on any drift or existing pinned-key conflict.",
+    "Operator verifies all pinned input bytes and regenerates the exact SQL digest before each execution.",
+    "Run the exact SQL with only its final COMMIT changed to ROLLBACK; require zero errors and conflicts and verify zero world_base data rows afterward.",
+    "Execute the exact one-transaction SQL against novgorod_world_v17 only, then read back every pinned primary key and full row equality, per-table counts, and unchanged old-database row counts."
+  ],
+  "authority": {
+    "import_and_exact_readback_authorized": true,
+    "party_database_operation_authorized": false,
+    "catalog_activation_authorized": false,
+    "runtime_cutover_authorized": false,
+    "production_composition_change_authorized": false,
+    "database_mutated_by_review": false
+  },
+  "excludes": [
+    "novgorod_party_v17 writes or migration",
+    "novgorod_world and novgorod_party writes",
+    "catalog registration or activation",
+    "runtime or release selection",
+    "production composition changes"
+  ]
+}

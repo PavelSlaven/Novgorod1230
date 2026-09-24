@@ -78,9 +78,11 @@
       "spatial_v3_npc_regional_context_profiles"
     ],
     ["spatial_v3_g6_acoustic_baselines"],
+    ["spatial_v3_local_movement_eligibility_profiles"],
     ["record_sources"]
   ],
   "allowlist": [
+    "spatial_v3_local_movement_eligibility_profiles",
     "source_records",
     "record_sources",
     "universal_categories",

@@ -5,8 +5,8 @@ import { serverError } from '../errors.js';
 import { packageBase } from './lower-dvina-trace-phase-3-command-shared.js';
 
 export function createSpatialV3LocalSceneRuntime({ pool,
-  readVisibleLocalEdgeRefs = null } = {}) {
-  const reader = createSpatialV3LocalSceneMovementReader({ pool });
+  readVisibleLocalEdgeRefs = null, readLocalMovementEligibility = null } = {}) {
+  const reader = createSpatialV3LocalSceneMovementReader({ pool, readLocalMovementEligibility });
   async function current({ partyId, actorId, state }) {
     const positionId = state?.position?.position_id;
     if (state?.party_id !== partyId || state.actor_id !== actorId || !text(positionId)

@@ -1,6 +1,13 @@
 {
   "schema": "rus.m2c_supplemental_data_approval.v1",
   "decision": "APPROVE_DATA_ONLY",
+  "local_movement_eligibility_candidate_approval": {
+    "candidate_sha256": "36e384e9c0fbe2681c9c27bb8c85db22cb8b62e167730689d16089f0f929645f",
+    "scope": "68 append-only eligibility adjuncts for 17 exact scene templates; independently directed opposing edges, editorial single-root transition limit, unchanged original relation and position capacity",
+    "excludes": "Mapped-data approval, P12 import, current visibility admission, historical party migration, runtime and production activation",
+    "reviewer": "gpt-6-sol/high independent data review",
+    "reviewed_on": "2026-09-24"
+  },
   "reviewer": "gpt-6-sol/high — independent Contract Auditor, separate data approval pass",
   "source_issue": "PavelSlaven/Novgorod1230#133",
   "reviewed_on": "2026-09-23",
@@ -118,6 +125,15 @@
     "source_candidate_sha256": "fcd2b47ff318b79031dc309193c159afd71909418beab1f77e9a455c4160bacd",
     "scope": "Exact deterministic approved-status mapping of the unchanged finite-only ordinary base profile and its four exact source SHA pins for the target world revision",
     "excludes": "World Base import, item catalog activation or runtime selection, current finite source and property decisions, ordinary background or Stage B authority, existing party migration and release activation",
+    "reviewed_on": "2026-09-24"
+  },
+  "local_movement_eligibility_mapped_approval": {
+    "manifest_sha256": "fc962c1aa530635325bcf0d02806c73a86b51e104c215e920d44da8ec729e068",
+    "dataset_sha256": "3923773694dc364f8187eb81edddb2aefa14e6bd122e91e49c51cd4798f65c75",
+    "source_candidate_sha256": "36e384e9c0fbe2681c9c27bb8c85db22cb8b62e167730689d16089f0f929645f",
+    "scope": "All 68 raw-preserving mapped eligibility adjuncts, exact authoring versions and canonical digests, editorial source and unchanged canonical node dependency inventory",
+    "excludes": "Runtime Contract Audit, current visibility admission, live production import or activation, original edge or position mutation, historical party migration",
+    "reviewer": "gpt-6-sol/high independent postpromotion data review",
     "reviewed_on": "2026-09-24"
   },
   "limits": [

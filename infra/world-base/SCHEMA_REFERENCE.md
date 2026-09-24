@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 24 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `ee4f82b6a35a52cb638710ecb6cac917855c368f9e30962f399624520aeeb377`.
-- Таблиц: 207.
+- Исполняемый источник: `infra/world-base/schema.sql` и 25 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `5d4412267e1082e098d036f5254e7a7e5eb4e425fe3af2b30fe46e8fbdf96038`.
+- Таблиц: 208.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -5731,3 +5731,35 @@ Digests, counts и dependency order таблиц одного импорта.
 - `UNIQUE (id, version, world_revision_id)`
 - `FOREIGN KEY (entity_kind, id, version, world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions( entity_kind, entity_id, version, world_revision_id ) DEFERRABLE INITIALLY DEFERRED`
 - `CHECK ( (rule_kind = 'adjacency' AND strategy = 'through_same_exit') OR (rule_kind = 'connectivity' AND strategy = 'existing_exit_reachable') OR (rule_kind = 'seed' AND strategy = 'mulberry32_v1') )`
+
+### `world_base.spatial_v3_local_movement_eligibility_profiles`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `entity_kind` | `TEXT` | нет | `'local_movement_eligibility_profile'` | — | `NOT NULL`<br>`CHECK (entity_kind = 'local_movement_eligibility_profile')` | Описание отсутствует. |
+| `id` | `TEXT` | нет | — | — | `NOT NULL` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `scene_template_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `scene_template_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (scene_template_version > 0)` | Описание отсутствует. |
+| `scene_template_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (scene_template_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `edge_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `opposing_edge_slot_key` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (opposing_edge_slot_key <> edge_slot_key)` | Описание отсутствует. |
+| `from_position_slot_key` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `to_position_slot_key` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (to_position_slot_key <> from_position_slot_key)` | Описание отсутствует. |
+| `eligibility_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (eligibility_kind = 'two_approved_directed_edges')` | Описание отсутствует. |
+| `max_root_owners_per_transition` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (max_root_owners_per_transition > 0)` | Описание отсутствует. |
+| `directness` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(directness)) > 0)` | Описание отсутствует. |
+| `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown','low','medium_low','medium','medium_high','high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status = 'approved')` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `provenance_ref` | `TEXT` | нет | — | `world_base.source_records(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `canonical_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (id, version)`
+- `FOREIGN KEY (entity_kind,id,version,world_revision_id) REFERENCES world_base.spatial_v3_authoring_versions(entity_kind,entity_id,version,world_revision_id) DEFERRABLE INITIALLY DEFERRED`
+- `FOREIGN KEY (scene_template_id,scene_template_version,edge_slot_key) REFERENCES world_base.spatial_v3_scene_movement_edge_templates(scene_template_id,scene_template_version,edge_slot_key) ON DELETE RESTRICT`
+- `FOREIGN KEY (scene_template_id,scene_template_version,opposing_edge_slot_key) REFERENCES world_base.spatial_v3_scene_movement_edge_templates(scene_template_id,scene_template_version,edge_slot_key) ON DELETE RESTRICT`

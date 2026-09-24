@@ -37,7 +37,7 @@ function persistedSceneEdgeCandidates(edge, actor, destination, allowed = []) {
       || edge.from_position_ref !== actor.zone_ref
       || edge.to_position_ref !== destination.zone_ref
       || !allowedMovement(edge.edge_id, allowed)
-      || edge.transition_footprint_units > edge.edge_capacity
+      || edge.transition_footprint_units > (edge.edge_capacity ?? edge.max_root_owners_per_transition)
       || edge.destination_occupancy + edge.transition_footprint_units
         > edge.destination_capacity) return [];
   return [Object.freeze({ owner: '@rus/movement-routes',
@@ -160,12 +160,14 @@ function positiveMinutes(value) {
 function validPersistedSceneEdge(value) {
   return value?.cost_kind === 'action' && Number.isSafeInteger(value.action_units)
     && value.action_units > 0 && value.base_minutes === null
-    && text(value.edge_id) && text(value.reverse_edge_id)
+    && text(value.edge_id)
     && text(value.from_position_ref) && text(value.to_position_ref)
-    && integer(value.edge_state_version) && integer(value.reverse_edge_state_version)
+    && integer(value.edge_state_version)
     && integer(value.source_node_state_version)
     && integer(value.destination_node_state_version)
-    && Number.isSafeInteger(value.edge_capacity) && value.edge_capacity > 0
+    && (text(value.reverse_edge_id) && integer(value.reverse_edge_state_version)
+      && Number.isSafeInteger(value.edge_capacity) && value.edge_capacity > 0
+      || validEligibilityAdjunct(value))
     && Number.isSafeInteger(value.destination_capacity) && value.destination_capacity > 0
     && value.transition_footprint_units === 1
     && Number.isSafeInteger(value.destination_occupancy)
@@ -173,6 +175,17 @@ function validPersistedSceneEdge(value) {
     && ['transition_environment_profile_ref', 'movement_orientation_profile_ref',
       'baseline_movement_method_id', 'movement_method_cost_profile_ref',
       'dynamic_recheck_policy_ref'].every((key) => Object.hasOwn(value, key));
+}
+
+function validEligibilityAdjunct(value) {
+  const pin = value.local_movement_eligibility_ref;
+  return value.reverse_edge_id === null && value.reverse_edge_state_version === null
+    && value.edge_capacity === null && text(value.opposing_edge_id)
+    && value.opposing_edge_id !== value.edge_id && integer(value.opposing_edge_state_version)
+    && text(pin?.id) && Number.isSafeInteger(pin.version) && pin.version > 0
+    && text(pin.world_revision_id) && /^[a-f0-9]{64}$/u.test(pin.canonical_digest)
+    && Number.isSafeInteger(value.max_root_owners_per_transition)
+    && value.max_root_owners_per_transition > 0;
 }
 
 function allowedMovement(id, allowed) {

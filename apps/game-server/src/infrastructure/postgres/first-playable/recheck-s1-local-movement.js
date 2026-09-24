@@ -1,6 +1,11 @@
 import { isDeepStrictEqual } from 'node:util';
+import { createSpatialV3LocalSceneMovementReader } from '../spatial-v3-local-scene-movement.js';
 
-export async function recheckS1LocalMovement({ transaction, partyId, check }) {
+export async function recheckS1LocalMovement({ transaction, partyId, check, readLocalMovementEligibility = null,
+  recheckLocalMovementVisibility = null }) {
+  if (check.movement_admission?.local_movement_eligibility_ref != null) {
+    return recheckAdjunct({ transaction, partyId, check, readLocalMovementEligibility, recheckLocalMovementVisibility });
+  }
   if (!text(check.actor_id) || !text(check.journey_location_id)
       || !integer(check.expected_journey_state_version)
       || ![check.from_position_ref, check.to_position_ref,
@@ -55,6 +60,50 @@ export async function recheckS1LocalMovement({ transaction, partyId, check }) {
     && Number(occupancy.rows[0]?.destination_occupancy)
       + check.movement_admission.transition_footprint_units
       <= check.movement_admission.destination_capacity);
+}
+
+async function recheckAdjunct({ transaction, partyId, check, readLocalMovementEligibility, recheckLocalMovementVisibility }) {
+  if (typeof readLocalMovementEligibility !== 'function' || typeof recheckLocalMovementVisibility !== 'function'
+      || !integer(check.expected_journey_state_version)
+      || ![check.actor_id, check.journey_location_id, check.from_position_ref,
+        check.to_position_ref, check.movement_edge_ref,
+        check.movement_admission?.opposing_edge_id].every(text)) return resultOf(false);
+  // Lock the same persisted facts used for admission before reading policy and occupancy again.
+  const locked = await transaction.query(`SELECT l.id
+    FROM party_runtime.parties party
+    JOIN party_runtime.party_journey_locations l ON l.party_id=party.party_id
+    JOIN party_runtime.scene_movement_edges e ON e.party_id=l.party_id AND e.id=$4
+    JOIN party_runtime.scene_movement_edges opposing ON opposing.party_id=l.party_id AND opposing.id=$5
+    JOIN party_runtime.scene_position_nodes source ON source.party_id=l.party_id AND source.id=e.from_position_id
+    JOIN party_runtime.scene_position_nodes destination ON destination.party_id=l.party_id AND destination.id=e.to_position_id
+    JOIN party_runtime.party_scene_baselines baseline ON baseline.party_id=l.party_id AND baseline.id=e.scene_baseline_id
+    JOIN party_runtime.party_g5_sites site ON site.party_id=l.party_id AND site.id=baseline.host_id
+    JOIN party_runtime.party_g6_instances source_g6 ON source_g6.party_id=l.party_id AND source_g6.id=source.g6_instance_id
+    JOIN party_runtime.party_g6_instances destination_g6 ON destination_g6.party_id=l.party_id AND destination_g6.id=destination.g6_instance_id
+    WHERE l.party_id=$1 AND l.id=$2 AND l.owner_kind='actor' AND l.owner_id=$3
+    FOR UPDATE OF party,l,e,opposing,source,destination,baseline,site,source_g6,destination_g6`,
+  [partyId, check.journey_location_id, check.actor_id, check.movement_edge_ref,
+    check.movement_admission.opposing_edge_id]);
+  if (locked.rowCount !== 1) return resultOf(false);
+  const rows = await createSpatialV3LocalSceneMovementReader({ pool: transaction,
+    readLocalMovementEligibility }).list({ partyId, actorId: check.actor_id,
+    positionId: check.from_position_ref });
+  const matches = rows.filter((row) => row.movement_admission.edge_id === check.movement_edge_ref
+    && row.movement_admission.opposing_edge_id === check.movement_admission.opposing_edge_id);
+  if (matches.length !== 1) return resultOf(false);
+  const actual = matches[0];
+  const { destination_occupancy: actualOccupancy, ...actualAdmission } = actual.movement_admission;
+  const { destination_occupancy: expectedOccupancy, ...expectedAdmission } = check.movement_admission;
+  const matchesAdmission = actual.journey_location_id === check.journey_location_id
+    && actual.journey_state_version === check.expected_journey_state_version
+    && actualAdmission.from_position_ref === check.from_position_ref
+    && actualAdmission.to_position_ref === check.to_position_ref
+    && isDeepStrictEqual(actualAdmission, expectedAdmission);
+  if (!matchesAdmission) return resultOf(false);
+  const visibility = await recheckLocalMovementVisibility({ transaction, partyId,
+    actorId: check.actor_id, edgeId: check.movement_edge_ref,
+    positionId: check.from_position_ref });
+  return resultOf(visibility?.ok === true);
 }
 
 const text = (value) => typeof value === 'string' && value.length > 0;

@@ -64,12 +64,13 @@ The approved 68-edge scene-movement candidate is a mechanical authoring input,
 not an imported replacement. P12 is append-only by exact row key, while the
 existing 17 scene templates already have version-1 edge keys. Those keys cannot
 be rewritten with capacity and reverse refs. A full new scene-template closure
-would require repinning many dependent profiles; an independently approved,
-versioned eligibility/capacity adjunct under the Spatial owner may instead
-check two existing directed edges without changing their semantics. Neither
-path has been authored, imported or activated. The historical S1 first-entry
-path remains pinned to version 1. Local movement remains closed without the
-approved current edge policy and visibility evidence.
+would require repinning many dependent profiles. A separate versioned Spatial
+eligibility/capacity adjunct now checks two existing directed edges without
+changing their one-way semantics. Sol high independently approved its raw and
+mapped data; isolated P12 import/readback and recheck PostgreSQL tests passed.
+The adjunct is not release-selected or activated in production. The historical
+S1 first-entry path remains pinned to version 1. Local movement remains closed
+without a real current-visibility supplier and exact release selection.
 
 ### Open typed data gaps
 

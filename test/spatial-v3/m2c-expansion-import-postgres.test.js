@@ -6,6 +6,7 @@ import test from 'node:test';
 import pg from 'pg';
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import { assertLocalMovementEligibilityPostgres } from './local-movement-eligibility-postgres-acceptance.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 120_000 });
 const candidateDir = resolve('data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1');
@@ -61,7 +62,9 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
   assert.equal(started.status, 0, started.stderr);
   let ready = false;
   for (let attempt = 0; attempt < 80; attempt += 1) {
-    if (docker(['exec', container, 'pg_isready', '-U', 'm2c', '-d', 'm2c']).status === 0) { ready = true; break; }
+    const logs = docker(['logs', container]);
+    if (`${logs.stdout}${logs.stderr}`.includes('PostgreSQL init process complete')
+        && docker(['exec', container, 'pg_isready', '-U', 'm2c', '-d', 'm2c']).status === 0) { ready = true; break; }
     await new Promise((resolvePromise) => setTimeout(resolvePromise, 250));
   }
   assert.equal(ready, true, 'isolated PostgreSQL starts');
@@ -157,4 +160,5 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
     'spatial_v3_authoring_versions', 'spatial_v3_external_dependency_versions'
   ]) await assertExactReadback(pool, datasetsDir, table);
   for (const table of immutableTables) await assertExactReadback(pool, datasetsDir, table);
+  await assertLocalMovementEligibilityPostgres(pool);
 });

@@ -9,7 +9,8 @@ import { recheckSiteConnectionTraversal } from './recheck-site-connection-traver
 import { recheckWorldRouteArrival } from './recheck-world-route-arrival.js';
 import { recheckSpatialV3PostgresFirstEntry } from '../spatial-v3-first-entry-recheck.js';
 
-export async function firstPlayableCommitRecheck({ transaction, party_id: partyId, check, plan }) {
+export async function firstPlayableCommitRecheck({ transaction, party_id: partyId, check, plan,
+  readLocalMovementEligibility = null, recheckLocalMovementVisibility = null }) {
   if (check.kind === 'state') {
     const result = await transaction.query(
       `SELECT state_version
@@ -21,7 +22,7 @@ export async function firstPlayableCommitRecheck({ transaction, party_id: partyI
     return resultOf(Number(result.rows[0]?.state_version) === check.expected_party_state_version);
   }
   if (check.kind === 's1_local_movement') {
-    return recheckS1LocalMovement({ transaction, partyId, check });
+    return recheckS1LocalMovement({ transaction, partyId, check, readLocalMovementEligibility, recheckLocalMovementVisibility });
   }
   if (check.kind === 'site_connection_traversal') {
     return recheckSiteConnectionTraversal({ transaction, partyId, check });

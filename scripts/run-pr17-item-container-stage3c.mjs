@@ -3,6 +3,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { gunzipSync } from 'node:zlib';
 import pg from 'pg';
+import { checkWorldBaseSchema } from './check-world-base-schema.mjs';
 
 import { normalizeStage13MaterializationPolicy, runStage13G5MaterializationBlock } from '@rus/new-game/stages/stage-13';
 import { normalizeStage14AuditPolicy, runStage14G5AuditBlock, STAGE14_OUTPUT_SCHEMA, STAGE14_REQUIRED_CHECKS } from '@rus/new-game/stages/stage-14/compat';
@@ -81,7 +82,8 @@ if (mode === 'dry-run') {
   const client = await pool.connect();
   try {
     const database = await assertDatabaseForMode(client, mode, expectedDatabase);
-    await initializeSchema(client);
+    if (mode === 'local-play') await assertEmptyWorldBase(client);
+    else await initializeSchema(client);
     if (mode === 'fixture-bootstrap') {
       const first = await applyRevisionPromotionPlan({ plan,
         adapter: createPostgresAdapter(client, gate1) });
@@ -96,9 +98,11 @@ if (mode === 'dry-run') {
         adapter: createPostgresAdapter(client, gate1) });
       const firstState = await verifyPromotionState(client, plan, input, gate1);
       const runtimeE2e = await verifyPromotedRuntime(client, plan);
-      await initializeSchema(client);
-      const repeated = await applyRevisionPromotionPlan({ plan,
-        adapter: createPostgresAdapter(client, gate1) });
+      if (mode !== 'local-play') await initializeSchema(client);
+      const repeated = mode === 'local-play'
+        ? { applied: false }
+        : await applyRevisionPromotionPlan({ plan,
+          adapter: createPostgresAdapter(client, gate1) });
       const repeatedState = await verifyPromotionState(client, plan, input, gate1);
       const result = { ...summary({ mode, plan, applied: first.applied }),
         database, rollback, repeat_clean_apply: repeated.applied,
@@ -168,6 +172,38 @@ async function assertDatabaseForMode(client, selectedMode, expectedDatabaseName)
 async function initializeSchema(client) {
   for (let part = 1; part <= 17; part += 1) await client.query(readFileSync(resolve(root, 'infra/world-base/schema', `${String(part).padStart(2, '0')}.sql`), 'utf8'));
   await client.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
+}
+
+async function assertEmptyWorldBase(client) {
+  const schema = await checkWorldBaseSchema({ root });
+  const approvedSchema = readJson(resolve(root,
+    'data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json'))
+    .world_schema;
+  const sourceFiles = [approvedSchema.entrypoint,
+    ...approvedSchema.ordered_parts];
+  if (sourceFiles.length !== schema.part_files.length + 1
+      || sourceFiles[0].path !== schema.entrypoint
+      || sourceFiles.slice(1).some(({ path }, index) =>
+        path !== schema.part_files[index])
+      || sourceFiles.some(({ path, sha256 }) => createHash('sha256')
+        .update(readFileSync(resolve(root, path))).digest('hex') !== sha256)) {
+    throw new Error('PR17_LOCAL_PLAY_SCHEMA_SOURCE_MISMATCH');
+  }
+  const actual = (await client.query(`SELECT tablename FROM pg_catalog.pg_tables
+    WHERE schemaname = 'world_base' ORDER BY tablename`)).rows
+    .map(({ tablename }) => tablename);
+  const expected = [...schema.table_names].sort();
+  if (actual.length !== expected.length
+      || actual.some((name, index) => name !== expected[index])) {
+    throw new Error('PR17_LOCAL_PLAY_SCHEMA_MISMATCH');
+  }
+  for (const table of expected) {
+    const occupied = await client.query(`SELECT EXISTS
+      (SELECT 1 FROM world_base.${quoteIdentifier(table)}) AS occupied`);
+    if (occupied.rows[0].occupied) {
+      throw new Error(`PR17_LOCAL_PLAY_DATABASE_NOT_EMPTY:${table}`);
+    }
+  }
 }
 
 function buildGate1ImportPlan({ parent, activation, attestation,

@@ -1,33 +1,11 @@
-# Gate1 import into the fresh v17 world database — approval request
+# Gate1 bootstrap import into fresh v17 — review request
 
-Status: **blocked pending P12 coexistence review, then independent high approval**. This request does not authorize a database write or production activation.
+Review the exact [request JSON](v17-bootstrap-import-request.json) and its `request_digest` in an independent high review. Historical Gate1 approvals and readback prove the source catalog; they do not authorize an import into `novgorod_world_v17`. This request grants no activation or party migration.
 
-## Exact subject
+**Order:** Gate1 first, then a separate P12 successor request after actual Gate1 readback. Fresh-schema execution evidence records PostgreSQL cluster `7683141184713630856`, `novgorod_world_v17` owned by `world_operator`, 208 `world_base` tables, and zero world data rows. P12 has not committed. The former P12-first wording was wrong: the Gate1 seed closure hashes the complete `source_records` table, so importing P12's source rows first would fail the approved closure.
 
-- Destination: PostgreSQL `current_database() = novgorod_world_v17`, supplied through `PR17_TEST_DATABASE_URL`. The Stage 3c runner requires `--mode local-play --expected-database novgorod_world_v17` and rejects every other actual database name for this request.
-- Operation: run `scripts/run-pr17-item-container-stage3c.mjs` in `local-play` mode once against the fresh v17 world database, after the approved P12 target import and its readback. Do not use `fixture-bootstrap` on this database.
-- Scope: import the existing approved Gate1 item/container catalog and its canonical owner closure without activation or rematerialization. Preserve the P12 target Spatial rows and all existing party state.
-- Prior approval chain: `authoring-approval-attestation.json`, `source-record-reconciliation-v1/authoring-approval-attestation.json`, `seed-closure-v1/authoring-approval-attestation.json`, and `docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json`. No new authoring approval is asserted here.
+The operation is `scripts/run-pr17-item-container-stage3c.mjs --mode local-play --expected-database novgorod_world_v17 --write-result <operator-selected-v17-readback-path>` with `PR17_TEST_DATABASE_URL` aimed at that exact database. The fixed local-play path checks the 26 approved DDL source hashes, actual 208-table set, and zero rows, then imports without running schema initialization. The old runner called `initializeSchema` in local-play mode; `01.sql` begins with `DROP SCHEMA world_base CASCADE`. Its prior SHA-256 `ca9f9b8419ef7ee84190b18923a975a6358940bd2afd7296a5d94a7043060d25` must never be used for this operation.
 
-## Immutable values to review
+Before approval, verify the request's source SHA-256 pins, fresh-schema execution attestation, exact target identity, available offline backup and current zero-row readback. Re-run the non-writing dry-run and compare its candidate, approval, manifest and catalog digests: 39 datasets, nine status transitions, 102 approved item templates, 18 approved container templates and nine G4 mappings. Confirm the approved seed closure remains 30 tables, 42,577 rows and digest `384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434`.
 
-| Field | Expected value |
-|---|---|
-| `promotion_manifest_digest` | `2818932121b2b65baf3611bb33c15b8bb996bbd52dfa650fb0ff9f2984ce0293` |
-| `target_revision_id` | `world_revision_novgorod_1230_item_container_approved_001` |
-| `target_catalog_digest` | `1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5` |
-| Approved item templates | 102 |
-| Approved container templates | 18 |
-| Approved G4 mappings | 9 |
-
-These values match `import-readback-result.json` in this directory. The `dry-run` plan reports 39 datasets, nine status transitions, `activation_performed: false`, and `existing_parties_rematerialized: false`.
-
-## Required independent review before execution
-
-1. Read the live v17 database identity and P12 import readback. Confirm the database is the intended fresh target and P12 target data is present. Record the exact connection identity and P12 evidence without credentials.
-2. Resolve the P12 coexistence blocker before approval. P12 dependency closure imports 12 rows into `world_base.source_records`. Gate1 seed closure expects 183 rows and hashes the **entire** table after seed import. Therefore `assertGate1SeedClosure` would reject a P12-first database with `GATE1_SEED_TABLE_PAYLOAD_MISMATCH:source_records`, even when the 12 P12 rows do not collide by ID. This approved closure cannot simply be relaxed in this request; obtain the correct reviewed import sequence or an approved coexistence amendment.
-3. Review the runner's `buildGate1ImportPlan`, `importGate1OwnerData`, and transaction path against the P12 target data. The `compatibleRows` loop reads v2–v6 `world_revisions.json` and inserts those rows only into `world_base.world_revisions`; it does not import v2–v6 Spatial node, edge, or route datasets. Review the canonical seed import separately for overlap with the P12 target rows.
-4. Confirm the exact plan digests and counts above against the approved Gate1 readback, and that no active runtime catalog pin, party, or historical catalog bytes will be changed.
-5. Approve or reject this **exact** database, plan, and operation in a separate high review. Approval must precede the `local-play` database write. Then capture the actual v17 import readback and check the same values, rollback/repeat results, and absence of activation.
-
-No v16 activation is requested. A predecessor activation is needed only if the later successor activation contract explicitly requires it.
+The runner's `compatibleRows` reads v2–v6 `world_revisions.json` and inserts only metadata rows into `world_base.world_revisions`; it does not import those versions' Spatial node, edge or route datasets. The canonical seed import is reviewed separately and its full closure remains exact. Stop on schema or row drift, any conflicting Gate1 row, failed rollback probe or readback mismatch. Record the actual v17 import readback and unchanged old database counts before preparing P12's new request. No production activation occurs here.

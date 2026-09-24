@@ -145,3 +145,45 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
       status: 'approved', confidence: 'medium'
     }]);
   });
+
+test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
+  async (t) => {
+    const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-gate1-v17-'));
+    const settings = { ...LOCAL_POSTGRES,
+      worldDatabase: 'novgorod_world_v17',
+      partyDatabase: `pr17_gate1_party_${process.pid}`,
+      worldUser: 'postgres', partyUser: 'postgres' };
+    const managed = await ensureLocalPostgres({ dataRoot, settings });
+    const pool = new pg.Pool({ connectionString: managed.worldUrl, max: 1 });
+    t.after(async () => {
+      await pool.end();
+      await managed.close();
+      await rm(dataRoot, { recursive: true, force: true });
+    });
+    for (let part = 1; part <= 26; part += 1) {
+      await pool.query(await readFile(new URL(`../../infra/world-base/schema/${String(part).padStart(2, '0')}.sql`, import.meta.url), 'utf8'));
+    }
+    const run = () => spawnSync(process.execPath,
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play',
+        '--expected-database', 'novgorod_world_v17'], {
+        cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
+        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
+      });
+    const applied = run();
+    assert.equal(applied.status, 0, applied.stderr);
+    const result = JSON.parse(applied.stdout);
+    assert.equal(result.rollback, 'pass');
+    assert.equal(result.repeat_clean_apply, false);
+    assert.equal(result.first_state.approved_item_template_count, 102);
+    assert.equal(result.first_state.approved_container_template_count, 18);
+    assert.equal(result.first_state.approved_g4_count, 9);
+    assert.deepEqual(result.repeated_state, result.first_state);
+    assert.equal(Number((await pool.query(`SELECT count(*) AS count
+      FROM pg_catalog.pg_tables WHERE schemaname = 'world_base'`)).rows[0].count), 208);
+    const repeated = run();
+    assert.notEqual(repeated.status, 0);
+    assert.match(repeated.stderr, /PR17_LOCAL_PLAY_DATABASE_NOT_EMPTY:/u);
+    assert.equal(Number((await pool.query(`SELECT count(*) AS count
+      FROM world_base.item_templates WHERE world_revision_id = $1`,
+    [result.target_revision_id])).rows[0].count), 102);
+  });

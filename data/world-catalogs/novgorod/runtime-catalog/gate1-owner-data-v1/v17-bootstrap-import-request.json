@@ -1,0 +1,120 @@
+{
+  "schema": "rus.gate1_v17_bootstrap_import_request.v1",
+  "request_id": "novgorod_gate1_v17_bootstrap_import_001",
+  "status": "pending_independent_high_review",
+  "source_head": "12e19aff2c3c3aa5e274893f587b6643732531e6",
+  "operation": "import_approved_gate1_owner_closure_and_item_container_catalog",
+  "runner": {
+    "path": "scripts/run-pr17-item-container-stage3c.mjs",
+    "sha256": "b0a6db9a2fab3f06ccca072612f954384136cdeb0ebe179003076c56c7c89f14",
+    "arguments": [
+      "--mode",
+      "local-play",
+      "--expected-database",
+      "novgorod_world_v17",
+      "--write-result",
+      "OPERATOR_SELECTED_V17_READBACK_PATH"
+    ],
+    "database_url_environment": "PR17_TEST_DATABASE_URL"
+  },
+  "target": {
+    "cluster_system_identifier": "7683141184713630856",
+    "postgres_version": "16.14",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "world_schema": "world_base",
+    "world_tables": 208,
+    "world_data_rows_before": 0,
+    "party_database": "novgorod_party_v17",
+    "party_database_operation": "none",
+    "existing_databases": "novgorod_world and novgorod_party read-only and unchanged"
+  },
+  "schema_execution_evidence": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-execution-attestation.json",
+    "sha256": "04416a846ae1dbbacd3797bed5d1a82bc399cc98fca0d3f49076b66f796091ed",
+    "world_tables": 208,
+    "world_data_rows": 0,
+    "party_tables": 132,
+    "party_parties": 0,
+    "old_row_counts_unchanged": true
+  },
+  "schema_source_request": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+    "sha256": "b4c1f994a95ae3d50f0c3b410079b484011bebef364caacb7cce7824345529d6",
+    "ordered_world_parts": 26
+  },
+  "approved_sources": [
+    {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/parent-import-request.json",
+      "sha256": "4e5046e0bd835910d064cd47e7215e17e8ec167e85a59836b5cb60ef1de0329c"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/authoring-approval-attestation.json",
+      "sha256": "21ef98e8ebbc4c28b3f1d4dcb32566a54258d66bf4c226b66491822ecd5b9b7c"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1/authoring-approval-attestation.json",
+      "sha256": "9910353d273a97163472a8e203cba3e85871813d300065ae9f3bc4e08f194d15"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/seed-closure-v1/authoring-approval-attestation.json",
+      "sha256": "054212eb613b4718948c7a87984007aada6eefd97bf42b888126bc5ef0440230"
+    },
+    {
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+      "sha256": "816509df226b1bab8a91a9b3d2b3afee251f925cb169a90633d5676daeb62859"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/import-readback-result.json",
+      "sha256": "45287a72231589b5b257c5e0f129b6213893660a285ee57207dc87dbb16dc2f1"
+    }
+  ],
+  "expected_plan": {
+    "candidate_digest": "7367a2f46cb3e9ea8efe1f0be48e56284a1db26b0e1f0f00e86f743334300e28",
+    "approval_request_digest": "06acf781d0a2c7eb3deba1884f4d1d004e50676ff1d95cd089498d87a79557d9",
+    "approval_attestation_digest": "67baf3e92a2aacde2566a60c13e5a3a2410e3544549f096684d473d8588f18f8",
+    "approval_amendment_attestation_digest": "a4800a5cd2d79ac66919e3d4a3c1c74346bf3911f7f433039b311dbe25e2de9e",
+    "promotion_manifest_digest": "2818932121b2b65baf3611bb33c15b8bb996bbd52dfa650fb0ff9f2984ce0293",
+    "target_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+    "target_catalog_digest": "1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5",
+    "dataset_count": 39,
+    "status_transition_count": 9,
+    "approved_item_templates": 102,
+    "approved_container_templates": 18,
+    "approved_g4_mappings": 9,
+    "seed_table_count": 30,
+    "seed_row_count": 42577,
+    "seed_table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434",
+    "gate1_owner_request_digest": "38ea4275130afc53a4bf0368c01cc0d18e2304c7373bb510432528a9765e1da3",
+    "gate1_owner_authoring_attestation_digest": "ab153b6e20c1bb9cac7e276e8dd8776b38d554a1cfbfa4d9b9d2f85350c05061",
+    "world_revision_count": 7,
+    "world_revisions_digest": "539c7191d85397403566e3562c9ce6ff7086a685dc291d93507512cb8c61b932",
+    "approved_g4_topology_digest": "b07f487c44269adaf09ae0e60b541c1aec9f9187e7b2800dfd6664a2c010b3f6",
+    "approved_parent_source_digest": "254b3b0a864a1479c249129bf38d222bab3b0b684d79dd9e582ff6cc3524ead9",
+    "approved_parent_source_count": 2
+  },
+  "preconditions": [
+    "independent high review approves exact request digest, runner bytes, prior approvals, schema execution evidence and target identity before write",
+    "operator rechecks actual cluster, database, owner, all 208 tables and zero world_base rows; stop on drift",
+    "runner local-play performs no schema initialization or destructive DDL",
+    "run dry-run and compare all expected plan digests and counts",
+    "confirm offline backup and absence of overlapping Gate1 keys"
+  ],
+  "execution": [
+    "run exact local-play command against verified novgorod_world_v17 only; built-in rollback probe must pass",
+    "read back approved Gate1 owner closure and 102 item templates, 18 container templates, 9 G4 mappings with exact digests",
+    "confirm unchanged 208-table schema, no activation, no party rematerialization, and old database counts unchanged",
+    "only after Gate1 readback prepare a separate P12 successor request and recheck P12 pinned keys"
+  ],
+  "spatial_compatibility_scope": "compatibleRows inserts v2-v6 world_revisions metadata only; it does not import historical Spatial node, edge or route datasets",
+  "authority": {
+    "request_only": true,
+    "import_authorized": false,
+    "activation_authorized": false,
+    "production_composition_change_authorized": false,
+    "party_migration_authorized": false,
+    "database_mutated": false
+  },
+  "independent_import_attestation": null,
+  "request_digest": "69e6e0e8ec8670ccc05f0285e58d7f9582f037bec57c6640523d619d7e61a03d"
+}

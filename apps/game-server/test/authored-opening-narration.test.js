@@ -306,12 +306,16 @@ test('first screen receives natural perception after committed rehydrate without
         async materialize(request) { internal.request_identity = request; committed = true; order.push('commit'); return { status: 'committed' }; },
         async loadVisible() { return visible; },
         async provisionInitialOrdinary() { order.push('provision'); },
-        async loadNaturalScenePerceptionInput() { order.push('perception'); return perception; }
+        async loadNaturalScenePerceptionInput() { order.push('perception'); return {
+          ...perception, entity_observations: canonical && lighting === 'clear'
+            ? [{ entity_kind: 'npc', entity_id: 'npc:arrival', visibility: 'clear',
+              display_label: 'человек', exterior: { sex_category: 'male', age_category: 'adult',
+                appearance: { build: 'lean' }, visible_equipment: [] } }] : [] }; }
       },
       authoredOpeningNarration: { async run(input) {
         order.push('narrate'); narratorInput = input.visibleContextPackage;
         const descriptions = narratorInput.visible_scene_facts.filter(({ fact_id }) => fact_id.startsWith('opening:natural:'));
-        return { prose: `Вы стоите у берега. ${descriptions.map(({ text }) => text).join(' ')}`,
+        return { prose: `Вы стоите у берега. ${descriptions.map(({ text }) => text).join(' ')} ${narratorInput.visible_npcs.map(({ label }) => label).join(' ')}`,
           flow: {}, original_stage23_audit: {} };
       } },
       traceOpeningProjector: buildLowerDvinaTraceOpeningScreen,
@@ -326,7 +330,13 @@ test('first screen receives natural perception after committed rehydrate without
     assert.equal(result.screen.main_prose.includes(surfaceText), lighting === 'clear');
     assert.equal(result.screen.main_prose.includes('Доносится неясный шум.'), !canonical);
     if (canonical) {
-      assert.deepEqual(narratorInput.visible_npcs, []);
+      assert.equal(narratorInput.visible_npcs.length, lighting === 'clear' ? 1 : 0);
+      if (lighting === 'clear') {
+        assert.equal(narratorInput.visible_npcs[0].label, 'человек');
+        assert.deepEqual(narratorInput.visible_npcs[0].observable_cues.identity.appearance,
+          { build: 'lean' });
+        assert.match(result.screen.main_prose, /человек/u);
+      }
       assert.deepEqual(result.screen.visible_context.environment, { facts: [] });
       assert.equal(narratorInput.opening_reader_control.pass, true);
       assert.equal(narratorInput.opening_reader_control.assessments.length, 8);
@@ -335,7 +345,9 @@ test('first screen receives natural perception after committed rehydrate without
         status: 'unknown', answered: false, fact_refs: [], reason: 'No player-known goal or obligation is supplied.' });
       assert.deepEqual(narratorInput.visible_exits, []);
       assert.equal(narratorInput.visible_scene_dossier.must_include.some(({ category }) =>
-        ['preceding_context', 'goal_stake', 'people'].includes(category)), false);
+        ['preceding_context', 'goal_stake'].includes(category)), false);
+      assert.equal(narratorInput.visible_scene_dossier.must_include.some(({ category }) =>
+        category === 'people'), lighting === 'clear');
       assert.equal(JSON.stringify(narratorInput).includes('навес'), false);
       assert.equal(JSON.stringify(narratorInput).includes('Милослав'), false);
       assert.match(JSON.stringify(narratorInput.known_context), /верёвка/u);

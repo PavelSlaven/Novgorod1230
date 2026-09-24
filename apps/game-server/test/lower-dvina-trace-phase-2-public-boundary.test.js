@@ -154,20 +154,28 @@ test('canonical initial turn uses current P22 without historical scene or raw en
     environment_snapshot: { schema: 'rus.approved_initial_environment.v1', season: 'summer',
       light_state: 'daylight', weather_state: { weather_state_id: 'PRIVATE_WEATHER_STATE' } } };
   const input = { screen, openingScreenDigest: canonicalDigest(screen), initialState,
-    canonicalInitialState: true, naturalScenePerceptionInput: perception,
+    canonicalInitialState: true, naturalScenePerceptionInput: { ...perception,
+      entity_observations: [{ entity_kind: 'npc', entity_id: 'npc:raw',
+        visibility: 'clear', display_label: 'человек', exterior: {
+          sex_category: 'male', age_category: 'adult', appearance: { build: 'lean' },
+          visible_equipment: [] } }] },
     scenePresentation: { locations: [{ location_ref: 'shore', display_name: 'берег крушения',
       player_visible_physical_facts: ['PRIVATE_LEGACY_SCENE'] }] } };
   const current = phase2InitialCurrentVisibleContext(input);
   assert.equal(current.visible_scene, perception.scene.visible_scene);
   assert.ok(current.sensory_details.length > 0);
-  assert.deepEqual(current.visible_npc, []);
+  assert.equal(current.visible_npc[0].display_label, 'человек');
+  assert.deepEqual(current.visible_npc[0].observable_cues.identity.appearance,
+    { build: 'lean' });
+  assert.equal(current.visible_npc[0].observable_cues.identity.display_name, undefined);
+  assert.equal(current.visible_npc.length, 1);
   assert.deepEqual(current.visible_objects, []);
   assert.deepEqual(current.visible_changes, []);
   assert.equal(/PRIVATE_|крушения|canonical_source_binding|payload_digest/u.test(JSON.stringify(current)), false);
   const dark = structuredClone(perception);
   dark.observer.visual_capability = 'none';
   assert.deepEqual(phase2InitialCurrentVisibleContext({ ...input,
-    naturalScenePerceptionInput: dark }).sensory_details, []);
+    naturalScenePerceptionInput: { ...dark, entity_observations: [] } }).sensory_details, []);
   assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
     naturalScenePerceptionInput: null }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
   for (const key of ['party_id', 'actor_id', 'position_id', 'scenario_id']) {
@@ -192,7 +200,8 @@ test('canonical start without initial rule uses exact verified current scene sou
   const args = { screen, openingScreenDigest: canonicalDigest(screen),
     initialState: { party_id: 'party:1', actor_id: 'player:1',
       position: { position_id: 'position:shore' } },
-    canonicalInitialState: true, naturalScenePerceptionInput: perception };
+    canonicalInitialState: true, naturalScenePerceptionInput: { ...perception,
+      entity_observations: [] } };
   const current = phase2InitialCurrentVisibleContext(args);
   assert.equal(current.visible_scene, perception.scene.visible_scene);
   assert.equal(JSON.stringify(current).includes('старое место'), false);

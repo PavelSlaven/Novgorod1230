@@ -5,7 +5,7 @@ import { assertLowerDvinaTracePublicScreen } from
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 import { scenePresentationForLocation } from
   '../../runtime/lower-dvina-trace-scene-presentation.js';
-import { projectG4NaturalPerception } from '../../runtime/g4-natural-perception.js';
+import { projectSpatialV3CurrentVisibleContext } from '../../runtime/spatial-v3-current-visible-context.js';
 import { serverError } from '../../errors.js';
 
 const ARRAY_FIELDS = [
@@ -45,10 +45,11 @@ export function phase2InitialCurrentVisibleContext({
         'Canonical initial turn projection requires exact current perception.',
         { status: 409, details: { reason: 'canonical_initial_perception_required' } });
     }
-    const perception = projectG4NaturalPerception({ input: naturalScenePerceptionInput,
-      partyId: initialState.party_id, actorId: initialState.actor_id,
-      positionId: initialState.position.position_id });
-    return requirePhase2CurrentVisibleContext(perception.visible_context);
+    return requirePhase2CurrentVisibleContext(projectSpatialV3CurrentVisibleContext({
+      naturalInput: naturalScenePerceptionInput, partyId: initialState.party_id,
+      actorId: initialState.actor_id, positionId: initialState.position.position_id,
+      entityObservations: naturalScenePerceptionInput.entity_observations,
+      localEdges: [], directionalExits: [] }));
   }
   const visibleContext = screen.visible_context;
   const presented = scenePresentation == null ? null : scenePresentationForLocation({

@@ -15,6 +15,7 @@ import { buildVisibleContextAuditApproval,
   computeVisibleContextPackageDigest } from '@rus/contracts';
 import { projectG4NaturalPerception } from './g4-natural-perception.js';
 import { buildCanonicalOpeningVisibleContext } from './canonical-opening-context.js';
+import { projectSpatialV3CurrentVisibleContext } from './spatial-v3-current-visible-context.js';
 
 export async function startLowerDvinaTrace({
   requestId,
@@ -138,8 +139,13 @@ export async function startLowerDvinaTrace({
     if (typeof traceStartAdapter.loadNaturalScenePerceptionInput === 'function') {
       const perceptionInput = await traceStartAdapter.loadNaturalScenePerceptionInput({
         partyId, actorId: internal.player.instance_id, internal, visible });
-      naturalScenePerception = projectG4NaturalPerception({ input: perceptionInput,
+      const natural = projectG4NaturalPerception({ input: perceptionInput,
         partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id });
+      naturalScenePerception = { ...natural,
+        visible_context: projectSpatialV3CurrentVisibleContext({ naturalInput: perceptionInput,
+          partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id,
+          entityObservations: perceptionInput.entity_observations,
+          localEdges: [], directionalExits: [] }) };
       canonicalSourceBinding = perceptionInput.canonical_source_binding ?? null;
     }
     const buildOpeningContext = canonicalSourceBinding == null

@@ -17,6 +17,8 @@ import { readInitialCanonicalNaturalSourceState } from './lower-dvina-trace-phas
 import { readCurrentNaturalSourceState } from './g4-current-natural-source-state.js';
 import { createTargetCurrentFactualContext } from './target-current-factual-context.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
+import { createSpatialV3CurrentVisibilityProvider } from './spatial-v3-current-visibility-provider.js';
+import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKnowledge } from './spatial-v3-current-visibility-inputs.js';
 export {
   readPartyDatabaseSchemaSnapshot,
   readWorldBaseReferenceSnapshot
@@ -228,8 +230,16 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
               : (request) => readInitialCanonicalNaturalSourceState({ ...request,
                 rule_ref: { id: selectedStart.initialRule.rule.id, version: selectedStart.initialRule.rule.version } }) });
           const input = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin: runtimeCatalogPin, currentFacts });
+          const visibility = createSpatialV3CurrentVisibilityProvider({ pool: partyPool,
+            verifiedCatalog, pin: runtimeCatalogPin,
+            readNatural: async () => currentFacts,
+            readTargetConditions: readCurrentTargetConditions,
+            readEntityExterior: readCommittedEntityExterior,
+            readPlayerKnowledge });
+          const entityObservations = await visibility.readEntityObservations({ transaction,
+            partyId, actorId });
           await transaction.query('COMMIT');
-          return input;
+          return { ...input, entity_observations: entityObservations };
         } catch (error) {
           await transaction.query('ROLLBACK');
           throw error;

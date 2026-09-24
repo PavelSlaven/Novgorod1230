@@ -31,7 +31,10 @@ export function buildCanonicalOpeningVisibleContext({ requestId, visible, intern
     visibleNpcIds: new Set() }).filter((item) => item.item_id && item.name);
   const visibleNpcs = context.visible_npc.map((npc) => ({
     npc_instance_id: npc.entity_ref.entity_id, label: npc.display_label,
-    recognition: npc.recognition, current_activity: npc.visible_status }));
+    recognition: npc.recognition,
+    ...(npc.visible_status == null ? {} : { current_activity: npc.visible_status }),
+    ...(npc.observable_cues == null ? {} : {
+      observable_cues: structuredClone(npc.observable_cues) }) }));
   const observedItems = context.visible_objects.filter((item) => item.entity_ref?.entity_kind === 'item')
     .map((item) => ({ item_instance_id: item.entity_ref.entity_id, label: item.display_label,
       recognition: item.recognition, visible_status: item.visible_status }));

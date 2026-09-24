@@ -144,6 +144,21 @@ export function withPhase2CurrentVisibleContext(state, currentVisibleContext) {
   };
 }
 
+export async function withPhase2CurrentLocalEdges(state, readLocalEdgeDisclosure) {
+  if (typeof readLocalEdgeDisclosure !== 'function') return state;
+  const disclosed = await readLocalEdgeDisclosure({ partyId: state.party_id,
+    actorId: state.actor_id, state });
+  const context = requirePhase2CurrentVisibleContext(state.current_visible_context);
+  return withPhase2CurrentVisibleContext(state, { ...context,
+    visible_objects: [
+      ...context.visible_objects.filter((row) =>
+        row?.entity_ref?.entity_kind !== 'scene_movement_edge'),
+      ...disclosed.map(({ edge_id, display_label }) => ({
+        entity_ref: { entity_kind: 'scene_movement_edge', entity_id: edge_id },
+        display_label, recognition: 'known' }))
+    ] });
+}
+
 export function withoutPhase2CurrentVisibleContext(state) {
   delete state.current_visible_context;
   return state;

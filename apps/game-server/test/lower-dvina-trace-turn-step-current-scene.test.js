@@ -21,6 +21,18 @@ const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
   economic_basis: 'Пустая сушильня.' }];
 
+test('current scene carries disclosed local edge into turn visible package', () => {
+  const state = committedState();
+  state.current_visible_context.visible_objects.push({
+    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
+    display_label: 'Проход 1', recognition: 'known' });
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.equal(current.current_visible_context.visible_objects.some((row) =>
+    row.entity_ref?.entity_kind === 'scene_movement_edge'
+      && row.entity_ref.entity_id === 'edge'), true);
+});
+
 test('direct sustained activity exposes the performed attempt without elapsed-time prose', () => {
   const changes = projectDirectSeedChanges({
     input: { consequence: { visible_seed: { turn_step_1: {

@@ -44,6 +44,14 @@ export async function assertLocalMovementEligibilityPostgres(pool) {
   const runtime = createSpatialV3LocalSceneRuntime({ pool, readLocalMovementEligibility,
     readLocalEdgeDisclosure: visible });
   const input = { partyId: 'adjunct-party', actorId: 'actor', state: state('arrival', 1) };
+  await pool.query(`INSERT INTO party_runtime.entity_placements
+    (party_id,entity_kind,entity_id,placement_kind,position_node_id,
+      occupies_capacity_units,state_version,updated_change_set_id)
+    VALUES ('adjunct-party','npc','focus-occupant','scene_position','focus',1,1,'seed')`);
+  assert.deepEqual(await runtime.listLocalOptions(input), [],
+    'NPC at capacity-one focus blocks arrival movement');
+  await pool.query(`DELETE FROM party_runtime.entity_placements
+    WHERE party_id='adjunct-party' AND entity_id='focus-occupant'`);
   assert.deepEqual(await createSpatialV3LocalSceneRuntime({ pool,
     readLocalMovementEligibility }).listLocalOptions(input), [], 'topology and policy grant no visibility');
   assert.deepEqual(await createSpatialV3LocalSceneRuntime({ pool,

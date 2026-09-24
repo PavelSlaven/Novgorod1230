@@ -7,6 +7,7 @@ import { phase2PublicResult, phase2ScreenDigest, publicCombatStateFromConsequenc
 import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery, factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
 import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
 import { phase2InitialCurrentVisibleContext, withPhase2CurrentVisibleContext,
+  withPhase2CurrentLocalEdges,
   withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
 import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
 import { replayLowerDvinaTracePhase2Presentation } from './lower-dvina-trace-phase-2-presentation-replay.js';
@@ -34,7 +35,8 @@ import { loadLowerDvinaTraceScenePresentation } from '../../internal/lower-dvina
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
-  loadInitialNaturalScenePerceptionInput = null } = {}) {
+  loadInitialNaturalScenePerceptionInput = null,
+  readLocalEdgeDisclosure = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -144,7 +146,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       );
       const journeyLocation = await loadPhase2JourneyLocation(
         readPool, partyId, initial.actor_id);
-      return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, hydrateNpcRoutineState({ ...withJourneyLocation(visible, journeyLocation),
+      const current = await withPhase2CurrentLocalEdges(
+        withJourneyLocation(visible, journeyLocation),
+        includeCurrentVisibleContext ? readLocalEdgeDisclosure : null);
+      return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, hydrateNpcRoutineState({ ...current,
         npc_schedule_runtime: structuredClone(temporalSourceProof.npc_schedule_runtime ?? []),
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime) })));
     }
@@ -187,8 +192,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       loadedPayload, await loadPhase2VisibleContext(partyPool, {
         commit: loadedPayload.last_turn.visible_package, turnBudget
       }));
+    const current = await withPhase2CurrentLocalEdges(loadedWithCurrentVisible,
+      includeCurrentVisibleContext ? readLocalEdgeDisclosure : null);
     return withLowerDvinaTracePostActionKnowledge(readPool, partyId, await withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, hydrateNpcRoutineState({
-      ...loadedWithCurrentVisible,
+      ...current,
       world_identity: {
         world_revision_id: row.world_revision_id,
         world_catalog_digest: row.world_catalog_digest

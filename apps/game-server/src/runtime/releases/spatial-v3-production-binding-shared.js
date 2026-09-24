@@ -112,7 +112,8 @@ export async function createSpatialV3ProductionBindings(
     targetStartRuntime = null,
     targetRuntimeProfiles = null,
     spatialExpansionRuntime = null,
-    spatialLocalSceneRuntime = null
+    spatialLocalSceneRuntime = null,
+    readLocalEdgeDisclosure = null
   } = {},
   {
     createNpcRuntimePorts,
@@ -232,6 +233,7 @@ export async function createSpatialV3ProductionBindings(
           worldKnowledge,
           spatialExpansionRuntime,
           spatialLocalSceneRuntime,
+          readLocalEdgeDisclosure,
           loadInitialNaturalScenePerceptionInput: traceStartAdapter.loadNaturalScenePerceptionInput ?? null,
           createPhase2RuntimeFactory,
           createNpcRuntimePorts

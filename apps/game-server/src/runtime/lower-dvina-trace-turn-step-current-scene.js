@@ -67,7 +67,10 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     visible_changes: [],
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
-    visible_objects: sceneItems.map(({ visibleObject }) => visibleObject),
+    visible_objects: uniqueLowerDvinaTraceVisibleObjects([
+      ...(initial?.visible_objects ?? []).filter((row) =>
+        row?.entity_ref?.entity_kind === 'scene_movement_edge'),
+      ...sceneItems.map(({ visibleObject }) => visibleObject)]),
     known_context: [profile.display_name, ...selfKnowledge],
     uncertainties: [],
     allowed_tensions: [],

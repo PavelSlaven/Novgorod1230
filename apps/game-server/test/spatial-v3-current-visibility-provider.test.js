@@ -7,6 +7,8 @@ import { approvedNaturalStableCover } from
   '../src/infrastructure/postgres/g4-natural-perception-reader.js';
 import { readCurrentTargetConditions } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
+import { withPhase2CurrentLocalEdges } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
 
 const label = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url))).labels[0];
@@ -62,6 +64,25 @@ test('current snapshot admits committed identities, edges and approved exit labe
     direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
     display_label: label.display_label }]);
   assert.equal(queries.filter((sql) => sql.startsWith('BEGIN')).length, 4);
+});
+
+test('current approved local edge reaches the turn visible context', async () => {
+  const { provider, scene } = fixture();
+  const state = { party_id: 'party', actor_id: 'actor',
+    journey_location: { scene_position_id: 'a' }, current_visible_context: {
+      version: 1, schema: 'visible_context_package', visible_scene: 'Лес',
+      visible_changes: [], sensory_details: [], visible_npc: [],
+      visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: [] } };
+  const current = await withPhase2CurrentLocalEdges(state,
+    provider.readLocalEdgeDisclosure);
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
+    display_label: localLabel.display_label, recognition: 'known' }]);
+  scene.movement_edges = [];
+  const changed = await withPhase2CurrentLocalEdges(current,
+    provider.readLocalEdgeDisclosure);
+  assert.deepEqual(changed.current_visible_context.visible_objects, []);
 });
 
 test('explicit geometry hides unlinked targets; modifiers and missing ambient fail closed', async () => {

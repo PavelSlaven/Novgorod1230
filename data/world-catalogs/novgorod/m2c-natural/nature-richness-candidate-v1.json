@@ -1,0 +1,79 @@
+{
+  "schema": "m2c_nature_richness_candidate_v1",
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "g4_version": 1,
+  "scope": "Forest and low alluvial riverbank G4 types only; eligibility for future bounded selection, not current presence or a finite resource",
+  "weight_policy": {
+    "status": "editorial_candidate",
+    "meaning": "Relative game selection preference among eligible alternatives within one layer and exact G4; not archaeological frequency, biological abundance, encounter probability or yield",
+    "weights": { "dominant": 8, "common": 4, "occasional": 2, "rare": 1 }
+  },
+  "source_register": {
+    "regional_landscape": "data/world-catalogs/novgorod/m2c-nature-coverage.json#entries",
+    "exact_g4": "data/world-catalogs/novgorod/m2c-natural/candidate.json#natural_profiles",
+    "archaeological_wood": "data/world-catalogs/novgorod/world-knowledge/research/population-settlement-craft.md#SC-02",
+    "archaeological_fauna": "data/world-catalogs/novgorod/world-knowledge/production-v1/environment-ecology.json#claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
+    "medieval_wetland": "data/world-catalogs/novgorod/world-knowledge/research/population-wetland-stems.md#WLS-01",
+    "modern_forest": "data/world-catalogs/novgorod/world-knowledge/research/population-wild-flora-modern.md#WFM-01",
+    "modern_willow": "data/world-catalogs/novgorod/world-knowledge/research/population-environment-biology.md#U11"
+  },
+  "era_filter": "Medieval Novgorod archaeology is regional compatibility only. Contemporary Valdai/European ecology is marked analogical; it is never a direct 1230 Lower Dvina occurrence. No exact G4 taxon, animal sighting, trace, sound, harvest, ownership, edible state or stock follows from this candidate.",
+  "season_policy": "Use actual world date and phenology before selection. Winter leafless deciduous trees remain trees; fruit, flowers, fresh stems and visible animals require separate current-state support. No fixed month or guaranteed seasonal occurrence is asserted.",
+  "layer_gate": "A candidate is eligible only where its exact G4 natural baseline layer is present; a missing fauna layer remains an approval gap. In the riverbank group willow is excluded at driftwood_bar and shifting_shoal_field because their riparian_vegetation layer is not_applicable.",
+  "profiles": [
+    {
+      "landscape_template_id": "lt_temperate_coniferous_forest",
+      "g4_ids": ["g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge"],
+      "selection_candidates": [
+        {"kind": "flora", "taxon": "Pinus (pine)", "layer": "tree_layer", "category": "common", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "exact_g4", "archaeological_wood", "modern_forest"], "season": "evergreen canopy possible year-round; cones or fallen branches need separate current state", "limit": "Historical timber use and modern forest habitat do not prove a living pine at this G4."},
+        {"kind": "flora", "taxon": "Picea (spruce)", "layer": "tree_layer", "category": "occasional", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "archaeological_wood", "modern_forest"], "season": "evergreen canopy possible year-round", "limit": "No exact species, stand density or usable log."},
+        {"kind": "fauna", "taxon": "Alces (elk)", "layer": "fauna", "category": "rare", "directness": "inferred", "confidence": "low", "source_keys": ["archaeological_fauna", "exact_g4"], "season": "year-round compatibility; observation depends on current state", "limit": "Bone assemblage is regional and cannot produce a sighting, track or hunt."},
+        {"kind": "material", "taxon": "sandy mineral ground", "layer": "natural_materials", "category": "common", "directness": "inferred", "confidence": "low", "source_keys": ["regional_landscape", "exact_g4"], "season": "exposure varies with snow, water and ground state", "limit": "Descriptive substrate only; no extractable stock."}
+      ]
+    },
+    {
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "g4_ids": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract"
+      ],
+      "selection_candidates": [
+        {"kind": "flora", "taxon": "Picea (spruce)", "layer": "tree_layer", "category": "common", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "archaeological_wood", "modern_forest"], "season": "evergreen canopy possible year-round", "limit": "Modern Valdai forest is a habitat analogy, not a Lower Dvina census."},
+        {"kind": "flora", "taxon": "Sphagnum (peat moss)", "layer": "ground_cover", "category": "occasional", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "medieval_wetland"], "season": "visible ground cover depends on snow and current water state", "limit": "Ryurik Gorodishche pollen does not attest this exact forest."},
+        {"kind": "fauna", "taxon": "Alces (elk)", "layer": "fauna", "category": "rare", "directness": "inferred", "confidence": "low", "source_keys": ["archaeological_fauna", "exact_g4"], "season": "year-round compatibility; observation depends on current state", "limit": "No animal, trace, call or hunt is created."},
+        {"kind": "material", "taxon": "waterlogged forest soil", "layer": "natural_materials", "category": "common", "directness": "inferred", "confidence": "low", "source_keys": ["regional_landscape", "exact_g4"], "season": "current wetness and exposure require weather and water state", "limit": "No bearing capacity, peat deposit or harvestable stock."}
+      ]
+    },
+    {
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "g4_ids": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing"
+      ],
+      "selection_candidates": [
+        {"kind": "flora", "taxon": "Salix (willow)", "layer": "riparian_vegetation", "category": "occasional", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "modern_willow", "exact_g4"], "season": "woody stems year-round; foliage requires current growing season", "limit": "Modern white-willow ecology supports riparian compatibility only; no medieval or exact G4 occurrence."},
+        {"kind": "fauna", "taxon": "Castor (beaver)", "layer": "fauna", "category": "rare", "directness": "inferred", "confidence": "low", "source_keys": ["archaeological_fauna", "exact_g4"], "season": "year-round compatibility; observation and sign require current state", "limit": "Archaeological remains do not create an animal, lodge, gnaw mark or pelt."},
+        {"kind": "material", "taxon": "alluvial sand and silt", "layer": "natural_materials", "category": "common", "directness": "inferred", "confidence": "low", "source_keys": ["regional_landscape", "exact_g4"], "season": "exposure varies with water level, freezing and snow", "limit": "Template substrate is broad; no exact sediment depth, safe footing or extractable stock."}
+      ]
+    }
+  ],
+  "unresolved": ["No fungal taxon has a medieval-to-exact-G4 bridge in this candidate.", "No species or material category here is approved for runtime selection; Sol-high historical and contract review is required."]
+}

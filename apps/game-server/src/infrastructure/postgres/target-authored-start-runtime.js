@@ -61,7 +61,10 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
   const catalog = await createRuntimeCatalogLoader({ worldBaseReader: { read: worldPool.query.bind(worldPool) },
     supportedRuntimeContractDigests: [itemPin.runtime_contract_digest] }).loadApprovedItemCatalog({ pin: itemPin });
   const [canonicalResult, sceneResult, g4Result] = await Promise.all([
-    reader.readPinnedCanonicalG5SceneBinding({ ...place.canonical_g5_ref, world_revision_id: worldPin.world_revision_id }),
+    reader.readPinnedCanonicalG5SceneBinding({ ...place.canonical_g5_ref,
+      world_revision_id: worldPin.world_revision_id,
+      scene_template_ref: place.scene_template_ref,
+      scene_materialization_profile_ref: place.scene_materialization_profile_ref }),
     reader.readPinnedSceneTemplateClosure({ ...place.scene_template_ref, world_revision_id: worldPin.world_revision_id }),
     worldPool.query(`SELECT n.id,n.version,n.world_revision_id,n.canonical_digest,n.status
       FROM world_base.spatial_v3_nodes n JOIN world_base.spatial_v3_authoring_versions av
@@ -77,7 +80,8 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
   const canonical = canonicalResult.value; const scene = sceneResult.value; const g4 = g4Result.rows[0];
   if (canonical.parent_id !== g4.id || canonical.parent_version !== g4.version
     || canonical.scene_template_id !== scene.header.id || canonical.scene_template_version !== scene.header.version
-    || canonical.materialization_profile_id !== place.scene_materialization_profile_ref.id) {
+    || canonical.materialization_profile_id !== place.scene_materialization_profile_ref.id
+    || canonical.materialization_profile_version !== place.scene_materialization_profile_ref.version) {
     gap('SPATIAL_V3_TARGET_START_SCENE_REQUIRED');
   }
   const snapshot = { version: 1, schema: 'world_base_reference_snapshot',

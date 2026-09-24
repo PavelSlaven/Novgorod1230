@@ -154,7 +154,7 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
       || Number(canonicalRef.authoring_version) !== rule.canonical_g5_ref.version
       || typeof worldBaseReader.readPinnedCanonicalG5SceneBinding !== 'function') gap('verified_canonical_initial_state_required');
     const canonical = await worldBaseReader.readPinnedCanonicalG5SceneBinding({ ...rule.canonical_g5_ref,
-      world_revision_id: rule.world_revision_id });
+      world_revision_id: rule.world_revision_id, scene_template_ref: rule.scene_template_ref });
     if (!canonical?.ok || canonical.value.id !== rule.canonical_g5_ref.id
       || canonical.value.version !== rule.canonical_g5_ref.version
       || canonical.value.world_revision_id !== rule.world_revision_id
@@ -175,7 +175,7 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
     }
     const canonical = await worldBaseReader.readPinnedCanonicalG5SceneBinding({
       id: ref.entity_id, version: Number(ref.authoring_version),
-      world_revision_id: snapshot.world_revision_id });
+      world_revision_id: snapshot.world_revision_id, scene_template_ref });
     if (!canonical?.ok || canonical.value.id !== ref.entity_id
       || canonical.value.version !== Number(ref.authoring_version)
       || canonical.value.world_revision_id !== snapshot.world_revision_id

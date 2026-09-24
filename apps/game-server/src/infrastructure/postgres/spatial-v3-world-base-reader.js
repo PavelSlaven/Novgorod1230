@@ -694,7 +694,7 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
           : { canonical_g5: { ...target } }) }) });
   }
   async function readPinnedCanonicalG5SceneBinding({ id, version,
-    world_revision_id } = {}) {
+    world_revision_id, scene_template_ref, scene_materialization_profile_ref } = {}) {
     if (typeof id !== 'string' || !id.trim() || !Number.isInteger(version)
       || version < 1 || typeof world_revision_id !== 'string'
       || !world_revision_id.trim()) {
@@ -705,6 +705,16 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
     if (typeof query !== 'function') {
       return failure('generated_schema_mismatch', 'node', id, {
         reason: 'read-only query port is required'
+      });
+    }
+    if ((scene_template_ref && (typeof scene_template_ref.id !== 'string'
+      || !Number.isInteger(scene_template_ref.version) || scene_template_ref.version < 1))
+      || (scene_materialization_profile_ref
+        && (typeof scene_materialization_profile_ref.id !== 'string'
+          || !Number.isInteger(scene_materialization_profile_ref.version)
+          || scene_materialization_profile_ref.version < 1))) {
+      return failure('authoring_dependency_pin_missing', 'node', id, {
+        reason: 'exact_canonical_g5_scene_pin_required'
       });
     }
     const result = await query(`SELECT n.id,n.version,n.world_revision_id,
@@ -733,8 +743,15 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
         ON nav.entity_kind='spatial_node' AND nav.entity_id=n.id AND nav.version=n.version
        AND nav.world_revision_id=n.world_revision_id AND nav.status='approved'
       WHERE n.id=$1 AND n.version=$2 AND n.world_revision_id=$3
-        AND n.spatial_level='G5' AND n.status='approved' LIMIT 2`,
-    [id, version, world_revision_id]);
+        AND n.spatial_level='G5' AND n.status='approved'
+        AND ($4::text IS NULL OR candidate.scene_template_id=$4)
+        AND ($5::int IS NULL OR candidate.scene_template_version=$5)
+        AND ($6::text IS NULL OR profile.id=$6)
+        AND ($7::int IS NULL OR profile.version=$7)
+      LIMIT 2`,
+    [id, version, world_revision_id, scene_template_ref?.id ?? null,
+      scene_template_ref?.version ?? null, scene_materialization_profile_ref?.id ?? null,
+      scene_materialization_profile_ref?.version ?? null]);
     if (!Array.isArray(result?.rows) || result.rows.length !== 1) {
       return failure('route_plan_snapshot_missing', 'node', id, {
         reason: result?.rows?.length > 1

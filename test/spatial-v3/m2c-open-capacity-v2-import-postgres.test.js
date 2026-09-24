@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
+import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { promoteM2cOpenCapacity } from '../../scripts/promote-m2c-open-capacity-v2.mjs';
 import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
 
@@ -59,6 +60,25 @@ test('approved M2c open capacity successor imports through P12 without overwriti
     (SELECT count(*)::int FROM world_base.spatial_v3_g6_acoustic_baselines WHERE scene_template_version=2) AS acoustics,
     (SELECT count(*)::int FROM world_base.spatial_v3_local_movement_eligibility_profiles WHERE scene_template_version=2) AS movement`)).rows[0];
   assert.deepEqual(v2, { scenes: 17, candidates: 220, acoustics: 71, movement: 68 });
+  const binding = (await pool.query(`SELECT p.source_entity_id AS id,
+      p.source_entity_version AS version,p.world_revision_id,p.id AS profile_id,
+      c.scene_template_id
+    FROM world_base.spatial_v3_scene_materialization_profiles p
+    JOIN world_base.spatial_v3_scene_materialization_candidates c
+      ON c.profile_id=p.id AND c.profile_version=p.version
+    WHERE p.source_kind='canonical_g5' AND p.version=2
+    ORDER BY p.id LIMIT 1`)).rows[0];
+  const reader = createSpatialV3WorldBaseReader({ query: pool.query.bind(pool) });
+  for (const version of [1, 2]) {
+    const selected = await reader.readPinnedCanonicalG5SceneBinding({
+      id: binding.id, version: binding.version, world_revision_id: binding.world_revision_id,
+      scene_template_ref: { id: binding.scene_template_id, version },
+      scene_materialization_profile_ref: { id: binding.profile_id, version }
+    });
+    assert.equal(selected.ok, true, JSON.stringify(selected.error));
+    assert.equal(selected.value.scene_template_version, version);
+    assert.equal(selected.value.materialization_profile_version, version);
+  }
   const proposed = JSON.parse(await readFile(
     'data/world-catalogs/novgorod/m2c-scene-movement-edges/open-capacity-v2-candidate.json'));
   for (const [table, expected] of [

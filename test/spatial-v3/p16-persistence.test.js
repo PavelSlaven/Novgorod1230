@@ -144,9 +144,11 @@ test('P16 reader resolves one exact canonical G5 scene binding', async () => {
   assert.deepEqual((await reader.readPinnedCanonicalG5SceneBinding({
     id: 'g5', version: 1, world_revision_id: 'revision'
   })).value, { ...row, scene_rules });
-  assert.deepEqual(calls[0].params, ['g5', 1, 'revision']);
+  assert.deepEqual(calls[0].params, ['g5', 1, 'revision', null, null, null, null]);
   assert.match(calls[0].sql, /source_kind='canonical_g5'/u);
   assert.match(calls[0].sql, /nav.status='approved'/u);
+  assert.match(calls[0].sql, /candidate.scene_template_version=\$5/u);
+  assert.match(calls[0].sql, /profile.version=\$7/u);
   assert.doesNotMatch(calls[0].sql, /nav\.canonical_digest=n\.canonical_digest/u);
   assert.doesNotMatch(calls[0].sql, /scene_materialization_profile' AND pav/u);
   assert.match(calls[1].sql, /JOIN revision_ancestry ancestry ON ancestry.id=av.world_revision_id/u);

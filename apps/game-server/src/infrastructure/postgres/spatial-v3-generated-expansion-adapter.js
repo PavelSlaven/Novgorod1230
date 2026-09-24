@@ -63,6 +63,15 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
         const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({ party_id, g4_id: g4.id });
         if (!loaded.ok) return loaded;
         const snapshot = loaded.snapshot;
+        const current = await transaction.query(`SELECT party.state_version, session.last_turn_id
+          FROM party_runtime.parties party
+          JOIN party_runtime.party_state_snapshots state
+            ON state.party_id=party.party_id AND state.state_version=party.state_version
+          LEFT JOIN party_runtime.party_server_sessions session ON session.party_id=party.party_id
+          WHERE party.party_id=$1`, [party_id]);
+        if (current.rows.length !== 1 || !/^[1-9][0-9]*$/u.test(String(current.rows[0].state_version))) {
+          return reject('committed_party_state_required', 'visible_package_persistence_gap');
+        }
         const chain = snapshot.chains.find((row) => row.id === `expansion:${suffix}:chain`);
         const timestamp = now();
         let selection;
@@ -236,9 +245,14 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
             created_refs: [...proposal.inserts, ...firstEntryWrites].map((row) => ({ table: row.target_table, id: row.id })) } },
         ...selection.choices.map((choice) => ({ target_table: 'party_materialization_choices',
           id: `${run_id}:${choice.choice_ordinal}`, record: { party_id, run_id, ...choice } }))];
-        const visible = await projectVisible({ transaction, request, snapshot, proposal, firstEntry, change_set_id,
-          idempotency_record_id: `idem:${change_set_id}` });
+        const visible = await projectVisible({ transaction, request, closure, snapshot, proposal, firstEntry,
+          dependency_pins, current_state_version: String(current.rows[0].state_version),
+          current_turn_id: current.rows[0].last_turn_id, package_id: `visible:${change_set_id}`,
+          idempotency_key, change_set_id, idempotency_record_id: `idem:${change_set_id}` });
         if (!visible?.ok) return visible?.error ? visible : reject('visible_projection_required');
+        if (!visible.envelope?.projection_policy_ref) {
+          return reject('approved_projection_policy_ref_required', 'visible_package_persistence_gap');
+        }
         const change = { target_table: 'party_v3_change_sets', id: change_set_id,
           record: { id: change_set_id, party_id, operation_kind: 'resolve_frontier', idempotency_record_id: `idem:${change_set_id}` } };
         const approvedWriteSets = [{ inserts: proposal.inserts, updates: proposal.updates, appends: [change, ...traceWrites] }, ...firstEntry.approved_write_sets];

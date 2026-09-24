@@ -58,6 +58,14 @@ fixed; generated G5 may attach only through existing directional exits.
 
 Current production visibility is partial. The generated-G5 adapter and saved-connection traversal are wired into v17 composition; ordinary UI, Contract Audit and final CI acceptance remain pending.
 
+Typed gap `player_watercraft_skill_missing`: the approved occupation skill
+catalog has `travel_transport` for boatmen, but the current 12-skill player
+schema has `riding` (horseback) and no watercraft skill. The Stage 11 player
+skill owner must resolve the vocabulary mismatch before boat or ferry capability
+can be granted to a player; `travel_transport` must not be mapped to `riding`.
+For the three M2c boatman/fisher starts, only approved `survival` primary +2
+can be derived now; secondary +1 requires a biography and is not assigned.
+
 Regional template-link source inventory (members inside
 `data/world-base-sources/rus13-base-v1.tar.gz`):
 

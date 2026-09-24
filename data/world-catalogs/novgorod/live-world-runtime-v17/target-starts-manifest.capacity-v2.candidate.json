@@ -1,8 +1,8 @@
 {
   "schema": "rus.live_world_runtime.target_starts_manifest.v1",
   "version": 1,
-  "status": "approved",
-  "activation_authorized": true,
+  "status": "candidate",
+  "activation_authorized": false,
   "source_artifacts": {
     "candidate": {
       "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json",
@@ -33,10 +33,7 @@
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_pine_ridge_approach_v1.basis.json",
         "sha256": "0d92318ee0f8ac92e96932814526e315b692b7a4086b66b3c11986a86a62d179"
       },
-      "approval": {
-        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
-        "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
-      }
+      "approval": null
     },
     {
       "binding_revision": 2,
@@ -57,10 +54,7 @@
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_riverbank_approach_v1.basis.json",
         "sha256": "f0a71866df33b1dcd9d01db6df1241b183386f7c32a23b35c978db6888bc443b"
       },
-      "approval": {
-        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
-        "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
-      }
+      "approval": null
     },
     {
       "binding_revision": 3,
@@ -81,10 +75,7 @@
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_reed_backwater_entrance_v1.basis.json",
         "sha256": "329bd40afe65f8c4b75e1ef0f1f5d40a4ad732b42ddc3ef41b56a612a9071aeb"
       },
-      "approval": {
-        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
-        "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
-      }
+      "approval": null
     },
     {
       "binding_revision": 4,
@@ -105,10 +96,7 @@
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_resource_edge_approach_v1.basis.json",
         "sha256": "9995929a64706dc8bc56a0dd23617e307f3a202f2ae421fe2985960c25ad8831"
       },
-      "approval": {
-        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
-        "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
-      }
+      "approval": null
     },
     {
       "binding_revision": 5,
@@ -129,10 +117,7 @@
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_zaostrovye_settlement_approach_v1.basis.json",
         "sha256": "dd7ade2ef132341a1577a710f9c930bba2266abcf7715d6de6526fa0da4f2846"
       },
-      "approval": {
-        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
-        "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
-      }
+      "approval": null
     },
     {
       "binding_revision": 6,
@@ -153,10 +138,7 @@
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_work_storage_v1.basis.json",
         "sha256": "25f3bf88db5796d975aa5ac30c874b0c9ff94bae4d2ce5cc0f7ee07efbe742a3"
       },
-      "approval": {
-        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
-        "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
-      }
+      "approval": null
     },
     {
       "binding_revision": 7,
@@ -177,18 +159,11 @@
         "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_household_cluster_v1.basis.json",
         "sha256": "b98d0c438bbfc1d56ebc35ee1d25d59b9e7dc8aad3f1eca7eef735c7681cfeda"
       },
-      "approval": {
-        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
-        "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
-      }
+      "approval": null
     }
   ],
   "capacity_v2_repin_review": {
     "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/review-candidate.json",
     "sha256": "78dec495a07ea03c6cbef7aa3281b37c9a1ce84e2f772ed150a117c0d85bda70"
-  },
-  "capacity_v2_repin_approval": {
-    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json",
-    "sha256": "03d61e1908f2c2d47a334110a0cc0433fa596ba004586c2b9bd524a631737e0e"
   }
 }

@@ -14,6 +14,15 @@ export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
   const approval = artifacts == null
     ? await readJson(rootDir, 'data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json')
     : JSON.parse(await readPinnedArtifact(rootDir, artifacts.approval));
+  const capacitySuccessor = approval.schema === 'rus.m2c_supplemental_data_approval.v1'
+    && approval.decision === 'APPROVE_DATA_ONLY' && Array.isArray(approval.approved_successors);
+  if (capacitySuccessor) {
+    const approved = approval.approved_successors?.find(({ scenario_id }) => scenario_id === artifacts.scenario_id);
+    if (approved == null || !['start', 'transfer', 'basis'].every((kind) =>
+      approved[kind]?.path === artifacts[kind]?.path && approved[kind]?.sha256 === artifacts[kind]?.sha256)) {
+      fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+    }
+  }
   if (approval.decision === 'DERIVED_FROM_APPROVED_SCOPES') {
     const [basisApproval, applicabilityApproval] = await Promise.all([
       readPinnedArtifact(rootDir, approval.basis_approval).then(JSON.parse),
@@ -53,7 +62,7 @@ export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
       : await readPinnedArtifact(rootDir, artifact);
     const digest = createHash('sha256').update(bytes).digest('hex');
     if (!['APPROVE_DATA_ONLY', 'DERIVED_FROM_APPROVED_SCOPES'].includes(approval.decision)
-      || approval[scope]?.candidate_sha256 !== digest) fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+      || (!capacitySuccessor && approval[scope]?.candidate_sha256 !== digest)) fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
     return { value: JSON.parse(bytes), digest };
   }));
   const [start, transfer, basis] = loaded.map(({ value }) => value);

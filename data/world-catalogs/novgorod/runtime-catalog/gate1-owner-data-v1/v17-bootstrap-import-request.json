@@ -2,7 +2,7 @@
   "schema": "rus.gate1_v17_bootstrap_import_request.v1",
   "request_id": "novgorod_gate1_v17_bootstrap_import_001",
   "status": "pending_independent_high_review",
-  "source_head": "12e19aff2c3c3aa5e274893f587b6643732531e6",
+  "source_head": "5759847ac6323c57b92c30c023ca6fd54a6a1f70",
   "operation": "import_approved_gate1_owner_closure_and_item_container_catalog",
   "runner": {
     "path": "scripts/run-pr17-item-container-stage3c.mjs",
@@ -116,5 +116,5 @@
     "database_mutated": false
   },
   "independent_import_attestation": null,
-  "request_digest": "69e6e0e8ec8670ccc05f0285e58d7f9582f037bec57c6640523d619d7e61a03d"
+  "request_digest": "1b68ef2e8224cbb5162705639df602b9d5cd9728b8625aebbc1d8ff1b6276b74"
 }

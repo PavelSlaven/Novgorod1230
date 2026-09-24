@@ -22,6 +22,7 @@ const slotTemplate = { slot_id: 'slot', slot_version: 1, template_id: 'generatio
   regional_template_id: 'regional', regional_template_version: 1, scene_materialization_profile_id: 'scene-profile',
   scene_materialization_profile_version: 1, template_status: 'approved', template_digest: digest, template_authoring_digest: digest };
 const scene = { id: 'scene-profile', version: 1, world_revision_id: 'target', source_kind: 'g5_generation_template',
+  selection_rule_id: 'select', selection_rule_version: 1, applicability_rule_id: 'apply', applicability_rule_version: 1,
   source_entity_id: 'generation', source_entity_version: 1, status: 'approved', canonical_digest: digest, profile_authoring_digest: digest,
   scene_template_id: 'scene', scene_template_version: 1, weight: 1, scene_status: 'approved', scene_digest: digest, scene_authoring_digest: digest,
   scene_basis_status: 'approved', scene_basis_digest: digest };
@@ -30,7 +31,7 @@ const successor = { g5_template_id: 'generation', g5_template_version: 1, ordina
   target_expansion_slot_id: 'slot', target_expansion_slot_version: 1, terminal_policy_id: 'terminal',
   terminal_policy_version: 1, scene_endpoint_slot_key: 'departure' };
 const rules = {
-  spatial_v3_nodes: [{ id: 'g4', version: 1, world_revision_id: 'target', spatial_level: 'G4', status: 'approved', canonical_digest: digest }],
+  spatial_v3_nodes: [{ id: 'g4', version: 1, world_revision_id: 'target', spatial_level: 'G4', status: 'approved', canonical_digest: digest, authoring_version_digest: digest }],
   spatial_v3_g4_expansion_profiles: [{ id: 'profile', version: 1, world_revision_id: 'target', g4_id: 'g4', g4_version: 1,
     adjacency_rule_set_id: 'adjacency', adjacency_rule_set_version: 1, connectivity_rule_set_id: 'connectivity', connectivity_rule_set_version: 1,
     seed_policy_id: 'seed-policy', seed_policy_version: 1, status: 'approved', canonical_digest: digest,
@@ -61,6 +62,11 @@ function readerWith(overrides = {}) {
   const calls = [];
   const reader = createSpatialV3WorldBaseReader({ query: async (sql, params) => {
     calls.push({ sql, params });
+    if (sql.includes('AS wanted(entity_kind,id,version)')) return { rows: overrides.scene_rules ?? [
+      { entity_kind: 'scene_selection_rule', id: 'select', version: 1, status: 'approved', world_revision_id: 'target', canonical_digest: digest },
+      { entity_kind: 'scene_applicability_rule', id: 'apply', version: 1, status: 'approved', world_revision_id: 'target', canonical_digest: digest }
+    ] };
+    if (sql.includes('FROM world_base.spatial_v3_nodes n')) return { rows: overrides.spatial_v3_nodes ?? rules.spatial_v3_nodes };
     if (sql.includes("dependency_role IN ('adjacency_rule_set'")) return { rows: rules.spatial_v3_expansion_rule_sets };
     if (sql.includes("dependency_role='g4_expansion_profile'")) return { rows: overrides.profileEdges ?? rules.spatial_v3_g4_expansion_profiles };
     if (sql.includes("dependency_role='expansion_site_connection_profile'")) return { rows: overrides.connectionProfiles ?? rules.spatial_v3_canonical_g5_connection_profiles };
@@ -77,6 +83,49 @@ function readerWith(overrides = {}) {
   } });
   return { reader, calls };
 }
+
+test('G4 expansion binding resolves one exact approved G4 and ordinal-zero profile edge', async () => {
+  const { reader, calls } = readerWith();
+  const result = await reader.readG4ExpansionBinding({ g4_id: 'g4',
+    world_revision_id: 'target' });
+  assert.equal(result.ok, true, JSON.stringify(result.error));
+  assert.deepEqual(result.value, {
+    g4: { id: 'g4', version: 1, world_revision_id: 'target',
+      canonical_digest: digest },
+    profile: { id: 'profile', version: 1, world_revision_id: 'target',
+      canonical_digest: digest }
+  });
+  assert.deepEqual(calls.map(({ params }) => params), [
+    ['g4', 'target'], ['g4', 1, 'target']
+  ]);
+  assert.match(calls[0].sql, /spatial_level='G4'/u);
+  assert.match(calls[1].sql, /dependency_role='g4_expansion_profile'/u);
+  assert.equal(Object.isFrozen(result.value.profile), true);
+});
+
+test('G4 expansion binding rejects missing, ambiguous, or unapproved pins', async () => {
+  const invalidInput = readerWith();
+  assert.equal((await invalidInput.reader.readG4ExpansionBinding({
+    g4_id: 'g4' })).ok, false);
+  assert.equal(invalidInput.calls.length, 0);
+
+  for (const overrides of [
+    { spatial_v3_nodes: [] },
+    { spatial_v3_nodes: [...rules.spatial_v3_nodes,
+      { ...rules.spatial_v3_nodes[0], version: 2 }] },
+    { profileEdges: [] },
+    { profileEdges: [...rules.spatial_v3_g4_expansion_profiles,
+      { ...rules.spatial_v3_g4_expansion_profiles[0], id: 'second-profile' }] },
+    { profileEdges: [{ ...rules.spatial_v3_g4_expansion_profiles[0],
+      canonical_ordinal: 1 }] },
+    { profileEdges: [{ ...rules.spatial_v3_g4_expansion_profiles[0],
+      authoring_version_digest: 'b'.repeat(64) }] }
+  ]) {
+    const { reader } = readerWith(overrides);
+    assert.equal((await reader.readG4ExpansionBinding({ g4_id: 'g4',
+      world_revision_id: 'target' })).ok, false);
+  }
+});
 
 test('G4 expansion reader returns one exact approved immutable closure', async () => {
   const { reader, calls } = readerWith();
@@ -102,6 +151,7 @@ test('G4 expansion reader fails closed on missing profile pin and missing exit c
   assert.equal((await missingExit.reader.readPinnedG4ExpansionClosure(pins)).ok, false);
   const ambiguousProfile = readerWith({ profileEdges: [...rules.spatial_v3_g4_expansion_profiles, { ...rules.spatial_v3_g4_expansion_profiles[0], id: 'another-profile' }] });
   assert.equal((await ambiguousProfile.reader.readPinnedG4ExpansionClosure(pins)).ok, false);
+  assert.equal((await readerWith({ scene_rules: [] }).reader.readPinnedG4ExpansionClosure(pins)).ok, false);
 });
 
 test('G4 expansion reader keeps approved connection profile row digest independent of its exact authoring-version identity digest', async () => {

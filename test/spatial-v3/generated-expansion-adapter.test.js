@@ -9,6 +9,8 @@ import { materializeSpatialV3GeneratedScene } from '@rus/materialization/spatial
 import { createSpatialV3GeneratedExpansionAdapter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-generated-expansion-adapter.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { readSpatialV3ExpansionContext } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-expansion-context.js';
+import { createSpatialV3ExpansionRuntime } from '../../apps/game-server/src/runtime/spatial-v3-expansion-runtime.js';
 
 const hash = 'a'.repeat(64);
 const profile = { id: 'profile', version: 1, world_revision_id: 'world', status: 'approved', canonical_digest: hash };
@@ -71,6 +73,8 @@ const sceneInput = { party_id: 'p', site_id: 'site', baseline_id: 'baseline', ch
 test('generated scene requires exact approved ambient and preserves template topology', () => {
   const result = materializeSpatialV3GeneratedScene(sceneInput);
   assert.equal(result.ok, true, JSON.stringify(result));
+  assert.deepEqual(result.proposal.rows.filter((row) => row.target_table === 'party_g6_instances')
+    .map((row) => row.record.scene_slot_key), scene.g6_slots.map((row) => row.scene_slot_key));
   assert.equal(result.proposal.rows.find((row) => row.target_table === 'g6_acoustic_profiles').record.ambient_noise, 1);
   assert.equal(result.proposal.rows.filter((row) => row.target_table === 'scene_position_nodes').length, 2);
   assert.equal(result.proposal.endpoints[0].position_id, 'baseline:position:arrival:0');
@@ -135,7 +139,9 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
       readPinnedG5AcousticClosure: async () => ({ ok: true, value: { rows: missingAmbient ? [] : [acoustic] } }) },
     committer: createSpatialV3PostgresCombinedAtomicCommitter({ pool }),
     writePlanBuilder: createCombinedWritePlanBuilder({ verifyApproval: async () => ({ ok: true }) }),
-    prepareFirstEntry: async () => ({ ok: true, approved_write_sets: [] }),
+    prepareFirstEntry: async () => ({ ok: true, approved_write_sets: [],
+      materialization_trace: { selection: { count: 0, choices: [{ choice_key: 'npc_count',
+        rng_draw: 1, selected_id: '0', candidate_set_digest: hash }] }, choices: [], attribute_traces: [] } }),
     now: () => Date.parse('2026-01-01T00:00:00Z'),
     admitGeneration: async () => { admissionCount += 1; return { ok: true,
       scene_template_ref: { id: 'scene', version: 1 }, validation_report: { status: 'pass', digest: digest('test-admission') },
@@ -175,6 +181,7 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
     assert.equal((await state()).site_connections.length, 1);
     assert.equal((await adapter.prepareExpansion(request)).replay, true);
     assert.equal((await pool.query('SELECT count(*) FROM party_runtime.party_journey_locations')).rows[0].count, '0');
+    await assertPublicExpansionReload(pool, request, currentClosure);
     return;
   }
   const missing = await adapter.prepareExpansion(request);
@@ -214,7 +221,44 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
   assert.equal(traces.length, 2);
   assert.equal(traces[0].trace.trigger, 'frontier_resolution');
   assert.equal(traces[0].trace.choice_ids.length, 2);
+  assert.equal(traces[0].trace.first_entry.selection.count, 0);
+  assert.equal(traces[0].trace.first_entry.selection.choices[0].selected_id, '0');
+  assert.deepEqual(traces[0].trace.first_entry.attribute_traces, []);
+  assert.equal(traces[1].trace.first_entry, undefined);
   assert.equal(traces[1].trace.choice_ids.length, 0);
   assert.equal((await pool.query('SELECT count(*) FROM party_runtime.party_materialization_choices')).rows[0].count, '2');
   assert.equal(generated.scene_baselines.find((row) => row.source_kind === 'generated_template').materialization_trace_id, traces[0].run_id);
+  await assertPublicExpansionReload(pool, request, currentClosure);
 });
+
+async function assertPublicExpansionReload(pool, request, currentClosure) {
+  const transaction = await pool.connect();
+  try {
+    await transaction.query('BEGIN');
+    await transaction.query(`INSERT INTO party_runtime.party_journey_locations
+      (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id)
+      VALUES ('test-location','p','actor','test-actor','scene',$1,1,'test')`, [request.source_position_id]);
+    const worldBaseReader = { readG4ExpansionBinding: async () => ({ ok: true, value: { g4: request.g4, profile: request.profile } }),
+      readPinnedG4ExpansionClosure: async () => ({ ok: true, value: currentClosure }),
+      readPinnedSceneTemplateClosure: async () => ({ ok: true, value: scene }) };
+    const release = { world_revision_id: 'world', world_catalog_digest: 'catalog' };
+    const readContext = (input) => readSpatialV3ExpansionContext({ ...input, transaction, worldBaseReader, release });
+    const runtime = createSpatialV3ExpansionRuntime({ readContext,
+      readExitDisclosure: async () => [{ directional_exit_id: 'exit', directional_exit_version: 1,
+        direction_context_id: currentClosure.directional_exits[0].direction_context_id,
+        knowledge_state: 'known', display_label: 'Продолжить путь' }],
+      generatedExpansionAdapter: { prepareExpansion: async () => assert.fail('reload must reuse committed connection') } });
+    const selected = { partyId: 'p', actorId: 'test-actor', directionalExitId: 'exit' };
+    const before = await transaction.query('SELECT count(*) FROM party_runtime.party_materialization_runs');
+    assert.equal((await runtime.listExpansionOptions(selected)).length, 1);
+    const replay = await runtime.prepareExpansion(selected);
+    assert.equal(replay.replay, true); assert.equal(replay.topology_status, 'committed');
+    assert.equal(replay.moves_traveller, false);
+    assert.deepEqual((await transaction.query('SELECT count(*) FROM party_runtime.party_materialization_runs')).rows, before.rows);
+    await assert.rejects(readSpatialV3ExpansionContext({ ...selected, transaction, worldBaseReader,
+      release: { ...release, world_catalog_digest: 'stale' } }),
+    (error) => error.details.reason === 'active_release_pin_mismatch');
+    await transaction.query('ROLLBACK');
+  } finally { transaction.release(); }
+  assert.equal((await pool.query("SELECT count(*) FROM party_runtime.party_journey_locations WHERE id='test-location'")).rows[0].count, '0');
+}

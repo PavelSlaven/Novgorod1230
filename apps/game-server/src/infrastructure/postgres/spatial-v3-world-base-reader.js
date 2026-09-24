@@ -713,6 +713,8 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
       profile.id AS materialization_profile_id,
       profile.version AS materialization_profile_version,
       profile.canonical_digest AS materialization_profile_digest,
+      profile.selection_rule_id,profile.selection_rule_version,
+      candidate.applicability_rule_id,candidate.applicability_rule_version,
       candidate.scene_template_id,candidate.scene_template_version
       FROM world_base.spatial_v3_nodes n
       JOIN world_base.spatial_v3_node_parents parent
@@ -727,6 +729,12 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
       JOIN world_base.spatial_v3_scene_materialization_candidates candidate
         ON candidate.profile_id=profile.id
        AND candidate.profile_version=profile.version
+      JOIN world_base.spatial_v3_authoring_versions nav
+        ON nav.entity_kind='spatial_node' AND nav.entity_id=n.id AND nav.version=n.version
+       AND nav.world_revision_id=n.world_revision_id AND nav.status='approved' AND nav.canonical_digest=n.canonical_digest
+      JOIN world_base.spatial_v3_authoring_versions pav
+        ON pav.entity_kind='scene_materialization_profile' AND pav.entity_id=profile.id AND pav.version=profile.version
+       AND pav.world_revision_id=profile.world_revision_id AND pav.status='approved' AND pav.canonical_digest=profile.canonical_digest
       WHERE n.id=$1 AND n.version=$2 AND n.world_revision_id=$3
         AND n.spatial_level='G5' AND n.status='approved' LIMIT 2`,
     [id, version, world_revision_id]);
@@ -737,8 +745,83 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
           : 'canonical_g5_scene_binding_missing', version, world_revision_id
       });
     }
+    const rules = await readSceneRulePins(result.rows, world_revision_id);
+    if (!rules.ok) return rules;
     return Object.freeze({ ok: true,
-      value: Object.freeze(structuredClone(result.rows[0])) });
+      value: deepFreeze(structuredClone({ ...result.rows[0], scene_rules: rules.value })) });
+  }
+  async function readG4ExpansionBinding({ g4_id, world_revision_id } = {}) {
+    const invalid = (reason) => failure('authoring_dependency_pin_missing',
+      'node', g4_id, { reason, world_revision_id });
+    if (typeof g4_id !== 'string' || !g4_id.trim()
+      || typeof world_revision_id !== 'string' || !world_revision_id.trim()) {
+      return invalid('exact_g4_id_and_world_revision_required');
+    }
+    if (typeof query !== 'function') return invalid('read_only_query_port_required');
+    const g4Result = await query(`SELECT n.id,n.version,n.world_revision_id,
+        n.canonical_digest,av.canonical_digest AS authoring_version_digest
+      FROM world_base.spatial_v3_nodes n
+      JOIN world_base.spatial_v3_authoring_versions av
+        ON av.entity_kind='spatial_node' AND av.entity_id=n.id
+       AND av.version=n.version AND av.world_revision_id=n.world_revision_id
+       AND av.status='approved' AND av.canonical_digest=n.canonical_digest
+      WHERE n.id=$1 AND n.world_revision_id=$2 AND n.spatial_level='G4'
+        AND n.status='approved' ORDER BY n.version LIMIT 2`,
+    [g4_id, world_revision_id]);
+    const g4Rows = g4Result?.rows;
+    if (!Array.isArray(g4Rows) || g4Rows.length !== 1) {
+      return failure('route_plan_snapshot_missing', 'node', g4_id, {
+        reason: g4Rows?.length > 1 ? 'ambiguous_approved_g4'
+          : 'approved_g4_missing', world_revision_id
+      });
+    }
+    const g4 = g4Rows[0];
+    const profileResult = await query(`SELECT p.id,p.version,p.world_revision_id,
+        p.g4_id,p.g4_version,p.status,p.canonical_digest,
+        av.canonical_digest AS authoring_version_digest,
+        e.source_entity_kind,e.source_entity_id,e.source_version,
+        e.dependency_role,e.target_entity_kind,e.target_entity_id,
+        e.target_version,e.canonical_ordinal
+      FROM world_base.spatial_v3_authoring_dependency_edges e
+      JOIN world_base.spatial_v3_authoring_versions av
+        ON av.entity_kind=e.target_entity_kind
+       AND av.entity_id=e.target_entity_id AND av.version=e.target_version
+       AND av.world_revision_id=e.world_revision_id AND av.status='approved'
+      JOIN world_base.spatial_v3_g4_expansion_profiles p
+        ON p.id=e.target_entity_id AND p.version=e.target_version
+       AND p.world_revision_id=e.world_revision_id AND p.status='approved'
+      WHERE e.source_entity_kind='spatial_node' AND e.source_entity_id=$1
+        AND e.source_version=$2 AND e.world_revision_id=$3
+        AND e.dependency_role='g4_expansion_profile'
+        AND e.target_entity_kind='g4_expansion_profile'
+      ORDER BY e.canonical_ordinal LIMIT 2`,
+    [g4.id, g4.version, world_revision_id]);
+    const profiles = profileResult?.rows;
+    if (!Array.isArray(profiles) || profiles.length !== 1
+      || profiles[0].source_entity_kind !== 'spatial_node'
+      || profiles[0].source_entity_id !== g4.id
+      || profiles[0].source_version !== g4.version
+      || profiles[0].dependency_role !== 'g4_expansion_profile'
+      || profiles[0].target_entity_kind !== 'g4_expansion_profile'
+      || profiles[0].canonical_ordinal !== 0
+      || profiles[0].g4_id !== g4.id || profiles[0].g4_version !== g4.version
+      || profiles[0].world_revision_id !== world_revision_id
+      || profiles[0].authoring_version_digest !== profiles[0].canonical_digest) {
+      return failure('route_plan_snapshot_missing', 'node', g4_id, {
+        reason: profiles?.length > 1 ? 'ambiguous_g4_expansion_profile'
+          : 'approved_g4_expansion_profile_missing',
+        world_revision_id
+      });
+    }
+    const profile = profiles[0];
+    return Object.freeze({ ok: true, value: deepFreeze({
+      g4: { id: g4.id, version: g4.version,
+        world_revision_id: g4.world_revision_id,
+        canonical_digest: g4.canonical_digest },
+      profile: { id: profile.id, version: profile.version,
+        world_revision_id: profile.world_revision_id,
+        canonical_digest: profile.canonical_digest }
+    }) });
   }
   async function readPinnedG4ExpansionClosure({ g4, profile } = {}) {
     const validPin = (ref) => ref && typeof ref.id === 'string' && ref.id.trim()
@@ -910,7 +993,10 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
       })) {
       return failure('route_plan_snapshot_missing', 'profile', profile.id, { reason: 'g4_entry_scene_or_rule_closure_missing' });
     }
+    const sceneRulePins = await readSceneRulePins(scenes, revision);
+    if (!sceneRulePins.ok) return sceneRulePins;
     const value = deepFreeze(structuredClone({ g4: g4Row, profile: Object.fromEntries(Object.entries(profileEdge).filter(([key]) => !['source_entity_kind','source_entity_id','source_version','dependency_role','target_entity_kind','target_entity_id','target_version','canonical_ordinal','edge_provenance_ref'].includes(key))), profile_edge: Object.fromEntries(Object.entries(profileEdge).filter(([key]) => ['source_entity_kind','source_entity_id','source_version','dependency_role','target_entity_kind','target_entity_id','target_version','canonical_ordinal','edge_provenance_ref'].includes(key))),
+      scene_rules: sceneRulePins.value,
       directional_exits: exits,
       slots, slot_templates: slotTemplates, template_limits: limits,
       scene_materialization_profiles: [...new Map(scenes.map((r) => [`${r.id}:${r.version}`, Object.fromEntries(Object.entries(r).filter(([key]) => !['scene_template_id','scene_template_version','weight','applicability_rule_id','applicability_rule_version','scene_status','scene_digest','regional_template_id','regional_template_version'].includes(key)))] )).values()],
@@ -922,6 +1008,27 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
       entry_endpoint_bindings: entryBindings,
       entry_scene_endpoints: entryScenes, entry_slot_rules: entryRules }));
     return Object.freeze({ ok: true, value, ref: Object.freeze({ g4: { ...g4 }, profile: { ...profile } }) });
+  }
+  async function readSceneRulePins(sources, revision) {
+    const requested = sources.flatMap((row) => [
+      { entity_kind: 'scene_selection_rule', id: row.selection_rule_id, version: row.selection_rule_version },
+      { entity_kind: 'scene_applicability_rule', id: row.applicability_rule_id, version: row.applicability_rule_version }
+    ]);
+    const invalid = () => failure('authoring_dependency_pin_missing', 'profile', revision,
+      { reason: 'approved_exact_scene_rule_required' });
+    if (requested.some((row) => !row.id || !Number.isSafeInteger(row.version) || row.version < 1)) return invalid();
+    const unique = [...new Map(requested.map((row) => [`${row.entity_kind}:${row.id}:${row.version}`, row])).values()];
+    const result = await query(`SELECT av.entity_kind,av.entity_id AS id,av.version,av.world_revision_id,av.status,av.canonical_digest
+      FROM unnest($1::text[],$2::text[],$3::int[]) AS wanted(entity_kind,id,version)
+      JOIN world_base.spatial_v3_authoring_versions av ON av.entity_kind=wanted.entity_kind
+        AND av.entity_id=wanted.id AND av.version=wanted.version
+      WHERE av.world_revision_id=$4 AND av.status='approved' ORDER BY av.entity_kind,av.entity_id,av.version`,
+    [unique.map((row) => row.entity_kind), unique.map((row) => row.id), unique.map((row) => row.version), revision]);
+    if (!Array.isArray(result?.rows) || result.rows.length !== unique.length || unique.some((pin) =>
+      result.rows.filter((row) => row.entity_kind === pin.entity_kind && row.id === pin.id
+        && row.version === pin.version && row.world_revision_id === revision && row.status === 'approved'
+        && /^[a-f0-9]{64}$/u.test(row.canonical_digest ?? '')).length !== 1)) return invalid();
+    return { ok: true, value: result.rows };
   }
   async function composeSceneTemplateClosure(header, ref) {
     const tables = Object.keys(SCENE_TEMPLATE_CLOSURE_COLUMNS);
@@ -953,6 +1060,7 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
     readPinnedCanonicalG5AcousticClosure,
     readPinnedCanonicalG5SceneBinding,
     readPinnedG4ExpansionClosure,
+    readG4ExpansionBinding,
     readPinnedG4NpcCompositionClosure,
     readOrientationProfile: (ref) =>
       read({ kind: 'orientation_profile', ref }),

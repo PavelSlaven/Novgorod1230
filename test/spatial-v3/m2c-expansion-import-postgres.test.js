@@ -93,16 +93,30 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
     const g4 = nodes.find((node) => node.id === profile.g4_id
       && node.version === profile.g4_version);
     assert.ok(g4, `approved expansion profile ${profile.id} pins an imported G4`);
-    const expansionClosure = await spatialReader.readPinnedG4ExpansionClosure({
-      g4: { id: g4.id, version: g4.version,
-        world_revision_id: g4.world_revision_id,
-        canonical_digest: g4.canonical_digest },
-      profile: { id: profile.id, version: profile.version,
-        canonical_digest: profile.canonical_digest }
+    const binding = await spatialReader.readG4ExpansionBinding({
+      g4_id: g4.id, world_revision_id: g4.world_revision_id
     });
+    assert.equal(binding.ok, true,
+      `${profile.id} exact binding: ${JSON.stringify(binding.error)}`);
+    assert.deepEqual(binding.value.g4, { id: g4.id, version: g4.version,
+      world_revision_id: g4.world_revision_id,
+      canonical_digest: g4.canonical_digest });
+    assert.deepEqual(binding.value.profile, { id: profile.id,
+      version: profile.version, world_revision_id: profile.world_revision_id,
+      canonical_digest: profile.canonical_digest });
+    const expansionClosure = await spatialReader.readPinnedG4ExpansionClosure(
+      binding.value);
     assert.equal(expansionClosure.ok, true,
       `${profile.id}: ${JSON.stringify(expansionClosure.error)}`);
     assert.ok(expansionClosure.value.terminal_policies.length > 0);
+    assert.equal(expansionClosure.value.scene_rules.length, 2);
+    const terminalExit = expansionClosure.value.directional_exits.find((exit) => exit.exit_canonical_g5_id);
+    assert.ok(terminalExit);
+    const terminalScene = await spatialReader.readPinnedCanonicalG5SceneBinding({
+      id: terminalExit.exit_canonical_g5_id, version: terminalExit.exit_canonical_g5_version,
+      world_revision_id: g4.world_revision_id });
+    assert.equal(terminalScene.ok, true, JSON.stringify(terminalScene.error));
+    assert.equal(terminalScene.value.scene_rules.length, 2);
     for (const sceneProfile of expansionClosure.value.scene_materialization_profiles) {
       if (sceneProfile.id.startsWith('m2c_smp_')) readGeneratedProfiles.add(sceneProfile.id);
     }

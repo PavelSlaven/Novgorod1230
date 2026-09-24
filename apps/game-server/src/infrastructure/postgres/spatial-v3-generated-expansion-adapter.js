@@ -218,10 +218,12 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
           canonical_output_digest: canonicalDigest({ inserts: semanticRows(proposal.inserts),
             updates: semanticRows(proposal.updates), connection_id: proposal.connection_id,
             target_site_id: proposal.target_site_id, target_position_id: proposal.target_position_id,
-            first_entry: semanticRows(firstEntryWrites) }),
+            first_entry: semanticRows(firstEntryWrites),
+            ...(firstEntry.materialization_trace ? { first_entry_trace: firstEntry.materialization_trace } : {}) }),
           validation_report_digest: canonicalDigest(admitted.validation_report),
           created_change_set_id: change_set_id, occurred_at_turn: admitted.created_at_turn ?? 0,
           dependency_pins, authoring_refs,
+          ...(firstEntry.materialization_trace ? { first_entry: firstEntry.materialization_trace } : {}),
           choice_ids: selection.choices.map((row) => `${run_id}:${row.choice_ordinal}`),
           seed_context: selection.seed_context, seed_digest: selection.seed_digest };
         const traceWrites = [{ target_table: 'party_materialization_runs', id: run_id,

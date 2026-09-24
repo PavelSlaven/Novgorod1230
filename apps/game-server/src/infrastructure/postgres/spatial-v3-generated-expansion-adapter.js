@@ -236,7 +236,7 @@ export function createSpatialV3GeneratedExpansionAdapter({ worldBaseReader, comm
             created_refs: [...proposal.inserts, ...firstEntryWrites].map((row) => ({ table: row.target_table, id: row.id })) } },
         ...selection.choices.map((choice) => ({ target_table: 'party_materialization_choices',
           id: `${run_id}:${choice.choice_ordinal}`, record: { party_id, run_id, ...choice } }))];
-        const visible = await projectVisible({ transaction, request, snapshot, proposal, change_set_id,
+        const visible = await projectVisible({ transaction, request, snapshot, proposal, firstEntry, change_set_id,
           idempotency_record_id: `idem:${change_set_id}` });
         if (!visible?.ok) return visible?.error ? visible : reject('visible_projection_required');
         const change = { target_table: 'party_v3_change_sets', id: change_set_id,

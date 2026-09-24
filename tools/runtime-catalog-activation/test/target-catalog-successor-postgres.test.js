@@ -105,7 +105,7 @@ test('target item and actor successors preserve v6 parties through real PostgreS
       FROM world_base.runtime_catalog_activation_events`);
     const saved = await historicalSnapshot(pool);
     const worlds = await json('data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_world_revisions.json');
-    for (let part = 21; part <= 24; part += 1) {
+    for (let part = 21; part <= 26; part += 1) {
       await pool.query(await readFile(`infra/world-base/schema/${part}.sql`, 'utf8'));
     }
     await pool.query(await buildCharacterAppearanceV1ImportSql({ tables: [

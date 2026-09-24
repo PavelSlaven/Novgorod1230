@@ -33,6 +33,15 @@ const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
 const gate1 = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
 const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1';
+const nature = 'data/world-catalogs/novgorod/m2c-natural';
+const naturePins = {
+  script: '2da6132c6bf46fe482a0a675ded4ca672c176b094a3312de1f8c3d0ada936952',
+  natural: '58e0d2be66df86a79faf76d4ef57d3d020ba778711736a61b4478c255d8cbef7',
+  presentation: '174a299d881dea38d5d0656f73877236f6aaf5aadaecf5ab1a7856ca7dd387f4',
+  approval: '310bf952bbd219f3935fdb4f26f5f8cb71c0edf5837eacc445ca838061db605d',
+  naturalRecords: 'f9db0acf806650af82a5cfc100863b596c262fe73a775fa4bb16f9d237743241',
+  presentationRecords: 'ea38c3d1412808306aa65216b4dc11f2411fdfe96d1e552eb746170f34436399'
+};
 const catalogDdl = {
   world: [
     ['tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql',
@@ -116,8 +125,20 @@ export async function checkV17BootstrapInputs() {
         || sql.length !== appearance.sql[`${kind}_bytes`])
       throw new Error(`V17_APPEARANCE_SQL_MISMATCH:${kind}`);
   }
+  await exact('scripts/generate-m2c-nature-successors.mjs', naturePins.script);
+  await exact(`${nature}/nature-successor-candidate-v2.json`, naturePins.natural);
+  await exact('data/world-catalogs/novgorod/m2c-natural-presentation/nature-successor-candidate-v2.json', naturePins.presentation);
+  await exact(`${nature}/nature-successor-data-approval.json`, naturePins.approval);
+  execFileSync(process.execPath, ['scripts/generate-m2c-nature-successors.mjs', '--check'],
+    { cwd: root, encoding: 'utf8' });
+  const natureApproval = await json(`${nature}/nature-successor-data-approval.json`);
+  for (const source of Object.values(natureApproval.candidates)) {
+    const approvedBytes = execFileSync('git', ['show', `ae212e78:${source.path}`],
+      { cwd: root, maxBuffer: 8 * 1024 * 1024 });
+    if (digest(approvedBytes) !== source.sha256) throw new Error(`V17_NATURE_APPROVAL_PIN_MISMATCH:${source.path}`);
+  }
   return { schema: 'exact', catalog_ddl: 'exact', gate1: 'exact', p12: 'exact', appearance_v3: 'exact',
-    database_mutated: false };
+    nature_successor: 'exact', database_mutated: false };
 }
 
 function databaseUrl(adminUrl, name) {
@@ -329,6 +350,31 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     if (itemImport.status !== 'applied'
       || (await importApprovedCatalog({ ...itemArgs, pool: world })).status !== 'already_applied')
       throw new Error('V17_ITEM_IMPORT_READBACK_MISMATCH');
+    const natureRecords = preparation.compiled.record_operations_by_table
+      .find((table) => table.table_name === 'procedural_scene_compiled_records')?.records
+      .map((row) => row.canonical_payload.canonical_fields)
+      .filter((row) => Number(row.version) === 2 && [
+        'rus.g4_natural_baseline_profile.v1', 'rus.g4_natural_presentation_profile.v1'
+      ].includes(row.payload?.schema)) ?? [];
+    const natureDigests = {};
+    for (const [schema, pin] of [
+      ['rus.g4_natural_baseline_profile.v1', naturePins.naturalRecords],
+      ['rus.g4_natural_presentation_profile.v1', naturePins.presentationRecords]
+    ]) {
+      const records = natureRecords.filter((row) => row.payload.schema === schema)
+        .sort((left, right) => left.record_id.localeCompare(right.record_id));
+      if (records.length !== 32 || digestEnvelope(records.map((row) =>
+        [row.record_id, Number(row.version), row.payload_digest])) !== pin)
+        throw new Error(`V17_NATURE_RUNTIME_DIGEST_MISMATCH:${schema}`);
+      for (const row of records) {
+        const actual = (await world.query(`SELECT payload_digest, payload FROM world_base.procedural_scene_compiled_records
+          WHERE record_id=$1 AND version=$2`, [row.record_id, row.version])).rows;
+        if (actual.length !== 1 || actual[0].payload_digest !== row.payload_digest
+          || digestEnvelope(actual[0].payload) !== row.payload_digest)
+          throw new Error(`V17_NATURE_ROW_MISMATCH:${row.record_id}`);
+      }
+      natureDigests[schema] = pin;
+    }
     const itemReadback = { verified: true, import_id: item.ledger.root.import_id,
       import_audit_digest: item.ledger.root.import_audit_digest,
       catalog_revision_id: item.ledger.root.target_revision_id,
@@ -393,7 +439,8 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },
       appearance_v3: { inserted_rows: appearanceRequest.expected_import_readback.inserted_rows,
-        rollback: 'pass' }, item_import: itemReadback,
+        rollback: 'pass' }, nature_successor: { inserted_rows: natureRecords.length,
+        runtime_record_digests: natureDigests }, item_import: itemReadback,
       item_activation: itemActivation, actor_import: actorReadback,
       activation_performed: false };
   } finally {

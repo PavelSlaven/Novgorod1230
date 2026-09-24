@@ -33,7 +33,9 @@ export async function loadTargetStartWorldReadback({ pool, start } = {}) {
   const reader = createSpatialV3WorldBaseReader({ query: pool.query.bind(pool) });
   const [g5Result, sceneResult, g4Result] = await Promise.all([
     reader.readPinnedCanonicalG5SceneBinding({ ...placement.canonical_g5_ref,
-      world_revision_id: revision }),
+      world_revision_id: revision,
+      scene_template_ref: placement.scene_template_ref,
+      scene_materialization_profile_ref: placement.scene_materialization_profile_ref }),
     reader.readPinnedSceneTemplateClosure({ ...placement.scene_template_ref,
       world_revision_id: revision }),
     pool.query(`SELECT n.id,n.version,n.world_revision_id,n.spatial_level,n.status,
@@ -93,11 +95,11 @@ export async function loadTargetStartWorldReadback({ pool, start } = {}) {
       family_candidate_ref,payload,payload_digest,source_pack_digest,status
     FROM world_base.procedural_scene_compiled_records
     WHERE record_id=ANY($1::text[]) ORDER BY record_id,version`, [compiledRecordIds]);
-  assert.deepEqual(naturalCompiledRecords.rows.map(({ record_id: id }) => id).sort(),
-    compiledRecordIds.slice().sort(),
+  assert.deepEqual(naturalCompiledRecords.rows.map(({ record_id: id, version }) => `${id}@${version}`).sort(),
+    [...compiledRecordIds.map((id) => `${id}@1`),
+      `${compiledRecordIds[0]}@2`, `${compiledRecordIds[1]}@2`].sort(),
     'target runtime catalog import contains exact natural, presentation, placement and initial-rule rows');
-  assert.ok(naturalCompiledRecords.rows.every((row) => row.version === 1
-    && row.record_kind === 'profile'
+  assert.ok(naturalCompiledRecords.rows.every((row) => row.record_kind === 'profile'
     && row.status === 'approved_authoring_not_runtime_selectable'
     && /^[a-f0-9]{64}$/u.test(row.payload_digest)
     && /^[a-f0-9]{64}$/u.test(row.source_pack_digest)),

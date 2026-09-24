@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
@@ -170,8 +171,21 @@ async function targetPresentationRows(root) {
     || createHash('sha256').update(naturalBytes).digest('hex') !== approval.approved_exact_candidates?.natural_baseline_sha256) {
     fail('SPATIAL_V3_TARGET_PRESENTATION_APPROVAL_REQUIRED', 'Exact independently approved natural baseline is required.');
   }
+  const successorApproval = await readJson(resolve(base, 'm2c-natural/nature-successor-data-approval.json'));
+  const approvedBytes = (path) => execFileSync('git', ['show', `ae212e78:${path}`],
+    { cwd: root, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  const naturalSuccessorBytes = await readFile(resolve(base, 'm2c-natural/nature-successor-candidate-v2.json'), 'utf8');
+  const presentationSuccessorBytes = await readFile(resolve(base, 'm2c-natural-presentation/nature-successor-candidate-v2.json'), 'utf8');
+  const naturalSuccessors = buildG4NaturalCompiledRecords({ candidateBytes: naturalSuccessorBytes,
+    approvedCandidateBytes: approvedBytes(successorApproval.candidates.natural.path), approval: successorApproval });
+  const presentationSuccessors = buildG4NaturalPresentationCompiledRecords({ candidateBytes: presentationSuccessorBytes,
+    approvedCandidateBytes: approvedBytes(successorApproval.candidates.presentation.path),
+    naturalCandidateBytes: naturalSuccessorBytes,
+    approvedNaturalCandidateBytes: approvedBytes(successorApproval.candidates.natural.path),
+    approval: successorApproval, naturalRecords: naturalSuccessors });
   return [...buildG4NaturalCompiledRecords({ candidate: JSON.parse(naturalBytes) }),
     ...buildG4NaturalPresentationCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-presentation/candidate.json'), 'utf8'), approval }),
+    ...naturalSuccessors, ...presentationSuccessors,
     ...buildG4NaturalPlacementCompiledRecords({ candidateBytes: await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8'), approval }),
     ...buildTargetStartCompiledRecords({ candidateBytes: await readFile(resolve(base, 'live-world-runtime-v17/target-start-candidate.json'), 'utf8'), approval: startApproval }),
     ...buildTargetFiniteCompiledRecords({ mappedBytes: await readFile(resolve(base, 'live-world-runtime-v17/m2c-finite-only-ordinary-base-approved.json'), 'utf8'),

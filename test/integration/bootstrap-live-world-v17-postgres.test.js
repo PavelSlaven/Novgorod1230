@@ -83,6 +83,11 @@ test('v17 bootstrap imports schema, Gate1, P12 and appearance into a fresh isola
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     assert.equal(result.p12.inserted_rows, 12359);
     assert.equal(result.appearance_v3.inserted_rows, 129);
+    assert.equal(result.nature_successor.inserted_rows, 64);
+    assert.deepEqual(result.nature_successor.runtime_record_digests, {
+      'rus.g4_natural_baseline_profile.v1': 'f9db0acf806650af82a5cfc100863b596c262fe73a775fa4bb16f9d237743241',
+      'rus.g4_natural_presentation_profile.v1': 'ea38c3d1412808306aa65216b4dc11f2411fdfe96d1e552eb746170f34436399'
+    });
     assert.equal(result.item_import.verified, true);
     assert.equal(result.item_activation.status, 'activated');
     assert.equal(result.actor_import.status, 'imported_exact_readback_verified');

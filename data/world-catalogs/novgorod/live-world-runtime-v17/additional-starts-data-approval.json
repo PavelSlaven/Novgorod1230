@@ -1,0 +1,13 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent data review",
+  "reviewed_on": "2026-09-24",
+  "reviewed_repository_head": "3224f492dff9f17cd805ceddbf936783936f674d",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json",
+  "candidate_sha256": "8ed911fc02e1a4024dc4e46767d222a0d9cdb61ff9af85d140977d152c234a40",
+  "scope": "Exact riverbank boatman and reed-backwater fisher authoring: approved canonical G4 entry to G5 arrival closure, matching landscape and natural placement, region-period role/occupation pairs, and explicitly editorial free adult player premises. All 11 source pins match current bytes. Neither premise transfers a boat, tackle, rights, travel history, specific knowledge, resources or pine-specific initial perception.",
+  "exclusions": "No player body, attributes, appearance, skills, language or clothing applicability approval; no initial observer/source-state or entity-perception approval; no current scene, water, visibility, sound, stock or access assertion; no import, PostgreSQL readback, runtime or release activation. These two natural starts do not satisfy the M2c acceptance matrix's separate economic and other human-place families.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

@@ -81,6 +81,14 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
   await pool.query(sql);
 
   const datasetsDir = join(candidateDir, 'datasets');
+  const connectionProfiles = JSON.parse(await readFile(join(datasetsDir,
+    'spatial_v3_canonical_g5_connection_profiles.json'), 'utf8'));
+  assert.equal(connectionProfiles.filter((row) => row.profile_scope === 'site_connection'
+    && row.version === 1 && row.availability_condition_set_ref !== null).length, 3);
+  assert.equal(connectionProfiles.filter((row) => row.profile_scope === 'site_connection'
+    && row.version === 2 && row.availability_condition_set_ref === null).length, 3);
+  assert.ok(connectionProfiles.filter((row) => row.profile_scope === 'world_route_segment')
+    .every((row) => row.availability_condition_set_ref !== null));
   const expansionProfiles = JSON.parse(await readFile(join(datasetsDir,
     'spatial_v3_g4_expansion_profiles.json'), 'utf8'));
   const nodes = JSON.parse(await readFile(join(datasetsDir,
@@ -113,6 +121,9 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
       `${profile.id}: ${JSON.stringify(expansionClosure.error)}`);
     assert.ok(expansionClosure.value.terminal_policies.length > 0);
     assert.equal(expansionClosure.value.scene_rules.length, 2);
+    assert.deepEqual(expansionClosure.value.connection_profiles.map((connection) =>
+      [connection.id, connection.version, connection.availability_condition_set_ref]),
+    [['cprofv3__site_connection__local_passage', 2, null]]);
     const terminalExit = expansionClosure.value.directional_exits.find((exit) => exit.exit_canonical_g5_id);
     assert.ok(terminalExit);
     const terminalScene = await spatialReader.readPinnedCanonicalG5SceneBinding({
@@ -143,7 +154,7 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
     FROM world_base.spatial_v3_authoring_dependency_edges
     WHERE target_entity_kind='external_dependency' AND target_registry_type IS NOT NULL
       AND target_registry_digest IS NOT NULL AND target_dependency_digest IS NOT NULL`)).rows[0].n;
-  assert.equal(edgePins, 1166);
+  assert.equal(edgePins, 1169);
   const applicableGeneratedCandidates = (await pool.query(`SELECT count(*)::int AS n
     FROM world_base.spatial_v3_scene_materialization_candidates
     WHERE profile_id LIKE 'm2c_smp_%' AND applicability_rule_id='scene_applicability_exact_source_ref_v1'
@@ -159,6 +170,10 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
     'spatial_v3_scene_materialization_profiles', 'spatial_v3_scene_materialization_candidates',
     'spatial_v3_authoring_versions', 'spatial_v3_external_dependency_versions'
   ]) await assertExactReadback(pool, datasetsDir, table);
+  for (const table of ['spatial_v3_canonical_g5_connection_profiles',
+    'spatial_v3_canonical_g5_connection_bindings', 'spatial_v3_authoring_dependency_edges']) {
+    await assertExactReadback(pool, datasetsDir, table);
+  }
   for (const table of immutableTables) await assertExactReadback(pool, datasetsDir, table);
   await assertLocalMovementEligibilityPostgres(pool);
 });

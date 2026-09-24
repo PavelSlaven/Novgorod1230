@@ -41,7 +41,8 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
       && refMatches(connection, 'movement_orientation_profile_ref', profile, 'movement_orientation_profile')) ?? [];
     if (profiles.length !== 1) gap('approved_connection_profile_required');
     const profile = profiles[0];
-    const conditionRef = `${connection.availability_condition_set_ref?.entity_id}@${connection.availability_condition_set_ref?.authoring_version}`;
+    const conditionRef = connection.availability_condition_set_ref == null ? null
+      : `${connection.availability_condition_set_ref.entity_id}@${connection.availability_condition_set_ref.authoring_version}`;
     if (conditionRef !== profile.availability_condition_set_ref) gap('approved_condition_pin_mismatch');
     const from = exact(snapshot.endpoint_bindings, connection.id, 'from');
     const to = exact(snapshot.endpoint_bindings, connection.id, 'to');

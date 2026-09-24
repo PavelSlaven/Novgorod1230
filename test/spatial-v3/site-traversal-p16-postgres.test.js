@@ -28,7 +28,7 @@ const visible = { version: 1, schema: 'visible_context_package',
   visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
   allowed_tensions: [], do_not_imply: [] };
 
-function traversal(change, invalidResult = false) {
+function traversal(change, invalidResult = false, conditionRef = condition) {
   const actionId = `action:${change}`;
   const executionId = `route-execution:${change}`;
   const step = { step_kind: 'immediate_action', departure_endpoint_snapshot: source,
@@ -64,7 +64,7 @@ function traversal(change, invalidResult = false) {
     source_g6_state_version: 1, destination_g6_state_version: 1,
     source_baseline_state_version: 1, destination_baseline_state_version: 1,
     source_site_state_version: 1, destination_site_state_version: 1,
-    destination_capacity: 2, availability_condition_set_ref: condition,
+    destination_capacity: 2, availability_condition_set_ref: conditionRef,
     capability_context_digest: 'capability-digest',
     destination_visible_digest: canonicalDigest(visible), action_units: 1 };
   const prepared = siteTraversalWrites({ partyId: 'p',
@@ -85,8 +85,8 @@ function traversal(change, invalidResult = false) {
     rechecks: prepared.rechecks };
 }
 
-async function sealedPlan(change, invalidResult = false) {
-  const writes = traversal(change, invalidResult);
+async function sealedPlan(change, invalidResult = false, conditionRef = condition) {
+  const writes = traversal(change, invalidResult, conditionRef);
   const payload = { schema: 'temporal_visible_package.v1', perceived_scene: 'Цель.',
     perceived_changes: [], sensory_details: [], visible_npcs: [], visible_objects: [],
     known_context: [], uncertainties: [], hypotheses: [], player_safe_interruption: null,
@@ -117,9 +117,10 @@ async function sealedPlan(change, invalidResult = false) {
   return result.plan;
 }
 
-test('site traversal P16 commits exact route, reloads, replays and rolls back PostgreSQL', async (t) => {
+for (const conditionRef of [condition, null]) test(
+  `site traversal P16 commits and replays with ${conditionRef ? 'conditional' : 'unconditional'} availability`, async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
-  const name = `m2c-site-traversal-${process.pid}`;
+  const name = `m2c-site-traversal-${conditionRef ? 'condition' : 'no-condition'}-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
   assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
@@ -165,7 +166,7 @@ test('site traversal P16 commits exact route, reloads, replays and rolls back Po
       movement_orientation_profile_ref,cost_kind,action_units,availability_condition_set_ref,
       status,state_version,created_change_set_id,updated_change_set_id)
     VALUES ('connection','p','source','target','path',$1,$2,'action',1,$3,'active',1,'seed','seed')`,
-  [ref('environment'), ref('orientation'), condition]);
+  [ref('environment'), ref('orientation'), conditionRef]);
   for (const role of ['from', 'to']) {
     const site = role === 'from' ? 'source' : 'target';
     await pool.query(`INSERT INTO party_runtime.party_site_connection_endpoint_bindings
@@ -183,7 +184,8 @@ test('site traversal P16 commits exact route, reloads, replays and rolls back Po
   const availability = async ({ transaction, connectionId, conditionSetRef }) => {
     assert.ok(transaction?.query);
     return { ok: availabilityOpen, connection_id: connectionId,
-      condition_set_ref: `${conditionSetRef.entity_id}@${conditionSetRef.authoring_version}` };
+      condition_set_ref: conditionSetRef == null ? null
+        : `${conditionSetRef.entity_id}@${conditionSetRef.authoring_version}` };
   };
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool,
     recheck: async ({ transaction, party_id, check }) => check.kind === 'site_connection_traversal'
@@ -193,27 +195,27 @@ test('site traversal P16 commits exact route, reloads, replays and rolls back Po
           capability_context: { canonical_digest: capabilityDigest } }),
         projectDestination: async () => ({ ok: true, position_id: 'target-pos',
           site_id: 'target', visible_context: projectedVisible }) }) : { ok: true } });
-  const denied = await committer.commit({ plan: await sealedPlan('denied'), created_at_turn: 1 });
+  const denied = await committer.commit({ plan: await sealedPlan('denied', false, conditionRef), created_at_turn: 1 });
   assert.equal(denied.ok, false);
   assert.equal((await pool.query(`SELECT count(*)::int AS n FROM party_runtime.party_route_plans`)).rows[0].n, 0);
   availabilityOpen = true;
   capabilityDigest = 'changed';
-  assert.equal((await committer.commit({ plan: await sealedPlan('changed-capability'),
+  assert.equal((await committer.commit({ plan: await sealedPlan('changed-capability', false, conditionRef),
     created_at_turn: 1 })).ok, false);
   capabilityDigest = 'capability-digest';
   projectedVisible = { ...visible, visible_scene: 'Сцена изменилась.' };
-  assert.equal((await committer.commit({ plan: await sealedPlan('changed-visibility'),
+  assert.equal((await committer.commit({ plan: await sealedPlan('changed-visibility', false, conditionRef),
     created_at_turn: 1 })).ok, false);
   projectedVisible = visible;
-  const invalid = await committer.commit({ plan: await sealedPlan('invalid', true), created_at_turn: 1 });
+  const invalid = await committer.commit({ plan: await sealedPlan('invalid', true, conditionRef), created_at_turn: 1 });
   assert.equal(invalid.ok, false);
   assert.equal((await pool.query(`SELECT count(*)::int AS n FROM party_runtime.party_route_plans`)).rows[0].n, 0);
   const [first, second] = await Promise.all([
-    committer.commit({ plan: await sealedPlan('travel-a'), created_at_turn: 1 }),
-    committer.commit({ plan: await sealedPlan('travel-b'), created_at_turn: 1 })]);
+    committer.commit({ plan: await sealedPlan('travel-a', false, conditionRef), created_at_turn: 1 }),
+    committer.commit({ plan: await sealedPlan('travel-b', false, conditionRef), created_at_turn: 1 })]);
   assert.equal([first.ok, second.ok].filter(Boolean).length, 1, JSON.stringify([first, second]));
   const winner = first.ok ? 'travel-a' : 'travel-b';
-  assert.equal((await committer.commit({ plan: await sealedPlan(winner), created_at_turn: 1 })).replay, true);
+  assert.equal((await committer.commit({ plan: await sealedPlan(winner, false, conditionRef), created_at_turn: 1 })).replay, true);
   assert.equal((await pool.query(`SELECT scene_position_id,state_version FROM party_runtime.party_journey_locations
     WHERE id='journey'`)).rows[0].scene_position_id, 'target-pos');
   const execution = (await pool.query(`SELECT status,state_version FROM party_runtime.party_route_plan_executions`)).rows;

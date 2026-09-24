@@ -58,12 +58,17 @@ const state = { party_id, actor_id: 'actor', party_state: { state_version: 1, tu
   position: { position_id: 'position:source', g4_id: 'g4' },
   journey_location: { id: 'journey', scene_position_id: 'position:source', state_version: 1 } };
 
-test('approved site connection prepares action-cost P18/P19 result and one atomic P16 write set', async () => {
+for (const conditionRef of [connection.availability_condition_set_ref, null]) test(
+  `approved site connection prepares P18/P19 and P16 with ${conditionRef ? 'conditional' : 'unconditional'} availability`, async () => {
+  const localConnection = { ...connection, availability_condition_set_ref: conditionRef };
+  const localProfile = { ...profile, availability_condition_set_ref: conditionRef == null
+    ? null : profile.availability_condition_set_ref };
+  const localContext = { ...context, closure: { connection_profiles: [localProfile] } };
   const current = { scene_position_id: 'position:source', location_kind: 'scene',
     journey_version: 1, from_site_id: 'site:source', to_site_id: 'site:target',
     connection_status: 'active', connection_version: 1, cost_kind: 'action',
     action_units: 1, base_minutes: null, connection_capacity: null,
-    portal_entity_id: null, availability_condition_set_ref: connection.availability_condition_set_ref,
+    portal_entity_id: null, availability_condition_set_ref: conditionRef,
     from_position: 'position:source', from_site: 'site:source',
     from_binding_status: 'active', from_binding_version: 1,
     to_position: 'position:target', to_site: 'site:target',
@@ -79,14 +84,14 @@ test('approved site connection prepares action-cost P18/P19 result and one atomi
   const prepare = createSpatialV3SiteTraversalRuntime({ pool: { query: async (sql) =>
     ({ rowCount: 1, rows: [sql.includes('FOR UPDATE OF l,c') ? current : { units: 0 }] }) },
   assessAvailability: async () => ({ ok: true, connection_id: connection.id,
-    condition_set_ref: profile.availability_condition_set_ref }),
+    condition_set_ref: localProfile.availability_condition_set_ref }),
   assessMovementCapability: async () => ({ ok: true, actor_id: 'actor',
     capability_context: capability }),
   projectDestination: async () => ({ ok: true, position_id: 'position:target',
     site_id: 'site:target', visible_context: visible }) });
   const consequence = await prepare({ partyId: party_id, actorId: 'actor',
     requestId: 'request', state, playerInput: { idempotency_key: 'idem' },
-    inputDigest: 'input', context, connection });
+    inputDigest: 'input', context: localContext, connection: localConnection });
   assert.equal(consequence.duration_minutes, 0);
   assert.equal(consequence.spatial_v3_traversal.result.result_kind, 'completed');
   assert.equal(consequence.position_transition.to_position_ref, 'position:target');
@@ -104,6 +109,7 @@ test('approved site connection prepares action-cost P18/P19 result and one atomi
     ['party_action_step_runs', 'party_route_plan_execution_events',
       'party_route_plan_execution_events', 'party_route_plan_execution_events']);
   assert.equal(written.rechecks[0].kind, 'site_connection_traversal');
+  assert.deepEqual(consequence.position_transition.availability_condition_set_ref, conditionRef);
 });
 
 test('availability and destination projection owner are required before movement', async () => {

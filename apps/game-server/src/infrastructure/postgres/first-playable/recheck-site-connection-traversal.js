@@ -12,10 +12,11 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
     check.source_site_id, check.destination_site_id,
     check.destination_g4_id, check.destination_g6_instance_id,
     check.destination_scene_baseline_id,
-    check.availability_condition_set_ref?.entity_id,
-    check.availability_condition_set_ref?.authoring_version,
     check.capability_context_digest,
     check.destination_visible_digest].every(text)
+    || check.availability_condition_set_ref != null
+      && ![check.availability_condition_set_ref.entity_id,
+        check.availability_condition_set_ref.authoring_version].every(text)
     || !['expected_journey_state_version', 'connection_state_version',
       'source_endpoint_state_version', 'destination_endpoint_state_version',
       'source_position_state_version', 'destination_position_state_version',
@@ -122,8 +123,8 @@ export async function recheckSiteConnectionTraversal({ transaction, partyId, che
     sourcePositionId: check.from_position_ref,
     destinationPositionId: check.to_position_ref, current: row });
   if (availability?.ok !== true || availability.connection_id !== check.connection_id
-    || availability.condition_set_ref !==
-      `${check.availability_condition_set_ref.entity_id}@${check.availability_condition_set_ref.authoring_version}`) {
+    || availability.condition_set_ref !== (check.availability_condition_set_ref == null ? null
+      : `${check.availability_condition_set_ref.entity_id}@${check.availability_condition_set_ref.authoring_version}`)) {
     return result(false);
   }
   const capability = await assessMovementCapability({ transaction, partyId,

@@ -1,8 +1,8 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 25 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `5d4412267e1082e098d036f5254e7a7e5eb4e425fe3af2b30fe46e8fbdf96038`.
+- Исполняемый источник: `infra/world-base/schema.sql` и 26 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `c712c37fb0f0312ab3917000391a1fab8ae9ea6b065246bc8f955cb73ef5260b`.
 - Таблиц: 208.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 

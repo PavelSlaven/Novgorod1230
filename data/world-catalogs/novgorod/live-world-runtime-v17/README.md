@@ -46,6 +46,13 @@ visible exits and conditional connection availability also remain gated.
 
 ## Operations
 
+Fresh v17 database preparation has a separate pending
+[schema request](fresh-schema-review-request.md) for `novgorod_world_v17` and
+`novgorod_party_v17` in the existing managed local-play PostgreSQL cluster.
+The request does not authorize execution. Independent exact review and schema
+readback precede a distinct P12 import request and approval. Historical v16
+databases and party pins remain untouched.
+
 Follow `../runtime-catalog/spatial-v3-target-v1/README.md` for the existing
 operator preparation, baseline/import, party-preserving preflight and activation
 sequence. Import approval and operational activation approval are separate.

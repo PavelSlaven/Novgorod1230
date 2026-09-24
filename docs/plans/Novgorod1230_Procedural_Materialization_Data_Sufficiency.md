@@ -56,6 +56,13 @@ not the full four-TSV source inventory and not G4 expansion profiles.
 | Approved | `m2c-sol-data-approval.json` records independent `gpt-6-sol/high` approval for exact expansion, natural, item/property, NPC, appearance, start, runtime and scene-edge candidates. Separate high review approved the exact landscape openness→stable-cover candidate SHA above and three nonportal site-connection `@2` profiles with null availability; these are data approvals with stated exclusions. |
 | Active | Isolated PostgreSQL import/readback and direct official-root start have passed for bounded target fixtures. Live schema v2 was applied and read back; P12 data dry-run rolled back after finding 939 existing primary-key conflicts (907 identical rows), with 10,513 candidate rows absent. Immutable successor owner decision is pending. No P12 data import or M2c runtime activation occurred. |
 
+For the immutable successor, the pending [fresh v17 schema request](../../data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md)
+targets new `novgorod_world_v17` and `novgorod_party_v17` databases in the same
+managed local-play cluster. It pins full world DDL 01–26 and party migrations
+001–036. The request is not an approval or readback; existing v16 databases
+remain untouched. P12 import requires a later request bound to the new schema
+readback and independent approval.
+
 Data-sufficiency decision: **continue M2c integration** using the approved
 authoring and existing owners. Missing G4 profiles were the intended authoring
 output and are now independently reviewed by Sol high. Production import and

@@ -1,0 +1,380 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_request.v1",
+  "request_id": "novgorod_live_world_runtime_v17_fresh_schema_001",
+  "status": "pending_independent_high_review",
+  "source_commit": "09119f4307f8ffcc5ca96722cb3f6aa516e5f2a2",
+  "operation": "create_fresh_databases_and_apply_exact_schema",
+  "target": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "party_database": "novgorod_party_v17",
+    "world_owner": "world_operator",
+    "party_owner": "party_operator",
+    "existing_databases": "read_only_unchanged"
+  },
+  "world_schema": {
+    "entrypoint": {
+      "path": "infra/world-base/schema.sql",
+      "bytes": 577,
+      "sha256": "7eb012ad743a9be9c5b0f1f1f6e4908e8d700b57b1071b38e5d9cefdef5d15ba"
+    },
+    "ordered_parts": [
+      {
+        "path": "infra/world-base/schema/01.sql",
+        "bytes": 13826,
+        "sha256": "d41de6b0d9b58b06e356d5c10bd2c541611ff8194820aed1f5f64fc2806aa582"
+      },
+      {
+        "path": "infra/world-base/schema/02.sql",
+        "bytes": 10348,
+        "sha256": "ebe63aeb31fe43c6403781a5041381ca082092f132311f4430fad7ba38db7f2f"
+      },
+      {
+        "path": "infra/world-base/schema/03.sql",
+        "bytes": 5715,
+        "sha256": "f61121937e004f2f28bfa71ccf5f5f4c0e177e70f4c81f05a7460e74387b3739"
+      },
+      {
+        "path": "infra/world-base/schema/04.sql",
+        "bytes": 12544,
+        "sha256": "bdc21c48d57b3e1dd541cdc517cb21f2a6da9f758c64af4959f980abd7b855f3"
+      },
+      {
+        "path": "infra/world-base/schema/05.sql",
+        "bytes": 13081,
+        "sha256": "05e5a95d54a053375159f02fce14d4d2ea9a1272c7893663a51d46a9e5d58e0c"
+      },
+      {
+        "path": "infra/world-base/schema/06.sql",
+        "bytes": 14187,
+        "sha256": "6ae9b0b23e7deb76c14fa821995cd6eea56cfb1e18abc4e5ee1b9bcab6891bee"
+      },
+      {
+        "path": "infra/world-base/schema/07.sql",
+        "bytes": 13409,
+        "sha256": "1e223989e920b4a68b9f25ccd56906cfe05b7a0bd6b509aa68cdbd92c0f0d4a7"
+      },
+      {
+        "path": "infra/world-base/schema/08.sql",
+        "bytes": 17668,
+        "sha256": "05900c96477690dc1b9f68c778cd08b762c5a56710c75325a1664252c18fa3dd"
+      },
+      {
+        "path": "infra/world-base/schema/09.sql",
+        "bytes": 16933,
+        "sha256": "544ca15351e5cea1f7f5274d6c75f6004485ff416eb5438fee561c5e484cfdb6"
+      },
+      {
+        "path": "infra/world-base/schema/10.sql",
+        "bytes": 27602,
+        "sha256": "1e008ff8b53c85aa5d9bb4463c90a2eb6ec82dc00fbce0f2e4175656b5e995c4"
+      },
+      {
+        "path": "infra/world-base/schema/11.sql",
+        "bytes": 4964,
+        "sha256": "62030f654e52f17cff6328a0ef93ac37e20fe17ac19f427176251fe38893bc36"
+      },
+      {
+        "path": "infra/world-base/schema/12.sql",
+        "bytes": 20389,
+        "sha256": "222ba2a702772ed066d2ee42f1048cee7a5d74edf8f8f7631766077887e00e49"
+      },
+      {
+        "path": "infra/world-base/schema/13.sql",
+        "bytes": 63124,
+        "sha256": "dd74263bdb58911e2b500cef6921cda50677ace1a9e84daebb23bdcd3b027c49"
+      },
+      {
+        "path": "infra/world-base/schema/14.sql",
+        "bytes": 38633,
+        "sha256": "5db9426408bf4fde1bb8c258b23004540af887caa29ed1d4b522ef614f7aa628"
+      },
+      {
+        "path": "infra/world-base/schema/15.sql",
+        "bytes": 5091,
+        "sha256": "3f23c495feb7ac6bce3a167ab05a3c449c453104763d4ad98360239ee9b4a5d6"
+      },
+      {
+        "path": "infra/world-base/schema/16.sql",
+        "bytes": 11140,
+        "sha256": "ec2ba59cd0eb5dce4e4cef4d62e9c3ebf5dbe1b4277027d55423f8b91f97d09c"
+      },
+      {
+        "path": "infra/world-base/schema/17.sql",
+        "bytes": 1613,
+        "sha256": "88af3083ed91edf526ac8331a866a991bce689f31a170879ca22eaf9badd4e23"
+      },
+      {
+        "path": "infra/world-base/schema/18.sql",
+        "bytes": 4217,
+        "sha256": "5a1039e22e9093253f0daffa2306340fbcdccf12d364294b9a2e2552f36c1f30"
+      },
+      {
+        "path": "infra/world-base/schema/19.sql",
+        "bytes": 5761,
+        "sha256": "20d5d1142b850f3d7b771a929bc8db4e6d313a4533a485098d31dee38e2ca9d9"
+      },
+      {
+        "path": "infra/world-base/schema/20.sql",
+        "bytes": 9706,
+        "sha256": "34b165f3a2c63cb6ba72085722c768df9239869a23c900daf2da9562e857eaa0"
+      },
+      {
+        "path": "infra/world-base/schema/21.sql",
+        "bytes": 10034,
+        "sha256": "35fe85394320d195077cabe7f1859f5bbb66475e67843884014a79191f28426d"
+      },
+      {
+        "path": "infra/world-base/schema/22.sql",
+        "bytes": 2646,
+        "sha256": "6c58a6e3167581c8fddc135c719b2c8d1cd9ae4b5644087744f2ecba313e6acc"
+      },
+      {
+        "path": "infra/world-base/schema/23.sql",
+        "bytes": 3039,
+        "sha256": "6662724cbb979fd61dfee829ddf186839c81601870aef068e023087a9f940f46"
+      },
+      {
+        "path": "infra/world-base/schema/24.sql",
+        "bytes": 6046,
+        "sha256": "97bb116691658bf448d77b1459e14356be64384ab9a8e94ec53428db2dc2c225"
+      },
+      {
+        "path": "infra/world-base/schema/25.sql",
+        "bytes": 2794,
+        "sha256": "6cb1335cad47efe02cc9544881d3397b4a8d40b04ec11f16b797ac83ffbf8253"
+      },
+      {
+        "path": "infra/world-base/schema/26.sql",
+        "bytes": 431,
+        "sha256": "9ba49fee1b39831b0df2d67a4ea65919b8462dd536262090fb7eea74e6bac29b"
+      }
+    ],
+    "expected_world_base_tables": 208
+  },
+  "party_schema": {
+    "owner_migration_module": {
+      "path": "apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js",
+      "bytes": 5361,
+      "sha256": "305733a491e736483cb40abbdb9bbe7c10fd2038dd84c7949341496f360d6204"
+    },
+    "ordered_migrations": [
+      {
+        "path": "schemas/party-db/001_party_runtime.sql",
+        "bytes": 19734,
+        "sha256": "5cab24b65540da3f9857c2e70cd9e93c9761bac439839dbde1940cde24b5f6a1"
+      },
+      {
+        "path": "schemas/party-db/002_party_runtime_v3.sql",
+        "bytes": 47598,
+        "sha256": "f81e9a5b36cccee90ff72cc3757506e75af5dec1662a6e4837c240181e007cd1"
+      },
+      {
+        "path": "schemas/party-db/003_party_runtime_v3_planning.sql",
+        "bytes": 50974,
+        "sha256": "1efbd7a6b7249e515004de25408453295069a47ce4720306ba13bad6f3664090"
+      },
+      {
+        "path": "schemas/party-db/004_party_runtime_v3_journeys.sql",
+        "bytes": 33037,
+        "sha256": "6844852262270c76c71a2a153aea0bc9d177f52e76daeb9ebe0f034da748d6cd"
+      },
+      {
+        "path": "schemas/party-db/005_party_runtime_v3_domain.sql",
+        "bytes": 2184,
+        "sha256": "2b06c19a706f9122d6318a038ee49600ba215cc0686361bd6af1dc32a8b504f0"
+      },
+      {
+        "path": "schemas/party-db/006_party_runtime_v3_migration.sql",
+        "bytes": 1640,
+        "sha256": "485971bd9301a41edd107a83d1b4ef875fdbc118fb0641988c5f3bc27637629f"
+      },
+      {
+        "path": "schemas/party-db/007_party_runtime_temporal_world.sql",
+        "bytes": 39898,
+        "sha256": "664085c1330763e234fcdd806662964c7eac12b08daf4789a298c2f8bb563c7b"
+      },
+      {
+        "path": "schemas/party-db/008_party_runtime_pr8_first_entry.sql",
+        "bytes": 1965,
+        "sha256": "bf072dd080e7daca2c922c60d07090b0dd34efcaef0e20c97e6607ae64611e7e"
+      },
+      {
+        "path": "schemas/party-db/009_party_runtime_pr8_reaction_knowledge.sql",
+        "bytes": 7121,
+        "sha256": "1fdaba3f43f15502f64e2644b13f3ac07beaffacb1b8260fa8db37720d3f54b2"
+      },
+      {
+        "path": "schemas/party-db/010_party_runtime_pr8_reaction_options.sql",
+        "bytes": 1589,
+        "sha256": "7a8b686fd0a74402d94284ef74a2c93e38402a3884c1d69b7de28fe07b6c9698"
+      },
+      {
+        "path": "schemas/party-db/011_party_runtime_first_playable.sql",
+        "bytes": 20468,
+        "sha256": "2714dd9faa9f1941ccf515e7cee6e46d46996cd00520f68492023e40ad59f79a"
+      },
+      {
+        "path": "schemas/party-db/012_party_runtime_external_ownership.sql",
+        "bytes": 1878,
+        "sha256": "f075187ee20cee962d7f215881eb89169770f555e5b556b3aa82f45afc5b9bab"
+      },
+      {
+        "path": "schemas/party-db/013_party_runtime_obligations.sql",
+        "bytes": 6406,
+        "sha256": "9fa0ddd3fdb9a9f63266533fdf9124a0178dd8a8dd2805c23aca2532f6c64b68"
+      },
+      {
+        "path": "schemas/party-db/014_party_runtime_activity_resume_terminal.sql",
+        "bytes": 5728,
+        "sha256": "877954824b980740281cd9b5737771559ce38ac8817751703bb4996967fdb0c2"
+      },
+      {
+        "path": "schemas/party-db/015_party_runtime_turn_step_items.sql",
+        "bytes": 8580,
+        "sha256": "0b8e439caeeb4669f5c638f8d9923609b74fdae075799736b9fa5118ddef64cc"
+      },
+      {
+        "path": "schemas/party-db/016_party_runtime_npc_semantic_conversation.sql",
+        "bytes": 11809,
+        "sha256": "6c1f48de83313bf32b31d33d74e9c78d9dbd8b8963f7167b99cc0ac4cedc8b7f"
+      },
+      {
+        "path": "schemas/party-db/017_party_runtime_conversation_transcript.sql",
+        "bytes": 1762,
+        "sha256": "3eed33f61aca6f0889057d9758e22e0aa7550f38359e6563c3b4a5b0141a6611"
+      },
+      {
+        "path": "schemas/party-db/018_party_runtime_phase7_container_state.sql",
+        "bytes": 444,
+        "sha256": "ed6e61b2a1a7d9d0f882ba4904f48ff61426d5e0037571f8af35ff449848053f"
+      },
+      {
+        "path": "schemas/party-db/019_party_runtime_combat_sessions.sql",
+        "bytes": 2833,
+        "sha256": "d816eeab68afc3bb5bb8486b5d8d9c03f5861756c58de91807de020f27c682a7"
+      },
+      {
+        "path": "schemas/party-db/020_party_runtime_actor_equipment.sql",
+        "bytes": 3516,
+        "sha256": "885e37576265633867b8100d841b74f21e5e2fb4495adf34fb0d1a47f400d741"
+      },
+      {
+        "path": "schemas/party-db/021_party_runtime_ordinary_materialization.sql",
+        "bytes": 679,
+        "sha256": "1ca6fc28b89d475d64766fb7e70c6a2013aaf062717ded1543bbb7a467e9ec2e"
+      },
+      {
+        "path": "schemas/party-db/022_party_runtime_ordinary_materialization_commit.sql",
+        "bytes": 8281,
+        "sha256": "674c4dc998ff1191f5c89b81de33be508a8ae954b3a9de94a719f4e3493259e9"
+      },
+      {
+        "path": "schemas/party-db/023_party_runtime_ordinary_materialization_enablement.sql",
+        "bytes": 1231,
+        "sha256": "7b288909880e472a72c59bf74f8a4a169272e3adab7dfb3b0e15d29698b6f949"
+      },
+      {
+        "path": "schemas/party-db/024_party_runtime_ordinary_world_items.sql",
+        "bytes": 6691,
+        "sha256": "bf46190a2d8196be79cfd2a9ec476be9f1ea89039c6aa8c982c8c5e26d24c3d3"
+      },
+      {
+        "path": "schemas/party-db/025_party_runtime_finite_resource_transitions.sql",
+        "bytes": 10446,
+        "sha256": "202370f150359de58d1da68d27db7ea104e71c306a160ff257fb03e9160c4846"
+      },
+      {
+        "path": "schemas/party-db/026_party_runtime_existing_container_ordinary_contents.sql",
+        "bytes": 18261,
+        "sha256": "0a992319808bb09c8633ec322a464b142b2c0e0eca6e93d0618486c9db14c99d"
+      },
+      {
+        "path": "schemas/party-db/027_party_runtime_action_production.sql",
+        "bytes": 894,
+        "sha256": "61b46a84bb664ab5552db3fc209a4ad4b1e4f5b5ac806467e8bcd5c3177f81cd"
+      },
+      {
+        "path": "schemas/party-db/028_party_runtime_local_exact_fire.sql",
+        "bytes": 3312,
+        "sha256": "bea7d3cb2e1cbadb9f901e9cf71011498d44845d3b3fda3342fa361d764375b3"
+      },
+      {
+        "path": "schemas/party-db/029_party_runtime_spatial_semantic_remainder.sql",
+        "bytes": 2673,
+        "sha256": "ef20ef6ce21f85e717c327bceb70751e1210bed0ae92b8dcbe97a4eb8dfeddab"
+      },
+      {
+        "path": "schemas/party-db/030_party_runtime_snapshot_validator_alias.sql",
+        "bytes": 4489,
+        "sha256": "037bf322358021dbdf73650259fc64eec346ba00474e072d3098393e2baee9cc"
+      },
+      {
+        "path": "schemas/party-db/031_party_runtime_deferred_npc_schedules.sql",
+        "bytes": 2325,
+        "sha256": "f25ae94fb5cc7b18e15f71d6a07012119ad46cc32b4eeb0576705ddf2031dd87"
+      },
+      {
+        "path": "schemas/party-db/032_party_runtime_factual_presentation_delivery.sql",
+        "bytes": 3168,
+        "sha256": "d9faba7e509512fa4b65f2c8a391fbdcf61e817e14fa38fcff3145c3a5e4ab71"
+      },
+      {
+        "path": "schemas/party-db/033_party_runtime_initial_semantic_decision.sql",
+        "bytes": 273,
+        "sha256": "eca7800db1583f12fdfe8e35e48f0bc1bac2d0aac594b42722f4e2cde21b7197"
+      },
+      {
+        "path": "schemas/party-db/034_party_runtime_actor_base_attributes.sql",
+        "bytes": 116,
+        "sha256": "db348b4f7b091798c7b94bcfab2520ba2aa8afc1af3e83ff22a4c5ed40cb25ce"
+      },
+      {
+        "path": "schemas/party-db/035_party_runtime_nonportal_availability.sql",
+        "bytes": 1235,
+        "sha256": "010190170846e819f256e841fdd4a2f6c13bbd20940e44bc978d0aa821d6c975"
+      },
+      {
+        "path": "schemas/party-db/036_party_runtime_visibility_modifiers.sql",
+        "bytes": 1576,
+        "sha256": "61a0324e9e2328a87997f98007373674fcfa2c2403ad7559be3c32de9ac8b223"
+      }
+    ],
+    "chain_digest": "4ed4f87066f2d9cd724cc51054e740bd2a388d685c0fc8bd1b72f3c66a8684a3"
+  },
+  "preconditions": [
+    "Independent Sol high approval binds this exact request and source hashes before any production write.",
+    "Reconnect to the existing managed local-play PostgreSQL cluster; verify cluster identity, PostgreSQL version, database names, role ownership, and backup status.",
+    "Both v17 database names are absent. If either already exists, stop; do not drop, reuse, or overwrite it.",
+    "Existing novgorod_world and novgorod_party databases and their row counts are recorded before execution and remain untouched.",
+    "All listed source bytes and hashes match the reviewed commit."
+  ],
+  "execution_order": [
+    "Create novgorod_world_v17 with owner world_operator and novgorod_party_v17 with owner party_operator; CREATE DATABASE is outside a transaction.",
+    "Verify both new databases are empty and owned by their requested roles.",
+    "Execute the complete world schema through psql -X -v ON_ERROR_STOP=1 -1 -f infra/world-base/schema.sql against novgorod_world_v17 only. The entrypoint includes part 01 DROP SCHEMA IF EXISTS world_base CASCADE; fresh-empty target proof is mandatory.",
+    "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-036 inside one transaction."
+  ],
+  "expected_readback": {
+    "world_base_table_count": 208,
+    "world_schema": "world_base",
+    "party_schema": "party_runtime",
+    "party_migrations_applied": 36,
+    "old_database_row_counts_unchanged": true,
+    "world_data_rows": 0,
+    "party_parties": 0
+  },
+  "excludes": [
+    "P12 data import",
+    "catalog registration or activation",
+    "runtime or default startup cutover",
+    "existing party migration or save mutation"
+  ],
+  "authority": {
+    "request_only": true,
+    "schema_write_authorized": false,
+    "p12_import_authorized": false,
+    "activation_authorized": false,
+    "database_mutated": false
+  }
+}

@@ -107,7 +107,7 @@ async function seed(pool) {
 
 test('P23 Node→PostgreSQL service validates persisted domain rows and commits one factual package atomically', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker required');
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   const started = docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p23', '-e', 'POSTGRES_USER=p23', '-e', 'POSTGRES_DB=p23', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr || started.stdout);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p23', password: 'p23', database: 'p23' }); t.after(() => pool.end());

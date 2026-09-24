@@ -20,7 +20,7 @@ test('P12 runs FK-derived staged import/readback only in isolated PostgreSQL and
   const manifestFile = join(dir, 'manifest.json'); await writeFile(manifestFile, JSON.stringify(manifest));
   assert.equal((await validateAuthoringBundle({ root: process.cwd(), manifestPath: manifestFile })).errors.length, 0);
   const staged = await buildStagedDryRunSql({ root: process.cwd(), manifestPath: manifestFile }); assert.match(staged, /BEGIN;[\s\S]*imported_rows[\s\S]*ROLLBACK;/);
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p12_local', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let i = 0; i < 40; i += 1) {

@@ -312,7 +312,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   t.after(async () => {
     if (pool) await pool.end();
     if (client) await client.end();
-    docker(['rm', '-f', name]);
+    docker(['rm', '-fv', name]);
   });
   assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name, '-e', 'POSTGRES_PASSWORD=p16', '-e', 'POSTGRES_USER=p16', '-e', 'POSTGRES_DB=p16', 'postgres:16-alpine']).status, 0);
   let ready = false;

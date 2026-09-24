@@ -106,7 +106,7 @@ test('P25 local PostgreSQL snapshot/restore drill refuses silent v3-to-v2 reinte
     return;
   }
   const port = 57600 + (process.pid % 300); const name = `p25-${process.pid}`;
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p25', '-e', 'POSTGRES_USER=p25', '-e', 'POSTGRES_DB=p25', 'postgres:16-alpine']).status, 0);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p25', password: 'p25', database: 'p25' }); t.after(() => pool.end());
   for (let i = 0; i < 50; i += 1) { try { await pool.query('SELECT 1'); break; } catch { await new Promise((resolve) => setTimeout(resolve, 200)); if (i === 49) throw new Error('postgres unavailable'); } }

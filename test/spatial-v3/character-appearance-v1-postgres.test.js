@@ -17,7 +17,7 @@ test('world migration 21 and character appearance v4 import replay in isolated P
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', container]);
+    docker(['rm', '-fv', container]);
   });
   assert.equal(docker([
     'run', '-d', '--name', container, '-p', '127.0.0.1::5432',

@@ -63,7 +63,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   t.after(async () => {
     if (server) await new Promise((resolve) => server.close(resolve));
     if (pool) await pool.end();
-    docker(['rm', '-f', name]);
+    docker(['rm', '-fv', name]);
   });
   const started = docker([
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',

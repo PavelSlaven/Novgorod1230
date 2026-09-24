@@ -14,7 +14,7 @@ const docker = (args, input, timeout = 60_000) =>
 
 test('successor snapshot imports, reads back and replays in disposable PostgreSQL', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker required');
-  t.after(() => docker(['rm', '-f', container]));
+  t.after(() => docker(['rm', '-fv', container]));
   assert.equal(docker([
     'run', '-d', '--name', container,
     '-e', 'POSTGRES_PASSWORD=lower_dvina',

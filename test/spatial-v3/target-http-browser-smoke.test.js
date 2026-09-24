@@ -33,3 +33,10 @@ test('displayed local movement may precede exit, but exit remains required', () 
   assert.throws(() => assertDisplayedMovementRoute([observation, observation, local, exit]),
     /exact currently displayed approved movement label/);
 });
+
+test('actions after the committed exit do not change route proof', () => {
+  const observation = { result: { screen: emptyScreen() } };
+  const exit = movement(observation, 'directional_exit:current', 'Иду по показанному пути', 1);
+  const laterAction = { args: [1, { raw_text: 'Собираю хворост' }], result: { screen: emptyScreen() } };
+  assert.doesNotThrow(() => assertDisplayedMovementRoute([observation, observation, exit, laterAction]));
+});

@@ -158,7 +158,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     assert.equal(turns[0].after.party.state_version, turns[0].before.party.state_version + 1);
     if (realProvider) assert.ok(turns[0].after.clock.whole_minutes > turns[0].before.clock.whole_minutes);
     else assert.equal(turns[0].after.clock.whole_minutes, turns[0].before.clock.whole_minutes + 1);
-    for (const key of ['body', 'positions', 'materialization_runs', 'sites']) {
+    for (const key of ['body', 'positions', 'entity_placements', 'materialization_runs', 'sites']) {
       assert.deepEqual(turns[0].after[key], turns[0].before[key], `observation preserves ${key}`);
     }
     assert.equal(turns[0].result.movement, null);
@@ -167,7 +167,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     const replayIndex = report.calls.indexOf(turns[1]);
     assert.ok(report.calls.slice(replayIndex + 1, report.calls.indexOf(turns[2]))
       .some((entry) => entry.method === 'getPartyScreen'), 'reload must fetch current screen before movement');
-    assertDisplayedMovementRoute(turns);
+    assertDisplayedMovementRoute(turns.filter((turn) => turn.args[0] === turns[0].args[0]));
     assert.ok(report.calls.find((entry) => entry.method === 'startNewGame')?.result);
     assert.ok(report.calls.find((entry) => entry.method === 'acknowledgeOpening')?.result);
     assert.ok(report.calls.some((entry) => entry.method === 'getPartyScreen'));
@@ -185,6 +185,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
 export function assertDisplayedMovementRoute(turns) {
   let exited = false;
   for (let index = 2; index < turns.length; index += 1) {
+    if (exited) break;
     const turn = turns[index];
     const previous = turns[index - 1];
     const screen = previous.result.screen;
@@ -204,7 +205,6 @@ export function assertDisplayedMovementRoute(turns) {
       assert.notEqual(turn.after.position_slot, turn.before.position_slot);
       assert.equal(Number(turn.after.sites), Number(turn.before.sites));
     } else {
-      assert.equal(index, turns.length - 1, 'directional exit must finish the movement sequence');
       assert.equal(Number(turn.after.sites), Number(turn.before.sites) + 1,
         'directional exit must commit exactly one generated G5');
       exited = true;
@@ -219,12 +219,27 @@ async function snapshot(pool, partyId) {
     (SELECT to_jsonb(c) FROM party_runtime.party_clocks c WHERE party_id=$1) AS clock,
     (SELECT jsonb_agg(to_jsonb(b) ORDER BY actor_id) FROM party_runtime.party_actor_body_states b WHERE party_id=$1) AS body,
     (SELECT jsonb_agg(to_jsonb(l) ORDER BY id) FROM party_runtime.party_journey_locations l WHERE party_id=$1) AS positions,
+    (SELECT jsonb_agg(jsonb_build_object('entity_kind', e.entity_kind,
+      'entity_id', e.entity_id, 'position_node_id', e.position_node_id,
+      'occupies_capacity_units', e.occupies_capacity_units) ORDER BY e.entity_kind, e.entity_id)
+      FROM party_runtime.entity_placements e
+      WHERE e.party_id=$1 AND e.position_node_id IS NOT NULL) AS entity_placements,
     (SELECT n.template_slot_key FROM party_runtime.party_journey_locations l
       JOIN party_runtime.scene_position_nodes n ON n.party_id=l.party_id AND n.id=l.scene_position_id
       JOIN party_runtime.party_player_characters a ON a.party_id=l.party_id AND a.character_id=l.owner_id
       WHERE l.party_id=$1 AND l.owner_kind='actor') AS position_slot,
     (SELECT count(*) FROM party_runtime.party_materialization_runs WHERE party_id=$1) AS materialization_runs,
     (SELECT count(*) FROM party_runtime.party_g5_sites WHERE party_id=$1) AS sites,
+    (SELECT jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,
+      'quantity_numerator', quantity_numerator, 'quantity_denominator', quantity_denominator,
+      'lifecycle_state', lifecycle_state, 'state_version', state_version)
+      ORDER BY resource_node_id) FROM party_runtime.party_resource_nodes WHERE party_id=$1) AS finite_sources,
+    (SELECT jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,
+      'causal_transition_identity', causal_transition_identity, 'before_numerator', before_numerator,
+      'decrement_numerator', decrement_numerator, 'after_numerator', after_numerator,
+      'lifecycle_state_after', lifecycle_state_after)
+      ORDER BY resource_node_id, causal_transition_identity)
+      FROM party_runtime.party_resource_node_decrements WHERE party_id=$1) AS finite_decrements,
     (SELECT count(*) FROM party_runtime.party_state_snapshots WHERE party_id=$1) AS snapshots`, [partyId])).rows[0];
   return row;
 }

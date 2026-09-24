@@ -31,9 +31,15 @@ export function phase2InitialCurrentVisibleContext({
   }
   if (canonicalInitialState) {
     const binding = naturalScenePerceptionInput?.canonical_source_binding;
-    if (binding?.schema !== 'rus.verified_canonical_initial_natural_source.v1'
+    const currentSceneSource = binding?.schema === 'rus.verified_canonical_scene_natural_source.v1'
+      && binding.g5_site_id === naturalScenePerceptionInput.scene?.site_id
+      && binding.baseline_id === naturalScenePerceptionInput.scene?.baseline_id
+      && typeof binding.source_slot_key === 'string' && binding.source_slot_key.length > 0;
+    const initialSource = binding?.schema === 'rus.verified_canonical_initial_natural_source.v1'
+      && binding.scenario_id === initialState.scenario_id;
+    if ((!currentSceneSource && !initialSource)
       || binding.verified !== true || binding.party_id !== initialState.party_id
-      || binding.actor_id !== initialState.actor_id || binding.scenario_id !== initialState.scenario_id
+      || binding.actor_id !== initialState.actor_id
       || binding.position_id !== initialState.position?.position_id) {
       throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
         'Canonical initial turn projection requires exact current perception.',

@@ -888,8 +888,12 @@ The initial Phase 2 read identifies the canonical v3 snapshot and requires its
 matching runtime binding plus `loadInitialNaturalScenePerceptionInput({ partyId,
 actorId, initialState })`. That callback returns the same prepared current P22
 input used by opening. `phase2InitialCurrentVisibleContext` verifies the exact
-canonical party/actor/scenario/position proof and uses only its safe projection;
-it does not load historical scene presentation or disclose raw colocated NPCs,
+canonical party/actor/position proof and uses only its safe projection. Starts
+with an initial natural-perception rule also require the scenario-bound initial
+source proof; starts without that rule accept the verified current canonical
+scene source, whose site, baseline and source slot were checked by the P22
+reader and preparation boundary. The Phase 2 projection does not load historical
+scene presentation or disclose raw colocated NPCs,
 items or weather metadata. Missing target binding/input is a typed perception
 gap. The historical initial read retains its existing projection path.
 

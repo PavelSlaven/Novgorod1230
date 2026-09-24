@@ -16,6 +16,7 @@ import { createGameHttpServer, listen } from '../src/index.js';
 import { projectSharedSemanticExchange } from
   '../src/infrastructure/postgres/lower-dvina-trace-conversation-shared-projection.js';
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
+import { prepareG4NaturalScenePerceptionInput } from '../src/runtime/g4-natural-perception.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 
 test('HTTP error never exposes an internal partial workflow checkpoint', async (t) => {
@@ -175,6 +176,37 @@ test('canonical initial turn uses current P22 without historical scene or raw en
     assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
       naturalScenePerceptionInput: wrong }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
   }
+});
+
+test('canonical start without initial rule uses exact verified current scene source', async () => {
+  const { input } = await approvedNaturalPerceptionFixture({ canonical: true });
+  input.currentFacts.canonical_source_binding = {
+    schema: 'rus.verified_canonical_scene_natural_source.v1', verified: true,
+    party_id: 'party:1', actor_id: 'player:1', position_id: 'position:shore',
+    g5_site_id: 'site', baseline_id: 'baseline', source_slot_key: 'arrival'
+  };
+  const perception = prepareG4NaturalScenePerceptionInput(input);
+  const screen = { version: 1, schema: 'first_game_screen', screen_status: 'ready',
+    party_id: 'party:1', main_prose: 'Старт.', visible_context: {
+      place: 'старое место', calendar: 'утро', environment: { facts: [] } } };
+  const args = { screen, openingScreenDigest: canonicalDigest(screen),
+    initialState: { party_id: 'party:1', actor_id: 'player:1',
+      position: { position_id: 'position:shore' } },
+    canonicalInitialState: true, naturalScenePerceptionInput: perception };
+  const current = phase2InitialCurrentVisibleContext(args);
+  assert.equal(current.visible_scene, perception.scene.visible_scene);
+  assert.equal(JSON.stringify(current).includes('старое место'), false);
+  for (const key of ['party_id', 'actor_id', 'position_id', 'g5_site_id',
+    'baseline_id', 'source_slot_key']) {
+    const wrong = structuredClone(perception);
+    wrong.canonical_source_binding[key] = key === 'source_slot_key' ? '' : 'wrong';
+    assert.throws(() => phase2InitialCurrentVisibleContext({ ...args,
+      naturalScenePerceptionInput: wrong }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  }
+  assert.throws(() => prepareG4NaturalScenePerceptionInput({ ...input,
+    currentFacts: { ...input.currentFacts, canonical_source_binding: {
+      ...input.currentFacts.canonical_source_binding, source_slot_key: 'wrong' } } }),
+  { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
 });
 
 test('canonical initial turn cannot fall back when its binding or perception callback is absent', async () => {

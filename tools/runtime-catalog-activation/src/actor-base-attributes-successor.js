@@ -4,7 +4,8 @@ import { validateActorBaseAttributesImportRequest } from
   '../../../scripts/generate-actor-base-attributes-import-request.mjs';
 import { buildBaseWorldCompatibilityManifest, digestEnvelope,
   verifyDecisionAttestation, buildActivationPartyPreflight } from './artifact-contracts.js';
-import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP } from
+import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+  ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP } from
   './forward-migrations.js';
 
 const ACTOR_REVISION = 'actor_base_attributes_spatial_v3_target_001';
@@ -20,8 +21,10 @@ export function isActorBaseAttributesSuccessor(request) {
 }
 
 export function buildActorBaseAttributesSuccessorImportRequest({
-  subjectCommit, parentCatalog
+  subjectCommit, parentCatalog,
+  schemaMigration = ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION
 }) {
+  const migration = resolveWorldMigration(schemaMigration);
   validateActorBaseAttributesImportRequest(historicalRequest);
   assert.deepEqual(Object.keys(parentCatalog ?? {}).sort(), [
     'catalog_scope', 'catalog_revision_id', 'catalog_digest',
@@ -80,8 +83,8 @@ export function buildActorBaseAttributesSuccessorImportRequest({
     target_catalog_digest: request.target_catalog_digest
   });
   request.import_plan.schema_migration = {
-    migration_id: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_id,
-    migration_digest: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_digest
+    migration_id: migration.migration_id,
+    migration_digest: migration.migration_digest
   };
   delete request.request_digest;
   return seal(request, 'request_digest');
@@ -91,7 +94,8 @@ export function validateActorBaseAttributesSuccessorImportApproval({ request,
   attestation }) {
   const expected = buildActorBaseAttributesSuccessorImportRequest({
     subjectCommit: request?.subject_commit,
-    parentCatalog: request?.parent_catalog
+    parentCatalog: request?.parent_catalog,
+    schemaMigration: request?.import_plan?.schema_migration
   });
   assert.deepEqual(request, expected, 'ACTOR_SUCCESSOR_IMPORT_REQUEST_INVALID');
   verifySuccessorAttestation({ request, attestation,
@@ -110,7 +114,8 @@ export function buildActorBaseAttributesSuccessorActivationRequest({
   assert.deepEqual(importRequest,
     buildActorBaseAttributesSuccessorImportRequest({
       subjectCommit: importRequest.subject_commit,
-      parentCatalog: importRequest.parent_catalog
+      parentCatalog: importRequest.parent_catalog,
+      schemaMigration: importRequest.import_plan.schema_migration
     }));
   const { result_digest: resultDigest, ...payload } = importResult;
   assert.equal(resultDigest, digestEnvelope(payload));
@@ -193,6 +198,16 @@ function verifySuccessorAttestation({ request, attestation, schema, decision,
     expectedBindings: { reviewed_repository_head: request.subject_commit,
       authority, database_mutated: false }
   });
+}
+
+function resolveWorldMigration(declared) {
+  for (const migration of [ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+    ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP]) {
+    if (declared?.migration_id === migration.migration_id
+        && declared?.migration_digest === migration.migration_digest)
+      return migration;
+  }
+  assert.fail('ACTOR_SUCCESSOR_SCHEMA_MIGRATION_INVALID');
 }
 
 function seal(payload, field) {

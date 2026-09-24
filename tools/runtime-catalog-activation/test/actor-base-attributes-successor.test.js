@@ -13,7 +13,9 @@ import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP } from
 
 test('actor successor requires exact parent, reviewed import-only approval and preserves historical artifacts', async () => {
   const request = buildActorBaseAttributesSuccessorImportRequest({
-    subjectCommit: 'a'.repeat(40), parentCatalog: {
+    subjectCommit: 'a'.repeat(40),
+    schemaMigration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
+    parentCatalog: {
       catalog_scope: 'item_container_materialization_v2',
       catalog_revision_id: 'item_container_spatial_v3_target_001',
       catalog_digest: 'b'.repeat(64), import_readback_ref: 'test-only:readback',

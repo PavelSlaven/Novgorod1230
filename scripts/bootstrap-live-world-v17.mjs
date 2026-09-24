@@ -366,7 +366,9 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       || (await activateApprovedCatalog(itemActivationArgs)).status !== 'already_active')
       throw new Error('V17_ITEM_ACTIVATION_READBACK_MISMATCH');
     const actorRequest = buildActorBaseAttributesSuccessorImportRequest({
-      subjectCommit, parentCatalog: {
+      subjectCommit,
+      schemaMigration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
+      parentCatalog: {
         catalog_scope: item.ledger.root.catalog_scope,
         catalog_revision_id: item.ledger.root.target_revision_id,
         catalog_digest: item.ledger.root.target_catalog_digest,

@@ -50,6 +50,19 @@ test('visible S1 local ref exposes one code-owned bidirectional movement operati
   }]);
 });
 
+test('visible scene movement edge reaches the turn planner as a movement operation', () => {
+  const state = projectLowerDvinaTraceTurnStepPlannerState({
+    actor_id: 'actor:player', current_visible_context: { visible_objects: [{
+      entity_ref: { entity_kind: 'scene_movement_edge',
+        entity_id: 'baseline:site:edge:edge_1' }, display_label: 'Проход 1'
+    }] }
+  });
+  assert.deepEqual(state.available_domain_operations, [{
+    op: 'request_movement', actor_ref: 'actor:player',
+    target_ref: 'baseline:site:edge:edge_1', movement_kind: 'local'
+  }]);
+});
+
 test('exact eligible background inspection is code-grounded before model audit', () => {
   const operation = { op: 'request_discovery', discovery_kind: 'inspect',
     actor_ref: 'actor:player', target_refs: ['npc:background'],

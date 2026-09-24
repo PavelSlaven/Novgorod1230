@@ -62,6 +62,13 @@ test('local movement follows only committed directed edges; P16 changes exact po
   const initial = await runtime.listLocalOptions({ partyId: 'party', actorId: 'actor', state: committed });
   assert.deepEqual(initial.map(({ edge_id: id }) => id), ['arrival:focus']);
   assert.equal(initial[0].display_label, 'Проход arrival:focus');
+  const commands = await createTraceLocalSceneCommands({ state: committed,
+    inputDigest: 'digest', spatialLocalSceneRuntime: runtime });
+  const actionSet = await createTurnAvailableActionSet({
+    registry: createTurnCommandRegistry(commands), committedState: committed,
+    actorId: committed.actor_id, policyPins: [] });
+  assert.deepEqual(actionSet.options.map(({ option_id: id }) => id),
+    ['local_scene_edge:arrival:focus']);
   await assert.rejects(runtime.prepareLocalMovement({ partyId: 'party', actorId: 'actor',
     state: committed, edgeId: 'focus:departure', playerInput: {}, inputDigest: 'digest' }),
   { code: 'SPATIAL_V3_LOCAL_EDGE_UNAVAILABLE' });

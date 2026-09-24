@@ -152,8 +152,9 @@ export function projectLowerDvinaTraceTurnStepPlannerState(state) {
   const localObjects = [...(safe.visible_objects ?? []),
     ...(safe.current_visible_context?.visible_objects ?? [])];
   const localMovement = [...new Map(localObjects
-    .flatMap(({ entity_ref: ref }) => ref?.entity_kind ===
-      'spatial_local_reference' && text(actorRef) && text(ref.entity_id)
+    .flatMap(({ entity_ref: ref }) =>
+      ['spatial_local_reference', 'scene_movement_edge'].includes(ref?.entity_kind)
+      && text(actorRef) && text(ref.entity_id)
       ? [[ref.entity_id, { op: 'request_movement', actor_ref: actorRef,
           target_ref: ref.entity_id, movement_kind: 'local' }]]
       : [])).values()];

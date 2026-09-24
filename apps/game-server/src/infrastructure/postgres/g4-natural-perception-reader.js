@@ -3,6 +3,27 @@ import { loadApprovedG4NaturalCatalog, loadApprovedG4NaturalPlacementCatalog,
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { serverError } from '../../errors.js';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+
+const coverCandidateBytes = readFileSync(new URL('../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-candidate.json', import.meta.url));
+const coverCandidate = JSON.parse(coverCandidateBytes);
+const coverApproval = JSON.parse(readFileSync(new URL('../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-approval.json', import.meta.url)));
+
+export function approvedNaturalStableCover(profile) {
+  if (coverApproval.decision !== 'APPROVE_DATA_ONLY'
+    || coverApproval.subject !== coverCandidate.candidate_id
+    || coverApproval.candidate_sha256 !== createHash('sha256').update(coverCandidateBytes).digest('hex')
+    || profile?.g4_ref?.world_revision_id !== coverCandidate.world_revision_id) {
+    gap('approved_natural_stable_cover_required');
+  }
+  const landscape = profile.template_refs?.landscape_template_id;
+  const rows = coverCandidate.rows.filter((row) => row.landscape_template_id === landscape);
+  if (rows.length !== 1 || !['clear', 'partial', 'none'].includes(rows[0].stable_cover)) {
+    gap('approved_natural_stable_cover_required');
+  }
+  return rows[0].stable_cover;
+}
 
 /** Shared committed scene read for natural and entity perception. */
 export async function readCurrentSceneSnapshot({ transaction, partyId, actorId, pin } = {}) {
@@ -68,7 +89,7 @@ export async function readCurrentEntityVisibilityScene(args = {}) {
 /** Read inside the caller's consistent read transaction. Temporal/actor/source
  * conditions remain with their current owner; this reader supplies no defaults. */
 export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
-  verifiedCatalog, pin, worldBaseReader, readCurrentSourceState } = {}) {
+  verifiedCatalog, pin, worldBaseReader, readCurrentSourceState, readCurrentEnvironment } = {}) {
   if (typeof worldBaseReader?.readPinnedSceneTemplateClosure !== 'function'
     || typeof readCurrentSourceState !== 'function') gap('current_perception_owner_required');
   const snapshot = await readCurrentSceneSnapshot({ transaction, partyId, actorId, pin });
@@ -81,9 +102,20 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
   const closure = await worldBaseReader.readPinnedSceneTemplateClosure({ ...scene_template_ref,
     world_revision_id: snapshot.world_revision_id });
   if (!closure?.ok) gap('approved_scene_template_closure_required');
-  const current = await readCurrentSourceState({ transaction, partyId, actorId,
+  const source = await readCurrentSourceState({ transaction, partyId, actorId,
     snapshot: structuredClone(snapshot), sceneClosure: closure.value,
     naturalProfile: profiles[0], verifiedCatalog, pin });
+  if (readCurrentEnvironment != null && typeof readCurrentEnvironment !== 'function') {
+    gap('current_temporal_owner_required');
+  }
+  const current = { ...source, ...(readCurrentEnvironment == null ? {} : {
+    current_environment: await readCurrentEnvironment({ transaction, partyId, actorId }) }) };
+  const stableCover = approvedNaturalStableCover(profiles[0].payload);
+  if (!Array.isArray(current?.source_observations)
+    || current.source_observations.some((row) => row.stable_cover != null
+      && row.stable_cover !== stableCover)) {
+    gap('current_natural_stable_cover_mismatch');
+  }
   const conditions = resolveG4NaturalPerceptionConditions({ verifiedCatalog, pin,
     snapshot, sceneClosure: closure.value, naturalProfile: profiles[0], current });
   const endpoint = closure.value.endpoint_slots.filter((row) => row.slot_key === conditions?.source_endpoint_slot_key);

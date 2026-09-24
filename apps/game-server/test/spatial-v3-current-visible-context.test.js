@@ -19,11 +19,16 @@ test('canonical and generated current scenes compose admitted natural, entities 
   for (const origin of ['canonical', 'generated']) {
     const { input } = await approvedNaturalPerceptionFixture({ canonical: origin === 'canonical' });
     const transaction = { query() {} };
+    const state = { marker: 'committed' };
+    const directionalExits = [{ id: 'exit:1' }];
     const result = await readAndProjectSpatialV3CurrentVisibleContext({ transaction,
       partyId: args.partyId, actorId: args.actorId,
       positionId: input.currentFacts.observer.position_id,
+      state, directionalExits,
       readCurrentSources: async (received) => {
         assert.equal(received.transaction, transaction);
+        assert.equal(received.state, state);
+        assert.equal(received.directionalExits, directionalExits);
         return { ...args, naturalInput: prepareG4NaturalScenePerceptionInput(input) };
       } });
     assert.equal(result.schema, 'visible_context_package', origin);

@@ -4,6 +4,7 @@ import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibili
 import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } from
   './g4-natural-perception-reader.js';
 import { serverError } from '../../errors.js';
+import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 
 const labelPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url);
 const approvalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/approval-attestation.json', import.meta.url);
@@ -31,29 +32,30 @@ const visibility = new Set(['clear', 'partial', 'none']);
  * readExitDisclosure(context with partyId,actorId,directional_exits) -> safe labels.
  * readEntityObservations({partyId,actorId}) -> admitted exterior and known names. */
 export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog, pin,
-  worldBaseReader, readCurrentSourceState, readTargetConditions,
+  worldBaseReader, readCurrentSourceState, readCurrentEnvironment, readTargetConditions,
   readEntityExterior, readPlayerKnowledge,
   readScene = readCurrentEntityVisibilityScene,
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
-  async function withCurrent(partyId, actorId, project) {
-    const transaction = await pool.connect();
+  async function withCurrent(partyId, actorId, project, suppliedTransaction) {
+    const transaction = suppliedTransaction ?? await pool.connect();
+    const owned = suppliedTransaction == null;
     try {
-      await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      if (owned) await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
       const args = { transaction, partyId, actorId, verifiedCatalog, pin,
-        worldBaseReader, readCurrentSourceState };
+        worldBaseReader, readCurrentSourceState, readCurrentEnvironment };
       const scene = await readScene(args);
       const natural = await readNatural(args);
       if (scene.baseline.id !== natural.scene.baseline_id
         || scene.location.scene_position_id !== natural.observer.position_id
         || !natural.ambient_visibility) gap('entity_lighting_policy_required');
       const result = await project({ transaction, scene, natural });
-      await transaction.query('COMMIT');
+      if (owned) await transaction.query('COMMIT');
       return result;
     } catch (error) {
-      await transaction.query('ROLLBACK');
+      if (owned) await transaction.query('ROLLBACK');
       throw error;
-    } finally { transaction.release(); }
+    } finally { if (owned) transaction.release(); }
   }
   async function admit({ transaction, scene, natural }, targets) {
     if (typeof readTargetConditions !== 'function') gap('current_target_conditions_required');
@@ -78,7 +80,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       positions: scene.positions, g6: scene.g6, visibility_links: scene.visibility_links,
       portals: natural.scene.portals, targets: resolved, modifier_set: scene.modifier_set });
   }
-  async function localDisclosure({ partyId, actorId, state } = {}) {
+  async function localDisclosure({ partyId, actorId, state, transaction } = {}) {
     return withCurrent(partyId, actorId, async (current) => {
       if (!approvedLocalLabels || state?.party_id !== partyId || state.actor_id !== actorId
         || state.journey_location?.scene_position_id !== current.scene.location.scene_position_id) {
@@ -99,9 +101,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         if (labels.length !== 1) gap('approved_local_edge_label_required');
         return [{ edge_id: edge.id, display_label: labels[0].display_label }];
       });
-    });
+    }, transaction);
   }
-  return Object.freeze({
+  const provider = Object.freeze({
     async readVisibleLocalEdgeRefs(input) {
       return (await localDisclosure(input)).map((row) => row.edge_id);
     },
@@ -131,9 +133,9 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
             display_label: labels[0].display_label }];
         });
-      });
+      }, context.transaction);
     },
-    async readEntityObservations({ partyId, actorId } = {}) {
+    async readEntityObservations({ partyId, actorId, transaction } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const placements = current.scene.placements.filter((row) =>
           row.entity_kind === 'npc' || row.entity_kind === 'item');
@@ -157,13 +159,34 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             ? await readPlayerKnowledge({ transaction: current.transaction, partyId, actorId, placement }) : null;
           result.push({ entity_kind: placement.entity_kind, entity_id: placement.entity_id,
             visibility: entry.visibility, exterior,
+            display_label: typeof known?.display_name === 'string' && known.display_name.trim()
+              ? known.display_name : placement.entity_kind === 'npc' ? 'человек' : 'предмет',
             ...(typeof known?.display_name === 'string' && known.display_name.trim()
               ? { display_name: known.display_name } : {}) });
         }
         return result;
-      });
+      }, transaction);
+    },
+    async readCurrentSources({ transaction, partyId, actorId, positionId,
+      state, directionalExits } = {}) {
+      if (typeof transaction?.query !== 'function' || !Array.isArray(directionalExits)) {
+        gap('current_visible_transaction_and_exits_required');
+      }
+      if (typeof readCurrentEnvironment !== 'function') gap('current_temporal_owner_required');
+      const current = await withCurrent(partyId, actorId, async (value) => value, transaction);
+      if (positionId !== current.scene.location.scene_position_id) gap('current_position_required');
+      const naturalInput = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin,
+        currentFacts: current.natural });
+      const entityObservations = await provider.readEntityObservations({ transaction, partyId, actorId });
+      const localEdges = await provider.readLocalEdgeDisclosure({ transaction, partyId, actorId, state });
+      const exits = await provider.readExitDisclosure({ transaction, partyId, actorId,
+        position: { id: positionId }, site: current.scene.site,
+        directional_exits: directionalExits });
+      return { naturalInput, entityObservations, localEdges,
+        directionalExits: exits };
     }
   });
+  return provider;
 }
 
 function naturalG4(natural) { return natural.scene.g4_ref.id; }

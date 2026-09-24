@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { approvedNaturalStableCover } from
+  '../src/infrastructure/postgres/g4-natural-perception-reader.js';
 
 const label = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url))).labels[0];
@@ -69,4 +71,22 @@ test('explicit geometry hides unlinked targets; modifiers and missing ambient fa
   const unpinned = fixture(); unpinned.natural.ambient_visibility = null;
   await assert.rejects(unpinned.provider.readEntityObservations({ partyId: 'party', actorId: 'actor' }),
     (error) => error.details?.reason === 'entity_lighting_policy_required');
+});
+
+test('supplied transaction remains caller-owned and stable cover follows approved landscape', async () => {
+  const { provider, queries } = fixture();
+  const transaction = { async query(sql) { queries.push(sql); } };
+  const rows = await provider.readEntityObservations({ transaction,
+    partyId: 'party', actorId: 'actor' });
+  assert.equal(rows[0].display_label, 'Known person');
+  assert.equal(rows[1].display_label, 'человек');
+  assert.equal(queries.length, 0);
+  const g4_ref = { world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001' };
+  assert.equal(approvedNaturalStableCover({ g4_ref,
+    template_refs: { landscape_template_id: 'lt_freshwater_marsh' } }), 'clear');
+  assert.equal(approvedNaturalStableCover({ g4_ref,
+    template_refs: { landscape_template_id: 'lt_temperate_coniferous_forest' } }), 'partial');
+  assert.throws(() => approvedNaturalStableCover({ g4_ref,
+    template_refs: { landscape_template_id: 'unknown' } }),
+  (error) => error.details?.reason === 'approved_natural_stable_cover_required');
 });

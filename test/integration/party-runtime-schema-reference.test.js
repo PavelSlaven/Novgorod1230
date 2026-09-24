@@ -13,10 +13,11 @@ test('party_runtime reference covers the current ordered migration chain and com
   const result = await buildPartyRuntimeSchemaReference({ root });
   const committed = await readFile(resolve(root, 'infra/party-db/SCHEMA_REFERENCE.md'), 'utf8');
   assert.equal(result.migration_count, SPATIAL_V3_TARGET_MIGRATION_FILES.length);
-  assert.equal(result.table_count, 131);
+  assert.equal(result.table_count, 132);
   assert.equal(result.markdown, committed);
-  assert.equal([...committed.matchAll(/^## `party_runtime\.[a-z_][a-z0-9_]*`$/gmu)].length, 131);
+  assert.equal([...committed.matchAll(/^## `party_runtime\.[a-z_][a-z0-9_]*`$/gmu)].length, 132);
   assert.match(committed, /party_runtime\.party_spatial_semantic_resolutions/u);
+  assert.match(committed, /party_runtime\.visibility_modifiers/u);
   assert.match(committed, /029_party_runtime_spatial_semantic_remainder\.sql/u);
   assert.match(committed, /ADD COLUMN IF NOT EXISTS delivery_mode text NOT NULL DEFAULT 'narrated'/u);
   assert.match(committed, /ADD COLUMN IF NOT EXISTS factual_screen jsonb/u);

@@ -8,7 +8,7 @@ test('world_base schema expands to exactly 208 unique tables', async () => {
   assert.equal(result.table_count, 208);
   assert.equal(result.table_names.length, 208);
   assert.deepEqual(result.duplicate_table_names, []);
-  assert.equal(result.part_files.length, 25);
+  assert.equal(result.part_files.length, 26);
 });
 
 test('world_base schema keeps the read-only runtime role', async () => {

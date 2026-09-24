@@ -1,0 +1,3596 @@
+{
+  "schema": "m2c_nature_coverage_report_v1",
+  "scope": "archived Novgorod regional template links versus exact M2c G4 natural profiles",
+  "source_status_warning": "Regional links are draft G1-G3 evidence; this report does not approve type presence at G4 or infer taxa from universal claims.",
+  "inputs": [
+    "data/world-base-sources/rus13-base-v1.tar.gz",
+    "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+    "data/world-catalogs/novgorod/world-knowledge/production-v1"
+  ],
+  "counts": {
+    "landscape": {
+      "exact_g4_profile": 7,
+      "no_exact_m2c_binding": 27
+    },
+    "water_body": {
+      "exact_g4_profile": 4,
+      "no_exact_m2c_binding": 20
+    },
+    "land_use": {
+      "exact_g4_profile": 0,
+      "no_exact_m2c_binding": 31
+    },
+    "place": {
+      "exact_g4_profile": 0,
+      "no_exact_m2c_binding": 39
+    }
+  },
+  "m2c_g4_count": 32,
+  "m2c_g4_without_fauna_layer": 32,
+  "world_knowledge_fauna_concepts": 42,
+  "world_knowledge_fauna_claims": 272,
+  "world_knowledge_context_scopes": {
+    "universal": 272
+  },
+  "world_knowledge_source_map": [
+    {
+      "concept_ref": "wk:biology_physiology:fauna-amphibian",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-naturescot-herptiles",
+        "source:fauna-naturescot-tadpoles"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-animal-communication",
+      "claim_count": 2,
+      "source_refs": [
+        "source:fauna-openstax-behavior"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-animal-learning",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-openstax-behavior"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-animal-movement",
+      "claim_count": 2,
+      "source_refs": [
+        "source:fauna-openstax-behavior"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-atlantic-salmon",
+      "claim_count": 8,
+      "source_refs": [
+        "source:fauna-noaa-salmon"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-bird-migration",
+      "claim_count": 8,
+      "source_refs": [
+        "source:fauna-cornell-migration"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-brown-bear",
+      "claim_count": 12,
+      "source_refs": [
+        "source:fauna-brown-bear",
+        "source:fauna-nps-bear-denning"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-common-adder",
+      "claim_count": 12,
+      "source_refs": [
+        "source:fauna-adw-adder",
+        "source:fauna-naturescot-adder"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-common-frog",
+      "claim_count": 10,
+      "source_refs": [
+        "source:fauna-adw-frog",
+        "source:fauna-transport-scotland-amphibian"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-common-toad",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-naturescot-tadpoles",
+        "source:fauna-naturescot-toad"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-cross-spider",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-adw-cross-spider"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-culex-mosquito",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-cdc-culex"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-domestic-cattle",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-domestic-cattle"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-domestic-dog",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-domestic-dog"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-domestic-goat",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-merck-goat"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-domestic-horse",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-domestic-horse"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-domestic-pig",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-domestic-pig"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-domestic-sheep",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-merck-sheep"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-dragonfly",
+      "claim_count": 10,
+      "source_refs": [
+        "source:fauna-bds-dragonfly"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-earthworm",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-nrcs-earthworm"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-eurasian-beaver",
+      "claim_count": 12,
+      "source_refs": [
+        "source:fauna-eurasian-beaver"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-eurasian-lynx",
+      "claim_count": 10,
+      "source_refs": [
+        "source:fauna-eurasian-lynx"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-eurasian-perch",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-slu-perch"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-european-eel",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-naturescot-eel"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-european-otter",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-european-otter"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-fish-oxygen",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-usgs-fish-oxygen"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-fish-senses",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-noaa-fish-senses"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-great-tit",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-bto-great-tit"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-honeybee",
+      "claim_count": 10,
+      "source_refs": [
+        "source:fauna-adw-honeybee"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-mallard",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-adw-mallard"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-moose",
+      "claim_count": 10,
+      "source_refs": [
+        "source:fauna-moose"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-mountain-hare",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-mountain-hare"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-northern-pike",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-adw-pike"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-pearl-mussel",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-naturescot-mussel"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-red-fox",
+      "claim_count": 12,
+      "source_refs": [
+        "source:fauna-red-fox"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-red-squirrel",
+      "claim_count": 8,
+      "source_refs": [
+        "source:fauna-red-squirrel"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-roe-deer",
+      "claim_count": 4,
+      "source_refs": [
+        "source:fauna-roe-deer"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-ruminant-grazing-selection",
+      "claim_count": 2,
+      "source_refs": [
+        "source:fauna-ruminant-grazing-selection"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-tawny-owl",
+      "claim_count": 8,
+      "source_refs": [
+        "source:fauna-adw-tawny-owl"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-tick",
+      "claim_count": 6,
+      "source_refs": [
+        "source:fauna-cdc-ticks"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-wild-boar",
+      "claim_count": 8,
+      "source_refs": [
+        "source:fauna-wild-boar"
+      ]
+    },
+    {
+      "concept_ref": "wk:biology_physiology:fauna-wolf",
+      "claim_count": 10,
+      "source_refs": [
+        "source:fauna-wolf"
+      ]
+    }
+  ],
+  "world_knowledge_files": [
+    "fauna-ecology.json",
+    "fauna-mammals.json",
+    "runtime-bundle.json"
+  ],
+  "entries": [
+    {
+      "kind": "land_use",
+      "template_id": "lu_bark_bast_collection",
+      "regional_link_id": "rlut_novgorod_bark_bast_collection",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "bark_bast_harvest",
+        "seasonal_pattern": "обычно весна/лето; зависит от дерева"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_bark_bast_collection",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_bog_iron_extraction",
+      "regional_link_id": "rlut_novgorod_bog_iron_extraction",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "bog_iron_extraction",
+        "seasonal_pattern": "обычно сухой сезон/низкая вода; затем обжиг/плавка отдельно"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_bog_iron_extraction",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_charcoal_burning",
+      "regional_link_id": "rlut_novgorod_charcoal_burning",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "charcoal_production",
+        "seasonal_pattern": "сезонно; требует сухой древесины и контроля огня"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_charcoal_burning",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_clay_extraction",
+      "regional_link_id": "rlut_novgorod_clay_extraction",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "clay_extraction",
+        "seasonal_pattern": "обычно тёплый сезон; сушка изделий отдельно"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_clay_extraction",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_common_pasture",
+      "regional_link_id": "rlut_novgorod_common_pasture",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "pasture",
+        "seasonal_pattern": "выпас в тёплый сезон; зимний выпас зависит от климата"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_common_pasture",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_dye_medicinal_crop_plot",
+      "regional_link_id": "rlut_novgorod_dye_medicinal_crop_plot",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "specialty_crop",
+        "seasonal_pattern": "сбор по виду растения"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_dye_medicinal_crop_plot",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_fallow_rotation",
+      "regional_link_id": "rlut_novgorod_fallow_rotation",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "fallow",
+        "seasonal_pattern": "годовой или многолетний перерыв; возможен выпас"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_fallow_rotation",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_fiber_crop_plot",
+      "regional_link_id": "rlut_novgorod_fiber_crop_plot",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "fiber_crop",
+        "seasonal_pattern": "посев/уборка; вымачивание требует воды отдельно"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_fiber_crop_plot",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_fish_weir_trap_operation",
+      "regional_link_id": "rlut_novgorod_fish_weir_trap_operation",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "fish_weir",
+        "seasonal_pattern": "часто сезон хода рыбы или приливный цикл"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_fish_weir_trap_operation",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_fishpond_aquaculture",
+      "regional_link_id": "rlut_novgorod_fishpond_aquaculture",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "fishpond_aquaculture",
+        "seasonal_pattern": "управление водой и вылов по сезону"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_fishpond_aquaculture",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_fuelwood_gathering",
+      "regional_link_id": "rlut_novgorod_fuelwood_gathering",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly",
+        "src_fao_lccs"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "fuelwood",
+        "seasonal_pattern": "круглый год, чаще перед холодами"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_fuelwood_gathering",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_fur_trapping_ground",
+      "regional_link_id": "rlut_novgorod_fur_trapping_ground",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "trapping_fur",
+        "seasonal_pattern": "часто осень/зима; зависит от меха и снега"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_fur_trapping_ground",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_hay_meadow_cutting",
+      "regional_link_id": "rlut_novgorod_hay_meadow_cutting",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_agriculture",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "hay_meadow",
+        "seasonal_pattern": "трава растёт весной/летом; покос в конце лета; затем выпас"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_hay_meadow_cutting",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_hunting_ground",
+      "regional_link_id": "rlut_novgorod_hunting_ground",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "hunting",
+        "seasonal_pattern": "сезон зависит от зверя, запретов и погоды"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_hunting_ground",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_inland_capture_fishing",
+      "regional_link_id": "rlut_novgorod_inland_capture_fishing",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "inland_fishing",
+        "seasonal_pattern": "сезоны нереста, льда, паводка и хода рыбы"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_inland_capture_fishing",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_kitchen_garden",
+      "regional_link_id": "rlut_novgorod_kitchen_garden",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "garden",
+        "seasonal_pattern": "весна–осень; зимой пустые гряды или хранение"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_kitchen_garden",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_open_field_strip_cultivation",
+      "regional_link_id": "rlut_novgorod_open_field_strip_cultivation",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "arable_field_system",
+        "seasonal_pattern": "сезонная пахота и жатва; пары/перелоги по местной системе"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_open_field_strip_cultivation",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_orchard_fruit_grove",
+      "regional_link_id": "rlut_novgorod_orchard_fruit_grove",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "orchard",
+        "seasonal_pattern": "обрезка/цветение/сбор плодов по культуре"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_orchard_fruit_grove",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_peat_cutting",
+      "regional_link_id": "rlut_novgorod_peat_cutting",
+      "regional_status": "draft",
+      "regional_confidence": "low",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "peat_extraction",
+        "seasonal_pattern": "сухой сезон; сушка требует времени"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_peat_cutting",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_rainfed_arable",
+      "regional_link_id": "rlut_novgorod_rainfed_arable",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_agriculture",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "arable",
+        "seasonal_pattern": "пахота/посев/жатва по местному календарю; часть года стерня или пар"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_rainfed_arable",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_reed_sedge_harvest",
+      "regional_link_id": "rlut_novgorod_reed_sedge_harvest",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "wetland_plant_harvest",
+        "seasonal_pattern": "обычно сухой сезон/зима; зависит от воды и льда"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_reed_sedge_harvest",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_resin_tar_pitch_production",
+      "regional_link_id": "rlut_novgorod_resin_tar_pitch_production",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "resin_tar_production",
+        "seasonal_pattern": "сезонно; требует дерева и очага/ямы"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_resin_tar_pitch_production",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_saltmaking_saltern",
+      "regional_link_id": "rlut_novgorod_saltmaking_saltern",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "salt_production",
+        "seasonal_pattern": "сухой/тёплый сезон для выпаривания; варка может быть круглогодичной"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_saltmaking_saltern",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_sand_gravel_extraction",
+      "regional_link_id": "rlut_novgorod_sand_gravel_extraction",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "sand_gravel_extraction",
+        "seasonal_pattern": "обычно сухой сезон и низкая вода"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_sand_gravel_extraction",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_slash_burn_cultivation",
+      "regional_link_id": "rlut_novgorod_slash_burn_cultivation",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture",
+        "src_fao_lccs"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "forest_clearance_arable",
+        "seasonal_pattern": "рубка/пал/несколько лет посевов/зарастание"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_slash_burn_cultivation",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_stone_quarrying",
+      "regional_link_id": "rlut_novgorod_stone_quarrying",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "stone_quarrying",
+        "seasonal_pattern": "обычно тёплый сезон; зависит от работной силы"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_stone_quarrying",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_timber_felling",
+      "regional_link_id": "rlut_novgorod_timber_felling",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly",
+        "src_fao_lccs"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "timber_harvest",
+        "seasonal_pattern": "обычно сезонно; зимой проще вывоз"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_timber_felling",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_tree_beekeeping_bortnichestvo",
+      "regional_link_id": "rlut_novgorod_tree_beekeeping_bortnichestvo",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "forest_beekeeping",
+        "seasonal_pattern": "сезонный уход и сбор мёда/воска"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_tree_beekeeping_bortnichestvo",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_watermill_water_management",
+      "regional_link_id": "rlut_novgorod_watermill_water_management",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_route_he"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "mill_water_management",
+        "seasonal_pattern": "работает при достаточной воде; чистка и ремонт каналов"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_watermill_water_management",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_wild_food_gathering",
+      "regional_link_id": "rlut_novgorod_wild_food_gathering",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "wild_gathering",
+        "seasonal_pattern": "сильно сезонно: ягоды, грибы, орехи, травы"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_wild_food_gathering",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "land_use",
+      "template_id": "lu_wood_pasture_silvopasture",
+      "regional_link_id": "rlut_novgorod_wood_pasture_silvopasture",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "land_use_kind": "wood_pasture",
+        "seasonal_pattern": "сезонный выпас; желудёвка/подножный корм по сезону"
+      },
+      "reference_source": "infra/world-base/land_use_templates.seed.json#lu_wood_pasture_silvopasture",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_alluvial_floodplain",
+      "regional_link_id": "rlt_novgorod_alluvial_floodplain",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "трава, осока, кустарник, местами деревья",
+        "soil_ground_type": "alluvial_silt_clay"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_alluvial_floodplain",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_boreal_mixed_forest",
+      "regional_link_id": "rlt_novgorod_boreal_mixed_forest",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_fao_gez",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "хвойные с берёзой, осиной, ольхой",
+        "forest_type": "boreal_mixed",
+        "soil_ground_type": "podzolic_litter_roots"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_boreal_mixed_forest",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_boreal_taiga_coniferous_forest",
+      "regional_link_id": "rlt_novgorod_boreal_taiga_coniferous_forest",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_fao_gez",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "ель, сосна, лиственница, мхи, кустарнички",
+        "forest_type": "boreal_coniferous",
+        "soil_ground_type": "podzolic_soil_moss_roots"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_boreal_taiga_coniferous_forest",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_dense_coniferous_forest",
+      "regional_link_id": "rlt_novgorod_dense_coniferous_forest",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_fao_gez"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "плотный хвойный древостой, мох, валежник",
+        "forest_type": "dense_coniferous",
+        "soil_ground_type": "needle_litter_roots_deadwood"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_dense_coniferous_forest",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_dry_meadow",
+      "regional_link_id": "rlt_novgorod_dry_meadow",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "низкая трава, разнотравье",
+        "soil_ground_type": "firm_grass_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_dry_meadow",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_dry_ravine_gully",
+      "regional_link_id": "rlt_novgorod_dry_ravine_gully",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "кустарник, трава, редкие деревья",
+        "soil_ground_type": "clay_sand_loam"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_dry_ravine_gully",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_fen",
+      "regional_link_id": "rlt_novgorod_fen",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "осока, мхи, травы, иногда кустарник",
+        "soil_ground_type": "minerotrophic_peat"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_fen",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_floodplain_wet_grassland",
+      "regional_link_id": "rlt_novgorod_floodplain_wet_grassland",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_iskos_poozerie",
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "влажная трава, осока, разнотравье",
+        "soil_ground_type": "alluvial_wet_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_floodplain_wet_grassland",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_freshwater_marsh",
+      "regional_link_id": "rlt_novgorod_freshwater_marsh",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "осока, тростник, камыш, водно-болотное разнотравье",
+        "soil_ground_type": "mineral_mud_silt"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_freshwater_marsh",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_gentle_hills",
+      "regional_link_id": "rlt_novgorod_gentle_hills",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_fao_gez"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "трава, кустарник, местами лес",
+        "soil_ground_type": "firm_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_gentle_hills",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_low_alluvial_riverbank",
+      "regional_link_id": "rlt_novgorod_low_alluvial_riverbank",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "трава, ива, кустарник, осока",
+        "soil_ground_type": "alluvial_silt_mud"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_low_alluvial_riverbank",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_marsh_lake_margin",
+      "regional_link_id": "rlt_novgorod_marsh_lake_margin",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "осока, мхи, камыш, кустарник",
+        "soil_ground_type": "mud_peat_silt"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_marsh_lake_margin",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_mesic_meadow",
+      "regional_link_id": "rlt_novgorod_mesic_meadow",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "трава, разнотравье, местами кустарник",
+        "soil_ground_type": "loam_grass_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_mesic_meadow",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_peat_swamp_forest",
+      "regional_link_id": "rlt_novgorod_peat_swamp_forest",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "болотный лес на торфе, мхи, кустарники",
+        "forest_type": "peat_swamp",
+        "soil_ground_type": "deep_peat_roots"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_peat_swamp_forest",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_raised_bog",
+      "regional_link_id": "rlt_novgorod_raised_bog",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "сфагнум, мхи, пушица, низкий кустарник",
+        "soil_ground_type": "sphagnum_peat"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_raised_bog",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_reed_lake_shore",
+      "regional_link_id": "rlt_novgorod_reed_lake_shore",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "камыш, тростник, осока",
+        "soil_ground_type": "mud_silt_reeds"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_reed_lake_shore",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_reedbed_marsh",
+      "regional_link_id": "rlt_novgorod_reedbed_marsh",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "тростник, камыш, высокая болотная растительность",
+        "soil_ground_type": "mud_silt"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_reedbed_marsh",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_riparian_scrub_bank",
+      "regional_link_id": "rlt_novgorod_riparian_scrub_bank",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "ива, ольха, кустарник, высокая трава",
+        "soil_ground_type": "mud_roots_brush"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_riparian_scrub_bank",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_rocky_lake_shore",
+      "regional_link_id": "rlt_novgorod_rocky_lake_shore",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "мхи, редкая трава, кустарник",
+        "soil_ground_type": "stone_boulder_gravel"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_rocky_lake_shore",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_sandy_lake_shore",
+      "regional_link_id": "rlt_novgorod_sandy_lake_shore",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "низкая трава, камыш местами, редкий кустарник",
+        "soil_ground_type": "sand"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_sandy_lake_shore",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_scrub_meadow",
+      "regional_link_id": "rlt_novgorod_scrub_meadow",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "трава, кустарник, молодая древесная поросль",
+        "soil_ground_type": "grass_brush_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_scrub_meadow",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_seasonal_sedge_marsh",
+      "regional_link_id": "rlt_novgorod_seasonal_sedge_marsh",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "осока, травы, сезонная болотная растительность",
+        "soil_ground_type": "silt_mud_seasonal"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_seasonal_sedge_marsh",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_seasonally_flooded_forest",
+      "regional_link_id": "rlt_novgorod_seasonally_flooded_forest",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "пойменный лес, кустарник, влажная трава",
+        "forest_type": "seasonally_flooded_forest",
+        "soil_ground_type": "alluvial_roots_mud"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_seasonally_flooded_forest",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_shrub_swamp",
+      "regional_link_id": "rlt_novgorod_shrub_swamp",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "ивняк, ольха, кустарник, болотная трава",
+        "soil_ground_type": "mud_roots_silt"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_shrub_swamp",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_steep_eroding_riverbank",
+      "regional_link_id": "rlt_novgorod_steep_eroding_riverbank",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "трава, кустарник, корни деревьев",
+        "soil_ground_type": "clay_silt_roots"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_steep_eroding_riverbank",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_steep_hills",
+      "regional_link_id": "rlt_novgorod_steep_hills",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "трава, кустарник, редкий лес",
+        "soil_ground_type": "clay_stony_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_steep_hills",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_temperate_broadleaf_mixed_forest",
+      "regional_link_id": "rlt_novgorod_temperate_broadleaf_mixed_forest",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_fao_gez",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "широколиственные и/или смешанные породы, кустарник, травы",
+        "forest_type": "temperate_broadleaf_mixed",
+        "soil_ground_type": "leaf_litter_root_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_temperate_broadleaf_mixed_forest",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_temperate_coniferous_forest",
+      "regional_link_id": "rlt_novgorod_temperate_coniferous_forest",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_fao_gez"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "сосна, ель, пихта или другие хвойные",
+        "forest_type": "temperate_coniferous",
+        "soil_ground_type": "needle_litter_roots"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_temperate_coniferous_forest",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_wet_lowland_forest",
+      "regional_link_id": "rlt_novgorod_wet_lowland_forest",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "ольха, берёза, ель, ива, кустарник",
+        "forest_type": "wet_lowland",
+        "soil_ground_type": "wet_roots_mud"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_wet_lowland_forest",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_wet_meadow",
+      "regional_link_id": "rlt_novgorod_wet_meadow",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands",
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "высокая трава, осока, влажное разнотравье",
+        "soil_ground_type": "wet_grass_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_wet_meadow",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_wet_ravine_gully",
+      "regional_link_id": "rlt_novgorod_wet_ravine_gully",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "кустарник, ольха, трава, мхи",
+        "soil_ground_type": "mud_clay_roots"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_wet_ravine_gully",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_wooded_floodplain",
+      "regional_link_id": "rlt_novgorod_wooded_floodplain",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "ива, ольха, тополь, кустарник",
+        "forest_type": "floodplain_forest",
+        "soil_ground_type": "alluvial_mud_roots"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_wooded_floodplain",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_wooded_hills",
+      "regional_link_id": "rlt_novgorod_wooded_hills",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_fao_gez"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "лес, кустарник",
+        "forest_type": "hill_forest",
+        "soil_ground_type": "roots_stony_soil"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_wooded_hills",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "landscape",
+      "template_id": "lt_wooded_swamp",
+      "regional_link_id": "rlt_novgorod_wooded_swamp",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "dominant_vegetation": "болотный лес, кустарник, мхи, осока",
+        "forest_type": "wet_forest",
+        "soil_ground_type": "peat_mud_roots"
+      },
+      "reference_source": "infra/world-base/landscape_templates.seed.json#lt_wooded_swamp",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_administrative_court",
+      "regional_link_id": "rpt_novgorod_administrative_court",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "administrative_center",
+        "summary": "место управления, суда, сбора повинностей или пребывания представителя власти."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_administrative_court",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_boat_landing",
+      "regional_link_id": "rpt_novgorod_boat_landing",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly",
+        "src_baltic_route"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "water_access_small",
+        "summary": "малая местная точка, где можно вытащить или привязать лодку."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_boat_landing",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_bridge_place",
+      "regional_link_id": "rpt_novgorod_bridge_place",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_route_he"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "crossing",
+        "summary": "устойчивое место перехода через воду или овраг по мосту."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_bridge_place",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_city_major_center",
+      "regional_link_id": "rpt_novgorod_city_major_center",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "major_urban_center",
+        "summary": "большой городской центр с политической, торговой, религиозной или военной ролью."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_city_major_center",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_clay_pit_pottery_site",
+      "regional_link_id": "rpt_novgorod_clay_pit_pottery_site",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "production_site",
+        "summary": "место добычи глины и/или производства керамики рядом с водой, топливом и поселением."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_clay_pit_pottery_site",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_crossroads",
+      "regional_link_id": "rpt_novgorod_crossroads",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_route_he"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "route_junction_place",
+        "summary": "устойчивый узел схода дорог, троп или коридоров; может стать местом торговли, засады, заставы или двора."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_crossroads",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_dispersed_settlement_cluster",
+      "regional_link_id": "rpt_novgorod_dispersed_settlement_cluster",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "rural_settlement_morphology",
+        "summary": "несколько дворов/малых усадеб, распределённых по округе без плотного ядра."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_dispersed_settlement_cluster",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_estate_center",
+      "regional_link_id": "rpt_novgorod_estate_center",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "estate_center",
+        "summary": "центр владения или хозяйственного управления с двором господина, управителя, монастыря или власти."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_estate_center",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_ferry_place",
+      "regional_link_id": "rpt_novgorod_ferry_place",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_baltic_route",
+        "src_route_he"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "crossing",
+        "summary": "место регулярной переправы через реку, озеро, протоку или залив на лодке/плоскодонке/пароме."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_ferry_place",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_fish_weir_site",
+      "regional_link_id": "rpt_novgorod_fish_weir_site",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "water_work_site",
+        "summary": "устойчивое место стационарного рыбного лова на реке, протоке, приливной зоне или мелководье."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_fish_weir_site",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_fishing_station",
+      "regional_link_id": "rpt_novgorod_fishing_station",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "water_work_site",
+        "summary": "сезонное или устойчивое место рыбной ловли, хранения снастей и обработки рыбы."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_fishing_station",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_ford_place",
+      "regional_link_id": "rpt_novgorod_ford_place",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_route_he"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "crossing",
+        "summary": "устойчивое место перехода через водоток вброд; является узлом пересечения воды и пути."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_ford_place",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_forest_work_camp",
+      "regional_link_id": "rpt_novgorod_forest_work_camp",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "seasonal_work_camp",
+        "summary": "временное или полупостоянное место лесного промысла: заготовка леса, углежжение, смола, лыко, охота."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_forest_work_camp",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_fortified_town",
+      "regional_link_id": "rpt_novgorod_fortified_town",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "urban_fortified",
+        "summary": "городской центр с укреплениями, воротами, стенами, валами или замком/детинцем по региону."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_fortified_town",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_hamlet",
+      "regional_link_id": "rpt_novgorod_hamlet",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "rural_settlement",
+        "summary": "небольшая группа дворов без обязательной церкви, рынка или административной функции."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_hamlet",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_hermitage_skete",
+      "regional_link_id": "rpt_novgorod_hermitage_skete",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "religious_small",
+        "summary": "малая удалённая религиозная стоянка или обитель с ограниченным числом людей."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_hermitage_skete",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_hillfort_gorodishche",
+      "regional_link_id": "rpt_novgorod_hillfort_gorodishche",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "fortified_archaeological_place",
+        "summary": "старое или действующее укреплённое место на возвышенности/мысу/берегу; может быть жилым, заброшенным или символическим."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_hillfort_gorodishche",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_hunting_camp",
+      "regional_link_id": "rpt_novgorod_hunting_camp",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "seasonal_work_camp",
+        "summary": "временное место охотников или ловцов, связанное с добычей зверя и обработкой добычи."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_hunting_camp",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_iron_smelting_site",
+      "regional_link_id": "rpt_novgorod_iron_smelting_site",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "production_site",
+        "summary": "место выплавки железа из руды, часто связано с лесом, болотной рудой, углём и водой."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_iron_smelting_site",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_isolated_farmstead",
+      "regional_link_id": "rpt_novgorod_isolated_farmstead",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context",
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "rural_settlement",
+        "summary": "один самостоятельный хозяйственный двор вне плотного поселения; в археологической типологии соответствует dispersed settlement/farmstead."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_isolated_farmstead",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_market_place",
+      "regional_link_id": "rpt_novgorod_market_place",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "market",
+        "summary": "регулярное место обмена товаров, обычно связанное с поселением, дорогой, властью или переправой."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_market_place",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_monastery",
+      "regional_link_id": "rpt_novgorod_monastery",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "religious_complex",
+        "summary": "устойчивый религиозный комплекс с общиной, хозяйством, правилами доступа и влиянием на округу."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_monastery",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_monastic_grange",
+      "regional_link_id": "rpt_novgorod_monastic_grange",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "monastic_economic_site",
+        "summary": "хозяйственный двор или сельскохозяйственный участок, принадлежащий монастырю или религиозному дому."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_monastic_grange",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_nucleated_village",
+      "regional_link_id": "rpt_novgorod_nucleated_village",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "rural_settlement_morphology",
+        "summary": "сельское поселение, где дворы сосредоточены в одном ядре, а хозяйственные земли лежат вокруг."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_nucleated_village",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_periodic_fairground",
+      "regional_link_id": "rpt_novgorod_periodic_fairground",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "periodic_market",
+        "summary": "место периодической торговли, оживающее в определённые сроки или сезоны."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_periodic_fairground",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_pilgrimage_shrine",
+      "regional_link_id": "rpt_novgorod_pilgrimage_shrine",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "religious_shrine",
+        "summary": "место религиозного почитания, куда приходят паломники; может быть в городе, монастыре, у источника или на дороге."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_pilgrimage_shrine",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_pogost_center",
+      "regional_link_id": "rpt_novgorod_pogost_center",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "rural_admin_religious_center",
+        "summary": "региональный восточнославянский тип церковно-административного/территориального центра, особенно важный для новгородской земли и северо-запада."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_pogost_center",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_portage_place",
+      "regional_link_id": "rpt_novgorod_portage_place",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_baltic_route",
+        "src_iskos_poozerie"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "route_support",
+        "summary": "место перетаскивания лодок и груза между водными системами или вокруг препятствия."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_portage_place",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_posad_suburb",
+      "regional_link_id": "rpt_novgorod_posad_suburb",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "urban_suburb",
+        "summary": "внешняя торгово-ремесленная зона у укреплённого центра или города; термин регионален для руси, но типологически соответствует suburb/extra-mural settlement."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_posad_suburb",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_river_landing",
+      "regional_link_id": "rpt_novgorod_river_landing",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_baltic_route",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "water_access",
+        "summary": "место посадки, высадки, погрузки и разгрузки на реке или протоке."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_river_landing",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_rural_church_center",
+      "regional_link_id": "rpt_novgorod_rural_church_center",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "rural_religious_center",
+        "summary": "сельское место с церковью/кладбищем и функцией центра для окрестных дворов или деревень."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_rural_church_center",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_saltworks",
+      "regional_link_id": "rpt_novgorod_saltworks",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "production_site",
+        "summary": "место добычи соли из морской воды, рассола, солёных источников или солёных озёр."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_saltworks",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_shipyard_boatyard",
+      "regional_link_id": "rpt_novgorod_shipyard_boatyard",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_baltic_route",
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "production_site",
+        "summary": "место постройки или ремонта лодок/судов на берегу реки, озера или моря."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_shipyard_boatyard",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_toll_customs_post",
+      "regional_link_id": "rpt_novgorod_toll_customs_post",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context",
+        "src_baltic_route"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "administrative_control",
+        "summary": "место контроля движения товаров и людей на дороге, переправе, порту, границе или рынке."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_toll_customs_post",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_town",
+      "regional_link_id": "rpt_novgorod_town",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "urban_settlement",
+        "summary": "плотное поселение с ремеслом, торговлей, властью, культовыми местами и устойчивой городской структурой."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_town",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_village",
+      "regional_link_id": "rpt_novgorod_village",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie",
+        "src_novgorod_agriculture"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "rural_settlement",
+        "summary": "устойчивое сельское поселение с несколькими дворами и хозяйственной округой."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_village",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_watchpost_guard_post",
+      "regional_link_id": "rpt_novgorod_watchpost_guard_post",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "military_control",
+        "summary": "малый наблюдательный или охранный пункт на пути, берегу, перевале, границе или высоте."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_watchpost_guard_post",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_watermill_site",
+      "regional_link_id": "rpt_novgorod_watermill_site",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_route_he"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "production_site",
+        "summary": "производственное место, использующее поток воды для помола или иной работы."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_watermill_site",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "place",
+      "template_id": "pt_wintering_hut",
+      "regional_link_id": "rpt_novgorod_wintering_hut",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_novgorod_promysly"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "place_kind": "seasonal_work_camp",
+        "summary": "малое сезонное укрытие или промысловый стан, занятый зимой или в холодный сезон."
+      },
+      "reference_source": "infra/world-base/place_templates.seed.json#pt_wintering_hut",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_backwater",
+      "regional_link_id": "rwbt_novgorod_backwater",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "backwater",
+        "flow_type": "still_or_slow",
+        "salinity": "fresh_or_brackish"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_backwater",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_bog_pool",
+      "regional_link_id": "rwbt_novgorod_bog_pool",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "bog_pool",
+        "flow_type": "still",
+        "salinity": "fresh_acidic"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_bog_pool",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_brine_spring",
+      "regional_link_id": "rwbt_novgorod_brine_spring",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "spring",
+        "flow_type": "seeping",
+        "salinity": "saline_or_brine"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_brine_spring",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_brook",
+      "regional_link_id": "rwbt_novgorod_brook",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_iucn_get",
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "stream",
+        "flow_type": "slow_to_fast",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_brook",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_fishpond",
+      "regional_link_id": "rwbt_novgorod_fishpond",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "fishpond",
+        "flow_type": "still_controlled",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_fishpond",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_floodplain_lake",
+      "regional_link_id": "rwbt_novgorod_floodplain_lake",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "floodplain_lake",
+        "flow_type": "still_or_seasonal",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_floodplain_lake",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_floodwater",
+      "regional_link_id": "rwbt_novgorod_floodwater",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "seasonal_floodwater",
+        "flow_type": "seasonal_flow",
+        "salinity": "fresh_or_brackish"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_floodwater",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_freshwater_pond",
+      "regional_link_id": "rwbt_novgorod_freshwater_pond",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "pond",
+        "flow_type": "still",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_freshwater_pond",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_large_fresh_lake",
+      "regional_link_id": "rwbt_novgorod_large_fresh_lake",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context",
+        "src_iskos_poozerie"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "lake",
+        "flow_type": "wind_driven_still",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_large_fresh_lake",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_large_river",
+      "regional_link_id": "rwbt_novgorod_large_river",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_baltic_route",
+        "src_iskos_poozerie"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "river",
+        "flow_type": "moderate_to_strong",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_large_river",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_marsh_channel",
+      "regional_link_id": "rwbt_novgorod_marsh_channel",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "channel",
+        "flow_type": "slow",
+        "salinity": "fresh_or_brackish"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_marsh_channel",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_marsh_pool",
+      "regional_link_id": "rwbt_novgorod_marsh_pool",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "marsh_pool",
+        "flow_type": "still",
+        "salinity": "fresh_or_brackish"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_marsh_pool",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_medium_river",
+      "regional_link_id": "rwbt_novgorod_medium_river",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context",
+        "src_baltic_route"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "river",
+        "flow_type": "moderate",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_medium_river",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_mill_leat",
+      "regional_link_id": "rwbt_novgorod_mill_leat",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_route_he"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "mill_leat",
+        "flow_type": "controlled_flow",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_mill_leat",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_moat_water",
+      "regional_link_id": "rwbt_novgorod_moat_water",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "moat",
+        "flow_type": "still_or_controlled",
+        "salinity": "fresh_or_brackish"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_moat_water",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_oxbow_lake",
+      "regional_link_id": "rwbt_novgorod_oxbow_lake",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "oxbow_lake",
+        "flow_type": "still_or_slow",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_oxbow_lake",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_rapid_section",
+      "regional_link_id": "rwbt_novgorod_rapid_section",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_baltic_route"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "river_section",
+        "flow_type": "fast",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_rapid_section",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_reservoir_impoundment",
+      "regional_link_id": "rwbt_novgorod_reservoir_impoundment",
+      "regional_status": "draft",
+      "regional_confidence": "medium_low",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_route_he"
+      ],
+      "regional_scales": [
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "reservoir",
+        "flow_type": "still_controlled",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_reservoir_impoundment",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_river_channel",
+      "regional_link_id": "rwbt_novgorod_river_channel",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "channel",
+        "flow_type": "slow_to_moderate",
+        "salinity": "fresh_or_brackish"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_river_channel",
+      "exact_m2c_g4": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center"
+      ],
+      "m2c_layers": [
+        "audible_context",
+        "bank_structure",
+        "ground_cover",
+        "light",
+        "natural_materials",
+        "relief",
+        "riparian_vegetation",
+        "seasonal_state",
+        "shrub_layer",
+        "surface",
+        "tree_layer",
+        "water_body",
+        "weather"
+      ],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "exact_g4_profile"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_seasonal_pool",
+      "regional_link_id": "rwbt_novgorod_seasonal_pool",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "seasonal_water",
+        "flow_type": "still",
+        "salinity": "fresh_or_dirty"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_seasonal_pool",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_seep",
+      "regional_link_id": "rwbt_novgorod_seep",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "seep",
+        "flow_type": "seeping",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_seep",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_small_fresh_lake",
+      "regional_link_id": "rwbt_novgorod_small_fresh_lake",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_iucn_get"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "lake",
+        "flow_type": "still",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_small_fresh_lake",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_small_river",
+      "regional_link_id": "rwbt_novgorod_small_river",
+      "regional_status": "draft",
+      "regional_confidence": "medium_high",
+      "regional_sources": [
+        "src_ramsar_wetlands",
+        "src_novgorod_wider_context"
+      ],
+      "regional_scales": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "river",
+        "flow_type": "moderate",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_small_river",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    },
+    {
+      "kind": "water_body",
+      "template_id": "wb_spring",
+      "regional_link_id": "rwbt_novgorod_spring",
+      "regional_status": "draft",
+      "regional_confidence": "medium",
+      "regional_sources": [
+        "src_ramsar_wetlands"
+      ],
+      "regional_scales": [
+        "G2",
+        "G3"
+      ],
+      "reference": {
+        "water_body_type": "spring",
+        "flow_type": "seeping",
+        "salinity": "fresh"
+      },
+      "reference_source": "infra/world-base/water_body_templates.seed.json#wb_spring",
+      "exact_m2c_g4": [],
+      "m2c_layers": [],
+      "m2c_taxon_claim_count": 0,
+      "coverage": "no_exact_m2c_binding"
+    }
+  ]
+}

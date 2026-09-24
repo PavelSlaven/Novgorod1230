@@ -24,6 +24,9 @@ against visible_context_package, not plausibility. Assess every required check.
 Only these exact factual/technical names may appear in failed_checks: ${STAGE23_REQUIRED_CHECKS.filter((key) => key !== 'literary_composition_check').join(', ')}.
 List failed checks only, never checks that passed or requirement names.
 If only literary composition fails, return pass=true and failed_checks=[].
+Set pass=false only when failed_checks names a failed factual or technical check
+and concerns contains a matching factual or technical concern. Never omit pass,
+failed_checks or concerns; pass=true requires no blocking failed checks or concerns.
 Fail factual, hidden, coverage, technical or agency defects. For a literary-only
 dossier, checklist or weak composition finding, report
 NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION in concerns; the host derives
@@ -36,11 +39,14 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
   llmDiagnostics = null } = {}) {
   if (typeof roleRunner?.run !== 'function') throw new TypeError(
     'Authored opening narration requires the configured role runner.');
-  const role = (roleId, instruction, assemble = (output) => output) => async (input) => {
+  const role = (roleId, instruction, assemble = (output) => output) => async (input,
+    feedback = null) => {
     llmDiagnostics?.turnBudget?.assertWithinDeadline?.();
     const response = await roleRunner.run({ scope: 'turn_runtime', role_id: roleId,
       request_identity: input.request_id,
-      messages: [{ role: 'system', content: instruction },
+      messages: [{ role: 'system', content: feedback?.length
+        ? `${instruction}\nCorrect the previous invalid audit: ${feedback.join(', ')}. Return every required field.`
+        : instruction },
         { role: 'user', content: JSON.stringify(input) }],
       overrides: { temperature: roleId.includes('repair') ? 0.2 : 0 } });
     if (!response?.output || typeof response.output !== 'object') throw serverError(
@@ -57,20 +63,15 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
       [key, true])) });
   const writer = role('gameplay_narrator', WRITER, proseOutput);
   const auditOutput = (output, input) => {
-    if (Array.isArray(output.failed_checks) && output.failed_checks.some((key) =>
-      !STAGE23_REQUIRED_CHECKS.includes(key))) openingError(
-        'AUTHORED_OPENING_AUDIT_INVALID', [{ code: 'STAGE23_AUDIT_CHECK_INVALID' }]);
-    const failed = new Set(Array.isArray(output.failed_checks) ? output.failed_checks : []);
-    const concerns = Array.isArray(output.concerns) ? output.concerns : [];
+    const failed = new Set(output.failed_checks);
+    const concerns = output.concerns;
     if (concerns.some(({ code }) => code ===
       'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION')) {
       failed.add('literary_composition_check');
     } else {
       failed.delete('literary_composition_check');
     }
-    const blocking = concerns.some(({ code }) =>
-      code !== 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION');
-    const pass = output.pass === true && !blocking;
+    const pass = output.pass;
     return { version: 1, schema: 'narrator_prose_audit',
       request_id: input.request_id, pass,
       checks: Object.fromEntries(STAGE23_REQUIRED_CHECKS.map((key) => [key,
@@ -81,7 +82,7 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
         can_write_player_visible_message: pass,
         can_mark_opening_scene_presented: pass } };
   };
-  const auditor = role('gameplay_narrator_auditor', AUDITOR, auditOutput);
+  const auditor = role('gameplay_narrator_auditor', AUDITOR);
   const semanticRepairer = role('gameplay_narrator_semantic_repair',
     `${WRITER} Repair every supplied Stage 23 concern.`, proseOutput);
   return Object.freeze({
@@ -89,7 +90,7 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
       visibleContextApproval }) {
       const execute = () => runBoundedOpening({ requestId,
         visibleContextPackage, visibleContextApproval, writer, auditor,
-        semanticRepairer });
+        auditOutput, semanticRepairer });
       return typeof llmDiagnostics?.runTurn === 'function'
         ? llmDiagnostics.runTurn({ party_id: partyId,
           request_id: requestId }, execute)
@@ -99,7 +100,7 @@ export function createAuthoredOpeningNarrationService({ roleRunner,
 }
 
 async function runBoundedOpening({ requestId, visibleContextPackage,
-  visibleContextApproval, writer, auditor, semanticRepairer }) {
+  visibleContextApproval, writer, auditor, auditOutput, semanticRepairer }) {
       const stage22Input = buildStage22NarratorInput({ request_id: requestId,
         visible_context_package: visibleContextPackage,
         visible_context_package_digest:
@@ -112,13 +113,20 @@ async function runBoundedOpening({ requestId, visibleContextPackage,
           visible_context_package: visibleContextPackage,
           visible_context_approval: visibleContextApproval,
           stage22_result: stage22 });
-    const value = await auditor(input);
-    const validation = validateNarratorProseAudit(value, input, {
-      allowRouteMissing: value.pass === false
-    });
-    if (validation.length > 0) openingError('AUTHORED_OPENING_AUDIT_INVALID',
-      validation);
-    return { input, result: stage23Result(input, value) };
+    let validation = [];
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const raw = await auditor(input, validation.map(({ code }) => code));
+      validation = validateRawAudit(raw);
+      if (validation.length === 0) {
+        const value = auditOutput(raw, input);
+        validation = validateNarratorProseAudit(value, input, {
+          allowRouteMissing: value.pass === false
+        });
+        if (validation.length === 0) return { input,
+          result: stage23Result(input, value) };
+      }
+    }
+    openingError('AUTHORED_OPENING_AUDIT_INVALID', validation);
   };
   let stage23 = await audit();
   const originalStage23Audit = structuredClone(
@@ -182,6 +190,32 @@ function stage23Result(input, audit) {
     commit_permission: { can_show_to_player: pass,
       can_write_player_visible_message: pass,
       can_mark_opening_scene_presented: pass } };
+}
+
+function validateRawAudit(output) {
+  const issues = [];
+  if (typeof output.pass !== 'boolean') issues.push({ code:
+    'STAGE23_AUDIT_PASS_INVALID' });
+  if (!Array.isArray(output.failed_checks) || output.failed_checks.some((key) =>
+    !STAGE23_REQUIRED_CHECKS.includes(key))) issues.push({ code:
+    'STAGE23_AUDIT_CHECK_INVALID' });
+  if (!Array.isArray(output.concerns) || output.concerns.some((item) =>
+    !item || typeof item !== 'object' || Array.isArray(item))) issues.push({ code:
+    'STAGE23_AUDIT_CONCERNS_INVALID' });
+  if (issues.length > 0) return issues;
+  const blockingChecks = output.failed_checks.filter((key) =>
+    key !== 'literary_composition_check');
+  const blockingConcerns = output.concerns.filter(({ code }) =>
+    code !== 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION');
+  if (output.pass && blockingChecks.length > 0) issues.push({ code:
+    'STAGE23_AUDIT_CHECK_FAILED_ON_PASS' });
+  if (output.pass && blockingConcerns.length > 0) issues.push({ code:
+    'STAGE23_AUDIT_CONCERNS_ON_PASS' });
+  if (!output.pass && blockingChecks.length === 0) issues.push({ code:
+    'STAGE23_AUDIT_NO_FAILED_CHECK' });
+  if (!output.pass && blockingConcerns.length === 0) issues.push({ code:
+    'STAGE23_AUDIT_CONCERNS_MISSING' });
+  return issues;
 }
 
 function openingError(code, concerns) {

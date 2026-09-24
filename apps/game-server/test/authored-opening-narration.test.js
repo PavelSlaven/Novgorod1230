@@ -14,14 +14,6 @@ import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixtur
 import { buildCanonicalOpeningVisibleContext } from '../src/runtime/canonical-opening-context.js';
 import { projectG4NaturalPerception } from '../src/runtime/g4-natural-perception.js';
 
-const checks = ['schema_and_structure', 'visible_context_compliance',
-  'new_fact_check', 'npc_check', 'item_check', 'container_check',
-  'door_exit_route_check', 'time_light_weather_check', 'position_check',
-  'g5_anchor_check', 'knowledge_boundary_check', 'hidden_state_leak_check',
-  'rumor_uncertainty_check', 'action_options_check', 'technical_text_check',
-  'literary_composition_check', 'must_include_check',
-  'must_not_include_check', 'commit_readiness'];
-
 test('authored opening package answers all reader controls from persisted refs', () => {
   const pkg = openingPackage();
   assert.equal(pkg.opening_reader_control.pass, true);
@@ -93,13 +85,8 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
         ].map((key) => [key, true]))
       } };
       if (call.role_id === 'gameplay_narrator_auditor') return { output: {
-        version: 1, schema: 'narrator_prose_audit', request_id: 'opening:1',
-        pass: true,
-        checks: Object.fromEntries(checks.map((key) => [key, { pass: true }])),
-        concerns: [], evidence: ['Every required opening source is grounded.'],
-        repair_route: null, commit_permission: { can_show_to_player: true,
-          can_write_player_visible_message: true,
-          can_mark_opening_scene_presented: true }
+        pass: true, failed_checks: [], concerns: [],
+        evidence: ['Every required opening source is grounded.']
       } };
       throw new Error(`unexpected role ${call.role_id}`);
     }
@@ -137,7 +124,42 @@ test('opening derives literary check from concern and keeps factual checks fail 
     { code: 'AUTHORED_OPENING_AUDIT_INVALID' });
   await assert.rejects(run({ failed_checks: ['new_fact_check'], concerns: [{
     code: 'NARRATOR_PROSE_ADDED_FACT', severity: 'repairable',
-    message: 'Unsupported fact.' }] }), { code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
+    message: 'Unsupported fact.' }] }), { code: 'AUTHORED_OPENING_AUDIT_INVALID' });
+});
+
+test('opening retries incomplete or contradictory audit once with feedback', async () => {
+  const pkg = openingPackage(), approval = openingApproval(pkg);
+  const calls = [];
+  const audit = { pass: true, failed_checks: [], concerns: [],
+    evidence: ['Opening is grounded.'] };
+  const run = (first, second) => createAuthoredOpeningNarrationService({
+    roleRunner: { async run(call) {
+      calls.push(call);
+      if (call.role_id === 'gameplay_narrator') return { output: {
+        prose: 'Любава готовит стан с братом.\n\nПеред ней берег и навес.' } };
+      return { output: calls.filter(({ role_id }) => role_id ===
+        'gameplay_narrator_auditor').length === 1 ? first : second };
+    } }
+  }).run({ requestId: 'opening:1', visibleContextPackage: pkg,
+    visibleContextApproval: approval });
+
+  const result = await run({ pass: false, evidence: ['Missing facts.'] }, audit);
+  assert.equal(result.stage23_result.pass, true);
+  assert.equal(calls.filter(({ role_id }) => role_id ===
+    'gameplay_narrator_auditor').length, 2);
+  assert.match(calls[2].messages[0].content, /STAGE23_AUDIT_CHECK_INVALID/u);
+
+  calls.length = 0;
+  await assert.rejects(run({ pass: false, failed_checks: [], concerns: [],
+    evidence: ['Missing facts.'] }, { pass: false, failed_checks: [],
+    concerns: [], evidence: ['Still incomplete.'] }), (error) => {
+    assert.equal(error.code, 'AUTHORED_OPENING_AUDIT_INVALID');
+    assert.deepEqual(error.details.codes, ['STAGE23_AUDIT_NO_FAILED_CHECK',
+      'STAGE23_AUDIT_CONCERNS_MISSING']);
+    return true;
+  });
+  assert.equal(calls.filter(({ role_id }) => role_id ===
+    'gameplay_narrator_auditor').length, 2);
 });
 
 test('opening bounds one semantic repair and final audit inside aggregate deadline',

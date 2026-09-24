@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { buildManifest } from '../../../../scripts/generate-target-starts-manifest-v1.mjs';
+import { buildStartArtifacts } from '../../../../scripts/generate-additional-start-artifacts-v1.mjs';
 
 const root = resolve(import.meta.dirname, '../../../..');
 const candidatePath = 'data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json';
@@ -24,6 +25,50 @@ test('inactive manifest pins exactly the independently approved six-start artifa
   assert.equal(manifest.activation_authorized, false);
   assert.equal(manifest.starts.length, 6);
   assert.equal(new Set(manifest.starts.map((start) => start.scenario_id)).size, 6);
+});
+
+test('six exact starts have deterministic pins; only forest-worker player basis is transferable', async () => {
+  const candidate = await json(candidatePath);
+  const manifest = await json(manifestPath);
+  const { files, artifacts } = await buildStartArtifacts();
+  assert.equal(files.size, 19); // Six starts and transfers, three forest bases and approvals, one review candidate.
+  for (const [path, expected] of files) assert.deepEqual(await bytes(path), expected, path);
+  for (const artifact of artifacts) {
+    const source = candidate.starts.find(({ scenario_id }) => scenario_id === artifact.scenario_id);
+    const entry = manifest.starts.find(({ scenario_id }) => scenario_id === artifact.scenario_id);
+    assert.equal(source.initial_placement.canonical_g5_ref.id, artifact.canonical_g5_ref.id);
+    assert.deepEqual(entry, { binding_revision: candidate.starts.indexOf(source) + 1, ...artifact });
+    for (const kind of ['start', 'transfer', 'basis', 'approval']) {
+      if (!artifact[kind]) continue;
+      assert.equal(sha256(await bytes(artifact[kind].path)), artifact[kind].sha256, `${artifact.scenario_id}:${kind}`);
+    }
+    const start = await json(artifact.start.path);
+    const transfer = await json(artifact.transfer.path);
+    assert.equal(start.initial_placement.canonical_g5_ref.id, source.initial_placement.canonical_g5_ref.id);
+    assert.equal(start.initial_placement.scene_template_ref.id, source.initial_placement.scene_template_ref.id);
+    assert.equal(Object.hasOwn(start, 'initial_perception_rule'), false);
+    assert.equal(transfer.attribute_transfer.occupation_archetype_id,
+      source.player_inputs.occupation_archetype_id);
+    if (source.player_inputs.occupation_ref === 'nov_occ_forest_worker') {
+      assert.ok(artifact.basis && artifact.approval);
+      const basis = await json(artifact.basis.path);
+      assert.equal(basis.skills.source_context,
+        'data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_forest_worker');
+      assert.equal(basis.target_start.player_transfer_sha256, artifact.transfer.sha256);
+      const approval = await json(artifact.approval.path);
+      assert.equal(approval.target_start_proposal_approval.candidate_sha256, artifact.start.sha256);
+      assert.equal(approval.target_player_transfer_approval.candidate_sha256, artifact.transfer.sha256);
+      assert.equal(approval.target_player_basis_approval.candidate_sha256, artifact.basis.sha256);
+    } else {
+      assert.equal(Object.hasOwn(artifact, 'basis'), false);
+      assert.equal(Object.hasOwn(artifact, 'approval'), false);
+    }
+  }
+  const review = await json('data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-basis-review-candidate.json');
+  assert.equal(review.status, 'pending_independent_data_approval');
+  assert.deepEqual(review.starts.map(({ scenario_id }) => scenario_id), candidate.starts
+    .filter(({ player_inputs }) => player_inputs.occupation_ref !== 'nov_occ_forest_worker')
+    .map(({ scenario_id }) => scenario_id));
 });
 
 test('six additional starts select exact approved spatial closure without operational authority', async () => {

@@ -1,0 +1,26 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "source_approvals": [
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-data-approval.json",
+      "sha256": "dfc1f300c20b25bc6234ab084dc29ca9300f0a2216d298f7a1b12b5b06e1d496"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-expansion-repin-data-approval.json",
+      "sha256": "df5c36fff70a0a5935dea3bc26523edeb87e898ad99606e709106d6a09db3b4f"
+    }
+  ],
+  "scope": "Exact forest-worker role and approved canonical placement; body, attributes, clothing and basis transferred from approved forest-worker owner with only scenario and start pins changed.",
+  "excludes": "No independent approval of boatman or fisher skills; no operational activation, import or first-screen readback.",
+  "target_start_proposal_approval": {
+    "candidate_sha256": "1ed6e526c5e0e4930575d7403e028117c995ee58136c1c7f137ecd4cbf46bec6"
+  },
+  "target_player_transfer_approval": {
+    "candidate_sha256": "878a9d7172a164871891e0feaed191e140a649e4f71f1c5066f26f15f8d06f27"
+  },
+  "target_player_basis_approval": {
+    "candidate_sha256": "0cea3de980db8895bfeaab11680b957204b3772936ad6b36d990ed44b2b6d1f4"
+  },
+  "activation_authorized": false
+}

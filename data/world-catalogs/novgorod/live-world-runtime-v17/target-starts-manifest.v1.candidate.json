@@ -20,6 +20,14 @@
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
         "version": 1
+      },
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.start.json",
+        "sha256": "175ad4805b6a1dcf601626fb786a8ab6205f8618366bb41f2199fd3d17f060ce"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.transfer.json",
+        "sha256": "17acf0d10d81ad2acaa7abeeb2c7aae6e99d493a053fa8c988272f454e78fb02"
       }
     },
     {
@@ -28,6 +36,14 @@
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
         "version": 1
+      },
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.start.json",
+        "sha256": "d979887c5e8a49e8eb793aaf690702d02f89d457d5643edb61bc37d7fcf8818f"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.transfer.json",
+        "sha256": "0d598771b7281d7cb4bc5ba2d3db5346cdddf483fc27051ec097fce1ce6be4bb"
       }
     },
     {
@@ -36,6 +52,22 @@
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
         "version": 1
+      },
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_resource_edge_approach_v1.start.json",
+        "sha256": "e33dcb4297315b4bcdfb57a6508e7ac323138bb06adb294740052c532876a78a"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_resource_edge_approach_v1.transfer.json",
+        "sha256": "352436034f648afa93e43585dbec583b550aa50d8da6c38ee1366aac14187d5b"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_resource_edge_approach_v1.basis.json",
+        "sha256": "e53e11044f79dac8d22983e4a9ac57fd6e8e7dc09754a1455278faa9bd4180a0"
+      },
+      "approval": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_resource_edge_approach_v1.approval.json",
+        "sha256": "81d8a4690e390790b9ffe01541da7951e15c34b2c3182e7f0d446b9b94f7f5e9"
       }
     },
     {
@@ -44,6 +76,14 @@
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
         "version": 1
+      },
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.start.json",
+        "sha256": "ee9ba3079a3ef4dde548d3670518598c9ce0ec09e4f24f420144ed1f8d9659ad"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.transfer.json",
+        "sha256": "e6f24a73ac29a1bc832ee09032c8bd853af4062275e078ddf2d0232f01492918"
       }
     },
     {
@@ -52,6 +92,22 @@
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
         "version": 1
+      },
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_work_storage_v1.start.json",
+        "sha256": "4b482e1cc968f16979f3733b62c1052c8a3b10078cf91d8e104692fee4b2040a"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_work_storage_v1.transfer.json",
+        "sha256": "30745daa392747978aa3082a06809b63d1d18d25e282e45667ffcff8001aeb21"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_work_storage_v1.basis.json",
+        "sha256": "45461106baaca5c9e8fd934af644f2cb1eaf1eacb4c5482cf902574be0745054"
+      },
+      "approval": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_work_storage_v1.approval.json",
+        "sha256": "ed90133330481f53faf9483cf78838fc5e587f3a85098dc2d0ae970cb80455dd"
       }
     },
     {
@@ -60,6 +116,22 @@
       "canonical_g5_ref": {
         "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
         "version": 1
+      },
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_household_cluster_v1.start.json",
+        "sha256": "1ed6e526c5e0e4930575d7403e028117c995ee58136c1c7f137ecd4cbf46bec6"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_household_cluster_v1.transfer.json",
+        "sha256": "878a9d7172a164871891e0feaed191e140a649e4f71f1c5066f26f15f8d06f27"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_household_cluster_v1.basis.json",
+        "sha256": "0cea3de980db8895bfeaab11680b957204b3772936ad6b36d990ed44b2b6d1f4"
+      },
+      "approval": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_household_cluster_v1.approval.json",
+        "sha256": "5cf196ee1962e1e23d44b7d87f376343f99acf8515ad3e4e4e9977169c1aee5a"
       }
     }
   ]

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { buildStartArtifacts } from './generate-additional-start-artifacts-v1.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const base = 'data/world-catalogs/novgorod/live-world-runtime-v17';
@@ -23,6 +24,8 @@ export async function buildManifest() {
   assert.equal(candidate.activation_authorized, false);
   assert.equal(approval.activation_authorized, false);
   for (const pin of candidate.source_pins) assert.equal(sha256(await bytes(pin.path)), pin.sha256, pin.path);
+  const generated = await buildStartArtifacts();
+  for (const [path, expected] of generated.files) assert.deepEqual(await bytes(path), expected, path);
   return {
     schema: 'rus.live_world_runtime.target_starts_manifest.v1',
     version: 1,
@@ -35,7 +38,8 @@ export async function buildManifest() {
     starts: candidate.starts.map((start, index) => ({
       binding_revision: index + 1,
       scenario_id: start.scenario_id,
-      canonical_g5_ref: start.initial_placement.canonical_g5_ref
+      canonical_g5_ref: start.initial_placement.canonical_g5_ref,
+      ...generated.artifacts.find(({ scenario_id }) => scenario_id === start.scenario_id)
     }))
   };
 }

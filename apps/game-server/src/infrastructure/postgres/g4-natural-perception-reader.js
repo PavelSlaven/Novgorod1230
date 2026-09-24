@@ -34,10 +34,12 @@ export function approvedNaturalStableCover(profile) {
 }
 
 /** Shared committed scene read for natural and entity perception. */
-export async function readCurrentSceneSnapshot({ transaction, partyId, actorId, pin } = {}) {
+export async function readCurrentSceneSnapshot({ transaction, partyId, actorId, pin,
+  observedPositionId = null } = {}) {
   if (typeof transaction?.query !== 'function') gap('current_perception_owner_required');
   const result = await transaction.query(`SELECT party.world_revision_id,party.world_catalog_digest,
-    to_jsonb(loc) AS location,to_jsonb(site) AS site,to_jsonb(baseline) AS baseline,
+    to_jsonb(loc) || jsonb_build_object('scene_position_id',pos.id) AS location,
+    to_jsonb(site) AS site,to_jsonb(baseline) AS baseline,
     (SELECT coalesce(jsonb_agg(b),'[]') FROM party_runtime.party_site_connection_endpoint_bindings b
       WHERE b.party_id=loc.party_id AND b.g5_site_id=site.id AND b.status='active') AS endpoint_bindings,
     (SELECT coalesce(jsonb_agg(p),'[]') FROM party_runtime.scene_position_nodes p
@@ -57,11 +59,13 @@ export async function readCurrentSceneSnapshot({ transaction, partyId, actorId, 
       WHERE p.party_id=loc.party_id AND p.scene_baseline_id=baseline.id) AS portals
     FROM party_runtime.party_journey_locations loc
     JOIN party_runtime.parties party ON party.party_id=loc.party_id
-    JOIN party_runtime.scene_position_nodes pos ON pos.id=loc.scene_position_id AND pos.party_id=loc.party_id AND pos.status='active'
+    JOIN party_runtime.scene_position_nodes pos ON pos.id=coalesce($3,loc.scene_position_id)
+      AND pos.party_id=loc.party_id AND pos.status='active'
     JOIN party_runtime.party_g6_instances g6 ON g6.id=pos.g6_instance_id AND g6.party_id=loc.party_id AND g6.status='active'
     JOIN party_runtime.party_scene_baselines baseline ON baseline.id=g6.scene_baseline_id AND baseline.party_id=loc.party_id AND baseline.status='active'
     JOIN party_runtime.party_g5_sites site ON baseline.host_kind='g5_site' AND site.id=baseline.host_id AND site.party_id=loc.party_id AND site.status='active'
-    WHERE loc.party_id=$1 AND loc.owner_kind='actor' AND loc.owner_id=$2 AND loc.location_kind='scene'`, [partyId, actorId]);
+    WHERE loc.party_id=$1 AND loc.owner_kind='actor' AND loc.owner_id=$2 AND loc.location_kind='scene'`,
+  [partyId, actorId, observedPositionId]);
   if (result.rows.length !== 1) gap('committed_actor_scene_required');
   const snapshot = result.rows[0];
   if (snapshot.world_revision_id !== pin?.compatible_world_revision_id
@@ -98,10 +102,12 @@ export async function readCurrentEntityVisibilityScene(args = {}) {
 /** Read inside the caller's consistent read transaction. Temporal/actor/source
  * conditions remain with their current owner; this reader supplies no defaults. */
 export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
-  verifiedCatalog, pin, worldBaseReader, readCurrentSourceState, readCurrentEnvironment } = {}) {
+  verifiedCatalog, pin, worldBaseReader, readCurrentSourceState, readCurrentEnvironment,
+  observedPositionId } = {}) {
   if (typeof worldBaseReader?.readPinnedSceneTemplateClosure !== 'function'
     || typeof readCurrentSourceState !== 'function') gap('current_perception_owner_required');
-  const snapshot = await readCurrentSceneSnapshot({ transaction, partyId, actorId, pin });
+  const snapshot = await readCurrentSceneSnapshot({ transaction, partyId, actorId, pin,
+    observedPositionId });
   const catalog = loadApprovedG4NaturalCatalog({ verifiedCatalog, pin });
   const profiles = catalog.profiles.filter(({ payload }) => payload.g4_ref.id === snapshot.site.parent_g4_id
     && payload.g4_ref.world_revision_id === snapshot.world_revision_id);

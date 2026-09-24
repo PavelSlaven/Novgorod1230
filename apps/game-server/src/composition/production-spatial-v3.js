@@ -43,6 +43,8 @@ import { createSpatialV3ExpansionContextReader } from
   '../infrastructure/postgres/spatial-v3-expansion-context.js';
 import { createSpatialV3ExpansionRuntime } from
   '../runtime/spatial-v3-expansion-runtime.js';
+import { createSpatialV3SiteTraversalRuntime } from
+  '../runtime/spatial-v3-site-traversal-runtime.js';
 import { createSpatialV3GeneratedExpansionAdapter } from
   '../infrastructure/postgres/spatial-v3-generated-expansion-adapter.js';
 import { createSpatialV3GenerationAdmission } from
@@ -161,12 +163,52 @@ export async function createSpatialV3ProductionCompositionRoot({
         readEntityExterior: readCommittedEntityExterior,
         readPlayerKnowledge
       });
+    const siteTraversalCapability = targetContext == null ? null
+      : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
+    const projectDestination = targetContext == null ? null : async ({ transaction,
+      partyId, actorId, context, destinationPosition, destinationSite,
+      destinationPositionId, destinationSiteId, current } = {}) => {
+      const positionId = destinationPosition?.id ?? destinationPositionId;
+      const siteId = destinationSite?.id ?? destinationSiteId;
+      let closure = context?.closure;
+      if (!closure) {
+        const binding = await targetContext.runtime.worldBaseReader.readG4ExpansionBinding({
+          g4_id: current?.destination_g4_id, world_revision_id: release.world_revision_id });
+        if (binding?.ok) {
+          const loaded = await targetContext.runtime.worldBaseReader.readPinnedG4ExpansionClosure(binding.value);
+          closure = loaded?.ok ? loaded.value : null;
+        }
+      }
+      if (!positionId || !siteId || !Array.isArray(closure?.directional_exits)) {
+        throw serverError('SPATIAL_V3_SITE_TRAVERSAL_DATA_GAP',
+          'Approved destination visibility sources are required.', { status: 409 });
+      }
+      const client = transaction ?? await pools.partyPool.connect();
+      try {
+        if (!transaction) await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+        const state = { party_id: partyId, actor_id: actorId,
+          journey_location: { scene_position_id: positionId } };
+        const sources = await currentVisibility.readCurrentSources({ transaction: client,
+          partyId, actorId, positionId, observedPositionId: positionId, siteId,
+          state, directionalExits: closure.directional_exits });
+        const visible_context = projectSpatialV3CurrentVisibleContext({ ...sources,
+          partyId, actorId, positionId });
+        if (!transaction) await client.query('COMMIT');
+        return { ok: true, position_id: positionId, site_id: siteId,
+          visible_context };
+      } catch (error) {
+        if (!transaction) await client.query('ROLLBACK');
+        throw error;
+      } finally { if (!transaction) client.release(); }
+    };
     const spatialExpansionRuntime = targetContext == null ? null
       : createSpatialV3ExpansionRuntime({
         readContext: createSpatialV3ExpansionContextReader({
           partyPool: pools.partyPool, worldBaseReader: targetContext.runtime.worldBaseReader,
           release }),
         readExitDisclosure: currentVisibility.readExitDisclosure,
+        prepareSiteTraversal: createSpatialV3SiteTraversalRuntime({
+          pool: pools.partyPool, ...siteTraversalCapability, projectDestination }),
         materializerVersion: targetStartPublication.binding.execution_identity.materializer_version,
         generatedExpansionAdapter: createSpatialV3GeneratedExpansionAdapter({
           worldBaseReader: targetContext.runtime.worldBaseReader,
@@ -225,12 +267,11 @@ export async function createSpatialV3ProductionCompositionRoot({
       }) : null;
     const spatialSemanticFirstEntryProvisioner = targetContext == null
       ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;
-    const siteTraversalCapability = targetContext == null ? null
-      : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
     committer = createSpatialV3PostgresCombinedAtomicCommitter({
       pool: pools.partyPool, recheck: siteTraversalCapability == null
         ? bindings.commitRecheck
-        : (input) => bindings.commitRecheck({ ...input, ...siteTraversalCapability }),
+        : (input) => bindings.commitRecheck({ ...input, ...siteTraversalCapability,
+          projectDestination }),
       readNaturalSourceProperty: targetFiniteFirstEntry?.readNaturalSourceProperty ?? null,
       ordinaryFirstEntryProvisioner: targetContext == null
         ? { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }

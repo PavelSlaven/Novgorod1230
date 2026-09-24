@@ -13,6 +13,8 @@ import { siteTraversalWrites } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-site-traversal-commit.js';
 import { recheckSiteConnectionTraversal } from
   '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck-site-connection-traversal.js';
+import { readCurrentSceneSnapshot } from
+  '../../apps/game-server/src/infrastructure/postgres/g4-natural-perception-reader.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const ref = (entity_id) => ({ entity_id, authoring_version: '1' });
@@ -178,6 +180,13 @@ for (const conditionRef of [condition, null]) test(
   await pool.query(`INSERT INTO party_runtime.party_journey_locations
     (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,updated_change_set_id)
     VALUES ('journey','p','actor','actor','scene','source-pos',1,'seed')`);
+  const destinationScene = await readCurrentSceneSnapshot({ transaction: pool,
+    partyId: 'p', actorId: 'actor', observedPositionId: 'target-pos',
+    pin: { compatible_world_revision_id: 'world', compatible_world_catalog_digest: 'catalog' } });
+  assert.equal(destinationScene.location.scene_position_id, 'target-pos');
+  assert.equal(destinationScene.site.id, 'target');
+  assert.equal((await pool.query(`SELECT scene_position_id FROM party_runtime.party_journey_locations
+    WHERE id='journey'`)).rows[0].scene_position_id, 'source-pos');
   let availabilityOpen = false;
   let capabilityDigest = 'capability-digest';
   let projectedVisible = visible;

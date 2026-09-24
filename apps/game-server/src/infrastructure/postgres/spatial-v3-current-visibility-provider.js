@@ -37,13 +37,15 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
   readScene = readCurrentEntityVisibilityScene,
   readNatural = readCurrentNaturalPerceptionFacts } = {}) {
   if (typeof pool?.connect !== 'function') throw new TypeError('PostgreSQL pool is required.');
-  async function withCurrent(partyId, actorId, project, suppliedTransaction) {
+  async function withCurrent(partyId, actorId, project, suppliedTransaction,
+    observedPositionId = null) {
     const transaction = suppliedTransaction ?? await pool.connect();
     const owned = suppliedTransaction == null;
     try {
       if (owned) await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
       const args = { transaction, partyId, actorId, verifiedCatalog, pin,
-        worldBaseReader, readCurrentSourceState, readCurrentEnvironment };
+        worldBaseReader, readCurrentSourceState, readCurrentEnvironment,
+        observedPositionId };
       const scene = await readScene(args);
       const natural = await readNatural(args);
       if (scene.baseline.id !== natural.scene.baseline_id
@@ -80,7 +82,8 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       positions: scene.positions, g6: scene.g6, visibility_links: scene.visibility_links,
       portals: natural.scene.portals, targets: resolved, modifier_set: scene.modifier_set });
   }
-  async function localDisclosure({ partyId, actorId, state, transaction } = {}) {
+  async function localDisclosure({ partyId, actorId, state, transaction,
+    observedPositionId } = {}) {
     return withCurrent(partyId, actorId, async (current) => {
       if (!approvedLocalLabels || state?.party_id !== partyId || state.actor_id !== actorId
         || state.journey_location?.scene_position_id !== current.scene.location.scene_position_id) {
@@ -101,7 +104,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         if (labels.length !== 1) gap('approved_local_edge_label_required');
         return [{ edge_id: edge.id, display_label: labels[0].display_label }];
       });
-    }, transaction);
+    }, transaction, observedPositionId);
   }
   const provider = Object.freeze({
     async readVisibleLocalEdgeRefs(input) {
@@ -133,9 +136,10 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
             direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
             display_label: labels[0].display_label }];
         });
-      }, context.transaction);
+      }, context.transaction, context.observedPositionId);
     },
-    async readEntityObservations({ partyId, actorId, transaction } = {}) {
+    async readEntityObservations({ partyId, actorId, transaction,
+      observedPositionId } = {}) {
       return withCurrent(partyId, actorId, async (current) => {
         const placements = current.scene.placements.filter((row) =>
           row.entity_kind === 'npc' || row.entity_kind === 'item');
@@ -165,23 +169,27 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
               ? { display_name: known.display_name } : {}) });
         }
         return result;
-      }, transaction);
+      }, transaction, observedPositionId);
     },
     async readCurrentSources({ transaction, partyId, actorId, positionId,
-      state, directionalExits } = {}) {
+      state, directionalExits, observedPositionId = null, siteId = null } = {}) {
       if (typeof transaction?.query !== 'function' || !Array.isArray(directionalExits)) {
         gap('current_visible_transaction_and_exits_required');
       }
       if (typeof readCurrentEnvironment !== 'function') gap('current_temporal_owner_required');
-      const current = await withCurrent(partyId, actorId, async (value) => value, transaction);
-      if (positionId !== current.scene.location.scene_position_id) gap('current_position_required');
+      const current = await withCurrent(partyId, actorId, async (value) => value,
+        transaction, observedPositionId);
+      if (positionId !== current.scene.location.scene_position_id
+        || siteId != null && siteId !== current.scene.site.id) gap('current_position_required');
       const naturalInput = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin,
         currentFacts: current.natural });
-      const entityObservations = await provider.readEntityObservations({ transaction, partyId, actorId });
-      const localEdges = await provider.readLocalEdgeDisclosure({ transaction, partyId, actorId, state });
+      const entityObservations = await provider.readEntityObservations({ transaction, partyId,
+        actorId, observedPositionId });
+      const localEdges = await provider.readLocalEdgeDisclosure({ transaction, partyId,
+        actorId, state, observedPositionId });
       const exits = await provider.readExitDisclosure({ transaction, partyId, actorId,
         position: { id: positionId }, site: current.scene.site,
-        directional_exits: directionalExits });
+        directional_exits: directionalExits, observedPositionId });
       return { naturalInput, entityObservations, localEdges,
         directionalExits: exits };
     }

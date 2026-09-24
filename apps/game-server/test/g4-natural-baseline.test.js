@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 import { G4_NATURAL_LAYERS, createRandomSource, deriveApprovedInitialEnvironment } from '@rus/materialization';
+import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { prepareG4NaturalBaseline } from '../src/runtime/g4-natural-baseline.js';
 import { buildG4NaturalCompiledRecords } from '../../../tools/runtime-catalog-activation/src/g4-natural-compiled-records.js';
@@ -62,6 +64,44 @@ test('exact activated G4 natural baseline resolves all layers without projecting
   assert.equal(result.sensory_details, undefined);
   assert.equal(candidate.import_authorized, false, 'building rows does not authorize import');
   assert.deepEqual(prepareG4NaturalBaseline(input), result);
+});
+
+test('verified successor profile selects only source-admitted members and rejects unresolved rows', () => {
+  const { input } = fixture();
+  const row = input.verifiedCatalog.records_by_table.procedural_scene_compiled_records[0];
+  row.payload.frequency_weight_policy = { version: 1, weights: { dominant: 8, common: 4 } };
+  row.payload.natural_profile.season_matrix = { summer: { ground_cover: {
+    applicability: 'present', mandatory_member_refs: ['baseline:ground_cover'],
+    excluded_candidate_refs: [], incompatibility: { status: 'resolved', member_refs: [] },
+    members: [
+      { member_ref: 'baseline:ground_cover', eligibility: 'approved_broad_context' },
+      { member_ref: 'reed', eligibility: 'conditional_current_state',
+        frequency_category: 'dominant', editorial_weight: 8 }
+    ] } } };
+  row.payload_digest = createHash('sha256').update(canonicalStringify(row.payload)).digest('hex');
+  input.member_selection = { party_id: 'party', g5_site_id: 'site',
+    eligible_member_refs: ['reed'] };
+  const selected = prepareG4NaturalBaseline(input).member_selection;
+  assert.deepEqual(selected.layers[0].member_refs, ['baseline:ground_cover', 'reed']);
+  assert.deepEqual(prepareG4NaturalBaseline(input).member_selection, selected);
+  input.member_selection.eligible_member_refs = [];
+  assert.deepEqual(prepareG4NaturalBaseline(input).member_selection.layers[0].member_refs,
+    ['baseline:ground_cover']);
+  delete input.member_selection;
+  assert.throws(() => prepareG4NaturalBaseline(input), (error) =>
+    error.details.reason === 'MEMBER_SELECTION_INPUT_INVALID');
+  row.payload.natural_profile.season_matrix.summer.ground_cover.incompatibility.status = 'unresolved_source_gap';
+  row.payload_digest = createHash('sha256').update(canonicalStringify(row.payload)).digest('hex');
+  assert.throws(() => prepareG4NaturalBaseline({ ...input, member_selection: {
+    party_id: 'party', g5_site_id: 'site', eligible_member_refs: ['reed'] } }), (error) =>
+    error.details.reason === 'MEMBER_RULES_UNRESOLVED');
+  row.payload.natural_profile.season_matrix.summer.fauna = {
+    applicability: 'conditional', mandatory_member_refs: [], excluded_candidate_refs: [],
+    incompatibility: { status: 'resolved', member_refs: [] }, members: [] };
+  row.payload_digest = createHash('sha256').update(canonicalStringify(row.payload)).digest('hex');
+  assert.throws(() => prepareG4NaturalBaseline({ ...input, member_selection: {
+    party_id: 'party', g5_site_id: 'site', eligible_member_refs: [] } }), (error) =>
+    error.details.reason === 'MEMBER_LAYER_UNSUPPORTED');
 });
 
 test('no family fallback, wrong version, partial layers, unactivated records or missing Temporal state', () => {

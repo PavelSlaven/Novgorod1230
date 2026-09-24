@@ -35,7 +35,7 @@ export function validateG4NaturalProfile(profile) {
 
 /** Machine baseline only. Perception must authorize any player-visible subset. */
 export function materializeG4NaturalBaseline({ catalog, g4_ref, scene_template_ref,
-  current_environment: environment } = {}) {
+  current_environment: environment, member_selection } = {}) {
   if (catalog?.schema !== 'rus.verified_g4_natural_catalog.v1' || catalog.verified !== true
     || catalog.pin?.compatible_world_revision_id !== g4_ref?.world_revision_id
     || !Array.isArray(catalog.profiles)) gap('CATALOG_PIN_MISSING');
@@ -75,11 +75,23 @@ export function materializeG4NaturalBaseline({ catalog, g4_ref, scene_template_r
     }
     return { layer, applicability, value: resolved, limits };
   });
+  const matrix = profile.natural_profile.season_matrix?.[environment.season];
+  if (profile.natural_profile.season_matrix != null
+    && (!object(matrix) || Object.entries(matrix).some(([layer, row]) =>
+      !G4_NATURAL_LAYERS.includes(layer)
+      || row.applicability !== layers.find((entry) => entry.layer === layer).applicability))) {
+    gap('MEMBER_LAYER_UNSUPPORTED');
+  }
+  const selection = profile.natural_profile.season_matrix == null ? null
+    : selectG4NaturalMembers({ profile, frequency_weight_policy: profile.frequency_weight_policy,
+      party_id: member_selection?.party_id, g5_site_id: member_selection?.g5_site_id,
+      season: environment.season, eligible_member_refs: member_selection?.eligible_member_refs });
   return deepFreeze({ schema: 'rus.g4_natural_baseline.v1', version: 1,
     profile_ref: { id: profile.profile_id, version: profile.profile_version,
       record_id: record.record_id, payload_digest: record.payload_digest },
     g4_ref: structuredClone(g4_ref), scene_template_ref: structuredClone(scene_template_ref),
-    layers, gameplay_materialization_llm_calls: 0 });
+    layers, ...(selection == null ? {} : { member_selection: selection }),
+    gameplay_materialization_llm_calls: 0 });
 }
 
 /** Pure choice over members already admitted by the current source-state owner. */

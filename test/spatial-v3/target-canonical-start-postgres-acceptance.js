@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { link, mkdir, mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { canonicalDigest } from '@rus/materialization';
@@ -22,14 +22,15 @@ import { readCurrentNaturalPerceptionFacts } from '../../apps/game-server/src/in
 import { readInitialCanonicalNaturalSourceState } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-initial-state.js';
 import { prepareG4NaturalScenePerceptionInput, projectG4NaturalPerception } from '../../apps/game-server/src/runtime/g4-natural-perception.js';
 import { createTargetCurrentFactualContext } from '../../apps/game-server/src/infrastructure/postgres/target-current-factual-context.js';
-import { serveTargetHttpBrowserSmoke } from './target-http-browser-smoke.js';
+import { serveTargetHttpBrowserSmoke, TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 import { createLlmSettingsFileStore } from '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
 import { createLlmSettingsOwner } from '../../apps/game-server/src/runtime/llm-settings.js';
 
 /** Run after the isolated operator has issued, applied and read back exact target pins. */
 export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorBinding, releaseInputs }) {
-  const overlay = await approvedSevenStartsOverlay();
-  try {
+  const rootDir = resolve(import.meta.dirname, '../..');
+  const manifest = JSON.parse(await readFile(join(rootDir,
+    'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json'), 'utf8'));
   const input = await targetCanonicalStartFixture();
   const worldReadback = await loadTargetStartWorldReadback({ pool, start: input.scenario_bundle.canonical_start.start });
   const runtime = await loadTargetAuthoredStartRuntime({ worldPool: pool, itemPin, actorBinding });
@@ -147,19 +148,44 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
       assert.equal(String(url), 'https://target-acceptance.invalid/chat/completions');
       const call = JSON.parse(init.body);
       const modelInput = JSON.parse(call.messages.find((message) => message.role === 'user').content);
-      const isWriter = call.messages[0].content.startsWith('Return only {"prose"');
-      narrationRoles.push(isWriter ? 'gameplay_narrator' : 'gameplay_narrator_auditor');
+      const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
       let output;
-      if (isWriter) {
+      if (system.includes('schema must equal world_knowledge_query_plan_v1.')) {
+        output = { schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+          domains: [], focus_refs: [], requested_predicates: [], search_hints: [] };
+      } else if (system.startsWith('Resolve the raw Russian player text')) {
+        output = { status: 'unknown', reason_code: 'unknown_intent' };
+      } else if (system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
+        assert.equal((modelInput.request ?? modelInput).root_player_action, TARGET_SMOKE_INPUT);
+        output = { operation_choice: null, interpretation: { adaptation: 'literal' },
+          resolution: 'direct', goal_result: 'achieved',
+          activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+          operations: [], check: null, continuation: null, clarification: null,
+          direct_result_kind: 'player_safe_observation', reason_code: 'review_supplied_visible_surroundings',
+          reason: 'Обзор ограничен уже предоставленными видимыми сведениями.' };
+      } else if (system.startsWith('Return only {"prose"') && modelInput.required_current_beat) {
+        narrationRoles.push('gameplay_narrator');
+        output = { prose: [...modelInput.required_current_beat.changes,
+          ...modelInput.required_current_beat.uncertainties].map(({ text }) => text).join('\n\n') };
+      } else if (system.startsWith('You are a strict evidence auditor of Russian game prose.')) {
+        narrationRoles.push('gameplay_narrator_auditor');
+        const ids = modelInput.segments.map(({ segment_id }) => segment_id);
+        output = { reviewed_segments: ids,
+          source_reviews: [...modelInput.required_current_beat.changes,
+            ...modelInput.required_current_beat.uncertainties].map(({ ref }) => ({ ref, segment_choices: ids })),
+          unsupported: [], literary_failures: [], evidence: ['Deterministic source-copy.'] };
+      } else if (system.startsWith('Return only {"prose"')) {
+        narrationRoles.push('gameplay_narrator');
         const context = modelInput.visible_context_package;
         assert.equal(context.known_context.some((entry) => /лодоч|рыбацкий стан/u.test(entry.text)), false);
         assert.equal(context.visible_npcs.length, 0, 'unproven NPC perception is not co-location disclosure');
         output = { prose: context.visible_scene_dossier.must_include.map((entry) => entry.text).join('\n\n') };
       } else {
-        assert.ok(call.messages[0].content.startsWith('Return only {"pass"'));
+        assert.ok(system.startsWith('Return only {"pass"'), system);
+        narrationRoles.push('gameplay_narrator_auditor');
         output = { pass: true, failed_checks: [], concerns: [], evidence: ['Test response uses the supplied committed visible facts.'] };
       }
-      providerTimings.push({ role: narrationRoles.at(-1), duration_ms: performance.now() - providerStarted });
+      providerTimings.push({ duration_ms: performance.now() - providerStarted });
       return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(output) } }] }), { status: 200 });
   };
   let publicRuntime;
@@ -167,7 +193,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   try {
   const rootOptions = {
     env: { DEEPSEEK_API_KEY: 'isolated-fixture-key', DEEPSEEK_BASE_URL: 'https://target-acceptance.invalid' },
-    config: { spatialV3BindingsModule: 'builtin:spatial-v3-production-v17', rootDir: overlay.rootDir,
+    config: { spatialV3BindingsModule: 'builtin:spatial-v3-production-v17', rootDir,
       runtimeCatalogPinManifestDigest: itemPin.compatible_world_pin_manifest_digest,
       targetCatalogActivationApprovals: { itemApproval: releaseInputs.itemApproval, actorApproval: releaseInputs.actorApproval },
       traceTurnDecisionSecret: 'isolated-target-acceptance-secret',
@@ -182,7 +208,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.equal(publicRuntime.health().world_revision_id, release.world_revision_id);
   const publicCatalog = await publicRuntime.listScenarios();
   assert.deepEqual(publicCatalog.scenarios.map((entry) => entry.scenario_id),
-    overlay.manifest.starts.map((entry) => entry.scenario_id));
+    manifest.starts.map((entry) => entry.scenario_id));
   assert.ok(publicCatalog.scenarios.every((entry) => entry.available));
   const startupMs = performance.now() - rootStarted;
   const publicRequest = { scenario_id: profile.scenario_id, request_id: 'target-real-public-opening' };
@@ -208,7 +234,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.equal((await publicRuntime.getPartyScreen(opening.party_id)).screen.main_prose, opening.screen.main_prose);
   await publicRuntime.acknowledgeOpening(opening.party_id, { client_ack_id: 'target-public-ack' });
   const opened = new Map([[profile.scenario_id, { partyId: opening.party_id, digest: canonicalDigest(opening.screen) }]]);
-  for (const entry of overlay.manifest.starts.slice(1)) {
+  for (const entry of process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true' ? [] : manifest.starts.slice(1)) {
     const next = await publicRuntime.startNewGame({ scenario_id: entry.scenario_id,
       request_id: `target-seven-starts-${entry.binding_revision}` });
     assert.equal(next.screen.schema, 'first_game_screen');
@@ -258,6 +284,20 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   } finally {
     await factualTransaction.query('ROLLBACK'); factualTransaction.release();
   }
+  for (const [scenarioId, { partyId }] of process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true'
+    ? [[profile.scenario_id, opened.get(profile.scenario_id)]] : opened) {
+    try {
+      await publicRuntime.submitTurn(partyId, { raw_text: TARGET_SMOKE_INPUT,
+        request_id: `target-seven-starts-observe-${scenarioId}` });
+    } catch (error) {
+      error.message = `${scenarioId}: ${error.message}`;
+      throw error;
+    }
+    const observed = await publicRuntime.getPartyScreen(partyId);
+    assert.equal(Number(observed.turn_number), 1);
+    assert.equal(observed.screen.main_prose.trim().length > 0, true);
+    opened.set(scenarioId, { partyId, digest: canonicalDigest(observed.screen) });
+  }
   const reloadedRuntime = await createSpatialV3ProductionCompositionRoot(rootOptions);
   try {
     for (const [scenarioId, { partyId, digest }] of opened) {
@@ -274,31 +314,4 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
     globalThis.fetch = previousFetch;
     await publicRuntime?.close();
   }
-  } finally { await rm(overlay.rootDir, { recursive: true, force: true }); }
-}
-
-async function approvedSevenStartsOverlay() {
-  const sourceRoot = resolve(import.meta.dirname, '../..');
-  const rootDir = await mkdtemp(join(tmpdir(), 'novgorod-seven-starts-'));
-  const relative = 'data/world-catalogs/novgorod/live-world-runtime-v17';
-  const manifest = JSON.parse(await readFile(join(sourceRoot, relative,
-    'target-starts-manifest.v1.candidate.json'), 'utf8'));
-  try {
-    let source = sourceRoot; let target = rootDir;
-    for (const segment of [...relative.split('/'), 'target-starts-manifest.v1.json']) {
-      await mkdir(target, { recursive: true });
-      for (const entry of await readdir(source, { withFileTypes: true })) {
-        if (entry.name === segment) continue;
-        const from = join(source, entry.name); const to = join(target, entry.name);
-        if (entry.isDirectory()) await symlink(from, to, 'junction');
-        else if (entry.isFile()) await link(from, to);
-      }
-      source = join(source, segment); target = join(target, segment);
-    }
-    const starts = process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true'
-      ? manifest.starts.slice(0, 1) : manifest.starts;
-    await writeFile(target, `${JSON.stringify({ ...manifest, starts, status: 'approved',
-      activation_authorized: true }, null, 2)}\n`);
-    return { rootDir, manifest: { ...manifest, starts } };
-  } catch (error) { await rm(rootDir, { recursive: true, force: true }); throw error; }
 }

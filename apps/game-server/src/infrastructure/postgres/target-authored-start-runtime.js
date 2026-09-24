@@ -21,6 +21,7 @@ export async function loadTargetAuthoredStartRuntimes(options = {}) {
   }
   if (manifest.schema !== 'rus.live_world_runtime.target_starts_manifest.v1'
     || manifest.version !== 1 || manifest.status !== 'approved'
+    || manifest.activation_authorized !== true
     || !Array.isArray(manifest.starts) || manifest.starts.length === 0) {
     gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
   }
@@ -33,8 +34,13 @@ export async function loadTargetAuthoredStartRuntimes(options = {}) {
       || !['start', 'transfer', 'basis', 'approval'].every((key) => artifacts?.[key])) {
       gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
     }
-    runtimes.push(Object.freeze({ ...await loadTargetAuthoredStartRuntime({ ...options, artifacts }),
-      bindingRevision: artifacts.binding_revision }));
+    const runtime = await loadTargetAuthoredStartRuntime({ ...options, artifacts });
+    if (runtime.profile.scenario_id !== artifacts.scenario_id
+      || runtime.profile.canonical_start.start.initial_placement.canonical_g5_ref.id !== artifacts.canonical_g5_ref?.id
+      || runtime.profile.canonical_start.start.initial_placement.canonical_g5_ref.version !== artifacts.canonical_g5_ref?.version) {
+      gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
+    }
+    runtimes.push(Object.freeze({ ...runtime, bindingRevision: artifacts.binding_revision }));
   }
   if (new Set(runtimes.map(({ profile }) => profile.scenario_id)).size !== runtimes.length) {
     gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');

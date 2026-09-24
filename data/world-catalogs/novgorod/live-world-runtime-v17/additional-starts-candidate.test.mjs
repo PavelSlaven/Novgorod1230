@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
-import { buildManifest } from '../../../../scripts/generate-target-starts-manifest-v1.mjs';
+import { buildManifest, buildActiveManifest } from '../../../../scripts/generate-target-starts-manifest-v1.mjs';
 import { buildStartArtifacts } from '../../../../scripts/generate-additional-start-artifacts-v1.mjs';
 import { TRACE_SKILL_IDS } from '../../../../packages/new-game/src/stages/stage-11-player-character/trace-policy.js';
 import { loadTargetAuthoredStartProfile } from '../../../../apps/game-server/src/internal/live-world-authored-starts.js';
@@ -11,6 +11,7 @@ import { loadTargetAuthoredStartProfile } from '../../../../apps/game-server/src
 const root = resolve(import.meta.dirname, '../../../..');
 const candidatePath = 'data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json';
 const manifestPath = 'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.candidate.json';
+const activeManifestPath = 'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json';
 const bytes = (path) => readFile(resolve(root, path));
 const json = async (path) => JSON.parse(await bytes(path));
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
@@ -28,6 +29,21 @@ test('inactive manifest pins the original and six additional starts', async () =
   assert.equal(manifest.starts.length, 7);
   assert.equal(new Set(manifest.starts.map((start) => start.scenario_id)).size, 7);
   assert.equal(manifest.starts[0].scenario_id, 'novgorod_pine_ridge_approach_v1');
+});
+
+test('active manifest selects exactly the seven approved start refs', async () => {
+  const active = await json(activeManifestPath);
+  assert.deepEqual(active, await buildActiveManifest());
+  assert.equal(active.status, 'approved');
+  assert.equal(active.activation_authorized, true);
+  assert.deepEqual(active.starts, (await json(manifestPath)).starts);
+  assert.equal(active.starts.length, 7);
+  for (const entry of active.starts) {
+    for (const key of ['start', 'transfer', 'basis', 'approval']) {
+      assert.equal(sha256(await bytes(entry[key].path)), entry[key].sha256,
+        `${entry.scenario_id}:${key}`);
+    }
+  }
 });
 
 test('nonforest starts require both exact independently approved scopes', async () => {

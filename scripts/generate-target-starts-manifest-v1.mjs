@@ -9,6 +9,7 @@ const base = 'data/world-catalogs/novgorod/live-world-runtime-v17';
 const candidatePath = `${base}/additional-starts-candidate.json`;
 const approvalPath = `${base}/additional-starts-data-approval.json`;
 const outputPath = `${base}/target-starts-manifest.v1.candidate.json`;
+const activePath = `${base}/target-starts-manifest.v1.json`;
 const bytes = (path) => readFile(resolve(root, path));
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 
@@ -61,11 +62,18 @@ export async function buildManifest() {
   };
 }
 
+export async function buildActiveManifest() {
+  return { ...await buildManifest(), status: 'approved', activation_authorized: true };
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
-  const generated = `${JSON.stringify(await buildManifest(), null, 2)}\n`;
-  if (process.argv.includes('--check')) {
-    assert.equal(await bytes(outputPath).then(String), generated);
+  const active = process.argv.includes('--activate') || process.argv.includes('--check-active');
+  const path = active ? activePath : outputPath;
+  const manifest = active ? await buildActiveManifest() : await buildManifest();
+  const generated = `${JSON.stringify(manifest, null, 2)}\n`;
+  if (process.argv.includes('--check') || process.argv.includes('--check-active')) {
+    assert.equal(await bytes(path).then(String), generated);
   } else {
-    await writeFile(resolve(root, outputPath), generated);
+    await writeFile(resolve(root, path), generated);
   }
 }

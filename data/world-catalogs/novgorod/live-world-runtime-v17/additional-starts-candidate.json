@@ -1,7 +1,7 @@
 {
   "schema": "rus.live_world_runtime.additional_starts_authoring_candidate.v1",
-  "candidate_id": "novgorod_m2c_river_and_marsh_starts_v1",
-  "version": 1,
+  "candidate_id": "novgorod_m2c_four_location_starts_v2",
+  "version": 2,
   "status": "pending_independent_data_approval",
   "approved": false,
   "import_authorized": false,
@@ -22,7 +22,7 @@
     { "path": "data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json", "sha256": "e861c4136307507880451532a76e8729a874d459650a905383b70661776fe86e" },
     { "path": "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json", "sha256": "b8a66008bf3830f5353b325ad913c2a2a95c085303ae5d8950f5a72265a38922" }
   ],
-  "selection_rule": "Use the exact approved world revision, G4 entry binding, canonical G5, scene materialization profile and arrival position. Landscape family is a separate exact natural-profile join. No family-name or first-row fallback.",
+  "selection_rule": "Use the exact approved world revision, G4 entry binding, canonical G5, scene materialization profile and arrival position. Landscape family is a separate exact natural-profile join. A G3/G4 economic or settlement family does not turn its river-approach arrival G5 into an interior work or habitation scene. No family-name or first-row fallback.",
   "shared_initial_inputs": {
     "calendar_date": { "year": 1230, "month": 7, "day": 1 },
     "local_minute_of_day": 480,
@@ -86,8 +86,54 @@
       "player_inputs": { "name": { "display_name": "Микула", "source_name_id": "nov_name_mikula_v1", "directness": "proposed_personal_name_transfer_only" }, "role_ref": "nov_role_fisher", "occupation_ref": "nov_occ_fisher", "occupation_archetype_id": "fishing_water", "sex_category": "male", "age_category": "adult", "role_and_occupation_directness": "exact_approved_catalog_pair", "sex_and_age_directness": "editorial_gameplay_initial_condition" },
       "initial_perception_policy": "Resolve from current committed scene, actual observer and condition owners, and independently approved exact natural source placement. No borrowed pine initial perception rule, guaranteed water sound, visibility, harvestable stock or safe access.",
       "initial_resources_policy": "No generated-G5 finite-stock profile applies to this canonical entry without separate canonical applicability approval."
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_resource_edge_approach_v1",
+      "public_metadata": { "title": "У Вихтуйского промыслового участка", "description": "Начало пути лесного промысловика у речного края ресурсного участка.", "available": false },
+      "authored_premise": { "directness": "editorial_gameplay_initial_condition", "text": "Игрок — взрослый свободный лесной промысловик у речного края существующего Вихтуйского ресурсного участка. Орудия, добыча, право пользования участком, наниматель и предыдущее путешествие не задаются.", "historical_event_claim": false, "new_historical_site_claim": false, "player_known_facts": [], "hidden_facts": [] },
+      "place_family": { "kind": "economic_resource_site_approach", "g3_ref": { "id": "gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge", "version": 1 }, "g3_class_id": "spatial.g3.resource_site", "arrival_scene_scope": "river_edge_route_approach; no active work or resource stock asserted" },
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "initial_placement": {
+        "mode": "canonical_g4_entry_initial_state",
+        "g4_ref": { "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge", "version": 1 },
+        "entry_binding_ref": { "id": "g4entryv3__g3_to_g4_access_023", "version": 1 },
+        "canonical_g5_ref": { "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge", "version": 1 },
+        "scene_materialization_profile_ref": { "id": "smpv3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge", "version": 1 },
+        "scene_template_ref": { "id": "stfv3__g5_route_approach_v1", "version": 1 },
+        "scene_endpoint_slot_key": "arrival", "position_slot_key": "arrival", "position_instance_ordinal": 0,
+        "placement_cause": "authored_initial_state", "travel_time": null, "directness": "exact_approved_spatial_reference"
+      },
+      "expansion_profile_ref": { "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge", "version": 1 },
+      "natural_profile_ref": { "id": "m2c_natural_g4_vikhtuy_resource_edge", "version": 1 },
+      "natural_placement_ref": { "id": "m2c_natural_g4_vikhtuy_resource_edge__stfv3__g5_route_approach_v1__arrival", "version": 1 },
+      "player_inputs": { "name": { "display_name": "Микула", "source_name_id": "nov_name_mikula_v1", "directness": "proposed_personal_name_transfer_only" }, "role_ref": "nov_role_forest_promyslovik", "occupation_ref": "nov_occ_forest_worker", "occupation_archetype_id": "forest_hunting", "sex_category": "male", "age_category": "adult", "role_and_occupation_directness": "exact_approved_catalog_pair", "sex_and_age_directness": "editorial_gameplay_initial_condition" },
+      "initial_perception_policy": "Resolve from current committed scene, actual observer and condition owners, and independently approved exact natural source placement. No borrowed pine initial perception rule, guaranteed work, stock, visibility, sound or safe access.",
+      "initial_resources_policy": "No generated-G5 finite-stock profile applies to this canonical entry without separate canonical applicability approval."
+    },
+    {
+      "scenario_id": "novgorod_zaostrovye_settlement_approach_v1",
+      "public_metadata": { "title": "У Заостровского поселения", "description": "Начало пути лодочника на речном подходе к поселению.", "available": false },
+      "authored_premise": { "directness": "editorial_gameplay_initial_condition", "text": "Игрок — взрослый свободный лодочник на существующем речном подходе к Заостровскому поселению. Жильё, родня, лодка, поручение, право пристать и предыдущее путешествие не задаются.", "historical_event_claim": false, "new_historical_site_claim": false, "player_known_facts": [], "hidden_facts": [] },
+      "place_family": { "kind": "human_settlement_approach", "g3_ref": { "id": "gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center", "version": 1 }, "g3_class_id": "spatial.g3.settlement", "arrival_scene_scope": "river_approach_route_scene; no dwelling, resident or social encounter asserted" },
+      "landscape_template_id": "lt_wooded_floodplain",
+      "initial_placement": {
+        "mode": "canonical_g4_entry_initial_state",
+        "g4_ref": { "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center", "version": 1 },
+        "entry_binding_ref": { "id": "g4entryv3__g3_to_g4_access_024", "version": 1 },
+        "canonical_g5_ref": { "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach", "version": 1 },
+        "scene_materialization_profile_ref": { "id": "smpv3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach", "version": 1 },
+        "scene_template_ref": { "id": "stfv3__g5_route_approach_v1", "version": 1 },
+        "scene_endpoint_slot_key": "arrival", "position_slot_key": "arrival", "position_instance_ordinal": 0,
+        "placement_cause": "authored_initial_state", "travel_time": null, "directness": "exact_approved_spatial_reference"
+      },
+      "expansion_profile_ref": { "id": "m2c_profile_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center", "version": 1 },
+      "natural_profile_ref": { "id": "m2c_natural_g4_zaostrovye_settlement_center", "version": 1 },
+      "natural_placement_ref": { "id": "m2c_natural_g4_zaostrovye_settlement_center__stfv3__g5_route_approach_v1__arrival", "version": 1 },
+      "player_inputs": { "name": { "display_name": "Микула", "source_name_id": "nov_name_mikula_v1", "directness": "proposed_personal_name_transfer_only" }, "role_ref": "nov_role_boatman", "occupation_ref": "nov_occ_boatman", "occupation_archetype_id": "transport_guiding", "sex_category": "male", "age_category": "adult", "role_and_occupation_directness": "exact_approved_catalog_pair", "sex_and_age_directness": "editorial_gameplay_initial_condition" },
+      "initial_perception_policy": "Resolve from current committed scene, actual observer and condition owners, and independently approved exact natural source placement. No borrowed pine initial perception rule, guaranteed habitation, residents, visibility, sound or safe access.",
+      "initial_resources_policy": "No generated-G5 finite-stock profile applies to this canonical entry without separate canonical applicability approval."
     }
   ],
-  "approval_request": { "reviewer_role": "independent_data_approver", "model": "gpt-6-sol", "reasoning": "high", "scope": "exact_two_start_identity_topology_landscape_editorial_player_inputs_and_source_pins", "author_may_approve": false, "approval_attestation": null },
+  "approval_request": { "reviewer_role": "independent_data_approver", "model": "gpt-6-sol", "reasoning": "high", "scope": "exact_four_start_identity_topology_landscape_editorial_player_inputs_and_source_pins", "author_may_approve": false, "approval_attestation": null },
   "runtime_readiness": { "status": "blocked", "required_before_runtime": ["Independent exact candidate approval", "Explicit player body, attributes, appearance, skills, language and clothing applicability for each scenario", "Approved canonical initial perception applicability and current source/condition readback", "Existing new-game materialization, Stage 24/25 persistence and operational release approvals"] }
 }

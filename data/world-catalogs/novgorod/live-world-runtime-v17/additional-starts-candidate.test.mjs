@@ -15,16 +15,20 @@ const exact = (rows, ref, idKey = 'id', versionKey = 'version') => {
   return matches[0];
 };
 
-test('two additional starts select exact approved source closure without operational authority', async () => {
+test('four additional starts select exact approved spatial closure without operational authority', async () => {
   const candidate = await json(candidatePath);
   assert.equal(candidate.schema, 'rus.live_world_runtime.additional_starts_authoring_candidate.v1');
   assert.equal(candidate.status, 'pending_independent_data_approval');
   for (const field of ['approved', 'import_authorized', 'activation_authorized']) assert.equal(candidate[field], false);
   assert.equal(candidate.approval_request.approval_attestation, null);
   assert.equal(candidate.runtime_readiness.status, 'blocked');
-  assert.equal(candidate.starts.length, 2);
-  assert.equal(new Set(candidate.starts.map((start) => start.scenario_id)).size, 2);
-  assert.equal(new Set(candidate.starts.map((start) => start.landscape_template_id)).size, 2);
+  assert.equal(candidate.starts.length, 4);
+  assert.equal(new Set(candidate.starts.map((start) => start.scenario_id)).size, 4);
+  assert.deepEqual(candidate.starts.filter((start) => start.place_family).map((start) =>
+    [start.place_family.kind, start.place_family.g3_class_id]), [
+    ['economic_resource_site_approach', 'spatial.g3.resource_site'],
+    ['human_settlement_approach', 'spatial.g3.settlement']
+  ]);
 
   for (const pin of candidate.source_pins) assert.equal(sha256(await bytes(pin.path)), pin.sha256, pin.path);
   const expansionPath = candidate.source_pins.find((pin) => pin.path.endsWith('/import-manifest.json')).path;
@@ -84,6 +88,15 @@ test('two additional starts select exact approved source closure without operati
     assert.equal('initial_perception_rule' in start, false);
     assert.equal(exact(nodes, at.g4_ref).spatial_level, 'G4');
     assert.equal(exact(nodes, at.canonical_g5_ref).spatial_level, 'G5');
+    if (start.place_family) {
+      const g3 = exact(nodes, start.place_family.g3_ref);
+      assert.equal(g3.primary_class_id, start.place_family.g3_class_id);
+      assert.equal(g3.status, 'approved');
+      const g4Parent = exact(parents, at.g4_ref, 'child_id', 'child_version');
+      assert.equal(g4Parent.parent_id, g3.id);
+      assert.equal(g4Parent.parent_version, g3.version);
+      assert.equal(at.scene_template_ref.id, 'stfv3__g5_route_approach_v1');
+    }
     const parent = exact(parents, at.canonical_g5_ref, 'child_id', 'child_version');
     assert.equal(parent.parent_id, at.g4_ref.id);
     assert.equal(parent.parent_version, at.g4_ref.version);

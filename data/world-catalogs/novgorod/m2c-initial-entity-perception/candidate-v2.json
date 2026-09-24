@@ -1,0 +1,98 @@
+{
+  "artifact_type": "canonical_initial_entity_perception_applicability_candidate",
+  "candidate_id": "novgorod_m2c_initial_entity_perception_v2",
+  "version": 2,
+  "supersedes_candidate_id": "novgorod_m2c_initial_entity_perception_v1",
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "scope": "Exact canonical initial scene; current committed facts are evaluated at projection time, not authored as initial observations",
+  "source_refs": [
+    {
+      "path": "data/world-catalogs/novgorod/m2c-initial-entity-perception/candidate.json",
+      "sha256": "770f1bed777d3e42bf41baeb149558ff6bd7d6cf391c0172a32bbb241e6e6076",
+      "directness": "immutable_predecessor_boundary_only"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json",
+      "sha256": "d6c2d53779f617e1f849e5ebe00fc86c82d5d4cfc4ed893e310aad1a9eadfe2f",
+      "selector": "initial_placement and initial_perception_rule.actor_initial_state",
+      "directness": "exact_initial_placement_reference_not_entity_visibility_evidence"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/canonical-initial-candidate.json",
+      "sha256": "3eb2f231ab89b90776f28fcccc905500b014d2c3649687eafd0401dd6be7321b",
+      "selector": "canonical initial composition and appearance profile references",
+      "directness": "composition_reference_not_observation_evidence"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json",
+      "sha256": "50d3dd7e035f2cf5c4524e2bde4ca0915af2526af1da512cd0ac0c9425c39635",
+      "selector": "placement_policy and Stage 16 equipment",
+      "directness": "placement_and_equipment_reference_not_observation_evidence"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+      "sha256": "6f63f52c3be0293e8d365f66fc0ee996b0edced2b468fc40d22d449c36f7708e",
+      "selector": "stfv3__g5_route_approach_v1@1 main: intra_g6_visibility_mode=default_clear",
+      "directness": "approved_scene_template_geometry_reference"
+    },
+    {
+      "path": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
+      "sha256": "2f4d7b3c8359061a203224620e39f6709891833c8e08c6255507630a82bfc52a",
+      "selector": "7.1 Visibility model",
+      "directness": "active_contract_not_scene_observation"
+    }
+  ],
+  "canonical_binding": {
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "canonical_g5_ref": { "id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach", "version": 1 },
+    "scene_template_ref": { "id": "stfv3__g5_route_approach_v1", "version": 1, "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9" },
+    "observer_position_slot": "arrival",
+    "g6_scene_slot": "main",
+    "npc_position_slots": ["focus", "departure"],
+    "position_instance_ordinal": 0,
+    "runtime_entity_binding": "Resolve exact current committed placements. A template slot or compatibility anchor does not establish entity existence or visibility."
+  },
+  "perception_owner": {
+    "api": "@rus/presentation/spatial-v3-projection.createSpatialV3VisibilityResolver",
+    "base_geometry": "Use current committed positions and G6. Same G6 with default_clear supplies clear base geometry; same G6 with explicit mode and different G6 require a directed visibility_link. Portal state limits a linked relation.",
+    "conditions": "Use actual Temporal lighting and weather plus active committed visibility modifiers at the affected scope. Read the complete current modifier set; a complete empty set contributes clear conditions. Missing or incomplete owner state is a typed gap, not an empty set.",
+    "result": "The resolver combines base geometry, portal and current conditions as clear, partial or none. No authored per-entity stable_cover, dynamic_occlusion or concealment values are transferred from the natural-layer initial rule."
+  },
+  "npc_boundary": {
+    "existence_and_position": "Only actual committed NPC instances and positions; approved composition is not an observed entity list.",
+    "visible_exterior": "After visual admission, use committed Stage 16 actor appearance and exterior equipped-item visual state only.",
+    "identity": "Expose a name, role or other identity only from committed player knowledge; objective NPC facts alone do not establish recognition."
+  },
+  "item_boundary": {
+    "ground_items": "Only actual committed item placements and visible exterior facts after the same current visibility resolution; a catalog stock class is not an item instance.",
+    "other_actor_equipment": "Only visible exterior equipment of an admitted actor from committed Stage 16 placements; do not expose concealed contents or ownership by inference.",
+    "own_items": "Use the existing player-safe inventory projection for committed owned or held items."
+  },
+  "exit_boundary": {
+    "visibility": "Resolve the current committed exit target position or anchor through base geometry and current conditions; expose only partial or clear results.",
+    "label": "Use an independently approved player-safe label only.",
+    "destination": "Keep factual destination hidden unless committed player knowledge separately permits it."
+  },
+  "absence_semantics": {
+    "complete_empty_modifier_set": "clear contribution from absent modifiers",
+    "missing_or_incomplete_current_state": "SCENE_ENTITY_PERCEPTION_DATA_GAP",
+    "missing_entity_placement": "does_not_create_an_entity",
+    "no_admitted_entities": "empty_visible_entity_set_after_complete_current_evaluation"
+  },
+  "provenance": {
+    "directness": "contract_and_existing_source_applicability_analysis",
+    "historical_claim": false,
+    "current_observation_claim": false,
+    "new_entity_condition_values_authored": false,
+    "reviewed_predecessor_scope": "The pinned v1 approval covers only gap analysis and excludes runtime use; it does not approve this successor."
+  },
+  "review_request": {
+    "role": "independent_data_approver",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "scope": "Review exact successor applicability and source provenance; separately decide data approval. Do not infer import, runtime activation or release authorization."
+  }
+}

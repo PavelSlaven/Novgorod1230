@@ -208,8 +208,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.equal((await publicRuntime.getPartyScreen(opening.party_id)).screen.main_prose, opening.screen.main_prose);
   await publicRuntime.acknowledgeOpening(opening.party_id, { client_ack_id: 'target-public-ack' });
   const opened = new Map([[profile.scenario_id, { partyId: opening.party_id, digest: canonicalDigest(opening.screen) }]]);
-  for (const entry of process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true'
-    ? [] : overlay.manifest.starts.slice(1)) {
+  for (const entry of overlay.manifest.starts.slice(1)) {
     const next = await publicRuntime.startNewGame({ scenario_id: entry.scenario_id,
       request_id: `target-seven-starts-${entry.binding_revision}` });
     assert.equal(next.screen.schema, 'first_game_screen');
@@ -296,8 +295,10 @@ async function approvedSevenStartsOverlay() {
       }
       source = join(source, segment); target = join(target, segment);
     }
-    await writeFile(target, `${JSON.stringify({ ...manifest, status: 'approved',
+    const starts = process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true'
+      ? manifest.starts.slice(0, 1) : manifest.starts;
+    await writeFile(target, `${JSON.stringify({ ...manifest, starts, status: 'approved',
       activation_authorized: true }, null, 2)}\n`);
-    return { rootDir, manifest };
+    return { rootDir, manifest: { ...manifest, starts } };
   } catch (error) { await rm(rootDir, { recursive: true, force: true }); throw error; }
 }

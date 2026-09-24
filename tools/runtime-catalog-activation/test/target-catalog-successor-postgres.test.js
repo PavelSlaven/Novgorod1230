@@ -279,7 +279,8 @@ test('target item and actor successors preserve v6 parties through real PostgreS
       assert.deepEqual(actual, expected.toSorted((a, b) => a.id.localeCompare(b.id)));
     }
     const ownerReader = createSpatialV3WorldBaseReader({ query: pool.query.bind(pool) });
-    const ownerStarts = (await json('data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json')).starts;
+    const startsManifest = await json('data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json');
+    const ownerStarts = await Promise.all(startsManifest.starts.map(({ start }) => json(start.path)));
     for (const start of ownerStarts) {
       const place = start.initial_placement;
       const revision = 'novgorod_spatial_v3_target_contract_approval_001';

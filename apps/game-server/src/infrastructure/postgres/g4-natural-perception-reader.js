@@ -215,7 +215,7 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
     && sourcePositions.length === 1 && ['clear', 'partial', 'none'].includes(lighting)
     && ['clear', 'partial', 'none'].includes(weather)
     ? { g6_instance_id: sourcePositions[0].g6_instance_id,
-      lighting, weather }
+      lighting, weather, stable_cover: stableCover }
     : null };
 }
 function gap(reason) { throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',

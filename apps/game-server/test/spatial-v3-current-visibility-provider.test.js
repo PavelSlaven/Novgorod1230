@@ -5,11 +5,15 @@ import { createSpatialV3CurrentVisibilityProvider } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
 import { approvedNaturalStableCover } from
   '../src/infrastructure/postgres/g4-natural-perception-reader.js';
+import { readCurrentTargetConditions } from
+  '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
 
 const label = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url))).labels[0];
 const localLabel = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json', import.meta.url))).labels[0];
+const naturalProfiles = JSON.parse(readFileSync(new URL(
+  '../../../data/world-catalogs/novgorod/m2c-natural/candidate.json', import.meta.url))).natural_profiles;
 const g4 = label.g4_ref.id;
 function fixture({ mode = 'default_clear', modifiers = [] } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
@@ -26,12 +30,13 @@ function fixture({ mode = 'default_clear', modifiers = [] } = {}) {
     modifier_set: { complete: true, rows: modifiers } };
   const natural = { observer: { position_id: 'a', visual_capability: 'clear' },
     scene: { baseline_id: 'baseline', g4_ref: { id: g4 }, portals: {} },
-    ambient_visibility: { g6_instance_id: 'g6', lighting: 'clear', weather: 'clear' } };
+    ambient_visibility: { g6_instance_id: 'g6', lighting: 'clear', weather: 'clear',
+      stable_cover: 'clear' } };
   const queries = [];
   const pool = { async connect() { return { async query(sql) { queries.push(sql); }, release() {} }; } };
   const provider = createSpatialV3CurrentVisibilityProvider({ pool,
     readScene: async () => scene, readNatural: async () => natural,
-    readTargetConditions: async () => ({ stable_cover: 'clear', dynamic_occlusion: 'clear', concealment: 'clear' }),
+    readTargetConditions: readCurrentTargetConditions,
     readEntityExterior: async ({ placement }) => ({ visible_clothing: placement.entity_id }),
     readPlayerKnowledge: async ({ placement }) => placement.entity_id === 'one'
       ? { display_name: 'Known person' } : null });
@@ -81,12 +86,10 @@ test('supplied transaction remains caller-owned and stable cover follows approve
   assert.equal(rows[0].display_label, 'Known person');
   assert.equal(rows[1].display_label, 'человек');
   assert.equal(queries.length, 0);
-  const g4_ref = { world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001' };
-  assert.equal(approvedNaturalStableCover({ g4_ref,
-    template_refs: { landscape_template_id: 'lt_freshwater_marsh' } }), 'clear');
-  assert.equal(approvedNaturalStableCover({ g4_ref,
-    template_refs: { landscape_template_id: 'lt_temperate_coniferous_forest' } }), 'partial');
-  assert.throws(() => approvedNaturalStableCover({ g4_ref,
-    template_refs: { landscape_template_id: 'unknown' } }),
+  const marsh = naturalProfiles.find((row) => row.template_refs.landscape_template_id === 'lt_freshwater_marsh');
+  const forest = naturalProfiles.find((row) => row.template_refs.landscape_template_id === 'lt_temperate_coniferous_forest');
+  assert.equal(approvedNaturalStableCover(marsh), 'clear');
+  assert.equal(approvedNaturalStableCover(forest), 'partial');
+  assert.throws(() => approvedNaturalStableCover({ ...marsh, profile_id: 'unknown' }),
   (error) => error.details?.reason === 'approved_natural_stable_cover_required');
 });

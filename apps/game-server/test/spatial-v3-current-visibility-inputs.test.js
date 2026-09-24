@@ -1,7 +1,32 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readCommittedEntityExterior, readPlayerKnowledge } from
+import { readCommittedEntityExterior, readCurrentTargetConditions, readPlayerKnowledge } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
+
+test('target conditions use exact committed targets and approved cover with complete empty modifiers', async () => {
+  const scene = { location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
+    positions: [{ id: 'a', g6_instance_id: 'g6' }, { id: 'b', g6_instance_id: 'g6' }],
+    g6: [{ id: 'g6' }], modifier_set: { complete: true, rows: [] },
+    placements: [{ entity_kind: 'npc', entity_id: 'npc', position_node_id: 'b' }],
+    movement_edges: [{ id: 'edge', from_position_id: 'a', to_position_id: 'b' }] };
+  const natural = { ambient_visibility: { stable_cover: 'partial' } };
+  const args = { partyId: 'party', actorId: 'actor', scene, natural };
+  const expected = { stable_cover: 'partial', dynamic_occlusion: 'clear', concealment: 'clear' };
+  assert.deepEqual(await readCurrentTargetConditions({ ...args,
+    target: { target_id: 'npc:npc', entity_kind: 'npc', entity_id: 'npc', position_id: 'b' } }), expected);
+  assert.deepEqual(await readCurrentTargetConditions({ ...args,
+    target: { target_id: 'edge', entity_kind: 'local_edge', position_id: 'b' } }), expected);
+  assert.deepEqual(await readCurrentTargetConditions({ ...args,
+    target: { target_id: 'exit', entity_kind: 'directional_exit', position_id: 'a' } }), expected);
+  await assert.rejects(readCurrentTargetConditions({ ...args,
+    target: { target_id: 'npc:other', entity_kind: 'npc', entity_id: 'other', position_id: 'b' } }),
+  (error) => error.details?.reason === 'current_target_conditions_required');
+  scene.modifier_set.rows.push({ modifier_kind: 'smoke', affected_scope_ref: {
+    spatial_kind: 'scene_position', spatial_id: 'b' } });
+  await assert.rejects(readCurrentTargetConditions({ ...args,
+    target: { target_id: 'npc:npc', entity_kind: 'npc', entity_id: 'npc', position_id: 'b' } }),
+  (error) => error.details?.reason === 'visibility_modifier_effect_policy_required');
+});
 
 test('NPC exterior exposes committed appearance and visible Stage 16 gear without identity', async () => {
   const appearance = { build: 'stocky', skin_tone: 'light', face_shape: 'broad',

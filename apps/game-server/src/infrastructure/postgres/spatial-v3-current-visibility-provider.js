@@ -68,7 +68,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         gap('entity_lighting_policy_required');
       }
       const current = await readTargetConditions({ transaction, partyId: scene.location.party_id,
-        actorId: scene.location.owner_id, scene, target });
+        actorId: scene.location.owner_id, scene, natural, target });
       if (conditions.some((key) => !visibility.has(current?.[key]))) {
         gap('current_target_conditions_required');
       }

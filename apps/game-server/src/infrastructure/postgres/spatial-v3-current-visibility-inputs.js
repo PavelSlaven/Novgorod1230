@@ -4,6 +4,39 @@ import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { playerSafeHeardNpcIntroduction, safeVisualProfile } from
   '../../runtime/lower-dvina-trace-player-safe-npc-details.js';
 
+/** Target conditions from the verified current scene and approved natural cover. */
+export async function readCurrentTargetConditions({ partyId, actorId, scene, natural, target } = {}) {
+  const location = scene?.location;
+  const modifiers = scene?.modifier_set;
+  const position = scene?.positions?.find((row) => row.id === target?.position_id);
+  if (!partyId || !actorId || location?.party_id !== partyId || location.owner_id !== actorId
+    || modifiers?.complete !== true || !Array.isArray(modifiers.rows)
+    || !position || !scene.g6?.some((row) => row.id === position.g6_instance_id)
+    || !['clear', 'partial', 'none'].includes(natural?.ambient_visibility?.stable_cover)) {
+    gap('current_target_conditions_required');
+  }
+  if (modifiers.rows.length) gap('visibility_modifier_effect_policy_required');
+  const kind = target.entity_kind;
+  if (kind === 'npc' || kind === 'item') {
+    const entityId = target.entity_id ?? target.placement?.entity_id;
+    if (!scene.placements?.some((row) => row.entity_kind === kind
+      && row.entity_id === entityId && row.position_node_id === position.id
+      && target.target_id === `${kind}:${row.entity_id}`)) gap('current_target_conditions_required');
+  } else if (kind === 'local_edge') {
+    const edgeId = target.edge?.id ?? target.target_id;
+    if (!scene.movement_edges?.some((row) => row.id === edgeId
+      && row.from_position_id === location.scene_position_id
+      && row.to_position_id === position.id)
+      || ![edgeId, `edge:${edgeId}`].includes(target.target_id)) gap('current_target_conditions_required');
+  } else if (kind === 'directional_exit') {
+    if (position.id !== location.scene_position_id || !target.target_id) {
+      gap('current_target_conditions_required');
+    }
+  } else gap('current_target_conditions_required');
+  return { stable_cover: natural.ambient_visibility.stable_cover,
+    dynamic_occlusion: 'clear', concealment: 'clear' };
+}
+
 /** Only outward fields from the committed entity; identity stays with knowledge. */
 export async function readCommittedEntityExterior({ transaction, partyId, placement } = {}) {
   if (typeof transaction?.query !== 'function' || !partyId || !placement?.entity_id) {

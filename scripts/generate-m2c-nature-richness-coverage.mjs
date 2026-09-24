@@ -45,6 +45,7 @@ const report = {
   variants: richness.profiles.map((p) => ({ landscape_template_id: p.landscape_template_id, g4_count: p.g4_ids.length, candidate_count: p.selection_candidates.length })),
   exact_profiles: [],
   layer_gaps: [],
+  substrate_gaps: [],
   errors
 };
 for (const [id, profile] of mapped) {
@@ -53,6 +54,10 @@ for (const [id, profile] of mapped) {
   const alternatives = [];
   for (const row of profile.selection_candidates) {
     const layer = baseline.natural_profile.layer_applicability[row.layer];
+    if (row.kind === 'fungi' && !layer?.value?.ambient_materials?.some((material) => richness.fungal_organic_substrates.includes(material))) {
+      report.substrate_gaps.push({ g4_id: id, kind: row.kind, taxon: row.taxon, reason: 'organic substrate absent from exact G4 ambient materials' });
+      continue;
+    }
     alternatives.push({
       kind: row.kind,
       taxon: row.taxon,
@@ -69,6 +74,7 @@ for (const [id, profile] of mapped) {
 }
 report.exact_profiles.sort((a, b) => a.g4_id.localeCompare(b.g4_id));
 report.layer_gaps.sort((a, b) => a.g4_id.localeCompare(b.g4_id) || a.kind.localeCompare(b.kind));
+report.substrate_gaps.sort((a, b) => a.g4_id.localeCompare(b.g4_id));
 if (report.missing_g4_ids.length || report.extra_g4_ids.length) errors.push('exact G4 coverage incomplete');
 if (errors.length) {
   console.error(JSON.stringify(report, null, 2));

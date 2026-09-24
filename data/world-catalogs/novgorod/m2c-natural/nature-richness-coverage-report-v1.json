@@ -1117,16 +1117,6 @@
           "category": "common",
           "editorial_weight": 4,
           "candidate_use": "conditional_selection"
-        },
-        {
-          "kind": "fungi",
-          "taxon": "decomposer fungal guild (unidentified)",
-          "layer": "natural_materials",
-          "baseline_layer": "alluvial_silt_mud",
-          "applicability": "present",
-          "category": "occasional",
-          "editorial_weight": 2,
-          "candidate_use": "substrate_process_only"
         }
       ]
     },
@@ -1925,6 +1915,14 @@
       "taxon": "Castor (beaver)",
       "layer": "fauna",
       "applicability": "missing"
+    }
+  ],
+  "substrate_gaps": [
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "kind": "fungi",
+      "taxon": "decomposer fungal guild (unidentified)",
+      "reason": "organic substrate absent from exact G4 ambient materials"
     }
   ],
   "errors": []

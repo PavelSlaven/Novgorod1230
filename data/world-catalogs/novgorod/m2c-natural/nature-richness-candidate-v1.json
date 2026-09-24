@@ -33,7 +33,19 @@
   },
   "era_filter": "Medieval Novgorod archaeology is regional compatibility only. Contemporary Valdai/European ecology is marked analogical; it is never a direct 1230 Lower Dvina occurrence. No exact G4 taxon, animal sighting, trace, sound, harvest, ownership, edible state or stock follows from this candidate.",
   "season_policy": "Use actual world date and phenology before selection. Winter leafless deciduous trees remain trees; fruit, flowers, fresh stems and visible animals require separate current-state support. No fixed month or guaranteed seasonal occurrence is asserted.",
-  "layer_gate": "A candidate is eligible only where its exact G4 natural baseline layer is present; a missing fauna layer remains an approval gap. Fungi candidates describe substrate ecology only, never a visible or harvestable fruiting body. At driftwood_bar and shifting_shoal_field riparian_vegetation is not_applicable.",
+  "layer_gate": "A candidate is eligible only where its exact G4 natural baseline layer is present; a missing fauna layer remains an approval gap. Fungi additionally require an organic substrate in that exact G4 ambient materials and describe substrate ecology only, never a visible or harvestable fruiting body. At driftwood_bar and shifting_shoal_field riparian_vegetation is not_applicable.",
+  "fungal_organic_substrates": [
+    "driftwood",
+    "grass_sedge_litter",
+    "grass_shrub_litter",
+    "leaf_litter",
+    "needle_litter",
+    "sedge_reed_litter",
+    "shrub_woody_debris",
+    "small_woody_debris",
+    "wetland_herb_litter",
+    "woody_debris"
+  ],
   "profiles": [
     {
       "landscape_template_id": "lt_temperate_coniferous_forest",

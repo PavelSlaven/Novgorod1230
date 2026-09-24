@@ -78,7 +78,7 @@ export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
       policy_profile_pins: policies } });
 }
 
-async function readPinnedArtifact(rootDir, artifact) {
+export async function readPinnedArtifact(rootDir, artifact) {
   if (typeof artifact?.path !== 'string' || !artifact.path.startsWith('data/')
     || artifact.path.includes('..') || !/^[a-f0-9]{64}$/u.test(artifact.sha256)) {
     fail('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');

@@ -1,10 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { createHash } from 'node:crypto';
 import { createRuntimeCatalogLoader, loadApprovedActorProfileCatalog,
   loadApprovedProceduralActorTemporalBundle, loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
 import { canonicalDigest } from '@rus/materialization';
-import { loadTargetAuthoredStartProfile } from '../../internal/live-world-authored-starts.js';
+import { loadTargetAuthoredStartProfile, readPinnedArtifact } from '../../internal/live-world-authored-starts.js';
 import { buildCalendarProjectionProfile } from '../../internal/lower-dvina-trace-phase-1a-bundle.js';
 import { createSpatialV3WorldBaseReader } from './spatial-v3-world-base-reader.js';
 import { serverError } from '../../errors.js';
@@ -114,18 +113,6 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
       actor_base_attributes_runtime_profile: actorBinding.runtime_profile,
       actor_equipment_activation: { status: 'active', event_id: itemPin.activation_event_id },
       calendar_profile: buildCalendarProjectionProfile(calendar) }) });
-}
-
-async function readPinnedArtifact(rootDir, artifact) {
-  if (typeof artifact?.path !== 'string' || !artifact.path.startsWith('data/')
-    || artifact.path.includes('..') || !/^[a-f0-9]{64}$/u.test(artifact.sha256)) {
-    gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
-  }
-  const bytes = await readFile(resolve(rootDir, artifact.path));
-  if (createHash('sha256').update(bytes).digest('hex') !== artifact.sha256) {
-    gap('SPATIAL_V3_TARGET_START_APPROVAL_REQUIRED');
-  }
-  return bytes;
 }
 
 function dateString(date) {

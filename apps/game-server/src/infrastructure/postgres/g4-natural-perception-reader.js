@@ -21,9 +21,11 @@ export function approvedNaturalStableCover(profile) {
     gap('approved_natural_stable_cover_required');
   }
   const source = naturalCandidate.natural_profiles.filter((row) =>
-    row.profile_id === profile?.profile_id && row.profile_version === profile.profile_version
+    row.profile_id === profile?.profile_id
     && row.g4_ref?.id === profile.g4_ref.id && row.g4_ref.version === profile.g4_ref.version
-    && canonicalDigest(row.natural_profile) === canonicalDigest(profile.natural_profile));
+    && canonicalDigest(row.exact_scene_features) === canonicalDigest(profile.exact_scene_features)
+    && canonicalDigest(row.natural_profile.layer_applicability.surface)
+      === canonicalDigest(profile.natural_profile.layer_applicability.surface));
   if (source.length !== 1) gap('approved_natural_stable_cover_required');
   const landscape = source[0].template_refs?.landscape_template_id;
   const rows = coverCandidate.rows.filter((row) => row.landscape_template_id === landscape);

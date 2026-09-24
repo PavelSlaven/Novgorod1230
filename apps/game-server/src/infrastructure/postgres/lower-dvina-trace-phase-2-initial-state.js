@@ -100,7 +100,8 @@ export async function readInitialCanonicalNaturalSourceState({ transaction,
     && value.version === rule.placement_candidate.placement_ref.version);
   const baseline = prepareG4NaturalBaseline({ verifiedCatalog, pin,
     g4_ref: { ...rule.g4_ref, world_revision_id: rule.world_revision_id },
-    scene_template_ref: rule.scene_template_ref, current_environment: environment });
+    scene_template_ref: rule.scene_template_ref, current_environment: environment,
+    member_selection: { party_id: partyId, g5_site_id: snapshot.site.id } });
   const positionId = snapshot.location.scene_position_id;
   const source_observations = placement.visual_layers.map((layer) => ({ layer,
     source_position_id: positionId,

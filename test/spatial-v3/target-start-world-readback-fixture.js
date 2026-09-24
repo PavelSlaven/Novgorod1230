@@ -96,9 +96,23 @@ export async function loadTargetStartWorldReadback({ pool, start } = {}) {
     FROM world_base.procedural_scene_compiled_records
     WHERE record_id=ANY($1::text[]) ORDER BY record_id,version`, [compiledRecordIds]);
   assert.deepEqual(naturalCompiledRecords.rows.map(({ record_id: id, version }) => `${id}@${version}`).sort(),
-    [...compiledRecordIds.map((id) => `${id}@1`),
-      `${compiledRecordIds[0]}@2`, `${compiledRecordIds[1]}@2`].sort(),
+    [...compiledRecordIds.slice(0, 2).flatMap((id) => [`${id}@1`, `${id}@2`]),
+      `${compiledRecordIds[2]}@2`, `${compiledRecordIds[3]}@1`].sort(),
     'target runtime catalog import contains exact natural, presentation, placement and initial-rule rows');
+  const placementRecord = naturalCompiledRecords.rows.find((row) =>
+    row.record_id === compiledRecordIds[2]);
+  const naturalV2 = naturalCompiledRecords.rows.find((row) =>
+    row.record_id === compiledRecordIds[0] && row.version === 2);
+  const presentationV2 = naturalCompiledRecords.rows.find((row) =>
+    row.record_id === compiledRecordIds[1] && row.version === 2);
+  const placed = placementRecord.payload.placements.find((row) =>
+    row.g4_ref.id === placement.g4_ref.id
+    && row.scene_template_ref.id === placement.scene_template_ref.id
+    && row.source_endpoint_slot_key === placement.scene_endpoint_slot_key);
+  assert.deepEqual(placed?.natural_profile_ref, { id: naturalProfile.profile_id,
+    version: 2, payload_digest: naturalV2.payload_digest });
+  assert.deepEqual(placed?.presentation_profile_ref, { id: presentationProfile.id, version: 2 });
+  assert.equal(presentationV2.payload.natural_profile_ref.payload_digest, naturalV2.payload_digest);
   assert.ok(naturalCompiledRecords.rows.every((row) => row.record_kind === 'profile'
     && row.status === 'approved_authoring_not_runtime_selectable'
     && /^[a-f0-9]{64}$/u.test(row.payload_digest)

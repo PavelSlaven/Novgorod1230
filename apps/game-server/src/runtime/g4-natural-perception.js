@@ -9,7 +9,8 @@ export function prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, cur
     canonical_source_binding, layer_admissions } = currentFacts ?? {};
   const catalog = loadApprovedG4NaturalPresentationCatalog({ verifiedCatalog, pin });
   const baseline = prepareG4NaturalBaseline({ verifiedCatalog, pin,
-    g4_ref: scene?.g4_ref, scene_template_ref: scene?.scene_template_ref, current_environment });
+    g4_ref: scene?.g4_ref, scene_template_ref: scene?.scene_template_ref, current_environment,
+    member_selection: { party_id: scene?.party_id, g5_site_id: scene?.site_id } });
   const profiles = catalog.profiles.filter((row) => row.natural_profile_ref.id === baseline.profile_ref.id
     && row.natural_profile_ref.version === baseline.profile_ref.version
     && row.natural_profile_ref.payload_digest === baseline.profile_ref.payload_digest);

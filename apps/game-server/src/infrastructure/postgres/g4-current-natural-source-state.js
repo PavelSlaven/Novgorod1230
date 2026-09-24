@@ -45,7 +45,7 @@ export async function readCurrentNaturalSourceState({ transaction, partyId, acto
   const baseline = prepareG4NaturalBaseline({ verifiedCatalog, pin,
     g4_ref: naturalProfile.payload.g4_ref,
     scene_template_ref: { id: sceneClosure.header.id, version: sceneClosure.header.version },
-    current_environment });
+    current_environment, member_selection: { party_id: partyId, g5_site_id: snapshot.site.id } });
   const stable_cover = approvedNaturalStableCover(naturalProfile.payload);
   const source_observations = placement.visual_layers.map((layer) => ({ layer,
     source_position_id: sourcePositions[0].id,

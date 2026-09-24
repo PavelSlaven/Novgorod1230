@@ -185,12 +185,12 @@ export function projectSpatialV3NaturalScene(input = {}) {
       edges: scene.acoustic_edges ?? [], portals: scene.portals ?? {} });
     for (const layer of baseline.layers) {
       if (layer.applicability === 'not_applicable') continue;
-      if (layer.applicability !== 'present') return gap('resolved_layer_applicability_required');
       const descriptors = profile.layers.filter((row) => row.layer === layer.layer);
       if (descriptors.length !== 1) return gap('exact_layer_descriptor_required');
       const descriptor = descriptors[0];
       if (descriptor.channel === 'none' && descriptor.clear_text == null
         && descriptor.partial_text == null) continue;
+      if (layer.applicability !== 'present') return gap('resolved_layer_applicability_required');
       if (!['visual', 'acoustic'].includes(descriptor.channel) || !text(descriptor.clear_text)) {
         return gap('approved_sensory_descriptor_required');
       }

@@ -14,6 +14,15 @@ test('natural projection uses exact approved descriptions and existing P22 perce
   assert.equal(Object.isFrozen(result), true);
 });
 
+test('conditional fauna without an admitted sensory channel stays undisclosed', () => {
+  const input = naturalSceneFixture();
+  input.natural_baseline.layers.push({ layer: 'fauna', applicability: 'conditional', value: {}, limits: 'No live entity.' });
+  input.presentation_profile.layers.push({ layer: 'fauna', channel: 'none', clear_text: null, partial_text: null });
+  const result = projectSpatialV3NaturalScene(input);
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.deepEqual(result.visible_context.sensory_details, ['Под ногами влажный ил.', 'Слышно движение воды.']);
+});
+
 test('darkness, occlusion and partial perception never reveal the full natural description', () => {
   for (const condition of ['lighting', 'dynamic_occlusion', 'weather']) {
     const input = naturalSceneFixture(); input.observations[0].visual_conditions[condition] = 'none';

@@ -45,7 +45,8 @@ export function createSpatialV3GenerationAdmission({ worldBaseReader, verifiedCa
     if (session.rows.length !== 1 || !Number.isSafeInteger(created_at_turn) || created_at_turn < 0) gap('committed_turn_required');
     const environment = await readCurrentEnvironment({ transaction, partyId: request.party_id });
     const natural = prepareG4NaturalBaseline({ verifiedCatalog, pin, g4_ref: request.g4,
-      scene_template_ref, current_environment: environment });
+      scene_template_ref, current_environment: environment,
+      member_selection: { party_id: request.party_id, g5_site_id: request.source_site_id } });
     const admission = { source_location: location[0], scene_template_ref, created_at_turn, scene_rules: approvedSceneRules,
       natural_profile_ref: natural.profile_ref, current_environment: environment, dependency_pins };
     const admissionDigest = canonicalDigest(admission);
@@ -66,7 +67,8 @@ export function createSpatialV3GenerationAdmission({ worldBaseReader, verifiedCa
         // Re-materialize the same machine baseline against the exact current
         // Temporal pins. Presentation remains at the P22 boundary.
         const currentNatural = prepareG4NaturalBaseline({ verifiedCatalog, pin, g4_ref: request.g4,
-          scene_template_ref, current_environment: currentEnvironment });
+          scene_template_ref, current_environment: currentEnvironment,
+          member_selection: { party_id: request.party_id, g5_site_id: request.source_site_id } });
         return { ok: canonicalDigest({ ...admission, current_environment: currentEnvironment,
           natural_profile_ref: currentNatural.profile_ref }) === admissionDigest, code: 'state_version_conflict' };
       }

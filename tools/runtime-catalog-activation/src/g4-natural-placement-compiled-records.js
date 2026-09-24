@@ -41,8 +41,11 @@ export function buildG4NaturalPlacementCompiledRecords({ candidateBytes, approva
         version: natural.version, payload_digest: natural.payload_digest };
       placement.presentation_profile_ref = { id: presentation.payload.id, version: presentation.version };
       for (const layer of presentation.payload.layers) {
-        if (layer.channel === 'none' && !['unprojected_layers', 'unplaced_visual_layers'].some((group) =>
-          placement[group].includes(layer.layer))) placement.unprojected_layers.push(layer.layer);
+        if (layer.channel !== 'none') continue;
+        for (const group of ['visual_layers', 'unplaced_visual_layers', 'acoustic_layers']) {
+          placement[group] = placement[group].filter((name) => name !== layer.layer);
+        }
+        if (!placement.unprojected_layers.includes(layer.layer)) placement.unprojected_layers.push(layer.layer);
       }
     }
   }

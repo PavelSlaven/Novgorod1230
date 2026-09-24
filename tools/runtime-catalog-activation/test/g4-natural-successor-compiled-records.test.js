@@ -7,6 +7,7 @@ import { resolve } from 'node:path';
 import { buildG4NaturalCompiledRecords, reportNaturalSuccessorRows } from '../src/g4-natural-compiled-records.js';
 import { buildG4NaturalPresentationCompiledRecords } from '../src/g4-natural-presentation-compiled-records.js';
 import { buildG4NaturalPlacementCompiledRecords } from '../src/g4-natural-placement-compiled-records.js';
+import { approvedNaturalStableCover } from '../../../apps/game-server/src/infrastructure/postgres/g4-natural-perception-reader.js';
 
 const root = resolve(import.meta.dirname, '../../..');
 const base = 'data/world-catalogs/novgorod/';
@@ -48,6 +49,8 @@ test('derived import carries exact source and layer-season evidence; typed gaps 
     approvedNaturalCandidateBytes: approvedNaturalBytes, approval, naturalRecords: natural });
   assert.equal(natural.length, 32);
   assert.equal(presentation.length, 32);
+  assert.ok(natural.every((record) => ['clear', 'partial', 'none'].includes(
+    approvedNaturalStableCover(record.payload))));
   const placement = buildG4NaturalPlacementCompiledRecords({
     candidateBytes: readFileSync(resolve(root, `${base}m2c-natural-placement/candidate.json`), 'utf8'),
     approval: JSON.parse(readFileSync(resolve(root, `${base}m2c-sol-data-approval.json`))),
@@ -62,6 +65,8 @@ test('derived import carries exact source and layer-season evidence; typed gaps 
     assert.deepEqual(row.presentation_profile_ref, { id: descriptor.payload.id, version: 2 });
     assert.ok(row.unprojected_layers.includes('fauna'));
     for (const layer of descriptor.payload.layers) {
+      assert.equal(['visual_layers', 'acoustic_layers', 'unplaced_visual_layers', 'unprojected_layers']
+        .flatMap((key) => row[key]).filter((name) => name === layer.layer).length, 1);
       const group = layer.channel === 'visual' ? ['visual_layers', 'unplaced_visual_layers']
         : [layer.channel === 'acoustic' ? 'acoustic_layers' : 'unprojected_layers'];
       assert.equal(group.flatMap((key) => row[key]).filter((name) => name === layer.layer).length, 1);

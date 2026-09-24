@@ -1,0 +1,1931 @@
+{
+  "schema": "m2c_nature_richness_coverage_report_v1",
+  "candidate_status": "candidate_approval_pending",
+  "weight_policy_version": 1,
+  "exact_g4_total": 32,
+  "exact_g4_mapped": 32,
+  "missing_g4_ids": [],
+  "extra_g4_ids": [],
+  "variants": [
+    {
+      "landscape_template_id": "lt_temperate_coniferous_forest",
+      "g4_count": 1,
+      "candidate_count": 5
+    },
+    {
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "g4_count": 3,
+      "candidate_count": 5
+    },
+    {
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "g4_count": 15,
+      "candidate_count": 4
+    },
+    {
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "g4_count": 6,
+      "candidate_count": 5
+    },
+    {
+      "landscape_template_id": "lt_gentle_hills",
+      "g4_count": 3,
+      "candidate_count": 5
+    },
+    {
+      "landscape_template_id": "lt_freshwater_marsh",
+      "g4_count": 2,
+      "candidate_count": 5
+    },
+    {
+      "landscape_template_id": "lt_wooded_floodplain",
+      "g4_count": 2,
+      "candidate_count": 5
+    }
+  ],
+  "exact_profiles": [
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-ground grass and sedge guild (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_sedge_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial silt and clay",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": null,
+          "applicability": "not_applicable",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "landscape_template_id": "lt_gentle_hills",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Betula (birch)",
+          "layer": "tree_layer",
+          "baseline_layer": "scattered_tree_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "grass and shrub cover (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "firm mineral soil",
+          "layer": "natural_materials",
+          "baseline_layer": "firm_soil",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "firm_soil",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "landscape_template_id": "lt_temperate_coniferous_forest",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Pinus (pine)",
+          "layer": "tree_layer",
+          "baseline_layer": "woodland_canopy",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "baseline_layer": "woodland_canopy",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "sandy mineral ground",
+          "layer": "natural_materials",
+          "baseline_layer": "needle_litter_roots",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "needle_litter_roots",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-ground grass and sedge guild (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_sedge_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial silt and clay",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "landscape_template_id": "lt_gentle_hills",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Betula (birch)",
+          "layer": "tree_layer",
+          "baseline_layer": "scattered_tree_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "grass and shrub cover (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "firm mineral soil",
+          "layer": "natural_materials",
+          "baseline_layer": "firm_soil",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "firm_soil",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "baseline_layer": "woodland_canopy",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "Sphagnum (peat moss)",
+          "layer": "ground_cover",
+          "baseline_layer": "wet_forest_understory_and_litter_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged forest soil",
+          "layer": "natural_materials",
+          "baseline_layer": "wet_roots_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "wet_roots_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-ground grass and sedge guild (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_sedge_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial silt and clay",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-ground grass and sedge guild (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_sedge_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial silt and clay",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "landscape_template_id": "lt_freshwater_marsh",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Phragmites (common reed)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "horsetail and wetland herb guild (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "sedge_reed_and_wetland_herb_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged organic and mineral sediment",
+          "layer": "natural_materials",
+          "baseline_layer": "mineral_mud_silt",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "mineral_mud_silt",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-ground grass and sedge guild (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_sedge_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial silt and clay",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "landscape_template_id": "lt_freshwater_marsh",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Phragmites (common reed)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "horsetail and wetland herb guild (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "sedge_reed_and_wetland_herb_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged organic and mineral sediment",
+          "layer": "natural_materials",
+          "baseline_layer": "mineral_mud_silt",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "mineral_mud_silt",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "landscape_template_id": "lt_gentle_hills",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Betula (birch)",
+          "layer": "tree_layer",
+          "baseline_layer": "scattered_tree_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "grass and shrub cover (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "firm mineral soil",
+          "layer": "natural_materials",
+          "baseline_layer": "firm_soil",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "firm_soil",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": null,
+          "applicability": "not_applicable",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-ground grass and sedge guild (unidentified)",
+          "layer": "ground_cover",
+          "baseline_layer": "grass_sedge_and_shrub_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial silt and clay",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_clay",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "baseline_layer": "woodland_canopy",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "Sphagnum (peat moss)",
+          "layer": "ground_cover",
+          "baseline_layer": "wet_forest_understory_and_litter_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged forest soil",
+          "layer": "natural_materials",
+          "baseline_layer": "wet_roots_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "wet_roots_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "landscape_template_id": "lt_wet_lowland_forest",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "baseline_layer": "woodland_canopy",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "Sphagnum (peat moss)",
+          "layer": "ground_cover",
+          "baseline_layer": "wet_forest_understory_and_litter_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged forest soil",
+          "layer": "natural_materials",
+          "baseline_layer": "wet_roots_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "wet_roots_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "landscape_template_id": "lt_wooded_floodplain",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Alnus (alder)",
+          "layer": "tree_layer",
+          "baseline_layer": "scattered_tree_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-edge herb and shrub guild (unidentified)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_wet_edge_vegetation",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "root-bound alluvial mud and leaf litter",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_mud_roots",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_mud_roots",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "landscape_template_id": "lt_low_alluvial_riverbank",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_silt_mud",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "landscape_template_id": "lt_wooded_floodplain",
+      "alternatives": [
+        {
+          "kind": "flora",
+          "taxon": "Alnus (alder)",
+          "layer": "tree_layer",
+          "baseline_layer": "scattered_tree_cover",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-edge herb and shrub guild (unidentified)",
+          "layer": "riparian_vegetation",
+          "baseline_layer": "generic_riparian_or_wetland_cover",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "baseline_layer": null,
+          "applicability": "missing",
+          "category": "rare",
+          "editorial_weight": 1,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "material",
+          "taxon": "root-bound alluvial mud and leaf litter",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_mud_roots",
+          "applicability": "present",
+          "category": "common",
+          "editorial_weight": 4,
+          "candidate_use": "conditional_selection"
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "baseline_layer": "alluvial_mud_roots",
+          "applicability": "present",
+          "category": "occasional",
+          "editorial_weight": 2,
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    }
+  ],
+  "layer_gaps": [
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "kind": "flora",
+      "taxon": "Salix (willow)",
+      "layer": "riparian_vegetation",
+      "applicability": "not_applicable"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "kind": "fauna",
+      "taxon": "Alces (elk)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "kind": "fauna",
+      "taxon": "Alces (elk)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "kind": "fauna",
+      "taxon": "Alces (elk)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "kind": "fauna",
+      "taxon": "Alces (elk)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "kind": "fauna",
+      "taxon": "Alces (elk)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "kind": "flora",
+      "taxon": "Salix (willow)",
+      "layer": "riparian_vegetation",
+      "applicability": "not_applicable"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "kind": "fauna",
+      "taxon": "Alces (elk)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "kind": "fauna",
+      "taxon": "Alces (elk)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "kind": "fauna",
+      "taxon": "Castor (beaver)",
+      "layer": "fauna",
+      "applicability": "missing"
+    }
+  ],
+  "errors": []
+}

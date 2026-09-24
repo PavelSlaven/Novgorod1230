@@ -6,11 +6,17 @@
   "activation_authorized": false,
   "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
   "g4_version": 1,
-  "scope": "Forest and low alluvial riverbank G4 types only; eligibility for future bounded selection, not current presence or a finite resource",
+  "scope": "All 32 exact G4 natural profiles; conditional alternatives for future bounded selection, not current presence or a finite resource",
   "weight_policy": {
+    "version": 1,
     "status": "editorial_candidate",
     "meaning": "Relative game selection preference among eligible alternatives within one layer and exact G4; not archaeological frequency, biological abundance, encounter probability or yield",
-    "weights": { "dominant": 8, "common": 4, "occasional": 2, "rare": 1 }
+    "weights": {
+      "dominant": 8,
+      "common": 4,
+      "occasional": 2,
+      "rare": 1
+    }
   },
   "source_register": {
     "regional_landscape": "data/world-catalogs/novgorod/m2c-nature-coverage.json#entries",
@@ -19,20 +25,97 @@
     "archaeological_fauna": "data/world-catalogs/novgorod/world-knowledge/production-v1/environment-ecology.json#claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
     "medieval_wetland": "data/world-catalogs/novgorod/world-knowledge/research/population-wetland-stems.md#WLS-01",
     "modern_forest": "data/world-catalogs/novgorod/world-knowledge/research/population-wild-flora-modern.md#WFM-01",
-    "modern_willow": "data/world-catalogs/novgorod/world-knowledge/research/population-environment-biology.md#U11"
+    "modern_willow": "data/world-catalogs/novgorod/world-knowledge/research/population-environment-biology.md#U11",
+    "modern_fungi": "data/world-catalogs/novgorod/world-knowledge/research/population-wild-flora-modern.md#WFM-06",
+    "fungal_decay": "data/world-catalogs/novgorod/world-knowledge/research/population-causal-materials.md#S2",
+    "modern_reed": "data/world-catalogs/novgorod/world-knowledge/research/population-environment-biology.md#U10",
+    "modern_alder": "data/world-catalogs/novgorod/world-knowledge/research/final-nature-gap-closure-v1.md#Sources-and-narrow-use"
   },
   "era_filter": "Medieval Novgorod archaeology is regional compatibility only. Contemporary Valdai/European ecology is marked analogical; it is never a direct 1230 Lower Dvina occurrence. No exact G4 taxon, animal sighting, trace, sound, harvest, ownership, edible state or stock follows from this candidate.",
   "season_policy": "Use actual world date and phenology before selection. Winter leafless deciduous trees remain trees; fruit, flowers, fresh stems and visible animals require separate current-state support. No fixed month or guaranteed seasonal occurrence is asserted.",
-  "layer_gate": "A candidate is eligible only where its exact G4 natural baseline layer is present; a missing fauna layer remains an approval gap. In the riverbank group willow is excluded at driftwood_bar and shifting_shoal_field because their riparian_vegetation layer is not_applicable.",
+  "layer_gate": "A candidate is eligible only where its exact G4 natural baseline layer is present; a missing fauna layer remains an approval gap. Fungi candidates describe substrate ecology only, never a visible or harvestable fruiting body. At driftwood_bar and shifting_shoal_field riparian_vegetation is not_applicable.",
   "profiles": [
     {
       "landscape_template_id": "lt_temperate_coniferous_forest",
-      "g4_ids": ["g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge"],
+      "g4_ids": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge"
+      ],
       "selection_candidates": [
-        {"kind": "flora", "taxon": "Pinus (pine)", "layer": "tree_layer", "category": "common", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "exact_g4", "archaeological_wood", "modern_forest"], "season": "evergreen canopy possible year-round; cones or fallen branches need separate current state", "limit": "Historical timber use and modern forest habitat do not prove a living pine at this G4."},
-        {"kind": "flora", "taxon": "Picea (spruce)", "layer": "tree_layer", "category": "occasional", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "archaeological_wood", "modern_forest"], "season": "evergreen canopy possible year-round", "limit": "No exact species, stand density or usable log."},
-        {"kind": "fauna", "taxon": "Alces (elk)", "layer": "fauna", "category": "rare", "directness": "inferred", "confidence": "low", "source_keys": ["archaeological_fauna", "exact_g4"], "season": "year-round compatibility; observation depends on current state", "limit": "Bone assemblage is regional and cannot produce a sighting, track or hunt."},
-        {"kind": "material", "taxon": "sandy mineral ground", "layer": "natural_materials", "category": "common", "directness": "inferred", "confidence": "low", "source_keys": ["regional_landscape", "exact_g4"], "season": "exposure varies with snow, water and ground state", "limit": "Descriptive substrate only; no extractable stock."}
+        {
+          "kind": "flora",
+          "taxon": "Pinus (pine)",
+          "layer": "tree_layer",
+          "category": "common",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4",
+            "archaeological_wood",
+            "modern_forest"
+          ],
+          "season": "evergreen canopy possible year-round; cones or fallen branches need separate current state",
+          "limit": "Historical timber use and modern forest habitat do not prove a living pine at this G4."
+        },
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "archaeological_wood",
+            "modern_forest"
+          ],
+          "season": "evergreen canopy possible year-round",
+          "limit": "No exact species, stand density or usable log."
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "category": "rare",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "archaeological_fauna",
+            "exact_g4"
+          ],
+          "season": "year-round compatibility; observation depends on current state",
+          "limit": "Bone assemblage is regional and cannot produce a sighting, track or hunt."
+        },
+        {
+          "kind": "material",
+          "taxon": "sandy mineral ground",
+          "layer": "natural_materials",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "exposure varies with snow, water and ground state",
+          "limit": "Descriptive substrate only; no extractable stock."
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_fungi",
+            "fungal_decay",
+            "exact_g4"
+          ],
+          "season": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+          "limit": "Fungal ecology of organic substrate only. No local fungus, fruiting body, species identification, edibility or harvest.",
+          "candidate_use": "substrate_process_only"
+        }
       ]
     },
     {
@@ -43,10 +126,79 @@
         "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract"
       ],
       "selection_candidates": [
-        {"kind": "flora", "taxon": "Picea (spruce)", "layer": "tree_layer", "category": "common", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "archaeological_wood", "modern_forest"], "season": "evergreen canopy possible year-round", "limit": "Modern Valdai forest is a habitat analogy, not a Lower Dvina census."},
-        {"kind": "flora", "taxon": "Sphagnum (peat moss)", "layer": "ground_cover", "category": "occasional", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "medieval_wetland"], "season": "visible ground cover depends on snow and current water state", "limit": "Ryurik Gorodishche pollen does not attest this exact forest."},
-        {"kind": "fauna", "taxon": "Alces (elk)", "layer": "fauna", "category": "rare", "directness": "inferred", "confidence": "low", "source_keys": ["archaeological_fauna", "exact_g4"], "season": "year-round compatibility; observation depends on current state", "limit": "No animal, trace, call or hunt is created."},
-        {"kind": "material", "taxon": "waterlogged forest soil", "layer": "natural_materials", "category": "common", "directness": "inferred", "confidence": "low", "source_keys": ["regional_landscape", "exact_g4"], "season": "current wetness and exposure require weather and water state", "limit": "No bearing capacity, peat deposit or harvestable stock."}
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "category": "common",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "archaeological_wood",
+            "modern_forest"
+          ],
+          "season": "evergreen canopy possible year-round",
+          "limit": "Modern Valdai forest is a habitat analogy, not a Lower Dvina census."
+        },
+        {
+          "kind": "flora",
+          "taxon": "Sphagnum (peat moss)",
+          "layer": "ground_cover",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "medieval_wetland"
+          ],
+          "season": "visible ground cover depends on snow and current water state",
+          "limit": "Ryurik Gorodishche pollen does not attest this exact forest."
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "category": "rare",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "archaeological_fauna",
+            "exact_g4"
+          ],
+          "season": "year-round compatibility; observation depends on current state",
+          "limit": "No animal, trace, call or hunt is created."
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged forest soil",
+          "layer": "natural_materials",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "current wetness and exposure require weather and water state",
+          "limit": "No bearing capacity, peat deposit or harvestable stock."
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_fungi",
+            "fungal_decay",
+            "exact_g4"
+          ],
+          "season": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+          "limit": "Fungal ecology of organic substrate only. No local fungus, fruiting body, species identification, edibility or harvest.",
+          "candidate_use": "substrate_process_only"
+        }
       ]
     },
     {
@@ -69,11 +221,406 @@
         "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing"
       ],
       "selection_candidates": [
-        {"kind": "flora", "taxon": "Salix (willow)", "layer": "riparian_vegetation", "category": "occasional", "directness": "analogical", "confidence": "low", "source_keys": ["regional_landscape", "modern_willow", "exact_g4"], "season": "woody stems year-round; foliage requires current growing season", "limit": "Modern white-willow ecology supports riparian compatibility only; no medieval or exact G4 occurrence."},
-        {"kind": "fauna", "taxon": "Castor (beaver)", "layer": "fauna", "category": "rare", "directness": "inferred", "confidence": "low", "source_keys": ["archaeological_fauna", "exact_g4"], "season": "year-round compatibility; observation and sign require current state", "limit": "Archaeological remains do not create an animal, lodge, gnaw mark or pelt."},
-        {"kind": "material", "taxon": "alluvial sand and silt", "layer": "natural_materials", "category": "common", "directness": "inferred", "confidence": "low", "source_keys": ["regional_landscape", "exact_g4"], "season": "exposure varies with water level, freezing and snow", "limit": "Template substrate is broad; no exact sediment depth, safe footing or extractable stock."}
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "modern_willow",
+            "exact_g4"
+          ],
+          "season": "woody stems year-round; foliage requires current growing season",
+          "limit": "Modern white-willow ecology supports riparian compatibility only; no medieval or exact G4 occurrence."
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "archaeological_fauna",
+            "exact_g4"
+          ],
+          "season": "year-round compatibility; observation and sign require current state",
+          "limit": "Archaeological remains do not create an animal, lodge, gnaw mark or pelt."
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "exposure varies with water level, freezing and snow",
+          "limit": "Template substrate is broad; no exact sediment depth, safe footing or extractable stock."
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_fungi",
+            "fungal_decay",
+            "exact_g4"
+          ],
+          "season": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+          "limit": "Fungal ecology of organic substrate only. No local fungus, fruiting body, species identification, edibility or harvest.",
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "landscape_template_id": "lt_alluvial_floodplain",
+      "g4_ids": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality"
+      ],
+      "selection_candidates": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "modern_willow",
+            "exact_g4"
+          ],
+          "season": "Woody form may persist year-round; foliage requires growing-season state.",
+          "limit": "Modern riparian ecology and an alluvial template do not attest a tree at any exact G4."
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-ground grass and sedge guild (unidentified)",
+          "layer": "ground_cover",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4",
+            "medieval_wetland"
+          ],
+          "season": "Above-ground cover and visibility depend on growing season, water, snow and disturbance.",
+          "limit": "Historical wet-ground pollen is from Ryurik Gorodishche, not this sector; no live stand, reed identity or fodder stock."
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "archaeological_fauna",
+            "exact_g4"
+          ],
+          "season": "Year-round habitat compatibility; observation or sign requires current state.",
+          "limit": "Regional remains and floodplain form do not attest a beaver, lodge, track or pelt here; fauna layer is unapproved."
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial silt and clay",
+          "layer": "natural_materials",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "Exposure and wetness vary with water level, freezing and snow.",
+          "limit": "Broad substrate class only; no measured soil profile, stable footing, clay quality or extractable stock."
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_fungi",
+            "fungal_decay",
+            "exact_g4"
+          ],
+          "season": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+          "limit": "Fungal ecology of organic substrate only. No local fungus, fruiting body, species identification, edibility or harvest.",
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "landscape_template_id": "lt_gentle_hills",
+      "g4_ids": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace"
+      ],
+      "selection_candidates": [
+        {
+          "kind": "flora",
+          "taxon": "Betula (birch)",
+          "layer": "tree_layer",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_forest",
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "Deciduous foliage requires current growing-season state; woody form may persist year-round.",
+          "limit": "Modern regional birch woodland does not establish a medieval tree at this G4."
+        },
+        {
+          "kind": "flora",
+          "taxon": "grass and shrub cover (unidentified)",
+          "layer": "ground_cover",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "Above-ground vegetation depends on growing season, snow and local disturbance.",
+          "limit": "Template stratum only; no taxon, stand, hay yield or access."
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "category": "rare",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "archaeological_fauna",
+            "exact_g4"
+          ],
+          "season": "Year-round compatibility; encounter requires current state.",
+          "limit": "Regional bone evidence does not establish local presence, trace or hunt; fauna layer is unapproved."
+        },
+        {
+          "kind": "material",
+          "taxon": "firm mineral soil",
+          "layer": "natural_materials",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "Surface conditions depend on frost, thaw, rain and snow.",
+          "limit": "Template ground class only; no surveyed geology, bearing capacity or extractable stock."
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_fungi",
+            "fungal_decay",
+            "exact_g4"
+          ],
+          "season": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+          "limit": "Fungal ecology of organic substrate only. No local fungus, fruiting body, species identification, edibility or harvest.",
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "landscape_template_id": "lt_freshwater_marsh",
+      "g4_ids": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater"
+      ],
+      "selection_candidates": [
+        {
+          "kind": "flora",
+          "taxon": "Phragmites (common reed)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_reed",
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "Standing dry stems may persist; fresh stems require growing-season and current water state.",
+          "limit": "Modern reed ecology is habitat analogy only. WLS-01 does not attest Phragmites, a medieval reed stand or usable stems here."
+        },
+        {
+          "kind": "flora",
+          "taxon": "horsetail and wetland herb guild (unidentified)",
+          "layer": "ground_cover",
+          "category": "occasional",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "medieval_wetland",
+            "exact_g4"
+          ],
+          "season": "Visible shoots require growing-season and water-state support.",
+          "limit": "Early-thirteenth-century pollen context is from Ryurik Gorodishche; no exact G4 live plant or harvest."
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "archaeological_fauna",
+            "exact_g4"
+          ],
+          "season": "Year-round compatibility; animal or sign requires current state.",
+          "limit": "Regional remains do not establish an animal, lodge or track; fauna layer is unapproved."
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged organic and mineral sediment",
+          "layer": "natural_materials",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "Exposure, saturation and frost follow current water and weather state.",
+          "limit": "Broad wet substrate only; no peat depth, extractable deposit, safe footing or stock."
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_fungi",
+            "fungal_decay",
+            "exact_g4"
+          ],
+          "season": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+          "limit": "Fungal ecology of organic substrate only. No local fungus, fruiting body, species identification, edibility or harvest.",
+          "candidate_use": "substrate_process_only"
+        }
+      ]
+    },
+    {
+      "landscape_template_id": "lt_wooded_floodplain",
+      "g4_ids": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center"
+      ],
+      "selection_candidates": [
+        {
+          "kind": "flora",
+          "taxon": "Alnus (alder)",
+          "layer": "tree_layer",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_alder",
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "Woody form may persist year-round; foliage requires current growing-season state.",
+          "limit": "Modern wet-site ecology is analogy, not a medieval or exact G4 alder record."
+        },
+        {
+          "kind": "flora",
+          "taxon": "wet-edge herb and shrub guild (unidentified)",
+          "layer": "riparian_vegetation",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4",
+            "medieval_wetland"
+          ],
+          "season": "Visible shoots and leaves require growing-season, water and snow state.",
+          "limit": "Template and distant pollen context support habitat compatibility only; no exact stand or gatherable stems."
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "archaeological_fauna",
+            "exact_g4"
+          ],
+          "season": "Year-round compatibility; encounter or sign requires current state.",
+          "limit": "No beaver, lodge, gnaw mark or pelt follows from regional remains; fauna layer is unapproved."
+        },
+        {
+          "kind": "material",
+          "taxon": "root-bound alluvial mud and leaf litter",
+          "layer": "natural_materials",
+          "category": "common",
+          "directness": "inferred",
+          "confidence": "low",
+          "source_keys": [
+            "regional_landscape",
+            "exact_g4"
+          ],
+          "season": "Exposure and wetness vary with flood, rain, freeze and snow.",
+          "limit": "Template substrate and ambient litter only; no exact soil depth, stable ground or extractable stock."
+        },
+        {
+          "kind": "fungi",
+          "taxon": "decomposer fungal guild (unidentified)",
+          "layer": "natural_materials",
+          "category": "occasional",
+          "directness": "analogical",
+          "confidence": "low",
+          "source_keys": [
+            "modern_fungi",
+            "fungal_decay",
+            "exact_g4"
+          ],
+          "season": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+          "limit": "Fungal ecology of organic substrate only. No local fungus, fruiting body, species identification, edibility or harvest.",
+          "candidate_use": "substrate_process_only"
+        }
       ]
     }
   ],
-  "unresolved": ["No fungal taxon has a medieval-to-exact-G4 bridge in this candidate.", "No species or material category here is approved for runtime selection; Sol-high historical and contract review is required."]
+  "unresolved": [
+    "No named fungal taxon or visible fruiting body has a medieval-to-exact-G4 bridge; decomposer guild is substrate ecology only.",
+    "No fauna baseline layer exists; fauna rows remain ineligible pending independent layer approval.",
+    "No species or material category here is approved for runtime selection; independent historical and contract review is required."
+  ]
 }

@@ -7,6 +7,10 @@ import { loadApprovedLocalMovementEligibilityPins } from
   '../src/infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
 import { createTraceLocalSceneCommands } from
   '../src/runtime/lower-dvina-trace-local-scene-commands.js';
+import { projectLowerDvinaTraceTurnStepPlannerState } from
+  '../src/runtime/lower-dvina-trace-phase-2-player-safe.js';
+import { createTurnStepDomainOwnerPreflight } from
+  '../../../packages/turn/src/turn-step-admission.js';
 import { applyS1LocalPositionTransition } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-commit-projections.js';
 import { createTracePhase3TemporalAdvance, createTracePhase3VisibleProjector } from
@@ -176,6 +180,34 @@ test('local command binds exact current edge and rejects stale state', async () 
   assert.deepEqual(actionSet.options.map(({ option_id: id }) => id),
     ['local_scene_edge:arrival:focus']);
   const operation = command.semantic_binding.operation_dto;
+  const projected = projectLowerDvinaTraceTurnStepPlannerState({
+    actor_id: 'actor', current_visible_context: { visible_objects: [{
+      entity_ref: { entity_kind: 'scene_movement_edge',
+        entity_id: 'arrival:focus' }, display_label: 'Перейти к соседнему месту 1'
+    }] }
+  });
+  assert.equal(projected.available_domain_operations, undefined);
+  const preflight = createTurnStepDomainOwnerPreflight({
+    externalRegistry: null, semanticBindings: [{ command,
+      binding: command.semantic_binding }],
+    availableOptions: new Set(actionSet.options.map(({ option_id }) => option_id)),
+    actor: { actor_ref: 'actor' }, committedState: committed, services: {}
+  });
+  const selected = { ...operation };
+  delete selected.description;
+  assert.equal(preflight.resolve({ operation: selected,
+    plan: { operations: [selected] }, request: {
+      available_domain_operations: [operation], player_safe_state: projected
+    } }).kind, 'binding');
+  const unavailable = createTurnStepDomainOwnerPreflight({
+    externalRegistry: null, semanticBindings: [{ command,
+      binding: command.semantic_binding }], availableOptions: new Set(),
+    actor: { actor_ref: 'actor' }, committedState: committed, services: {}
+  });
+  assert.equal(unavailable.resolve({ operation: selected,
+    plan: { operations: [selected] }, request: {
+      available_domain_operations: [selected], player_safe_state: projected
+    } }).kind, 'missing');
   assert.equal(command.semantic_binding.matches({ operation: {
     ...operation, description: 'Иду к соседнему месту' } }), true);
   assert.equal(command.semantic_binding.matches({ operation: {

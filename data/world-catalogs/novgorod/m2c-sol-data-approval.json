@@ -112,6 +112,14 @@
     "excludes": "Canonical initial G5, current source or property readback, ordinary background or ambient seeding, Stage B qualification, per-source mechanics bypass, mapped import, runtime use, historical claims and release activation",
     "reviewed_on": "2026-09-24"
   },
+  "finite_only_ordinary_base_mapped_approval": {
+    "manifest_sha256": "81278ca154bca3dafb44c0301ca2041ee4615d8292c05dc2010c9a95a4ff551e",
+    "dataset_sha256": "465e6626ec976805a3234422a768cf53482ecfaaa714e7c6a1363ff37ab0edcf",
+    "source_candidate_sha256": "fcd2b47ff318b79031dc309193c159afd71909418beab1f77e9a455c4160bacd",
+    "scope": "Exact deterministic approved-status mapping of the unchanged finite-only ordinary base profile and its four exact source SHA pins for the target world revision",
+    "excludes": "World Base import, item catalog activation or runtime selection, current finite source and property decisions, ordinary background or Stage B authority, existing party migration and release activation",
+    "reviewed_on": "2026-09-24"
+  },
   "limits": [
     "Approval covers exact immutable authoring bytes and stated scope only; it does not approve production activation or the whole M2c milestone.",
     "Natural placement does not establish current physical sources, committed endpoint-position bindings, actor faculties, Temporal/P22 conditions or production suppliers.",

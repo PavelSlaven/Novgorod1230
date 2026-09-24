@@ -24,12 +24,16 @@
     "approved_container_templates": 18,
     "gate1_seed_tables": 30,
     "gate1_readback_sha256": "3d91cee04f1e2b8005f7da490c6c42574e929dc9c398001b50cdcfa2835c942c",
-    "gate1_seed_rows": 42577,
+    "gate1_seed_closure_rows": 42577,
     "gate1_readback_path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/v17-bootstrap-import-readback-result.json",
     "gate1_state_digest": "bffa6ed1ffd3082fb5d126740cc73666b43ee2ac77e517a21fe59801de04ec74",
     "approved_item_templates": 102,
     "approved_g4_sectors": 9,
-    "gate1_seed_rows_are_subset_of_current_rows": true
+    "gate1_seed_closure_is_scoped": true,
+    "current_seed_table_rows": 42594,
+    "current_source_records": 200,
+    "current_world_revisions": 8,
+    "gate1_transaction_xmin": "4878"
   },
   "operation": "insert_only",
   "transaction": "single_world_base_transaction",
@@ -173,19 +177,25 @@
       "spatial_v3_world_routes": 86,
       "universal_categories": 57
     },
-    "p12_source_records_after": 200,
+    "p12_source_records_after": 217,
     "shared_table_pk_overlap": {
       "record_sources": 0,
       "source_records": 0,
       "universal_categories": 0
     },
     "p12_distinct_source_records_absent": 17,
-    "gate1_source_records": 183
+    "gate1_seed_closure_source_records": 183,
+    "current_source_records_before": 200,
+    "current_pinned_keys": {
+      "absent": 12359,
+      "identical": 0,
+      "conflicting": 0
+    }
   },
   "preconditions": [
     "Fresh independent Sol high approval of this exact request SHA-256, source HEAD, Gate1 readback digest, target identity, manifests and SQL pins before any import.",
-    "Verify live cluster system identifier, novgorod_world_v17 ownership, unchanged 208-table schema, exact Gate1 baseline, and available offline backup; stop on drift.",
-    "Classify every P12 pinned primary key in current v17 as absent, identical or conflicting by full row; require zero conflicts. All 17 unique P12 source_records must be absent from 183 Gate1 source_records; require zero primary-key overlap for source_records, universal_categories and record_sources.",
+    "Verify live cluster system identifier, novgorod_world_v17 ownership, unchanged 208-table schema, exact post-Gate1 baseline (42594 full rows in the 30 seed tables, 200 source_records, 8 world_revisions), and available offline backup; stop on drift. The Gate1 readback's 42577 seed rows, 183 source_records and 7 world_revisions are scoped closure or selected-ID counts, not full final table counts.",
+    "Classify every P12 pinned primary key in current v17 as absent, identical or conflicting by full row; require 12359 absent, zero identical and zero conflicting. All 17 unique P12 source_records must be absent from the current 200 source_records, including the 183 Gate1 seed-closure IDs; require zero primary-key overlap for source_records, universal_categories and record_sources.",
     "All five manifests and approval bytes match pins; validateAuthoringBundle succeeds with zero errors and gaps.",
     "novgorod_world_v17 schema matches pinned effective DDL; P12 does not write world_base.world_revisions."
   ],

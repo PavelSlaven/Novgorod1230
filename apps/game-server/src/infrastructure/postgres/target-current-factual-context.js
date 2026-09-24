@@ -2,6 +2,7 @@ import { canonicalDigest, projectApprovedCurrentEnvironment } from '@rus/materia
 import { projectCalendar } from '@rus/time-events-history/calendar';
 import { createLowerDvinaTracePhase2PostgresRepository } from './lower-dvina-trace-phase-2.js';
 import { serverError } from '../../errors.js';
+import { readCurrentEntityVisibilityScene } from './g4-natural-perception-reader.js';
 
 /** Reuse the normalized committed-state owner inside the caller's transaction. */
 export function createTargetCurrentFactualContext({ partyPool, committer, runtime,
@@ -36,6 +37,14 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
   }
   return Object.freeze({
     async readCurrentEnvironment(args) { return (await read(args)).environment; },
+    async readCurrentVisibilityFacts({ transaction, partyId, actorId }) {
+      const current = await read({ transaction, partyId });
+      if (current.state.actor_id !== actorId) gap();
+      const scene = await readCurrentEntityVisibilityScene({ transaction, partyId, actorId,
+        pin: runtime.itemPin });
+      if (current.state.position?.position_id !== scene.location.scene_position_id) gap();
+      return { scene, environment: current.environment };
+    },
     async readFactualContext({ transaction, request }) {
       const args = { transaction, partyId: request.party_id };
       const current = await read(args);

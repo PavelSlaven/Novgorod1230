@@ -1,15 +1,12 @@
-import { loadApprovedG4NaturalCatalog, loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
+import { loadApprovedG4NaturalCatalog, loadApprovedG4NaturalPlacementCatalog,
+  loadApprovedCanonicalNaturalInitialRule } from '@rus/runtime-catalog';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { serverError } from '../../errors.js';
 
-/** Read inside the caller's consistent read transaction. Temporal/actor/source
- * conditions remain with their current owner; this reader supplies no defaults. */
-export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
-  verifiedCatalog, pin, worldBaseReader, readCurrentSourceState } = {}) {
-  if (typeof transaction?.query !== 'function'
-    || typeof worldBaseReader?.readPinnedSceneTemplateClosure !== 'function'
-    || typeof readCurrentSourceState !== 'function') gap('current_perception_owner_required');
+/** Shared committed scene read for natural and entity perception. */
+export async function readCurrentSceneSnapshot({ transaction, partyId, actorId, pin } = {}) {
+  if (typeof transaction?.query !== 'function') gap('current_perception_owner_required');
   const result = await transaction.query(`SELECT party.world_revision_id,party.world_catalog_digest,
     to_jsonb(loc) AS location,to_jsonb(site) AS site,to_jsonb(baseline) AS baseline,
     (SELECT coalesce(jsonb_agg(b),'[]') FROM party_runtime.party_site_connection_endpoint_bindings b
@@ -40,6 +37,41 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
   const snapshot = result.rows[0];
   if (snapshot.world_revision_id !== pin?.compatible_world_revision_id
     || snapshot.world_catalog_digest !== pin?.compatible_world_catalog_digest) gap('exact_current_world_pin_required');
+  return snapshot;
+}
+
+/** Keep entity placements, local endpoints and mutable modifiers on the same
+ * transaction and scene snapshot used by natural perception. */
+export async function readCurrentEntityVisibilityScene(args = {}) {
+  const snapshot = await readCurrentSceneSnapshot(args);
+  const { transaction, partyId } = args;
+  const positions = snapshot.positions.map((row) => row.id);
+  const result = await transaction.query(`SELECT
+    (SELECT coalesce(jsonb_agg(e),'[]') FROM party_runtime.entity_placements e
+      WHERE e.party_id=$1 AND e.position_node_id=ANY($2::text[])
+        AND e.host_entity_ref IS NULL) AS placements,
+    (SELECT coalesce(jsonb_agg(e),'[]') FROM party_runtime.scene_movement_edges e
+      WHERE e.party_id=$1 AND e.scene_baseline_id=$3 AND e.status='active') AS movement_edges,
+    (SELECT coalesce(jsonb_agg(m),'[]') FROM party_runtime.visibility_modifiers m
+      WHERE m.party_id=$1) AS modifiers`, [partyId, positions, snapshot.baseline.id]);
+  if (result.rows.length !== 1) gap('complete_current_visibility_required');
+  const { placements, movement_edges, modifiers } = result.rows[0];
+  if (![placements, movement_edges, modifiers].every(Array.isArray)
+    || placements.some((row) => row.party_id !== partyId || !positions.includes(row.position_node_id))
+    || movement_edges.some((row) => row.party_id !== partyId
+      || !positions.includes(row.from_position_id) || !positions.includes(row.to_position_id))) {
+    gap('complete_current_visibility_required');
+  }
+  return { ...snapshot, placements, movement_edges, modifier_set: { complete: true, rows: modifiers } };
+}
+
+/** Read inside the caller's consistent read transaction. Temporal/actor/source
+ * conditions remain with their current owner; this reader supplies no defaults. */
+export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
+  verifiedCatalog, pin, worldBaseReader, readCurrentSourceState } = {}) {
+  if (typeof worldBaseReader?.readPinnedSceneTemplateClosure !== 'function'
+    || typeof readCurrentSourceState !== 'function') gap('current_perception_owner_required');
+  const snapshot = await readCurrentSceneSnapshot({ transaction, partyId, actorId, pin });
   const catalog = loadApprovedG4NaturalCatalog({ verifiedCatalog, pin });
   const profiles = catalog.profiles.filter(({ payload }) => payload.g4_ref.id === snapshot.site.parent_g4_id
     && payload.g4_ref.world_revision_id === snapshot.world_revision_id);
@@ -121,7 +153,31 @@ export async function readCurrentNaturalPerceptionFacts({ transaction, partyId, 
   current_environment: conditions?.current_environment,
   layer_admissions: conditions?.layer_admissions };
   prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, currentFacts });
-  return currentFacts;
+  const placementCatalog = loadApprovedG4NaturalPlacementCatalog({ verifiedCatalog, pin });
+  const placements = placementCatalog.placements.filter((row) =>
+    row.natural_profile_ref.id === profiles[0].payload.profile_id
+    && row.natural_profile_ref.version === profiles[0].payload.profile_version
+    && row.natural_profile_ref.payload_digest === profiles[0].payload_digest
+    && row.scene_template_ref.id === scene_template_ref.id
+    && row.scene_template_ref.version === scene_template_ref.version
+    && row.scene_template_ref.canonical_digest === closure.value.header.canonical_digest);
+  const policy = placementCatalog.condition_policies.find((row) =>
+    row.id === placements[0]?.condition_policy_ref.id
+    && row.version === placements[0]?.condition_policy_ref.version);
+  const sourcePositions = snapshot.positions.filter((row) =>
+    row.template_slot_key === endpoint[0].required_position_slot_key
+    && row.template_instance_ordinal === endpoint[0].required_position_instance_ordinal
+    && row.g6_instance_id === snapshot.g6.find((g6) =>
+      g6.scene_slot_key === placements[0]?.g6_scene_slot_key)?.id
+  );
+  const lighting = policy?.lighting_by_light_state[currentFacts.current_environment.light_state];
+  const weather = policy?.weather_by_visibility[currentFacts.current_environment.weather_state?.visibility];
+  return { ...currentFacts, ambient_visibility: placements.length === 1 && policy
+    && sourcePositions.length === 1 && ['clear', 'partial', 'none'].includes(lighting)
+    && ['clear', 'partial', 'none'].includes(weather)
+    ? { g6_instance_id: sourcePositions[0].g6_instance_id,
+      lighting, weather }
+    : null };
 }
 function gap(reason) { throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
   'Current natural perception facts are unavailable.', { status: 409, details: { reason } }); }

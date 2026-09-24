@@ -36,8 +36,9 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
   const runtimeBinding = Object.freeze({ catalog_id: 'novgorod_live_world_runtime_v17', revision: bindingRevision,
     status: 'approved', scenario_id: profile.scenario_id, materializer_binding_id: 'target_canonical_authored_start_v1',
     materializer_version: 'code_materializer_v3', snapshot_schema: 'rus.authored_start_initial_party_snapshot.v3',
-    initial_natural_perception_rule_pin: profile.canonical_start.policy_profile_pins.find((pin) =>
-      pin.key === start.initial_perception_rule.id && pin.revision === start.initial_perception_rule.version) });
+    ...(start.initial_perception_rule == null ? {} : { initial_natural_perception_rule_pin:
+      profile.canonical_start.policy_profile_pins.find((pin) =>
+        pin.key === start.initial_perception_rule.id && pin.revision === start.initial_perception_rule.version) }) });
   const metadata = Object.freeze({ ...profile.public_metadata,
     available: release.production_activation === true && release.runtime_selectable_in_canonical_production === true });
   const world = start.world_pin;

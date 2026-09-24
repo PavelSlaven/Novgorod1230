@@ -14,6 +14,8 @@ import { createRuntimeCatalogLoader, loadApprovedProceduralCompiledCatalog } fro
 import { createPostgresWorldBaseReader } from './world-base.js';
 import { readCurrentNaturalPerceptionFacts } from './g4-natural-perception-reader.js';
 import { readInitialCanonicalNaturalSourceState } from './lower-dvina-trace-phase-2-initial-state.js';
+import { readCurrentNaturalSourceState } from './g4-current-natural-source-state.js';
+import { createTargetCurrentFactualContext } from './target-current-factual-context.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 export {
   readPartyDatabaseSchemaSnapshot,
@@ -32,6 +34,8 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   actorBaseAttributesBinding = null,
   runtimeCatalogLoader = null,
   targetStartRuntime = null,
+  committer = null,
+  authoredRuntimeBindingResolver = null,
   rootDir = process.cwd()
 } = {}) {
   requirePool(partyPool, 'partyPool');
@@ -211,10 +215,15 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         try {
           await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
           const { domain_catalog: verifiedCatalog } = selectedStart.materialization_inputs;
+          const readCurrentEnvironment = selectedStart.initialRule == null
+            ? createTargetCurrentFactualContext({ partyPool, committer, runtime: selectedStart,
+              authoredRuntimeBindingResolver }).readCurrentEnvironment : null;
           const currentFacts = await readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
             verifiedCatalog, pin: runtimeCatalogPin, worldBaseReader: selectedStart.worldBaseReader,
-            readCurrentSourceState: (request) => readInitialCanonicalNaturalSourceState({ ...request,
-              rule_ref: { id: selectedStart.initialRule.rule.id, version: selectedStart.initialRule.rule.version } }) });
+            readCurrentSourceState: selectedStart.initialRule == null
+              ? (request) => readCurrentNaturalSourceState({ ...request, readCurrentEnvironment })
+              : (request) => readInitialCanonicalNaturalSourceState({ ...request,
+                rule_ref: { id: selectedStart.initialRule.rule.id, version: selectedStart.initialRule.rule.version } }) });
           const input = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin: runtimeCatalogPin, currentFacts });
           await transaction.query('COMMIT');
           return input;

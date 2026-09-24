@@ -191,6 +191,7 @@ export async function createSpatialV3ProductionBindings(
       const traceStartAdapter = createLowerDvinaTracePhase1BProductionAdapter({
         partyPool: ports.partyPool, worldPool: ports.worldPool, release, runtimeCatalogPin, worldKnowledge,
         authoredStartResolver: authoredStartCatalog.resolveProfile,
+        committer, authoredRuntimeBindingResolver: authoredStartCatalog.resolveRuntimeBinding,
         approvedActorCatalog: authoredStartCatalog.actor_catalog, actorBaseAttributesBinding,
         ...(targetStartRuntime == null ? {} : { targetStartRuntime }),
         ...(authoredInitialProvisioner == null ? {} : { initialOrdinaryProvisioner: authoredInitialProvisioner })

@@ -78,6 +78,22 @@ test('target initial runtime binding resolves only against exact approved start 
   assert.equal(catalog.resolveRuntimeBinding({ catalog_id: 'historical', revision: 1 }), null);
 });
 
+test('target current-owner start does not require a historical initial perception rule pin', () => {
+  const profile = { scenario_id: 'current-owner', manifest_digest: 'b'.repeat(64),
+    public_metadata: { title: 'Current owner' }, actor_catalog: {},
+    canonical_start: { policy_profile_pins: [], start: {
+      world_pin: { world_revision_id: 'world', world_catalog_digest: 'c'.repeat(64) },
+      initial_environment_inputs: { calendar_date: { year: 1230, month: 7, day: 1 } }
+    } } };
+  const catalog = createTargetAuthoredStartCatalog({ runtime: { profile }, release: {
+    scenario_binding_id: profile.scenario_id, world_revision_id: 'world',
+    world_catalog_digest: 'c'.repeat(64),
+    scenario_profile_exact_pins: { phase_1a_manifest_digest: profile.manifest_digest,
+      scenario_definition_revision: 1 } } });
+  const binding = catalog.resolveRuntimeBinding(catalog.runtime_binding);
+  assert.equal(Object.hasOwn(binding, 'initial_natural_perception_rule_pin'), false);
+});
+
 test('target catalog lists and selects each exact loaded start', async () => {
   const makeRuntime = (id) => ({ profile: {
     scenario_id: id, manifest_digest: id, public_metadata: { title: id }, actor_catalog: {},

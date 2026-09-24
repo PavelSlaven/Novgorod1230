@@ -103,10 +103,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
           'Canonical initial turn runtime binding is unavailable.', { status: 409 });
       }
-      if (canonicalInitialState && (!authoredInitialState || !naturalPin
-        || !Array.isArray(row.state_payload.policy_profile_pins)
+      if (canonicalInitialState && (!authoredInitialState || (naturalPin != null
+        && (!Array.isArray(row.state_payload.policy_profile_pins)
         || row.state_payload.policy_profile_pins.filter((pin) => pin.key === naturalPin.key
-          && pin.revision === naturalPin.revision && pin.digest === naturalPin.digest).length !== 1)) {
+          && pin.revision === naturalPin.revision && pin.digest === naturalPin.digest).length !== 1)))) {
         throw serverError('NATURAL_SCENE_PERCEPTION_DATA_GAP',
           'Canonical initial turn perception rule pin is unavailable.', { status: 409 });
       }

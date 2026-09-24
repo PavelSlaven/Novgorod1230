@@ -100,8 +100,9 @@ export async function loadTargetAuthoredStartRuntime({ worldPool, itemPin, actor
   if (!npc.ok || !acoustic.ok || !acoustic.value.rows.length) gap('SPATIAL_V3_TARGET_START_OWNER_DATA_REQUIRED');
   const actorBundle = await loadApprovedProceduralActorTemporalBundle({ worldBaseReader: { read: worldPool.query.bind(worldPool) },
     worldPin, actorCatalog: profile.actor_catalog, actorProfileCatalog: actorProfiles, temporalRecords: temporal.rows });
-  const initialRule = loadApprovedCanonicalNaturalInitialRule({ verifiedCatalog: catalog, pin: itemPin,
-    rule_ref: { id: start.initial_perception_rule.id, version: start.initial_perception_rule.version } });
+  const initialRule = start.initial_perception_rule == null ? null
+    : loadApprovedCanonicalNaturalInitialRule({ verifiedCatalog: catalog, pin: itemPin,
+      rule_ref: { id: start.initial_perception_rule.id, version: start.initial_perception_rule.version } });
   const calendar = temporal.rows.find((row) => row.record_id === start.initial_environment_inputs.calendar_record_ref.id);
   if (!calendar || Number(calendar.version) !== start.initial_environment_inputs.calendar_record_ref.version) {
     gap('SPATIAL_V3_TARGET_START_TEMPORAL_REQUIRED');

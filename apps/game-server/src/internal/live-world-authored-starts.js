@@ -42,7 +42,8 @@ export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
   const closure = worldBaseReferenceSnapshot?.scene_template_closures?.find(({ header }) =>
     header.id === p.scene_template_ref.id && header.version === p.scene_template_ref.version);
   const position = closure?.position_slots?.find((row) => row.position_slot_key === p.position_slot_key);
-  if (!position || closure.header.canonical_digest !== start.initial_perception_rule.scene_template_ref.canonical_digest) {
+  if (!position || (start.initial_perception_rule
+    && closure.header.canonical_digest !== start.initial_perception_rule.scene_template_ref.canonical_digest)) {
     fail('SPATIAL_V3_TARGET_START_SCENE_REQUIRED');
   }
   const actorCatalog = await loadActorCatalog(rootDir, { version: 1, region_id: 'region_novgorod_land',
@@ -58,8 +59,8 @@ export async function loadTargetAuthoredStartProfile({ rootDir = process.cwd(),
       category_id: template.category_id, quantity: 1, holder: 'player' };
   });
   const policies = loaded.map(({ value, digest }) => ({ key: value.candidate_id, revision: value.version, digest }));
-  policies.push({ key: start.initial_perception_rule.id, revision: start.initial_perception_rule.version,
-    digest: loaded[0].digest });
+  if (start.initial_perception_rule) policies.push({ key: start.initial_perception_rule.id,
+    revision: start.initial_perception_rule.version, digest: loaded[0].digest });
   const definition = { schema: 'rus.live_world_runtime.canonical_start_profile.v1',
     scenario_id: start.scenario_id, status: 'approved', policy_profile_pins: policies };
   return freezeDeep({ schema: 'rus.live_world_runtime.canonical_start_profile.v1', status: 'approved',

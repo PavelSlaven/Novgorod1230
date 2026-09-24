@@ -5,7 +5,9 @@ import { visibleCurrentTargets } from '../../runtime/spatial-v3-current-visibili
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
 import { readCurrentNaturalSourceState } from './g4-current-natural-source-state.js';
-import { readCommittedEntityExterior, readPlayerKnowledge } from './spatial-v3-current-visibility-inputs.js';
+import { approvedNaturalStableCover } from './g4-natural-perception-reader.js';
+import { currentSceneVisibilityModifiers, readCommittedEntityExterior, readPlayerKnowledge } from
+  './spatial-v3-current-visibility-inputs.js';
 import { serverError } from '../../errors.js';
 
 const labels = loadLabels('m2c-exit-labels');
@@ -68,8 +70,12 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
     const profiles = catalog.profiles.filter(({ payload }) => payload.g4_ref.id === site.parent_g4_id
       && payload.g4_ref.world_revision_id === pin.compatible_world_revision_id);
     if (profiles.length !== 1) gap();
+    const placements = overlay.placements.filter((row) => row.party_id === partyId
+      && row.host_entity_ref == null && positions.some((p) => p.id === row.position_node_id)
+      && ['npc', 'item'].includes(row.entity_kind));
     const snapshot = { site, baseline, location: { ...sourceLocation, scene_position_id: position.id },
-      positions, g6, acoustic_profiles: overlay.acoustic_profiles.filter((row) =>
+      positions, g6, placements, movement_edges: movementEdges,
+      acoustic_profiles: overlay.acoustic_profiles.filter((row) =>
         row.party_id === partyId && g6.some((item) => item.id === row.g6_instance_id)),
       visibility_links: links, acoustic_edges: [], portals,
       endpoint_bindings: overlay.endpoint_bindings.filter((row) => row.party_id === partyId
@@ -100,9 +106,13 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
         row.source_slot_key === endpoint[0].slot_key),
       current_environment: conditions.current_environment,
       layer_admissions: conditions.layer_admissions } });
-    const modifiers = await transaction.query(`SELECT id,state_version FROM party_runtime.visibility_modifiers
+    const modifiers = await transaction.query(`SELECT id,state_version,affected_scope_ref FROM party_runtime.visibility_modifiers
       WHERE party_id=$1`, [partyId]);
     if (!Array.isArray(modifiers?.rows)) gap();
+    const modifier_set = { complete: true,
+      rows: currentSceneVisibilityModifiers(modifiers.rows, snapshot) };
+    const natural = { ambient_visibility: {
+      stable_cover: approvedNaturalStableCover(profiles[0].payload) } };
     const ambient = current.current_environment;
     const placementCatalog = loadApprovedG4NaturalPlacementCatalog({ verifiedCatalog, pin });
     const placement = placementCatalog.placements.filter((row) => row.natural_profile_ref.id === profiles[0].payload.profile_id
@@ -118,9 +128,7 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
     if (placement.length !== 1 || !['clear', 'partial', 'none'].includes(lighting)
       || !['clear', 'partial', 'none'].includes(weather)) gap();
     const targetRows = [
-      ...overlay.placements.filter((row) => row.party_id === partyId && row.host_entity_ref == null
-        && positions.some((p) => p.id === row.position_node_id)
-        && ['npc', 'item'].includes(row.entity_kind)).map((row) => ({
+      ...placements.map((row) => ({
         target_id: `${row.entity_kind}:${row.entity_id}`, position_id: row.position_node_id,
         entity_kind: row.entity_kind, placement: row })),
       ...movementEdges.filter((row) => row.from_position_id === position.id).map((row) => ({
@@ -131,7 +139,7 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
     const targets = [];
     for (const row of targetRows) {
       const currentTarget = await readTargetConditions({ transaction, partyId, actorId,
-        scene: { ...snapshot, modifier_set: { complete: true, rows: modifiers.rows } }, target: row });
+        scene: { ...snapshot, modifier_set }, natural, target: row });
       if (['stable_cover', 'dynamic_occlusion', 'concealment'].some((key) =>
         !['clear', 'partial', 'none'].includes(currentTarget?.[key]))) gap();
       targets.push({ ...row, lighting, weather, ...currentTarget });
@@ -139,7 +147,7 @@ export function createSpatialV3ProposedVisibleSources({ verifiedCatalog, pin, wo
     const admitted = visibleCurrentTargets({ observer_position_id: position.id,
       observer_visual_capability: conditions.visual_capability, positions, g6,
       visibility_links: links, portals: {}, targets,
-      modifier_set: { complete: true, rows: modifiers.rows } });
+      modifier_set });
     const entityObservations = []; const localEdges = []; const visibleExits = [];
     for (const row of admitted) {
       const target = targetRows.find((item) => item.target_id === row.target_id);

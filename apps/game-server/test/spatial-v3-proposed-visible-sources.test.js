@@ -4,6 +4,8 @@ import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/regis
 import { approvedNaturalPerceptionFixture } from './g4-natural-perception-fixture.js';
 import { createSpatialV3ProposedVisibleSources } from
   '../src/infrastructure/postgres/spatial-v3-proposed-visible-sources.js';
+import { readCurrentTargetConditions } from
+  '../src/infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
 import { overlaySpatialV3VisibleRows, projectSpatialV3ProposedVisiblePackage } from
   '../src/runtime/spatial-v3-proposed-visible-context.js';
 
@@ -34,9 +36,11 @@ test('proposed destination matches committed package using one transaction for m
     entity_kind: 'item', entity_id: 'item:1', position_node_id: 'position:shore',
     placement_kind: 'scene_position' })], updates: [], appends: [] }] };
   const seen = [];
+  let modifiers = [];
   const transaction = { async query(sql) {
     seen.push(sql);
     assert.doesNotMatch(sql, /party_g5_sites|party_scene_baselines|scene_position_nodes/);
+    if (sql.includes('visibility_modifiers')) return { rows: modifiers };
     if (sql.includes('party_actor_body_states')) return { rowCount: 1,
       rows: [{ state_version: 3 }] };
     if (sql.includes('party_item_placements')) return { rows: [{ state: { contents: [] },
@@ -54,10 +58,7 @@ test('proposed destination matches committed package using one transaction for m
     readCurrentEnvironment: async ({ transaction: used }) => {
       assert.equal(used, transaction); return currentFacts.current_environment;
     },
-    readTargetConditions: async ({ transaction: used }) => {
-      assert.equal(used, transaction);
-      return { stable_cover: 'clear', dynamic_occlusion: 'clear', concealment: 'clear' };
-    } });
+    readTargetConditions: readCurrentTargetConditions });
   const pins = [];
   const envelopeInput = { package_id: 'visible:1', party_id: 'party:1', turn_id: 'turn:1',
     committed_state_version: '1', change_set_id: 'change:1',
@@ -76,6 +77,21 @@ test('proposed destination matches committed package using one transaction for m
   assert.ok(seen.some((sql) => sql.includes('party_actor_body_states')));
   assert.ok(seen.some((sql) => sql.includes('visibility_modifiers')));
   assert.ok(seen.some((sql) => sql.includes('party_item_placements')));
+  modifiers = [{ id: 'remote', affected_scope_ref: {
+    spatial_kind: 'party_g5_site', spatial_id: 'other-site' } }];
+  const remoteProposed = await projectSpatialV3ProposedVisiblePackage({ transaction, snapshot: rows,
+    proposal, firstEntry, readSources, envelopeInput });
+  const remoteCommitted = await projectSpatialV3ProposedVisiblePackage({ transaction,
+    snapshot: committed, proposal: { ...proposal, inserts: [], updates: [] },
+    firstEntry: { approved_write_sets: [] }, readSources, envelopeInput });
+  assert.equal(remoteProposed.envelope.package_digest, remoteCommitted.envelope.package_digest);
+  assert.equal(remoteProposed.envelope.package_digest, proposed.envelope.package_digest);
+  modifiers = [{ id: 'local', affected_scope_ref: {
+    spatial_kind: 'scene_position', spatial_id: 'position:shore' } }];
+  await assert.rejects(projectSpatialV3ProposedVisiblePackage({ transaction, snapshot: rows,
+    proposal, firstEntry, readSources, envelopeInput }), (error) =>
+    error.details?.reason === 'visibility_modifier_effect_policy_required');
+  modifiers = [];
   fixture.sceneClosure.visibility_links = [{ link_slot_key: 'unmaterialized' }];
   await assert.rejects(projectSpatialV3ProposedVisiblePackage({ transaction, snapshot: rows,
     proposal, firstEntry, readSources, envelopeInput }), (error) =>

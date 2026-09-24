@@ -300,4 +300,66 @@ test('expansion P16 preserves normalized state, replay, concurrent CAS and rollb
   })));
   assert.equal(locked.every((result) => result.ok), true, JSON.stringify(locked));
   assert.equal((await repository.loadExpansionState({ party_id: 'p', g4_id: 'g4' })).snapshot.ledgers[0].state_version, 4);
+
+  await pool.query(`INSERT INTO party_runtime.party_g5_sites
+    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,created_change_set_id,updated_change_set_id)
+    VALUES ('outside','p','canonical','other-g4','{"entity_id":"outside"}','active',0,'seed','seed');
+    INSERT INTO party_runtime.party_scene_baselines
+    SELECT 'base:outside',party_id,host_kind,'outside',source_kind,scene_template_ref,
+      materialization_trace_id,materializer_version,catalog_digest,status,state_version,
+      created_change_set_id,updated_change_set_id,terminal_change_set_id
+      FROM party_runtime.party_scene_baselines WHERE id='base:source';
+    INSERT INTO party_runtime.party_g6_instances
+    SELECT 'g6:outside',party_id,'base:outside',source_scene_template_ref,scene_slot_key,
+      enclosing_stable_structure_id,host_kind,'outside',physical_class_id,primary_scene_role_id,
+      vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,
+      acoustic_uniformity,status,state_version,created_change_set_id,updated_change_set_id,terminal_change_set_id
+      FROM party_runtime.party_g6_instances WHERE id='g6:source';
+    INSERT INTO party_runtime.scene_position_nodes
+    SELECT 'pos:outside',party_id,'g6:outside',position_type_id,template_slot_key,
+      template_instance_ordinal,stable_basis_ref,capacity,access_class_id,light_profile_ref,
+      hazard_profile_ref,status,state_version,created_change_set_id,updated_change_set_id,terminal_change_set_id
+      FROM party_runtime.scene_position_nodes WHERE id='pos:source'`);
+  for (const site of ['source', 'outside']) {
+    const baseline = `base:${site}`; const position = `pos:${site}`; const g6 = `g6:${site}`;
+    await pool.query(`INSERT INTO party_runtime.portal_entities
+      (id,party_id,scene_baseline_id,portal_template_ref,state,state_version,created_change_set_id,updated_change_set_id)
+      VALUES ($1,'p',$2,'{}','closed',1,'seed','seed')`, [`portal:${site}`, baseline]);
+    await pool.query(`INSERT INTO party_runtime.scene_movement_edges
+      (id,party_id,scene_baseline_id,source_scene_template_ref,source_edge_slot_key,
+       from_position_id,to_position_id,passage_type_id,transition_environment_profile_ref,
+       movement_orientation_profile_ref,cost_kind,action_units,status,state_version,
+       created_change_set_id,updated_change_set_id)
+      VALUES ($1,'p',$2,'{}','edge',$3,$3,'path','{}','{}','action',1,'active',1,'seed','seed')`,
+    [`edge:${site}`, baseline, position]);
+    await pool.query(`INSERT INTO party_runtime.visibility_links
+      (id,party_id,scene_baseline_id,source_scene_template_ref,source_link_slot_key,
+       from_position_id,to_position_id,quality,distance_band,status,state_version,
+       created_change_set_id,updated_change_set_id)
+      VALUES ($1,'p',$2,'{}','link',$3,$3,'clear','near','active',1,'seed','seed')`,
+    [`link:${site}`, baseline, position]);
+    await pool.query(`INSERT INTO party_runtime.g6_acoustic_profiles
+      (party_id,g6_instance_id,ambient_noise,acoustic_uniformity,state_version,updated_change_set_id)
+      VALUES ('p',$1,1,'uniform',1,'seed') ON CONFLICT (party_id,g6_instance_id)
+      DO UPDATE SET ambient_noise=EXCLUDED.ambient_noise`, [g6]);
+    await pool.query(`INSERT INTO party_runtime.acoustic_edges
+      (id,party_id,scene_baseline_id,source_scene_template_ref,source_edge_slot_key,
+       from_g6_instance_id,to_g6_instance_id,base_loss,status,state_version,
+       created_change_set_id,updated_change_set_id)
+      VALUES ($1,'p',$2,'{}','sound',$3,$3,1,'active',1,'seed','seed')`,
+    [`sound:${site}`, baseline, g6]);
+    await pool.query(`INSERT INTO party_runtime.entity_placements
+      (party_id,entity_kind,entity_id,placement_kind,position_node_id,occupies_capacity_units,
+       state_version,updated_change_set_id)
+      VALUES ('p','item',$1,'scene_position',$2,1,1,'seed')`, [`item:${site}`, position]);
+  }
+  const scoped = (await repository.loadExpansionState({ party_id: 'p', g4_id: 'g4' })).snapshot;
+  for (const [field, id] of Object.entries({ portals: 'portal:source', movement_edges: 'edge:source',
+    visibility_links: 'link:source', acoustic_edges: 'sound:source' })) {
+    assert.deepEqual(scoped[field].map((row) => row.id), [id], field);
+  }
+  assert.deepEqual(scoped.acoustic_profiles.map((row) => row.g6_instance_id),
+    [...scoped.g6_instances.map((row) => row.id)].sort());
+  assert.deepEqual(scoped.placements.map((row) => row.entity_id), ['item:source']);
+  assert.equal(Object.isFrozen(scoped.visibility_links[0]), true);
 });

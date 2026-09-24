@@ -62,6 +62,24 @@ export function createSpatialV3PartyRepository({ transaction } = {}) {
       COALESCE((SELECT jsonb_agg(r ORDER BY r.id) FROM baselines r), '[]'::jsonb) AS scene_baselines,
       COALESCE((SELECT jsonb_agg(r ORDER BY r.id) FROM g6 r), '[]'::jsonb) AS g6_instances,
       COALESCE((SELECT jsonb_agg(r ORDER BY r.id) FROM positions r), '[]'::jsonb) AS scene_positions,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.portal_entities r JOIN baselines b ON b.id=r.scene_baseline_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS portals,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.scene_movement_edges r JOIN baselines b ON b.id=r.scene_baseline_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS movement_edges,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.visibility_links r JOIN baselines b ON b.id=r.scene_baseline_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS visibility_links,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.g6_instance_id)
+        FROM party_runtime.g6_acoustic_profiles r JOIN g6 g ON g.id=r.g6_instance_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS acoustic_profiles,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
+        FROM party_runtime.acoustic_edges r JOIN baselines b ON b.id=r.scene_baseline_id
+        WHERE r.party_id=$1), '[]'::jsonb) AS acoustic_edges,
+      COALESCE((SELECT jsonb_agg(r ORDER BY r.entity_kind, r.entity_id)
+        FROM party_runtime.entity_placements r JOIN positions p ON p.id=r.position_node_id
+        WHERE r.party_id=$1 AND r.host_entity_ref IS NULL), '[]'::jsonb) AS placements,
       COALESCE((SELECT jsonb_agg(r ORDER BY r.id) FROM connections r), '[]'::jsonb) AS site_connections,
       COALESCE((SELECT jsonb_agg(r ORDER BY r.id)
         FROM party_runtime.party_site_connection_endpoint_bindings r

@@ -20,7 +20,7 @@ const capabilityPins = [{ dependency_role: 'source_authoring',
 const capability = { cohort_membership_snapshot_pin: null, load_state_pin: null,
   root_carrier_attachment_pins: null, allowed_movement_methods: ['walk'],
   available_transport_pins: null, equipment_state_pins: null, legal_access_fact_pins: null,
-  allowed_pace_modes: ['normal'], dependency_pins: {
+  allowed_pace_modes: [], dependency_pins: {
     pins: capabilityPins, canonical_digest: digest(capabilityPins).slice(7) } };
 capability.canonical_digest = digest(capability);
 const connection = active('connection', { from_site_id: 'site:source', to_site_id: 'site:target',
@@ -120,4 +120,21 @@ test('availability and destination projection owner are required before movement
   const commitCheck = await recheckSiteConnectionTraversal({ transaction: { query() {} },
     partyId: party_id, check: { party_id } });
   assert.equal(commitCheck.ok, false);
+});
+
+test('known movement denial is a player-safe refusal without traversal', async () => {
+  const prepare = createSpatialV3SiteTraversalRuntime({
+    pool: { query: async () => ({ rowCount: 1, rows: [{ units: 0 }] }) },
+    assessAvailability: async () => ({ ok: true, connection_id: connection.id,
+      condition_set_ref: profile.availability_condition_set_ref }),
+    assessMovementCapability: async () => ({ ok: false, actor_id: 'actor',
+      code: 'movement_actor_unavailable' }),
+    projectDestination: async () => ({ ok: true, position_id: 'position:target',
+      site_id: 'site:target', visible_context: visible })
+  });
+  await assert.rejects(prepare({ partyId: party_id, actorId: 'actor',
+    requestId: 'request', state, playerInput: { idempotency_key: 'idem' },
+    inputDigest: 'input', context, connection }), (error) =>
+    error.code === 'SPATIAL_V3_MOVEMENT_DENIED' && error.status === 409
+      && /не может двигаться/u.test(error.message));
 });

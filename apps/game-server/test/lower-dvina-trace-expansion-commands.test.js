@@ -115,6 +115,59 @@ test('missing or ambiguous approved exit identity is a typed data gap', async ()
   assert.deepEqual(await commands(null), []);
 });
 
+test('official exit action reports known movement denial without moving or advancing time',
+  async () => {
+    const bundle = await loadScenarioBundle(13);
+    const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
+    const current = structuredClone(seed.state);
+    current.scenario_id = 'authored:unseen-woodland';
+    const f = fixture({ committedState: current,
+      authoredTurnProfile: { profile: LIVE_WORLD_TURN_PROFILE, pin: {
+        artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
+        revision: LIVE_WORLD_TURN_PROFILE.revision,
+        digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
+      } },
+      spatialExpansionRuntime: {
+        listExpansionOptions: async () => [candidate],
+        prepareExpansion: async () => ({ ok: true }),
+        prepareTraversal: async () => { throw Object.assign(
+          new Error('Персонаж сейчас не может двигаться.'),
+          { code: 'SPATIAL_V3_MOVEMENT_DENIED', status: 409 }); }
+      },
+      turnStepModel(request) {
+        const selected = request.available_domain_operations.find((operation) =>
+          operation.route_ref === candidate.directional_exit_id);
+        return { schema: 'turn_step_plan_v1', request_id: request.request_id,
+          committed_state_version: request.committed_state_version,
+          working_revision: request.working_revision, step_index: request.step_index,
+          interpretation: { player_goal: 'пройти по лесной тропе',
+            grounded_attempt: 'пройти по видимому выходу', adaptation: 'literal' },
+          resolution: 'domain_request', goal_result: 'pending',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operations: [selected], check: null, continuation: null,
+          clarification: null, direct_result_kind: null,
+          reason_code: 'approved_exit', reason: 'Follow the supplied visible exit.' };
+      }
+    });
+    const beforePosition = structuredClone(f.state.position);
+    const beforeClock = structuredClone(f.state.clock);
+    await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: {
+      request_id: 'expansion:denied', raw_text: 'Иду дальше по лесной тропе.'
+    } }), (error) => {
+      assert.equal(error.code, 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED');
+      assert.equal(error.cause.code, 'SPATIAL_V3_MOVEMENT_DENIED');
+      const publicError = errorEnvelope(error);
+      assert.equal(publicError.status, 409);
+      assert.equal(publicError.body.error.movement_status, 'movement_denied');
+      assert.equal(publicError.body.error.turn_commit_status, 'topology_committed');
+      assert.equal(publicError.body.error.actor_moved, false);
+      assert.equal(publicError.body.error.time_advanced, false);
+      return true;
+    });
+    assert.deepEqual(f.state.position, beforePosition);
+    assert.deepEqual(f.state.clock, beforeClock);
+  });
+
 for (const topologyCommitted of [false, true]) test(topologyCommitted
   ? 'public traversal refusal preserves committed topology without moving actor or advancing time'
   : 'public authored turn exposes the approved exit and rejects an unwired traversal without commit',

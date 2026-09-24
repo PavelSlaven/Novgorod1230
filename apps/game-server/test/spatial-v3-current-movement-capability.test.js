@@ -28,6 +28,7 @@ test('current body and combat state grant pinned action movement', async () => {
   const first = await owner.assessMovementCapability(input);
   assert.equal(validCapabilityContext(first.capability_context), true);
   assert.deepEqual(first.capability_context.allowed_movement_methods, ['movement.foot@1']);
+  assert.deepEqual(first.capability_context.allowed_pace_modes, []);
   assert.equal(first.capability_context.dependency_pins.pins[0].version_pin.state_version, 3);
   row.state_version = '4';
   const changed = await owner.assessMovementCapability(input);
@@ -46,8 +47,8 @@ test('current body and combat state grant pinned action movement', async () => {
   assert.equal(absent.hearing_capability, 'none');
   assert.deepEqual(absent.allowed_movement_methods, []);
   assert.equal(absent.dependency_pins.length, 3);
-  await assert.rejects(owner.assessMovementCapability(input),
-    (error) => error.details.reason === 'movement_actor_unavailable');
+  assert.deepEqual(await owner.assessMovementCapability(input),
+    { ok: false, actor_id: 'actor', code: 'movement_actor_unavailable' });
   sessions[0].participant_states[0].combat_status = 'restrained';
   const restrained = await readCurrentActorBodyCapability({ transaction: pool,
     ...input, purpose: 'movement' });
@@ -55,8 +56,8 @@ test('current body and combat state grant pinned action movement', async () => {
   await assert.rejects(readCurrentActorBodyCapability({ transaction: pool,
     ...input, purpose: 'perception' }),
   (error) => error.details.reason === 'actor_perception_capability_owner_required');
-  await assert.rejects(owner.assessMovementCapability(input),
-    (error) => error.details.reason === 'movement_actor_unavailable');
+  assert.deepEqual(await owner.assessMovementCapability(input),
+    { ok: false, actor_id: 'actor', code: 'movement_actor_unavailable' });
   conditions[0].status = 'resolved';
   const resolved = await readCurrentActorBodyCapability({ transaction: pool,
     ...input, purpose: 'perception' });
@@ -148,14 +149,14 @@ test('PostgreSQL body and active conditions control current capability', async (
   assert.equal(incapacitated.hearing_capability, 'none');
   assert.deepEqual(incapacitated.allowed_movement_methods, []);
   assert.equal(incapacitated.dependency_pins.length, 3);
-  await assert.rejects(owner.assessMovementCapability(input),
-    (error) => error.details.reason === 'movement_actor_unavailable');
+  assert.deepEqual(await owner.assessMovementCapability(input),
+    { ok: false, actor_id: 'actor', code: 'movement_actor_unavailable' });
   await pool.query(`UPDATE party_runtime.party_combat_sessions
     SET participant_states=jsonb_set(participant_states, '{0,combat_status}', '"restrained"'),
       state_version=state_version+1
     WHERE combat_id='combat'`);
-  await assert.rejects(owner.assessMovementCapability(input),
-    (error) => error.details.reason === 'movement_actor_unavailable');
+  assert.deepEqual(await owner.assessMovementCapability(input),
+    { ok: false, actor_id: 'actor', code: 'movement_actor_unavailable' });
   await assert.rejects(readCurrentActorBodyCapability({ transaction: pool,
     ...input, purpose: 'perception' }),
   (error) => error.details.reason === 'actor_perception_capability_owner_required');

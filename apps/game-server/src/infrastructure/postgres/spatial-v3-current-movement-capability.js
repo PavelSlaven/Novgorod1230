@@ -67,7 +67,9 @@ export function createSpatialV3CurrentMovementCapability({ pool } = {}) {
   if (!pool?.query) throw new TypeError('PostgreSQL pool is required.');
   async function assessMovementCapability({ transaction = pool, partyId, actorId } = {}) {
     const current = await readCurrentActorBodyCapability({ transaction, partyId, actorId });
-    if (current.allowed_movement_methods.length === 0) gap('movement_actor_unavailable');
+    if (current.allowed_movement_methods.length === 0) {
+      return { ok: false, actor_id: actorId, code: 'movement_actor_unavailable' };
+    }
     const pins = current.dependency_pins;
     const capability_context = { cohort_membership_snapshot_pin: null, load_state_pin: null,
       root_carrier_attachment_pins: null,

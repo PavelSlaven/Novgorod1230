@@ -81,6 +81,12 @@ export function createSpatialV3SiteTraversalRuntime({ pool, assessAvailability,
     const identity = canonicalDigest({ partyId, inputDigest, connection_id: connection.id });
     const capabilityAssessment = await assessMovementCapability({ partyId, actorId,
       context, connection });
+    if (capabilityAssessment?.ok === false
+      && capabilityAssessment.actor_id === actorId
+      && capabilityAssessment.code === 'movement_actor_unavailable') {
+      throw serverError('SPATIAL_V3_MOVEMENT_DENIED',
+        'Персонаж сейчас не может двигаться.', { status: 409 });
+    }
     const capability = capabilityAssessment?.capability_context;
     if (capabilityAssessment?.ok !== true || capabilityAssessment.actor_id !== actorId
       || !text(capability?.canonical_digest)) gap('movement_capability_missing');

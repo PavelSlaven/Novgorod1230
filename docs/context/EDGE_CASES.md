@@ -12,8 +12,7 @@
   подставляет значение по умолчанию и не делает повторный semantic call. Нормы: AGENTS §10.1, §21, §22
   (запрет маскировать дефект catch-all, silent ignore, безусловным fallback и ослаблением фильтра).
 - Пример владельца: [temporal-advance.md](../../docs/pipelines/temporal-advance.md), раздел «Fail-closed data
-  readiness and replay». ⚠ Документ описывает `spatial-v3-production-v9`, а в коде сейчас release
-  `spatial-v3-production-v15`/`v16`. Устаревшие v9-факты — LW-017 в `docs/work/LEGACY_WARNINGS.md`.
+  readiness and replay».
 - Transport LLM не создаёт fallback model/provider и не сочиняет ответ —
   [packages/llm-runtime/MODULE.md](../../packages/llm-runtime/MODULE.md).
 - Party ports при недоступности отказывают без v2 fallback —

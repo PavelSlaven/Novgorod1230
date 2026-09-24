@@ -22,8 +22,8 @@
 | `docs/work/LEGACY_WARNINGS.md` | `REFERENCE / DOMAIN GUIDE` | work-digest | до правки — `rg` по затрагиваемым путям: [LEGACY_WARNINGS](work/LEGACY_WARNINGS.md) |
 | `docs/work/temporal-world-v4/` | `UNDECLARED` | evidence | только задачи temporal v4; файлы читают tools (LW-010) — не переносить |
 | `docs/architecture/` | `UNDECLARED` | правила модулей и knowledge-source | код в apps/packages, границы зависимостей, правка корпуса |
-| `docs/domain/` | `UNDECLARED` | context (OWNERSHIP_MAP) | поиск владельца; содержит устаревшие факты (LW-017) — сверять с MODULE.md |
-| `docs/pipelines/` | `UNDECLARED` | context | turn / new-game / temporal-advance flow (LW-017 для temporal-advance) |
+| `docs/domain/` | `UNDECLARED` | context (OWNERSHIP_MAP) | поиск владельца; точный owner и public contract — `MODULE.md` |
+| `docs/pipelines/` | `UNDECLARED` | context | turn / new-game / temporal-advance flow |
 | `docs/modules/` | `UNDECLARED` | context | knowledge-source и инвентарь tools |
 | `docs/setup/` | `UNDECLARED` (CONTRACT_INDEX §3 называет CBM-настройку технической инструкцией) | procedure | локальная настройка CBM, LLM-провайдеров, embeddings |
 | `docs/adr/` | `UNDECLARED` (строки «Status» в шапках ADR — отдельная шкала, LW-008) | decision record | задача меняет решение, записанное в ADR |
@@ -32,7 +32,8 @@
 | `docs/migration/` | `UNDECLARED` | archive / evidence | исторический архив прошлой миграции; `CANONICAL_PATHS.json` — реестр canonical-путей для `docs:generate` |
 | `docs/archive/` | `UNDECLARED` (не норматив) | archive | снятые agent instructions и журналы: [индекс](archive/README.md); не читать как правила |
 | `MODULE_INDEX.md`, `generated/` | — | generated | навигация; вручную не править, пересобирать `npm run docs:generate` |
-| `DOCUMENTS/`, `legacy/` | `UNDECLARED` | legacy | не читать как норму (LW-003) |
+| `legacy/` | `UNDECLARED` | legacy | не читать как норму; `legacy/src` — живая зависимость production через `packages/new-game/src/legacy-adapter.js`, `legacy/DOCUMENTS` — зеркало `canonicalized_from_legacy` (LW-003) |
+| `DOCUMENTS/`, `src/`, `prompts/`, корневые `test/*.test.js` | `UNDECLARED` | legacy | не читать как норму и не расширять; вне production runtime, но `src/` и `DOCUMENTS/` ещё читают операторские скрипты и gate-тесты (LW-001, LW-002, LW-003) |
 
 ## Куда класть новый документ
 
@@ -47,7 +48,7 @@
 | известный костыль, техдолг | [LEGACY_WARNINGS](work/LEGACY_WARNINGS.md) + issue по форме `tech_debt` |
 | история изменений | `CHANGELOG.md` → `## Unreleased` |
 | архитектурное решение | `docs/adr/` |
-| новый корневой .md | никогда: allowlist проверяют `docs:check` и `architecture:check` (LW-013) |
+| новый корневой .md | никогда: allowlist `ROOT_MARKDOWN_ALLOWLIST` (`tools/docs-tools/src/documentation.js`) проверяют `docs:check` и `architecture:check` |
 
 ## Инструменты агентов
 

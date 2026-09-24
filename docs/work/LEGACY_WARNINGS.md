@@ -34,8 +34,8 @@
 ## Записи
 
 ### LW-001 — корневой `src/`
-- **Что.** `src/` (env, ui-server, ui, world) — вторая копия до-модульного runtime вне npm workspaces (`apps/* packages/* tools/*`), отличающаяся от `legacy/src`. Её импортируют корневые `test/*.test.js`; `DOCUMENTS/` и `prompts/` читает только `src/world/corpus-loader.js`.
-- **Как жить.** Новый код туда не класть; владельцы — пакеты из `MODULE_INDEX.md`. Правка `src/` — только если задача прямо про него.
+- **Что.** `src/` (env, ui-server, ui, world) — вторая копия до-модульного runtime вне npm workspaces (`apps/* packages/* tools/*`), отличающаяся от `legacy/src`. Читатели (на 21bd0938): корневые `test/*.test.js`, `test/party-turn-test-helpers.js`, `test/fixtures/new-game-pipeline-stage{3..7}.js`, gate-тест `test/modules/party-runtime-preflight-v2.test.js` (`src/world/new-game-prerequisites.js`) и операторские `scripts/*.js` (`src/env.js`; из `package.json` — `seed-world-base`, `seed-party-db`, `run-world-base-importer`, `import-novgorod-regional-templates` и др.). Production new-game импортирует не эту копию, а `legacy/src` (`packages/new-game/src/legacy-adapter.js`). `prompts/` читает только `src/world/corpus-loader.js`.
+- **Как жить.** Новый код туда не класть; владельцы — пакеты из `MODULE_INDEX.md`. Правка `src/` — только если задача прямо про него; поведение production new-game меняется в `legacy/src`, не в одноимённом файле `src/`. Удаление — после переноса читателей выше.
 - **Issue.** [#127](https://github.com/PavelSlaven/Novgorod1230/issues/127)
 
 ### LW-002 — корневые тесты `test/`
@@ -44,7 +44,7 @@
 - **Issue.** [#127](https://github.com/PavelSlaven/Novgorod1230/issues/127)
 
 ### LW-003 — `DOCUMENTS/` и `legacy/`
-- **Что.** `DOCUMENTS/documents-kg/` и `legacy/` — исходная система и её корпус; `legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/` — зеркало для `canonicalized_from_legacy`.
+- **Что.** `DOCUMENTS/documents-kg/` и `legacy/` — исходная система и её корпус; `legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/` — зеркало для `canonicalized_from_legacy`. `legacy/src` — живая зависимость production (legacy-adapter) и фасадов в `architecture:check`. Корневой `DOCUMENTS/` читают gate-тест `test/modules/stage23-security.test.js` (`new_game_start/23.txt`), `src/world/corpus-loader.js`, `src/world/new-game-pipeline/llm-matrix.js` и `scripts/generate-schema-reference.js`.
 - **Как жить.** Production-код обращается к legacy только через `packages/new-game/src/legacy-adapter.js`; нормы читать из `data/knowledge-source/corpus/DOCUMENTS/`, не из legacy-копий.
 - **Issue.** [#127](https://github.com/PavelSlaven/Novgorod1230/issues/127)
 

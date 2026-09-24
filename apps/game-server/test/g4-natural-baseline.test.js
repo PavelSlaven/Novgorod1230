@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import { G4_NATURAL_LAYERS, createRandomSource, deriveApprovedInitialEnvironment } from '@rus/materialization';
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { G4_NATURAL_LAYERS, createRandomSource, deriveApprovedInitialEnvironment,
+  selectG4NaturalMembers } from '@rus/materialization';
 import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { prepareG4NaturalBaseline } from '../src/runtime/g4-natural-baseline.js';
@@ -120,6 +124,16 @@ test('no family fallback, wrong version, partial layers, unactivated records or 
   }
 });
 
+test('legacy profile keeps exactly thirteen layers', () => {
+  const { input } = fixture();
+  input.verifiedCatalog.records_by_table.procedural_scene_compiled_records[0]
+    .payload.natural_profile.layer_applicability.fauna = {
+      applicability: 'conditional', value: { class: 'habitat_only' },
+      source_refs: ['source'], limits: 'No current animal.' };
+  assert.throws(() => prepareG4NaturalBaseline(input), (error) =>
+    error.details.reason === 'PROFILE_INVALID');
+});
+
 test('review row builder rejects unresolved applicability and duplicate exact G4 profiles', () => {
   const { candidate } = fixture();
   candidate.natural_profiles.push(structuredClone(candidate.natural_profiles[0]));
@@ -160,4 +174,62 @@ test('night and closed-portal contexts receive no natural sensory facts from bas
   assert.equal(baseline.visibleContext, undefined);
   assert.equal(baseline.sensory_details, undefined);
   assert.deepEqual(input.visibleContext, before, 'perception context is never expanded by readiness');
+});
+
+test('approved successor selects derived members for each G4 and season, never typed gaps', () => {
+  const root = resolve(import.meta.dirname, '../../..');
+  const path = 'data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json';
+  const candidateBytes = readFileSync(resolve(root, path), 'utf8');
+  const approvedCandidateBytes = execFileSync('git', ['show', `ae212e78:${path}`],
+    { cwd: root, encoding: 'utf8', maxBuffer: 8_000_000 });
+  const approval = JSON.parse(readFileSync(resolve(root,
+    'data/world-catalogs/novgorod/m2c-natural/nature-successor-data-approval.json')));
+  const records = buildG4NaturalCompiledRecords({ candidateBytes, approvedCandidateBytes, approval });
+  assert.equal(records.length, 32);
+  const { input } = fixture();
+  const first = records[0];
+  const rows = first.payload.natural_profile.layer_applicability;
+  input.g4_ref = first.payload.g4_ref;
+  const [id, version] = first.payload.exact_scene_features.canonical_scene_template_refs[0].split('@');
+  input.scene_template_ref = { id, version: Number(version) };
+  input.pin.compatible_world_revision_id = input.g4_ref.world_revision_id;
+  input.verifiedCatalog.records_by_table.procedural_scene_compiled_records = [{ ...first,
+    version: String(first.version) }];
+  input.current_environment = { ...input.current_environment,
+    calendar_record_ref: { id: rows.seasonal_state.value.calendar_profile_ref,
+      version: String(rows.seasonal_state.value.calendar_profile_version) },
+    weather_record_ref: { id: rows.weather.value.weather_profile_ref,
+      version: String(rows.weather.value.weather_profile_version) } };
+  input.member_selection = { party_id: 'party', g5_site_id: 'site' };
+  const baseline = prepareG4NaturalBaseline(input);
+  assert.equal(baseline.layers.length, 14);
+  assert.equal(baseline.layers.find((layer) => layer.layer === 'fauna').applicability, 'conditional');
+  assert.equal(baseline.member_selection.layers.some((layer) => layer.layer === 'fauna'), false);
+  const tampered = structuredClone(first.payload);
+  const [season, seasonRows] = Object.entries(tampered.natural_profile.season_matrix)[0];
+  const row = Object.values(seasonRows)[0];
+  row.evidence.season_window = 'other';
+  assert.throws(() => selectG4NaturalMembers({ profile: tampered,
+    frequency_weight_policy: tampered.natural_profile.frequency_weight_policy,
+    party_id: 'party', g5_site_id: 'site', season, eligible_member_refs: [] }), (error) =>
+    error.details.reason === 'MEMBER_RULES_UNRESOLVED');
+  for (const { payload: profile } of records) {
+    const { natural_profile } = profile;
+    assert.equal(Object.keys(natural_profile.layer_applicability).length, 14);
+    for (const season of ['spring', 'summer', 'autumn', 'winter']) {
+      const result = selectG4NaturalMembers({ profile,
+        frequency_weight_policy: natural_profile.frequency_weight_policy,
+        party_id: 'party', g5_site_id: 'site', season, eligible_member_refs: [] });
+      assert.equal(result.layers.length, Object.keys(natural_profile.season_matrix[season]).length);
+      for (const layer of result.layers) {
+        const row = natural_profile.season_matrix[season][layer.layer];
+        assert.equal(row.source_condition, 'derived_layer_season');
+        assert.ok(layer.member_refs.every((ref) => row.members.some((member) => member.member_ref === ref
+          && ['approved_broad_context', 'derived_layer_season'].includes(member.eligibility))));
+      }
+      assert.equal(result.layers.some((layer) => layer.layer === 'fauna'), false);
+      assert.equal(result.layers.some((layer) => layer.layer === 'audible_context'
+        && natural_profile.layer_applicability.audible_context.value.class.includes('water')), false);
+    }
+  }
 });

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createTurnAvailableActionSet, createTurnCommandRegistry } from '@rus/turn';
 import { createSpatialV3LocalSceneRuntime } from
   '../src/runtime/spatial-v3-local-scene-runtime.js';
 import { loadApprovedLocalMovementEligibilityPins } from
@@ -85,6 +86,16 @@ test('local command binds exact current edge and rejects stale state', async () 
   const [command] = await createTraceLocalSceneCommands({ state: committed,
     inputDigest: 'digest', spatialLocalSceneRuntime: runtime });
   assert.equal(command.semantic_binding.operation_dto.target_ref, 'arrival:focus');
+  const actionSet = await createTurnAvailableActionSet({
+    registry: createTurnCommandRegistry([command]), committedState: committed,
+    actorId: committed.actor_id, policyPins: [] });
+  assert.deepEqual(actionSet.options.map(({ option_id: id }) => id),
+    ['local_scene_edge:arrival:focus']);
+  const operation = command.semantic_binding.operation_dto;
+  assert.equal(command.semantic_binding.matches({ operation: {
+    ...operation, description: 'Иду к соседнему месту' } }), true);
+  assert.equal(command.semantic_binding.matches({ operation: {
+    ...operation, target_ref: 'arrival:other' } }), false);
   assert.equal(command.availability({ retrievedState: committed }).can_attempt, true);
   const stale = { ...committed, position: { position_id: 'focus' } };
   assert.equal(command.availability({ retrievedState: stale }).can_attempt, false);

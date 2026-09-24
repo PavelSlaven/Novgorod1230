@@ -46,7 +46,8 @@ export async function createTraceExpansionCommands({ state, requestId,
         binding_id: `directional_exit:${exitId}`,
         operation: 'request_movement',
         operation_dto: operation,
-        matches: ({ operation: selected }) => isDeepStrictEqual(selected, operation)
+        matches: ({ operation: selected }) => selected != null
+          && isDeepStrictEqual({ ...selected, description: label }, operation)
       },
       availability({ committed_state: current, retrievedState }) {
         const state = current ?? retrievedState;

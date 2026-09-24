@@ -57,6 +57,8 @@ test('approved exit is a selectable exact server operation; topology input is ID
     }, choices);
     const command = definitions[0];
     assert.equal(command.semantic_binding.matches(selected), true);
+    assert.equal(command.semantic_binding.matches({ operation: {
+      ...selected.operation, description: 'Иду по лесной тропе' } }), true);
     assert.equal(command.matches({ raw_text: candidate.display_label }), false);
     const playerInput = { request_id: 'request:walk',
       topology_payload: { forged: true }, directional_exit_id: 'exit:forged' };

@@ -39,7 +39,8 @@ export async function createTraceLocalSceneCommands({ state, inputDigest,
       matches: () => false,
       semantic_binding: { binding_id: `local_scene_edge:${edgeId}`,
         operation: 'request_movement', operation_dto: operation,
-        matches: ({ operation: selected }) => isDeepStrictEqual(selected, operation) },
+        matches: ({ operation: selected }) => selected != null
+          && isDeepStrictEqual({ ...selected, description: label }, operation) },
       availability({ committed_state: current, retrievedState }) {
         const state = current ?? retrievedState;
         const sourceReady = currentSource(state);

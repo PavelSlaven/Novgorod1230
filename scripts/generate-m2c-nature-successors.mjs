@@ -23,21 +23,23 @@ const richness = json(paths.richness);
 const approval = json(paths.approval);
 const phrases = json(paths.phrases);
 const seasons = ['winter', 'spring', 'summer', 'autumn'];
+const richnessRef = (variantIndex, rowIndex) => `${paths.richness}#profiles/${variantIndex}/selection_candidates/${rowIndex}`;
 if (hash(bytes(paths.richness)) !== approval.candidate_sha256 || approval.decision !== 'APPROVE_AUTHORING_DATA_ONLY') {
   throw new Error('Nature richness input lacks exact data approval');
 }
 if (natural.natural_profiles.length !== 32 || presentation.presentation_profiles.length !== 32) throw new Error('Expected 32 exact G4 profiles');
 const richnessByG4 = new Map();
-for (const variant of richness.profiles) for (const id of variant.g4_ids) {
+for (const [variantIndex, variant] of richness.profiles.entries()) for (const id of variant.g4_ids) {
   if (richnessByG4.has(id)) throw new Error(`Duplicate richness G4: ${id}`);
-  richnessByG4.set(id, variant);
+  richnessByG4.set(id, { variant, variantIndex });
 }
 const presentationByG4 = new Map(presentation.presentation_profiles.map((profile) => [profile.g4_ref.id, profile]));
 const naturalProfiles = [];
 const presentationProfiles = [];
-for (const original of natural.natural_profiles) {
+for (const [profileIndex, original] of natural.natural_profiles.entries()) {
   const id = original.g4_ref.id;
-  const variant = richnessByG4.get(id);
+  const source = richnessByG4.get(id);
+  const variant = source?.variant;
   const oldPresentation = presentationByG4.get(id);
   if (!variant || !oldPresentation || original.template_refs.landscape_template_id !== variant.landscape_template_id) {
     throw new Error(`Missing exact source profile: ${id}`);
@@ -54,22 +56,30 @@ for (const original of natural.natural_profiles) {
     limits: 'Habitat compatibility only. No animal entity, current trace, sound, encounter or stock follows.'
   };
   const membersByLayer = new Map();
+  const exclusionsByLayer = new Map();
   for (const [index, row] of variant.selection_candidates.entries()) {
     const layer = layers[row.layer];
     if (!layer) throw new Error(`Unknown layer ${row.layer}: ${id}`);
+    const candidateRef = richnessRef(source.variantIndex, index);
     if (row.layer !== 'fauna' && layer.applicability !== 'present') {
       if (row.taxon !== 'Salix (willow)' || row.layer !== 'riparian_vegetation'
         || !id.endsWith('_driftwood_bar') && !id.endsWith('_shifting_shoal_field')) {
         throw new Error(`Unexpected inapplicable alternative: ${id}/${row.taxon}`);
       }
+      (exclusionsByLayer.get(row.layer) ?? exclusionsByLayer.set(row.layer, []).get(row.layer)).push({ candidate_ref: candidateRef,
+        reason: 'baseline_layer_not_applicable', baseline_ref: `${paths.natural}#natural_profiles/${profileIndex}/natural_profile/layer_applicability/${row.layer}` });
       continue;
     }
     if (row.kind === 'fungi' && !layer.value?.ambient_materials?.some((material) => richness.fungal_organic_substrates.includes(material))) {
       if (!id.endsWith('_shifting_shoal_field')) throw new Error(`Unexpected fungal substrate gap: ${id}`);
+      (exclusionsByLayer.get(row.layer) ?? exclusionsByLayer.set(row.layer, []).get(row.layer)).push({ candidate_ref: candidateRef,
+        reason: 'organic_substrate_absent', baseline_ref: `${paths.natural}#natural_profiles/${profileIndex}/natural_profile/layer_applicability/${row.layer}` });
       continue;
     }
+    if (!(row.category in richness.weight_policy.weights)) throw new Error(`Unknown frequency category: ${row.category}`);
     const member = {
       id: `${id}:nature_member_${index + 1}`, kind: row.kind, taxon_or_material_ref: row.taxon,
+      source_candidate_ref: candidateRef, frequency_category: row.category,
       ordinal_category: row.category, editorial_weight: richness.weight_policy.weights[row.category],
       directness: row.directness, confidence: row.confidence,
       source_refs: row.source_keys.map((key) => richness.source_register[key]),
@@ -85,12 +95,17 @@ for (const original of natural.natural_profiles) {
       const alternatives = layer.alternatives ?? [];
       const members = alternatives.map((member) => ({
         member_ref: member.id, eligibility: 'conditional_current_state',
+        frequency_category: member.frequency_category, editorial_weight: member.editorial_weight,
+        season_eligibility: { status: 'unresolved_machine_condition', condition_ref: `${member.source_candidate_ref}/season` },
         phase: name === 'fauna' ? phrases.fauna_phase
           : phrases.seasonal_phase[member.taxon_or_material_ref]?.[seasonIndex] ?? phrases.default_phase
       }));
       if (layer.applicability === 'present') members.unshift({ member_ref: `baseline:${name}`, eligibility: 'approved_broad_context', phase: phrases.default_phase });
       if (layer.applicability !== 'not_applicable' && !members.length) throw new Error(`Empty applicable ${season}/${name}: ${id}`);
-      return [name, { applicability: layer.applicability, members }];
+      return [name, { applicability: layer.applicability,
+        mandatory_member_refs: layer.applicability === 'present' ? [`baseline:${name}`] : [],
+        excluded_candidate_refs: exclusionsByLayer.get(name) ?? [],
+        incompatibility: { status: 'unresolved_source_gap', member_refs: [] }, members }];
     }))]));
   naturalProfiles.push(profile);
 
@@ -133,6 +148,7 @@ const output = {
     artifact_type: 'natural_baseline_successor_authoring_candidate', candidate_id: 'novgorod_m2c_natural_baseline_g4_v2',
     version: 2, status: 'candidate_approval_pending', approved: false, import_authorized: false, activation_authorized: false,
     source_pins: sourcePins,
+    frequency_weight_policy: structuredClone(richness.weight_policy),
     limits: 'Authoring data only. Existing 13-layer runtime validator does not admit the conditional fauna layer. Selection requires separate current-state and owner admission; no local presence or stock is asserted.',
     target: natural.target, natural_profiles: naturalProfiles
   },

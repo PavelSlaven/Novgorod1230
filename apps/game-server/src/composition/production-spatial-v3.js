@@ -35,6 +35,8 @@ import { deriveActivatedReleaseFromReadback } from './production-v2-activation-s
 import { loadSpatialV3TargetProductionRelease, loadTargetCatalogActivationApprovals } from './production-spatial-v3-release-v17.js';
 import { loadTargetRuntimeProfiles } from '../internal/target-runtime-profiles.js';
 import { createSpatialV3LocalSceneRuntime } from '../runtime/spatial-v3-local-scene-runtime.js';
+import { createSpatialV3CurrentMovementCapability } from
+  '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
   SPATIAL_V3_PRODUCTION_RELEASE,
@@ -146,8 +148,12 @@ export async function createSpatialV3ProductionCompositionRoot({
       }) : null;
     const spatialSemanticFirstEntryProvisioner = targetContext == null
       ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;
+    const siteTraversalCapability = targetContext == null ? null
+      : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
     const committer = createSpatialV3PostgresCombinedAtomicCommitter({
-      pool: pools.partyPool, recheck: bindings.commitRecheck,
+      pool: pools.partyPool, recheck: siteTraversalCapability == null
+        ? bindings.commitRecheck
+        : (input) => bindings.commitRecheck({ ...input, ...siteTraversalCapability }),
       readNaturalSourceProperty: targetFiniteFirstEntry?.readNaturalSourceProperty ?? null,
       ordinaryFirstEntryProvisioner: targetContext == null
         ? { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }

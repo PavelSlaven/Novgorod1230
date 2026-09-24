@@ -203,6 +203,16 @@ export function createSpatialV3PartyRepository({ transaction } = {}) {
       knowledge: Object.freeze(knowledge.rows.map((row) => Object.freeze(clone(row))))
     });
   }
+  async function loadVisibilityModifiers({ party_id } = {}, context = {}) {
+    const tx = context.transaction ?? transaction;
+    if (!text(party_id) || !requireTransaction(tx)) return failure('generated_schema_mismatch', 'party', party_id ?? 'unknown', { resource: 'visibility_modifiers' });
+    // A party-wide read avoids treating an unknown or broader spatial scope as empty.
+    const result = await tx.query(`SELECT id,party_id,source_entity_ref,affected_scope_ref,
+      modifier_kind,condition_ref,source_dependency_pins,state_version,updated_change_set_id
+      FROM party_runtime.visibility_modifiers WHERE party_id=$1 ORDER BY id`, [party_id]);
+    return Object.freeze({ ok: true, complete: true,
+      rows: Object.freeze(result.rows.map((row) => Object.freeze(clone(row)))) });
+  }
   const persist = async ({ party_id } = {}) => failure('generated_schema_mismatch', 'party', party_id ?? 'unknown', { reason: 'P16 repositories are read-only; only CombinedAtomicCommitter writes.' });
-  return Object.freeze({ load, persist, loadExpansionState, loadSpatialState: (input, context) => load({ ...input, resource: 'spatial_state' }, context), loadPlan: (input, context) => load({ ...input, resource: 'plans' }, context), loadExecution: (input, context) => load({ ...input, resource: 'executions' }, context), loadFrontier: (input, context) => load({ ...input, resource: 'frontiers' }, context), loadCarrier: (input, context) => load({ ...input, resource: 'carriers' }, context), loadHistory, loadPerceptionReplay, loadReactionOptionProposal, loadReactionConsequence, loadKnowledgeMergeResult, loadKnowledgeState });
+  return Object.freeze({ load, persist, loadExpansionState, loadVisibilityModifiers, loadSpatialState: (input, context) => load({ ...input, resource: 'spatial_state' }, context), loadPlan: (input, context) => load({ ...input, resource: 'plans' }, context), loadExecution: (input, context) => load({ ...input, resource: 'executions' }, context), loadFrontier: (input, context) => load({ ...input, resource: 'frontiers' }, context), loadCarrier: (input, context) => load({ ...input, resource: 'carriers' }, context), loadHistory, loadPerceptionReplay, loadReactionOptionProposal, loadReactionConsequence, loadKnowledgeMergeResult, loadKnowledgeState });
 }

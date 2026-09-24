@@ -2,7 +2,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { materializeSpatialV3Expansion, materializeSpatialV3GeneratedScene,
   selectSpatialV3Expansion } from '@rus/materialization/spatial-v3-materialization';
 import { createSpatialV3Repository } from '@rus/party-store/spatial-v3';
-import { createCombinedWritePlanBuilder } from '@rus/turn/spatial-v3';
+import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { computeSpatialV3CanonicalDigest as digest,
   createSpatialV3TypedError } from '@rus/contracts/spatial-v3/registry';
 

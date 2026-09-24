@@ -34,6 +34,8 @@ const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
 const gate1 = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
 const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1';
 const nature = 'data/world-catalogs/novgorod/m2c-natural';
+const capacityManifest = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
+const capacityManifestSha256 = '80d3c420583307197c8118a4c07b86fe0cea47eb5486a4e09d38429a1bd7e20d';
 const naturePins = {
   script: '2da6132c6bf46fe482a0a675ded4ca672c176b094a3312de1f8c3d0ada936952',
   natural: '58e0d2be66df86a79faf76d4ef57d3d020ba778711736a61b4478c255d8cbef7',
@@ -108,6 +110,7 @@ export async function checkV17BootstrapInputs() {
   if (sqlHash.digest('hex') !== request.sql_builder.combined_sql_sha256
       || sqlBytes !== request.sql_builder.combined_sql_bytes)
     throw new Error('V17_P12_COMBINED_SQL_MISMATCH');
+  await exact(capacityManifest, capacityManifestSha256);
 
   const appearance = await json(`${v17}/appearance-transfer-v3-v17-import-request.json`);
   const approved = appearance.approved_data;
@@ -277,6 +280,29 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
 
+    const capacity = await json(capacityManifest);
+    const pinnedTables = ['spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles'];
+    const previous = {};
+    for (const table of pinnedTables) {
+      previous[table] = (await world.query(`SELECT to_jsonb(r) AS row FROM world_base.${table} r
+        WHERE version=1 ORDER BY id`)).rows.map(({ row }) => row);
+    }
+    await world.query(await buildTransactionalImportSql({ root,
+      manifestPath: capacityManifest, temporaryTablePrefix: 'm2c_capacity_v2' }));
+    const capacityDigests = {};
+    for (const table of pinnedTables) {
+      const dataset = capacity.datasets.find((entry) => entry.table === table);
+      const rows = await json(`data/world-catalogs/novgorod/${dataset.file}`);
+      const actual = (await world.query(`SELECT to_jsonb(r) AS row FROM world_base.${table} r
+        WHERE version=2 ORDER BY id`)).rows.map(({ row }) => row);
+      assert.deepEqual(actual, rows.toSorted((a, b) => a.id.localeCompare(b.id)));
+      const unchanged = (await world.query(`SELECT to_jsonb(r) AS row FROM world_base.${table} r
+        WHERE version=1 ORDER BY id`)).rows.map(({ row }) => row);
+      assert.deepEqual(unchanged, previous[table]);
+      capacityDigests[table] = digestEnvelope(rows.map((row) =>
+        [row.id, row.version, row.canonical_digest]).sort((a, b) => a[0].localeCompare(b[0])));
+    }
+
     const appearanceCounts = appearanceRequest.expected_import_readback.by_table;
     const beforeAppearance = await tableCounts(world, Object.keys(appearanceCounts));
     const rollback = await buildTargetAppearanceTransferV3ImportSql({ root, rollback: true });
@@ -439,7 +465,8 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },
       appearance_v3: { inserted_rows: appearanceRequest.expected_import_readback.inserted_rows,
-        rollback: 'pass' }, nature_successor: { inserted_rows: natureRecords.length,
+        rollback: 'pass' }, capacity_v2: { manifest_sha256: capacityManifestSha256,
+        runtime_record_digests: capacityDigests }, nature_successor: { inserted_rows: natureRecords.length,
         runtime_record_digests: natureDigests }, item_import: itemReadback,
       item_activation: itemActivation, actor_import: actorReadback,
       activation_performed: false };

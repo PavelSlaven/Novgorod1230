@@ -20,7 +20,7 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
       listPublic: () => catalogs.flatMap((catalog) => catalog.listPublic()),
       hasScenario: (id) => byId.get(id)?.hasScenario(id) ?? false,
       resolveProfile: (id) => byId.get(id)?.resolveProfile(id) ?? historicalCatalog?.resolveProfile(id) ?? null,
-      loadPublication: (id, options) => byId.get(id)?.loadPublication(id, options)
+      loadPublication: (id, options) => byId.get(id)?.loadPublication(id)
         ?? historicalCatalog?.loadPublication(id, options) ?? null,
       resolveRuntimeBinding: (ref) => ref?.catalog_id === 'novgorod_live_world_runtime_v17'
         ? bindings.get(ref.revision) ?? null : historicalCatalog?.resolveRuntimeBinding(ref) ?? null });
@@ -67,8 +67,8 @@ export function createTargetAuthoredStartCatalog({ runtime, release, historicalC
     listPublic: () => [{ scenario_id: profile.scenario_id, ...metadata }],
     hasScenario: (scenarioId) => metadata.available && scenarioId === profile.scenario_id,
     resolveProfile: (scenarioId) => scenarioId === profile.scenario_id ? profile : historicalCatalog?.resolveProfile(scenarioId) ?? null,
-    loadPublication: async (scenarioId, { bindingRevision: requestedRevision = 1 } = {}) => {
-      if (scenarioId === profile.scenario_id) return requestedRevision == null || requestedRevision === 1 ? publication : null;
+    loadPublication: async (scenarioId, { bindingRevision: requestedRevision = bindingRevision } = {}) => {
+      if (scenarioId === profile.scenario_id) return requestedRevision == null || requestedRevision === bindingRevision ? publication : null;
       return historicalCatalog?.loadPublication(scenarioId, { bindingRevision }) ?? null;
     },
     resolveRuntimeBinding: (ref) => ref?.catalog_id === runtimeBinding.catalog_id && ref.revision === runtimeBinding.revision

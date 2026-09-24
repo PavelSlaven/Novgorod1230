@@ -114,6 +114,8 @@ test('target catalog lists and selects each exact loaded start', async () => {
   assert.equal(catalog.hasScenario('river'), true);
   assert.equal((await catalog.loadPublication('river')).binding.scenario_id, 'river');
   assert.equal((await catalog.loadPublication('river')).binding.runtime_binding.revision, 2);
+  assert.equal((await catalog.loadPublication('river', { bindingRevision: 2 })).binding.scenario_id, 'river');
+  assert.equal((await catalog.loadPublication('river', { bindingRevision: 1 })).binding.runtime_binding.revision, 2);
   assert.equal(catalog.resolveRuntimeBinding({ catalog_id: 'novgorod_live_world_runtime_v17', revision: 2 }).scenario_id, 'river');
   assert.equal(catalog.hasScenario('unknown'), false);
   let selected = null;

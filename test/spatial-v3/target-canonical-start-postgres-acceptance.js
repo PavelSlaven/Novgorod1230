@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
-import { writeFile } from 'node:fs/promises';
+import { link, mkdir, mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { canonicalDigest } from '@rus/materialization';
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
 import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
@@ -27,6 +28,8 @@ import { createLlmSettingsOwner } from '../../apps/game-server/src/runtime/llm-s
 
 /** Run after the isolated operator has issued, applied and read back exact target pins. */
 export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorBinding, releaseInputs }) {
+  const overlay = await approvedSevenStartsOverlay();
+  try {
   const input = await targetCanonicalStartFixture();
   const worldReadback = await loadTargetStartWorldReadback({ pool, start: input.scenario_bundle.canonical_start.start });
   const runtime = await loadTargetAuthoredStartRuntime({ worldPool: pool, itemPin, actorBinding });
@@ -162,9 +165,9 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   let publicRuntime;
   const rootStarted = performance.now();
   try {
-  publicRuntime = await createSpatialV3ProductionCompositionRoot({
+  const rootOptions = {
     env: { DEEPSEEK_API_KEY: 'isolated-fixture-key', DEEPSEEK_BASE_URL: 'https://target-acceptance.invalid' },
-    config: { spatialV3BindingsModule: 'builtin:spatial-v3-production-v17',
+    config: { spatialV3BindingsModule: 'builtin:spatial-v3-production-v17', rootDir: overlay.rootDir,
       runtimeCatalogPinManifestDigest: itemPin.compatible_world_pin_manifest_digest,
       targetCatalogActivationApprovals: { itemApproval: releaseInputs.itemApproval, actorApproval: releaseInputs.actorApproval },
       traceTurnDecisionSecret: 'isolated-target-acceptance-secret',
@@ -173,12 +176,14 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
       const client = await pool.connect();
       return { query: client.query.bind(client), release() { client.release(true); } };
     } }, partyPool: pool, async close() {} },
-    worldKnowledgeEncoderFactory: () => ({ async ready() {}, async encode() { return new Float32Array(1024); }, async close() {} }) });
+    worldKnowledgeEncoderFactory: () => ({ async ready() {}, async encode() { return new Float32Array(1024); }, async close() {} }) };
+  publicRuntime = await createSpatialV3ProductionCompositionRoot(rootOptions);
   assert.equal(publicRuntime.health().release_id, release.release_id);
   assert.equal(publicRuntime.health().world_revision_id, release.world_revision_id);
   const publicCatalog = await publicRuntime.listScenarios();
-  assert.deepEqual(publicCatalog.scenarios.map((entry) => entry.scenario_id), [profile.scenario_id]);
-  assert.equal(publicCatalog.scenarios[0].available, true);
+  assert.deepEqual(publicCatalog.scenarios.map((entry) => entry.scenario_id),
+    overlay.manifest.starts.map((entry) => entry.scenario_id));
+  assert.ok(publicCatalog.scenarios.every((entry) => entry.available));
   const startupMs = performance.now() - rootStarted;
   const publicRequest = { scenario_id: profile.scenario_id, request_id: 'target-real-public-opening' };
   const openingStarted = performance.now();
@@ -202,6 +207,31 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   assert.deepEqual(await publicRuntime.startNewGame(publicRequest), opening);
   assert.equal((await publicRuntime.getPartyScreen(opening.party_id)).screen.main_prose, opening.screen.main_prose);
   await publicRuntime.acknowledgeOpening(opening.party_id, { client_ack_id: 'target-public-ack' });
+  const opened = new Map([[profile.scenario_id, { partyId: opening.party_id, digest: canonicalDigest(opening.screen) }]]);
+  for (const entry of overlay.manifest.starts.slice(1)) {
+    const next = await publicRuntime.startNewGame({ scenario_id: entry.scenario_id,
+      request_id: `target-seven-starts-${entry.binding_revision}` });
+    assert.equal(next.screen.schema, 'first_game_screen');
+    assert.equal(next.screen.scenario_id, entry.scenario_id);
+    assert.equal(next.screen.main_prose.trim().length > 0, true);
+    assert.equal(next.screen.panels.route.visible, true);
+    assert.equal(next.screen.panels.character.visible, true);
+    assert.ok(next.screen.visible_context.place);
+    assert.ok(next.screen.visible_context.timestamp);
+    assert.ok(next.screen.visible_context.environment);
+    assert.equal(next.screen.delivery_state.ready, true);
+    assert.equal(canonicalDigest((await publicRuntime.getPartyScreen(next.party_id)).screen),
+      canonicalDigest(next.screen));
+    const ack = await publicRuntime.acknowledgeOpening(next.party_id,
+      { client_ack_id: `target-seven-starts-ack-${entry.binding_revision}` });
+    assert.equal(ack.screen_digest, canonicalDigest(next.screen));
+    opened.set(entry.scenario_id, { partyId: next.party_id, digest: ack.screen_digest });
+  }
+  for (const [scenarioId, { partyId, digest }] of opened) {
+    const look = await publicRuntime.getPartyScreen(partyId);
+    assert.equal(look.screen.scenario_id, scenarioId);
+    assert.equal(canonicalDigest(look.screen), digest);
+  }
   const phase2 = createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool,
     committer: { async commit() { throw new Error('read acceptance must not commit a turn'); } },
     authoredRuntimeBindingResolver: catalog.resolveRuntimeBinding,
@@ -228,6 +258,14 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   } finally {
     await factualTransaction.query('ROLLBACK'); factualTransaction.release();
   }
+  const reloadedRuntime = await createSpatialV3ProductionCompositionRoot(rootOptions);
+  try {
+    for (const [scenarioId, { partyId, digest }] of opened) {
+      const reloaded = await reloadedRuntime.getPartyScreen(partyId);
+      assert.equal(reloaded.screen.scenario_id, scenarioId);
+      assert.equal(canonicalDigest(reloaded.screen), digest);
+    }
+  } finally { await reloadedRuntime.close(); }
   if (process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true') {
     await serveTargetHttpBrowserSmoke({ root: { ...publicRuntime,
       ...(realProvider ? { getLlmSettings: () => llmSettings.read() } : {}) }, pool, realProvider });
@@ -236,4 +274,29 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
     globalThis.fetch = previousFetch;
     await publicRuntime?.close();
   }
+  } finally { await rm(overlay.rootDir, { recursive: true, force: true }); }
+}
+
+async function approvedSevenStartsOverlay() {
+  const sourceRoot = resolve(import.meta.dirname, '../..');
+  const rootDir = await mkdtemp(join(tmpdir(), 'novgorod-seven-starts-'));
+  const relative = 'data/world-catalogs/novgorod/live-world-runtime-v17';
+  const manifest = JSON.parse(await readFile(join(sourceRoot, relative,
+    'target-starts-manifest.v1.candidate.json'), 'utf8'));
+  try {
+    let source = sourceRoot; let target = rootDir;
+    for (const segment of [...relative.split('/'), 'target-starts-manifest.v1.json']) {
+      await mkdir(target, { recursive: true });
+      for (const entry of await readdir(source, { withFileTypes: true })) {
+        if (entry.name === segment) continue;
+        const from = join(source, entry.name); const to = join(target, entry.name);
+        if (entry.isDirectory()) await symlink(from, to, 'junction');
+        else if (entry.isFile()) await link(from, to);
+      }
+      source = join(source, segment); target = join(target, segment);
+    }
+    await writeFile(target, `${JSON.stringify({ ...manifest, status: 'approved',
+      activation_authorized: true }, null, 2)}\n`);
+    return { rootDir, manifest };
+  } catch (error) { await rm(rootDir, { recursive: true, force: true }); throw error; }
 }

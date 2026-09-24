@@ -4,11 +4,13 @@ import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-p
 import { resolveG4NaturalPerceptionConditions } from '../../runtime/g4-natural-perception-conditions.js';
 import { serverError } from '../../errors.js';
 import { createHash } from 'node:crypto';
+import { canonicalDigest } from '@rus/materialization';
 import { readFileSync } from 'node:fs';
 
 const coverCandidateBytes = readFileSync(new URL('../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-candidate.json', import.meta.url));
 const coverCandidate = JSON.parse(coverCandidateBytes);
 const coverApproval = JSON.parse(readFileSync(new URL('../../../../../data/world-catalogs/novgorod/live-world-runtime-v17/natural-source-stable-cover-approval.json', import.meta.url)));
+const naturalCandidate = JSON.parse(readFileSync(new URL('../../../../../data/world-catalogs/novgorod/m2c-natural/candidate.json', import.meta.url)));
 
 export function approvedNaturalStableCover(profile) {
   if (coverApproval.decision !== 'APPROVE_DATA_ONLY'
@@ -17,7 +19,12 @@ export function approvedNaturalStableCover(profile) {
     || profile?.g4_ref?.world_revision_id !== coverCandidate.world_revision_id) {
     gap('approved_natural_stable_cover_required');
   }
-  const landscape = profile.template_refs?.landscape_template_id;
+  const source = naturalCandidate.natural_profiles.filter((row) =>
+    row.profile_id === profile?.profile_id && row.profile_version === profile.profile_version
+    && row.g4_ref?.id === profile.g4_ref.id && row.g4_ref.version === profile.g4_ref.version
+    && canonicalDigest(row.natural_profile) === canonicalDigest(profile.natural_profile));
+  if (source.length !== 1) gap('approved_natural_stable_cover_required');
+  const landscape = source[0].template_refs?.landscape_template_id;
   const rows = coverCandidate.rows.filter((row) => row.landscape_template_id === landscape);
   if (rows.length !== 1 || !['clear', 'partial', 'none'].includes(rows[0].stable_cover)) {
     gap('approved_natural_stable_cover_required');

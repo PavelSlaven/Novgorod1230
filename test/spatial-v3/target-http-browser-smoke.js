@@ -13,14 +13,15 @@ export const TARGET_SMOKE_INPUT = 'Осматриваюсь вокруг, ост
  * use the printed local URL, then POST browser observations to /__smoke/finish.
  * Deterministic model responses test delivery/mechanics, not prose quality.
  */
-export async function serveTargetHttpBrowserSmoke({ root, pool }) {
+export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = false }) {
   const provider = globalThis.fetch;
   const report = { schema: 'target_http_browser_smoke_v1', scope: 'isolated PostgreSQL test approvals only',
+    provider: realProvider ? 'configured_local_settings' : 'deterministic_test_fixture',
     player_input: TARGET_SMOKE_INPUT, started_at: new Date().toISOString(),
     model_calls: [], calls: [], browser: null };
   const reportPath = join(tmpdir(), `novgorod-target-http-smoke-${process.pid}.json`);
   const save = () => writeFile(reportPath, JSON.stringify(report, null, 2));
-  globalThis.fetch = async (url, init) => {
+  if (!realProvider) globalThis.fetch = async (url, init) => {
     const call = JSON.parse(init.body);
     const system = call.messages[0].content.replace(/^Return a valid json object\.\s*/u, '');
     const input = JSON.parse(call.messages.find((message) => message.role === 'user').content);
@@ -71,9 +72,10 @@ export async function serveTargetHttpBrowserSmoke({ root, pool }) {
     await save();
     return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(output) } }] }), { status: 200 });
   };
-  const observedRoot = { ...root, getLlmSettings: () => ({ mode: 'custom', compatibility: 'openai_compatible',
-    base_url: 'https://target-acceptance.invalid', model: 'deterministic-test-fixture',
-    api_key_present: true, default_model: 'deterministic-test-fixture' }), getTurnProgress: () => null };
+  const observedRoot = { ...root, ...(realProvider ? {} : { getLlmSettings: () => ({
+    mode: 'custom', compatibility: 'openai_compatible', base_url: 'https://target-acceptance.invalid',
+    model: 'deterministic-test-fixture', api_key_present: true,
+    default_model: 'deterministic-test-fixture' }) }), getTurnProgress: () => null };
   for (const method of ['startNewGame', 'acknowledgeOpening', 'submitTurn', 'getPartyScreen']) {
     observedRoot[method] = async (...args) => {
       const started = performance.now();
@@ -120,7 +122,8 @@ export async function serveTargetHttpBrowserSmoke({ root, pool }) {
     assert.deepEqual(turns[1].result, turns[0].result, 'successful HTTP retry is idempotent');
     assert.deepEqual(turns[1].after, turns[0].after, 'retry adds no gameplay write');
     assert.equal(turns[0].after.party.state_version, turns[0].before.party.state_version + 1);
-    assert.equal(turns[0].after.clock.whole_minutes, turns[0].before.clock.whole_minutes + 1);
+    if (realProvider) assert.ok(turns[0].after.clock.whole_minutes > turns[0].before.clock.whole_minutes);
+    else assert.equal(turns[0].after.clock.whole_minutes, turns[0].before.clock.whole_minutes + 1);
     for (const key of ['body', 'positions', 'materialization_runs', 'sites']) {
       assert.deepEqual(turns[0].after[key], turns[0].before[key], `observation preserves ${key}`);
     }
@@ -135,7 +138,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool }) {
       !['world_knowledge_query_planner', 'intent_router', 'turn_step_planner', 'gameplay_narrator', 'gameplay_narrator_auditor'].includes(call.role)).length;
     report.finished_at = new Date().toISOString(); await save();
   } finally {
-    clearTimeout(timeout); globalThis.fetch = provider;
+    clearTimeout(timeout); if (!realProvider) globalThis.fetch = provider;
     await new Promise((done) => server.close(done));
   }
 }

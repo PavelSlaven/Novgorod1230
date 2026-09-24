@@ -22,6 +22,8 @@ import { readInitialCanonicalNaturalSourceState } from '../../apps/game-server/s
 import { prepareG4NaturalScenePerceptionInput, projectG4NaturalPerception } from '../../apps/game-server/src/runtime/g4-natural-perception.js';
 import { createTargetCurrentFactualContext } from '../../apps/game-server/src/infrastructure/postgres/target-current-factual-context.js';
 import { serveTargetHttpBrowserSmoke } from './target-http-browser-smoke.js';
+import { createLlmSettingsFileStore } from '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
+import { createLlmSettingsOwner } from '../../apps/game-server/src/runtime/llm-settings.js';
 
 /** Run after the isolated operator has issued, applied and read back exact target pins. */
 export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorBinding, releaseInputs }) {
@@ -132,7 +134,12 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   const narrationRoles = [];
   const providerTimings = [];
   const previousFetch = globalThis.fetch;
-  globalThis.fetch = async (url, init) => {
+  const realProvider = process.env.RUS_TARGET_HTTP_BROWSER_SMOKE_PROVIDER === 'real';
+  const llmSettings = realProvider
+    ? createLlmSettingsOwner({ initialRecord: await createLlmSettingsFileStore().load() }) : null;
+  if (realProvider) assert.equal(llmSettings.providerSnapshot().mode, 'custom',
+    'real browser smoke requires configured local LLM settings');
+  if (!realProvider) globalThis.fetch = async (url, init) => {
       const providerStarted = performance.now();
       assert.equal(String(url), 'https://target-acceptance.invalid/chat/completions');
       const call = JSON.parse(init.body);
@@ -160,7 +167,8 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
     config: { spatialV3BindingsModule: 'builtin:spatial-v3-production-v17',
       runtimeCatalogPinManifestDigest: itemPin.compatible_world_pin_manifest_digest,
       targetCatalogActivationApprovals: { itemApproval: releaseInputs.itemApproval, actorApproval: releaseInputs.actorApproval },
-      traceTurnDecisionSecret: 'isolated-target-acceptance-secret' },
+      traceTurnDecisionSecret: 'isolated-target-acceptance-secret',
+      ...(realProvider ? { llmSettings } : {}) },
     pools: { worldPool: { query: pool.query.bind(pool), async connect() {
       const client = await pool.connect();
       return { query: client.query.bind(client), release() { client.release(true); } };
@@ -180,7 +188,8 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   await writeFile(playtestPath, JSON.stringify({ release_id: release.release_id,
     scenario_id: profile.scenario_id, endpoint: 'officialRoot.startNewGame',
     operational_approval_scope: 'isolated PostgreSQL fixture only',
-    external_provider: 'deterministic HTTP fixture', first_screen: opening.screen,
+    external_provider: realProvider ? 'configured_local_settings' : 'deterministic HTTP fixture',
+    first_screen: opening.screen,
     timing_ms: { root_startup_and_catalog: startupMs, public_start_total: openingMs,
       external_provider_calls: providerTimings,
       generation_commit_projection: null,
@@ -189,7 +198,7 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   console.log(`Target official start playtest: ${playtestPath}`);
   assert.equal(opening.screen.schema, 'first_game_screen');
   assert.equal(opening.screen.scenario_id, profile.scenario_id);
-  assert.deepEqual(narrationRoles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
+  if (!realProvider) assert.deepEqual(narrationRoles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
   assert.deepEqual(await publicRuntime.startNewGame(publicRequest), opening);
   assert.equal((await publicRuntime.getPartyScreen(opening.party_id)).screen.main_prose, opening.screen.main_prose);
   await publicRuntime.acknowledgeOpening(opening.party_id, { client_ack_id: 'target-public-ack' });
@@ -220,7 +229,8 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
     await factualTransaction.query('ROLLBACK'); factualTransaction.release();
   }
   if (process.env.RUS_TARGET_HTTP_BROWSER_SMOKE === 'true') {
-    await serveTargetHttpBrowserSmoke({ root: publicRuntime, pool });
+    await serveTargetHttpBrowserSmoke({ root: { ...publicRuntime,
+      ...(realProvider ? { getLlmSettings: () => llmSettings.read() } : {}) }, pool, realProvider });
   }
   } finally {
     globalThis.fetch = previousFetch;

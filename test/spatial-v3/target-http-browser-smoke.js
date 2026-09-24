@@ -170,11 +170,15 @@ export function assertDisplayedMovementRoute(turns) {
   for (let index = 2; index < turns.length; index += 1) {
     const turn = turns[index];
     const previous = turns[index - 1];
-    const offered = previous.result.screen.action_panel.suggested_actions.filter((action) =>
-      (action.option_id?.startsWith('local_scene_edge:') || action.option_id?.startsWith('directional_exit:'))
-      && action.label === turn.args[1].raw_text);
+    const screen = previous.result.screen;
+    const offered = (screen.panels?.route?.data?.movement?.options ?? []).filter((action) =>
+      action.knowledge_state === 'known' && action.label === turn.args[1].raw_text);
     assert.equal(offered.length, 1, 'submit the exact currently displayed approved movement label');
-    const isExit = offered[0].option_id.startsWith('directional_exit:');
+    const refs = (screen.visible_context?.visible_objects ?? []).filter((object) =>
+      object.display_label === offered[0].label
+      && ['scene_movement_edge', 'g4_directional_exit'].includes(object.entity_ref?.entity_kind));
+    assert.equal(refs.length, 1, 'displayed route has one visible committed movement ref');
+    const isExit = refs[0].entity_ref.entity_kind === 'g4_directional_exit';
     assert.equal(turn.error, undefined, 'visible movement must reach the production movement owner');
     assert.notEqual(turn.result.movement, null);
     assert.notDeepEqual(turn.after.positions, turn.before.positions, 'movement must change committed position');

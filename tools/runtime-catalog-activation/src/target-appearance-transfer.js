@@ -87,6 +87,44 @@ export async function buildTargetAppearanceTransferCandidate({ repositoryRoot = 
 }
 function digest(bytes) { return createHash('sha256').update(bytes).digest('hex'); }
 
+/** Data-only v17 candidate: carry the 44 approved v4 dependency rows exactly. */
+export async function buildTargetAppearanceTransferV3Candidate({ repositoryRoot = process.cwd() } = {}) {
+  const v2 = await buildTargetAppearanceTransferCandidate({ repositoryRoot });
+  const sourceRefs = {};
+  for (const [table, rows] of Object.entries(v2.existing_dependencies)) {
+    const pin = v2.source_tables.find((item) => item.table === table);
+    if (!pin || rows.some((row) => row.status !== 'approved')) throw new Error('TARGET_APPEARANCE_DEPENDENCY_SOURCE_REQUIRED');
+    sourceRefs[table] = rows.map((row) => ({
+      row_id: row.id, source_ref: { file: `${v2.source_directory}/${table}.json`, sha256: pin.sha256, row_id: row.id },
+      directness: 'exact_approved_row_transfer'
+    }));
+  }
+  return {
+    ...v2,
+    candidate_id: 'novgorod_target_actor_appearance_transfer_v3', version: 3,
+    world_registration: { ...v2.world_registration, import_order: [
+      'world_revisions', 'universal_categories', 'region_demographic_profiles',
+      'region_appearance_profiles', 'region_category_options',
+      'region_demographic_profile_entries', 'region_appearance_profile_entries'
+    ] },
+    limits: v2.limits.map((limit) => limit === 'Existing profiles and categories are exact dependencies. No v4/v6 row or historical actor snapshot may be updated.'
+      ? 'The two profiles and 42 categories are exact approved v4 row inserts; no v4/v6 row or historical actor snapshot may be updated.' : limit),
+    existing_dependencies: {},
+    proposed_insert_rows: {
+      world_revisions: v2.proposed_insert_rows.world_revisions,
+      universal_categories: v2.existing_dependencies.universal_categories,
+      region_demographic_profiles: v2.existing_dependencies.region_demographic_profiles,
+      region_appearance_profiles: v2.existing_dependencies.region_appearance_profiles,
+      region_category_options: v2.proposed_insert_rows.region_category_options,
+      region_demographic_profile_entries: v2.proposed_insert_rows.region_demographic_profile_entries,
+      region_appearance_profile_entries: v2.proposed_insert_rows.region_appearance_profile_entries
+    },
+    dependency_source_refs: sourceRefs,
+    approval_request: { ...v2.approval_request,
+      scope: 'exact_44_approved_v4_dependencies_and_unchanged_85_v2_target_inserts' }
+  };
+}
+
 /** Prepare approved-status mapping for independent review; it does not execute SQL. */
 export async function buildTargetAppearanceTransferImportArtifacts({ repositoryRoot = process.cwd() } = {}) {
   const directory = 'data/world-catalogs/novgorod/live-world-runtime-v17';

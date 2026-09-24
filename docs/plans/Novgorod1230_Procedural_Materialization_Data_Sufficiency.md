@@ -21,6 +21,10 @@ The report separately indexes flora/fungi, soil/geology/material and medieval re
 
 **Remaining typed gaps:** `m2c_nature_type_reference_required` (historically checked, geographically bounded flora, fauna and material incidence with season and source anchors for each applicable G4 type); `m2c_nature_fauna_layer_authoring_required` (separately approved fauna presence/trace/acoustic descriptors through the existing natural baseline and presentation owners); `m2c_nature_exact_applicability_required` (source-backed land-use/place applicability to G4/G5). No production import or database write occurred in this benchmark.
 
+### First nature-richness authoring candidate
+
+`m2c-natural/nature-richness-candidate-v1.json` now records flora, fauna and substrate alternatives for 19 exact forest and low-alluvial-riverbank G4 profiles. The generated comparison lists each alternative beside its current broad natural layer and names the remaining 13 G4 IDs. The candidate keeps medieval regional archaeology, modern habitat analogy and exact spatial template evidence separate. Every taxon transfer is low-confidence inference or analogy pending independent historical review. The 8/4/2/1 category map is an explicit editorial preference for later selection, never a measured source frequency or a current animal/plant. Fungal taxa remain unresolved. Neither the candidate nor this report changes active natural baselines, creates a fauna layer or permits an import.
+
 Status: authoring/readiness input for PR #98. Source files, candidate bundles,
 approved records and records activated under the exact runtime pin are distinct.
 Only the last class is executable runtime data.

@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ARCHIVE = ROOT / "data/world-base-sources/rus13-base-v1.tar.gz"
 NATURAL = ROOT / "data/world-catalogs/novgorod/m2c-natural/candidate.json"
+RICHNESS = ROOT / "data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json"
 KNOWLEDGE = ROOT / "data/world-catalogs/novgorod/world-knowledge/production-v1"
 MEMBER_BASE = "nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED"
 KINDS = {
@@ -41,6 +42,30 @@ def read_json(path):
 
 def main():
     profiles = read_json(NATURAL)["natural_profiles"]
+    richness = read_json(RICHNESS)
+    exact_profiles = {p["g4_ref"]["id"]: p for p in profiles}
+    candidate_by_g4 = {}
+    weights = richness["weight_policy"]["weights"]
+    if richness["approved"] or richness["import_authorized"] or richness["activation_authorized"]:
+        raise ValueError("nature richness candidate must remain inactive")
+    if weights != {"dominant": 8, "common": 4, "occasional": 2, "rare": 1}:
+        raise ValueError("unexpected nature richness editorial weight policy")
+    for group in richness["profiles"]:
+        for candidate in group["selection_candidates"]:
+            if candidate["category"] not in weights or not candidate["source_keys"]:
+                raise ValueError("nature candidate missing weight category or source")
+            if any(key not in richness["source_register"] for key in candidate["source_keys"]):
+                raise ValueError("nature candidate has unknown source key")
+        for g4_id in group["g4_ids"]:
+            if g4_id in candidate_by_g4 or g4_id not in exact_profiles:
+                raise ValueError("duplicate or unknown nature candidate G4: " + g4_id)
+            if exact_profiles[g4_id]["template_refs"]["landscape_template_id"] != group["landscape_template_id"]:
+                raise ValueError("nature candidate landscape mismatch: " + g4_id)
+            layers = exact_profiles[g4_id]["natural_profile"]["layer_applicability"]
+            for candidate in group["selection_candidates"]:
+                if candidate["layer"] in layers and layers[candidate["layer"]]["applicability"] not in ("present", "not_applicable"):
+                    raise ValueError("unsupported nature layer applicability: " + g4_id)
+            candidate_by_g4[g4_id] = group
     by_template = defaultdict(list)
     for profile in profiles:
         for kind, (key, _, _) in KINDS.items():
@@ -115,6 +140,12 @@ def main():
                 len((value.get("value") or {}).get("taxon_claims", [])) for value in layers.values()
             ),
             "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+            "richness_candidate": [
+                {"kind": row["kind"], "taxon": row["taxon"], "layer": row["layer"],
+                 "category": row["category"], "editorial_weight": weights[row["category"]]}
+                for row in candidate_by_g4.get(profile["g4_ref"]["id"], {}).get("selection_candidates", [])
+                if row["layer"] not in layers or layers[row["layer"]]["applicability"] == "present"
+            ],
         })
 
     # runtime-bundle.json repeats source-shard claims; count claim identities once.
@@ -185,9 +216,18 @@ def main():
         "schema": "m2c_nature_coverage_report_v2",
         "scope": "archived Novgorod regional template links versus exact M2c G4 natural profiles",
         "source_status_warning": "Regional links are draft G1-G3 evidence; this report does not approve type presence at G4 or infer taxa from universal claims.",
-        "inputs": [str(ARCHIVE.relative_to(ROOT)).replace("\\", "/"), str(NATURAL.relative_to(ROOT)).replace("\\", "/"), str(KNOWLEDGE.relative_to(ROOT)).replace("\\", "/")],
+        "inputs": [str(ARCHIVE.relative_to(ROOT)).replace("\\", "/"), str(NATURAL.relative_to(ROOT)).replace("\\", "/"), str(RICHNESS.relative_to(ROOT)).replace("\\", "/"), str(KNOWLEDGE.relative_to(ROOT)).replace("\\", "/")],
         "counts": {kind: {status: counts[(kind, status)] for status in ("exact_g4_profile", "no_exact_m2c_binding")} for kind in KINDS},
         "m2c_g4_count": len(profiles),
+        "nature_richness_candidate": {
+            "status": richness["status"],
+            "weight_policy": richness["weight_policy"],
+            "covered_g4_count": len(candidate_by_g4),
+            "uncovered_g4_ids": sorted(set(exact_profiles) - set(candidate_by_g4)),
+            "candidate_rows_by_kind": dict(sorted(Counter(
+                row["kind"] for group in richness["profiles"] for row in group["selection_candidates"]
+            ).items())),
+        },
         "m2c_g4_without_fauna_layer": sum("fauna" not in p["natural_profile"]["layer_applicability"] for p in profiles),
         "world_knowledge_fauna_concepts": len(concept_sources),
         "world_knowledge_fauna_claims": sum(concept_claims.values()),

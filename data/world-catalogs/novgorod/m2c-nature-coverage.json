@@ -5,6 +5,7 @@
   "inputs": [
     "data/world-base-sources/rus13-base-v1.tar.gz",
     "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+    "data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json",
     "data/world-catalogs/novgorod/world-knowledge/production-v1"
   ],
   "counts": {
@@ -26,6 +27,40 @@
     }
   },
   "m2c_g4_count": 32,
+  "nature_richness_candidate": {
+    "status": "candidate_approval_pending",
+    "weight_policy": {
+      "status": "editorial_candidate",
+      "meaning": "Relative game selection preference among eligible alternatives within one layer and exact G4; not archaeological frequency, biological abundance, encounter probability or yield",
+      "weights": {
+        "dominant": 8,
+        "common": 4,
+        "occasional": 2,
+        "rare": 1
+      }
+    },
+    "covered_g4_count": 19,
+    "uncovered_g4_ids": [
+      "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center"
+    ],
+    "candidate_rows_by_kind": {
+      "fauna": 3,
+      "flora": 5,
+      "material": 3
+    }
+  },
   "m2c_g4_without_fauna_layer": 32,
   "world_knowledge_fauna_concepts": 42,
   "world_knowledge_fauna_claims": 136,
@@ -541,7 +576,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
@@ -598,7 +656,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
@@ -655,7 +736,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
@@ -701,7 +783,23 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
@@ -758,7 +856,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
@@ -814,7 +913,37 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Pinus (pine)",
+          "layer": "tree_layer",
+          "category": "common",
+          "editorial_weight": 4
+        },
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "sandy mineral ground",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
@@ -871,7 +1000,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
@@ -928,7 +1080,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
@@ -985,7 +1160,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
@@ -1042,7 +1218,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
@@ -1100,7 +1277,37 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "category": "common",
+          "editorial_weight": 4
+        },
+        {
+          "kind": "flora",
+          "taxon": "Sphagnum (peat moss)",
+          "layer": "ground_cover",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged forest soil",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
@@ -1157,7 +1364,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
@@ -1214,7 +1422,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
@@ -1271,7 +1480,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
@@ -1328,7 +1560,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
@@ -1381,7 +1636,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
@@ -1438,7 +1694,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
@@ -1491,7 +1748,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
@@ -1548,7 +1806,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
@@ -1605,7 +1886,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
@@ -1651,7 +1933,23 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
@@ -1708,7 +2006,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
@@ -1765,7 +2086,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
@@ -1822,7 +2166,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
@@ -1880,7 +2225,37 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "category": "common",
+          "editorial_weight": 4
+        },
+        {
+          "kind": "flora",
+          "taxon": "Sphagnum (peat moss)",
+          "layer": "ground_cover",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged forest soil",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
@@ -1937,7 +2312,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
@@ -1994,7 +2392,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
@@ -2051,7 +2472,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
@@ -2109,7 +2553,37 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Picea (spruce)",
+          "layer": "tree_layer",
+          "category": "common",
+          "editorial_weight": 4
+        },
+        {
+          "kind": "flora",
+          "taxon": "Sphagnum (peat moss)",
+          "layer": "ground_cover",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Alces (elk)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "waterlogged forest soil",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
@@ -2167,7 +2641,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
@@ -2224,7 +2699,30 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": [
+        {
+          "kind": "flora",
+          "taxon": "Salix (willow)",
+          "layer": "riparian_vegetation",
+          "category": "occasional",
+          "editorial_weight": 2
+        },
+        {
+          "kind": "fauna",
+          "taxon": "Castor (beaver)",
+          "layer": "fauna",
+          "category": "rare",
+          "editorial_weight": 1
+        },
+        {
+          "kind": "material",
+          "taxon": "alluvial sand and silt",
+          "layer": "natural_materials",
+          "category": "common",
+          "editorial_weight": 4
+        }
+      ]
     },
     {
       "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
@@ -2282,7 +2780,8 @@
       },
       "authored_fauna_layer": false,
       "authored_taxon_claim_count": 0,
-      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required"
+      "species_materialization": "typed_gap_exact_g4_era_and_season_evidence_required",
+      "richness_candidate": []
     }
   ],
   "entries": [

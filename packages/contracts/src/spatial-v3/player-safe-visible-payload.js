@@ -17,7 +17,8 @@ export const PLAYER_SAFE_VISIBLE_PAYLOAD_KEYS = Object.freeze([
   'player_safe_interruption',
   'allowed_action_affordances'
 ]);
-const playerSafeVisiblePayloadKeySet = new Set(PLAYER_SAFE_VISIBLE_PAYLOAD_KEYS);
+const LIGHT_PHASES = Object.freeze(['daylight', 'civil_dawn', 'civil_dusk', 'night']);
+const playerSafeVisiblePayloadKeySet = new Set([...PLAYER_SAFE_VISIBLE_PAYLOAD_KEYS, 'current_light_phase']);
 const playerSafeEntityKeys = Object.freeze([
   'entity_ref', 'display_label', 'recognition', 'visible_status',
   'observable_cues'
@@ -238,6 +239,7 @@ export function validatePlayerSafeVisiblePayload(value, path = 'visible_payload'
     ...validatePlayerSafeAffordances(value.allowed_action_affordances, `${path}.allowed_action_affordances`)
   );
   if (value.player_safe_interruption != null && !stableId(value.player_safe_interruption)) errors.push(issue('generated_schema_mismatch', `${path}.player_safe_interruption`, `${path}.player_safe_interruption must be null or a non-empty player-safe string.`));
+  if (value.current_light_phase != null && !LIGHT_PHASES.includes(value.current_light_phase)) errors.push(issue('generated_schema_mismatch', `${path}.current_light_phase`, `${path}.current_light_phase must be an approved calendar light phase.`));
   return errors;
 }
 

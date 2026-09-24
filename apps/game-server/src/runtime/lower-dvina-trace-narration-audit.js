@@ -24,6 +24,10 @@ when it adds no atomic proposition. Labels, IDs, categories, names and plausible
 implications add no sensory trait, causality, time, result, execution or certainty.
 Plausibility is never evidence. An object or place never supports an unstated sound,
 smell, touch, motion, reaction or persistence.
+current_light_phase is only the committed calendar phase of daylight. It does not
+establish local brightness, darkness, dimness, shadows or visibility. Reject any
+such unsupported local-light proposition as unsupported_world_state or
+unsupported_sensory, even when its phrasing sounds plausible for that phase.
 Treat a required_current_beat uncertainty with status unperformed_result_unknown
 as evidence only that the second-person player's named continuation is not yet
 performed and has no result. Never attribute it to an NPC. An explicitly open

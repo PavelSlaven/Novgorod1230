@@ -298,6 +298,8 @@ export function phase2VisibleContextFromPayload(payload) {
     visible_objects: structuredClone(payload.visible_objects),
     known_context: structuredClone(payload.known_context),
     uncertainties: structuredClone(payload.uncertainties),
+    ...(payload.current_light_phase == null ? {} : {
+      current_light_phase: payload.current_light_phase }),
     allowed_tensions: [],
     do_not_imply: []
   };

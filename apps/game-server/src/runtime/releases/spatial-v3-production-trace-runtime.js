@@ -63,6 +63,8 @@ import { createProductionWorldKnowledgeGrounder } from
   '../world-knowledge-grounding.js';
 import { createAuthoredOpeningNarrationService } from
   '../authored-opening-narration.js';
+import { createTargetCurrentFactualContext } from
+  '../../infrastructure/postgres/target-current-factual-context.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -74,6 +76,7 @@ export function createTraceTurnRuntime({
   authoredSpatialSemanticProfile = null,
   authoredNpcSemanticRemainderProfile = null,
   authoredRuntimeBindingResolver,
+  targetStartRuntime = null,
   spatialExpansionRuntime = null,
   spatialLocalSceneRuntime = null,
   readLocalEdgeDisclosure = null,
@@ -196,7 +199,10 @@ export function createTraceTurnRuntime({
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer, authoredRuntimeBindingResolver, loadInitialNaturalScenePerceptionInput,
-      readLocalEdgeDisclosure, readCurrentExitDisclosure
+      readLocalEdgeDisclosure, readCurrentExitDisclosure,
+      projectEnvironmentAtClock: targetStartRuntime == null ? null
+        : createTargetCurrentFactualContext({ partyPool, committer,
+          runtime: targetStartRuntime, authoredRuntimeBindingResolver }).projectEnvironmentAtClock
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,

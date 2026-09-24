@@ -58,9 +58,10 @@ export function fixture({ direct = false, speech = false,
     idempotency_key: 'idem-key', raw_text: 'беру песок' });
   const plans = [];
   return { state, envelope, batch, plans,
-    commit: ({ turnStepAmbientPortionProfileRef = null } = {}) =>
+    commit: ({ turnStepAmbientPortionProfileRef = null,
+      projectEnvironmentAtClock = null } = {}) =>
       commitLowerDvinaTracePhase2({ partyId: 'p', writePlan,
-      turnStepAmbientPortionProfileRef,
+      turnStepAmbientPortionProfileRef, projectEnvironmentAtClock,
       inputDigest, contracts: {}, phase3Contracts: null, phase4Contracts: null,
       phase5Contracts: null, phase6Contracts: null,
       loadState: async () => structuredClone(state),

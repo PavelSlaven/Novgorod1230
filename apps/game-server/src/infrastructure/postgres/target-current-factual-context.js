@@ -21,7 +21,7 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
       || state.world_identity?.world_catalog_digest !== runtime.itemPin.compatible_world_catalog_digest) gap();
     return { state, environment: projectEnvironment(state) };
   }
-  function projectEnvironment(state) {
+  function projectEnvironment(state, clock = state.clock) {
     const environment = state.environment_snapshot;
     const exact = (ref, family) => {
       const matches = records.filter((row) => row.record_id === ref?.id
@@ -31,7 +31,7 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
     };
     const calendar = exact(environment?.calendar_record_ref, 'calendar_daylight_light_profiles');
     const weather = exact(environment?.weather_record_ref, 'weather_transition_profiles_processes');
-    const projected = projectCalendar(state.clock, calendarProfile);
+    const projected = projectCalendar(clock, calendarProfile);
     const minute = Number(BigInt(projected.local_time_of_day.numerator)
       / BigInt(projected.local_time_of_day.denominator));
     return projectApprovedCurrentEnvironment({ calendar_record: calendar,
@@ -40,6 +40,7 @@ export function createTargetCurrentFactualContext({ partyPool, committer, runtim
       local_minute_of_day: minute });
   }
   return Object.freeze({
+    projectEnvironmentAtClock: ({ state, clock }) => projectEnvironment(state, clock),
     async readCurrentEnvironment(args) { return (await read(args)).environment; },
     async readInitialEnvironment({ transaction, partyId, actorId }) {
       if (typeof transaction?.query !== 'function' || !calendarProfile || !Array.isArray(records)) gap();

@@ -36,7 +36,8 @@ export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   committer, authoredRuntimeBindingResolver = null,
   loadInitialNaturalScenePerceptionInput = null,
-  readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null } = {}) {
+  readLocalEdgeDisclosure = null, readCurrentExitDisclosure = null,
+  projectEnvironmentAtClock = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -221,7 +222,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       narrator, turnBudget, persistPhase2Screen });
   }
   async function commitPhase2Turn(input) {
-    return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget) });
+    return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget),
+      projectEnvironmentAtClock });
   }
   function commitPorts(turnBudget = null) {
     const loadState = turnBudget == null ? loadCommittablePhase2State :

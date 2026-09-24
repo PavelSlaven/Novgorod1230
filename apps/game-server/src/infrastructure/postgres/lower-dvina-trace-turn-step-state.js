@@ -11,7 +11,8 @@ import { assertSharedSemanticSnapshotSafe } from
 import { SITE_TRAVERSAL_OWNER } from './spatial-v3-site-traversal-commit.js';
 
 export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
-  partyId, turnNumber, nextVersion, changeSetId, idemId, envelope
+  partyId, turnNumber, nextVersion, changeSetId, idemId, envelope,
+  currentLightPhase = null
 }) {
   const context = envelope.visible_context;
   const visiblePayload = {
@@ -28,6 +29,7 @@ export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
       ?? null,
     allowed_action_affordances: []
   };
+  if (currentLightPhase != null) visiblePayload.current_light_phase = currentLightPhase;
   const dependencyPins =
     deriveLowerDvinaTraceTurnStepVisibleDependencyPins(envelope);
   return {

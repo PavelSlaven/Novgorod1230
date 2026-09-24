@@ -47,7 +47,8 @@ import { applySiteTraversalTransition, siteTraversalWrites } from
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer,
-  turnStepAmbientPortionProfileRef = null, turnStepApprovedOwners = null
+  turnStepAmbientPortionProfileRef = null, turnStepApprovedOwners = null,
+  projectEnvironmentAtClock = null
 }) {
   const envelope = requireEnvelope(writePlan);
   assertRootInput({ partyId, inputDigest, envelope });
@@ -153,7 +154,9 @@ export async function commitLowerDvinaTraceTurnStep({
   const visibleEnvelopeInput = visibleContext === envelope.visible_context ? envelope
     : { ...envelope, visible_context: visibleContext };
   const visibleEnvelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
-    partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts
+    partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts,
+    currentLightPhase: projectEnvironmentAtClock?.({ state,
+      clock: envelope.time_update.clock_after }).light_state ?? null
   });
   const base = buildLowerDvinaTraceTurnStepSnapshot({
     state, envelope, inputDigest, nextVersion, turnNumber, changeSetId,

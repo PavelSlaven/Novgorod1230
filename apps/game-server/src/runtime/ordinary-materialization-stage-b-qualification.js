@@ -35,9 +35,17 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
     const outputs = [];
     for (const probe of probes) {
       try {
+        if (evalContract.version === 2 && probe.expected_entity === null) {
+          // Source presence and access are settled by the discovery owner before Stage B.
+          outputs.push({ id: probe.id,
+            resolution: probe.allowed_resolutions.includes('absent')
+              ? 'absent' : 'authority_required', entities: [] });
+          continue;
+        }
         const request = presenceRequest(probe);
         const output = await qualifiedOutput({ roleRunner, invocation, identity,
-          request });
+          request, mechanicsPolicy: qualificationMechanicsPolicy(probe),
+          expectedEntity: probe.expected_entity ?? null });
         outputs.push({ id: probe.id,
           resolution: validateOrdinaryMaterializationPlanV1(output,
             contractRequest(request)).length === 0
@@ -60,29 +68,43 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
   }
 }
 
-async function qualifiedOutput({ roleRunner, invocation, identity, request }) {
+async function qualifiedOutput({ roleRunner, invocation, identity, request,
+  mechanicsPolicy, expectedEntity }) {
   const first = await invoke({ roleRunner, invocation, identity, request,
-    repair: null, mechanicsPolicy: qualificationMechanicsPolicy() });
+    repair: null, mechanicsPolicy, expectedEntity });
   const errors = validateOrdinaryMaterializationPlanV1(first,
     contractRequest(request));
   if (errors.length === 0) return first;
   return invoke({ roleRunner, invocation, identity, request,
-    mechanicsPolicy: qualificationMechanicsPolicy(), repair: {
+    mechanicsPolicy, expectedEntity, repair: {
     schema: 'ordinary_materialization_repair_context_v1', original_output: null,
     validation_errors: errors
   } });
 }
 
 async function invoke({ roleRunner, invocation, identity, request, repair,
-  mechanicsPolicy }) {
+  mechanicsPolicy, expectedEntity }) {
+  const messages = buildOrdinaryMaterializationMessages(request, { repair,
+    mechanicsPolicy });
+  if (expectedEntity != null) messages[0].content +=
+    ` The committed finite-source output policy fixes packing_slot_cost at ${expectedEntity.mechanics_proposal.packing_slot_cost}.`;
   const response = await roleRunner.run({ ...invocation, repair: repair !== null,
-    messages: buildOrdinaryMaterializationMessages(request, { repair,
-      mechanicsPolicy }) });
+    messages });
   const outputResponse = ordinaryMaterializationResponseOf(response);
   if (!sameIdentity(identity, outputResponse.provider_record)) throw new Error('identity');
   return bindOrdinaryMaterializationPlan(request, outputResponse.output);
 }
-function qualificationMechanicsPolicy() {
+function qualificationMechanicsPolicy(probe) {
+  const exact = probe.expected_entity?.mechanics_proposal;
+  if (exact != null) return {
+    policy_ref: 'stage-b', max_mass_grams: exact.mass_grams,
+    allowed_external_hand_costs: [exact.external_hand_cost],
+    allowed_carry_forms: [exact.carry_form],
+    max_packing_slot_cost: exact.packing_slot_cost,
+    max_quantity: exact.quantity.value,
+    ...(exact.mass_grams % exact.quantity.value === 0 ? {
+      mass_grams_per_quantity_unit: exact.mass_grams / exact.quantity.value
+    } : {}) };
   return { policy_ref: 'stage-b', max_mass_grams: 20_000,
     allowed_external_hand_costs: [0, 1, 2],
     allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],

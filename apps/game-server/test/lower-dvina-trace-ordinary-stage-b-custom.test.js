@@ -16,6 +16,37 @@ import { absentPlan, presenceRequest } from
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m22-content/'
   + 'ordinary-materialization-profile.json', import.meta.url);
+const finiteCandidateUrl = new URL('../../../data/world-catalogs/novgorod/'
+  + 'live-world-runtime-v17/m2c-finite-only-ordinary-stage-b-successor-candidate.json',
+import.meta.url);
+
+test('finite Stage B qualification supplies exact committed mechanics and only calls the model for reachable sources', async () => {
+  const candidateProfile = JSON.parse(await readFile(finiteCandidateUrl, 'utf8'));
+  const contract = candidateProfile.stage_b_classification_eval;
+  const identity = { provider: 'test', model: 'finite', scope: 'turn_runtime',
+    role_id: 'ordinary_materialization', config_hash: 'finite' };
+  const calls = [];
+  const roleRunner = { describe: () => identity, async run(call) {
+    calls.push(call);
+    const request = JSON.parse(call.messages[1].content);
+    assert.equal(request.authority_envelope.candidate.coverage_kind, 'finite_source');
+    assert.equal(request.authority_envelope.selected_supporting_basis_ref, 'stage-b');
+    assert.match(call.messages[0].content, /mass_grams must equal quantity.value \* 50/);
+    assert.match(call.messages[0].content, /packing_slot_cost at (2|4|8|16)/);
+    return { provider_record: identity, output: { resolution: 'absent',
+      semantic_materialization_kind: 'standalone_item',
+      semantic_admission_class: 'common_mundane', reason_code: 'absent',
+      entities: [] } };
+  } };
+  const result = await runOrdinaryMaterializationStageBQualification({ roleRunner,
+    evalContract: contract });
+  assert.equal(calls.length, 7);
+  assert.deepEqual(result.report.failed_case_ids,
+    contract.cases.filter((probe) => probe.expected_entity != null)
+      .map((probe) => probe.id).sort());
+  assert.deepEqual(result.outputs.filter(({ id }) => id === 'owned-wood')
+    .map(({ resolution }) => resolution), ['authority_required']);
+});
 
 test('O1 wire omits duplicate WK prose only when the full structured slice is present', () => {
   const knowledge = { schema: 'world_knowledge_slice_v1', context_text: 'duplicate factual prose',

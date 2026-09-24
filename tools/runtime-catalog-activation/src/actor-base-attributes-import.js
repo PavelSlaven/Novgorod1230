@@ -7,7 +7,8 @@ import { ACTOR_BASE_ATTRIBUTES_OWNER_REGISTRY,
 import { validateActorBaseAttributesImportApproval } from
   '../../../data/world-catalogs/novgorod/procedural-scene-v2/actor-base-attributes-v1/runtime-import-v1/validate-import-approval.mjs';
 import { buildImportLedger, digestEnvelope } from './artifact-contracts.js';
-import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION } from
+import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+  ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP } from
   './forward-migrations.js';
 import { SPATIAL_V3_PRODUCTION_V12_RELEASE } from
   './spatial-v3-production-v12-activation.js';
@@ -52,6 +53,7 @@ export function buildActorBaseAttributesImportLedger({ request,
     record_count: 1,
     payload_digest: computeTablePayloadDigest([record])
   };
+  const migration = actorMigrationForRequest(request);
   return buildImportLedger({
     importId,
     rootFields: {
@@ -74,7 +76,7 @@ export function buildActorBaseAttributesImportLedger({ request,
       approval_request_digest: request.request_digest,
       approval_attestation_digest: attestation.attestation_digest,
       schema_migration_digest:
-        ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION.migration_digest
+        migration.migration_digest
     },
     tables: [table],
     records: [record],
@@ -303,10 +305,11 @@ function readbackPayload({ request, attestation, ledger }) {
 }
 
 async function assertImportPrerequisites(client, request, ledger) {
+  const migrationDescriptor = actorMigrationForRequest(request);
   const migration = (await client.query(
     `SELECT migration_digest FROM world_base.schema_migrations
       WHERE migration_id=$1`,
-    [ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION.migration_id])).rows[0];
+    [migrationDescriptor.migration_id])).rows[0];
   if (migration?.migration_digest !== ledger.root.schema_migration_digest) {
     fail('ACTOR_BASE_ATTRIBUTES_IMPORT_SCHEMA_MISSING',
       'Exact actor base-attribute owner migration is required.');
@@ -322,6 +325,21 @@ async function assertImportPrerequisites(client, request, ledger) {
     status: 'approved'
   })) fail('ACTOR_BASE_ATTRIBUTES_IMPORT_WORLD_MISMATCH',
     'Compatible world tuple is unavailable.');
+}
+
+function actorMigrationForRequest(request) {
+  const declared = request.import_plan.schema_migration;
+  if (declared == null && !isActorBaseAttributesSuccessor(request))
+    return ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION;
+  for (const descriptor of [ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+    ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP]) {
+    if (canonicalStringify(declared) === canonicalStringify({
+      migration_id: descriptor.migration_id,
+      migration_digest: descriptor.migration_digest
+    })) return descriptor;
+  }
+  fail('ACTOR_BASE_ATTRIBUTES_IMPORT_SCHEMA_MISSING',
+    'Approved actor migration must name a declared world owner migration.');
 }
 
 async function readParentRegistrationId(client, request) {

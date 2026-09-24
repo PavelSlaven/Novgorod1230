@@ -7,6 +7,9 @@ import { buildActorBaseAttributesSuccessorImportRequest,
   validateActorBaseAttributesSuccessorImportApproval,
   buildActorBaseAttributesSuccessorPreflight } from '../src/actor-base-attributes-successor.js';
 import { runActorBaseAttributesImport } from '../../../scripts/run-actor-base-attributes-import.mjs';
+import { buildActorBaseAttributesImportLedger } from '../src/actor-base-attributes-import.js';
+import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP } from
+  '../src/forward-migrations.js';
 
 test('actor successor requires exact parent, reviewed import-only approval and preserves historical artifacts', async () => {
   const request = buildActorBaseAttributesSuccessorImportRequest({
@@ -27,6 +30,18 @@ test('actor successor requires exact parent, reviewed import-only approval and p
       old_save_rematerialization_authorized: false } };
   const attestation = { ...payload, attestation_digest: digestEnvelope(payload) };
   assert.equal(validateActorBaseAttributesSuccessorImportApproval({ request, attestation }), true);
+  const ledger = buildActorBaseAttributesImportLedger({ request, attestation });
+  assert.deepEqual(request.import_plan.schema_migration, {
+    migration_id: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_id,
+    migration_digest: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_digest
+  });
+  assert.equal(ledger.root.schema_migration_digest,
+    ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_digest);
+  const changedMigration = structuredClone(request);
+  changedMigration.import_plan.schema_migration.migration_digest = '0'.repeat(64);
+  assert.throws(() => buildActorBaseAttributesImportLedger({
+    request: changedMigration, attestation
+  }));
   assert.throws(() => validateActorBaseAttributesSuccessorImportApproval({ request, attestation: null }));
   const changed = structuredClone(request);
   changed.owner_rows[0].row.profile_payload.ordinary_array[0] = 99;

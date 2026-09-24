@@ -21,6 +21,13 @@ import { importApprovedActorBaseAttributes, readActorBaseAttributesImport } from
   '../tools/runtime-catalog-activation/src/actor-base-attributes-import.js';
 import { buildActivationPartyPreflight, buildActivationRequest, digestEnvelope } from
   '../tools/runtime-catalog-activation/src/artifact-contracts.js';
+import { runForwardMigration } from
+  '../tools/runtime-catalog-activation/src/forward-migration.js';
+import { WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
+  ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
+  PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
+  ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP } from
+  '../tools/runtime-catalog-activation/src/forward-migrations.js';
 
 const root = resolve(import.meta.dirname, '..');
 const v17 = 'data/world-catalogs/novgorod/live-world-runtime-v17';
@@ -142,25 +149,13 @@ function assertAdded(before, after, expected, stage) {
 }
 
 async function applyCatalogDdl(pool, schema, migrations, tables) {
-  const client = await pool.connect();
-  try {
-    for (const commit of [false, true]) {
-      await client.query('BEGIN');
-      try {
-        for (const [path, sha256] of migrations)
-          await client.query((await exact(path, sha256)).toString());
-        await client.query(commit ? 'COMMIT' : 'ROLLBACK');
-      } catch (error) {
-        await client.query('ROLLBACK').catch(() => {});
-        throw error;
-      }
-      const found = (await client.query(`SELECT count(*)::int AS count
-        FROM pg_catalog.pg_tables WHERE schemaname = $1 AND tablename = ANY($2::text[])`,
-      [schema, tables])).rows[0].count;
-      if (found !== (commit ? tables.length : 0))
-        throw new Error(`V17_CATALOG_DDL_${commit ? 'READBACK' : 'ROLLBACK'}_MISMATCH:${schema}`);
-    }
-  } finally { client.release(); }
+  for (const migration of migrations)
+    await runForwardMigration({ pool, migration });
+  const found = (await pool.query(`SELECT count(*)::int AS count
+    FROM pg_catalog.pg_tables WHERE schemaname = $1 AND tablename = ANY($2::text[])`,
+  [schema, tables])).rows[0].count;
+  if (found !== tables.length)
+    throw new Error(`V17_CATALOG_DDL_READBACK_MISMATCH:${schema}`);
 }
 
 export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest = null }) {
@@ -294,11 +289,17 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       await world.query((await exact(finalize,
         'd23d16cba41b66b3071febe8058d4ced1d606995b97faaaa94674ef670017a60')).toString());
     }
-    await applyCatalogDdl(world, 'world_base', catalogDdl.world,
+    await applyCatalogDdl(world, 'world_base', [
+      WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
+      ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP
+    ],
       ['schema_migrations', 'catalog_baseline_registrations', 'domain_catalog_revisions',
         'catalog_import_records', 'catalog_import_dependency_assertions',
         'runtime_catalog_activation_events', 'actor_base_attribute_profiles']);
-    await applyCatalogDdl(party, 'party_runtime', catalogDdl.party,
+    await applyCatalogDdl(party, 'party_runtime', [
+      PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
+      ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP
+    ],
       ['schema_migrations', 'party_catalog_pins', 'party_materialization_run_catalog_pins']);
     const subjectCommit = execFileSync('git', ['rev-parse', 'HEAD'],
       { cwd: root, encoding: 'utf8' }).trim();

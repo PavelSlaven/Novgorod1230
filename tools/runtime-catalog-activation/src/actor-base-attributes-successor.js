@@ -4,6 +4,8 @@ import { validateActorBaseAttributesImportRequest } from
   '../../../scripts/generate-actor-base-attributes-import-request.mjs';
 import { buildBaseWorldCompatibilityManifest, digestEnvelope,
   verifyDecisionAttestation, buildActivationPartyPreflight } from './artifact-contracts.js';
+import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP } from
+  './forward-migrations.js';
 
 const ACTOR_REVISION = 'actor_base_attributes_spatial_v3_target_001';
 const ITEM_REVISION = 'item_container_spatial_v3_target_001';
@@ -77,6 +79,10 @@ export function buildActorBaseAttributesSuccessorImportRequest({
     catalog_revision_id: ACTOR_REVISION,
     target_catalog_digest: request.target_catalog_digest
   });
+  request.import_plan.schema_migration = {
+    migration_id: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_id,
+    migration_digest: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_digest
+  };
   delete request.request_digest;
   return seal(request, 'request_digest');
 }

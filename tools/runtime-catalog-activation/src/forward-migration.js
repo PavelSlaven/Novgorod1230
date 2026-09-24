@@ -95,6 +95,17 @@ export async function runForwardMigration({
   sourceBridge = null,
   readSchemaFingerprint = readPostgresSchemaFingerprint
 }) {
+  const sealed = createForwardMigration({
+    migrationId: migration.migration_id,
+    schemaName: migration.schema_name,
+    sourceSchemaFingerprint: migration.source_schema_fingerprint,
+    targetSchemaFingerprint: migration.target_schema_fingerprint,
+    sql: migration.sql
+  });
+  if (sealed.migration_digest !== migration.migration_digest) {
+    fail('MIGRATION_DESCRIPTOR_TAMPERED',
+      'Migration SQL or descriptor differs from its recorded digest.');
+  }
   if (sourceBridge && (
     sourceBridge.schema_name !== migration.schema_name
     || sourceBridge.target_schema_fingerprint !== migration.source_schema_fingerprint

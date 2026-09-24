@@ -95,6 +95,38 @@ export const ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION = createForwardMigration({
   sql: ACTOR_BASE_ATTRIBUTES_PARTY_SQL
 });
 
+export const WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
+  migrationId: 'world_runtime_catalog_activation_v17_bootstrap',
+  schemaName: 'world_base',
+  sourceSchemaFingerprint: '3308647b0545ac7696c592e3b73938deca089512f94a742931f6ae2ac52fe305',
+  targetSchemaFingerprint: '25af99bc6bbd8c7160069562dd75d9436a6464e8dd27c882876837f8f1c3a295',
+  sql: WORLD_SQL
+});
+
+export const ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
+  migrationId: 'world_actor_base_attributes_owner_v17_bootstrap',
+  schemaName: 'world_base',
+  sourceSchemaFingerprint: '25af99bc6bbd8c7160069562dd75d9436a6464e8dd27c882876837f8f1c3a295',
+  targetSchemaFingerprint: '1e927fceb809370a95329dc8a1d96bc045982c429ee1e4d35b64fb5ba1219af3',
+  sql: ACTOR_BASE_ATTRIBUTES_WORLD_SQL
+});
+
+export const PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
+  migrationId: 'party_runtime_catalog_pins_v17_bootstrap',
+  schemaName: 'party_runtime',
+  sourceSchemaFingerprint: '9354031c0e997aa0b224c14f8e41c93beff7c5d590471de99d61312d053b88c8',
+  targetSchemaFingerprint: 'b5b3f1941c020a72561bf20017c39b6064b70a1b24322b262458738170db173f',
+  sql: PARTY_SQL
+});
+
+export const ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP = createForwardMigration({
+  migrationId: 'party_actor_base_attributes_pins_v17_bootstrap',
+  schemaName: 'party_runtime',
+  sourceSchemaFingerprint: 'b5b3f1941c020a72561bf20017c39b6064b70a1b24322b262458738170db173f',
+  targetSchemaFingerprint: 'e44244b1d95cfcf64bb516be93c4d915fd009616ef5ded755d965729b1783ea4',
+  sql: ACTOR_BASE_ATTRIBUTES_PARTY_SQL
+});
+
 export function buildWorldRuntimeCatalogMigrationPreflight({
   actualSchemaFingerprint,
   ledgerRow,

@@ -11,6 +11,7 @@ import {
 import {
   ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION,
   ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+  ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
   PARTY_RUNTIME_CATALOG_MIGRATION,
   buildWorldRuntimeCatalogMigrationPreflight,
   WORLD_LEGACY_SCHEMA_BRIDGE,
@@ -138,6 +139,21 @@ test('forward migration state matrix hard-blocks unknown, partial and conflictin
       scenario.name
     );
   }
+});
+
+test('forward migration rejects changed SQL before opening a transaction', async () => {
+  await assert.rejects(() => runForwardMigration({
+    pool: { connect() { throw new Error('database must not be touched'); } },
+    migration: { ...migration, sql: `${migration.sql}\nSELECT 1;` }
+  }), { code: 'MIGRATION_DESCRIPTOR_TAMPERED' });
+});
+
+test('v17 bootstrap owner migration rejects another schema fingerprint', () => {
+  assert.throws(() => classifyForwardMigrationState({
+    migration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
+    actualSchemaFingerprint: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION.target_schema_fingerprint,
+    ledgerRow: null
+  }), { code: 'MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN' });
 });
 
 test('forward migration applies DDL and ledger row in one transaction with exact target readback', async () => {

@@ -78,12 +78,26 @@ test('real-provider observation advances exact clock within one whole minute', (
   const turn = observation('forest', 'fractional');
   turn.before.clock = { whole_minutes: 261121, subminute_numerator: 1, subminute_denominator: 3 };
   turn.after.clock = { whole_minutes: 261121, subminute_numerator: 1, subminute_denominator: 2 };
+  turn.result.time_update = { exact_elapsed: { exact_minutes: { numerator: '1', denominator: '6' } } };
   assert.doesNotThrow(() => assertTargetObservation(turn, true));
+  turn.result.time_update.exact_elapsed.exact_minutes.denominator = '5';
+  assert.throws(() => assertTargetObservation(turn, true), /must equal exact_elapsed/);
+  turn.result.time_update.exact_elapsed.exact_minutes.denominator = '6';
   turn.after.clock.subminute_numerator = 2;
   turn.after.clock.subminute_denominator = 6;
-  assert.throws(() => assertTargetObservation(turn, true), /must advance exact clock/);
+  assert.throws(() => assertTargetObservation(turn, true), /advances exact clock only for positive elapsed time/);
   turn.after.clock.subminute_numerator = 1;
-  assert.throws(() => assertTargetObservation(turn, true), /must advance exact clock/);
+  assert.throws(() => assertTargetObservation(turn, true), /advances exact clock only for positive elapsed time/);
+});
+
+test('real-provider free look commits state without advancing exact clock', () => {
+  const turn = observation('forest', 'free-look');
+  turn.before.clock = { whole_minutes: 261121, subminute_numerator: 1, subminute_denominator: 3 };
+  turn.after.clock = { whole_minutes: 261121, subminute_numerator: 2, subminute_denominator: 6 };
+  turn.result.time_update = { exact_elapsed: { exact_minutes: { numerator: '0', denominator: '1' } } };
+  assert.doesNotThrow(() => assertTargetObservation(turn, true));
+  turn.after.clock.subminute_numerator = 3;
+  assert.throws(() => assertTargetObservation(turn, true), /advances exact clock only for positive elapsed time/);
 });
 
 test('displayed exit accepts generated destination after observation', () => {

@@ -217,9 +217,16 @@ export function assertTargetObservation(turn, realProvider = false) {
     const after = turn.after.clock;
     const numerator = (clock) => BigInt(clock.whole_minutes) * BigInt(clock.subminute_denominator)
       + BigInt(clock.subminute_numerator);
-    assert.ok(numerator(after) * BigInt(before.subminute_denominator)
-      > numerator(before) * BigInt(after.subminute_denominator),
-    'real-provider observation must advance exact clock');
+    const beforeDenominator = BigInt(before.subminute_denominator);
+    const afterDenominator = BigInt(after.subminute_denominator);
+    const elapsed = turn.result.time_update.exact_elapsed.exact_minutes;
+    const elapsedNumerator = BigInt(elapsed.numerator);
+    const delta = numerator(after) * beforeDenominator - numerator(before) * afterDenominator;
+    assert.ok(elapsedNumerator > 0n ? delta > 0n : delta === 0n,
+      'real-provider observation advances exact clock only for positive elapsed time');
+    assert.equal(delta * BigInt(elapsed.denominator),
+      elapsedNumerator * beforeDenominator * afterDenominator,
+      'real-provider exact clock delta must equal exact_elapsed');
   }
   else assert.equal(turn.after.clock.whole_minutes, turn.before.clock.whole_minutes + 1);
   for (const key of ['body', 'positions', 'entity_placements', 'materialization_runs', 'sites']) {

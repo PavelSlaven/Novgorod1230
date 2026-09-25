@@ -4,7 +4,8 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { buildG4NaturalCompiledRecords, reportNaturalSuccessorRows } from '../src/g4-natural-compiled-records.js';
+import { buildG4NaturalCompiledRecords, deriveApprovedNaturalSceneRepins,
+  reportNaturalSuccessorRows } from '../src/g4-natural-compiled-records.js';
 import { buildG4NaturalPresentationCompiledRecords } from '../src/g4-natural-presentation-compiled-records.js';
 import { buildG4NaturalPlacementCompiledRecords } from '../src/g4-natural-placement-compiled-records.js';
 import { approvedNaturalStableCover } from '../../../apps/game-server/src/infrastructure/postgres/g4-natural-perception-reader.js';
@@ -30,6 +31,38 @@ test('successor import remains blocked when exact approved bytes differ', () => 
   assert.throws(() => buildG4NaturalPresentationCompiledRecords({ candidateBytes: presentationBytes,
     approvedCandidateBytes: presentationBytes, approval }),
     /Exact independently approved natural presentation bytes/);
+});
+
+test('approved capacity starts repin only their matching natural G4 scene refs', () => {
+  const capacityApproval = JSON.parse(readFileSync(resolve(root,
+    `${base}live-world-runtime-v17/capacity-v2-start-successors/data-approval.json`)));
+  const sceneTemplateBytes = readFileSync(resolve(root, capacityApproval.source_pins.scene_templates.path), 'utf8');
+  const starts = new Map(capacityApproval.approved_successors.map(({ start }) =>
+    [start.path, readFileSync(resolve(root, start.path), 'utf8')]));
+  const repins = deriveApprovedNaturalSceneRepins({ capacityApproval, sceneTemplateBytes,
+    startBytesByPath: starts });
+  assert.equal(repins.size, 6);
+  const records = buildG4NaturalCompiledRecords({ candidateBytes: naturalBytes,
+    approvedCandidateBytes: approvedNaturalBytes, approval, approvedSceneRepins: repins });
+  const originals = buildG4NaturalCompiledRecords({ candidateBytes: naturalBytes,
+    approvedCandidateBytes: approvedNaturalBytes, approval });
+  assert.equal([...repins.values()].reduce((count, refs) => count + refs.size, 0), 7);
+  for (const record of records) {
+    assert.ok(['clear', 'partial', 'none'].includes(approvedNaturalStableCover(record.payload)));
+    const refs = record.payload.exact_scene_features.canonical_scene_template_refs;
+    for (const id of repins.get(record.payload.g4_ref.id) ?? []) {
+      assert.ok(refs.includes(`${id}@2`));
+      assert.ok(!refs.includes(`${id}@1`));
+    }
+    const original = originals.find((row) => row.record_id === record.record_id);
+    assert.deepEqual(refs, original.payload.exact_scene_features.canonical_scene_template_refs
+      .map((ref) => repins.get(record.payload.g4_ref.id)?.has(ref.slice(0, -2)) ? `${ref.slice(0, -2)}@2` : ref));
+    assert.deepEqual({ ...record.payload, exact_scene_features: original.payload.exact_scene_features }, original.payload);
+  }
+  const tampered = new Map(starts);
+  tampered.set(capacityApproval.approved_successors[0].start.path, `${starts.get(capacityApproval.approved_successors[0].start.path)} `);
+  assert.throws(() => deriveApprovedNaturalSceneRepins({ capacityApproval,
+    sceneTemplateBytes, startBytesByPath: tampered }), /Exact approved capacity start bytes/);
 });
 
 test('derived import carries exact source and layer-season evidence; typed gaps stay candidate', () => {

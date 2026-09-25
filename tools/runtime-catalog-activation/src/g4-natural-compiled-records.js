@@ -3,7 +3,8 @@ import { validateG4NaturalProfile } from '../../../packages/materialization/src/
 import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
 
 /** Builds reviewable rows only; the existing approval/import workflow owns writes. */
-export function buildG4NaturalCompiledRecords({ candidate, candidateBytes, approvedCandidateBytes, approval } = {}) {
+export function buildG4NaturalCompiledRecords({ candidate, candidateBytes, approvedCandidateBytes, approval,
+  approvedSceneRepins } = {}) {
   if (candidateBytes != null) {
     if (typeof candidateBytes !== 'string'
       || approval?.schema !== 'rus.m2c_nature_successor_data_approval.v1'
@@ -30,6 +31,13 @@ export function buildG4NaturalCompiledRecords({ candidate, candidateBytes, appro
   return candidate.natural_profiles.map((profile, profileIndex) => {
     const successor = candidate.artifact_type === 'natural_baseline_successor_authoring_candidate';
     const compiled = successor ? deriveNaturalSuccessorProfile(profile, profileIndex, candidate.frequency_weight_policy, sourceSha256) : profile;
+    for (const sceneId of approvedSceneRepins?.get(profile.g4_ref.id) ?? []) {
+      if (!successor || !compiled.exact_scene_features.canonical_scene_template_refs.includes(`${sceneId}@1`)) {
+        throw new TypeError('Exact approved natural scene repin source is required.');
+      }
+      compiled.exact_scene_features.canonical_scene_template_refs =
+        compiled.exact_scene_features.canonical_scene_template_refs.map((ref) => ref === `${sceneId}@1` ? `${sceneId}@2` : ref);
+    }
     validateG4NaturalProfile(compiled);
     const key = `${profile.g4_ref.id}@${profile.g4_ref.version}`;
     if (profile.g4_ref.world_revision_id !== candidate.target.world_revision_id || seen.has(key)) {
@@ -46,6 +54,37 @@ export function buildG4NaturalCompiledRecords({ candidate, candidateBytes, appro
       payload_digest: digest(payload), source_pack_digest,
       status: 'approved_authoring_not_runtime_selectable' };
   }).sort((a, b) => a.record_id.localeCompare(b.record_id));
+}
+
+/** Approved capacity starts authorize only their exact G4 and scene-version pairs. */
+export function deriveApprovedNaturalSceneRepins({ capacityApproval, startBytesByPath,
+  sceneTemplateBytes } = {}) {
+  const sha = (bytes) => typeof bytes === 'string'
+    ? createHash('sha256').update(bytes).digest('hex') : null;
+  if (capacityApproval?.schema !== 'rus.m2c_supplemental_data_approval.v1'
+    || capacityApproval.decision !== 'APPROVE_DATA_ONLY'
+    || sha(sceneTemplateBytes) !== capacityApproval.source_pins?.scene_templates?.sha256
+    || capacityApproval.approved_successors?.length !== 7) {
+    throw new TypeError('Exact approved capacity scene repin sources are required.');
+  }
+  const scenes = JSON.parse(sceneTemplateBytes);
+  const repins = new Map();
+  for (const row of capacityApproval.approved_successors) {
+    const bytes = startBytesByPath?.get(row.start.path);
+    if (sha(bytes) !== row.start.sha256) throw new TypeError('Exact approved capacity start bytes are required.');
+    const start = JSON.parse(bytes);
+    const g4 = start.initial_placement?.g4_ref;
+    const scene = start.initial_placement?.scene_template_ref;
+    if (start.scenario_id !== row.scenario_id || !g4?.id || g4.version !== 1
+      || !scene?.id || scene.version !== 2
+      || scenes.filter((entry) => entry.id === scene.id && entry.version === 2).length !== 1) {
+      throw new TypeError('Exact approved capacity scene and G4 refs are required.');
+    }
+    const refs = repins.get(g4.id) ?? new Set();
+    refs.add(scene.id);
+    repins.set(g4.id, refs);
+  }
+  return repins;
 }
 
 function stripDerivedNatural(candidate) {

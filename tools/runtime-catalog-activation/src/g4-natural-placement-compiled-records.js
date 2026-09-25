@@ -3,16 +3,16 @@ import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
 
 /** Pure compilation; the existing catalog workflow owns import and activation. */
 export function buildG4NaturalPlacementCompiledRecords({ candidateBytes, approval,
-  naturalRecords, presentationRecords, sourceCandidateBytes, approvedStartBytes,
+  naturalRecords, presentationRecords, sourceCandidateBytes, approvedStartBytesByPath,
   capacityApproval, sceneTemplateBytes } = {}) {
   const approved = typeof candidateBytes === 'string'
     && createHash('sha256').update(candidateBytes).digest('hex')
       === approval?.approved_exact_candidates?.natural_placement_sha256;
   const derived = !approved && typeof candidateBytes === 'string'
-    && typeof sourceCandidateBytes === 'string' && typeof approvedStartBytes === 'string'
+    && typeof sourceCandidateBytes === 'string' && approvedStartBytesByPath instanceof Map
     && typeof sceneTemplateBytes === 'string'
     && candidateBytes === deriveApprovedNaturalPlacementV2Successor({ sourceCandidateBytes,
-      approvedStartBytes, capacityApproval, sceneTemplateBytes, approval });
+      approvedStartBytesByPath, capacityApproval, sceneTemplateBytes, approval });
   if (typeof candidateBytes !== 'string'
     || approval?.schema !== 'rus.m2c_supplemental_data_approval.v1'
     || approval.decision !== 'APPROVE_DATA_ONLY'
@@ -64,7 +64,7 @@ export function buildG4NaturalPlacementCompiledRecords({ candidateBytes, approva
     status: 'approved_authoring_not_runtime_selectable' }];
 }
 export function deriveApprovedNaturalPlacementV2Successor({ sourceCandidateBytes,
-  approvedStartBytes, capacityApproval, sceneTemplateBytes, approval } = {}) {
+  approvedStartBytesByPath, capacityApproval, sceneTemplateBytes, approval } = {}) {
   const sha = (bytes) => typeof bytes === 'string'
     ? createHash('sha256').update(bytes).digest('hex') : null;
   if (approval?.schema !== 'rus.m2c_supplemental_data_approval.v1'
@@ -72,30 +72,33 @@ export function deriveApprovedNaturalPlacementV2Successor({ sourceCandidateBytes
     || sha(sourceCandidateBytes) !== approval.approved_exact_candidates?.natural_placement_sha256
     || capacityApproval?.schema !== 'rus.m2c_supplemental_data_approval.v1'
     || capacityApproval.decision !== 'APPROVE_DATA_ONLY'
-    || sha(sceneTemplateBytes) !== capacityApproval.source_pins?.scene_templates?.sha256) {
+    || sha(sceneTemplateBytes) !== capacityApproval.source_pins?.scene_templates?.sha256
+    || capacityApproval.approved_successors?.length !== 7) {
     throw new TypeError('Exact approved placement, start and scene bytes are required.');
   }
-  const start = JSON.parse(approvedStartBytes);
-  const rule = start.initial_perception_rule;
-  if (capacityApproval.approved_successors?.filter((row) => row.scenario_id === start.scenario_id
-    && row.start?.sha256 === sha(approvedStartBytes)).length !== 1
-    || rule?.placement_candidate?.sha256 !== sha(sourceCandidateBytes)
-    || rule.scene_template_ref?.version !== 2) {
-    throw new TypeError('Exact approved forest start is required.');
-  }
   const scenes = JSON.parse(sceneTemplateBytes);
-  if (scenes.filter((row) => row.id === rule.scene_template_ref.id
-    && row.version === 2 && row.canonical_digest === rule.scene_template_ref.canonical_digest).length !== 1) {
-    throw new TypeError('Exact approved scene template is required.');
-  }
   const source = JSON.parse(sourceCandidateBytes);
-  const placements = source.placements.filter((row) => row.id === rule.placement_candidate.placement_ref.id);
-  if (placements.length !== 1 || placements[0].scene_template_ref?.id !== rule.scene_template_ref.id
-    || placements[0].scene_template_ref.version !== 1
-    || placements[0].scene_template_ref.canonical_digest !== rule.scene_template_ref.canonical_digest) {
-    throw new TypeError('Exact approved source placement is required.');
+  for (const approved of capacityApproval.approved_successors) {
+    const bytes = approvedStartBytesByPath?.get(approved.start.path);
+    if (sha(bytes) !== approved.start.sha256) throw new TypeError('Exact approved start bytes are required.');
+    const start = JSON.parse(bytes);
+    const scene = start.initial_placement?.scene_template_ref;
+    const ref = start.initial_perception_rule?.placement_candidate?.placement_ref
+      ?? start.natural_placement_ref;
+    const placements = source.placements.filter((row) => row.id === ref?.id && row.version === ref.version);
+    if (start.scenario_id !== approved.scenario_id || scene?.version !== 2
+      || (start.initial_perception_rule && (start.initial_perception_rule.placement_candidate.sha256 !== sha(sourceCandidateBytes)
+        || start.initial_perception_rule.scene_template_ref.id !== scene.id
+        || start.initial_perception_rule.scene_template_ref.version !== scene.version))
+      || placements.length !== 1 || placements[0].g4_ref.id !== start.initial_placement.g4_ref.id
+      || placements[0].scene_template_ref?.id !== scene.id
+      || placements[0].scene_template_ref.version !== 1
+      || scenes.filter((row) => row.id === scene.id && row.version === 2
+        && row.canonical_digest === placements[0].scene_template_ref.canonical_digest).length !== 1) {
+      throw new TypeError('Exact approved source placement and scene are required.');
+    }
+    placements[0].scene_template_ref.version = 2;
   }
-  placements[0].scene_template_ref.version = 2;
   return `${JSON.stringify(source, null, 2)}\n`;
 }
 function digest(value) { return createHash('sha256').update(canonicalStringify(value)).digest('hex'); }

@@ -42,7 +42,7 @@ import {
   WORLD_RUNTIME_CATALOG_MIGRATION_V3
 } from './forward-migrations.js';
 import { RECORD_ADAPTERS } from './record-adapters.generated.js';
-import { buildG4NaturalCompiledRecords } from './g4-natural-compiled-records.js';
+import { buildG4NaturalCompiledRecords, deriveApprovedNaturalSceneRepins } from './g4-natural-compiled-records.js';
 import { buildG4NaturalPresentationCompiledRecords } from './g4-natural-presentation-compiled-records.js';
 import { buildG4NaturalPlacementCompiledRecords } from './g4-natural-placement-compiled-records.js';
 import { buildTargetStartCompiledRecords } from './target-start-compiled-records.js';
@@ -177,8 +177,15 @@ async function targetPresentationRows(root) {
     { cwd: root, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
   const naturalSuccessorBytes = await readFile(resolve(base, 'm2c-natural/nature-successor-candidate-v2.json'), 'utf8');
   const presentationSuccessorBytes = await readFile(resolve(base, 'm2c-natural-presentation/nature-successor-candidate-v2.json'), 'utf8');
+  const sceneTemplateBytes = await readFile(resolve(base,
+    'm2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_scene_templates.json'), 'utf8');
+  const startBytesByPath = new Map(await Promise.all(capacityStartApproval.approved_successors
+    .map(async ({ start }) => [start.path, await readFile(resolve(root, start.path), 'utf8')])));
+  const approvedSceneRepins = deriveApprovedNaturalSceneRepins({ capacityApproval: capacityStartApproval,
+    sceneTemplateBytes, startBytesByPath });
   const naturalSuccessors = buildG4NaturalCompiledRecords({ candidateBytes: naturalSuccessorBytes,
-    approvedCandidateBytes: approvedBytes(successorApproval.candidates.natural.path), approval: successorApproval });
+    approvedCandidateBytes: approvedBytes(successorApproval.candidates.natural.path), approval: successorApproval,
+    approvedSceneRepins });
   const presentationSuccessors = buildG4NaturalPresentationCompiledRecords({ candidateBytes: presentationSuccessorBytes,
     approvedCandidateBytes: approvedBytes(successorApproval.candidates.presentation.path),
     naturalCandidateBytes: naturalSuccessorBytes,
@@ -188,10 +195,8 @@ async function targetPresentationRows(root) {
   const placementSuccessor = buildG4NaturalPlacementCompiledRecords({
     candidateBytes: await readFile(resolve(base, placementPath), 'utf8'),
     sourceCandidateBytes: await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8'),
-    approvedStartBytes: await readFile(resolve(base,
-      'live-world-runtime-v17/capacity-v2-start-successors/novgorod_pine_ridge_approach_v1.start.json'), 'utf8'),
-    sceneTemplateBytes: await readFile(resolve(base,
-      'm2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_scene_templates.json'), 'utf8'),
+    approvedStartBytesByPath: startBytesByPath,
+    sceneTemplateBytes,
     capacityApproval: capacityStartApproval, approval,
     naturalRecords: naturalSuccessors, presentationRecords: presentationSuccessors });
   return [...buildG4NaturalCompiledRecords({ candidate: JSON.parse(naturalBytes) }),

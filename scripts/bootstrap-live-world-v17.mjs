@@ -47,8 +47,8 @@ const naturePins = {
   natural: '58e0d2be66df86a79faf76d4ef57d3d020ba778711736a61b4478c255d8cbef7',
   presentation: '174a299d881dea38d5d0656f73877236f6aaf5aadaecf5ab1a7856ca7dd387f4',
   approval: '310bf952bbd219f3935fdb4f26f5f8cb71c0edf5837eacc445ca838061db605d',
-  naturalRecords: 'f9db0acf806650af82a5cfc100863b596c262fe73a775fa4bb16f9d237743241',
-  presentationRecords: 'ea38c3d1412808306aa65216b4dc11f2411fdfe96d1e552eb746170f34436399'
+  naturalRecords: '89bcd203c1ae44fd425143130c5c2f127616f715350121097634c427df448310',
+  presentationRecords: 'da155bde9d3a73f481b3a19b21a79deb3440b7a45c90372a57cd3edf12fbd1df'
 };
 const catalogDdl = {
   world: [

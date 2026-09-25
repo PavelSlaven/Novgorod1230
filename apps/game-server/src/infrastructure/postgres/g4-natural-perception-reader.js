@@ -23,7 +23,6 @@ export function approvedNaturalStableCover(profile) {
   const source = naturalCandidate.natural_profiles.filter((row) =>
     row.profile_id === profile?.profile_id
     && row.g4_ref?.id === profile.g4_ref.id && row.g4_ref.version === profile.g4_ref.version
-    && canonicalDigest(row.exact_scene_features) === canonicalDigest(profile.exact_scene_features)
     && canonicalDigest(row.natural_profile.layer_applicability.surface)
       === canonicalDigest(profile.natural_profile.layer_applicability.surface));
   if (source.length !== 1) gap('approved_natural_stable_cover_required');

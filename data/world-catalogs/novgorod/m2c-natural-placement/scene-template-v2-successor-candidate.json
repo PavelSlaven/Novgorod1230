@@ -6729,7 +6729,7 @@
       },
       "scene_template_ref": {
         "id": "stfv3__g5_route_approach_v1",
-        "version": 1,
+        "version": 2,
         "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
       },
       "source_endpoint_slot_key": "arrival",
@@ -8195,7 +8195,7 @@
       },
       "scene_template_ref": {
         "id": "stfv3__g5_route_approach_v1",
-        "version": 1,
+        "version": 2,
         "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
       },
       "source_endpoint_slot_key": "arrival",
@@ -8891,7 +8891,7 @@
       },
       "scene_template_ref": {
         "id": "stfv3__g5_habitation_v1",
-        "version": 1,
+        "version": 2,
         "canonical_digest": "a1ff5a56232841c0a10ecef2e4da1b5af3131ef2678d2c366f60ff585f52fc91"
       },
       "source_endpoint_slot_key": "arrival",
@@ -9199,7 +9199,7 @@
       },
       "scene_template_ref": {
         "id": "stfv3__g5_work_storage_social_v1",
-        "version": 1,
+        "version": 2,
         "canonical_digest": "ec0320df19eedcdc2fd227a42a8b1336772ec07e97451fa1e55563084bae2044"
       },
       "source_endpoint_slot_key": "arrival",
@@ -9507,7 +9507,7 @@
       },
       "scene_template_ref": {
         "id": "stfv3__g5_route_approach_v1",
-        "version": 1,
+        "version": 2,
         "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
       },
       "source_endpoint_slot_key": "arrival",
@@ -12269,7 +12269,7 @@
       },
       "scene_template_ref": {
         "id": "stfv3__g5_route_approach_v1",
-        "version": 1,
+        "version": 2,
         "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
       },
       "source_endpoint_slot_key": "arrival",

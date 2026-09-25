@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -27,7 +27,9 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
       const value = { ...payload, attested_by: 'isolated-postgres-test-fixture' };
       return { ...value, attestation_digest: digestEnvelope(value) };
     };
+    const activationApprovalsPath = join(dataRoot, 'v17-activation-approvals.json');
     const result = await bootstrapV17Imports({ adminUrl: adminUrl.href,
+      activationApprovalsPath,
       onRequest: async ({ stage, request }) => {
         if (process.env.V17_BOOTSTRAP_REQUEST_DIR) {
           await mkdir(process.env.V17_BOOTSTRAP_REQUEST_DIR, { recursive: true });
@@ -114,6 +116,12 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     assert.equal(result.actor_activation.production_authorized, true);
     assert.equal(result.actor_activation.event_sequence, 1);
     assert.equal(result.activation_performed, true);
+    const approvals = JSON.parse(await readFile(activationApprovalsPath, 'utf8'));
+    for (const key of ['itemBaselineApproval', 'itemImportApproval', 'itemApproval',
+      'actorImportApproval', 'actorApproval']) {
+      assert.ok(approvals[key].request);
+      assert.ok(approvals[key].attestation);
+    }
     const admin = new pg.Pool({ connectionString: adminUrl.href, max: 1 });
     try {
       const rows = (await admin.query(`SELECT datname FROM pg_database

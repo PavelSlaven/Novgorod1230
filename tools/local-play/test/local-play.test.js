@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
 
 import { assertReadiness, buildServerEnv, startLocalPlay,
@@ -90,11 +93,74 @@ test('readiness allows startup qualification to exceed thirty seconds', async ()
   assert.equal(calls, 122);
 });
 
+test('v17 uses matching binding, approvals and scenario', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'local-v17-play-'));
+  const approvalsPath = join(directory, 'approvals.json');
+  await writeFile(approvalsPath, JSON.stringify({ itemApproval: {
+    request: { compatible_world_pin_manifest_digest: digest }, attestation: { ok: true }
+  }, actorApproval: { request: { ok: true }, attestation: { ok: true } } }));
+  try {
+    const child = new EventEmitter(); child.exitCode = null;
+    child.kill = () => { child.exitCode = 0; queueMicrotask(() => child.emit('exit', 0)); };
+    let spawnedEnv;
+    const result = await startLocalPlay({ env: {
+      RUS_SPATIAL_V3_TARGET_ACTIVATION_APPROVALS_PATH: approvalsPath },
+    readGit: async () => git, isPortAvailable: async () => true,
+    provisionRuntime: async () => managed,
+    ensurePostgres: async () => ({ worldUrl: 'world-v17', partyUrl: 'party-v17',
+      state: 'existing', releaseVersion: 17, close: async () => {} }),
+    createPool: () => ({ end: async () => {} }),
+    loadPin: async () => ({ compatible_world_pin_manifest_digest: digest }),
+    setupProduction: async () => { throw new Error('v16 setup called'); },
+    setupM3Development: async () => { throw new Error('M3 setup called'); },
+    spawnServer: ({ env }) => { spawnedEnv = env; return child; },
+    fetchImpl: async (url) => response(url.endsWith('/health')
+      ? health(17) : url.endsWith('/scenarios')
+        ? { scenarios: [{ scenario_id: 'novgorod_pine_ridge_approach_v1', available: true }] }
+        : { mode: 'unconfigured' }), log: () => {} });
+    assert.equal(spawnedEnv.RUS_SPATIAL_V3_BINDINGS_MODULE,
+      'builtin:spatial-v3-production-v17');
+    assert.equal(spawnedEnv.RUS_SPATIAL_V3_TARGET_ACTIVATION_APPROVALS_PATH,
+      approvalsPath);
+    await result.close();
+    await assert.rejects(assertReadiness({ baseUrl: 'http://test', attempts: 1,
+      releaseVersion: 17, fetchImpl: async (url) => response(url.endsWith('/health')
+        ? health(17) : { scenarios: [{ scenario_id: 'lower_dvina_trace_v1', available: true }] }) }),
+    { code: 'LOCAL_PLAY_SCENARIO_UNAVAILABLE' });
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('v17 rejects absent, corrupt, or mismatched approvals before spawn', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'local-v17-approval-test-'));
+  const path = join(directory, 'approvals.json');
+  let spawned = false;
+  const launch = () => startLocalPlay({ env: {
+    RUS_SPATIAL_V3_TARGET_ACTIVATION_APPROVALS_PATH: path },
+    readGit: async () => git, isPortAvailable: async () => true,
+    provisionRuntime: async () => managed,
+    ensurePostgres: async () => ({ worldUrl: 'world', partyUrl: 'party',
+      state: 'existing', releaseVersion: 17, close: async () => {} }),
+    createPool: () => ({ end: async () => {} }),
+    loadPin: async () => ({ compatible_world_pin_manifest_digest: digest }),
+    spawnServer: () => { spawned = true; } });
+  try {
+    await assert.rejects(launch(), { code: 'LOCAL_PLAY_V17_APPROVALS_INVALID' });
+    await writeFile(path, '{bad');
+    await assert.rejects(launch(), { code: 'LOCAL_PLAY_V17_APPROVALS_INVALID' });
+    await writeFile(path, JSON.stringify({ itemApproval: { request: {
+      compatible_world_pin_manifest_digest: 'b'.repeat(64) }, attestation: {} },
+    actorApproval: { request: {}, attestation: {} } }));
+    await assert.rejects(launch(), { code: 'LOCAL_PLAY_V17_APPROVALS_INVALID' });
+    assert.equal(spawned, false);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
 test('validation and occupied port fail before provisioning', async () => {
   assert.throws(() => validateLocalPlay({ env: { RUS_SERVER_PORT: '0' },
     nodeVersion: '22.0.0' }), { code: 'LOCAL_PLAY_PORT_INVALID' });
   let provisioned = false;
   await assert.rejects(startLocalPlay({ env: {},
+    readGit: async () => git,
     isPortAvailable: async () => false,
     provisionRuntime: async () => { provisioned = true; } }),
   { code: 'LOCAL_PLAY_PORT_UNAVAILABLE' });
@@ -212,8 +278,8 @@ test('readiness reports server exit', async () => {
 
 function response(data) { return { ok: true, status: 200,
   json: async () => ({ ok: true, data }) }; }
-function health() { return { status: 'ok',
-  release_id: 'spatial-v3-production-v16', activation: 'sole_owner',
+function health(version = 16) { return { status: 'ok',
+  release_id: `spatial-v3-production-v${version}`, activation: 'sole_owner',
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only', runtime_fallback: 'forbidden',
   production_activation: true, runtime_selectable_in_canonical_production: true }; }

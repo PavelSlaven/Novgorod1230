@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
+import { localV17ApprovalsPath } from '../tools/local-play/local-postgres.js';
 import { runSpatialV3TargetMigrations } from '../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { buildTransactionalImportSql } from '../tools/spatial-v3/p12-authoring-importer.mjs';
 import { buildTargetAppearanceTransferV3ImportSql } from '../tools/spatial-v3/character-appearance-v1-importer.mjs';
@@ -195,7 +196,8 @@ async function applyCatalogDdl(pool, schema, migrations, tables) {
     throw new Error(`V17_CATALOG_DDL_READBACK_MISMATCH:${schema}`);
 }
 
-export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest = null }) {
+export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest = null,
+  activationApprovalsPath = localV17ApprovalsPath() }) {
   if (!adminUrl) throw new Error('V17_ADMIN_URL_REQUIRED');
   if (typeof attest !== 'function') throw new Error('V17_INDEPENDENT_ATTESTATIONS_REQUIRED');
   await checkV17BootstrapInputs();
@@ -538,6 +540,19 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       catalog_digest: actorActivation.catalog_digest,
       expected_previous_event_id: null
     });
+    const approvals = {
+      itemBaselineApproval: { request: preparation.baseline_request, attestation: baselineAttestation },
+      itemImportApproval: { request: preparation.approval_request, attestation: overlayAttestation },
+      itemApproval: { request: itemActivationRequest, attestation: itemActivationAttestation },
+      actorImportApproval: { request: actorRequest, attestation: actorAttestation },
+      actorApproval: { request: actorActivationRequest, attestation: actorActivationAttestation }
+    };
+    await mkdir(dirname(activationApprovalsPath), { recursive: true });
+    const pendingPath = `${activationApprovalsPath}.${process.pid}.pending`;
+    try {
+      await writeFile(pendingPath, `${JSON.stringify(approvals, null, 2)}\n`, { mode: 0o600 });
+      await rename(pendingPath, activationApprovalsPath);
+    } finally { await rm(pendingPath, { force: true }); }
     return { database: worldName, party_database: partyName,
       schema: { world_tables: 208, party_migrations: partyMigration.applied },
       gate1: { status: gateReadback.status, digest: gate.first_state_digest },
@@ -653,6 +668,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const attestations = Object.fromEntries(await Promise.all(stages.map(async (stage) =>
       [stage, JSON.parse(await readFile(join(directory, `${stage}.json`), 'utf8'))])));
     result = await bootstrapV17Imports({ adminUrl: process.env.V17_BOOTSTRAP_ADMIN_URL,
+      activationApprovalsPath: process.env.V17_BOOTSTRAP_ACTIVATION_APPROVALS_PATH
+        || localV17ApprovalsPath(),
       attest: ({ stage }) => attestations[stage],
       onRequest: async ({ stage, request }) => {
         const output = process.env.V17_BOOTSTRAP_REQUEST_DIR;

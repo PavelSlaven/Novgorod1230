@@ -265,6 +265,7 @@ test('target item and actor successors preserve v6 parties through real PostgreS
       manifestPath: bundle.manifest_path, wrapTransaction: false,
       temporaryTablePrefix: bundle.temporary_table_prefix })));
     await pool.query(`${p12.sql_builder.concatenation.prefix}${parts.join('')}${p12.sql_builder.concatenation.suffix}`);
+    await pool.query(await readFile('scripts/live-world-v17-generated-npc-versioned-index.sql', 'utf8'));
     const capacityManifestPath = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
     const capacity = await json(capacityManifestPath);
     await pool.query(await buildTransactionalImportSql({ manifestPath: capacityManifestPath,

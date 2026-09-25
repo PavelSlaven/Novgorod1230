@@ -23,9 +23,22 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     const adminUrl = new URL(managed.worldUrl);
     adminUrl.username = 'postgres';
     adminUrl.pathname = '/postgres';
-    const fixtureApproval = (payload) => {
-      const value = { ...payload, attested_by: 'isolated-postgres-test-fixture' };
-      return { ...value, attestation_digest: digestEnvelope(value) };
+    const candidateDir = process.env.V17_BOOTSTRAP_CANDIDATE_DIR;
+    if (candidateDir) {
+      await mkdir(candidateDir, { recursive: true });
+      await writeFile(join(candidateDir, 'UNISSUED.txt'),
+        'Candidate bytes for independent review. No authority until separately approved.\n');
+    }
+    const fixtureApproval = async (stage, payload) => {
+      const value = { ...payload, ...(candidateDir ? {
+        attested_by: 'gpt-6-sol-high-independent-runtime-authority-review',
+        auditor_ref: 'PR-98-M2c-v17-d224bf53-runtime-authority',
+        independence_basis: 'Independent read-only review of exact request digests, approved item and actor provenance, v17 bootstrap inputs and active validators; no database mutation.'
+      } : { attested_by: 'isolated-postgres-test-fixture' }) };
+      const attestation = { ...value, attestation_digest: digestEnvelope(value) };
+      if (candidateDir) await writeFile(join(candidateDir, `${stage}.json`),
+        `${JSON.stringify(attestation, null, 2)}\n`);
+      return attestation;
     };
     const activationApprovalsPath = join(dataRoot, 'v17-activation-approvals.json');
     const result = await bootstrapV17Imports({ adminUrl: adminUrl.href,
@@ -38,7 +51,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
         }
       },
       attest: ({ stage, request }) => {
-        if (stage === 'item_baseline') return fixtureApproval({
+        if (stage === 'item_baseline') return fixtureApproval(stage, {
           schema: 'rus.baseline_registration_attestation.v2',
           registration_request_digest: request.registration_request_digest,
           parent_tuple: { parent_revision_id: request.parent_revision_id,
@@ -50,12 +63,12 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
             compatible_world_pin_manifest_digest: request.compatible_world_pin_manifest_digest },
           decision: 'approve_register_baseline', action: 'register_baseline'
         });
-        if (stage === 'item_import') return fixtureApproval({
+        if (stage === 'item_import') return fixtureApproval(stage, {
           schema: 'rus.item_container_overlay_approval_attestation.v2',
           approval_request_digest: request.approval_request_digest,
           decision: 'approve_overlay_import', activation_authorized: false
         });
-        if (stage === 'item_activation') return fixtureApproval({
+        if (stage === 'item_activation') return fixtureApproval(stage, {
           schema: 'rus.runtime_catalog_activation_attestation.v2',
           activation_request_digest: request.activation_request_digest,
           catalog_scope: request.catalog_scope,
@@ -67,7 +80,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
           runtime_release_id: request.runtime_release_id,
           decision: 'approve_activation'
         });
-        if (stage === 'actor_import') return fixtureApproval({
+        if (stage === 'actor_import') return fixtureApproval(stage, {
           schema: 'rus.actor_base_attributes_successor_import_attestation.v1',
           request_digest: request.request_digest,
           decision: 'approve_exact_actor_base_attributes_successor_import',
@@ -78,7 +91,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
             production_authorized: false, existing_party_migration_authorized: false,
             old_save_rematerialization_authorized: false }
         });
-        if (stage === 'actor_activation') return fixtureApproval({
+        if (stage === 'actor_activation') return fixtureApproval(stage, {
           schema: 'rus.actor_base_attributes_successor_activation_attestation.v1',
           request_digest: request.request_digest,
           decision: 'approve_exact_actor_base_attributes_new_production_activation',

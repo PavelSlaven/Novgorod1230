@@ -1,6 +1,8 @@
 # New-game pipeline
 
-Канонический владелец orchestration: `@rus/new-game`.
+Канонический владелец пакетов стадий: `@rus/new-game`. Оркестратор
+`runModularNewGamePipeline` — **не** production-владелец: production-старт идёт
+через композицию game-server (LW-026).
 
 ## Production path на ветке PR #98 (v17)
 
@@ -36,6 +38,22 @@
 | 24 | party-db-write-plan | утверждённый physical write plan |
 | 25 | party-commit | идемпотентный commit |
 
+## Живые стадии bootstrap v17 / play:local (не оркестратор)
+
+Стадии **8, 13, 14/compat и 16** живы через
+[`scripts/run-pr17-item-container-stage3c.mjs`](../../scripts/run-pr17-item-container-stage3c.mjs)
+(bootstrap v17, `play:local` / `tools/local-play/production-setup.js`) —
+[#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D2;
+уточнение #127: https://github.com/PavelSlaven/Novgorod1230/issues/127#issuecomment-5839784223.
+Они не входят в мёртвый modular orchestrator ниже.
+
+| Stage | Имя | Результат |
+|---:|---|---|
+| 8 | item-profile-candidates | кандидаты предметных профилей |
+| 13 | g5-materialization | code-only G5 instances и trace |
+| 14 | g5-audit | аудит G5 (включая compat-путь) |
+| 16 | item-placement | code-only item/container/property instances |
+
 ## Modular stage table (legacy / removable)
 
 Таблица и `runModularNewGamePipeline` описывают **модульный** конвейер `@rus/new-game`
@@ -43,7 +61,7 @@
 ([#127](https://github.com/PavelSlaven/Novgorod1230/issues/127)). **Production его не вызывает**
 (`adapters/workflows.js` только реэкспортируется из [`src/index.js`](../../apps/game-server/src/index.js)).
 Не расширять этот путь новой gameplay-логикой. Ниже — только мёртвые стадии
-(оркестратор; 2–10, 13–15, 17–21, 26).
+(оркестратор; 2–7, 9–10, 15, 17–21, 26). Стадии 8/13/14/16 — см. таблицу bootstrap выше.
 
 | Stage | Имя | Результат |
 |---:|---|---|
@@ -53,11 +71,8 @@
 | 5 | start-candidates | кандидаты старта |
 | 6 | candidate-place-templates | шаблоны мест-кандидатов |
 | 7 | npc-candidates | кандидаты NPC |
-| 8 | item-profile-candidates | кандидаты предметных профилей |
 | 9 | start-node-selection | выбранный стартовый узел |
 | 10 | start-place-audit | аудит места старта |
-| 13 | g5-materialization | code-only G5 instances и trace |
-| 14 | g5-audit | аудит G5 |
 | 15 | npc-placement | code-only NPC instances из profile sets |
 | 17 | time-light-gate | согласование времени и света |
 | 18 | character-knowledge-map | карта знаний персонажа |
@@ -78,13 +93,15 @@ World-base, party persistence и LLM transport передаются через c
 
 ## Границы
 
-- Stage 19 остаётся hidden; Stage 20 — visible projection; Stages 22–23 — только visible inputs.
+- Stage 19 хранит hidden; Stage 20 — visible projection; Stages 22–23 — только visible inputs.
 - Stage 13, 15 и 16 не вызывают LLM для создания экземпляров.
-- Stage 24–25: фиксированный write plan и одна транзакция (на modular path).
-- Production new-game / first screen на v17 — через composition root выше.
+- Stage 24–25: фиксированный write plan и запись хранилища (на modular path).
+- Production new-game / first screen на v17 — через composition root game-server.
+- Bootstrap v17 / `play:local` вызывают стадии 8/13/14/16 через
+  `scripts/run-pr17-item-container-stage3c.mjs`, не через мёртвый оркестратор.
 
 ## Ссылки
 
 - [packages/new-game/MODULE.md](../../packages/new-game/MODULE.md)
 - [ARCHITECTURE](../context/ARCHITECTURE.md)
-- LW-001…LW-003, LW-033
+- LW-001…LW-003, LW-026, LW-033

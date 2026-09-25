@@ -46,12 +46,17 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    - `@rus/turn` with `@rus/party-store` — availability, placement, capacity,
      access and consequences (ADR-004 deliberately creates no place/access
      package);
-   - weather/light — current projection: `@rus/materialization`
+   - weather/light — `@rus/environment-state` применяет погоду и свет и считает
+     моменты смены; следующее состояние выбирает `@rus/turn` через
+     детерминированный RandomSource (seed партии, G0-зона, интервал);
+     начальное — `@rus/materialization`
      `projectApprovedCurrentEnvironment` via
      `apps/game-server/src/infrastructure/postgres/target-current-factual-context.js`
-     (v17); live weather change not yet implemented
-     ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5837624476)
-     п.6–8); `@rus/environment-state` will be removed (not yet removed);
+     (v17); данные — преемник
+     `data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json`
+     (novgorod v2; утверждение WR §21.1)
+     ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)
+     D7); живая смена по seed ещё не реализована как полный runtime path;
    - `@rus/time-events-history` — historical phases and due event effects;
    - `@rus/npc-runtime` — schedule, perception and generic NPC signal
      proposals (`npc_decision_signal_v1`);

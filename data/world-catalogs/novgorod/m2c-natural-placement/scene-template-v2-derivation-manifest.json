@@ -45,7 +45,7 @@
   },
   "candidate": {
     "path": "data/world-catalogs/novgorod/m2c-natural-placement/scene-template-v2-successor-candidate.json",
-    "sha256": "b65d8aa6f65d8e8b4f063af706919aa4eb31a94c86f184770f9d0fd657a2dce0"
+    "sha256": "3a13c439313c57225c44862c8011f7cbdd92f915d87cd7258737a56c03e73def"
   },
   "exact_change": {
     "placement_ids": [
@@ -60,6 +60,7 @@
     "field": "scene_template_ref.version",
     "from": 1,
     "to": 2,
+    "retained_source_scene_placements": "same source row with __scene_v1 id",
     "all_other_fields_unchanged": true
   }
 }

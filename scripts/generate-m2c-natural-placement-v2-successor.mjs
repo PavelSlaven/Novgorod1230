@@ -41,7 +41,9 @@ export async function buildNaturalPlacementV2Successor() {
     exact_change: { placement_ids: approval.approved_successors.map(({ start }) => {
       const row = JSON.parse(startBytesByPath.get(start.path));
       return row.initial_perception_rule?.placement_candidate?.placement_ref.id ?? row.natural_placement_ref.id;
-    }), field: 'scene_template_ref.version', from: 1, to: 2, all_other_fields_unchanged: true }
+    }), field: 'scene_template_ref.version', from: 1, to: 2,
+    retained_source_scene_placements: 'same source row with __scene_v1 id',
+    all_other_fields_unchanged: true }
   });
   return new Map([[outputPath, candidateBytes], [manifestPath, manifestBytes]]);
 }

@@ -12401,6 +12401,541 @@
         ],
         "limits": "Places broad approved local natural layers at the existing open-scene arrival endpoint; no coordinates, reachability, rights, species, current weather or active sound cause are added."
       }
+    },
+    {
+      "id": "m2c_natural_g4_dry_pine_ridge__stfv3__g5_route_approach_v1__arrival__scene_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_pine_ridge",
+        "version": 1,
+        "payload_digest": "962219e66537c5a1de17880bd2686c78d053787b86442aa12938e958eed8e6a3"
+      },
+      "presentation_profile_ref": {
+        "id": "m2c_natural_g4_dry_pine_ridge_presentation",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1,
+        "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
+      },
+      "source_endpoint_slot_key": "arrival",
+      "source_endpoint_role": "arrival",
+      "g6_scene_slot_key": "main",
+      "required_position_slot_key": "arrival",
+      "required_position_instance_ordinal": 0,
+      "scene_physical_pins": {
+        "physical_class_id": "spatial.g6.open",
+        "overhead_cover_id": "none",
+        "intra_g6_visibility_mode": "default_clear",
+        "acoustic_uniformity": "uniform",
+        "enclosing_structure_slot_key": null
+      },
+      "visible_scene": "Окрестности.",
+      "visual_layers": [
+        "surface",
+        "tree_layer",
+        "shrub_layer",
+        "ground_cover",
+        "natural_materials"
+      ],
+      "acoustic_layers": [],
+      "unplaced_visual_layers": [],
+      "unprojected_layers": [
+        "relief",
+        "water_body",
+        "bank_structure",
+        "riparian_vegetation",
+        "seasonal_state",
+        "light",
+        "weather",
+        "audible_context"
+      ],
+      "condition_policy_ref": {
+        "id": "m2c_natural_current_perception_conditions",
+        "version": 1
+      },
+      "acoustic_source_rule_ref": null,
+      "provenance": {
+        "directness": "editorial_analogical",
+        "confidence": "low",
+        "source_refs": [
+          "data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json#m2c_natural_g4_dry_pine_ridge_presentation",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_endpoint_slots.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json#stfv3__g5_route_approach_v1@1/main"
+        ],
+        "limits": "Places broad approved local natural layers at the existing open-scene arrival endpoint; no coordinates, reachability, rights, species, current weather or active sound cause are added."
+      }
+    },
+    {
+      "id": "m2c_natural_g4_south_entry_reach__stfv3__g5_route_approach_v1__arrival__scene_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_south_entry_reach",
+        "version": 1,
+        "payload_digest": "0aea66edab59f063d8828c813e8f9a643ae8da70af7547a9d19212b3d4fe19f0"
+      },
+      "presentation_profile_ref": {
+        "id": "m2c_natural_g4_south_entry_reach_presentation",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1,
+        "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
+      },
+      "source_endpoint_slot_key": "arrival",
+      "source_endpoint_role": "arrival",
+      "g6_scene_slot_key": "main",
+      "required_position_slot_key": "arrival",
+      "required_position_instance_ordinal": 0,
+      "scene_physical_pins": {
+        "physical_class_id": "spatial.g6.open",
+        "overhead_cover_id": "none",
+        "intra_g6_visibility_mode": "default_clear",
+        "acoustic_uniformity": "uniform",
+        "enclosing_structure_slot_key": null
+      },
+      "visible_scene": "Окрестности.",
+      "visual_layers": [
+        "surface",
+        "relief",
+        "water_body",
+        "bank_structure",
+        "tree_layer",
+        "shrub_layer",
+        "ground_cover",
+        "riparian_vegetation",
+        "natural_materials"
+      ],
+      "acoustic_layers": [
+        "audible_context"
+      ],
+      "unplaced_visual_layers": [],
+      "unprojected_layers": [
+        "seasonal_state",
+        "light",
+        "weather"
+      ],
+      "condition_policy_ref": {
+        "id": "m2c_natural_current_perception_conditions",
+        "version": 1
+      },
+      "acoustic_source_rule_ref": {
+        "id": "m2c_current_moving_water_source",
+        "version": 1
+      },
+      "provenance": {
+        "directness": "editorial_analogical",
+        "confidence": "low",
+        "source_refs": [
+          "data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json#m2c_natural_g4_south_entry_reach_presentation",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_endpoint_slots.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json#stfv3__g5_route_approach_v1@1/main"
+        ],
+        "limits": "Places broad approved local natural layers at the existing open-scene arrival endpoint; no coordinates, reachability, rights, species, current weather or active sound cause are added."
+      }
+    },
+    {
+      "id": "m2c_natural_g4_reed_backwater__stfv3__g5_route_approach_v1__arrival__scene_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_reed_backwater",
+        "version": 1,
+        "payload_digest": "6d441c65185f7e12e15114ef384194de08c27fc8d065a1ec2d6b0dff99a329e7"
+      },
+      "presentation_profile_ref": {
+        "id": "m2c_natural_g4_reed_backwater_presentation",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1,
+        "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
+      },
+      "source_endpoint_slot_key": "arrival",
+      "source_endpoint_role": "arrival",
+      "g6_scene_slot_key": "main",
+      "required_position_slot_key": "arrival",
+      "required_position_instance_ordinal": 0,
+      "scene_physical_pins": {
+        "physical_class_id": "spatial.g6.open",
+        "overhead_cover_id": "none",
+        "intra_g6_visibility_mode": "default_clear",
+        "acoustic_uniformity": "uniform",
+        "enclosing_structure_slot_key": null
+      },
+      "visible_scene": "Окрестности.",
+      "visual_layers": [
+        "surface",
+        "relief",
+        "water_body",
+        "bank_structure",
+        "shrub_layer",
+        "ground_cover",
+        "riparian_vegetation",
+        "natural_materials"
+      ],
+      "acoustic_layers": [
+        "audible_context"
+      ],
+      "unplaced_visual_layers": [],
+      "unprojected_layers": [
+        "tree_layer",
+        "seasonal_state",
+        "light",
+        "weather"
+      ],
+      "condition_policy_ref": {
+        "id": "m2c_natural_current_perception_conditions",
+        "version": 1
+      },
+      "acoustic_source_rule_ref": {
+        "id": "m2c_current_moving_water_source",
+        "version": 1
+      },
+      "provenance": {
+        "directness": "editorial_analogical",
+        "confidence": "low",
+        "source_refs": [
+          "data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json#m2c_natural_g4_reed_backwater_presentation",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_endpoint_slots.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json#stfv3__g5_route_approach_v1@1/main"
+        ],
+        "limits": "Places broad approved local natural layers at the existing open-scene arrival endpoint; no coordinates, reachability, rights, species, current weather or active sound cause are added."
+      }
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_resource_edge__stfv3__g5_route_approach_v1__arrival__scene_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_resource_edge",
+        "version": 1,
+        "payload_digest": "c0db3e62b2f7b5b3433de961304cbaa96b1b49040efc90f95c64f30099912a1d"
+      },
+      "presentation_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_resource_edge_presentation",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1,
+        "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
+      },
+      "source_endpoint_slot_key": "arrival",
+      "source_endpoint_role": "arrival",
+      "g6_scene_slot_key": "main",
+      "required_position_slot_key": "arrival",
+      "required_position_instance_ordinal": 0,
+      "scene_physical_pins": {
+        "physical_class_id": "spatial.g6.open",
+        "overhead_cover_id": "none",
+        "intra_g6_visibility_mode": "default_clear",
+        "acoustic_uniformity": "uniform",
+        "enclosing_structure_slot_key": null
+      },
+      "visible_scene": "Окрестности.",
+      "visual_layers": [
+        "surface",
+        "relief",
+        "water_body",
+        "bank_structure",
+        "tree_layer",
+        "shrub_layer",
+        "ground_cover",
+        "riparian_vegetation",
+        "natural_materials"
+      ],
+      "acoustic_layers": [
+        "audible_context"
+      ],
+      "unplaced_visual_layers": [],
+      "unprojected_layers": [
+        "seasonal_state",
+        "light",
+        "weather"
+      ],
+      "condition_policy_ref": {
+        "id": "m2c_natural_current_perception_conditions",
+        "version": 1
+      },
+      "acoustic_source_rule_ref": {
+        "id": "m2c_current_moving_water_source",
+        "version": 1
+      },
+      "provenance": {
+        "directness": "editorial_analogical",
+        "confidence": "low",
+        "source_refs": [
+          "data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json#m2c_natural_g4_vikhtuy_resource_edge_presentation",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_endpoint_slots.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json#stfv3__g5_route_approach_v1@1/main"
+        ],
+        "limits": "Places broad approved local natural layers at the existing open-scene arrival endpoint; no coordinates, reachability, rights, species, current weather or active sound cause are added."
+      }
+    },
+    {
+      "id": "m2c_natural_g4_zaostrovye_settlement_center__stfv3__g5_route_approach_v1__arrival__scene_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_settlement_center",
+        "version": 1,
+        "payload_digest": "3b191c91c10c7372e4b5531109e03fe02d53ac890f96bec2a68b31c3e8e01d6b"
+      },
+      "presentation_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_settlement_center_presentation",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_route_approach_v1",
+        "version": 1,
+        "canonical_digest": "3e389ce47b58746ec1eadec95739582a5b7922f2a63bf13fe3cac4f333bee2e9"
+      },
+      "source_endpoint_slot_key": "arrival",
+      "source_endpoint_role": "arrival",
+      "g6_scene_slot_key": "main",
+      "required_position_slot_key": "arrival",
+      "required_position_instance_ordinal": 0,
+      "scene_physical_pins": {
+        "physical_class_id": "spatial.g6.open",
+        "overhead_cover_id": "none",
+        "intra_g6_visibility_mode": "default_clear",
+        "acoustic_uniformity": "uniform",
+        "enclosing_structure_slot_key": null
+      },
+      "visible_scene": "Окрестности.",
+      "visual_layers": [
+        "surface",
+        "relief",
+        "water_body",
+        "bank_structure",
+        "tree_layer",
+        "shrub_layer",
+        "ground_cover",
+        "riparian_vegetation",
+        "natural_materials"
+      ],
+      "acoustic_layers": [
+        "audible_context"
+      ],
+      "unplaced_visual_layers": [],
+      "unprojected_layers": [
+        "seasonal_state",
+        "light",
+        "weather"
+      ],
+      "condition_policy_ref": {
+        "id": "m2c_natural_current_perception_conditions",
+        "version": 1
+      },
+      "acoustic_source_rule_ref": {
+        "id": "m2c_current_moving_water_source",
+        "version": 1
+      },
+      "provenance": {
+        "directness": "editorial_analogical",
+        "confidence": "low",
+        "source_refs": [
+          "data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json#m2c_natural_g4_zaostrovye_settlement_center_presentation",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_endpoint_slots.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json#stfv3__g5_route_approach_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json#stfv3__g5_route_approach_v1@1/main"
+        ],
+        "limits": "Places broad approved local natural layers at the existing open-scene arrival endpoint; no coordinates, reachability, rights, species, current weather or active sound cause are added."
+      }
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_locality__stfv3__g5_work_storage_social_v1__arrival__scene_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_locality",
+        "version": 1,
+        "payload_digest": "d00bb41965ec4a68f9603c5a1f47656ba0b95bcbd3c2750ad1e4c38e82dc0fab"
+      },
+      "presentation_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_locality_presentation",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_work_storage_social_v1",
+        "version": 1,
+        "canonical_digest": "ec0320df19eedcdc2fd227a42a8b1336772ec07e97451fa1e55563084bae2044"
+      },
+      "source_endpoint_slot_key": "arrival",
+      "source_endpoint_role": "arrival",
+      "g6_scene_slot_key": "main",
+      "required_position_slot_key": "arrival",
+      "required_position_instance_ordinal": 0,
+      "scene_physical_pins": {
+        "physical_class_id": "spatial.g6.open",
+        "overhead_cover_id": "none",
+        "intra_g6_visibility_mode": "default_clear",
+        "acoustic_uniformity": "uniform",
+        "enclosing_structure_slot_key": null
+      },
+      "visible_scene": "Окрестности.",
+      "visual_layers": [
+        "surface",
+        "relief",
+        "water_body",
+        "bank_structure",
+        "tree_layer",
+        "shrub_layer",
+        "ground_cover",
+        "riparian_vegetation",
+        "natural_materials"
+      ],
+      "acoustic_layers": [
+        "audible_context"
+      ],
+      "unplaced_visual_layers": [],
+      "unprojected_layers": [
+        "seasonal_state",
+        "light",
+        "weather"
+      ],
+      "condition_policy_ref": {
+        "id": "m2c_natural_current_perception_conditions",
+        "version": 1
+      },
+      "acoustic_source_rule_ref": {
+        "id": "m2c_current_moving_water_source",
+        "version": 1
+      },
+      "provenance": {
+        "directness": "editorial_analogical",
+        "confidence": "low",
+        "source_refs": [
+          "data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json#m2c_natural_g4_vikhtuy_locality_presentation",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_endpoint_slots.json#stfv3__g5_work_storage_social_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json#stfv3__g5_work_storage_social_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json#stfv3__g5_work_storage_social_v1@1/main"
+        ],
+        "limits": "Places broad approved local natural layers at the existing open-scene arrival endpoint; no coordinates, reachability, rights, species, current weather or active sound cause are added."
+      }
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_locality__stfv3__g5_habitation_v1__arrival__scene_v1",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_locality",
+        "version": 1,
+        "payload_digest": "d00bb41965ec4a68f9603c5a1f47656ba0b95bcbd3c2750ad1e4c38e82dc0fab"
+      },
+      "presentation_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_locality_presentation",
+        "version": 1
+      },
+      "scene_template_ref": {
+        "id": "stfv3__g5_habitation_v1",
+        "version": 1,
+        "canonical_digest": "a1ff5a56232841c0a10ecef2e4da1b5af3131ef2678d2c366f60ff585f52fc91"
+      },
+      "source_endpoint_slot_key": "arrival",
+      "source_endpoint_role": "arrival",
+      "g6_scene_slot_key": "main",
+      "required_position_slot_key": "arrival",
+      "required_position_instance_ordinal": 0,
+      "scene_physical_pins": {
+        "physical_class_id": "spatial.g6.open",
+        "overhead_cover_id": "none",
+        "intra_g6_visibility_mode": "default_clear",
+        "acoustic_uniformity": "uniform",
+        "enclosing_structure_slot_key": null
+      },
+      "visible_scene": "Окрестности.",
+      "visual_layers": [
+        "surface",
+        "relief",
+        "water_body",
+        "bank_structure",
+        "tree_layer",
+        "shrub_layer",
+        "ground_cover",
+        "riparian_vegetation",
+        "natural_materials"
+      ],
+      "acoustic_layers": [
+        "audible_context"
+      ],
+      "unplaced_visual_layers": [],
+      "unprojected_layers": [
+        "seasonal_state",
+        "light",
+        "weather"
+      ],
+      "condition_policy_ref": {
+        "id": "m2c_natural_current_perception_conditions",
+        "version": 1
+      },
+      "acoustic_source_rule_ref": {
+        "id": "m2c_current_moving_water_source",
+        "version": 1
+      },
+      "provenance": {
+        "directness": "editorial_analogical",
+        "confidence": "low",
+        "source_refs": [
+          "data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json#m2c_natural_g4_vikhtuy_locality_presentation",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_endpoint_slots.json#stfv3__g5_habitation_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json#stfv3__g5_habitation_v1@1/arrival",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json#stfv3__g5_habitation_v1@1/main"
+        ],
+        "limits": "Places broad approved local natural layers at the existing open-scene arrival endpoint; no coordinates, reachability, rights, species, current weather or active sound cause are added."
+      }
     }
   ]
 }

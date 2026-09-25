@@ -7,7 +7,7 @@ import { resolve } from 'node:path';
 import { buildG4NaturalCompiledRecords, deriveApprovedNaturalSceneRepins,
   reportNaturalSuccessorRows } from '../src/g4-natural-compiled-records.js';
 import { buildG4NaturalPresentationCompiledRecords } from '../src/g4-natural-presentation-compiled-records.js';
-import { buildG4NaturalPlacementCompiledRecords } from '../src/g4-natural-placement-compiled-records.js';
+import { buildG4NaturalPlacementCompiledRecords, deriveApprovedNaturalPlacementV2Successor } from '../src/g4-natural-placement-compiled-records.js';
 import { approvedNaturalStableCover } from '../../../apps/game-server/src/infrastructure/postgres/g4-natural-perception-reader.js';
 
 const root = resolve(import.meta.dirname, '../../..');
@@ -52,17 +52,42 @@ test('approved capacity starts repin only their matching natural G4 scene refs',
     const refs = record.payload.exact_scene_features.canonical_scene_template_refs;
     for (const id of repins.get(record.payload.g4_ref.id) ?? []) {
       assert.ok(refs.includes(`${id}@2`));
-      assert.ok(!refs.includes(`${id}@1`));
+      assert.ok(refs.includes(`${id}@1`));
     }
     const original = originals.find((row) => row.record_id === record.record_id);
-    assert.deepEqual(refs, original.payload.exact_scene_features.canonical_scene_template_refs
-      .map((ref) => repins.get(record.payload.g4_ref.id)?.has(ref.slice(0, -2)) ? `${ref.slice(0, -2)}@2` : ref));
+    assert.deepEqual(refs, [...original.payload.exact_scene_features.canonical_scene_template_refs,
+      ...[...(repins.get(record.payload.g4_ref.id) ?? [])].map((id) => `${id}@2`)]);
     assert.deepEqual({ ...record.payload, exact_scene_features: original.payload.exact_scene_features }, original.payload);
   }
   const tampered = new Map(starts);
   tampered.set(capacityApproval.approved_successors[0].start.path, `${starts.get(capacityApproval.approved_successors[0].start.path)} `);
   assert.throws(() => deriveApprovedNaturalSceneRepins({ capacityApproval,
     sceneTemplateBytes, startBytesByPath: tampered }), /Exact approved capacity start bytes/);
+});
+
+test('approved scene v2 starts retain exact scene v1 natural placement for generated arrival', () => {
+  const capacityApproval = JSON.parse(readFileSync(resolve(root,
+    `${base}live-world-runtime-v17/capacity-v2-start-successors/data-approval.json`)));
+  const sceneTemplateBytes = readFileSync(resolve(root, capacityApproval.source_pins.scene_templates.path), 'utf8');
+  const starts = new Map(capacityApproval.approved_successors.map(({ start }) =>
+    [start.path, readFileSync(resolve(root, start.path), 'utf8')]));
+  const sourceCandidateBytes = readFileSync(resolve(root, `${base}m2c-natural-placement/candidate.json`), 'utf8');
+  const successor = JSON.parse(deriveApprovedNaturalPlacementV2Successor({
+    sourceCandidateBytes, approvedStartBytesByPath: starts, capacityApproval, sceneTemplateBytes,
+    approval: JSON.parse(readFileSync(resolve(root, `${base}m2c-sol-data-approval.json`))) }));
+  const source = JSON.parse(sourceCandidateBytes);
+  assert.equal(successor.placements.length, source.placements.length + capacityApproval.approved_successors.length);
+  for (const { start } of capacityApproval.approved_successors) {
+    const approved = JSON.parse(starts.get(start.path));
+    const ref = approved.initial_perception_rule?.placement_candidate?.placement_ref
+      ?? approved.natural_placement_ref;
+    const rows = successor.placements.filter((row) => row.id === ref.id && row.version === ref.version);
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].scene_template_ref.version, 2);
+    const original = source.placements.find((row) => row.id === ref.id && row.version === ref.version);
+    assert.deepEqual(successor.placements.find((row) => row.id === `${ref.id}__scene_v1`),
+      { ...original, id: `${ref.id}__scene_v1` });
+  }
 });
 
 test('derived import carries exact source and layer-season evidence; typed gaps stay candidate', () => {

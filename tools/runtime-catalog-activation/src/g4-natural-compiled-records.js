@@ -35,8 +35,7 @@ export function buildG4NaturalCompiledRecords({ candidate, candidateBytes, appro
       if (!successor || !compiled.exact_scene_features.canonical_scene_template_refs.includes(`${sceneId}@1`)) {
         throw new TypeError('Exact approved natural scene repin source is required.');
       }
-      compiled.exact_scene_features.canonical_scene_template_refs =
-        compiled.exact_scene_features.canonical_scene_template_refs.map((ref) => ref === `${sceneId}@1` ? `${sceneId}@2` : ref);
+      compiled.exact_scene_features.canonical_scene_template_refs.push(`${sceneId}@2`);
     }
     validateG4NaturalProfile(compiled);
     const key = `${profile.g4_ref.id}@${profile.g4_ref.version}`;

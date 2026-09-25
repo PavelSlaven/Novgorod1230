@@ -136,12 +136,32 @@ test('P12 pine arrival discloses its approved G4 exit before local topology exis
   assert.deepEqual(current.current_visible_context.visible_objects, [{
     entity_ref: { entity_kind: 'g4_directional_exit', entity_id: expected[0].id },
     display_label: approved.display_label, recognition: 'known' }]);
-  worldBaseReader.readApprovedG4DirectionalExits = async () => ({ ok: true, value: [] });
-  await assert.rejects(provider.readCurrentExitDisclosure({ partyId: 'party', actorId: 'actor' }),
-    (error) => error.details?.reason === 'approved_g4_directional_exits_required');
   worldBaseReader.readApprovedG4DirectionalExits = async () => ({ ok: false });
   await assert.rejects(provider.readCurrentExitDisclosure({ partyId: 'party', actorId: 'actor' }),
     (error) => error.details?.reason === 'approved_g4_directional_exits_required');
+});
+
+test('interior canonical G5 has no G4 exit disclosure in approved exit set', async () => {
+  const start = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/live-world-runtime-v17/capacity-v2-start-successors/novgorod_vikhtuy_work_storage_v1.start.json',
+    import.meta.url)));
+  const rows = JSON.parse(readFileSync(new URL(
+    '../../../data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_g4_directional_exits.json',
+    import.meta.url)));
+  const approved = rows.filter((row) => row.g4_id === start.initial_placement.g4_ref.id);
+  assert.equal(approved.length, 3);
+  assert.equal(approved.filter((row) =>
+    row.exit_canonical_g5_id === start.initial_placement.canonical_g5_ref.id).length, 0);
+  const worldBaseReader = {
+    async readG4ExpansionBinding() { return { ok: true, value: { g4: start.initial_placement.g4_ref } }; },
+    async readApprovedG4DirectionalExits() { return { ok: true, value: approved }; }
+  };
+  const { provider, scene, natural } = fixture({ worldBaseReader });
+  scene.world_revision_id = start.world_pin.world_revision_id;
+  scene.site = { parent_g4_id: start.initial_placement.g4_ref.id,
+    canonical_g5_ref: { entity_id: start.initial_placement.canonical_g5_ref.id } };
+  natural.scene.g4_ref.id = start.initial_placement.g4_ref.id;
+  assert.deepEqual(await provider.readCurrentExitDisclosure({ partyId: 'party', actorId: 'actor' }), []);
 });
 
 test('current approved local edge reaches the turn visible context', async () => {

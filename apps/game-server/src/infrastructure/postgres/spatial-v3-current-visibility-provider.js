@@ -130,7 +130,6 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
         }
         const exits = approved.value.filter((row) =>
           row.exit_canonical_g5_id === current.scene.site.canonical_g5_ref?.entity_id);
-        if (!exits.length) gap('approved_g4_directional_exits_required');
         return provider.readExitDisclosure({ transaction: current.transaction, partyId,
           actorId, position: { id: current.scene.location.scene_position_id },
           site: current.scene.site, directional_exits: exits });

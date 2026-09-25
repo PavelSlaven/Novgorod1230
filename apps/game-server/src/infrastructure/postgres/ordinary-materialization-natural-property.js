@@ -9,21 +9,21 @@ const unresolved = () => { throw Object.assign(new Error('M2C_NATURAL_ACCESS_CON
 
 /** Reads the existing ordinary source property context; no separate rights store. */
 export function createApprovedGeneratedNaturalPropertyReader({ candidateBytes, approval,
-  sourceBytesByPath, capacityApproval, sceneTemplateBytes } = {}) {
+  sourceBytesByPath, capacityApproval, sceneTemplateBytes, materializationProfileBytes } = {}) {
   if (typeof candidateBytes !== 'string'
       || approval?.decision !== 'APPROVE_M2C_GENERATED_PROPERTY_CONTEXT_AUTHORING_V1'
       || approval.approval_scope !== 'generated_property_context_authoring_data_only'
       || hash(candidateBytes) !== approval.candidate_sha256) unresolved();
   const candidate = capacityApproval == null ? JSON.parse(candidateBytes)
     : deriveApprovedGeneratedSceneV2Bindings(JSON.parse(candidateBytes),
-      { capacityApproval, sceneTemplateBytes });
+      { capacityApproval, sceneTemplateBytes, materializationProfileBytes });
   const contextRef = `${candidate.candidate_id}@${candidate.version}`;
   if (approval.candidate_ref !== contextRef || !Array.isArray(candidate.source_set)
       || candidate.source_set.some((pin) => typeof sourceBytesByPath?.[pin.path] !== 'string'
         || hash(sourceBytesByPath[pin.path]) !== pin.sha256)) unresolved();
   const items = capacityApproval == null ? JSON.parse(sourceBytesByPath[ITEMS])
     : deriveApprovedGeneratedSceneV2Bindings(JSON.parse(sourceBytesByPath[ITEMS]),
-      { capacityApproval, sceneTemplateBytes });
+      { capacityApproval, sceneTemplateBytes, materializationProfileBytes });
   return async function readNaturalSourceProperty({ transaction, partyId, g5Id,
     g4Id, sourceRef, profileId, operation, spatialProposal = null }) {
     if (!transaction?.query || !candidate.operations.includes(operation)) unresolved();

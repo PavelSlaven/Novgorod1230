@@ -23,7 +23,7 @@ const close = (aggregate, request_identity = 'close-a') => applyOrdinaryAggregat
 
 test('ordinary aggregate PostgreSQL adapter is exact, CAS-only, and rollback-safe', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required for isolated PostgreSQL test');
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary', '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   let ready = false;

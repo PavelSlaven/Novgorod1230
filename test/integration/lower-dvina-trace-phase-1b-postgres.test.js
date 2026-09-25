@@ -147,7 +147,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     if (worldPool) await worldPool.end();
     if (managed) await managed.close();
     if (managedRoot) await rm(managedRoot, { recursive: true, force: true });
-    if (dockerReady) docker(['rm', '-f', name]);
+    if (dockerReady) docker(['rm', '-fv', name]);
   });
   let databaseUrl;
   let worldDatabaseUrl;

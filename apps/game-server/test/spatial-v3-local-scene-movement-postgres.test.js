@@ -16,7 +16,7 @@ test('committed canonical scene edges move arrival→focus→departure with stal
     if (docker(['version']).status !== 0) return t.skip('Docker required');
     const name = `m2c-local-${randomUUID().slice(0, 12)}`;
     let db;
-    t.after(async () => { await db?.end(); docker(['rm', '-f', name]); });
+    t.after(async () => { await db?.end(); docker(['rm', '-fv', name]); });
     assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
       '-e', 'POSTGRES_PASSWORD=local', '-e', 'POSTGRES_USER=local',
       '-e', 'POSTGRES_DB=local', 'postgres:16-alpine']).status, 0);

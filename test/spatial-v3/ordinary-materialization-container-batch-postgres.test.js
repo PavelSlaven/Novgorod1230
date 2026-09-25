@@ -50,7 +50,7 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
   async (t) => {
     if (docker(['version']).status !== 0) return t.skip('Docker required');
     let pool;
-    t.after(async () => { if (pool) await pool.end(); docker(['rm','-f',container]); });
+    t.after(async () => { if (pool) await pool.end(); docker(['rm','-fv',container]); });
     const started = docker(['run','-d','--name',container,
       '-p','127.0.0.1::5432','-e','POSTGRES_PASSWORD=ordinary',
       '-e','POSTGRES_USER=ordinary','-e','POSTGRES_DB=ordinary',

@@ -37,8 +37,7 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
    `docs:generate`. Изменённый документ с legacy provenance требует отдельной процедуры выше; команда
    останавливается без переписывания его записи. Generated вручную не править (KSP «Изменение корпуса»).
 3. **Проверки:** `knowledge:check-corpus`, `knowledge:check`, `knowledge:controls`, `knowledge:status`,
-   `temporal-v4:check-docs` (сравнить с baseline: на c5501419 — `conflict_count: 2`, оба в
-   `llm_documentation_navigation.md`), `docs:check`, `test:knowledge-source`, `test:tools`, `git diff --check`.
+   `temporal-v4:check-docs` (baseline на 21bd0938 — `conflict_count: 0`), `docs:check`, `test:knowledge-source`, `test:tools`, `git diff --check`.
    Полный `npm test` — в CI (AGENTS §24).
 4. **CONTRACT_INDEX** — обновить в том же PR, если документ создан, повышен, переименован, перемещён, заменён или
    существенно изменён (CONTRACT_INDEX §10). Сам индекс — `native`-документ: его правка идёт по этим же шагам.
@@ -86,11 +85,10 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
 **Не входят в `npm test` (non-gate, сравнивать с baseline до правки):**
 
 - `tools/spatial-v3/check-temporal-docs.mjs` (`temporal-v4:check-docs`): temporal-утверждения в
-  `temporal_world_and_interruptible_activities.md`, `llm_documentation_navigation.md`, `time_system.txt`,
-  `base_turn_orchestration.txt`, `movement_locations_regions.txt`, `interface_ux.md`;
+  `temporal_world_and_interruptible_activities.md`, `time_system.txt`, `base_turn_orchestration.txt`,
+  `movement_locations_regions.txt`, `interface_ux.md`;
 - `tools/spatial-v3/check-p01.mjs` … `check-p04.mjs` (`spatial-v3:check-p0N`) — фразы в NPC-контрактах, temporal,
-  movement, time, formulas, orchestration, world_generation, interface_ux, navigation; `check-p04` на c5501419
-  уже падает;
+  movement, time, formulas, orchestration, world_generation, interface_ux; `check-p02` на 21bd0938 уже падает;
 - sha256-пины исторических baseline: `data/contracts/spatial-v3/p05-reviewed-baseline.json` и
   `docs/migration/spatial-v3/normative-freeze.json` (17 документов корпуса и ADR-001).
 

@@ -10,7 +10,7 @@ test('expansion rule-set schema applies, replays and binds all three profile rul
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const name = `m2c-rule-ddl-${process.pid}`;
   let pool;
-  t.after(async () => { await pool?.end(); docker(['rm', '-f', '-v', name]); });
+  t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
   assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
     '-e', 'POSTGRES_PASSWORD=m2c', '-e', 'POSTGRES_USER=m2c', '-e', 'POSTGRES_DB=m2c',
     'postgres:16-alpine']).status, 0);

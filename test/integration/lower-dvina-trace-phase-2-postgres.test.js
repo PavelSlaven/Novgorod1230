@@ -62,7 +62,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', name]);
+    docker(['rm', '-fv', name]);
   });
   const started = docker([
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
@@ -657,7 +657,7 @@ test('active A1 partial authored result survives reload, retry and reuse',
     let pool;
     t.after(async () => {
       if (pool) await pool.end();
-      docker(['rm', '-f', name]);
+      docker(['rm', '-fv', name]);
     });
     const started = docker([
       'run', '-d', '--name', name, '-p', '127.0.0.1::5432',

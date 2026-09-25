@@ -16,7 +16,7 @@ test('P13 applies 001→002 idempotently and enforces the v3 spatial foundation'
     t.skip('Docker required for isolated P13 PostgreSQL test');
     return;
   }
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p13_local', '-e', 'POSTGRES_USER=p13', '-e', 'POSTGRES_DB=p13', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-U', 'p13', '-d', 'p13']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-U', 'p13', '-d', 'p13']).status === 0) { ready = true; break; } } }

@@ -14,7 +14,7 @@ test('P14 target migration is re-applicable and enforces planning/history state 
   assert.equal(RUNTIME_MIGRATIONS.length, 1, 'production runtime remains v2 before P28');
   assert.ok(SPATIAL_V3_TARGET_MIGRATIONS.length >= 3, 'P14 remains the target-only 001→003 prefix');
   if (docker(['version']).status !== 0) t.skip('Docker required for isolated PostgreSQL test');
-  t.after(() => docker(['rm', '-f', name]));
+  t.after(() => docker(['rm', '-fv', name]));
   assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p14_local', '-e', 'POSTGRES_USER=p14', '-e', 'POSTGRES_DB=p14', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-U', 'p14', '-d', 'p14']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-U', 'p14', '-d', 'p14']).status === 0) { ready = true; break; } } }

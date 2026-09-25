@@ -55,7 +55,7 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', name]);
+    docker(['rm', '-fv', name]);
   });
   const started = docker([
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',

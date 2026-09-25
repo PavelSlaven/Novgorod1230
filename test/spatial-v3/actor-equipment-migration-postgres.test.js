@@ -9,7 +9,7 @@ const docker = (args, input, timeout = 60_000) => spawnSync('docker', args, { in
 
 test('party migration 020 preserves rows and permits equipped NPC or player holders', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
-  t.after(() => docker(['rm', '-f', container]));
+  t.after(() => docker(['rm', '-fv', container]));
   assert.equal(docker([
     'run', '-d', '--name', container,
     '-e', 'POSTGRES_PASSWORD=equipment', '-e', 'POSTGRES_USER=equipment',

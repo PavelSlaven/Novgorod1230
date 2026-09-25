@@ -63,7 +63,7 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const container = `m2c-natural-entry-${process.pid}`;
   let pool;
-  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', container]); });
+  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', container]); });
   const start = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',
     '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);

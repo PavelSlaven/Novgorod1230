@@ -62,7 +62,7 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', name]);
+    docker(['rm', '-fv', name]);
   });
   const started = docker([
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',

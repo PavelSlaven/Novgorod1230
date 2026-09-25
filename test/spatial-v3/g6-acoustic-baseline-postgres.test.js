@@ -21,7 +21,7 @@ test('P12 imports an approved G6 acoustic baseline and the reader returns its ex
   t.after(async () => {
     await pool?.end();
     await rm(temp, { recursive: true, force: true });
-    docker(['rm', '-f', '-v', name]);
+    docker(['rm', '-fv', name]);
   });
   assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
     '-e', 'POSTGRES_PASSWORD=m2c', '-e', 'POSTGRES_USER=m2c',

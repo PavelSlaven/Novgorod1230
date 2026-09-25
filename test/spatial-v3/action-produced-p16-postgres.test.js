@@ -48,7 +48,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     let pool;
     t.after(async () => {
       if (pool) await pool.end();
-      docker(['rm', '-f', container]);
+      docker(['rm', '-fv', container]);
     });
     const started = docker(['run', '-d', '--name', container,
       '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=action',

@@ -25,7 +25,7 @@ test('legacy world schema migrates forward without losing existing rows', async 
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', name]);
+    docker(['rm', '-fv', name]);
   });
 
   const started = docker([

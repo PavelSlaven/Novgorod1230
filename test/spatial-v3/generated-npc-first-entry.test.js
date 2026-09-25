@@ -152,7 +152,7 @@ test('generated NPC rows commit atomically and reload without reroll in PostgreS
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const name = `m2c-npc-entry-${process.pid}`;
   let pool;
-  t.after(async () => { await pool?.end(); docker(['rm', '-f', name]); });
+  t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
   assert.equal(docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=npc', '-e', 'POSTGRES_USER=npc', '-e', 'POSTGRES_DB=npc',
     'postgres:16-alpine']).status, 0);

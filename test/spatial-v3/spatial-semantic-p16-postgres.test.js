@@ -44,7 +44,7 @@ test('S1 P16 schema stores envelope capacity and resolution without reservations
   let pool;
   t.after(async () => {
     if (pool) await pool.end();
-    docker(['rm', '-f', container]);
+    docker(['rm', '-fv', container]);
   });
   const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
@@ -143,7 +143,7 @@ test('S1 first-entry rejects duplicate matching envelopes before writes', async 
 test('S1 P16 commit reloads one resolution and stale last-slot plan cannot commit', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const name = `${container}-commit`; let pool;
-  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
+  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
   const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
     'postgres:16-alpine']);
@@ -195,7 +195,7 @@ test('S1 P16 commit reloads one resolution and stale last-slot plan cannot commi
 test('S1 combined P16 maps concurrent last-slot loss to typed conflict', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const name = `${container}-combined`; let pool;
-  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
+  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
   const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
     'postgres:16-alpine']);
@@ -522,7 +522,7 @@ async function startP16Postgres(t, suffix) {
   }
   const name = `${container}-${suffix}`;
   let pool;
-  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
+  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
   const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
     'postgres:16-alpine']);

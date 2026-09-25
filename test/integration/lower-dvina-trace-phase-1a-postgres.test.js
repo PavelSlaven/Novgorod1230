@@ -41,7 +41,7 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
     if (pool) await pool.end();
     if (managed) await managed.close();
     if (managedRoot) await rm(managedRoot, { recursive: true, force: true });
-    if (dockerReady) docker(['rm', '-f', name]);
+    if (dockerReady) docker(['rm', '-fv', name]);
   });
   if (dockerReady) {
     const started = docker([

@@ -63,11 +63,14 @@ CI ([test.yml](../../.github/workflows/test.yml)): матрица jobs `full-npm
 - общие: Node 22, `npm ci`; для `fast`/`acceptance`/`browser-architecture` — Python 3.12 и проверка WK encoder;
 - `fast`: dry-run импорта world_base и FK-аудит; `world-db:schema-check` / `world-db:schema-doc-check`;
   контейнер `postgres:16`, DDL world_base с проверкой **208** таблиц и grants `world_reader`;
+  PostgreSQL-интеграции `world-db:import:stage3b1:integration` и
+  `character-appearance:test-world-v4-postgres` (**в suite `fast`**, не `integration` —
+  [.github/workflows/test.yml](../../.github/workflows/test.yml));
   `knowledge:check-corpus`; `docs:generate` / `character-appearance:generate` + `git diff --exit-code` по
   `MODULE_INDEX.md`, `generated/`, `infra/world-base/SCHEMA_REFERENCE.md` и каталогам lower-dvina;
   затем `test:modules` … `docs:check` (как в package.json до integration);
-- `integration`: PostgreSQL-интеграции (`world-db:import:stage3b1:integration`,
-  `character-appearance:test-world-v4-postgres`) и `scripts/run-integration-tests.mjs`;
+- `integration`: `world-db:schema-check` / `world-db:schema-doc-check` / DDL 208 (как в `fast`) и
+  `scripts/run-integration-tests.mjs`;
 - `acceptance`: `test:acceptance`;
 - `browser-architecture`: `test:browser-e2e` и `architecture:check`.
 

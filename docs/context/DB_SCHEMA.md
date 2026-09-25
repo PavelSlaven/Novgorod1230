@@ -30,7 +30,8 @@ migration/rollback source.
 | Что | Факт | Источник |
 |---|---|---|
 | Имена БД | `novgorod_world_v17` / `novgorod_party_v17` | [local-postgres.js](../../tools/local-play/local-postgres.js) `LOCAL_V17_DATABASES`; [bootstrap-live-world-v17.mjs](../../scripts/bootstrap-live-world-v17.mjs) |
-| Каталог данных | `%LOCALAPPDATA%\Novgorod1230` (`localDataRoot`) | [local-postgres.js](../../tools/local-play/local-postgres.js) |
+| Каталог данных | `%LOCALAPPDATA%\Novgorod1230` (`localDataRoot`); подкаталог кластера — `data\postgres-16.14.0-utf8` | [local-postgres.js](../../tools/local-play/local-postgres.js) |
+| MSIX / packaged apps | в процессах из MSIX (Codex, Claude Desktop) `%LOCALAPPDATA%` перенаправлен в LocalCache пакета: пара БД, созданная оттуда, не видна `play:local` из обычного терминала, и тот молча берёт v16 (LW-033). Bootstrap и play — из обычного терминала | LW-033; GS §26 |
 | Выбор релиза `play:local` | обе БД v17 есть → release 17; ни одной → 16 (`novgorod_world`/`novgorod_party`); ровно одна → `LOCAL_POSTGRES_V17_PAIR_INCOMPLETE` | `selectLocalRelease` в том же файле; LW-033 |
 | Bootstrap | `node scripts/bootstrap-live-world-v17.mjs` (npm-скрипта нет); входы — каталоги `data/world-catalogs/novgorod/live-world-runtime-v17`, `m2c-*`, runtime-catalog gate1 и др. | сам скрипт; LW-035 (без temporal-v4) |
 | Default binding сервера | без env — `builtin:spatial-v3-production-v16`; v17 — через `RUS_SPATIAL_V3_BINDINGS_MODULE` | [load-spatial-v3-bindings.js](../../apps/game-server/src/runtime/load-spatial-v3-bindings.js) |
@@ -74,8 +75,11 @@ Generated-файл (`npm run world-db:schema-doc`, проверка — `world-d
   до `036_party_runtime_visibility_modifiers.sql` (**36** SQL-файлов на диске).
 - **Порядок и состав цепочки** задаёт массив `files` в
   [spatial-v3-target-migrations.js](../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js).
-  `SPATIAL_V3_TARGET_MIGRATION_FILES.length === 36`; хвост: `033`…`036`
-  (`actor_base_attributes`, `nonportal_availability`, `visibility_modifiers`).
+  `SPATIAL_V3_TARGET_MIGRATION_FILES.length === 36`; хвост `033`–`036`:
+  `033_party_runtime_initial_semantic_decision.sql`,
+  `034_party_runtime_actor_base_attributes.sql`,
+  `035_party_runtime_nonportal_availability.sql`,
+  `036_party_runtime_visibility_modifiers.sql`.
   Digest цепочки — `SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST`.
 - **Справочник:** [SCHEMA_REFERENCE.md](../../infra/party-db/SCHEMA_REFERENCE.md) — «001–036», **132** таблицы
   (generated header на HEAD).
@@ -111,13 +115,16 @@ Runtime игры её не использует.
 Изменение `world_base` DDL: часть в `infra/world-base/schema/`, затем `EXPECTED_TABLE_COUNT`, число в `test.yml`,
 `field-descriptions.js` и `npm run world-db:schema-doc`.
 
+Legacy [`migrations.js`](../../apps/game-server/src/infrastructure/postgres/migrations.js):
+`runPartyRuntimeMigrations` применяет только `001_party_runtime.sql` (не Spatial v3 chain).
+
 ## 6. Только тестовая БД
 
 Правило — [AGENTS.md §23](../governance/ARCHITECTURE_INVARIANTS.md):
 
-- PostgreSQL-тесты поднимают одноразовый `postgres:16-alpine` и в `t.after` удаляют через `docker rm -f`.
+- PostgreSQL-тесты поднимают одноразовый `postgres:16-alpine` и в `t.after` удаляют через `docker rm -fv` (не `-f`; GS §26 — anonymous volume).
 - CI использует `postgres:16` и `world_base_ci` ([test.yml](../../.github/workflows/test.yml)).
-- `npm run play:local` — embedded PostgreSQL в `%LOCALAPPDATA%\Novgorod1230` (`tools/local-play/`).
+- `npm run play:local` — embedded PostgreSQL в `%LOCALAPPDATA%\Novgorod1230\data\postgres-16.14.0-utf8` (`tools/local-play/`); см. предупреждение MSIX в §1.1.
 - Import/seed/operator CLI — только против локальной/тестовой базы по задаче.
 
 ## 7. Куда смотреть дальше

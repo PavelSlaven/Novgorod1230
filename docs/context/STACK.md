@@ -36,7 +36,7 @@
 |---|---|---|
 | PostgreSQL | 16 | см. ниже |
 | CI | docker-контейнер `postgres:16` внутри job | [test.yml](../../.github/workflows/test.yml) |
-| Локальная игра | `embedded-postgres` (PostgreSQL 16.14.0) поднимает `npm run play:local`; данные в `%LOCALAPPDATA%\Novgorod1230` | [local-postgres.js](../../tools/local-play/local-postgres.js), [local-play MODULE.md](../../tools/local-play/MODULE.md) |
+| Локальная игра | `embedded-postgres` (PostgreSQL 16.14.0) поднимает `npm run play:local`; данные в `%LOCALAPPDATA%\Novgorod1230\data\postgres-16.14.0-utf8`. В MSIX/packaged apps `%LOCALAPPDATA%` перенаправлен — пара БД оттуда не видна обычному `play:local` (молчит → v16, LW-033); без личных путей машины | [local-postgres.js](../../tools/local-play/local-postgres.js), [local-play MODULE.md](../../tools/local-play/MODULE.md), [DB_SCHEMA](DB_SCHEMA.md) §1.1 |
 | Пара БД v17 | `novgorod_world_v17` / `novgorod_party_v17`; bootstrap — `scripts/bootstrap-live-world-v17.mjs` | [DB_SCHEMA.md](DB_SCHEMA.md) §1.1 |
 | Dev-only compose | `postgres:16` + `nocodb/nocodb:2026.09.0` (ручное заполнение world_base в NocoDB); `npm run world-db:up` | [docker-compose.yml](../../docker-compose.yml) |
 | Драйвер | `pg` (node-postgres) | [package.json](../../package.json) |
@@ -63,8 +63,7 @@
   [packages/llm-runtime/MODULE.md](../../packages/llm-runtime/MODULE.md).
 - Провайдер и модель по умолчанию здесь не фиксируются числом — смотри владельцев и LW-020:
   [LLM_PROVIDERS.md](../setup/LLM_PROVIDERS.md), [local-play MODULE.md](../../tools/local-play/MODULE.md),
-  [llm-settings.js](../../apps/game-server/src/runtime/llm-settings.js) (на этой ветке gameplay-кандидат
-  `qwen3.8-27b-uncensored-w4a16-tp2` / `openai_compatible`), [.env.example](../../.env.example).
+  [llm-settings.js](../../apps/game-server/src/runtime/llm-settings.js), [.env.example](../../.env.example).
   Скрипт `gameplay:acceptance:local` → `tools/local-play/local-provider-acceptance.mjs`.
 
 ## Навигация по коду для агентов

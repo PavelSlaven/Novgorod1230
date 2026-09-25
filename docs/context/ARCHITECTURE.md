@@ -10,7 +10,7 @@
 
 | Папка | Назначение | Источник |
 |---|---|---|
-| `apps/` | composition roots: `apps/game-server` (production composition и единственный владелец физической PostgreSQL-транзакции; на ветке PR #98 значимая доменная логика всё ещё в `runtime/lower-dvina-trace-*` — долг, LW-026) и `apps/game-web` | [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md), [MODULE_INDEX](../../MODULE_INDEX.md), [game-server MODULE.md](../../apps/game-server/MODULE.md) |
+| `apps/` | composition roots: `apps/game-server` (production composition и единственный владелец физической PostgreSQL-транзакции; на ветке PR #98 доменная логика ещё в `src/runtime`, `src/internal` и `src/infrastructure/postgres` — долг LW-026) и `apps/game-web` | [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md), [MODULE_INDEX](../../MODULE_INDEX.md), [game-server MODULE.md](../../apps/game-server/MODULE.md) |
 | `packages/` | модули `@rus/*`: workflow/presentation, domain и platform слои | [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md), [MODULE_INDEX](../../MODULE_INDEX.md) |
 | `tools/` | автономные CLI (docs, architecture, world-catalog, local-play и др.); production runtime их не импортирует, кроме `tools/world-catalog-workflow`, который импортируют стадии 7, 8, 13, 16 `packages/new-game` (LW-038) | [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md), [TOOLS_INVENTORY](../modules/TOOLS_INVENTORY.md) |
 | `data/` | нормативный корпус (`data/knowledge-source`), world-catalogs, approved seeds; не место для generated output | [data/README.md](../../data/README.md) |
@@ -36,15 +36,18 @@
 
 ## 1.1. Цепочка хода v17 (фактический путь)
 
+Composition root строится при старте сервера (`server.js` → `modular-entry.js`), не на каждый HTTP-запрос.
+
 ```text
 HTTP /api/v1/parties/:id/turns
   → apps/game-server/src/http/handler.js
-  → createSpatialV3ProductionCompositionRoot
-       (apps/game-server/src/composition/production-spatial-v3.js)
-  → bindings.createPublicRuntimeFacade
-       (runtime/releases/spatial-v3-production-v{16|17}-bindings.js)
-  → phase-2 / lower-dvina-trace runtime ports (LW-026)
-  → @rus/turn runTurnStepLoop (packages/turn/src/turn-step-loop.js)
+  → technicalCore.executeReleaseOperation
+  → lower-dvina-trace-public-runtime.js
+  → createTraceTurnRuntime
+       (runtime/releases/spatial-v3-production-trace-runtime.js)
+  → phase-2 runTurnWorkflow
+  → turn-step-admission → @rus/turn runTurnStepLoop
+       (packages/turn/src/turn-step-loop.js)
        + WK grounding (runtime/world-knowledge-grounding.js)
        + grounding auditor (lower-dvina-trace-turn-step-grounding-audit.js)
   → P16 combined atomic committer
@@ -53,18 +56,37 @@ HTTP /api/v1/parties/:id/turns
   → @rus/narration (post-commit prose from persisted visible package)
 ```
 
+Bindings: `createSpatialV3ProductionCompositionRoot`
+(`composition/production-spatial-v3.js`) →
+`runtime/releases/spatial-v3-production-v{16|17}-bindings.js`.
 Default binding без env — v16; v17 — `RUS_SPATIAL_V3_BINDINGS_MODULE` / пара БД v17 в `play:local` ([DB_SCHEMA](DB_SCHEMA.md) §1.1, LW-033).
 
 ## 1.2. Цепочка заполнения места (first entry / generated G5)
 
+### v17
+
 ```text
 G4 expansion profile / scene template (world_base)
-  → generation admission + generated expansion adapter
-  → first-entry provisioners (ordinary / spatial-semantic / target-generated)
-  → @rus/materialization (+ target-runtime-profiles.js; O2a/O2b/F1/S1 на v17 null — LW-029)
-  → P16 write set → party_runtime
+  → infrastructure/postgres/spatial-v3-generation-admission.js
+  → infrastructure/postgres/spatial-v3-generated-expansion-adapter.js
+  → infrastructure/postgres/target-generated-first-entry.js
+  → infrastructure/postgres/generated-npc-first-entry.js
+  → infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js
+       (createTargetFiniteFirstEntryPorts)
+  → internal/target-runtime-profiles.js (O2a/O2b/F1/S1 на v17 null — LW-029;
+       на v17 ordinary- и spatial-semantic-провижинеры не строятся: targetContext == null)
+  → infrastructure/postgres/spatial-v3-combined-atomic-committer.js
   → visibility / factual context → opening projection → narrator
 ```
+
+Старт партии: phase-1b → phase-1a
+(`infrastructure/postgres/lower-dvina-trace-phase-1b.js` →
+`internal/lower-dvina-trace-phase-1a.js`).
+
+### v16 (к удалению после M2c, LW-033)
+
+Тот же Spatial v3 temporal/materialization контур на bindings v16; не расширять.
+Удаление v16 и привязок v2–v15 — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425).
 
 Владельцы: `@rus/materialization`, `@rus/items-property`, `@rus/npc-runtime`, `@rus/runtime-catalog`; commit — game-server. См. [OWNERSHIP_MAP](../domain/OWNERSHIP_MAP.md).
 
@@ -77,7 +99,8 @@ G4 expansion profile / scene template (world_base)
 | Pure core | `@rus/world-knowledge` | [MODULE.md](../../packages/world-knowledge/MODULE.md) |
 | Encoder Giga | `createGigaQueryEncoder` | [giga-query-encoder.js](../../apps/game-server/src/infrastructure/embedding/giga-query-encoder.js); [WORLD_KNOWLEDGE_GIGA_EMBEDDINGS.md](../setup/WORLD_KNOWLEDGE_GIGA_EMBEDDINGS.md) |
 | Pins релиза | pack_ref / revision / embedding_profile_ref | `spatial-v3-production-v17-bindings.js` |
-| Потребители | ход, NPC semantic/autonomous models через grounder ports | v17 bindings `createNpcRuntimePorts` |
+| Подключение grounder | ports в `runtime/releases/spatial-v3-production-trace-runtime.js` | createNpcRuntimePorts / bindings |
+| Потребители | планировщик хода; NPC semantic/autonomous; разговор [`lower-dvina-trace-conversation-llm.js`](../../apps/game-server/src/runtime/lower-dvina-trace-conversation-llm.js); ordinary/N1/S1 материализация [`ordinary-materialization-llm.js`](../../apps/game-server/src/runtime/ordinary-materialization-llm.js) (`materialization_support`), [`releases/lower-dvina-trace-n1-production.js`](../../apps/game-server/src/runtime/releases/lower-dvina-trace-n1-production.js), [`releases/lower-dvina-trace-s1-production.js`](../../apps/game-server/src/runtime/releases/lower-dvina-trace-s1-production.js) (доступность на v17 — LW-029); preflight старта [`lower-dvina-trace-phase-1a.js`](../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js) | |
 
 ## 2. Слои и владельцы (только ссылки)
 

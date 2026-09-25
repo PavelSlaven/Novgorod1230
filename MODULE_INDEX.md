@@ -39,7 +39,7 @@ Release: `0.23.0-migration.24`
 
 | Application | Path | Purpose |
 |---|---|---|
-| `@rus/game-server` | `apps/game-server` | `prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16 equipment and Stage 24 body/routine projections for an exact generated scene. It returns one P16 write set, validation and deterministic choice traces; it neither commits nor reads catalogs. The caller supplies verified actor, Temporal, equipment and routine inputs. NPC schedules bind the generated position directly and retain the existing `@rus/npc-runtime` transition state. Every generated NPC requires exact regional and clothing profile bindings; clothing belonging to another NPC cannot satisfy its requirements. |
+| `@rus/game-server` | `apps/game-server` | Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`, runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade и post-commit presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в `src/runtime/lower-dvina-trace-*` (долг LW-026) — не считать game-server «тонким» composition root. |
 | `@rus/game-web` | `apps/game-web` | Browser-клиент, который получает только versioned public read models от `@rus/game-server` и отображает их без вычисления игровых последствий. |
 
 ## Tools

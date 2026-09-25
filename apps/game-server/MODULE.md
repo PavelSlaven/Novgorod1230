@@ -15,6 +15,12 @@ Gap Auditor работает отдельно в authoring workflow; в runtime 
 
 ## Назначение
 
+Production composition root и единственный physical PostgreSQL transaction owner для Spatial v3
+bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`,
+runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade и post-commit
+presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
+`src/runtime/lower-dvina-trace-*` (долг LW-026) — не считать game-server «тонким» composition root.
+
 `prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16
 equipment and Stage 24 body/routine projections for an exact generated scene.
 It returns one P16 write set, validation and deterministic choice traces;
@@ -35,7 +41,7 @@ target release to call this boundary with its approved catalog and current
 Temporal state and route perceived facts through the visibility owner before
 publishing the first screen.
 
-Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
+It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
 
 The generated expansion adapter reads exact G4/profile/scene/acoustic closures
 and the normalized party snapshot inside the existing P16 expansion lock.

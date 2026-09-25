@@ -1,38 +1,49 @@
 # Tools inventory
 
-Tools are autonomous and are not imported by production runtime.
+REFERENCE. Список каталогов `tools/*` на ветке; описание — из `tools/*/MODULE.md` (если есть)
+или имя пакета из `tools/*/package.json`. Числа таблиц/миграций сюда не копируются —
+см. [DB_SCHEMA](../context/DB_SCHEMA.md) и [MODULE_INDEX](../../MODULE_INDEX.md).
 
-| Tool | Responsibility | Runtime side effects |
+Скрипт сверки (вне репо): перечислить `tools/*/`, прочитать `package.json` + первую строку
+«Назначение»/Purpose в `MODULE.md`. Ниже — результат на commit карты.
+
+| Каталог | Пакет | Назначение (из MODULE.md / имя) |
 |---|---|---|
-| `@rus/map-maker` | Import approved graph contracts, create separate layout sidecars and previews | No canonical DB writes |
-| `@rus/db-tools` | Build and validate dry-run/approval packages | No SQL execution |
-| `@rus/docs-tools` | Deterministic documentation generation, canonical-path validation, corpus delegation checks, graph/RAG materialization and migration verification | Writes generated documentation only through explicit CLI |
-| `@rus/runtime-catalog-activation-tooling` | Exact forward migrations, baseline/compatible-world verification, overlay compile, immutable import/readback and append-only activation | Writes only through explicit confirmed operator CLI against operator-selected databases |
-| `scripts/check-world-base-schema.mjs` | Validate the executable 62-table `world_base` DDL, ordered SQL parts and read-only permissions | Read-only source inspection |
-| `scripts/generate-world-base-schema-reference.mjs` | Extract tables, columns, types, FK and constraints from current DDL and apply only approved field descriptions | Writes only generated `infra/world-base/SCHEMA_REFERENCE.md` through explicit commands/docs CLI |
-| `tools/docs-tools/src/knowledge-corpus-verifier.js` | Validate corpus manifest, aliases, file existence, bytes and SHA-256 | Read-only corpus inspection |
-| `tools/docs-tools/src/canonical-corpus-registry.js` | Enforce that `CANONICAL_PATHS.json` delegates corpus ownership to the single corpus manifest and does not duplicate corpus paths | Read-only registry inspection |
-| `tools/docs-tools/src/knowledge-materializer-v2.js` | Preserve approved semantic graph/RAG snapshots only after semantic hash/chunk parity, exact graph/RAG semantic-set matching and fail-closed provenance validation for every node/link/hyperedge/member source; reject relations to structural-only nodes; add deterministic structural/lexical coverage without fabricated embeddings | Writes only declared `generated/knowledge-source/*` outputs through explicit generate commands |
-| `@rus/audit-tools` | Safe release/audit tree manifests | Read-only source scan |
-| `@rus/shadow-run` | Execute allowlisted old/new parity corpus and classify differences | Runs test processes and writes dated reports; no provider/DB/cutover |
-| `@rus/cutover` | Execute versioned 13-step cutover with repeated gates and import proof | Writes cutover evidence only; no live environment mutation |
-| `@rus/finalization` | Aggregate release evidence and separate automated completion from manual owner gates | Writes finalization evidence only; no secrets, deployment mutation or deletion |
+| `architecture` | (нет package name) | `check-boundaries.mjs` и др. — `npm run architecture:check` |
+| `audit-tools` | `@rus/audit-tools` | Безопасная инвентаризация release/audit trees |
+| `cutover` | `@rus/cutover` | 13-шаговый cutover legacy → modular |
+| `db-tools` | `@rus/db-tools` | Контракты dry-run/approval для DB operations |
+| `docs-tools` | `@rus/docs-tools` | Генерация/проверка документации и corpus |
+| `finalization` | `@rus/finalization` | Финализация миграции / evidence |
+| `llm-runtime-eval` | llm-runtime-eval | Eval harness (без MODULE.md) |
+| `local-play` | local-play | `npm run play:local` launcher |
+| `map-maker` | `@rus/map-maker` | Редактор графов G0–G5 |
+| `release` | release | Release hygiene (без MODULE.md) |
+| `runtime-catalog-activation` | `@rus/runtime-catalog-activation-tooling` | Operator import/activation catalog |
+| `rus13-llm-repair-audit` | — | Authoring audit (без MODULE.md) |
+| `rus13-new-party-generator` | — | Authoring generator (без MODULE.md) |
+| `rus13-novgorod-place-generation-limits` | — | Authoring limits (без MODULE.md) |
+| `rus13-novgorod-place-generation-rules` | — | Authoring rules (без MODULE.md) |
+| `rus13-novgorod-regional-templates` | — | Regional templates (без MODULE.md) |
+| `rus13-social-archetype-backfill` | — | Social backfill (без MODULE.md) |
+| `rus13-start-g5-materialization` | — | G5 materialization tooling (без MODULE.md) |
+| `rus13-world-base-fk-audit` | — | FK audit helper (без MODULE.md) |
+| `rus13-world-base-importer` | — | World-base importer (без MODULE.md) |
+| `shadow-run` | `@rus/shadow-run` | Old/new parity corpus |
+| `spatial-v3` | spatial-v3 | Spatial v3 checks/generators (без корневого MODULE.md) |
+| `temporal-v4` | temporal-v4 | Temporal v4 checks (без корневого MODULE.md) |
+| `world-catalog-workflow` | `@rus/world-catalog-workflow` | Ревизии карты / G1; также читается stages new-game (LW-038) |
+
+**Всего каталогов `tools/*`:** 24 (скрипт `fs.readdirSync('tools')`).
+
+Production runtime **не импортирует** tools, кроме исключения LW-038 (`world-catalog-workflow` из
+отдельных стадий `@rus/new-game`).
+
+Связанные корневые скрипты схемы (не tools): `scripts/check-world-base-schema.mjs`,
+`scripts/generate-world-base-schema-reference.mjs` — числа таблиц только в DB_SCHEMA / CI.
 
 ## CI contract
 
-`.github/workflows/test.yml` must execute, in order:
-
-1. clean checkout;
-2. Node.js setup;
-3. lockfile registry normalization;
-4. `npm ci`;
-5. static `world-db:schema-check` and deterministic `world-db:schema-doc-check`;
-6. real PostgreSQL 16 DDL execution with table, role and read-only grant checks;
-7. `knowledge:check-corpus`;
-8. deterministic documentation and knowledge generation;
-9. generated-file reproducibility check, including `infra/world-base/SCHEMA_REFERENCE.md`;
-10. full `npm test`.
-
-`test/integration/ci-workflow-contract.test.js` prevents a false-green workflow that omits mandatory gates.
-
-`@rus/finalization` owns `rus.finalization_plan.v1` and `rus.finalization_report.v1`. Missing operator or critic evidence produces a hold, never implicit approval.
+`.github/workflows/test.yml` — матрица suite; обязательные schema gates на `fast`:
+`world-db:schema-check`, `world-db:schema-doc-check`, DDL + table count (см. DB_SCHEMA / TESTING).
+`test/integration/ci-workflow-contract.test.js` ловит выпадение gates.

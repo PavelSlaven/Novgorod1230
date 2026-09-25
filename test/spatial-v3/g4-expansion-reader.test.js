@@ -72,7 +72,7 @@ function readerWith(overrides = {}) {
     if (sql.includes("dependency_role='expansion_site_connection_profile'")) return { rows: overrides.connectionProfiles ?? rules.spatial_v3_canonical_g5_connection_profiles };
     if (sql.includes("dependency_role='expansion_entry_slot'")) return { rows: rules.spatial_v3_authoring_dependency_edges };
     if (sql.includes('FROM world_base.spatial_v3_g4_directional_exits e')) return { rows: overrides.spatial_v3_g4_directional_exits ?? rules.spatial_v3_g4_directional_exits };
-    if (sql.includes('AS binding_id')) return { rows: [{ binding_id: 'entry', binding_version: 1,
+    if (sql.includes('AS binding_id')) return { rows: overrides.entryScenes ?? [{ binding_id: 'entry', binding_version: 1,
       profile_id: 'canonical-profile', profile_version: 1, profile_digest: digest, profile_authoring_digest: digest, profile_status: 'approved',
       scene_template_id: 'canonical-scene', scene_template_version: 1, scene_template_status: 'approved', scene_template_authoring_status: 'approved', scene_template_digest: digest, scene_authoring_digest: digest, arrival_slot_key: 'arrival',
       arrival_role: 'arrival', departure_slot_key: 'departure', departure_role: 'departure' }] };
@@ -141,6 +141,28 @@ test('G4 expansion reader returns one exact approved immutable closure', async (
   assert.ok(Object.isFrozen(result.value.slots[0]));
   assert.deepEqual(calls[0].params, ['g4', 1, 'target', digest]);
   assert.equal(calls[0].sql.includes("spatial_level='G4'"), true);
+});
+
+test('G4 expansion reader accepts approved entry scene versions under one profile ID', async () => {
+  const first = { binding_id: 'entry', binding_version: 1,
+    profile_id: 'canonical-profile', profile_version: 1, profile_digest: digest,
+    profile_authoring_digest: digest, profile_status: 'approved',
+    scene_template_id: 'canonical-scene', scene_template_version: 1,
+    scene_template_status: 'approved', scene_template_authoring_status: 'approved',
+    scene_template_digest: digest, scene_authoring_digest: digest,
+    arrival_slot_key: 'arrival', arrival_role: 'arrival',
+    departure_slot_key: 'departure', departure_role: 'departure' };
+  const { reader } = readerWith({ entryScenes: [first, { ...first,
+    profile_version: 2, scene_template_version: 2 }] });
+  const result = await reader.readPinnedG4ExpansionClosure(pins);
+  assert.equal(result.ok, true, JSON.stringify(result.error));
+  assert.deepEqual(result.value.entry_scene_endpoints.map((row) => row.profile_version), [1, 2]);
+
+  const ambiguous = readerWith({ entryScenes: [first, { ...first,
+    profile_id: 'different-profile', profile_version: 2, scene_template_version: 2 }] });
+  const rejected = await ambiguous.reader.readPinnedG4ExpansionClosure(pins);
+  assert.equal(rejected.ok, false);
+  assert.equal(rejected.error?.diagnostics?.reason, 'g4_entry_scene_or_rule_closure_missing');
 });
 
 test('G4 expansion reader fails closed on missing profile pin and missing exit coverage', async () => {

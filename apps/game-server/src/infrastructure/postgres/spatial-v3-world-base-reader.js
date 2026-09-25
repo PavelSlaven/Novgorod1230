@@ -1013,7 +1013,7 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
     if (!Array.isArray(entryScenes) || !Array.isArray(entryRules)
       || entryBindings.some((b) => {
         const candidates = entryScenes.filter((r) => r.binding_id === b.id && r.binding_version === b.version);
-        const profilePins = new Set(candidates.filter((r) => r.profile_id).map((r) => `${r.profile_id}:${r.profile_version}`));
+        const profilePins = new Set(candidates.filter((r) => r.profile_id).map((r) => r.profile_id));
         return candidates.length === 0 || profilePins.size !== 1 || candidates.some((r) => r.profile_status !== 'approved'
           || r.profile_digest !== r.profile_authoring_digest || !r.scene_template_id || !r.scene_template_version
           || r.scene_template_status !== 'approved' || r.scene_template_authoring_status !== 'approved'

@@ -107,6 +107,16 @@ test('approved M2c open capacity successor imports through P12 without overwriti
     WHERE p.source_kind='canonical_g5' AND p.version=2
     ORDER BY p.id LIMIT 1`)).rows[0];
   const reader = createSpatialV3WorldBaseReader({ query: pool.query.bind(pool) });
+  const g4 = (await pool.query(`SELECT id,world_revision_id FROM world_base.spatial_v3_nodes
+    WHERE id='g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge'`)).rows[0];
+  assert.ok(g4, 'approved dry pine G4 imported');
+  const expansionBinding = await reader.readG4ExpansionBinding({
+    g4_id: g4.id, world_revision_id: g4.world_revision_id });
+  assert.equal(expansionBinding.ok, true, JSON.stringify(expansionBinding.error));
+  const expansionClosure = await reader.readPinnedG4ExpansionClosure(expansionBinding.value);
+  assert.equal(expansionClosure.ok, true, JSON.stringify(expansionClosure.error));
+  assert.ok(expansionClosure.value.entry_scene_endpoints.some((row) =>
+    row.profile_version === 2 && row.scene_template_version === 2));
   for (const version of [1, 2]) {
     const selected = await reader.readPinnedCanonicalG5SceneBinding({
       id: binding.id, version: binding.version, world_revision_id: binding.world_revision_id,

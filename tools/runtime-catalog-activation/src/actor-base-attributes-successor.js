@@ -211,7 +211,9 @@ function verifySuccessorAttestation({ request, attestation, schema, decision,
     expectedDecision: decision,
     expectedBindings: { ...(request.version === 2
       ? { reviewed_repository_head: request.subject_commit }
-      : { reviewed_source_digest: request.compatible_world.compatible_world_pin_manifest_digest }),
+      : { reviewed_source_digest: (request.schema === ACTIVATION_SCHEMA
+        ? request.import_request.compatible_world : request.compatible_world)
+        .compatible_world_pin_manifest_digest }),
       authority, database_mutated: false }
   });
 }

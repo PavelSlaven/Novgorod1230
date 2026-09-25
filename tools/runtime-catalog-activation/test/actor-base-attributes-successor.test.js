@@ -68,11 +68,32 @@ test('actor successor requires exact parent, reviewed import-only approval and p
     result_digest: digestEnvelope(importResultPayload) };
   const partyPreflight = { party_count: 0, pinned_party_count: 0,
     missing_domain_pin_count: 0, inflight_count: 0 };
-  assert.equal(buildActorBaseAttributesSuccessorActivationRequest({
+  const activationRequest = buildActorBaseAttributesSuccessorActivationRequest({
     importRequest: request, importResult, previousEvent: null, partyPreflight
-  }).request_digest, buildActorBaseAttributesSuccessorActivationRequest({
+  });
+  assert.equal(activationRequest.request_digest, buildActorBaseAttributesSuccessorActivationRequest({
     importRequest: sameContent, importResult, previousEvent: null, partyPreflight
   }).request_digest);
+  const activationPayload = {
+    schema: 'rus.actor_base_attributes_successor_activation_attestation.v1',
+    request_digest: activationRequest.request_digest,
+    decision: 'approve_exact_actor_base_attributes_new_production_activation',
+    reviewed_source_digest: request.compatible_world.compatible_world_pin_manifest_digest,
+    attested_by: 'unit-test-only', independence_basis: 'unit test fixture',
+    database_mutated: false,
+    authority: { ...payload.authority, import_authorized: false,
+      activation_authorized: true, production_authorized: true }
+  };
+  assert.equal(validateActorBaseAttributesSuccessorActivationApproval({
+    request: activationRequest,
+    attestation: { ...activationPayload, attestation_digest: digestEnvelope(activationPayload) }
+  }), true);
+  const wrongActivationPayload = { ...activationPayload, reviewed_source_digest: '0'.repeat(64) };
+  assert.throws(() => validateActorBaseAttributesSuccessorActivationApproval({
+    request: activationRequest,
+    attestation: { ...wrongActivationPayload,
+      attestation_digest: digestEnvelope(wrongActivationPayload) }
+  }));
   const changedContent = structuredClone(compatibilityManifest);
   changedContent.source_artifact_digests[1].sha256 = '0'.repeat(64);
   const { compatible_world_pin_manifest_digest: oldPin, ...changedCompatibilityPayload } = changedContent;

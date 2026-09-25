@@ -847,6 +847,20 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
         canonical_digest: profile.canonical_digest }
     }) });
   }
+  async function readApprovedG4DirectionalExits({ g4 } = {}) {
+    if (!exact(g4) || typeof query !== 'function') {
+      return failure('authoring_dependency_pin_missing', 'node', g4?.id,
+        { reason: 'exact_g4_pin_and_read_only_query_required' });
+    }
+    const result = await query(`SELECT e.id,e.version,e.g4_id,e.g4_version,e.direction_context_id,e.exit_kind,e.exit_canonical_g5_id,e.exit_canonical_g5_version,e.status,e.canonical_digest,av.canonical_digest AS authoring_version_digest FROM world_base.spatial_v3_g4_directional_exits e JOIN world_base.spatial_v3_authoring_versions av ON av.entity_kind='g4_directional_exit' AND av.entity_id=e.id AND av.version=e.version AND av.world_revision_id=e.world_revision_id AND av.status='approved' AND av.canonical_digest=e.canonical_digest JOIN world_base.spatial_v3_nodes n ON n.id=e.g4_id AND n.version=e.g4_version AND n.world_revision_id=e.world_revision_id AND n.spatial_level='G4' AND n.status='approved' AND n.canonical_digest=$4 JOIN world_base.spatial_v3_authoring_versions nav ON nav.entity_kind='spatial_node' AND nav.entity_id=n.id AND nav.version=n.version AND nav.world_revision_id=n.world_revision_id AND nav.status='approved' AND nav.canonical_digest=n.canonical_digest WHERE e.g4_id=$1 AND e.g4_version=$2 AND e.world_revision_id=$3 AND e.status='approved' ORDER BY e.id,e.version`,
+    [g4.id, g4.version, g4.world_revision_id, g4.canonical_digest]);
+    if (!Array.isArray(result?.rows) || !result.rows.length
+      || result.rows.some((row) => row.authoring_version_digest !== row.canonical_digest)) {
+      return failure('route_plan_snapshot_missing', 'node', g4.id,
+        { reason: 'approved_g4_directional_exits_missing', world_revision_id: g4.world_revision_id });
+    }
+    return Object.freeze({ ok: true, value: deepFreeze(structuredClone(result.rows)) });
+  }
   async function readPinnedG4ExpansionClosure({ g4, profile } = {}) {
     const validPin = (ref) => ref && typeof ref.id === 'string' && ref.id.trim()
       && Number.isInteger(ref.version) && ref.version > 0
@@ -1100,6 +1114,7 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
     readPinnedCanonicalG5AcousticClosure,
     readPinnedCanonicalG5SceneBinding,
     readPinnedG4ExpansionClosure,
+    readApprovedG4DirectionalExits,
     readG4ExpansionBinding,
     readPinnedG4NpcCompositionClosure,
     readOrientationProfile: (ref) =>

@@ -124,12 +124,13 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
           g4_id: current.scene.site.parent_g4_id,
           world_revision_id: current.scene.world_revision_id });
         if (!binding?.ok) gap('approved_g4_expansion_binding_required');
-        const closure = await worldBaseReader.readPinnedG4ExpansionClosure(binding.value);
-        if (!closure?.ok || !Array.isArray(closure.value?.directional_exits)) {
-          gap('approved_g4_expansion_closure_required');
+        const approved = await worldBaseReader.readApprovedG4DirectionalExits(binding.value);
+        if (!approved?.ok || !Array.isArray(approved.value)) {
+          gap('approved_g4_directional_exits_required');
         }
-        const exits = closure.value.directional_exits.filter((row) =>
+        const exits = approved.value.filter((row) =>
           row.exit_canonical_g5_id === current.scene.site.canonical_g5_ref?.entity_id);
+        if (!exits.length) gap('approved_g4_directional_exits_required');
         return provider.readExitDisclosure({ transaction: current.transaction, partyId,
           actorId, position: { id: current.scene.location.scene_position_id },
           site: current.scene.site, directional_exits: exits });

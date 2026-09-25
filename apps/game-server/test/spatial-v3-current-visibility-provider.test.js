@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createSpatialV3CurrentVisibilityProvider } from
   '../src/infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { createSpatialV3WorldBaseReader } from
+  '../src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { approvedNaturalStableCover } from
   '../src/infrastructure/postgres/g4-natural-perception-reader.js';
 import { readCurrentTargetConditions } from
@@ -17,6 +19,22 @@ const localLabel = JSON.parse(readFileSync(new URL(
 const naturalProfiles = JSON.parse(readFileSync(new URL(
   '../../../data/world-catalogs/novgorod/m2c-natural/candidate.json', import.meta.url))).natural_profiles;
 const g4 = label.g4_ref.id;
+test('canonical exit reader requires approved authoring at exact G4 revision and pin', async () => {
+  const calls = [];
+  const reader = createSpatialV3WorldBaseReader({ async query(sql, params) {
+    calls.push({ sql, params });
+    return { rows: [] };
+  } });
+  const pin = { g4: { id: g4, version: 1,
+    world_revision_id: label.world_revision_id,
+    canonical_digest: 'a'.repeat(64) } };
+  assert.equal((await reader.readApprovedG4DirectionalExits(pin)).ok, false);
+  assert.deepEqual(calls[0].params, [g4, pin.g4.version,
+    pin.g4.world_revision_id, pin.g4.canonical_digest]);
+  assert.match(calls[0].sql, /av\.status='approved' AND av\.canonical_digest=e\.canonical_digest/);
+  assert.match(calls[0].sql, /nav\.status='approved' AND nav\.canonical_digest=n\.canonical_digest/);
+  assert.match(calls[0].sql, /e\.status='approved'/);
+});
 function fixture({ mode = 'default_clear', modifiers = [], worldBaseReader } = {}) {
   const scene = { world_revision_id: label.world_revision_id,
     location: { party_id: 'party', owner_id: 'actor', scene_position_id: 'a' },
@@ -64,7 +82,11 @@ test('current snapshot admits committed identities, edges and approved exit labe
   [{ directional_exit_id: exit.id, directional_exit_version: exit.version,
     direction_context_id: exit.direction_context_id, knowledge_state: 'visible',
     display_label: label.display_label }]);
-  assert.equal(queries.filter((sql) => sql.startsWith('BEGIN')).length, 4);
+  await assert.rejects(provider.readExitDisclosure({ partyId: 'party', actorId: 'actor',
+    position: { id: 'a' }, site: { parent_g4_id: g4 },
+    directional_exits: [{ ...exit, canonical_digest: '0'.repeat(64) }] }),
+  (error) => error.details?.reason === 'approved_exit_label_required');
+  assert.equal(queries.filter((sql) => sql.startsWith('BEGIN')).length, 5);
 });
 
 test('current snapshot discloses the mechanically repinned version 2 edge label', async () => {
@@ -86,9 +108,9 @@ test('P12 pine arrival discloses its approved G4 exit before local topology exis
     && row.exit_canonical_g5_id === start.initial_placement.canonical_g5_ref.id);
   assert.equal(expected.length, 1);
   const worldBaseReader = {
-    async readG4ExpansionBinding() { return { ok: true, value: { id: 'approved-pine-binding' } }; },
-    async readPinnedG4ExpansionClosure() { return { ok: true, value: {
-      directional_exits: rows.filter((row) => row.g4_id === start.initial_placement.g4_ref.id) } }; }
+    async readG4ExpansionBinding() { return { ok: true, value: { g4: start.initial_placement.g4_ref } }; },
+    async readApprovedG4DirectionalExits() { return { ok: true,
+      value: rows.filter((row) => row.g4_id === start.initial_placement.g4_ref.id) }; }
   };
   const { provider, scene, natural } = fixture({ worldBaseReader });
   scene.world_revision_id = start.world_pin.world_revision_id;
@@ -114,6 +136,12 @@ test('P12 pine arrival discloses its approved G4 exit before local topology exis
   assert.deepEqual(current.current_visible_context.visible_objects, [{
     entity_ref: { entity_kind: 'g4_directional_exit', entity_id: expected[0].id },
     display_label: approved.display_label, recognition: 'known' }]);
+  worldBaseReader.readApprovedG4DirectionalExits = async () => ({ ok: true, value: [] });
+  await assert.rejects(provider.readCurrentExitDisclosure({ partyId: 'party', actorId: 'actor' }),
+    (error) => error.details?.reason === 'approved_g4_directional_exits_required');
+  worldBaseReader.readApprovedG4DirectionalExits = async () => ({ ok: false });
+  await assert.rejects(provider.readCurrentExitDisclosure({ partyId: 'party', actorId: 'actor' }),
+    (error) => error.details?.reason === 'approved_g4_directional_exits_required');
 });
 
 test('current approved local edge reaches the turn visible context', async () => {

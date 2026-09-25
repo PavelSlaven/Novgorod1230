@@ -33,15 +33,25 @@ test('NPC exterior exposes committed appearance and visible Stage 16 gear withou
     hair: { color: 'dark_brown', length: 'short', style: 'straight', facial_hair: 'short_beard' },
     eyes: { color: 'gray' } };
   const visual = { schema: 'item_visual_profile_snapshot_v1', version: 1,
-    equipment_slot: 'outer_garment', neckline: 'high_closed', sleeve_form: 'narrow',
-    outer_form: 'wrap', visible_fabric: 'wool', trim: null,
-    main_visible_color: 'dark_blue', secondary_visible_color: null, headwear_kind: 'none' };
+    garment_kind: 'base_garment', equipment_slot: 'base_garment',
+    neckline: 'slit_round', sleeve_form: 'narrow',
+    outer_form: 'long lower-body-covering garment', visible_fabric: 'light_linen',
+    trim: 'none', main_visible_color: 'undyed_linen',
+    secondary_visible_color: 'undyed_linen', headwear_kind: 'none' };
+  const footwear = { ...visual, garment_kind: 'footwear',
+    equipment_slot: 'footwear', neckline: 'not_applicable',
+    sleeve_form: 'not_applicable', outer_form: 'low_leather_shoe',
+    visible_fabric: 'leather', main_visible_color: 'brown',
+    secondary_visible_color: 'brown' };
   let gear = [{ state: { visual_profile_snapshot: { ...visual, secret_origin: 'hidden' } },
     condition_state: 'serviceable', physical_position: 'equipped',
-    equipment_slot_category_id: 'outer_garment' },
+    equipment_slot_category_id: 'base_garment' },
+  { state: { visual_profile_snapshot: footwear },
+    condition_state: 'serviceable', physical_position: 'equipped',
+    equipment_slot_category_id: 'footwear' },
   { state: { visual_profile_snapshot: visual, visibility_state: 'concealed' },
     condition_state: 'serviceable', physical_position: 'equipped',
-    equipment_slot_category_id: 'outer_garment' }];
+    equipment_slot_category_id: 'base_garment' }];
   const transaction = { async query(sql, params) {
     assert.deepEqual(params, ['party', 'npc']);
     if (sql.includes('FROM party_runtime.party_npcs')) return { rows: [{ identity_state: {
@@ -56,8 +66,10 @@ test('NPC exterior exposes committed appearance and visible Stage 16 gear withou
   assert.deepEqual(await readCommittedEntityExterior(input), {
     sex_category: 'male', age_category: 'young_adult', appearance,
     visible_equipment: [{ physical_position: 'equipped',
-      equipment_slot_category_id: 'outer_garment',
-      visual_profile_snapshot: visual }]
+      equipment_slot_category_id: 'base_garment',
+      visual_profile_snapshot: visual },
+    { physical_position: 'equipped', equipment_slot_category_id: 'footwear',
+      visual_profile_snapshot: footwear }]
   });
   gear = [{ ...gear[0], state: {} }];
   await assert.rejects(readCommittedEntityExterior(input),

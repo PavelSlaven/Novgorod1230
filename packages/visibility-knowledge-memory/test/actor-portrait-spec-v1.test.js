@@ -45,3 +45,15 @@ test('portrait ignores hidden inventory and uses safe presentation defaults', ()
   assert.deepEqual(portrait.expression, { emotion: 'neutral', intensity: 'low' });
   assert.equal(portrait.eyes.gaze, 'viewer');
 });
+
+test('portrait returns null for visible item values outside portrait vocabulary', () => {
+  const approvedShirt = { ...shirt, visual_profile_snapshot: {
+    ...shirt.visual_profile_snapshot, garment_kind: 'shirt', sleeve_form: 'long',
+    visible_fabric: 'linen', main_visible_color: 'undyed' } };
+  const footwear = { ...shirt, equipment_slot_category_id: 'footwear',
+    visual_profile_snapshot: { ...shirt.visual_profile_snapshot,
+      garment_kind: 'low_leather_shoe', equipment_slot: 'footwear',
+      neckline: 'not_applicable', visible_fabric: 'leather' } };
+  assert.equal(projectActorPortraitSpecV1({ identity,
+    visible_equipment: [approvedShirt, footwear] }), null);
+});

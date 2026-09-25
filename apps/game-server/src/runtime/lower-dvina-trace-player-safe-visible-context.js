@@ -173,7 +173,7 @@ function projectObservableEquipment(value, strict, path) {
 function projectVisualProfile(value, strict, path) {
   if (!plain(value)) return undefined;
   const textKeys = [
-    'schema', 'equipment_slot', 'neckline', 'sleeve_form', 'outer_form',
+    'schema', 'garment_kind', 'equipment_slot', 'neckline', 'sleeve_form', 'outer_form',
     'visible_fabric', 'trim', 'main_visible_color',
     'secondary_visible_color', 'headwear_kind'
   ];

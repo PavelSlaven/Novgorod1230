@@ -73,6 +73,9 @@ export function projectActorPortraitSpecV1({
     background: presentationValue(presentation.background, PORTRAIT_SPEC_V1_ENUMS.background, 'neutral')
   };
   if (!requiredGarmentSemanticsPresent(spec.clothing)) return null;
+  for (const [key, allowed] of Object.entries(PORTRAIT_SPEC_V1_ENUMS.clothing)) {
+    if (!allowed.includes(spec.clothing[key])) return null;
+  }
   assertPortraitSpecV1(spec);
   return deepFreeze(spec);
 }

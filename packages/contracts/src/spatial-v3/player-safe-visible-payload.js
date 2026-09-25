@@ -156,25 +156,17 @@ function validateObservableEquipment(value, path) {
 function validateVisualProfile(value, path) {
   if (!isObject(value)) return [issue('generated_schema_mismatch', path,
     `${path} must be a visible equipment profile.`)];
-  const keys = ['schema', 'version', 'equipment_slot', 'neckline',
+  const keys = ['schema', 'version', 'garment_kind', 'equipment_slot', 'neckline',
     'sleeve_form', 'outer_form', 'visible_fabric', 'trim',
     'main_visible_color', 'secondary_visible_color', 'headwear_kind'];
   const errors = unexpected(value, keys, path);
-  optionalText(value, 'schema', path, errors);
-  if (value.version != null && !Number.isFinite(value.version)) errors.push(
+  if (value.schema !== 'item_visual_profile_snapshot_v1') errors.push(issue(
+    'generated_schema_mismatch', `${path}.schema`,
+    `${path}.schema must be item_visual_profile_snapshot_v1.`));
+  if (value.version !== 1) errors.push(
     issue('generated_schema_mismatch', `${path}.version`,
-      `${path}.version must be finite.`));
-  optionalText(value, 'equipment_slot', path, errors);
-  for (const [key, values] of Object.entries({
-    neckline: PORTRAIT_SPEC_V1_ENUMS.clothing.neckline,
-    sleeve_form: PORTRAIT_SPEC_V1_ENUMS.clothing.sleeve,
-    outer_form: PORTRAIT_SPEC_V1_ENUMS.clothing.outer,
-    visible_fabric: PORTRAIT_SPEC_V1_ENUMS.clothing.fabric,
-    trim: PORTRAIT_SPEC_V1_ENUMS.clothing.trim,
-    main_visible_color: PORTRAIT_SPEC_V1_ENUMS.clothing.main_color,
-    secondary_visible_color: PORTRAIT_SPEC_V1_ENUMS.clothing.secondary_color,
-    headwear_kind: PORTRAIT_SPEC_V1_ENUMS.clothing.headwear
-  })) optionalEnum(value, key, values, path, errors);
+      `${path}.version must be 1.`));
+  for (const key of keys.slice(2)) optionalText(value, key, path, errors);
   return errors;
 }
 

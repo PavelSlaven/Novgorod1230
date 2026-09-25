@@ -3,6 +3,10 @@ import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { buildKnowledgeSourceOutputsV2 } from './knowledge-materializer-v2.js';
 import { readKnowledgeSourceInventory } from './knowledge-source.js';
+import {
+  diffCorpusStatusesAgainstIndex,
+  loadContractIndexCorpusStatuses
+} from './contract-index-corpus-status.js';
 
 const SOURCE_ROOT = 'data/knowledge-source';
 const GENERATED_ROOT = 'generated/knowledge-source';
@@ -82,6 +86,15 @@ export async function verifyKnowledgeSourceMigrationV2({ root = '.' } = {}) {
         errors.push(`${record.document_id}: available legacy source differs`);
       }
     }
+  }
+
+  const corpusHasIndex = (manifest.documents ?? []).some((record) => record.file_name === 'CONTRACT_INDEX.md');
+  if (corpusHasIndex) {
+    const statusByFile = await loadContractIndexCorpusStatuses({ root: projectRoot }).catch((error) => {
+      errors.push(`CONTRACT_INDEX status load failed: ${error.message}`);
+      return new Map();
+    });
+    errors.push(...diffCorpusStatusesAgainstIndex(manifest.documents ?? [], statusByFile));
   }
 
   const expected = await buildKnowledgeSourceOutputsV2({ root: projectRoot }).catch((error) => {

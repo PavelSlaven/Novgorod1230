@@ -23,7 +23,7 @@ test('repository retrieval policy covers every registered document and pins curr
   assert.ok(policy.control_queries.length >= 5);
 });
 
-test('repository policy registers proposed classification documents without changing their corpus status', async () => {
+test('repository policy registers proposed classification policy; references stay non-active per CONTRACT_INDEX', async () => {
   const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
   const policy = validateRetrievalPolicy(JSON.parse(await readFile(resolve(sourceRoot, 'retrieval-policy.json'), 'utf8')), manifest);
   const proposedIds = [
@@ -32,7 +32,7 @@ test('repository policy registers proposed classification documents without chan
   ];
   assert.deepEqual(
     manifest.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.status),
-    ['proposed', 'proposed']
+    ['proposed', 'deprecated']
   );
   assert.deepEqual(
     policy.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.document_id),
@@ -99,7 +99,8 @@ test('repository registers the audited spatial architecture standard as an activ
     status: 'active'
   });
   assert.equal(metadata?.document_type, 'target_normative');
-  assert.equal(metadata?.priority_tier, 'highest_materialization_normative');
+  assert.equal(metadata?.priority_tier, 'technical_contract');
+  assert.equal(document?.priority_tier, 'technical_contract');
   assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('spatial-architecture-standard-g0-g6')));
 });
 

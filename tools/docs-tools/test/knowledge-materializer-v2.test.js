@@ -67,7 +67,8 @@ test('knowledge materializer builds structural graph nodes for every active docu
   assert.equal(graph.hyperedges.length, 0);
   assert.ok(structuralNodes.every((node) => node.type === 'canonical_document'));
   assert.equal(structuralNodes.some((node) => node.id === 'canonical-document:code-driven-world-materialization-architecture'), true);
-  assert.equal(structuralNodes.some((node) => node.id === 'canonical-document:weapons-and-armor'), true);
+  assert.equal(structuralNodes.some((node) => node.id === 'canonical-document:items-and-property'), true);
+  assert.equal(structuralNodes.some((node) => node.id === 'canonical-document:weapons-and-armor'), false);
 });
 
 test('knowledge materializer includes changed proposed documents lexically without activating them in the graph', async () => {
@@ -112,6 +113,7 @@ test('unseen-equivalent: new active document stays lexical and readiness stays r
     sha256: sha256(text),
     bytes: text.length,
     status: 'active',
+    priority_tier: 'technical_contract',
     provenance_mode: 'native'
   });
   policy.documents.push({

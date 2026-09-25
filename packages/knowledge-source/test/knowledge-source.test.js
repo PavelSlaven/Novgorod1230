@@ -33,14 +33,16 @@ async function fixture({ text = '# Alpha\n\nCanonical text.\nSecond line.\n' } =
       file_name: 'alpha.md',
       sha256: sha256(text),
       bytes: Buffer.byteLength(text),
-      status: 'active'
+      status: 'active',
+      priority_tier: 'technical_contract'
     }, {
       document_id: 'beta',
       canonical_path: 'corpus/DOCUMENTS/beta.md',
       file_name: 'beta.md',
       sha256: sha256(proposedText),
       bytes: Buffer.byteLength(proposedText),
-      status: 'proposed'
+      status: 'proposed',
+      priority_tier: 'profile_normative'
     }]
   }));
   await writeFile(join(root, 'source-aliases.json'), JSON.stringify({

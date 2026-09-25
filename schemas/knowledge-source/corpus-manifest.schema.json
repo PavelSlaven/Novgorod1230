@@ -13,7 +13,7 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["document_id", "canonical_path", "file_name", "sha256", "bytes", "status"],
+        "required": ["document_id", "canonical_path", "file_name", "sha256", "bytes", "status", "priority_tier"],
         "properties": {
           "document_id": { "type": "string", "pattern": "^[a-z0-9.-]+$" },
           "canonical_path": { "type": "string", "pattern": "^corpus/DOCUMENTS/[^/]+$" },
@@ -21,6 +21,16 @@
           "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
           "bytes": { "type": "integer", "minimum": 0 },
           "status": { "enum": ["proposed", "active", "deprecated"] },
+          "priority_tier": {
+            "enum": [
+              "highest_materialization_normative",
+              "profile_normative",
+              "development_process_normative",
+              "technical_contract",
+              "navigation",
+              "reference"
+            ]
+          },
           "provenance_mode": { "enum": ["native", "legacy_mirror", "canonicalized_from_legacy"] },
           "source_legacy_path": { "type": "string", "minLength": 1 },
           "source_legacy_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },

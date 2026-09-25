@@ -22,9 +22,9 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlE
   const manifest = {
     schema_version: 'rus.knowledge_corpus_manifest.v2', corpus_id: 'test', release: 'test',
     documents: [
-      { document_id: 'active', canonical_path: 'corpus/DOCUMENTS/active.md', file_name: 'active.md', sha256: sha(texts['active.md']), bytes: texts['active.md'].length, status: 'active', provenance_mode: 'native' },
-      { document_id: 'proposed', canonical_path: 'corpus/DOCUMENTS/proposed.md', file_name: 'proposed.md', sha256: sha(texts['proposed.md']), bytes: texts['proposed.md'].length, status: 'proposed', provenance_mode: 'native' },
-      ...(includeDeprecated ? [{ document_id: 'deprecated', canonical_path: 'corpus/DOCUMENTS/deprecated.md', file_name: 'deprecated.md', sha256: sha(texts['deprecated.md']), bytes: texts['deprecated.md'].length, status: 'deprecated', provenance_mode: 'native' }] : [])
+      { document_id: 'active', canonical_path: 'corpus/DOCUMENTS/active.md', file_name: 'active.md', sha256: sha(texts['active.md']), bytes: texts['active.md'].length, status: 'active', priority_tier: 'highest_materialization_normative', provenance_mode: 'native' },
+      { document_id: 'proposed', canonical_path: 'corpus/DOCUMENTS/proposed.md', file_name: 'proposed.md', sha256: sha(texts['proposed.md']), bytes: texts['proposed.md'].length, status: 'proposed', priority_tier: 'profile_normative', provenance_mode: 'native' },
+      ...(includeDeprecated ? [{ document_id: 'deprecated', canonical_path: 'corpus/DOCUMENTS/deprecated.md', file_name: 'deprecated.md', sha256: sha(texts['deprecated.md']), bytes: texts['deprecated.md'].length, status: 'deprecated', priority_tier: 'reference', provenance_mode: 'native' }] : [])
     ]
   };
   const manifestBytes = jsonBytes(manifest);

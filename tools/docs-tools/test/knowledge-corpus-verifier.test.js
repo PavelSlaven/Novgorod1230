@@ -9,9 +9,9 @@ import { repinCanonicalCorpus } from '../src/knowledge-corpus-repin.js';
 
 const repositoryRoot = join(import.meta.dirname, '../../..');
 const requiredNormatives = [
-  ['development-rules', 'development_rules.txt', 'active'],
+  ['development-rules', 'development_rules.txt', 'deprecated'],
   ['map-g0-g4-workflow', 'map_g0_g4_workflow.txt', 'deprecated'],
-  ['base-turn-orchestration', 'base_turn_orchestration.txt', 'active'],
+  ['base-turn-orchestration', 'base_turn_orchestration.txt', 'deprecated'],
   ['read-only-database-and-graph-architecture', 'read_only_database_and_graph_architecture.md', 'deprecated'],
   ['code-driven-world-materialization-architecture', 'code_driven_world_materialization_architecture.md', 'active'],
   ['contract-index', 'CONTRACT_INDEX.md', 'active'],
@@ -38,6 +38,7 @@ async function fixture({ corrupt = false } = {}) {
       sha256: corrupt && fileName === 'native.md' ? '0'.repeat(64) : createHash('sha256').update(bytes).digest('hex'),
       bytes: bytes.length,
       status: 'active',
+      priority_tier: 'technical_contract',
       ...(legacyPath ? { source_legacy_path: legacyPath } : {})
     });
   }

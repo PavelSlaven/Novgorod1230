@@ -1,8 +1,20 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
+import {
+  diffCorpusStatusesAgainstIndex,
+  loadContractIndexCorpusStatuses
+} from './contract-index-corpus-status.js';
 
 const SOURCE_ROOT = 'data/knowledge-source';
+const PRIORITY_TIERS = new Set([
+  'highest_materialization_normative',
+  'profile_normative',
+  'development_process_normative',
+  'technical_contract',
+  'navigation',
+  'reference'
+]);
 
 export async function verifyCanonicalCorpus({ root = '.' } = {}) {
   const projectRoot = resolve(root);
@@ -39,10 +51,12 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
     const id = String(record.document_id ?? '');
     const canonicalPath = String(record.canonical_path ?? '');
     const status = String(record.status ?? '');
+    const priorityTier = String(record.priority_tier ?? '');
     if (!id) errors.push('document without document_id');
     if (ids.has(id)) errors.push(`duplicate document_id: ${id}`);
     ids.add(id);
     if (!['active', 'proposed', 'deprecated'].includes(status)) errors.push(`${id}: invalid document status ${status || '<empty>'}`);
+    if (!PRIORITY_TIERS.has(priorityTier)) errors.push(`${id}: invalid priority_tier ${priorityTier || '<empty>'}`);
     if (status === 'active') activeCount += 1;
     if (status === 'proposed') proposedCount += 1;
     if (!/^corpus\/DOCUMENTS\/[^/]+$/u.test(canonicalPath)) {
@@ -65,6 +79,15 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
   for (const [alias, id] of Object.entries(aliases.aliases ?? {})) {
     if (!alias.trim()) errors.push('empty source alias');
     if (!ids.has(id)) errors.push(`alias ${alias} references unknown document ${id}`);
+  }
+
+  const corpusHasIndex = (manifest.documents ?? []).some((record) => record.file_name === 'CONTRACT_INDEX.md');
+  if (corpusHasIndex) {
+    const statusByFile = await loadContractIndexCorpusStatuses({ root: projectRoot }).catch((error) => {
+      errors.push(`CONTRACT_INDEX status load failed: ${error.message}`);
+      return new Map();
+    });
+    errors.push(...diffCorpusStatusesAgainstIndex(manifest.documents, statusByFile));
   }
 
   return freezeResult({ errors, documentCount: manifest.documents.length, activeCount, proposedCount, legacyCount, manifestSha256: sha256(manifestBytes) });

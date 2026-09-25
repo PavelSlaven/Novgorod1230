@@ -14,9 +14,10 @@ Semantic boundary игрока: `turn_step_request_v1` → `turn_step_plan_v1`. 
 остаются впереди. V2 — только migration/rollback source; mixed reads, dual writes, runtime fallback
 и второй player planner запрещены.
 
-Исторические активации revisons (conversation Phase 3–4, autonomous NPC Phase 7, combat Phase 8,
+Исторические активации revisions (conversation Phase 3–4, autonomous NPC Phase 7, combat Phase 8,
 post-combat Phase 9, P16 completion follow-up) наследуются текущими bindings; детали профилей —
 в `MODULE.md` `@rus/turn` / `@rus/npc-runtime` и release bindings, не дублируются здесь.
+Продвижение времени — [temporal-advance.md](temporal-advance.md).
 
 ## Этапы
 
@@ -50,19 +51,20 @@ WK grounding и auditor выполняются на границе planner/NPC m
 
 ## Ports
 
-State reader, code-owned command registry, `turnStepModel`, player-safe working projector, step execution registry, check-context resolver, random source, code-owned visible projector, narrator, party store, screen projector и (на production path) world-knowledge grounder передаются явно. Closed bounded choices отдельно используют identity/secret/expiry ports; свободный player input их не использует.
+State reader, code-owned command registry, `turnStepModel`, player-safe working projector, step execution registry, check-context resolver, random source, code-owned visible projector, narrator, party store, screen projector и (на production path) world-knowledge grounder передаются явно. Closed bounded choices отдельно используют identity/secret/expiry ports; свободный player input их не использует. State reader вызывается перед каждым semantic step и повторно до финального commit.
 
 Reload/turn получает item/container catalog только из persisted `party_catalog_pins` и exact historical import через `@rus/runtime-catalog`. Отсутствующий pin — `PARTY_CATALOG_PIN_MISSING` без backfill.
 
 ## Границы
 
-Код не придумывает authored categories и отсутствующие significant candidates. Exact path выбирает зарегистрированный handler; player planner возвращает только строгий следующий step. LLM не возвращает SQL, physical write targets, state patch, derived mechanics, hidden facts, NPC/combat result или narration. Ordinary materialization на v17: ambient O2a/O2b/F1/S1 profiles сейчас `null` (LW-029) — обобщение в M2c. Stale state, invalid plan/repair, ambiguous domain binding или невалидный change set останавливают pipeline без частичного commit.
+Код не придумывает authored categories и отсутствующие significant candidates. Exact path выбирает зарегистрированный handler; player planner возвращает только строгий следующий step. LLM не возвращает SQL, physical write targets, state patch, derived mechanics, hidden facts, NPC/combat result или narration. Ordinary direct action result допускается только через code-owned origin/admission/inventory gates (ordinary materialization на v17: ambient O2a/O2b/F1/S1 profiles сейчас `null` — LW-029; обобщение в M2c). Stale state, invalid plan/repair, ambiguous domain binding, поддельный bounded token или невалидный change set останавливают pipeline без частичного commit.
 
 NPC conversation / autonomous / combat идут через общий `npc_decision_signal_v1` → `npc_decision_boundary_v1`; persistence и visibility — code-owned.
 
 ## Ссылки
 
 - [ARCHITECTURE](../context/ARCHITECTURE.md) §1.1–1.3
+- [temporal-advance.md](temporal-advance.md)
 - [packages/turn/MODULE.md](../../packages/turn/MODULE.md)
 - [EDGE_CASES](../context/EDGE_CASES.md) §10.1 (примеры действий для проверок)
 - [LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md) LW-026…LW-033

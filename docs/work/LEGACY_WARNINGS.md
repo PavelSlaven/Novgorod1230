@@ -179,7 +179,7 @@
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-038 — `tools/world-catalog-workflow` в runtime
-- **Что.** Стадии 7, 8, 13 и 16 `packages/new-game` импортируют `tools/world-catalog-workflow`, хотя `docs/architecture/DEPENDENCY_RULES.md` и `docs/modules/TOOLS_INVENTORY.md` утверждают, что production runtime не импортирует tools; `check-boundaries.mjs` это не проверяет. `docs/context/ARCHITECTURE.md` фиксирует исключение.
+- **Что.** Стадии 7, 8, 13 и 16 `packages/new-game` импортируют `tools/world-catalog-workflow`, хотя `docs/architecture/DEPENDENCY_RULES.md` утверждает, что production runtime не импортирует tools; `check-boundaries.mjs` это не проверяет. `docs/context/ARCHITECTURE.md` и `TOOLS_INVENTORY` фиксируют исключение LW-038; расхождение остаётся с DEPENDENCY_RULES.
 - **Как жить.** Правка этого tool меняет new-game: кандидаты NPC и предметов, шаблоны G5, упаковку снаряжения. Гонять `test:domain` и профильные тесты стадий 7, 8, 13, 16.
 
 ### LW-039 — обрезанные документы корпуса

@@ -5,7 +5,7 @@
 | `@rus/actors` | identity, canonical base appearance, biography fields, social/skill bindings, actor state shape и actor invariants | тело, одежда/предметы, маршруты, время, persistence |
 | `@rus/body-state` | здоровье, сытость, бодрость, активные состояния, части тела, применение утверждённых изменений, edge-triggered threshold crossing и body-origin `self` signal descriptor | выбор причины изменения, combat intent, лечение как смысловое решение |
 | `@rus/items-property` | item identity/profile binding, containers, ownership, normalized inventory topology, mass/load/hands/access, stack signature и approved property/container transition proposals | материализация предмета, цены мира, persistence, исторические template facts |
-| `@rus/space-map` | G0–G5 types, position chain, graph node/edge shape, current position, scene anchors, structural graph validation; **пакет к удалению** после переноса потребителей ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)) | выбор маршрута, время пути, знания персонажа |
+| `@rus/space-map` | **не владелец runtime** (пакет в дереве, runtime не импортирует; удаление — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5837624476) п.6, без добавленного условия) | не использовать как owner |
 | `@rus/movement-routes` | route availability, route knowledge envelope, GU/time cost, access requirements, traversal contracts | создание дорог, смысловой выбор курса, RNG implementation |
 | `@rus/time-events-history` | clock, duration, timers, delayed event records, historical phases, time-update requests | создание исторических событий и их смысловых последствий |
 | `@rus/checks-rng` | dice requests, `RandomSource`, characteristic bonus, check formula и result envelope | решение о необходимости проверки, narrative consequence |
@@ -15,8 +15,8 @@
 | `@rus/runtime-catalog` | read-only active/historical domain pin loading, exact import reconstruction, world-pin compatibility и applicable item/container projection | authoring, import/activation writes, party persistence, materialization |
 | `@rus/world-knowledge` | pure read-only WK query → slice; exact/structured/lexical (+ caller vector scores) | LLM, DB, party state, presence, narration |
 | `@rus/llm-runtime` | LLM transport, roles, tier config, limits; без fallback chain | domain facts, WK retrieval core |
-| `@rus/new-game` | modular new-game stage packages / orchestrator (на v17 production path — не sole entry; см. [pipelines/new-game.md](../pipelines/new-game.md)) | physical DB transaction, HTTP |
-| `@rus/materialization` | deterministic materialization traces; на [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) — также владелец текущей погоды/света (вместо удаляемых пакетов ниже) | database access / commit |
+| `@rus/new-game` | modular stage packages / orchestrator; production его не вызывает (`adapters/workflows.js` только реэкспорт из `src/index.js`; см. [pipelines/new-game.md](../pipelines/new-game.md)) | physical DB transaction, HTTP |
+| `@rus/materialization` | deterministic materialization traces; **цель** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5837624476) п.6 — владелец погоды/света (ещё не реализовано; текущий read — `target-current-factual-context`) | database access / commit |
 | `@rus/environment-state` | **к удалению** (runtime не импортирует; [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)) | — |
 
 ## Spatial v3 production ownership (P08)
@@ -28,7 +28,7 @@ Dual write, mixed reads and compatibility fallback remain forbidden.
 
 | Owner | Sole target responsibility | Explicit boundary |
 |---|---|---|
-| `@rus/space-map` | typed spatial refs, containment, route topology (пока в дереве пакетов; удаление — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)) | no route selection, persistence or player knowledge |
+| `@rus/space-map` | пакет в дереве; runtime не импортирует; удаление — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5837624476) п.6 | do not treat as runtime owner |
 | `@rus/movement-routes` | path queries, immutable plans, method/time resolution, progress and navigation outcomes | no topology authoring or commit |
 | `@rus/materialization` | deterministic stable-topology materialization and traces | no database access or commit |
 | `@rus/time-events-history` | exact clock, timers and historical update requests | no topology or route ownership |
@@ -47,7 +47,7 @@ or write a partial result.
 The completed `versioned production activation cutover` made these
 responsibilities authoritative. Current selectable production bindings on this
 branch are v16 and v17 (not «v16 only»). Older releases v2–v15 remain on disk
-but are not the default local path; removal after M2c acceptance — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133).
+but are not selected by the loader; removal after M2c acceptance — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425).
 
 | Owner | Exact target responsibility | Explicit boundary |
 |---|---|---|
@@ -56,7 +56,7 @@ but are not the default local path; removal after M2c acceptance — [#133](http
 | `@rus/turn` | temporal workflow, owner invocation, deterministic proposal merge, conversation/autonomous/combat semantic validation and replay, persisted combat session/intent lifecycle, same-time technical-step recheck, automatic exchange orchestration, logical combined plan, limits and idempotency | no PostgreSQL transaction, combat/check/body/item/movement formulas, NPC perception/knowledge ownership or social consequence |
 | `@rus/party-store` | normalized placement/capacity/ownership/holder/controller/access validation and logical-plan persistence boundary | no orchestration, semantic fallback or physical database transaction ownership |
 | `@rus/game-server` | physical target PostgreSQL transaction for the combined factual commit | no domain proposals or narration fact creation |
-| `@rus/environment-state` | **удаляется** ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)); погода/свет → `@rus/materialization` | do not extend |
+| `@rus/environment-state` | **удаляется** ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5837624476) п.6); целевой владелец погоды/света — `@rus/materialization` (цель, не текущее состояние) | do not extend |
 | `@rus/npc-runtime` | pure pinned schedule/perception proposals; common `npc_decision_signal_v1` validation and per-NPC/same-time-batch `npc_decision_boundary_v1` aggregation; conversation, autonomous and revision-16 combat request/plan/applicability contracts; historical/genuinely closed bounded decisions | no initial NPC materialization, DB, LLM invocation, workflow control or mechanical combat execution |
 | `@rus/turn` carrier proposal engine | synchronized root/local transport proposals; root result owns the one shared clock update | local carrier result never advances the party clock again |
 | `@rus/world-processes` | pure bounded remote catch-up and propagation proposals | no continuous global simulation, persistence, or direct calls to peer owners |

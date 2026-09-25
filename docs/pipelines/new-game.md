@@ -11,15 +11,21 @@
 [DB_SCHEMA](../context/DB_SCHEMA.md) §1.1. Цепочки заполнения места и хода —
 [ARCHITECTURE](../context/ARCHITECTURE.md) §1.1–1.2.
 
+Старт v17 вызывает (имена стадий modular pipeline — ориентир, не sole entry):
+- phase-1b → phase-1a: [`infrastructure/postgres/lower-dvina-trace-phase-1b.js`](../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js),
+  [`internal/lower-dvina-trace-phase-1a.js`](../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js)
+  (player validation — [`internal/lower-dvina-trace-player-validation.js`](../../apps/game-server/src/internal/lower-dvina-trace-player-validation.js));
+- NPC first-entry: [`infrastructure/postgres/generated-npc-first-entry.js`](../../apps/game-server/src/infrastructure/postgres/generated-npc-first-entry.js);
+- opening narration: [`runtime/authored-opening-narration.js`](../../apps/game-server/src/runtime/authored-opening-narration.js).
+Стадии 11/12/16/22/23/24/25 modular table ниже на этом пути вызываются через эти модули, а не как sole runner.
+
 ## Modular stage table (legacy / removable)
 
 Таблица стадий и `runModularNewGamePipeline` описывают **модульный** конвейер `@rus/new-game`
-через `@rus/pipeline-engine`. На текущем production path v17 он **не является** sole entry:
-adapter всё ещё импортирует `runModularNewGamePipeline`
-([apps/game-server/src/adapters/workflows.js](../../apps/game-server/src/adapters/workflows.js)),
-но целевое удаление мёртвого модульного pipeline зафиксировано в backlog
-([#127](https://github.com/PavelSlaven/Novgorod1230/issues/127) / долг ветки). Не расширять этот путь
-новой gameplay-логикой.
+через `@rus/pipeline-engine` — мёртвый оркестратор в смысле production entry
+([#127](https://github.com/PavelSlaven/Novgorod1230/issues/127)). **Production его не вызывает**
+(`adapters/workflows.js` только реэкспортируется из [`src/index.js`](../../apps/game-server/src/index.js)).
+Не расширять этот путь новой gameplay-логикой.
 
 | Stage | Имя | Результат |
 |---:|---|---|
@@ -64,7 +70,7 @@ World-base, party persistence и LLM transport передаются через c
 - Stage 19 остаётся hidden; Stage 20 — visible projection; Stages 22–23 — только visible inputs.
 - Stage 13, 15 и 16 не вызывают LLM для создания экземпляров.
 - Stage 24–25: фиксированный write plan и одна транзакция (на modular path).
-- Production new-game / first screen на v17 — через composition root выше, не через эту таблицу как sole owner.
+- Production new-game / first screen на v17 — через composition root выше.
 
 ## Ссылки
 

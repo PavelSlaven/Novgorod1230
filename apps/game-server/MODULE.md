@@ -19,7 +19,7 @@ Production composition root и единственный physical PostgreSQL tran
 bindings v16/v17: HTTP `/api/v1`, wiring domain public APIs, read-only `world_base`, `party_runtime`,
 runtime-catalog pins, World Knowledge loader/encoder, turn/public runtime facade и post-commit
 presentation delivery. На этой ветке значимая логика хода/NPC/сцены всё ещё живёт в
-`src/runtime/lower-dvina-trace-*` (долг LW-026) — не считать game-server «тонким» composition root.
+`src/runtime`, `src/internal` и `src/infrastructure/postgres` (долг LW-026) — не считать game-server «тонким» composition root.
 
 `prepareGeneratedNpcFirstEntry` composes approved NPC materialization, Stage 16
 equipment and Stage 24 body/routine projections for an exact generated scene.

@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { createFileSystemKnowledgeSourceStorage } from './adapters/filesystem-storage.js';
 import { createKnowledgeSourceReader } from './services/reader.js';
 import { createKnowledgeRagReader } from './services/rag-reader.js';
+import { CANONICAL_DEFAULT_STATUSES } from './domain/retrieval-policy.js';
 import { KnowledgeSourceError } from './errors.js';
 
 const args = process.argv.slice(2);
@@ -17,7 +18,7 @@ try {
   const policyRaw = await storage.readRetrievalPolicy();
   const defaultStatuses = Array.isArray(policyRaw?.value?.default_statuses) && policyRaw.value.default_statuses.length > 0
     ? policyRaw.value.default_statuses
-    : ['active', 'reference'];
+    : [...CANONICAL_DEFAULT_STATUSES];
   const statuses = csvOption(args, '--statuses') ?? defaultStatuses;
   const sourceReader = createKnowledgeSourceReader({ storage, allowedStatuses: statuses });
   const ragReader = createKnowledgeRagReader({ storage, allowedStatuses: statuses });

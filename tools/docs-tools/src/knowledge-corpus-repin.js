@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import { CANONICAL_DEFAULT_STATUSES } from '../../../packages/knowledge-source/src/domain/retrieval-policy.js';
 import { readJson, sha256, stableJson } from './knowledge-source-json.js';
 import {
   applyContractIndexStatusesToDocuments,
@@ -51,7 +52,7 @@ export async function repinCanonicalCorpus({ root = '.' } = {}) {
       if (item && Object.hasOwn(item, 'priority_tier')) delete item.priority_tier;
     }
   }
-  policy.default_statuses = ['active', 'reference'];
+  policy.default_statuses = [...CANONICAL_DEFAULT_STATUSES];
   policy.baseline_manifest_sha256 = manifestDigest;
   await writeFile(manifestPath, manifestBytes);
   await writeFile(policyPath, stableJson(policy));

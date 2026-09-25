@@ -1,9 +1,10 @@
 import { createHash } from 'node:crypto';
 import { basename } from 'node:path';
 import { deepFreeze, validateAliases, validateCorpusManifest } from '../domain/manifest.js';
+import { CANONICAL_DEFAULT_STATUSES } from '../domain/retrieval-policy.js';
 import { knowledgeSourceError } from '../errors.js';
 
-export function createKnowledgeSourceReader({ storage, allowedStatuses = ['active', 'reference'] } = {}) {
+export function createKnowledgeSourceReader({ storage, allowedStatuses = CANONICAL_DEFAULT_STATUSES } = {}) {
   assertStorage(storage);
   const visibleStatuses = normalizeStatuses(allowedStatuses);
   return Object.freeze({

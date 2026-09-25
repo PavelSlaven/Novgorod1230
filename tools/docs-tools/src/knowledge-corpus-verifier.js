@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
+import { CANONICAL_DEFAULT_STATUSES } from '../../../packages/knowledge-source/src/domain/retrieval-policy.js';
 import {
   diffCorpusStatusesAgainstIndex,
   loadContractIndexCorpusStatuses
@@ -16,7 +17,6 @@ const PRIORITY_TIERS = new Set([
   'proposed',
   'reference'
 ]);
-const CANONICAL_DEFAULT_STATUSES = Object.freeze(['active', 'reference']);
 
 export async function verifyCanonicalCorpus({ root = '.' } = {}) {
   const projectRoot = resolve(root);

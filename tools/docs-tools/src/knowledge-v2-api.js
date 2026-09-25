@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import { CANONICAL_DEFAULT_STATUSES } from '../../../packages/knowledge-source/src/domain/retrieval-policy.js';
 import { buildKnowledgeSourceOutputsV2 } from './knowledge-materializer-v2.js';
 import { readKnowledgeSourceInventory } from './knowledge-source.js';
 import {
@@ -106,7 +107,7 @@ export async function verifyKnowledgeSourceMigrationV2({ root = '.' } = {}) {
     try {
       const policy = JSON.parse(policyBytes.toString('utf8'));
       const defaults = Array.isArray(policy.default_statuses) ? policy.default_statuses : [];
-      const expectedDefaults = ['active', 'reference'];
+      const expectedDefaults = [...CANONICAL_DEFAULT_STATUSES];
       if (defaults.length !== expectedDefaults.length || expectedDefaults.some((status, index) => defaults[index] !== status)) {
         errors.push(`retrieval policy default_statuses must be ${JSON.stringify(expectedDefaults)} (got ${JSON.stringify(defaults)}); run knowledge:repin`);
       }

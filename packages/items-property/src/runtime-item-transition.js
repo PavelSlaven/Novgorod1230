@@ -12,7 +12,8 @@ export {
 } from './runtime-container-access.js';
 
 export function normalizeRuntimeItemPlacement({ placement, actor_id: actorId,
-  current_location_ref: currentLocationRef, entity_ref: entityRef,
+  current_location_ref: currentLocationRef, current_position_ref: currentPositionRef,
+  entity_ref: entityRef,
   visible_items: visibleItems, incoming_mechanics: incomingMechanics,
   resolve_mechanics: resolveMechanics } = {}) {
   if (!plain(placement) || !exactText(placement.relation)
@@ -30,10 +31,14 @@ export function normalizeRuntimeItemPlacement({ placement, actor_id: actorId,
     });
   }
   if (placement.relation === 'located_at') {
-    return targetRef === currentLocationRef
-      ? placed({ location_ref: targetRef })
+    return targetRef === currentLocationRef || targetRef === currentPositionRef
+      ? placed(targetRef === currentLocationRef
+        ? { location_ref: targetRef } : { scene_position_id: targetRef })
       : failedPlacement('ITEM_RUNTIME_LOCATION_NOT_CURRENT', {
-          target_ref: targetRef, current_location_ref: currentLocationRef
+          target_ref: targetRef, current_location_ref: currentLocationRef,
+          ...(currentPositionRef == null ? {} : {
+            current_position_ref: currentPositionRef
+          })
         });
   }
   const items = Array.isArray(visibleItems) ? visibleItems : [];
@@ -48,7 +53,7 @@ export function normalizeRuntimeItemPlacement({ placement, actor_id: actorId,
     });
   }
   if (!target || !isCurrentVisible(targetRef, byId, actorId,
-    currentLocationRef, new Set())) {
+    currentLocationRef, currentPositionRef, new Set())) {
     return failedPlacement('ITEM_RUNTIME_PLACEMENT_TARGET_NOT_VISIBLE', {
       target_ref: targetRef
     });
@@ -262,7 +267,8 @@ function carriedBy(ref, byId, actorId, trail) {
   return carriedBy(hostRef, byId, actorId, trail);
 }
 
-function isCurrentVisible(ref, byId, actorId, currentLocationRef, trail) {
+function isCurrentVisible(ref, byId, actorId, currentLocationRef,
+  currentPositionRef, trail) {
   if (trail.has(ref)) return false;
   trail.add(ref);
   const item = byId.get(ref);
@@ -274,13 +280,17 @@ function isCurrentVisible(ref, byId, actorId, currentLocationRef, trail) {
     if (!host || placement.container_id && !contentsOpenAndAccessible(host)) {
       return false;
     }
-    return isCurrentVisible(hostRef, byId, actorId, currentLocationRef, trail);
+    return isCurrentVisible(hostRef, byId, actorId, currentLocationRef,
+      currentPositionRef, trail);
   }
   if (placement?.holder_character_id != null) {
     return placement.holder_character_id === actorId;
   }
   if (placement?.location_ref != null) {
     return placement.location_ref === currentLocationRef;
+  }
+  if (placement?.scene_position_id != null) {
+    return placement.scene_position_id === currentPositionRef;
   }
   return item.visible === true || item.is_visible === true;
 }

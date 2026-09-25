@@ -77,8 +77,8 @@ export function validatePlacementShape(value, index = null) {
     return;
   }
   const fields = [
-    'holder_character_id', 'holder_npc_id', 'location_ref', 'container_id',
-    'attached_item_id'
+    'holder_character_id', 'holder_npc_id', 'location_ref',
+    'scene_position_id', 'container_id', 'attached_item_id'
   ].filter((key) => value[key] != null);
   const allowed = new Set([
     ...fields, 'physical_position', 'equipment_slot_category_id'

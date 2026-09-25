@@ -129,3 +129,19 @@ test('repository RAG readiness is ready for lexical-only coverage', async () => 
   assert.equal(Object.hasOwn(status, 'semantic_coverage_gap_document_ids'), false);
   assert.equal(Object.hasOwn(status, 'semantic_coverage_blocker_document_ids'), false);
 });
+
+test('repository reference_results surface npc-generation-profiles and interface-ux', async () => {
+  const reader = createKnowledgeRagReader({
+    storage: createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot })
+  });
+  const npc = await reader.searchKnowledge({ query: 'генерация NPC' });
+  assert.ok(
+    npc.reference_results.some((item) => item.document_id === 'npc-generation-profiles'),
+    `expected npc-generation-profiles in reference_results; got ${npc.reference_results.map((item) => item.document_id).join(',')}`
+  );
+  const ux = await reader.searchKnowledge({ query: 'интерфейс игрока' });
+  assert.ok(
+    ux.reference_results.some((item) => item.document_id === 'interface-ux'),
+    `expected interface-ux in reference_results; got ${ux.reference_results.map((item) => item.document_id).join(',')}`
+  );
+});

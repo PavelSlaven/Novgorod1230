@@ -47,14 +47,15 @@ async function search(storage, input = {}, visibleStatuses) {
     limit: resultLimit
   }).map(mapResult);
 
-  // Independent reference search: dedupe by document, up to 3.
+  // Independent reference search: best chunk per document from full ranking, then top 3.
+  // Slice-before-dedupe drops weaker documents when one large reference fills the ceiling (REVIEW-016).
   const reference_results = requestedStatuses.has('reference')
     ? dedupeByDocument(rankKnowledgeChunks({
       query,
       chunks: context.chunks,
       documentsByFile: new Map(select((item) => item.status === 'reference').map((item) => [item.file_name, item])),
       metadataById,
-      limit: 100
+      limit: null
     })).slice(0, 3).map(mapResult)
     : [];
 

@@ -45,6 +45,8 @@ export function rankKnowledgeChunks({ query, chunks, documentsByFile, metadataBy
     String(left.document.document_id).localeCompare(String(right.document.document_id)) ||
     String(left.chunk.id).localeCompare(String(right.chunk.id))
   );
+  // limit null/Infinity = full ranked list (reference_results dedupe-before-slice; REVIEW-016).
+  if (limit == null || limit === Infinity) return scored;
   return scored.slice(0, normalizeLimit(limit));
 }
 

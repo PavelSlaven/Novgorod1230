@@ -50,8 +50,8 @@ const naturePins = {
   natural: '58e0d2be66df86a79faf76d4ef57d3d020ba778711736a61b4478c255d8cbef7',
   presentation: '174a299d881dea38d5d0656f73877236f6aaf5aadaecf5ab1a7856ca7dd387f4',
   approval: '310bf952bbd219f3935fdb4f26f5f8cb71c0edf5837eacc445ca838061db605d',
-  naturalRecords: '451490374c0e3a74deeb3579569f67e82b0785868e4a5aca82a9c6dca6f5eb22',
-  presentationRecords: 'f817d2c6f22645466174037f6d902f033fd6b70d8e0f7e7573fd7d6d37376f79'
+  naturalRecords: '063c6f53c6c2c4247bcfba3f11e24ef0476a32612221aa5fb516b853b930655e',
+  presentationRecords: '5033151ea6a1fef35714897ca6a842f71eca2989bbb1319c50ae69727820cee8'
 };
 const catalogDdl = {
   world: [

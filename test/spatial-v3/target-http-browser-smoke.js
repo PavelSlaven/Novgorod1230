@@ -24,7 +24,14 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   const save = () => writeFile(reportPath, JSON.stringify(report, null, 2));
   if (realProvider) globalThis.fetch = async (url, init) => {
     const call = JSON.parse(init.body);
-    const system = call.messages?.[0]?.content ?? '';
+    const system = (call.messages?.[0]?.content ?? '').replace(/^Return a valid json object\.\s*/u, '');
+    if (system.startsWith('Return only {"pass"')) {
+      const response = await provider(url, init);
+      report.model_calls.push({ role: 'gameplay_narrator_auditor',
+        output: await readStage23AuditOutput(response) });
+      await save();
+      return response;
+    }
     if (!system.startsWith('Return only one JSON object containing the semantic choice for one turn step.')) {
       return provider(url, init);
     }
@@ -180,6 +187,19 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     clearTimeout(timeout); if (!realProvider) globalThis.fetch = provider;
     await new Promise((done) => server.close(done));
   }
+}
+
+export async function readStage23AuditOutput(response) {
+  let output;
+  try { output = JSON.parse((await response.clone().json()).choices?.[0]?.message?.content); }
+  catch { return null; }
+  if (!output || typeof output !== 'object' || Array.isArray(output)) return null;
+  const string = (value) => typeof value === 'string' ? value : null;
+  return { pass: typeof output.pass === 'boolean' ? output.pass : null,
+    failed_checks: Array.isArray(output.failed_checks) ? output.failed_checks.map(string) : null,
+    concerns: Array.isArray(output.concerns) ? output.concerns.map((item) => ({
+      code: string(item?.code), severity: string(item?.severity), message: string(item?.message) })) : null,
+    evidence: Array.isArray(output.evidence) ? output.evidence.map(string) : null };
 }
 
 export function assertDisplayedMovementRoute(turns) {

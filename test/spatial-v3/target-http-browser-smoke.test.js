@@ -1,6 +1,21 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assertDisplayedMovementRoute } from './target-http-browser-smoke.js';
+import { assertDisplayedMovementRoute, readStage23AuditOutput } from './target-http-browser-smoke.js';
+
+test('real-provider Stage 23 capture keeps only diagnostic audit fields', async () => {
+  const response = (output) => new Response(JSON.stringify({ choices: [{ message: {
+    content: JSON.stringify(output) } }] }));
+  const attempts = [{ pass: false, failed_checks: ['factual_grounding_check'],
+    concerns: [{ code: 'UNSUPPORTED_FACT', severity: 'repairable', message: 'Unsupported detail.',
+      private_state: 'hidden' }], evidence: ['Unsupported detail.'],
+    request: { api_key: 'secret', hidden_state: 'hidden' } },
+  { pass: true, failed_checks: [], concerns: [], evidence: ['Grounded.'] }];
+  assert.deepEqual(await Promise.all(attempts.map((output) => readStage23AuditOutput(response(output)))), [
+    { pass: false, failed_checks: ['factual_grounding_check'],
+      concerns: [{ code: 'UNSUPPORTED_FACT', severity: 'repairable', message: 'Unsupported detail.' }],
+      evidence: ['Unsupported detail.'] },
+    { pass: true, failed_checks: [], concerns: [], evidence: ['Grounded.'] }]);
+});
 
 function movement(previous, optionId, label, siteDelta = 0) {
   previous.result.screen.panels.route.data.movement.options = [{ label, knowledge_state: 'known' }];

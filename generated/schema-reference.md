@@ -135,7 +135,7 @@ Release: `0.23.0-migration.24`
 
 | Path | Type | Bytes | SHA-256 |
 |---|---:|---:|---|
-| `schemas/knowledge-source/corpus-manifest.schema.json` | json | 1805 | `de24a2f21d5365e04f3792d6ca8350ab3d7ceb819dd9dd5317870068da6bbfeb` |
+| `schemas/knowledge-source/corpus-manifest.schema.json` | json | 1818 | `94a9625532c33d20da0ebb032dd6e964f6a8bb501751470993d1e08a3ff20f4a` |
 | `schemas/knowledge-source/graph-manifest.schema.json` | json | 1076 | `b1a7a96fffec9843630415c5e6b456f58f50ab5be97be1c1bd86232874fda4ca` |
 | `schemas/knowledge-source/import-history.schema.json` | json | 1047 | `b608e70c982acee2df00aac19c9a72ed557966e8e9ba83756c6d202053aeaef7` |
 | `schemas/knowledge-source/rag-manifest.schema.json` | json | 1154 | `a02253c557403a0b9e021611692fda448c74011f8e2a255341ebdefa27fb190d` |

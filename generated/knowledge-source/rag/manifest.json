@@ -3,7 +3,7 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "deterministic_lexical_coverage",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "d4ff0c477e89056377568dd38bd669c5942eaf6bf8765d383b5fab89d131f105",
+  "corpus_manifest_sha256": "66e468d2899d58601c72f1574394385806351498a397f38ab615f7b58418ca34",
   "corpus_hash": "573a8568c1ad39c4411dd0dacb283b532c5a794efa3a77044bdda3269f501aa2",
   "lexical_index": "generated/knowledge-source/rag/lexical-index.json",
   "lexical_index_sha256": "7a2223c74b3e2c6d1d7afb897128dd062a87c2fc8a2acbeb562d0ab29266ed8b",

@@ -13,7 +13,9 @@ const PRIORITY_TIERS = new Set([
 
 /**
  * Map CONTRACT_INDEX label → corpus-manifest retrieval status + priority_tier.
- * ACTIVE* → active with top normative priority; UNDECLARED / REFERENCE / REDIRECT → not active.
+ * ACTIVE* → active; PROPOSED* → proposed; UNDECLARED / non-legacy REFERENCE → reference;
+ * REFERENCE/LEGACY, REDIRECT, SUPERSEDED, MIGRATION/ROLLBACK → deprecated.
+ * Unknown label → throw (knowledge:check fails).
  */
 export function mapIndexLabelToCorpusFields(indexLabel) {
   const label = String(indexLabel ?? '').trim().toUpperCase();
@@ -30,11 +32,11 @@ export function mapIndexLabelToCorpusFields(indexLabel) {
   if (label.includes('REDIRECT') || label.startsWith('SUPERSEDED')) {
     return { status: 'deprecated', priority_tier: 'navigation', index_status: indexLabel.trim() };
   }
-  if (label.startsWith('MIGRATION') || label.includes('ROLLBACK')) {
+  if (label.startsWith('MIGRATION') || label.includes('ROLLBACK') || label.startsWith('REFERENCE / LEGACY')) {
     return { status: 'deprecated', priority_tier: 'reference', index_status: indexLabel.trim() };
   }
   if (label.startsWith('REFERENCE') || label.startsWith('UNDECLARED')) {
-    return { status: 'deprecated', priority_tier: 'reference', index_status: indexLabel.trim() };
+    return { status: 'reference', priority_tier: 'reference', index_status: indexLabel.trim() };
   }
   throw new Error(`Unsupported CONTRACT_INDEX status label: ${indexLabel}`);
 }

@@ -32,7 +32,7 @@ test('repository policy registers proposed classification policy; references sta
   ];
   assert.deepEqual(
     manifest.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.status),
-    ['proposed', 'deprecated']
+    ['proposed', 'reference']
   );
   assert.deepEqual(
     policy.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.document_id),
@@ -61,7 +61,7 @@ test('repository registers active spatial v3 specializations and excludes deprec
     manifest.documents.filter((document) => deprecatedV2Ids.includes(document.document_id)).map((document) => document.status),
     ['deprecated', 'deprecated']
   );
-  assert.deepEqual(policy.default_statuses, ['active']);
+  assert.deepEqual(policy.default_statuses, ['active', 'reference']);
   assert.equal(policy.documents.filter((document) => activeV3Ids.includes(document.document_id)).length, activeV3Ids.length);
   const indexDocument = manifest.documents.find((document) => document.document_id === 'contract-index');
   const indexMetadata = policy.documents.find((document) => document.document_id === 'contract-index');
@@ -72,7 +72,7 @@ test('repository registers active spatial v3 specializations and excludes deprec
 
   const reader = createKnowledgeRagReader({
     storage: createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot }),
-    allowedStatuses: ['active', 'deprecated']
+    allowedStatuses: ['active', 'reference', 'deprecated']
   });
   const defaultResult = await reader.searchKnowledge({ query: 'finite party-generated G5' });
   assert.ok(defaultResult.results.some((result) => activeV3Ids.includes(result.document_id)));

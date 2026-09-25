@@ -10,7 +10,7 @@ const command = args[0] ?? '';
 
 try {
   const root = resolve(option(args, '--root') ?? '.');
-  const statuses = csvOption(args, '--statuses') ?? ['active'];
+  const statuses = csvOption(args, '--statuses') ?? ['active', 'reference'];
   const storage = createFileSystemKnowledgeSourceStorage({
     sourceRoot: resolve(root, 'data/knowledge-source'),
     generatedRoot: resolve(root, 'generated/knowledge-source')

@@ -15,13 +15,21 @@ function sha(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
 }
 
-test('CONTRACT_INDEX labels map UNDECLARED/REFERENCE/REDIRECT away from active', () => {
-  assert.equal(mapIndexLabelToCorpusFields('UNDECLARED / DOMAIN GUIDE').status, 'deprecated');
-  assert.equal(mapIndexLabelToCorpusFields('REFERENCE / DOMAIN GUIDE').status, 'deprecated');
+test('CONTRACT_INDEX labels map to active/proposed/reference/deprecated', () => {
+  assert.equal(mapIndexLabelToCorpusFields('UNDECLARED / DOMAIN GUIDE').status, 'reference');
+  assert.equal(mapIndexLabelToCorpusFields('REFERENCE / DOMAIN GUIDE').status, 'reference');
+  assert.equal(mapIndexLabelToCorpusFields('REFERENCE / KNOWLEDGE GUIDE').status, 'reference');
+  assert.equal(mapIndexLabelToCorpusFields('REFERENCE / TEMPLATE').status, 'reference');
+  assert.equal(mapIndexLabelToCorpusFields('REFERENCE FOR PROPOSED POLICY').status, 'reference');
+  assert.equal(mapIndexLabelToCorpusFields('REFERENCE / LEGACY').status, 'deprecated');
   assert.equal(mapIndexLabelToCorpusFields('SUPERSEDED / REDIRECT').status, 'deprecated');
+  assert.equal(mapIndexLabelToCorpusFields('REDIRECT').status, 'deprecated');
+  assert.equal(mapIndexLabelToCorpusFields('MIGRATION / ROLLBACK').status, 'deprecated');
   assert.equal(mapIndexLabelToCorpusFields('ACTIVE SPECIALIZATION').status, 'active');
   assert.equal(mapIndexLabelToCorpusFields('ACTIVE SPECIALIZATION').priority_tier, 'highest_materialization_normative');
+  assert.equal(mapIndexLabelToCorpusFields('ACTIVE DOMAIN NORM').status, 'active');
   assert.equal(mapIndexLabelToCorpusFields('PROPOSED').status, 'proposed');
+  assert.throws(() => mapIndexLabelToCorpusFields('TOTALLY_UNKNOWN_LABEL'), /Unsupported CONTRACT_INDEX status label/);
 });
 
 test('parser keeps first ACTIVE SPECIALIZATION over later plain ACTIVE repeat', () => {
@@ -95,28 +103,28 @@ test('unseen-equivalent: CONTRACT_INDEX status change updates manifest status an
     schema_version: 'rus.knowledge_retrieval_policy.v1',
     policy_version: '1.0.0',
     baseline_manifest_sha256: '0'.repeat(64),
-    default_statuses: ['active'],
+    default_statuses: ['active', 'reference'],
     documents: [
       {
         document_id: 'contract-index',
         document_type: 'navigation',
         priority_tier: 'navigation',
-        subsystems: [],
-        related_document_ids: [],
+        subsystems: ['docs'],
+        related_document_ids: ['items-and-property'],
         related_module_paths: [],
         related_contracts: [],
-        search_terms: [],
+        search_terms: ['index'],
         conflicts_with_document_ids: []
       },
       {
         document_id: 'items-and-property',
         document_type: 'canonical_normative',
         priority_tier: 'technical_contract',
-        subsystems: [],
-        related_document_ids: [],
+        subsystems: ['items'],
+        related_document_ids: ['contract-index'],
         related_module_paths: [],
         related_contracts: [],
-        search_terms: [],
+        search_terms: ['items'],
         conflicts_with_document_ids: []
       }
     ],
@@ -130,6 +138,13 @@ test('unseen-equivalent: CONTRACT_INDEX status change updates manifest status an
   assert.equal(items.priority_tier, 'profile_normative');
   const check = await verifyCanonicalCorpus({ root: fixtureRoot });
   assert.equal(check.ok, true, check.errors.join('\n'));
+
+  await writeIndex('UNDECLARED / DOMAIN GUIDE');
+  await repinCanonicalCorpus({ root: fixtureRoot });
+  const asReference = JSON.parse(await readFile(join(sourceRoot, 'corpus-manifest.json'), 'utf8'));
+  const itemsRef = asReference.documents.find((d) => d.document_id === 'items-and-property');
+  assert.equal(itemsRef.status, 'reference');
+  assert.equal(itemsRef.priority_tier, 'reference');
 
   await writeIndex('ACTIVE');
   await repinCanonicalCorpus({ root: fixtureRoot });

@@ -20,7 +20,7 @@
     },
     {
       "path": "generated/knowledge-source/graph/manifest.json",
-      "sha256": "f13aac7840dc54b7bc16cd7ea0afbd1952e1e63519b52be1b3b740713143e48a",
+      "sha256": "dcecebff67946f0d6188466783daa909234e75f7bb97f9897d9ff14e99a79426",
       "bytes": 591
     },
     {
@@ -35,7 +35,7 @@
     },
     {
       "path": "generated/knowledge-source/rag/manifest.json",
-      "sha256": "831e3710398919ac8babab0d4a0c7450b4500c8668fcb4145167e1fc5dfb0043",
+      "sha256": "6f7775849c8bcb2cd202bab6b3a378d3689b68f2462733590f8dfde66a0a7a2f",
       "bytes": 7543
     }
   ]

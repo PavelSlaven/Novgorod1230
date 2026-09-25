@@ -1,6 +1,6 @@
 # Canonical knowledge source
 
-This directory uses corpus manifest v2. Documents may be `proposed`, `active` or `deprecated`; production reads only `active` by default. Canonicalized legacy documents retain separate legacy digest/byte provenance and are never overwritten by re-import.
+This directory uses corpus manifest v2. Documents may be `proposed`, `active`, `reference` or `deprecated`; production reads `active` and `reference` by default. Canonicalized legacy documents retain separate legacy digest/byte provenance and are never overwritten by re-import.
 
 - `corpus/DOCUMENTS` is the source of truth.
 - `imports/legacy-inventory.json` records the complete classified legacy inventory and permits autonomous verification.

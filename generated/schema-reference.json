@@ -618,9 +618,9 @@
   ],
   "external_schemas": [
     {
-      "bytes": 1805,
+      "bytes": 1818,
       "path": "schemas/knowledge-source/corpus-manifest.schema.json",
-      "sha256": "de24a2f21d5365e04f3792d6ca8350ab3d7ceb819dd9dd5317870068da6bbfeb",
+      "sha256": "94a9625532c33d20da0ebb032dd6e964f6a8bb501751470993d1e08a3ff20f4a",
       "type": "json"
     },
     {

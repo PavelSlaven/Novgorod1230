@@ -4,7 +4,7 @@ import { validateRetrievalPolicy } from '../domain/retrieval-policy.js';
 import { rankKnowledgeChunks } from '../domain/retrieval.js';
 import { knowledgeSourceError } from '../errors.js';
 
-export function createKnowledgeRagReader({ storage, allowedStatuses = ['active'] } = {}) {
+export function createKnowledgeRagReader({ storage, allowedStatuses = ['active', 'reference'] } = {}) {
   assertStorage(storage);
   const visibleStatuses = normalizeStatuses(allowedStatuses);
   return Object.freeze({
@@ -218,7 +218,7 @@ function requestedStatusSet(value, defaults, visibleStatuses) {
 
 function normalizeStatuses(value) {
   if (!Array.isArray(value) || value.length === 0) throw new TypeError('statuses must be a non-empty array.');
-  const allowed = new Set(['active', 'proposed', 'deprecated']);
+  const allowed = new Set(['active', 'proposed', 'reference', 'deprecated']);
   const result = new Set();
   for (const raw of value) {
     const status = String(raw ?? '').trim();

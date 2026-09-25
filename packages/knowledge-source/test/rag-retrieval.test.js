@@ -13,26 +13,29 @@ function jsonBytes(value) {
   return Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
 }
 
-function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlExpected = ['active'], includeDeprecated = false } = {}) {
+function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlExpected = ['active'], includeDeprecated = false, includeReference = false, defaultStatuses = ['active'] } = {}) {
   const texts = {
     'active.md': Buffer.from('# Active\n\nCode materializes instances from approved profiles.'),
     'proposed.md': Buffer.from('# Proposed\n\nFuture perception engine proposal.'),
-    'deprecated.md': Buffer.from('# Deprecated\n\nHistoric reference vocabulary.')
+    'deprecated.md': Buffer.from('# Deprecated\n\nHistoric reference vocabulary.'),
+    'reference.md': Buffer.from('# Reference guide\n\nShared topic phrase materializes instances from approved profiles.')
   };
   const manifest = {
     schema_version: 'rus.knowledge_corpus_manifest.v2', corpus_id: 'test', release: 'test',
     documents: [
       { document_id: 'active', canonical_path: 'corpus/DOCUMENTS/active.md', file_name: 'active.md', sha256: sha(texts['active.md']), bytes: texts['active.md'].length, status: 'active', priority_tier: 'highest_materialization_normative', provenance_mode: 'native' },
       { document_id: 'proposed', canonical_path: 'corpus/DOCUMENTS/proposed.md', file_name: 'proposed.md', sha256: sha(texts['proposed.md']), bytes: texts['proposed.md'].length, status: 'proposed', priority_tier: 'profile_normative', provenance_mode: 'native' },
+      ...(includeReference ? [{ document_id: 'reference', canonical_path: 'corpus/DOCUMENTS/reference.md', file_name: 'reference.md', sha256: sha(texts['reference.md']), bytes: texts['reference.md'].length, status: 'reference', priority_tier: 'reference', provenance_mode: 'native' }] : []),
       ...(includeDeprecated ? [{ document_id: 'deprecated', canonical_path: 'corpus/DOCUMENTS/deprecated.md', file_name: 'deprecated.md', sha256: sha(texts['deprecated.md']), bytes: texts['deprecated.md'].length, status: 'deprecated', priority_tier: 'reference', provenance_mode: 'native' }] : [])
     ]
   };
   const manifestBytes = jsonBytes(manifest);
   const policy = {
-    schema_version: 'rus.knowledge_retrieval_policy.v1', policy_version: '1.0.0', baseline_manifest_sha256: sha(manifestBytes), default_statuses: ['active'],
+    schema_version: 'rus.knowledge_retrieval_policy.v1', policy_version: '1.0.0', baseline_manifest_sha256: sha(manifestBytes), default_statuses: defaultStatuses,
     documents: [
       { document_id: 'active', document_type: 'architecture', priority_tier: 'highest_materialization_normative', subsystems: ['materialization'], related_document_ids: [], related_module_paths: ['packages/materialization'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: activeConflicts },
       { document_id: 'proposed', document_type: 'proposal', priority_tier: 'profile_normative', subsystems: ['perception'], related_document_ids: ['active'], related_module_paths: ['packages/perception'], related_contracts: [], search_terms: ['future perception'], conflicts_with_document_ids: [] },
+      ...(includeReference ? [{ document_id: 'reference', document_type: 'reference', priority_tier: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: [] }] : []),
       ...(includeDeprecated ? [{ document_id: 'deprecated', document_type: 'reference', priority_tier: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['historic reference'], conflicts_with_document_ids: [] }] : [])
     ],
     control_queries: [{ query_id: 'materialization-owner', query: 'approved profiles materializes instances', expected_document_ids: controlExpected, top_k: 3 }]
@@ -40,6 +43,7 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlE
   const lexical = { schema_version: 'rus.lexical_index.v1', chunks: [
     { id: 'active:0', file: 'active.md', section: 'Active', line_start: 1, line_end: 3, text: '# Active\nCode materializes instances from approved profiles.', char_count: 60 },
     { id: 'proposed:0', file: 'proposed.md', section: 'Proposed', line_start: 1, line_end: 3, text: '# Proposed\nFuture perception engine proposal.', char_count: 45 },
+    ...(includeReference ? [{ id: 'reference:0', file: 'reference.md', section: 'Reference guide', line_start: 1, line_end: 3, text: '# Reference guide\nShared topic phrase materializes instances from approved profiles.', char_count: 84 }] : []),
     ...(includeDeprecated ? [{ id: 'deprecated:0', file: 'deprecated.md', section: 'Deprecated', line_start: 1, line_end: 3, text: '# Deprecated\nHistoric reference vocabulary.', char_count: 42 }] : [])
   ] };
   const lexicalBytes = jsonBytes(lexical);
@@ -50,6 +54,7 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlE
     coverage: [
       { document_id: 'active', file_name: 'active.md', lexical_indexed: true },
       { document_id: 'proposed', file_name: 'proposed.md', lexical_indexed: true },
+      ...(includeReference ? [{ document_id: 'reference', file_name: 'reference.md', lexical_indexed: true }] : []),
       ...(includeDeprecated ? [{ document_id: 'deprecated', file_name: 'deprecated.md', lexical_indexed: true }] : [])
     ]
   };
@@ -100,6 +105,22 @@ test('deprecated documents are lexical and require an explicit status request', 
   assert.equal((await reader.searchKnowledge({ query: 'historic reference' })).results.length, 0);
   const visible = await reader.searchKnowledge({ query: 'historic reference', statuses: ['deprecated'] });
   assert.equal(visible.results[0].document_id, 'deprecated');
+});
+
+test('unseen-equivalent: reference is visible by default below active; deprecated redirect stays out', async () => {
+  const reader = createKnowledgeRagReader({
+    storage: makeFixture({
+      includeReference: true,
+      includeDeprecated: true,
+      defaultStatuses: ['active', 'reference']
+    }).storage
+  });
+  const result = await reader.searchKnowledge({ query: 'materializes instances from approved profiles', limit: 5 });
+  const ids = result.results.map((item) => item.document_id);
+  assert.deepEqual([...result.requested_statuses].sort(), ['active', 'reference']);
+  assert.ok(ids.includes('reference'), `reference visible: ${ids.join(',')}`);
+  assert.ok(!ids.includes('deprecated'), `deprecated out of default: ${ids.join(',')}`);
+  assert.ok(ids.indexOf('active') < ids.indexOf('reference'), `active before reference: ${ids.join(',')}`);
 });
 
 test('RAG retrieval rejects semantic coverage markers in generated coverage', async () => {

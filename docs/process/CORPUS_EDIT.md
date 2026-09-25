@@ -33,7 +33,8 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
    списке закреплённых фраз ниже.
 2. **`npm run knowledge:repin`.** Для `native` пересчитывает `sha256`/`bytes` в
    [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json), выводит `status` и
-   `priority_tier` из [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md),
+   `priority_tier` из [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)
+   (`active` / `proposed` / `reference` / `deprecated`; см. KSP и LW-008),
    синхронизирует `priority_tier` в [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json),
    закрепляет SHA-256 manifest в policy baseline и вызывает `docs:generate`. Изменённый документ с legacy
    provenance требует отдельной процедуры выше; команда останавливается без переписывания его записи.

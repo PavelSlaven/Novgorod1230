@@ -7,6 +7,14 @@ const PRIORITY_WEIGHT = Object.freeze({
   reference: 15
 });
 
+// Status rank: reference/deprecated stay below active|proposed for the same query (#144 REVIEW-012).
+const STATUS_RANK = Object.freeze({
+  active: 40,
+  proposed: 40,
+  reference: 20,
+  deprecated: 10
+});
+
 const STOP_WORDS = new Set([
   'and', 'or', 'the', 'a', 'an', 'to', 'of', 'in', 'for', 'is', 'are', 'with',
   'и', 'или', 'в', 'во', 'на', 'к', 'ко', 'с', 'со', 'для', 'как', 'что', 'кто',
@@ -30,6 +38,7 @@ export function rankKnowledgeChunks({ query, chunks, documentsByFile, metadataBy
     scored.push({ chunk, document, metadata, score });
   }
   scored.sort((left, right) =>
+    statusRank(right.document.status) - statusRank(left.document.status) ||
     right.score - left.score ||
     priorityWeight(right.metadata.priority_tier) - priorityWeight(left.metadata.priority_tier) ||
     String(left.document.document_id).localeCompare(String(right.document.document_id)) ||
@@ -80,6 +89,10 @@ function countOccurrences(text, token) {
 
 function priorityWeight(value) {
   return PRIORITY_WEIGHT[value] ?? 0;
+}
+
+function statusRank(value) {
+  return STATUS_RANK[value] ?? 0;
 }
 
 function normalizeLimit(value) {

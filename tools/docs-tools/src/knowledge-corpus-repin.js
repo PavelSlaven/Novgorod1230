@@ -49,6 +49,7 @@ export async function repinCanonicalCorpus({ root = '.' } = {}) {
       item.priority_tier = record.priority_tier;
     }
   }
+  policy.default_statuses = ['active', 'reference'];
   policy.baseline_manifest_sha256 = manifestDigest;
   await writeFile(manifestPath, manifestBytes);
   await writeFile(policyPath, stableJson(policy));

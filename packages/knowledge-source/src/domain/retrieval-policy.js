@@ -32,7 +32,7 @@ export function validateRetrievalPolicy(value, manifest) {
     schema_version: SCHEMA,
     policy_version: requiredText(value.policy_version, 'policy_version'),
     baseline_manifest_sha256: validateDigest(value.baseline_manifest_sha256, 'baseline_manifest_sha256'),
-    default_statuses: normalizeStatuses(value.default_statuses ?? ['active'], 'default_statuses'),
+    default_statuses: normalizeStatuses(value.default_statuses ?? ['active', 'reference'], 'default_statuses'),
     documents,
     control_queries: controls
   });
@@ -109,7 +109,7 @@ function normalizeControlQueries(value, knownIds) {
 
 function normalizeStatuses(value, field) {
   const statuses = uniqueTextArray(value, field);
-  const allowed = new Set(['active', 'proposed', 'deprecated']);
+  const allowed = new Set(['active', 'proposed', 'reference', 'deprecated']);
   for (const status of statuses) {
     if (!allowed.has(status)) throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `${field} contains unsupported status ${status}.`);
   }

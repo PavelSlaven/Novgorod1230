@@ -55,7 +55,7 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
     if (!id) errors.push('document without document_id');
     if (ids.has(id)) errors.push(`duplicate document_id: ${id}`);
     ids.add(id);
-    if (!['active', 'proposed', 'deprecated'].includes(status)) errors.push(`${id}: invalid document status ${status || '<empty>'}`);
+    if (!['active', 'proposed', 'reference', 'deprecated'].includes(status)) errors.push(`${id}: invalid document status ${status || '<empty>'}`);
     if (!PRIORITY_TIERS.has(priorityTier)) errors.push(`${id}: invalid priority_tier ${priorityTier || '<empty>'}`);
     if (status === 'active') activeCount += 1;
     if (status === 'proposed') proposedCount += 1;

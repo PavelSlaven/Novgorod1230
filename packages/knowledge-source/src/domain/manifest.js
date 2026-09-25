@@ -1,7 +1,7 @@
 import { knowledgeSourceError } from '../errors.js';
 
 const SCHEMA = 'rus.knowledge_corpus_manifest.v2';
-const DOCUMENT_STATUSES = new Set(['proposed', 'active', 'deprecated']);
+const DOCUMENT_STATUSES = new Set(['proposed', 'active', 'reference', 'deprecated']);
 const PRIORITY_TIERS = new Set([
   'highest_materialization_normative',
   'profile_normative',

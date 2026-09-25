@@ -55,10 +55,10 @@ test('read accepts query line ranges and sections, rejecting unknown sections', 
     '--section', '1. Обязательный порядок чтения']));
   assert.match(section.text, /## 1\. Обязательный порядок чтения/u);
   const headinglessQuery = parseJson(runCli(['query', '--root', root, '--query', 'генерация',
-    '--statuses', 'deprecated', '--document-ids', 'g1-g5-generation-rules', '--limit', '1']));
+    '--statuses', 'reference', '--document-ids', 'g1-g5-generation-rules', '--limit', '1']));
   const headinglessHit = headinglessQuery.results[0];
   const headinglessSection = parseJson(runCli(['read', '--root', root, '--document-id', headinglessHit.document_id,
-    '--statuses', 'deprecated', '--section', headinglessHit.section]));
+    '--statuses', 'reference', '--section', headinglessHit.section]));
   assert.equal(headinglessSection.source_sha256, headinglessHit.source_sha256);
   const unknown = runCli(['read', '--root', root, '--document-id', 'contract-index', '--section', 'нет такого раздела']);
   assert.equal(unknown.status, 1);

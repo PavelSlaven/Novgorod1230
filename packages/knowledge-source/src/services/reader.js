@@ -3,7 +3,7 @@ import { basename } from 'node:path';
 import { deepFreeze, validateAliases, validateCorpusManifest } from '../domain/manifest.js';
 import { knowledgeSourceError } from '../errors.js';
 
-export function createKnowledgeSourceReader({ storage, allowedStatuses = ['active'] } = {}) {
+export function createKnowledgeSourceReader({ storage, allowedStatuses = ['active', 'reference'] } = {}) {
   assertStorage(storage);
   const visibleStatuses = normalizeStatuses(allowedStatuses);
   return Object.freeze({
@@ -220,7 +220,7 @@ function normalizeAllowed(value, manifest, aliases) {
 
 function normalizeStatuses(value) {
   if (!Array.isArray(value) || value.length === 0) throw new TypeError('allowedStatuses must be a non-empty array.');
-  const allowed = new Set(['proposed', 'active', 'deprecated']);
+  const allowed = new Set(['proposed', 'active', 'reference', 'deprecated']);
   const result = new Set();
   for (const raw of value) {
     const status = String(raw ?? '').trim();

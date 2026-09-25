@@ -24,7 +24,7 @@ canonical corpus
 
 ## Регистрация, покрытие и видимость
 
-Регистрация в corpus manifest, статус документа, retrieval-policy metadata и lexical provenance coverage — раздельные понятия. Каждый registered документ обязан иметь policy metadata и запись RAG coverage. Генератор создаёт deterministic lexical chunks для всех статусов; graph получает structural nodes только для `active`. По умолчанию query и reader видят только `active`; `proposed` и `deprecated` доступны только при явном status request. Изменение текста любого registered документа, включая non-active, требует штатной пересборки generated RAG.
+Регистрация в corpus manifest, статус документа, retrieval-policy metadata и lexical provenance coverage — раздельные понятия. Каждый registered документ обязан иметь policy metadata и запись RAG coverage. Генератор создаёт deterministic lexical chunks для всех статусов; graph получает structural nodes только для `active`. По умолчанию query и reader видят `active` и `reference`; `proposed` и `deprecated` доступны только при явном status request. Статус `reference` в ранжировании ниже любого `active`. Изменение текста любого registered документа, включая non-active, требует штатной пересборки generated RAG.
 
 The public `@rus/docs-tools.writeKnowledgeSourceOutputs` API and both `knowledge:generate` and `docs:generate` use the same v2 lexical materializer. `knowledge:import` preflights corpus targets, manifest, aliases, inventory and import history before writing.
 

@@ -2,7 +2,7 @@
 
 ## Источник истины
 
-Единственный канонический runtime-корпус находится в `data/knowledge-source/corpus/DOCUMENTS`. Manifest v2 различает `proposed`, `active` и `deprecated`; поля `status` и `priority_tier` в `corpus-manifest.json` выводит `knowledge:repin` из меток [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md) (ACTIVE → `active` и верхний приоритет; UNDECLARED / REFERENCE / REDIRECT — не `active`). Ручная правка этих полей запрещена. Production reader по умолчанию видит только `active`. Legacy-файлы остаются rollback evidence, а актуализированный канонический документ хранит отдельный digest legacy provenance.
+Единственный канонический runtime-корпус находится в `data/knowledge-source/corpus/DOCUMENTS`. Manifest v2 различает `proposed`, `active`, `reference` и `deprecated`; поля `status` и `priority_tier` в `corpus-manifest.json` выводит `knowledge:repin` из меток [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md) (ACTIVE → `active`; PROPOSED → `proposed`; UNDECLARED / non-legacy REFERENCE → `reference`; REFERENCE/LEGACY, REDIRECT, SUPERSEDED, MIGRATION → `deprecated`; неизвестная метка — ошибка `knowledge:check`). Ручная правка этих полей запрещена. Production reader по умолчанию видит `active` и `reference`. Legacy-файлы остаются rollback evidence, а актуализированный канонический документ хранит отдельный digest legacy provenance.
 
 ## Разделение source и generated
 
@@ -34,7 +34,7 @@ Codex, Cursor и другие агенты разработки использу
 
 `data/knowledge-source/retrieval-policy.json` является формальным техническим контрактом retrieval-слоя. Для каждого зарегистрированного документа он фиксирует тип, нормативный приоритет, подсистемы, связанные документы, модули и контракты, поисковые термины и известные конфликты.
 
-Обычный RAG-поиск использует только документы со статусом `active`. `proposed` и `deprecated` доступны только читателю, которому эти статусы явно разрешены, и только при явном указании статуса в запросе. Каждый результат возвращает статус документа, SHA-256 источника, диапазон строк, метод retrieval, нормативный приоритет и связи. Явно зарегистрированный конфликт возвращается отдельно от обычных результатов с собственным статусом и полным provenance; status isolation не скрывает его и не делает конфликтующий документ обычным нормативным контекстом.
+Обычный RAG-поиск использует документы со статусами `active` и `reference` (`default_statuses`). Статус `reference` имеет нижний `priority_tier` и в ранжировании всегда ниже любого `active`. `proposed` и `deprecated` доступны только читателю, которому эти статусы явно разрешены, и только при явном указании статуса в запросе. Каждый результат возвращает статус документа, SHA-256 источника, диапазон строк, метод retrieval, нормативный приоритет и связи. Явно зарегистрированный конфликт возвращается отдельно от обычных результатов с собственным статусом и полным provenance; status isolation не скрывает его и не делает конфликтующий документ обычным нормативным контекстом.
 
 Поиск корпуса — честно лексический: ранжирование по committed lexical chunks. Новый или изменённый active-документ после `knowledge:repin` / `knowledge:generate` остаётся в том же lexical контуре и не переводит RAG readiness в `blocked` из-за отсутствия embedding.
 

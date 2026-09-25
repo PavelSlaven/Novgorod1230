@@ -34,6 +34,7 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from
 import { batchInput } from
   '../../apps/game-server/test/ordinary-materialization-container-batch-plan.test.js';
 import { createOrdinaryAggregate } from '@rus/materialization';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { ordinaryPhysicalKeys } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-ordinary-p16.js';
 
@@ -50,7 +51,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       if (pool) await pool.end();
       docker(['rm', '-fv', container]);
     });
-    const started = docker(['run', '-d', '--name', container,
+    const started = docker(['run', ...testContainerLabel(), '-d', '--name', container,
       '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=action',
       '-e', 'POSTGRES_USER=action', '-e', 'POSTGRES_DB=action',
       'postgres:16-alpine']);

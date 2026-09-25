@@ -39,6 +39,7 @@ import {
 import {
   createLowerDvinaTraceOrdinaryDiscoveryResolver
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-ordinary-discovery.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
 import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
@@ -314,7 +315,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     if (client) await client.end();
     docker(['rm', '-fv', name]);
   });
-  assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name, '-e', 'POSTGRES_PASSWORD=p16', '-e', 'POSTGRES_USER=p16', '-e', 'POSTGRES_DB=p16', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name, '-e', 'POSTGRES_PASSWORD=p16', '-e', 'POSTGRES_USER=p16', '-e', 'POSTGRES_DB=p16', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let attempt = 0; attempt < 40; attempt += 1) {
     await new Promise((done) => setTimeout(done, 300));

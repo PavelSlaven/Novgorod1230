@@ -10,6 +10,7 @@ import {
 import {
   readPostgresSchemaFingerprint
 } from '../../tools/runtime-catalog-activation/src/forward-migration.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const LEGACY_WORLD_SCHEMA_FINGERPRINT =
   '869021eded07633eec27048a102600385248e5a8e5f8dd499943d404e17fad8f';
@@ -29,7 +30,7 @@ test('legacy world schema migrates forward without losing existing rows', async 
   });
 
   const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=legacy_migration',
     '-e', 'POSTGRES_DB=legacy_migration',

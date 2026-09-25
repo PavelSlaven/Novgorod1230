@@ -109,7 +109,9 @@ CI (`test.yml`, один job `full-npm-test`, профиль `full` для pull_
 - Узкий прогон одного файла: `node --test path/to/file.test.js`; по имени теста — `--test-name-pattern`.
 - PostgreSQL-тесты с `--test-concurrency=1` не распараллеливать вручную.
 - Одноразовые тестовые контейнеры и данные удаляются сразу после прогона, вместе с anonymous volumes
-  (AGENTS §26.1).
+  (AGENTS §26.1). Тестовый `docker run` получает метку владельца: `docker(['run', ...testContainerLabel(), ...])`
+  из [test/helpers/test-containers.js](../../test/helpers/test-containers.js); контейнеры убитых прогонов
+  удаляет следующий Docker-тест. Страж — `tools/db-tools/test/test-container-cleanup.test.js` (`test:tools`).
 - Unseen-equivalent случай для свободного gameplay-поведения обязателен по AGENTS §24; как его записать в
   критерии — [CHANGE_REQUEST](../process/CHANGE_REQUEST.md).
 - Полезные карты: [STACK](STACK.md), [ARCHITECTURE](ARCHITECTURE.md), [DB_SCHEMA](DB_SCHEMA.md),

@@ -36,6 +36,7 @@ import {
   applySpatialV3ProductionV12ActivationBundle,
   buildSpatialV3ProductionV12ActivationBundle
 } from '../../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { buildLowerDvinaBoundaryV1ImportSql } from
   '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildLowerDvinaV2ImportSql } from
@@ -66,7 +67,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     docker(['rm', '-fv', name]);
   });
   const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=phase1b',
     '-e', 'POSTGRES_DB=pr17_phase1b',

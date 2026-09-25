@@ -6,6 +6,7 @@ import pg from 'pg';
 import { canonicalDigest } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { createLowerDvinaTracePublicRuntime } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from
@@ -50,7 +51,7 @@ test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically'
       docker(['rm', '-fv', name]);
     });
     const started = docker([
-      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase9',
       '-e', 'POSTGRES_DB=phase9', 'postgres:16-alpine'
     ]);

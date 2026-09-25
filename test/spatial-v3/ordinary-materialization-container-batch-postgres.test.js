@@ -32,6 +32,7 @@ import { loadLowerDvinaTraceProductionMaterializationProfiles } from
 import { createOrdinaryMaterializationFirstEntryProvisioner } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { buildExistingContainerOrdinarySeedRequest } from '@rus/items-property';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-player-safe-state.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
@@ -51,7 +52,7 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     if (docker(['version']).status !== 0) return t.skip('Docker required');
     let pool;
     t.after(async () => { if (pool) await pool.end(); docker(['rm','-fv',container]); });
-    const started = docker(['run','-d','--name',container,
+    const started = docker(['run',...testContainerLabel(),'-d','--name',container,
       '-p','127.0.0.1::5432','-e','POSTGRES_PASSWORD=ordinary',
       '-e','POSTGRES_USER=ordinary','-e','POSTGRES_DB=ordinary',
       'postgres:16-alpine']);

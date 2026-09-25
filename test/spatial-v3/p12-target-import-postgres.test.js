@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
 import { buildP12TargetImportPlan } from '../../tools/spatial-v3/p12-target-import.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const port = 57900 + (process.pid % 300);
@@ -12,7 +13,7 @@ const name = `p12-target-import-${process.pid}`;
 test('P12 target bundle applies closure and V1.1 projection atomically in an isolated PostgreSQL database', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required for isolated P12 PostgreSQL test');
   t.after(() => docker(['rm', '-fv', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p12', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p12', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p12', password: 'p12', database: 'p12' });
   t.after(() => pool.end());
   for (let attempt = 0; attempt < 50; attempt += 1) {

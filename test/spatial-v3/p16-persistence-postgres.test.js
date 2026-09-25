@@ -2,13 +2,14 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 45_000 });
 const name = `p16-persistence-${process.pid}`;
 test('P16 isolated PostgreSQL physical persistence invariants', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker required');
   t.after(() => docker(['rm', '-fv', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p16', '-e', 'POSTGRES_USER=p16', '-e', 'POSTGRES_DB=p16', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p16', '-e', 'POSTGRES_USER=p16', '-e', 'POSTGRES_DB=p16', 'postgres:16-alpine']).status, 0);
   let ready = false; for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 300)); if (docker(['exec', name, 'pg_isready', '-U', 'p16', '-d', 'p16']).status === 0) { ready = true; break; } } assert.equal(ready, true); await new Promise((done) => setTimeout(done, 700));
   const psql = (sql) => docker(['exec', '-i', name, 'psql', '-q', '-v', 'ON_ERROR_STOP=1', '-U', 'p16', '-d', 'p16'], sql);
   for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql']) assert.equal(psql(await readFile(`schemas/party-db/${file}`, 'utf8')).status, 0, file);

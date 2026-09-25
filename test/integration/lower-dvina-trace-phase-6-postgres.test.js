@@ -17,6 +17,7 @@ import { firstPlayableCommitRecheck } from '../../apps/game-server/src/infrastru
 import { loadLowerDvinaTraceMaterializationBundle } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
 import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-effect-owner.js';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
@@ -37,7 +38,7 @@ test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks
   const name = `lower-dvina-phase-6-${process.pid}`;
   let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
-  assert.equal(docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase6', '-e', 'POSTGRES_DB=phase6', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase6', '-e', 'POSTGRES_DB=phase6', 'postgres:16-alpine']).status, 0);
   await waitForPostgres(name, 'phase6');
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
   pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase6', password: 'local_only', database: 'phase6', max: 8 });

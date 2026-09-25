@@ -41,6 +41,7 @@ import { createPostgresPartyStore } from '../../apps/game-server/src/infrastruct
 import { createPostgresStage25Ports } from '../../apps/game-server/src/infrastructure/postgres/stage25.js';
 import { createRuntimeCatalogCoordinator } from '../../apps/game-server/src/runtime/runtime-catalog.js';
 import { materializeWorldInstances } from '@rus/materialization';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 
@@ -56,7 +57,7 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     docker(['rm', '-fv', name]);
   });
   const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=runtime_migration',
     '-e', 'POSTGRES_DB=runtime_migration',

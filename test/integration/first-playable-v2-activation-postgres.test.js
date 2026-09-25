@@ -33,6 +33,7 @@ import {
 import {
   buildLowerDvinaBoundaryV1ImportSql
 } from '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, options = {}) => spawnSync('docker', args, {
   encoding: 'utf8',
@@ -373,7 +374,7 @@ async function seedObsoleteV2Party({ partyPool, partyId, pin }) {
 
 function startPostgres({ name, user, database }) {
   return docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', `POSTGRES_USER=${user}`,
     '-e', `POSTGRES_DB=${database}`,

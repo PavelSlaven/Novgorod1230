@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { loadApprovedLocalEdgeLabels } from './approved-labels.mjs';
 
 const candidate = JSON.parse(readFileSync(new URL('./candidate.json', import.meta.url)));
 const sourcePath = '../spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_movement_edge_templates.json';
@@ -34,5 +35,16 @@ test('local edge labels cover the exact authored internal passages without grant
     assert.ok(label.provenance.source_refs.includes(
       `data/world-catalogs/novgorod/${sourcePath.slice(3)}#${key(row.scene_template_id, row.scene_template_version, row.edge_slot_key)}`
     ));
+  }
+});
+
+test('approved open-capacity edge successor transfers every label without editorial changes', () => {
+  const labels = loadApprovedLocalEdgeLabels();
+  assert.equal(labels.length, 136);
+  for (let index = 0; index < 68; index += 1) {
+    const old = labels[index];
+    const successor = labels[index + 68];
+    assert.deepEqual(successor, { ...old, version: 2,
+      scene_template_ref: { ...old.scene_template_ref, version: 2 } });
   }
 });

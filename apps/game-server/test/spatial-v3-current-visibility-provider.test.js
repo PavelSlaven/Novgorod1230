@@ -67,6 +67,14 @@ test('current snapshot admits committed identities, edges and approved exit labe
   assert.equal(queries.filter((sql) => sql.startsWith('BEGIN')).length, 4);
 });
 
+test('current snapshot discloses the mechanically repinned version 2 edge label', async () => {
+  const { scene, provider } = fixture();
+  scene.movement_edges[0].source_scene_template_ref.authoring_version = 2;
+  const disclosed = await provider.readLocalEdgeDisclosure({ partyId: 'party', actorId: 'actor',
+    state: { party_id: 'party', actor_id: 'actor', journey_location: { scene_position_id: 'a' } } });
+  assert.deepEqual(disclosed, [{ edge_id: 'edge', display_label: localLabel.display_label }]);
+});
+
 test('P12 pine arrival discloses its approved G4 exit before local topology exists', async () => {
   const start = JSON.parse(readFileSync(new URL(
     '../../../data/world-catalogs/novgorod/live-world-runtime-v17/target-start-candidate.json',

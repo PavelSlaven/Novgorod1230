@@ -9,9 +9,10 @@ import { approvedNaturalStableCover } from './g4-natural-perception-reader.js';
 import { currentSceneVisibilityModifiers, readCommittedEntityExterior, readPlayerKnowledge } from
   './spatial-v3-current-visibility-inputs.js';
 import { serverError } from '../../errors.js';
+import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
 
 const labels = loadLabels('m2c-exit-labels');
-const localLabels = loadLabels('m2c-local-edge-labels');
+const localLabels = loadApprovedLocalEdgeLabels();
 const gap = () => { throw serverError('SPATIAL_V3_VISIBLE_CONTEXT_DATA_GAP',
   'Complete proposed player-visible facts are required.',
   { status: 409, details: { reason: 'place_visible_context_source_required' } }); };

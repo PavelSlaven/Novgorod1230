@@ -5,6 +5,7 @@ import { readCurrentEntityVisibilityScene, readCurrentNaturalPerceptionFacts } f
   './g4-natural-perception-reader.js';
 import { serverError } from '../../errors.js';
 import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
+import { loadApprovedLocalEdgeLabels } from '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approved-labels.mjs';
 
 const labelPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/candidate.json', import.meta.url);
 const approvalPath = new URL('../../../../../data/world-catalogs/novgorod/m2c-exit-labels/approval-attestation.json', import.meta.url);
@@ -14,14 +15,7 @@ const labelApproval = JSON.parse(readFileSync(approvalPath));
 const approvedLabels = labelApproval.decision === 'APPROVE_DATA_ONLY'
   && labelApproval.candidate_ref === `${labelCatalog.candidate_id}@${labelCatalog.version}`
   && labelApproval.candidate_sha256 === createHash('sha256').update(labelBytes).digest('hex');
-const localLabelBytes = readFileSync(new URL(
-  '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/candidate.json', import.meta.url));
-const localLabelCatalog = JSON.parse(localLabelBytes);
-const localLabelApproval = JSON.parse(readFileSync(new URL(
-  '../../../../../data/world-catalogs/novgorod/m2c-local-edge-labels/approval-attestation.json', import.meta.url)));
-const approvedLocalLabels = localLabelApproval.decision === 'APPROVE_DATA_ONLY'
-  && localLabelApproval.candidate_ref === `${localLabelCatalog.candidate_id}@${localLabelCatalog.version}`
-  && localLabelApproval.candidate_sha256 === createHash('sha256').update(localLabelBytes).digest('hex');
+const localLabels = loadApprovedLocalEdgeLabels();
 const conditions = ['stable_cover', 'dynamic_occlusion', 'concealment'];
 const visibility = new Set(['clear', 'partial', 'none']);
 
@@ -85,7 +79,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
   async function localDisclosure({ partyId, actorId, state, transaction,
     observedPositionId } = {}) {
     return withCurrent(partyId, actorId, async (current) => {
-      if (!approvedLocalLabels || state?.party_id !== partyId || state.actor_id !== actorId
+      if (state?.party_id !== partyId || state.actor_id !== actorId
         || state.journey_location?.scene_position_id !== current.scene.location.scene_position_id) {
         gap('current_local_edge_disclosure_required');
       }
@@ -96,7 +90,7 @@ export function createSpatialV3CurrentVisibilityProvider({ pool, verifiedCatalog
       const visible = new Set(admitted.map((row) => row.target_id));
       return edges.flatMap((edge) => {
         if (!visible.has(edge.id)) return [];
-        const labels = localLabelCatalog.labels.filter((row) =>
+        const labels = localLabels.filter((row) =>
           row.scene_template_ref.id === (edge.source_scene_template_ref?.entity_id
             ?? edge.source_scene_template_ref?.entity_ref?.entity_id)
           && row.scene_template_ref.version === Number(edge.source_scene_template_ref?.authoring_version)

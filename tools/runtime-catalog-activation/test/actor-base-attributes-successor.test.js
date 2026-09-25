@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { digestEnvelope } from '../src/artifact-contracts.js';
+import { buildBaseWorldCompatibilityManifest, digestEnvelope } from '../src/artifact-contracts.js';
 import { buildActorBaseAttributesSuccessorImportRequest,
   buildActorBaseAttributesSuccessorActivationRequest,
   validateActorBaseAttributesSuccessorActivationApproval,
@@ -12,26 +12,84 @@ import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP } from
   '../src/forward-migrations.js';
 
 test('actor successor requires exact parent, reviewed import-only approval and preserves historical artifacts', async () => {
+  const runtimeConfiguration = {
+    schema: 'rus.spatial_v3_target_catalog_configuration.v1',
+    release_id: 'spatial-v3-production-v17',
+    world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001',
+    world_catalog_digest: '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+    world_manifest_sha256: '4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e'
+  };
+  const compatibilityManifest = buildBaseWorldCompatibilityManifest({
+    compatibleWorldRevisionId: runtimeConfiguration.world_revision_id,
+    compatibleWorldCatalogDigest: runtimeConfiguration.world_catalog_digest,
+    sourceRuntimeConfigurationDigest: digestEnvelope(runtimeConfiguration),
+    sourceArtifactPaths: ['data/world.json', 'schema.sql'],
+    sourceArtifactDigests: [
+      { path: 'data/world.json', sha256: 'e'.repeat(64) },
+      { path: 'schema.sql', sha256: 'f'.repeat(64) }
+    ],
+    sourceCommitSha: 'a'.repeat(40),
+    validationContractVersion: 'base_world_compatibility_v2'
+  });
   const request = buildActorBaseAttributesSuccessorImportRequest({
     subjectCommit: 'a'.repeat(40),
+    compatibilityManifest,
     schemaMigration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
     parentCatalog: {
       catalog_scope: 'item_container_materialization_v2',
       catalog_revision_id: 'item_container_spatial_v3_target_001',
       catalog_digest: 'b'.repeat(64), import_readback_ref: 'test-only:readback',
-      import_readback_digest: 'c'.repeat(64), compatible_world_pin_manifest_digest: 'd'.repeat(64)
+      import_readback_digest: 'c'.repeat(64),
+      compatible_world_pin_manifest_digest: compatibilityManifest.compatible_world_pin_manifest_digest
     }
   });
   const payload = { schema: 'rus.actor_base_attributes_successor_import_attestation.v1',
     request_digest: request.request_digest,
     decision: 'approve_exact_actor_base_attributes_successor_import',
-    reviewed_repository_head: request.subject_commit,
+    reviewed_source_digest: request.compatible_world.compatible_world_pin_manifest_digest,
     attested_by: 'unit-test-only', independence_basis: 'unit test fixture', database_mutated: false,
     authority: { import_authorized: true, activation_authorized: false,
       production_authorized: false, existing_party_migration_authorized: false,
       old_save_rematerialization_authorized: false } };
   const attestation = { ...payload, attestation_digest: digestEnvelope(payload) };
   assert.equal(validateActorBaseAttributesSuccessorImportApproval({ request, attestation }), true);
+  const sameContent = buildActorBaseAttributesSuccessorImportRequest({
+    subjectCommit: '9'.repeat(40), compatibilityManifest,
+    schemaMigration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
+    parentCatalog: request.parent_catalog
+  });
+  assert.equal(sameContent.request_digest, request.request_digest);
+  assert.equal(sameContent.target_catalog_digest, request.target_catalog_digest);
+  const importResultPayload = { status: 'imported_exact_readback_verified',
+    request_digest: request.request_digest,
+    target_catalog_digest: request.target_catalog_digest,
+    target_revision_id: request.target_revision_id };
+  const importResult = { ...importResultPayload,
+    result_digest: digestEnvelope(importResultPayload) };
+  const partyPreflight = { party_count: 0, pinned_party_count: 0,
+    missing_domain_pin_count: 0, inflight_count: 0 };
+  assert.equal(buildActorBaseAttributesSuccessorActivationRequest({
+    importRequest: request, importResult, previousEvent: null, partyPreflight
+  }).request_digest, buildActorBaseAttributesSuccessorActivationRequest({
+    importRequest: sameContent, importResult, previousEvent: null, partyPreflight
+  }).request_digest);
+  const changedContent = structuredClone(compatibilityManifest);
+  changedContent.source_artifact_digests[1].sha256 = '0'.repeat(64);
+  const { compatible_world_pin_manifest_digest: oldPin, ...changedCompatibilityPayload } = changedContent;
+  changedContent.compatible_world_pin_manifest_digest = digestEnvelope(changedCompatibilityPayload);
+  const changedParent = { ...request.parent_catalog,
+    compatible_world_pin_manifest_digest: changedContent.compatible_world_pin_manifest_digest };
+  const changedRequest = buildActorBaseAttributesSuccessorImportRequest({
+    subjectCommit: 'a'.repeat(40), compatibilityManifest: changedContent,
+    schemaMigration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
+    parentCatalog: changedParent
+  });
+  assert.notEqual(changedRequest.request_digest, request.request_digest);
+  assert.notEqual(changedRequest.target_catalog_digest, request.target_catalog_digest);
+  const wrongApproval = { ...payload, request_digest: changedRequest.request_digest };
+  assert.throws(() => validateActorBaseAttributesSuccessorImportApproval({
+    request, attestation: { ...wrongApproval, attestation_digest: digestEnvelope(wrongApproval) }
+  }));
   const ledger = buildActorBaseAttributesImportLedger({ request, attestation });
   assert.deepEqual(request.import_plan.schema_migration, {
     migration_id: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_id,

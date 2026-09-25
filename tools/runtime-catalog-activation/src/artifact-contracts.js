@@ -122,6 +122,7 @@ export function buildBaseWorldCompatibilityManifest({
   compatibleWorldCatalogDigest,
   sourceRuntimeConfigurationDigest,
   sourceArtifactPaths,
+  sourceArtifactDigests,
   sourceCommitSha,
   validationContractVersion
 }) {
@@ -130,6 +131,23 @@ export function buildBaseWorldCompatibilityManifest({
       || sourceArtifactPaths.some((value) => !String(value ?? '').trim())
       || !/^[a-f0-9]{40}$/u.test(String(sourceCommitSha ?? ''))) {
     throw new TypeError('Exact source paths and source commit SHA are required.');
+  }
+  if (sourceArtifactDigests !== undefined) {
+    if (!Array.isArray(sourceArtifactDigests)
+        || sourceArtifactDigests.length !== new Set(sourceArtifactPaths).size
+        || new Set(sourceArtifactDigests.map(({ path }) => path)).size !== sourceArtifactDigests.length
+        || sourceArtifactDigests.some(({ path, sha256 }) =>
+          !sourceArtifactPaths.includes(path) || !/^[a-f0-9]{64}$/u.test(sha256))) {
+      throw new TypeError('Exact source artifact digests are required.');
+    }
+    return withDigest({
+      schema: 'rus.base_world_compatibility_manifest.v2',
+      compatible_world_revision_id: requiredText(compatibleWorldRevisionId, 'compatibleWorldRevisionId'),
+      compatible_world_catalog_digest: requireDigest(compatibleWorldCatalogDigest, 'compatibleWorldCatalogDigest'),
+      source_runtime_configuration_digest: requireDigest(sourceRuntimeConfigurationDigest, 'sourceRuntimeConfigurationDigest'),
+      source_artifact_digests: [...sourceArtifactDigests].sort((a, b) => a.path.localeCompare(b.path)),
+      validation_contract_version: requiredText(validationContractVersion, 'validationContractVersion')
+    }, 'compatible_world_pin_manifest_digest');
   }
   return withDigest({
     schema: 'rus.base_world_compatibility_manifest.v1',

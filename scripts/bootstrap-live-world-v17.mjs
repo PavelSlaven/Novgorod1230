@@ -370,7 +370,8 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     const subjectCommit = execFileSync('git', ['rev-parse', 'HEAD'],
       { cwd: root, encoding: 'utf8' }).trim();
     const preparation = await prepareSpatialV3TargetItemCatalog({
-      worldPool: world, repositoryRoot: root, gitCommitSha: subjectCommit
+      worldPool: world, repositoryRoot: root, gitCommitSha: subjectCommit,
+      contentIdentity: true
     });
     const baselineAttestation = await requireAttestation('item_baseline',
       preparation.baseline_request, attest, onRequest);
@@ -458,6 +459,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       throw new Error('V17_ITEM_ACTIVATION_READBACK_MISMATCH');
     const actorRequest = buildActorBaseAttributesSuccessorImportRequest({
       subjectCommit,
+      compatibilityManifest: preparation.compatibility_manifest,
       schemaMigration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
       parentCatalog: {
         catalog_scope: item.ledger.root.catalog_scope,

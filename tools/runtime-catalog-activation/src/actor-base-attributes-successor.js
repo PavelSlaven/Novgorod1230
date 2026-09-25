@@ -21,10 +21,11 @@ export function isActorBaseAttributesSuccessor(request) {
 }
 
 export function buildActorBaseAttributesSuccessorImportRequest({
-  subjectCommit, parentCatalog,
+  subjectCommit, parentCatalog, compatibilityManifest,
   schemaMigration = ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION
 }) {
   const migration = resolveWorldMigration(schemaMigration);
+  const v17 = migration.migration_id === ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP.migration_id;
   validateActorBaseAttributesImportRequest(historicalRequest);
   assert.deepEqual(Object.keys(parentCatalog ?? {}).sort(), [
     'catalog_scope', 'catalog_revision_id', 'catalog_digest',
@@ -45,7 +46,7 @@ export function buildActorBaseAttributesSuccessorImportRequest({
     world_revision_id: WORLD_REVISION, world_catalog_digest: WORLD_DIGEST,
     world_manifest_sha256: MANIFEST_SHA
   };
-  const compatibleWorld = buildBaseWorldCompatibilityManifest({
+  const compatibleWorld = v17 ? structuredClone(compatibilityManifest) : buildBaseWorldCompatibilityManifest({
     compatibleWorldRevisionId: WORLD_REVISION,
     compatibleWorldCatalogDigest: WORLD_DIGEST,
     sourceRuntimeConfigurationDigest: digestEnvelope(runtimeConfiguration),
@@ -56,10 +57,21 @@ export function buildActorBaseAttributesSuccessorImportRequest({
     sourceCommitSha: subjectCommit,
     validationContractVersion: 'base_world_compatibility_v2'
   });
+  if (v17) {
+    assert.equal(compatibleWorld?.schema, 'rus.base_world_compatibility_manifest.v2');
+    assert.equal(compatibleWorld.compatible_world_revision_id, WORLD_REVISION);
+    assert.equal(compatibleWorld.compatible_world_catalog_digest, WORLD_DIGEST);
+    assert.equal(compatibleWorld.source_runtime_configuration_digest,
+      digestEnvelope(runtimeConfiguration));
+    const { compatible_world_pin_manifest_digest: claimed, ...payload } = compatibleWorld;
+    assert.equal(claimed, digestEnvelope(payload));
+    assert.equal(claimed, parentCatalog.compatible_world_pin_manifest_digest);
+  }
   const request = structuredClone(historicalRequest);
   request.schema = IMPORT_SCHEMA;
-  request.version = 2;
-  request.subject_commit = subjectCommit;
+  request.version = v17 ? 3 : 2;
+  if (v17) delete request.subject_commit;
+  else request.subject_commit = subjectCommit;
   request.target_revision_id = ACTOR_REVISION;
   request.parent_catalog = structuredClone(parentCatalog);
   request.compatible_world = compatibleWorld;
@@ -95,6 +107,7 @@ export function validateActorBaseAttributesSuccessorImportApproval({ request,
   const expected = buildActorBaseAttributesSuccessorImportRequest({
     subjectCommit: request?.subject_commit,
     parentCatalog: request?.parent_catalog,
+    compatibilityManifest: request?.compatible_world,
     schemaMigration: request?.import_plan?.schema_migration
   });
   assert.deepEqual(request, expected, 'ACTOR_SUCCESSOR_IMPORT_REQUEST_INVALID');
@@ -115,6 +128,7 @@ export function buildActorBaseAttributesSuccessorActivationRequest({
     buildActorBaseAttributesSuccessorImportRequest({
       subjectCommit: importRequest.subject_commit,
       parentCatalog: importRequest.parent_catalog,
+      compatibilityManifest: importRequest.compatible_world,
       schemaMigration: importRequest.import_plan.schema_migration
     }));
   const { result_digest: resultDigest, ...payload } = importResult;
@@ -129,9 +143,9 @@ export function buildActorBaseAttributesSuccessorActivationRequest({
     : previousEvent.event_id && Number.isSafeInteger(previousEvent.event_sequence)
       && previousEvent.event_sequence > 0, 'ACTOR_SUCCESSOR_PREDECESSOR_REQUIRED');
   return seal({
-    schema: ACTIVATION_SCHEMA, version: 2,
+    schema: ACTIVATION_SCHEMA, version: importRequest.version,
     status: 'pending_independent_runtime_approval',
-    subject_commit: importRequest.subject_commit,
+    ...(importRequest.version === 2 ? { subject_commit: importRequest.subject_commit } : {}),
     activation_scope: 'new_production_parties_only',
     runtime_capability: 'actor_base_attributes_runtime_selection',
     import_request: importRequest,
@@ -195,7 +209,9 @@ function verifySuccessorAttestation({ request, attestation, schema, decision,
     requestDigestField: 'request_digest',
     expectedRequestDigest: request.request_digest,
     expectedDecision: decision,
-    expectedBindings: { reviewed_repository_head: request.subject_commit,
+    expectedBindings: { ...(request.version === 2
+      ? { reviewed_repository_head: request.subject_commit }
+      : { reviewed_source_digest: request.compatible_world.compatible_world_pin_manifest_digest }),
       authority, database_mutated: false }
   });
 }

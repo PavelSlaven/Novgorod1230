@@ -21,7 +21,7 @@ const TARGET_WORLD_DIGEST =
 
 /** Prepare review inputs only. Operational requests require live exact readback. */
 export async function buildSpatialV3TargetCatalogRequests({ repositoryRoot,
-  subjectCommit }) {
+  subjectCommit, contentIdentity = false }) {
   const read = async (path) => JSON.parse(await readFile(
     resolve(repositoryRoot, path), 'utf8'));
   const manifestBytes = await readFile(resolve(repositoryRoot,
@@ -70,19 +70,37 @@ export async function buildSpatialV3TargetCatalogRequests({ repositoryRoot,
     world_catalog_digest: TARGET_WORLD_DIGEST,
     world_manifest_sha256: sha256(manifestBytes)
   };
+  const schemaRequest = contentIdentity
+    ? await read('data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json')
+    : null;
+  const sourceArtifactPaths = contentIdentity ? [
+    `${WORLD_ROOT}/manifest.json`,
+    `${WORLD_ROOT}/datasets/spatial_v3_world_revisions.json`,
+    ...schemaRequest.world_schema.ordered_parts.map((part) => part.path),
+    ...schemaRequest.party_schema.ordered_migrations.map((part) => part.path),
+    'tools/runtime-catalog-activation/migrations/world/001_runtime_catalog_activation.sql',
+    'tools/runtime-catalog-activation/migrations/world/002_actor_base_attributes_owner.sql',
+    'tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql',
+    'tools/runtime-catalog-activation/migrations/party/002_actor_base_attributes_pins.sql'
+  ] : [`${WORLD_ROOT}/manifest.json`,
+    `${WORLD_ROOT}/datasets/spatial_v3_world_revisions.json`];
+  const sourceArtifactDigests = contentIdentity
+    ? await Promise.all(sourceArtifactPaths.map(async (path) =>
+      ({ path, sha256: sha256(await readFile(resolve(repositoryRoot, path))) })))
+    : undefined;
   const compatibility = buildBaseWorldCompatibilityManifest({
     compatibleWorldRevisionId: TARGET_WORLD,
     compatibleWorldCatalogDigest: TARGET_WORLD_DIGEST,
     sourceRuntimeConfigurationDigest: digestEnvelope(runtimeConfiguration),
-    sourceArtifactPaths: [`${WORLD_ROOT}/manifest.json`,
-      `${WORLD_ROOT}/datasets/spatial_v3_world_revisions.json`],
+    sourceArtifactPaths,
+    sourceArtifactDigests,
     sourceCommitSha: subjectCommit,
     validationContractVersion: 'base_world_compatibility_v2'
   });
   const common = {
-    version: 1,
+    version: contentIdentity ? 2 : 1,
     status: 'pending_independent_compatibility_approval',
-    subject_commit: subjectCommit,
+    ...(!contentIdentity ? { subject_commit: subjectCommit } : {}),
     runtime_configuration: runtimeConfiguration,
     compatible_world: compatibility,
     activation_scope: 'new_production_parties_only',
@@ -93,7 +111,7 @@ export async function buildSpatialV3TargetCatalogRequests({ repositoryRoot,
     runtime_pin: null
   };
   const item = seal({
-    schema: 'rus.item_container_target_compatibility_request.v1',
+    schema: `rus.item_container_target_compatibility_request.v${contentIdentity ? 2 : 1}`,
     ...common,
     catalog_scope: 'item_container_materialization_v2',
     target_revision_id: 'item_container_spatial_v3_target_001',
@@ -115,7 +133,7 @@ export async function buildSpatialV3TargetCatalogRequests({ repositoryRoot,
     ]
   });
   const actor = seal({
-    schema: 'rus.actor_base_attributes_target_compatibility_request.v1',
+    schema: `rus.actor_base_attributes_target_compatibility_request.v${contentIdentity ? 2 : 1}`,
     ...common,
     catalog_scope: 'actor_base_attributes_v1',
     target_revision_id: 'actor_base_attributes_spatial_v3_target_001',

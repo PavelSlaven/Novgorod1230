@@ -75,9 +75,9 @@ const FIRST_PLAYABLE_V2_RELEASE = Object.freeze({
 
 /** Read-only preparation; approvals are supplied later by the independent reviewer. */
 export async function prepareSpatialV3TargetItemCatalog({ worldPool,
-  repositoryRoot, gitCommitSha }) {
+  repositoryRoot, gitCommitSha, contentIdentity = false }) {
   const pending = (await buildSpatialV3TargetCatalogRequests({
-    repositoryRoot, subjectCommit: gitCommitSha
+    repositoryRoot, subjectCommit: gitCommitSha, contentIdentity
   }))['item-compatibility-request.json'];
   const root = resolve(repositoryRoot);
   const candidateRoot = resolve(root,

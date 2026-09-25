@@ -186,7 +186,8 @@ export async function verifyBaseWorldCompatibility({
     compatible_world_pin_manifest_digest: claimedDigest,
     ...manifestPayload
   } = manifest ?? {};
-  if (manifestPayload.schema !== 'rus.base_world_compatibility_manifest.v1'
+  if (!['rus.base_world_compatibility_manifest.v1',
+    'rus.base_world_compatibility_manifest.v2'].includes(manifestPayload.schema)
       || claimedDigest !== digestEnvelope(manifestPayload)
       || runtimeConfigurationTuple?.compatible_world_revision_id
         !== manifestPayload.compatible_world_revision_id

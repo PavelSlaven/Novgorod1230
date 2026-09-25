@@ -58,3 +58,19 @@ test('target request requires an exact subject commit', async () => {
     repositoryRoot: root, subjectCommit: 'HEAD'
   }), /Exact source paths and source commit SHA are required/u);
 });
+
+test('v17 content identity ignores commit SHA and binds data and SQL bytes', async () => {
+  const first = await buildSpatialV3TargetCatalogRequests({
+    repositoryRoot: root, subjectCommit: 'a'.repeat(40), contentIdentity: true
+  });
+  const second = await buildSpatialV3TargetCatalogRequests({
+    repositoryRoot: root, subjectCommit: 'b'.repeat(40), contentIdentity: true
+  });
+  for (const name of Object.keys(first)) {
+    assert.deepEqual(first[name], second[name]);
+    assert.equal(first[name].compatible_world.schema,
+      'rus.base_world_compatibility_manifest.v2');
+    assert.ok(first[name].compatible_world.source_artifact_digests.some((entry) =>
+      entry.path.endsWith('.sql')));
+  }
+});

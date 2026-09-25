@@ -21,6 +21,19 @@ test('ordinary discovery admits an unseen nested player-visible object', () => {
   }), true);
 });
 
+test('ordinary discovery admits the current scene position as a scope', () => {
+  const playerSafeState = {
+    position: { location_ref: 'scene:forest', position_id: 'position:arrival' },
+    ordinary_resolution: { discovery_available: true,
+      container_resolution_available: false, scene_seed_available: false }
+  };
+  const operation = { op: 'request_discovery', discovery_kind: 'inspect',
+    target_refs: ['position:arrival'], query: 'валежник' };
+  assert.equal(isOrdinaryDiscoveryInScope({ operation, playerSafeState }), true);
+  assert.equal(isOrdinaryDiscoveryInScope({ operation: { ...operation,
+    target_refs: ['position:elsewhere'] }, playerSafeState }), false);
+});
+
 test('ordinary discovery rejects multi-target requests even when all items are visible', () => {
   const playerSafeState = {
     ordinary_resolution: { discovery_available: true,

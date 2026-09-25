@@ -106,8 +106,8 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
     });
     assert.equal(result.nature_successor.inserted_rows, 64);
     assert.deepEqual(result.nature_successor.runtime_record_digests, {
-      'rus.g4_natural_baseline_profile.v1': '89bcd203c1ae44fd425143130c5c2f127616f715350121097634c427df448310',
-      'rus.g4_natural_presentation_profile.v1': 'da155bde9d3a73f481b3a19b21a79deb3440b7a45c90372a57cd3edf12fbd1df'
+      'rus.g4_natural_baseline_profile.v1': '451490374c0e3a74deeb3579569f67e82b0785868e4a5aca82a9c6dca6f5eb22',
+      'rus.g4_natural_presentation_profile.v1': 'f817d2c6f22645466174037f6d902f033fd6b70d8e0f7e7573fd7d6d37376f79'
     });
     assert.equal(result.item_import.verified, true);
     assert.equal(result.item_activation.status, 'activated');

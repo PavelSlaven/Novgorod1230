@@ -17,7 +17,14 @@ body:
     id: task_type
     attributes:
       label: Тип задачи
-      description: Строка маршрутизации AGENTS.md (свободный текст), например docs-only, NPC, persistence / DB.
+      description: Строка маршрутизации AGENTS.md, например docs-only, NPC, persistence / DB.
+    validations:
+      required: true
+  - type: textarea
+    id: quality
+    attributes:
+      label: Уровень качества и допустимый долг
+      description: Прототип, рабочее решение или финальное; какой техдолг разрешён и в какой LW он записывается.
     validations:
       required: true
   - type: textarea

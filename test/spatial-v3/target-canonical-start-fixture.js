@@ -7,8 +7,9 @@ import { buildCalendarProjectionProfile } from '../../apps/game-server/src/inter
 const json = async (path) => JSON.parse(await readFile(path, 'utf8'));
 const base = 'data/world-catalogs/novgorod/';
 // Catalog approval/pins below are isolated test authority, never operational evidence.
-export async function targetCanonicalStartFixture() {
-  const start = await json(`${base}live-world-runtime-v17/target-start-candidate.json`);
+export async function targetCanonicalStartFixture({ startRuntime } = {}) {
+  const start = startRuntime?.profile.canonical_start.start
+    ?? await json(`${base}live-world-runtime-v17/target-start-candidate.json`);
   const place = start.initial_placement;
   const manifestPath = `${base}m2c-npc-canonical-import-manifest.json`;
   const manifest = await json(manifestPath);
@@ -40,7 +41,8 @@ export async function targetCanonicalStartFixture() {
       .map((row) => ({ ...row, status: 'approved' }));
   }
   const domain = { schema: 'rus.verified_item_catalog.v2', verified: true, pin, records_by_table: records };
-  const profile = await loadTargetAuthoredStartProfile({ worldBaseReferenceSnapshot: world, domainCatalog: domain });
+  const profile = startRuntime?.profile
+    ?? await loadTargetAuthoredStartProfile({ worldBaseReferenceSnapshot: world, domainCatalog: domain });
   const runtime = await rows('spatial_v3_npc_runtime_profiles');
   const npcClosure = { schema: 'rus.m2c_npc_binding_bundle.v1', world_revision_id: start.world_pin.world_revision_id,
     g4_ref: place.g4_ref, canonical_g5_ref: place.canonical_g5_ref,

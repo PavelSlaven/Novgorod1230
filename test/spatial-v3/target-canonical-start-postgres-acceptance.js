@@ -17,7 +17,6 @@ import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-s
 import { createTargetAuthoredStartCatalog } from '../../apps/game-server/src/internal/target-authored-start-catalog.js';
 import { targetCanonicalStartFixture } from './target-canonical-start-fixture.js';
 import { loadTargetStartWorldReadback } from './target-start-world-readback-fixture.js';
-import { loadTargetAuthoredStartRuntime } from '../../apps/game-server/src/infrastructure/postgres/target-authored-start-runtime.js';
 import { readCurrentNaturalPerceptionFacts } from '../../apps/game-server/src/infrastructure/postgres/g4-natural-perception-reader.js';
 import { readInitialCanonicalNaturalSourceState } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-initial-state.js';
 import { prepareG4NaturalScenePerceptionInput, projectG4NaturalPerception } from '../../apps/game-server/src/runtime/g4-natural-perception.js';
@@ -31,13 +30,16 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
   const rootDir = resolve(import.meta.dirname, '../..');
   const manifest = JSON.parse(await readFile(join(rootDir,
     'data/world-catalogs/novgorod/live-world-runtime-v17/target-starts-manifest.v1.json'), 'utf8'));
-  const input = await targetCanonicalStartFixture();
-  const worldReadback = await loadTargetStartWorldReadback({ pool, start: input.scenario_bundle.canonical_start.start });
-  const runtime = await loadTargetAuthoredStartRuntime({ worldPool: pool, itemPin, actorBinding });
+  const releaseContext = await loadSpatialV3TargetProductionRelease(releaseInputs);
+  assert.equal(manifest.starts.length, 7);
+  assert.deepEqual(releaseContext.runtime.starts.map(({ profile }) => profile.scenario_id),
+    manifest.starts.map(({ scenario_id }) => scenario_id));
+  const runtime = releaseContext.runtime.starts[0];
+  const input = await targetCanonicalStartFixture({ startRuntime: runtime });
+  const worldReadback = await loadTargetStartWorldReadback({ pool, start: runtime.profile.canonical_start.start });
   Object.assign(input, runtime.materialization_inputs);
   const profile = runtime.profile;
   const domainCatalog = input.domain_catalog;
-  const releaseContext = await loadSpatialV3TargetProductionRelease(releaseInputs);
   const release = deriveActivatedReleaseFromReadback(releaseContext.release,
     releaseContext.readback.item_pin, releaseContext.readback);
   const catalog = createTargetAuthoredStartCatalog({ runtime, release });

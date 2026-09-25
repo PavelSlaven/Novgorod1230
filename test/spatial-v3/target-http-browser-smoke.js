@@ -148,7 +148,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   const url = `http://127.0.0.1:${server.address().port}`;
   await writeFile(join(tmpdir(), 'novgorod-target-http-smoke-ready.json'), JSON.stringify({ url, reportPath }));
   console.log(`Target HTTP browser fixture ready: ${url}; report: ${reportPath}`);
-  console.log(`Browser smoke: open ${url}, select the forest start, acknowledge opening, submit "${TARGET_SMOKE_INPUT}"; retry the same HTTP turn identity, reload, then follow exact currently displayed approved movement labels in "Действие" until the displayed directional exit creates G5. POST observed results to ${url}/__smoke/finish.`);
+  console.log(`Browser smoke: open ${url}, select the forest start, acknowledge opening, submit "${TARGET_SMOKE_INPUT}"; retry the same HTTP turn identity, reload, then follow exact currently displayed approved movement labels in "Действие" to a directional exit. If it reaches a canonical terminal, start another ordinary UI party and repeat until an exit reaches a generated G5. POST observed results to ${url}/__smoke/finish.`);
   const timeout = setTimeout(() => finish(), 15 * 60_000);
   try {
     await finished;
@@ -187,7 +187,11 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     const replayIndex = report.calls.indexOf(turns[1]);
     assert.ok(report.calls.slice(replayIndex + 1, report.calls.indexOf(turns[2]))
       .some((entry) => entry.method === 'getPartyScreen'), 'reload must fetch current screen before movement');
-    assertDisplayedMovementRoute(turns.filter((turn) => turn.args[0] === turns[0].args[0]));
+    const parties = [...new Set(turns.map((turn) => turn.args[0]))];
+    report.movement_routes = parties.map((partyId) => ({ party_id: partyId,
+      ...assertDisplayedMovementRoute(turns.filter((turn) => turn.args[0] === partyId)) }));
+    assert.ok(report.movement_routes.some(({ generated }) => generated),
+      'at least one ordinary UI party must enter a committed generated G5');
     assert.ok(report.calls.find((entry) => entry.method === 'startNewGame')?.result);
     assert.ok(report.calls.find((entry) => entry.method === 'acknowledgeOpening')?.result);
     assert.ok(report.calls.some((entry) => entry.method === 'getPartyScreen'));
@@ -217,6 +221,7 @@ export async function readStage23AuditOutput(response) {
 
 export function assertDisplayedMovementRoute(turns) {
   let exited = false;
+  let generated = false;
   for (let index = 2; index < turns.length; index += 1) {
     if (exited) break;
     const turn = turns[index];
@@ -237,13 +242,27 @@ export function assertDisplayedMovementRoute(turns) {
     if (!isExit) {
       assert.notEqual(turn.after.position_slot, turn.before.position_slot);
       assert.equal(Number(turn.after.sites), Number(turn.before.sites));
+      assert.equal(turn.after.site?.id, turn.before.site?.id, 'local movement stays in its G5');
     } else {
-      assert.equal(Number(turn.after.sites), Number(turn.before.sites) + 1,
-        'directional exit must commit exactly one generated G5');
+      const connections = (turn.after.connections ?? []).filter((connection) =>
+        connection.from_site_id === turn.before.site?.id
+        && connection.to_site_id === turn.after.site?.id
+        && !(turn.before.connections ?? []).some((previousConnection) => previousConnection.id === connection.id));
+      assert.equal(connections.length, 1, 'exit must commit one connection from current to destination site');
+      assert.equal(connections[0].status, 'active');
+      assert.ok(['canonical', 'generated'].includes(turn.after.site?.origin),
+        'exit must reach a committed canonical or generated G5');
+      const siteDelta = Number(turn.after.sites) - Number(turn.before.sites);
+      if (turn.after.site.origin === 'generated') {
+        assert.equal(siteDelta, 1, 'generated exit must commit exactly one G5');
+        generated = true;
+      } else assert.ok(siteDelta === 0 || siteDelta === 1,
+        'terminal exit may reuse or project one canonical G5');
       exited = true;
     }
   }
-  assert.ok(exited, 'displayed directional exit must create G5');
+  assert.ok(exited, 'displayed directional exit must reach a committed G5');
+  return { generated };
 }
 
 async function snapshot(pool, partyId) {
@@ -261,6 +280,16 @@ async function snapshot(pool, partyId) {
       JOIN party_runtime.scene_position_nodes n ON n.party_id=l.party_id AND n.id=l.scene_position_id
       JOIN party_runtime.party_player_characters a ON a.party_id=l.party_id AND a.character_id=l.owner_id
       WHERE l.party_id=$1 AND l.owner_kind='actor') AS position_slot,
+    (SELECT jsonb_build_object('id',s.id,'origin',s.origin) FROM party_runtime.party_journey_locations l
+      JOIN party_runtime.party_player_characters a ON a.party_id=l.party_id AND a.character_id=l.owner_id
+      JOIN party_runtime.scene_position_nodes n ON n.party_id=l.party_id AND n.id=l.scene_position_id
+      JOIN party_runtime.party_g6_instances g ON g.party_id=n.party_id AND g.id=n.g6_instance_id
+      JOIN party_runtime.party_scene_baselines b ON b.party_id=g.party_id AND b.id=g.scene_baseline_id
+      JOIN party_runtime.party_g5_sites s ON s.party_id=b.party_id AND s.id=b.host_id
+      WHERE l.party_id=$1 AND l.owner_kind='actor' AND b.host_kind='g5_site') AS site,
+    (SELECT jsonb_agg(jsonb_build_object('id',c.id,'from_site_id',c.from_site_id,
+      'to_site_id',c.to_site_id,'status',c.status) ORDER BY c.id)
+      FROM party_runtime.g5_site_connections c WHERE c.party_id=$1) AS connections,
     (SELECT count(*) FROM party_runtime.party_materialization_runs WHERE party_id=$1) AS materialization_runs,
     (SELECT count(*) FROM party_runtime.party_g5_sites WHERE party_id=$1) AS sites,
     (SELECT jsonb_agg(jsonb_build_object('resource_node_id', resource_node_id,

@@ -48,8 +48,6 @@ async function search(storage, input = {}, visibleStatuses) {
     text: String(chunk.text ?? ''),
     score,
     retrieval_method: 'ranked_lexical_over_committed_rag_chunks',
-    semantic_indexed: chunk.semantic_indexed === true,
-    semantic_coverage_gap: chunk.semantic_indexed === true ? null : metadata.semantic_coverage_disposition,
     document_type: metadata.document_type,
     priority_tier: metadata.priority_tier,
     subsystems: metadata.subsystems,
@@ -69,8 +67,7 @@ async function search(storage, input = {}, visibleStatuses) {
         source_sha256: record.sha256,
         start_line: 1,
         end_line: line_count,
-        priority_tier: metadata.priority_tier,
-        semantic_coverage_disposition: metadata.semantic_coverage_disposition
+        priority_tier: metadata.priority_tier
       };
     });
   return deepFreeze({
@@ -100,14 +97,10 @@ async function runControls(storage, input = {}, visibleStatuses) {
 
 async function readiness(storage, visibleStatuses) {
   const context = await loadContext(storage);
-  const visibleIds = new Set(context.manifest.documents.filter((item) => visibleStatuses.has(item.status)).map((item) => item.document_id));
-  const gaps = context.readiness.gaps.filter((id) => visibleIds.has(id));
-  const blockers = context.readiness.blockers.filter((id) => visibleIds.has(id));
+  void visibleStatuses;
   return deepFreeze({
     schema_version: 'rus.knowledge_rag_readiness.v1',
-    status: blockers.length ? 'blocked' : gaps.length ? 'degraded' : 'ready',
-    semantic_coverage_gap_document_ids: gaps,
-    semantic_coverage_blocker_document_ids: blockers,
+    status: context.readiness.status,
     retrieval_policy_version: context.policy.policy_version,
     control_query_count: context.policy.control_queries.length
   });
@@ -135,36 +128,17 @@ async function loadContext(storage) {
   if (rag.corpus_manifest_sha256 !== sha256(registry.manifestBytes) || registry.policy.baseline_manifest_sha256 !== rag.corpus_manifest_sha256) {
     throw knowledgeSourceError('GENERATED_INDEX_STALE', 'Corpus, retrieval policy and RAG manifest are not pinned to the same manifest.');
   }
-  const semanticRaw = await storage.readGeneratedArtifact('rag', 'index.json');
   const lexicalRaw = await storage.readGeneratedArtifact('rag', 'lexical-index.json');
-  if (semanticRaw.sha256 !== rag.semantic_index_sha256 || lexicalRaw.sha256 !== rag.lexical_index_sha256) throw knowledgeSourceError('GENERATED_INDEX_STALE', 'RAG artifact digest differs from its manifest.');
-  const semantic = parseJson(semanticRaw.bytes, 'semantic index');
+  if (lexicalRaw.sha256 !== rag.lexical_index_sha256) throw knowledgeSourceError('GENERATED_INDEX_STALE', 'RAG artifact digest differs from its manifest.');
   const lexical = parseJson(lexicalRaw.bytes, 'lexical index');
   const coverage = validateRagCoverage(rag.coverage, registry.manifest);
-  const gaps = [];
-  const blockers = [];
-  for (const metadata of registry.policy.documents) {
-    const item = coverage.get(metadata.document_id);
-    if (!item) throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `RAG coverage is missing ${metadata.document_id}.`);
-    const record = registry.documentsById.get(metadata.document_id).record;
-    if (record.status !== 'active' && (item.semantic_indexed !== false || item.lexical_indexed !== true)) {
-      throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `${metadata.document_id} is ${record.status} and must be lexical-only.`);
-    }
-    if (item.semantic_indexed === true && metadata.semantic_coverage_disposition !== 'covered') throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `${metadata.document_id} semantic coverage metadata conflicts with generated RAG.`);
-    if (item.semantic_indexed !== true && metadata.semantic_coverage_disposition === 'covered') throw knowledgeSourceError('SEMANTIC_COVERAGE_GAP', `${metadata.document_id} is marked covered but has no approved semantic snapshot.`);
-    if (item.semantic_indexed !== true) {
-      gaps.push(metadata.document_id);
-      if (metadata.semantic_coverage_disposition === 'required_before_merge') blockers.push(metadata.document_id);
-    }
-  }
-  const semanticChunks = (semantic.chunks ?? []).map((item) => ({ ...item, semantic_indexed: true }));
-  const lexicalChunks = (lexical.chunks ?? []).map((item) => ({ ...item, semantic_indexed: false }));
-  validateChunkLocations([...semanticChunks, ...lexicalChunks], registry.documentsById);
-  validateChunkIndexProvenance(semanticChunks, lexicalChunks, registry.documentsById, coverage);
+  const lexicalChunks = lexical.chunks ?? [];
+  validateChunkLocations(lexicalChunks, registry.documentsById);
+  validateLexicalCoverage(lexicalChunks, registry.documentsById, coverage);
   return {
     ...registry,
-    chunks: [...semanticChunks, ...lexicalChunks],
-    readiness: { status: blockers.length ? 'blocked' : gaps.length ? 'degraded' : 'ready', gaps, blockers }
+    chunks: lexicalChunks,
+    readiness: { status: 'ready' }
   };
 }
 
@@ -179,7 +153,8 @@ function validateRagCoverage(value, manifest) {
     if (!record) throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `RAG coverage references unknown document ${documentId || '(empty)'}.`);
     if (coverage.has(documentId)) throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `RAG coverage duplicates ${documentId}.`);
     if (item.file_name !== record.file_name) throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `RAG coverage file mismatch for ${documentId}.`);
-    if (item.semantic_indexed === item.lexical_indexed) throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `RAG coverage must select exactly one index type for ${documentId}.`);
+    if (item.lexical_indexed !== true) throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `RAG coverage must be lexical for ${documentId}.`);
+    if (item.semantic_indexed === true) throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `Semantic RAG coverage is not permitted for ${documentId}.`);
     coverage.set(documentId, item);
   }
   return coverage;
@@ -217,30 +192,18 @@ function validateChunkLocations(chunks, documentsById) {
   }
 }
 
-function validateChunkIndexProvenance(semanticChunks, lexicalChunks, documentsById, coverage) {
+function validateLexicalCoverage(lexicalChunks, documentsById, coverage) {
   const documentsByFile = new Map([...documentsById.values()].map((item) => [item.record.file_name, item.record]));
-  const semanticDocumentIds = new Set();
   const lexicalDocumentIds = new Set();
-  for (const chunk of semanticChunks) {
-    const document = documentsByFile.get(String(chunk.file ?? ''));
-    const item = document && coverage.get(document.document_id);
-    if (!document || document.status !== 'active' || item?.semantic_indexed !== true || item.lexical_indexed !== false) {
-      throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `Semantic RAG chunk is not permitted for ${document?.document_id ?? String(chunk.id ?? '<unknown>')}.`);
-    }
-    semanticDocumentIds.add(document.document_id);
-  }
   for (const chunk of lexicalChunks) {
     const document = documentsByFile.get(String(chunk.file ?? ''));
     const item = document && coverage.get(document.document_id);
-    if (!document || item?.semantic_indexed !== false || item.lexical_indexed !== true) {
+    if (!document || item?.lexical_indexed !== true) {
       throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `Lexical RAG chunk conflicts with coverage for ${document?.document_id ?? String(chunk.id ?? '<unknown>')}.`);
     }
     lexicalDocumentIds.add(document.document_id);
   }
   for (const [documentId, item] of coverage) {
-    if (item.semantic_indexed === true && !semanticDocumentIds.has(documentId)) {
-      throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `Semantic RAG coverage has no chunk for ${documentId}.`);
-    }
     if (item.lexical_indexed === true && !lexicalDocumentIds.has(documentId)) {
       throw knowledgeSourceError('GENERATED_PROVENANCE_INVALID', `Lexical RAG coverage has no chunk for ${documentId}.`);
     }

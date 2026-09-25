@@ -14,13 +14,6 @@ const generatedRoot = resolve(root, 'generated/knowledge-source');
 
 function sha(value) { return createHash('sha256').update(value).digest('hex'); }
 
-function activeBaselineGapCount(policy, manifest) {
-  const activeDocumentIds = new Set(manifest.documents.filter((document) => document.status === 'active').map((document) => document.document_id));
-  return policy.documents.filter((document) => (
-    activeDocumentIds.has(document.document_id) && document.semantic_coverage_disposition === 'baseline_gap'
-  )).length;
-}
-
 test('repository retrieval policy covers every registered document and pins current corpus', async () => {
   const manifestBytes = await readFile(resolve(sourceRoot, 'corpus-manifest.json'));
   const manifest = validateCorpusManifest(JSON.parse(manifestBytes.toString('utf8')));
@@ -126,12 +119,10 @@ test('repository exposes the accepted Temporal World amendment through active-on
   assert.ok(result.results.some((item) => item.document_id === document.document_id));
 });
 
-test('repository RAG exposes explicit baseline semantic gaps and no unacknowledged blocker', async () => {
+test('repository RAG readiness is ready for lexical-only coverage', async () => {
   const storage = createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot });
   const status = await createKnowledgeRagReader({ storage }).getReadinessStatus();
-  const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
-  const policy = validateRetrievalPolicy(JSON.parse(await readFile(resolve(sourceRoot, 'retrieval-policy.json'), 'utf8')), manifest);
-  assert.equal(status.status, 'degraded');
-  assert.equal(status.semantic_coverage_blocker_document_ids.length, 0);
-  assert.equal(status.semantic_coverage_gap_document_ids.length, activeBaselineGapCount(policy, manifest));
+  assert.equal(status.status, 'ready');
+  assert.equal(Object.hasOwn(status, 'semantic_coverage_gap_document_ids'), false);
+  assert.equal(Object.hasOwn(status, 'semantic_coverage_blocker_document_ids'), false);
 });

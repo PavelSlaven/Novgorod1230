@@ -10,8 +10,6 @@ const PRIORITY_TIERS = new Set([
   'navigation',
   'reference'
 ]);
-const COVERAGE_DISPOSITIONS = new Set(['covered', 'baseline_gap', 'required_before_merge']);
-
 export function validateRetrievalPolicy(value, manifest) {
   if (!value || typeof value !== 'object' || value.schema_version !== SCHEMA) {
     throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `Retrieval policy must use ${SCHEMA}.`);
@@ -52,9 +50,8 @@ function normalizeMetadata(item, index, knownIds, metadataIds) {
   if (!PRIORITY_TIERS.has(priorityTier)) {
     throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `Invalid priority_tier for ${id}: ${priorityTier}`);
   }
-  const coverage = requiredText(item.semantic_coverage_disposition, `documents[${index}].semantic_coverage_disposition`);
-  if (!COVERAGE_DISPOSITIONS.has(coverage)) {
-    throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `Invalid semantic coverage disposition for ${id}: ${coverage}`);
+  if (Object.hasOwn(item, 'semantic_coverage_disposition')) {
+    throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `${id} must not declare semantic_coverage_disposition.`);
   }
   const relatedDocumentIds = uniqueTextArray(item.related_document_ids, `${id}.related_document_ids`);
   for (const relatedId of relatedDocumentIds) {
@@ -80,8 +77,7 @@ function normalizeMetadata(item, index, knownIds, metadataIds) {
     related_module_paths: relatedModulePaths,
     related_contracts: relatedContracts,
     search_terms: uniqueTextArray(item.search_terms, `${id}.search_terms`),
-    conflicts_with_document_ids: conflicts,
-    semantic_coverage_disposition: coverage
+    conflicts_with_document_ids: conflicts
   };
 }
 

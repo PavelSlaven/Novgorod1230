@@ -20,12 +20,9 @@ export async function buildKnowledgeGraphFromSnapshotV2({ root = '.' } = {}) {
 
 export async function buildRagIndexFromSnapshotV2({ root = '.' } = {}) {
   const outputs = await buildKnowledgeSourceOutputsV2({ root });
-  const indexText = outputs.get(`${GENERATED_ROOT}/rag/index.json`);
   const lexicalText = outputs.get(`${GENERATED_ROOT}/rag/lexical-index.json`);
   const manifestText = outputs.get(`${GENERATED_ROOT}/rag/manifest.json`);
   return Object.freeze({
-    index: JSON.parse(indexText),
-    index_text: indexText,
     lexical_index: JSON.parse(lexicalText),
     lexical_index_text: lexicalText,
     manifest: JSON.parse(manifestText)

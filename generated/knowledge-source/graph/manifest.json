@@ -1,17 +1,14 @@
 {
   "schema_version": "rus.knowledge_graph_manifest.v1",
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
-  "generation_mode": "approved_semantic_snapshot_plus_structural_document_nodes",
+  "generation_mode": "structural_document_nodes_only",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
   "corpus_manifest_sha256": "6845f358d52768de240cb4971cb7f67f16f7a910f9052463c0cc4eb0d20d97b7",
-  "source_snapshot": "data/knowledge-source/imports/graph/graph.json",
-  "source_snapshot_sha256": "b70f50a053634f717aa6665e87ee7a9fab655db11c08faef6129b8b3f54652fc",
   "registered_document_count": 44,
   "source_document_count": 39,
-  "semantic_document_count": 2,
-  "structural_only_document_count": 37,
-  "node_count": 445,
-  "link_count": 787,
+  "structural_only_document_count": 39,
+  "node_count": 39,
+  "link_count": 0,
   "hyperedge_count": 0,
-  "graph_sha256": "f248c41df1f277847b7fbbf8a6fefe79c7ceaca0378ca495700e7e3955e8645c"
+  "graph_sha256": "050ee2ad7e05d5bdd5c427b8523ca5a32a486099f9eecc047381dfef544d0abf"
 }

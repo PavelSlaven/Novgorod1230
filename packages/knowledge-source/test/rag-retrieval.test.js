@@ -13,7 +13,7 @@ function jsonBytes(value) {
   return Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
 }
 
-function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], proposedCoverage = 'baseline_gap', deprecatedCoverage = 'baseline_gap', controlExpected = ['active'], includeDeprecated = false } = {}) {
+function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlExpected = ['active'], includeDeprecated = false } = {}) {
   const texts = {
     'active.md': Buffer.from('# Active\n\nCode materializes instances from approved profiles.'),
     'proposed.md': Buffer.from('# Proposed\n\nFuture perception engine proposal.'),
@@ -31,27 +31,26 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], proposed
   const policy = {
     schema_version: 'rus.knowledge_retrieval_policy.v1', policy_version: '1.0.0', baseline_manifest_sha256: sha(manifestBytes), default_statuses: ['active'],
     documents: [
-      { document_id: 'active', document_type: 'architecture', priority_tier: 'highest_materialization_normative', subsystems: ['materialization'], related_document_ids: [], related_module_paths: ['packages/materialization'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: activeConflicts, semantic_coverage_disposition: 'covered' },
-      { document_id: 'proposed', document_type: 'proposal', priority_tier: 'profile_normative', subsystems: ['perception'], related_document_ids: ['active'], related_module_paths: ['packages/perception'], related_contracts: [], search_terms: ['future perception'], conflicts_with_document_ids: [], semantic_coverage_disposition: proposedCoverage },
-      ...(includeDeprecated ? [{ document_id: 'deprecated', document_type: 'reference', priority_tier: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['historic reference'], conflicts_with_document_ids: [], semantic_coverage_disposition: deprecatedCoverage }] : [])
+      { document_id: 'active', document_type: 'architecture', priority_tier: 'highest_materialization_normative', subsystems: ['materialization'], related_document_ids: [], related_module_paths: ['packages/materialization'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: activeConflicts },
+      { document_id: 'proposed', document_type: 'proposal', priority_tier: 'profile_normative', subsystems: ['perception'], related_document_ids: ['active'], related_module_paths: ['packages/perception'], related_contracts: [], search_terms: ['future perception'], conflicts_with_document_ids: [] },
+      ...(includeDeprecated ? [{ document_id: 'deprecated', document_type: 'reference', priority_tier: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['historic reference'], conflicts_with_document_ids: [] }] : [])
     ],
     control_queries: [{ query_id: 'materialization-owner', query: 'approved profiles materializes instances', expected_document_ids: controlExpected, top_k: 3 }]
   };
-  const semantic = { schema_version: 'rus.rag_index.v1', dimensions: 2, chunks: [{ id: 'active:0', file: 'active.md', section: 'Active', line_start: 1, line_end: 3, text: '# Active\nCode materializes instances from approved profiles.', char_count: 60, embedding: [1, 0] }] };
   const lexical = { schema_version: 'rus.lexical_index.v1', chunks: [
+    { id: 'active:0', file: 'active.md', section: 'Active', line_start: 1, line_end: 3, text: '# Active\nCode materializes instances from approved profiles.', char_count: 60 },
     { id: 'proposed:0', file: 'proposed.md', section: 'Proposed', line_start: 1, line_end: 3, text: '# Proposed\nFuture perception engine proposal.', char_count: 45 },
     ...(includeDeprecated ? [{ id: 'deprecated:0', file: 'deprecated.md', section: 'Deprecated', line_start: 1, line_end: 3, text: '# Deprecated\nHistoric reference vocabulary.', char_count: 42 }] : [])
   ] };
-  const semanticBytes = jsonBytes(semantic);
   const lexicalBytes = jsonBytes(lexical);
   const ragManifest = {
     schema_version: 'rus.knowledge_rag_manifest.v1',
     corpus_manifest_sha256: staleRagCorpusPin ? '0'.repeat(64) : sha(manifestBytes),
-    semantic_index_sha256: sha(semanticBytes), lexical_index_sha256: sha(lexicalBytes),
+    lexical_index_sha256: sha(lexicalBytes),
     coverage: [
-      { document_id: 'active', file_name: 'active.md', semantic_indexed: true, lexical_indexed: false },
-      { document_id: 'proposed', file_name: 'proposed.md', semantic_indexed: false, lexical_indexed: true },
-      ...(includeDeprecated ? [{ document_id: 'deprecated', file_name: 'deprecated.md', semantic_indexed: false, lexical_indexed: true }] : [])
+      { document_id: 'active', file_name: 'active.md', lexical_indexed: true },
+      { document_id: 'proposed', file_name: 'proposed.md', lexical_indexed: true },
+      ...(includeDeprecated ? [{ document_id: 'deprecated', file_name: 'deprecated.md', lexical_indexed: true }] : [])
     ]
   };
   const wrap = (value) => ({ value, bytes: jsonBytes(value) });
@@ -66,7 +65,10 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], proposed
       return { bytes, sha256: sha(bytes) };
     },
     readGeneratedManifest: async () => wrap(ragManifest),
-    readGeneratedArtifact: async (kind, name) => name === 'index.json' ? { bytes: semanticBytes, sha256: sha(semanticBytes) } : { bytes: lexicalBytes, sha256: sha(lexicalBytes) }
+    readGeneratedArtifact: async (_kind, name) => {
+      if (name !== 'lexical-index.json') throw new Error(`Unexpected artifact ${name}`);
+      return { bytes: lexicalBytes, sha256: sha(lexicalBytes) };
+    }
   };
   return { storage, manifest, policy };
 }
@@ -77,8 +79,10 @@ test('ranked RAG search defaults to active documents and returns source metadata
   assert.deepEqual(result.requested_statuses, ['active']);
   assert.equal(result.results[0].document_id, 'active');
   assert.equal(result.results[0].status, 'active');
-  assert.equal(result.results[0].semantic_indexed, true);
+  assert.equal(Object.hasOwn(result.results[0], 'semantic_indexed'), false);
+  assert.equal(Object.hasOwn(result.results[0], 'semantic_coverage_gap'), false);
   assert.equal(result.results[0].priority_tier, 'highest_materialization_normative');
+  assert.equal(result.rag_status, 'ready');
   assert.equal(Object.isFrozen(result), true);
 });
 
@@ -88,70 +92,32 @@ test('proposed documents require an explicit status request and remain labelled'
   const visible = await reader.searchKnowledge({ query: 'future perception', statuses: ['proposed'] });
   assert.equal(visible.results[0].document_id, 'proposed');
   assert.equal(visible.results[0].status, 'proposed');
-  assert.equal(visible.results[0].semantic_coverage_gap, 'baseline_gap');
+  assert.equal(Object.hasOwn(visible.results[0], 'semantic_coverage_gap'), false);
 });
 
-test('deprecated documents are lexical-only and require an explicit status request', async () => {
+test('deprecated documents are lexical and require an explicit status request', async () => {
   const reader = createKnowledgeRagReader({ storage: makeFixture({ includeDeprecated: true }).storage, allowedStatuses: ['active', 'deprecated'] });
   assert.equal((await reader.searchKnowledge({ query: 'historic reference' })).results.length, 0);
   const visible = await reader.searchKnowledge({ query: 'historic reference', statuses: ['deprecated'] });
   assert.equal(visible.results[0].document_id, 'deprecated');
-  assert.equal(visible.results[0].semantic_indexed, false);
 });
 
-test('RAG retrieval rejects semantic coverage for a proposed document even when policy coverage is subverted', async () => {
-  const { storage } = makeFixture({ proposedCoverage: 'covered' });
-  const readGeneratedManifest = storage.readGeneratedManifest;
-  storage.readGeneratedManifest = async () => {
-    const raw = await readGeneratedManifest();
-    const value = structuredClone(raw.value);
-    value.coverage.find((item) => item.document_id === 'proposed').semantic_indexed = true;
-    value.coverage.find((item) => item.document_id === 'proposed').lexical_indexed = false;
-    return { value, bytes: jsonBytes(value) };
-  };
-  await assert.rejects(() => createKnowledgeRagReader({ storage, allowedStatuses: ['active', 'proposed'] }).searchKnowledge({ query: 'future perception', statuses: ['proposed'] }), (error) => error.code === 'GENERATED_PROVENANCE_INVALID');
-});
-
-test('RAG retrieval rejects semantic coverage for a deprecated document even when policy coverage is subverted', async () => {
-  const { storage } = makeFixture({ includeDeprecated: true, deprecatedCoverage: 'covered' });
-  const readGeneratedManifest = storage.readGeneratedManifest;
-  storage.readGeneratedManifest = async () => {
-    const raw = await readGeneratedManifest();
-    const value = structuredClone(raw.value);
-    value.coverage.find((item) => item.document_id === 'deprecated').semantic_indexed = true;
-    value.coverage.find((item) => item.document_id === 'deprecated').lexical_indexed = false;
-    return { value, bytes: jsonBytes(value) };
-  };
-  await assert.rejects(() => createKnowledgeRagReader({ storage, allowedStatuses: ['active', 'deprecated'] }).searchKnowledge({ query: 'historic reference', statuses: ['deprecated'] }), (error) => error.code === 'GENERATED_PROVENANCE_INVALID');
-});
-
-test('RAG retrieval rejects a semantic chunk for a proposed document', async () => {
+test('RAG retrieval rejects semantic coverage markers in generated coverage', async () => {
   const { storage } = makeFixture();
-  const readGeneratedArtifact = storage.readGeneratedArtifact;
-  const injectedSemantic = jsonBytes({ schema_version: 'rus.rag_index.v1', dimensions: 2, chunks: [
-    { id: 'active:0', file: 'active.md', section: 'Active', line_start: 1, line_end: 3, text: '# Active\nCode materializes instances from approved profiles.', char_count: 60, embedding: [1, 0] },
-    { id: 'proposed:injected', file: 'proposed.md', section: 'Proposed', line_start: 1, line_end: 3, text: '# Proposed\nFuture perception engine proposal.', char_count: 45, embedding: [0, 1] }
-  ] });
-  storage.readGeneratedArtifact = async (kind, name) => name === 'index.json'
-    ? { bytes: injectedSemantic, sha256: sha(injectedSemantic) }
-    : readGeneratedArtifact(kind, name);
   const readGeneratedManifest = storage.readGeneratedManifest;
   storage.readGeneratedManifest = async () => {
     const raw = await readGeneratedManifest();
     const value = structuredClone(raw.value);
-    value.semantic_index_sha256 = sha(injectedSemantic);
+    value.coverage.find((item) => item.document_id === 'active').semantic_indexed = true;
     return { value, bytes: jsonBytes(value) };
   };
-  await assert.rejects(() => createKnowledgeRagReader({ storage, allowedStatuses: ['active', 'proposed'] }).searchKnowledge({ query: 'future perception', statuses: ['proposed'] }), (error) => error.code === 'GENERATED_PROVENANCE_INVALID');
+  await assert.rejects(() => createKnowledgeRagReader({ storage }).searchKnowledge({ query: 'approved profiles' }), (error) => error.code === 'GENERATED_PROVENANCE_INVALID');
 });
 
-test('RAG retrieval rejects proposed and deprecated lexical coverage without lexical chunks', async () => {
+test('RAG retrieval rejects lexical coverage without lexical chunks', async () => {
   const { storage } = makeFixture({ includeDeprecated: true });
-  const readGeneratedArtifact = storage.readGeneratedArtifact;
   const emptyLexical = jsonBytes({ schema_version: 'rus.lexical_index.v1', chunks: [] });
-  storage.readGeneratedArtifact = async (kind, name) => name === 'lexical-index.json'
-    ? { bytes: emptyLexical, sha256: sha(emptyLexical) }
-    : readGeneratedArtifact(kind, name);
+  storage.readGeneratedArtifact = async () => ({ bytes: emptyLexical, sha256: sha(emptyLexical) });
   const readGeneratedManifest = storage.readGeneratedManifest;
   storage.readGeneratedManifest = async () => {
     const raw = await readGeneratedManifest();
@@ -160,23 +126,6 @@ test('RAG retrieval rejects proposed and deprecated lexical coverage without lex
     return { value, bytes: jsonBytes(value) };
   };
   await assert.rejects(() => createKnowledgeRagReader({ storage, allowedStatuses: ['active', 'proposed', 'deprecated'] }).searchKnowledge({ query: 'future perception', statuses: ['proposed'] }), (error) => error.code === 'GENERATED_PROVENANCE_INVALID');
-});
-
-test('RAG retrieval rejects semantic coverage without a semantic chunk', async () => {
-  const { storage } = makeFixture();
-  const readGeneratedArtifact = storage.readGeneratedArtifact;
-  const emptySemantic = jsonBytes({ schema_version: 'rus.rag_index.v1', dimensions: 2, chunks: [] });
-  storage.readGeneratedArtifact = async (kind, name) => name === 'index.json'
-    ? { bytes: emptySemantic, sha256: sha(emptySemantic) }
-    : readGeneratedArtifact(kind, name);
-  const readGeneratedManifest = storage.readGeneratedManifest;
-  storage.readGeneratedManifest = async () => {
-    const raw = await readGeneratedManifest();
-    const value = structuredClone(raw.value);
-    value.semantic_index_sha256 = sha(emptySemantic);
-    return { value, bytes: jsonBytes(value) };
-  };
-  await assert.rejects(() => createKnowledgeRagReader({ storage }).searchKnowledge({ query: 'approved profiles' }), (error) => error.code === 'GENERATED_PROVENANCE_INVALID');
 });
 
 test('RAG retrieval hard-blocks when policy and generated RAG are not pinned to the same corpus', async () => {
@@ -235,20 +184,20 @@ test('RAG retrieval hard-blocks when generated coverage duplicates a registered 
 
 test('RAG retrieval rejects a generated chunk with an invalid source location', async () => {
   const { storage } = makeFixture();
-  const readGeneratedArtifact = storage.readGeneratedArtifact;
-  storage.readGeneratedArtifact = async (kind, name) => {
-    if (name !== 'index.json') return readGeneratedArtifact(kind, name);
-    const invalid = jsonBytes({ schema_version: 'rus.rag_index.v1', dimensions: 2, chunks: [{ id: 'active:bad', file: 'active.md', section: 'Active', line_start: 1, line_end: 99, text: 'invalid', char_count: 7, embedding: [1, 0] }] });
-    return { bytes: invalid, sha256: sha(invalid) };
+  const invalid = jsonBytes({ schema_version: 'rus.lexical_index.v1', chunks: [{ id: 'active:bad', file: 'active.md', section: 'Active', line_start: 1, line_end: 99, text: 'invalid', char_count: 7 }] });
+  storage.readGeneratedArtifact = async () => ({ bytes: invalid, sha256: sha(invalid) });
+  const readGeneratedManifest = storage.readGeneratedManifest;
+  storage.readGeneratedManifest = async () => {
+    const raw = await readGeneratedManifest();
+    const value = structuredClone(raw.value);
+    value.lexical_index_sha256 = sha(invalid);
+    return { value, bytes: jsonBytes(value) };
   };
-  const ragManifest = await storage.readGeneratedManifest('rag');
-  ragManifest.value.semantic_index_sha256 = sha((await storage.readGeneratedArtifact('rag', 'index.json')).bytes);
-  ragManifest.bytes = jsonBytes(ragManifest.value);
   const reader = createKnowledgeRagReader({ storage });
   await assert.rejects(() => reader.searchKnowledge({ query: 'approved profiles' }), (error) => error.code === 'GENERATED_PROVENANCE_INVALID');
 });
 
-test('RAG conflict reporting preserves full provenance across status isolation', async () => {
+test('RAG conflict reporting preserves provenance across status isolation', async () => {
   const reader = createKnowledgeRagReader({ storage: makeFixture({ activeConflicts: ['proposed'] }).storage });
   const result = await reader.searchKnowledge({ query: 'approved profiles' });
   assert.deepEqual(result.requested_statuses, ['active']);
@@ -260,8 +209,7 @@ test('RAG conflict reporting preserves full provenance across status isolation',
     source_sha256: result.conflicts[0].source_sha256,
     start_line: 1,
     end_line: 3,
-    priority_tier: 'profile_normative',
-    semantic_coverage_disposition: 'baseline_gap'
+    priority_tier: 'profile_normative'
   }]);
 });
 
@@ -277,17 +225,11 @@ test('control-query failure is returned as a failed report', async () => {
   assert.equal(report.checks[0].ok, false);
 });
 
-test('readiness reports acknowledged semantic gaps without claiming coverage', async () => {
+test('readiness is ready for lexical-only coverage', async () => {
   const status = await createKnowledgeRagReader({ storage: makeFixture().storage, allowedStatuses: ['active', 'proposed'] }).getReadinessStatus();
-  assert.equal(status.status, 'degraded');
-  assert.deepEqual(status.semantic_coverage_gap_document_ids, ['proposed']);
-  assert.deepEqual(status.semantic_coverage_blocker_document_ids, []);
-});
-
-test('required_before_merge semantic coverage blocks readiness', async () => {
-  const status = await createKnowledgeRagReader({ storage: makeFixture({ proposedCoverage: 'required_before_merge' }).storage, allowedStatuses: ['active', 'proposed'] }).getReadinessStatus();
-  assert.equal(status.status, 'blocked');
-  assert.deepEqual(status.semantic_coverage_blocker_document_ids, ['proposed']);
+  assert.equal(status.status, 'ready');
+  assert.equal(Object.hasOwn(status, 'semantic_coverage_gap_document_ids'), false);
+  assert.equal(Object.hasOwn(status, 'semantic_coverage_blocker_document_ids'), false);
 });
 
 test('ranked retrieval resolves equal scores deterministically by document id and chunk id', () => {
@@ -312,4 +254,11 @@ test('retrieval policy rejects missing document metadata', () => {
   const incomplete = structuredClone(policy);
   incomplete.documents.pop();
   assert.throws(() => validateRetrievalPolicy(incomplete, manifest), (error) => error.code === 'RETRIEVAL_POLICY_INCOMPLETE');
+});
+
+test('retrieval policy rejects semantic_coverage_disposition', () => {
+  const { manifest, policy } = makeFixture();
+  const invalid = structuredClone(policy);
+  invalid.documents[0].semantic_coverage_disposition = 'baseline_gap';
+  assert.throws(() => validateRetrievalPolicy(invalid, manifest), (error) => error.code === 'RETRIEVAL_POLICY_INVALID');
 });

@@ -6,7 +6,7 @@
 
 ## Разделение source и generated
 
-Исходные документы являются нормативным источником. `generated/knowledge-source/graph` и `generated/knowledge-source/rag` являются воспроизводимыми представлениями и не имеют права заменять исходный текст. Imported snapshots хранят утверждённые LLM/embedding-результаты, которые код только проверяет и материализует.
+Исходные документы являются нормативным источником. `generated/knowledge-source/graph` и `generated/knowledge-source/rag` являются воспроизводимыми представлениями и не имеют права заменять исходный текст. Generated graph — structural document nodes; RAG — deterministic lexical chunks без embedding-слоя.
 
 ## Граница кода и LLM
 
@@ -14,7 +14,7 @@
 
 ## Fail-closed
 
-Отсутствующий документ, неверный SHA-256, повреждённый manifest, недопустимый диапазон строк или неизвестный `document_id` останавливают операцию typed failure. Approved embedding применяется только при byte-compatible chunks; изменённый документ автоматически становится lexical-only до нового semantic approval. Legacy fallback и подстановка похожего документа запрещены.
+Отсутствующий документ, неверный SHA-256, повреждённый manifest, недопустимый диапазон строк или неизвестный `document_id` останавливают операцию typed failure. Legacy fallback и подстановка похожего документа запрещены.
 
 ## Доступ
 
@@ -28,17 +28,17 @@ Codex, Cursor и другие агенты разработки использу
 
 Изменение документа требует обновления manifest, пересборки graph/RAG, parity-проверки, полного regression и аудита критика. Ручное редактирование generated output запрещено.
 
-Документ без утверждённого semantic/embedding snapshot получает только structural graph node и lexical-only chunks. Provenance каждого semantic node, link, hyperedge и его `member_source_files` обязан принадлежать exact approved embedding document set; semantic relations не могут ссылаться на structural-only nodes. Semantic relations, embedding vectors и признаки `semantic_indexed` не создаются эвристически.
+Каждый зарегистрированный документ получает structural graph node (для `active`) и deterministic lexical chunks. Embedding vectors, semantic index и признаки semantic coverage не создаются.
 
 ## RAG-готовность
 
-`data/knowledge-source/retrieval-policy.json` является формальным техническим контрактом retrieval-слоя. Для каждого зарегистрированного документа он фиксирует тип, нормативный приоритет, подсистемы, связанные документы, модули и контракты, поисковые термины, известные конфликты и состояние semantic coverage.
+`data/knowledge-source/retrieval-policy.json` является формальным техническим контрактом retrieval-слоя. Для каждого зарегистрированного документа он фиксирует тип, нормативный приоритет, подсистемы, связанные документы, модули и контракты, поисковые термины и известные конфликты.
 
 Обычный RAG-поиск использует только документы со статусом `active`. `proposed` и `deprecated` доступны только читателю, которому эти статусы явно разрешены, и только при явном указании статуса в запросе. Каждый результат возвращает статус документа, SHA-256 источника, диапазон строк, метод retrieval, нормативный приоритет и связи. Явно зарегистрированный конфликт возвращается отдельно от обычных результатов с собственным статусом и полным provenance; status isolation не скрывает его и не делает конфликтующий документ обычным нормативным контекстом.
 
-Semantic coverage не подменяется эвристикой. Состояния `baseline_gap` и `required_before_merge` отображаются явно. `required_before_merge` блокирует готовность RAG; `baseline_gap` допускается только как зарегистрированный долг существующего корпуса. Изменённый существующий active-документ без обновлённого semantic snapshot сохраняет `baseline_gap`. Новый active-документ без утверждённого embedding получает `required_before_merge`, если semantic snapshot не обновляется в том же PR.
+Поиск корпуса — честно лексический: ранжирование по committed lexical chunks. Новый или изменённый active-документ после `knowledge:repin` / `knowledge:generate` остаётся в том же lexical контуре и не переводит RAG readiness в `blocked` из-за отсутствия embedding.
 
-Retrieval policy и generated RAG должны быть привязаны к одному SHA-256 corpus manifest. Расхождение, отсутствующая metadata-карточка, конфликт metadata с фактическим coverage или повреждённый generated artifact приводят к typed failure.
+Retrieval policy и generated RAG должны быть привязаны к одному SHA-256 corpus manifest. Расхождение, отсутствующая metadata-карточка или повреждённый generated artifact приводят к typed failure.
 
 Для устойчивых обязанностей системы поддерживаются контрольные запросы. Проверка считается успешной, только если хотя бы один ожидаемый авторитетный документ попал в заданный `top_k`. Контрольные запросы обновляются вместе с изменением терминологии, приоритетов и ответственности подсистем.
 
@@ -53,4 +53,4 @@ knowledge:status
 → knowledge:controls и тесты
 ```
 
-RAG отвечает за обнаружение и provenance, но не отменяет чтение разделов, найденных через query или назначенных маршрутизацией `AGENTS.md`; документ целиком читается, только если он редактируется или является контрактом при изменении повышенного риска. Stale RAG, typed failure, semantic blocker или недоступный обязательный документ являются hard block и не могут обходиться прямым файловым поиском.
+RAG отвечает за обнаружение и provenance, но не отменяет чтение разделов, найденных через query или назначенных маршрутизацией `AGENTS.md`; документ целиком читается, только если он редактируется или является контрактом при изменении повышенного риска. Stale RAG, typed failure или недоступный обязательный документ являются hard block и не могут обходиться прямым файловым поиском.

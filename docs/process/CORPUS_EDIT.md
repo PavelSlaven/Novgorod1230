@@ -48,10 +48,9 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
 
 - **L29** требует при изменении документа «полного regression и аудита критика». Практически это: полный
   `npm test` как merge gate в CI (AGENTS §24) + Contract Auditor по AGENTS §25.1.
-- **L39** (решение владельца 2026-09-23, #115): изменённый существующий active-документ без обновлённого
-  semantic snapshot сохраняет `semantic_coverage_disposition: baseline_gap`; новый active-документ без
-  утверждённого embedding получает `required_before_merge`, если snapshot не обновляется в том же PR.
-  `required_before_merge` блокирует RAG readiness (`packages/knowledge-source/src/services/rag-reader.js`).
+- RAG корпуса — лексический: после `knowledge:repin` / `knowledge:generate` новый или изменённый
+  active-документ получает lexical chunks и не блокирует `knowledge:status` отсутствием embedding
+  (`docs/architecture/KNOWLEDGE_SOURCE_POLICY.md`, «RAG-готовность»).
 
 ## Закреплённые фразы и байты
 

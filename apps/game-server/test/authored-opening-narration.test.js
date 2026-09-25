@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildVisibleContextAuditApproval,
   computeVisibleContextPackageDigest } from '@rus/contracts';
+import { STAGE23_CONCERN_CODES } from '@rus/new-game';
 import { buildAuthoredOpeningVisibleContext,
   auditAuthoredOpeningContext, auditOpeningReaderAssessments, buildLowerDvinaTraceOpeningScreen } from
   '../src/runtime/lower-dvina-trace-opening.js';
@@ -98,6 +99,52 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
   assert.equal(result.stage23_result.pass, true);
   assert.equal(result.original_stage23_audit.pass, true);
   assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
+});
+
+test('opening repairs unsupported negative prose once and blocks hard findings', async () => {
+  const pkg = openingPackage(), approval = openingApproval(pkg);
+  const run = (severity) => {
+    const roles = [];
+    const service = createAuthoredOpeningNarrationService({ roleRunner: {
+      async run(call) {
+        roles.push(call.role_id);
+        if (call.role_id === 'gameplay_narrator') return { output: {
+          prose: 'На берегу никого нет.' } };
+        if (call.role_id === 'gameplay_narrator_semantic_repair') return {
+          output: { prose: 'Любава стоит у берега рядом с братом.' } };
+        assert.equal(call.role_id, 'gameplay_narrator_auditor');
+        assert.match(call.messages[0].content,
+          new RegExp(STAGE23_CONCERN_CODES.join(', '), 'u'));
+        assert.match(call.messages[0].content,
+          /unsupported negative fact in prose is a factual must_not_include_check/u);
+        assert.match(call.messages[0].content,
+          /Use severity\s+repairable when rewriting prose from the same visible package/u);
+        if (roles.includes('gameplay_narrator_semantic_repair')) return { output: {
+          pass: true, failed_checks: [], concerns: [], evidence: ['Grounded.'] } };
+        return { output: { pass: false,
+          failed_checks: ['must_not_include_check'], concerns: [{
+            code: 'NARRATOR_PROSE_MUST_NOT_INCLUDE_VIOLATION', severity,
+            message: 'The prose denies a supplied visible person.'
+          }], evidence: ['Visible person is present.'] } };
+      }
+    } });
+    return { roles, result: service.run({ requestId: 'opening:1',
+      visibleContextPackage: pkg, visibleContextApproval: approval }) };
+  };
+  const repairable = run('repairable');
+  const result = await repairable.result;
+  assert.equal(result.prose, 'Любава стоит у берега рядом с братом.');
+  assert.equal(result.original_stage23_audit.pass, false);
+  assert.equal(result.stage23_result.pass, true);
+  assert.deepEqual(repairable.roles, ['gameplay_narrator',
+    'gameplay_narrator_auditor', 'gameplay_narrator_semantic_repair',
+    'gameplay_narrator_auditor']);
+
+  const blocked = run('hard_block');
+  await assert.rejects(blocked.result,
+    { code: 'AUTHORED_OPENING_AUDIT_REJECTED' });
+  assert.deepEqual(blocked.roles, ['gameplay_narrator',
+    'gameplay_narrator_auditor']);
 });
 
 test('opening derives literary check from concern and keeps factual checks fail closed', async () => {

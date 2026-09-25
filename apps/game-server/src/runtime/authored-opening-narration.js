@@ -1,5 +1,6 @@
 import { buildStage22NarratorInput, buildStage23AuditInput,
-  validateStage23CommitHandoff, SELF_CHECK_FIELDS, STAGE23_REQUIRED_CHECKS,
+  validateStage23CommitHandoff, SELF_CHECK_FIELDS, STAGE23_CONCERN_CODES,
+  STAGE23_REQUIRED_CHECKS,
   buildNarratorStartCodePrecheck, validateNarratorStartingProseOutput,
   buildNarratorProseCodePrecheck, validateNarratorProseAudit } from
   '@rus/new-game';
@@ -22,6 +23,7 @@ const AUDITOR = `Return only {"pass":<boolean>,"failed_checks":["<required check
 Audit the opening
 against visible_context_package, not plausibility. Assess every required check.
 Only these exact factual/technical names may appear in failed_checks: ${STAGE23_REQUIRED_CHECKS.filter((key) => key !== 'literary_composition_check').join(', ')}.
+Only these exact codes may appear in concerns: ${STAGE23_CONCERN_CODES.join(', ')}.
 List failed checks only, never checks that passed or requirement names.
 If only literary composition fails, return pass=true and failed_checks=[].
 Set pass=false only when failed_checks names a failed factual or technical check
@@ -32,8 +34,12 @@ dossier, checklist or weak composition finding, report
 NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION in concerns; the host derives
 literary_composition_check from that concern. Do not put literary_composition_check
 in failed_checks. Literary findings do not make pass false when all blocking checks
-pass. Evidence must be concise and nonempty. Do not rewrite prose or include private
-state.`;
+pass. An unsupported negative fact in prose is a factual must_not_include_check
+failure: pass=false with NARRATOR_PROSE_MUST_NOT_INCLUDE_VIOLATION. Use severity
+repairable when rewriting prose from the same visible package can remove it;
+use hard_block or upstream_block when prose-only repair cannot fix the defect.
+Use warning only for literary findings. Evidence must be concise and nonempty.
+Do not rewrite prose or include private state.`;
 
 export function createAuthoredOpeningNarrationService({ roleRunner,
   llmDiagnostics = null } = {}) {

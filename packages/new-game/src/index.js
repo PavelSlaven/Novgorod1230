@@ -16,7 +16,7 @@ export { validateNarratorStartingProseOutput } from
 export { buildStage23AuditInput, runStage23NarratorProseAudit,
   validateStage23CommitHandoff } from
   './stages/stage-23-narrator-prose-audit/index.js';
-export { STAGE23_REQUIRED_CHECKS, STAGE23_ROUTE_SCHEMA } from
+export { STAGE23_CONCERN_CODES, STAGE23_REQUIRED_CHECKS, STAGE23_ROUTE_SCHEMA } from
   './stages/stage-23-narrator-prose-audit/policy/constants.js';
 export { buildNarratorProseCodePrecheck } from
   './stages/stage-23-narrator-prose-audit/precheck/build-precheck.js';

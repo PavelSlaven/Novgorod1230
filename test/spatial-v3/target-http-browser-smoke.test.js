@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assertDisplayedMovementRoute, assertTargetTurnEvidence, readStage23AuditOutput,
+import { assertDisplayedMovementRoute, assertTargetObservation, assertTargetTurnEvidence, readStage23AuditOutput,
   TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
 test('real-provider Stage 23 capture keeps only diagnostic audit fields', async () => {
@@ -37,11 +37,11 @@ function movement(previous, optionId, label, destinationOrigin = null) {
 function emptyScreen() { return { panels: { route: { data: { movement: { options: [] } } } },
   visible_context: { visible_objects: [] } }; }
 
-function observation(partyId, requestId, visibleNpcs = []) {
+function observation(partyId, requestId, visibleNpcs = [], panelNpcs = visibleNpcs.map(({ display_label }) => ({ display_label }))) {
   const screen = emptyScreen();
   screen.screen_status = 'ready';
   screen.visible_context.visible_npc = visibleNpcs;
-  screen.panels.people = { data: { visible_npcs: visibleNpcs.map(({ display_label }) => ({ display_label })) } };
+  screen.panels.people = { data: { visible_npcs: panelNpcs } };
   const before = { party: { state_version: 1 }, clock: { whole_minutes: 10 }, positions: [1],
     body: [], entity_placements: [], materialization_runs: '1', sites: '1' };
   const after = { ...before, party: { state_version: 2 }, clock: { whole_minutes: 11 } };
@@ -49,6 +49,30 @@ function observation(partyId, requestId, visibleNpcs = []) {
     request_id: requestId, idempotency_key: requestId }], before, after,
   result: { movement: null, screen } };
 }
+
+test('observation accepts zero, one, or distinctly numbered unrecognized NPC labels', () => {
+  const npc = (id) => ({ display_label: 'человек',
+    entity_ref: { entity_kind: 'npc', entity_id: id }, recognition: 'unrecognized',
+    observable_cues: { identity: { display_name: 'человек', appearance: {} }, equipment: [] } });
+  const empty = observation('forest', 'empty');
+  delete empty.result.screen.panels.people;
+  assert.doesNotThrow(() => assertTargetObservation(empty));
+  const one = observation('forest', 'one', [npc('a')]);
+  assert.doesNotThrow(() => assertTargetObservation(one));
+  one.result.screen.panels.people.data.visible_npcs[0].display_label = 'человек (1)';
+  assert.throws(() => assertTargetObservation(one));
+  const two = observation('forest', 'two', [npc('a'), npc('b')],
+    [{ display_label: 'человек (1)' }, { display_label: 'человек (2)' }]);
+  assert.doesNotThrow(() => assertTargetObservation(two));
+  two.result.screen.panels.people.data.visible_npcs[1].display_label = 'человек';
+  assert.throws(() => assertTargetObservation(two));
+  two.result.screen.panels.people.data.visible_npcs[1].display_label = 'человек (2)';
+  two.result.screen.panels.people.data.visible_npcs[1].status = 'скрытый статус';
+  assert.throws(() => assertTargetObservation(two));
+  delete two.result.screen.panels.people.data.visible_npcs[1].status;
+  two.result.screen.panels.people.data.visible_npcs[1].display_label = 'тайное имя';
+  assert.throws(() => assertTargetObservation(two));
+});
 
 test('displayed exit accepts generated destination after observation', () => {
   const observation = { result: { screen: emptyScreen() } };

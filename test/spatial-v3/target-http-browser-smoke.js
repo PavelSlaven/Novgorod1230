@@ -208,7 +208,7 @@ export function assertTargetTurnEvidence(calls, realProvider = false) {
   return routes;
 }
 
-function assertTargetObservation(turn, realProvider) {
+export function assertTargetObservation(turn, realProvider = false) {
   assert.equal(turn.error, undefined, 'approved target observation must reach its existing owner');
   assert.equal(turn.result.screen.screen_status, 'ready');
   assert.equal(turn.after.party.state_version, turn.before.party.state_version + 1);
@@ -229,9 +229,11 @@ function assertTargetObservation(turn, realProvider) {
     assert.equal(typeof visibleNpc.observable_cues.identity.appearance, 'object');
     assert.ok(Array.isArray(visibleNpc.observable_cues.equipment));
   }
-  assert.deepEqual(turn.result.screen.panels.people.data.visible_npcs.map(
+  assert.deepEqual((turn.result.screen.panels.people?.data?.visible_npcs ?? []).map(
     ({ display_label, status }) => ({ display_label, status })),
-  visibleNpcs.map(({ display_label }) => ({ display_label, status: undefined })));
+  visibleNpcs.map(({ display_label }, index) => ({
+    display_label: visibleNpcs.length > 1 ? `${display_label} (${index + 1})` : display_label,
+    status: undefined })));
 }
 
 export async function readStage23AuditOutput(response) {

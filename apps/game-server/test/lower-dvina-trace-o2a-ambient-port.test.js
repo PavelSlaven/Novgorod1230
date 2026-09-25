@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { isOrdinaryDiscoveryInScope } from '@rus/turn';
 import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from
   '../src/internal/lower-dvina-trace-ordinary-materialization-profile.js';
 import { createLowerDvinaTraceO2aAmbientPort } from
@@ -189,6 +190,28 @@ test('player-safe discovery exposes committed source, not expected result capabi
   assert.equal(serialized.includes('hidden-permission'), false);
   assert.equal(serialized.includes('source:hidden-stock'), false);
   assert.equal(serialized.includes('скрытый запас'), false);
+});
+
+test('committed source in current scene can be inspected by ordinary owner', () => {
+  const projected = projectLowerDvinaTraceO2aDiscoverySources({
+    sources: [{ source_ref: 'source:deadwood', public_name: 'валежник',
+      disclosure_state: 'visible' }],
+    projected: { player_safe_state: {
+      current_visible_context: { visible_objects: [] },
+      ordinary_resolution: { discovery_available: true,
+        container_resolution_available: false, scene_seed_available: false }
+    } }
+  });
+  assert.equal(isOrdinaryDiscoveryInScope({
+    operation: { op: 'request_discovery', discovery_kind: 'inspect',
+      target_refs: ['source:deadwood'], query: 'валежник' },
+    playerSafeState: projected.player_safe_state
+  }), true);
+  assert.equal(isOrdinaryDiscoveryInScope({
+    operation: { op: 'request_discovery', discovery_kind: 'inspect',
+      target_refs: ['source:other'], query: 'валежник' },
+    playerSafeState: projected.player_safe_state
+  }), false);
 });
 
 test('the O2a owner intercepts only its explicit capability ref', async () => {

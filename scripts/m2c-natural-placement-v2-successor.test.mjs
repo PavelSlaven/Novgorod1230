@@ -6,16 +6,13 @@ import { buildNaturalPlacementV2Successor } from './generate-m2c-natural-placeme
 import { buildG4NaturalPlacementCompiledRecords } from
   '../tools/runtime-catalog-activation/src/g4-natural-placement-compiled-records.js';
 
-test('placement successor changes only seven approved scene template versions', async () => {
+test('placement successor closes every approved G4 scene pair and retains v1 rows', async () => {
   const root = resolve(import.meta.dirname, '..');
   const files = await buildNaturalPlacementV2Successor();
   for (const [path, bytes] of files) assert.deepEqual(await readFile(resolve(root, path)), bytes);
   const sourceBytes = await readFile(resolve(root,
     'data/world-catalogs/novgorod/m2c-natural-placement/candidate.json'));
   const successorBytes = [...files.values()][0];
-  assert.equal(successorBytes.length, sourceBytes.length);
-  assert.deepEqual([...successorBytes].flatMap((byte, index) =>
-    byte === sourceBytes[index] ? [] : [[sourceBytes[index], byte]]), Array.from({ length: 7 }, () => [49, 50]));
   const old = JSON.parse(sourceBytes);
   const candidate = JSON.parse(successorBytes);
   const capacityApproval = JSON.parse(await readFile(resolve(root,
@@ -26,12 +23,14 @@ test('placement successor changes only seven approved scene template versions', 
     const row = JSON.parse(startBytesByPath.get(start.path));
     return row.initial_perception_rule?.placement_candidate?.placement_ref.id ?? row.natural_placement_ref.id;
   });
-  for (const id of ids) {
-    const row = candidate.placements.find((item) => item.id === id);
-    assert.equal(row.scene_template_ref.version, 2);
-    row.scene_template_ref.version = 1;
+  assert.equal(candidate.placements.length, old.placements.length * 2);
+  for (const row of old.placements) {
+    assert.deepEqual(candidate.placements.find((item) => item.id === `${row.id}__scene_v1`),
+      { ...row, id: `${row.id}__scene_v1` });
+    assert.deepEqual(candidate.placements.find((item) => item.id === row.id),
+      { ...row, scene_template_ref: { ...row.scene_template_ref, version: 2 } });
   }
-  assert.deepEqual(candidate, old);
+  for (const id of ids) assert.equal(candidate.placements.find((item) => item.id === id).scene_template_ref.version, 2);
   const oldApproval = JSON.parse(await readFile(resolve(root,
     'data/world-catalogs/novgorod/m2c-sol-data-approval.json')));
   assert.throws(() => buildG4NaturalPlacementCompiledRecords({

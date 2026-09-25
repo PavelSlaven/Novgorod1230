@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { canonicalDigest } from '@rus/materialization';
+import { deriveApprovedGeneratedSceneV2Bindings } from './approved-generated-scene-v2-bindings.js';
 
 const ITEMS = 'data/world-catalogs/novgorod/m2c-items/candidate.json';
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -8,17 +9,21 @@ const unresolved = () => { throw Object.assign(new Error('M2C_NATURAL_ACCESS_CON
 
 /** Reads the existing ordinary source property context; no separate rights store. */
 export function createApprovedGeneratedNaturalPropertyReader({ candidateBytes, approval,
-  sourceBytesByPath } = {}) {
+  sourceBytesByPath, capacityApproval, sceneTemplateBytes } = {}) {
   if (typeof candidateBytes !== 'string'
       || approval?.decision !== 'APPROVE_M2C_GENERATED_PROPERTY_CONTEXT_AUTHORING_V1'
       || approval.approval_scope !== 'generated_property_context_authoring_data_only'
       || hash(candidateBytes) !== approval.candidate_sha256) unresolved();
-  const candidate = JSON.parse(candidateBytes);
+  const candidate = capacityApproval == null ? JSON.parse(candidateBytes)
+    : deriveApprovedGeneratedSceneV2Bindings(JSON.parse(candidateBytes),
+      { capacityApproval, sceneTemplateBytes });
   const contextRef = `${candidate.candidate_id}@${candidate.version}`;
   if (approval.candidate_ref !== contextRef || !Array.isArray(candidate.source_set)
       || candidate.source_set.some((pin) => typeof sourceBytesByPath?.[pin.path] !== 'string'
         || hash(sourceBytesByPath[pin.path]) !== pin.sha256)) unresolved();
-  const items = JSON.parse(sourceBytesByPath[ITEMS]);
+  const items = capacityApproval == null ? JSON.parse(sourceBytesByPath[ITEMS])
+    : deriveApprovedGeneratedSceneV2Bindings(JSON.parse(sourceBytesByPath[ITEMS]),
+      { capacityApproval, sceneTemplateBytes });
   return async function readNaturalSourceProperty({ transaction, partyId, g5Id,
     g4Id, sourceRef, profileId, operation, spatialProposal = null }) {
     if (!transaction?.query || !candidate.operations.includes(operation)) unresolved();

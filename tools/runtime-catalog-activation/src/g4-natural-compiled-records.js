@@ -57,7 +57,7 @@ export function buildG4NaturalCompiledRecords({ candidate, candidateBytes, appro
 
 /** Approved capacity starts authorize only their exact G4 and scene-version pairs. */
 export function deriveApprovedNaturalSceneRepins({ capacityApproval, startBytesByPath,
-  sceneTemplateBytes } = {}) {
+  sceneTemplateBytes, placementCandidateBytes, placementApproval } = {}) {
   const sha = (bytes) => typeof bytes === 'string'
     ? createHash('sha256').update(bytes).digest('hex') : null;
   if (capacityApproval?.schema !== 'rus.m2c_supplemental_data_approval.v1'
@@ -82,6 +82,23 @@ export function deriveApprovedNaturalSceneRepins({ capacityApproval, startBytesB
     const refs = repins.get(g4.id) ?? new Set();
     refs.add(scene.id);
     repins.set(g4.id, refs);
+  }
+  if (placementCandidateBytes != null) {
+    if (sha(placementCandidateBytes) !== placementApproval?.approved_exact_candidates?.natural_placement_sha256
+      || placementApproval?.decision !== 'APPROVE_DATA_ONLY') {
+      throw new TypeError('Exact approved natural placement source is required.');
+    }
+    const placements = JSON.parse(placementCandidateBytes).placements;
+    for (const placement of placements) {
+      const scene = placement.scene_template_ref;
+      if (scene?.version !== 1 || scenes.filter((entry) => entry.id === scene.id
+        && entry.version === 2 && entry.canonical_digest === scene.canonical_digest).length !== 1) {
+        throw new TypeError('Exact approved capacity scene pair is required.');
+      }
+      const refs = repins.get(placement.g4_ref.id) ?? new Set();
+      refs.add(scene.id);
+      repins.set(placement.g4_ref.id, refs);
+    }
   }
   return repins;
 }

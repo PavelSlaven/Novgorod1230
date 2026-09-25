@@ -9,6 +9,10 @@ import { createLowerDvinaTraceTurnStepGenericOwners } from '../src/runtime/lower
 import { loadLiveWorldAuthoredStartCatalog } from '../src/internal/live-world-authored-starts.js';
 import { validateLowerDvinaTraceOrdinaryStageBApproval } from
   '../src/internal/lower-dvina-trace-ordinary-stage-b-approval.js';
+import { readApprovedNaturalFirstEntryAuthoring } from
+  '../src/infrastructure/postgres/ordinary-materialization-first-entry-natural.js';
+import { deriveApprovedGeneratedSceneV2Bindings } from
+  '../src/infrastructure/postgres/approved-generated-scene-v2-bindings.js';
 
 const worldRevisionId = 'novgorod_spatial_v3_target_contract_approval_001';
 
@@ -73,6 +77,22 @@ test('finite-only profile selects exactly approved Stage B without ambient', asy
     'qwen3.8-27b-uncensored-w4a16-tp2');
   assert.equal(validateLowerDvinaTraceOrdinaryStageBApproval(loaded.stage_b_approval,
     loaded.profile.stage_b_classification_eval), true);
+  const items = readApprovedNaturalFirstEntryAuthoring(loaded.naturalSourceAuthoring);
+  const property = deriveApprovedGeneratedSceneV2Bindings(
+    JSON.parse(loaded.propertySourceAuthoring.candidateBytes), loaded.propertySourceAuthoring);
+  for (const family of items.family_profiles) {
+    for (const ref of family.exact_match.scene_template_refs.filter((value) => value.endsWith('@1'))) {
+      assert.ok(family.exact_match.scene_template_refs.includes(`${ref.slice(0, -1)}2`));
+    }
+  }
+  for (const family of property.family_bindings) {
+    for (const ref of family.scene_template_refs.filter((value) => value.endsWith('@1'))) {
+      assert.ok(family.scene_template_refs.includes(`${ref.slice(0, -1)}2`));
+    }
+  }
+  assert.throws(() => readApprovedNaturalFirstEntryAuthoring({ ...loaded.naturalSourceAuthoring,
+    sceneTemplateBytes: `${loaded.naturalSourceAuthoring.sceneTemplateBytes} ` }),
+  /Exact approved scene v2 source/);
   assert.equal(validateLowerDvinaTraceOrdinaryStageBApproval({ ...loaded.stage_b_approval,
     model_identity: { ...loaded.stage_b_approval.model_identity, model: 'another-model' } },
   loaded.profile.stage_b_classification_eval), false);

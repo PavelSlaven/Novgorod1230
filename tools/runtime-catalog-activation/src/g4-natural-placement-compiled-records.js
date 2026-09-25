@@ -97,9 +97,17 @@ export function deriveApprovedNaturalPlacementV2Successor({ sourceCandidateBytes
         && row.canonical_digest === placements[0].scene_template_ref.canonical_digest).length !== 1) {
       throw new TypeError('Exact approved source placement and scene are required.');
     }
-    const prior = structuredClone(placements[0]);
+  }
+  const original = [...source.placements];
+  for (const placement of original) {
+    const scene = placement.scene_template_ref;
+    if (scene?.version !== 1 || scenes.filter((row) => row.id === scene.id && row.version === 2
+      && row.canonical_digest === scene.canonical_digest).length !== 1) {
+      throw new TypeError('Exact approved source placement and scene are required.');
+    }
+    const prior = structuredClone(placement);
     prior.id = `${prior.id}__scene_v1`;
-    placements[0].scene_template_ref.version = 2;
+    placement.scene_template_ref.version = 2;
     source.placements.push(prior);
   }
   return `${JSON.stringify(source, null, 2)}\n`;

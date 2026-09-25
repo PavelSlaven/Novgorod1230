@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
 import { canonicalDigest } from '@rus/materialization';
+import { deriveApprovedGeneratedSceneV2Bindings } from './approved-generated-scene-v2-bindings.js';
 
-export function readApprovedNaturalFirstEntryAuthoring({ candidateBytes, approval } = {}) {
+export function readApprovedNaturalFirstEntryAuthoring({ candidateBytes, approval,
+  capacityApproval, sceneTemplateBytes } = {}) {
   if (typeof candidateBytes !== 'string'
       || approval?.decision !== 'APPROVE_M2C_ITEMS_AUTHORING_V1'
       || approval.approval_scope !== 'items_and_finite_stocks_authoring_data_only'
@@ -13,7 +15,8 @@ export function readApprovedNaturalFirstEntryAuthoring({ candidateBytes, approva
       || !Array.isArray(candidate.natural_finite_source_profiles)) {
     fail('ORDINARY_NATURAL_AUTHORING_NOT_APPROVED');
   }
-  return candidate;
+  return capacityApproval == null ? candidate
+    : deriveApprovedGeneratedSceneV2Bindings(candidate, { capacityApproval, sceneTemplateBytes });
 }
 
 export async function buildFirstEntryNaturalCapabilities({ authoring, binding,

@@ -33,20 +33,23 @@ test('successor import remains blocked when exact approved bytes differ', () => 
     /Exact independently approved natural presentation bytes/);
 });
 
-test('approved capacity starts repin only their matching natural G4 scene refs', () => {
+test('approved capacity scenes repin every matching natural G4 scene pair', () => {
   const capacityApproval = JSON.parse(readFileSync(resolve(root,
     `${base}live-world-runtime-v17/capacity-v2-start-successors/data-approval.json`)));
   const sceneTemplateBytes = readFileSync(resolve(root, capacityApproval.source_pins.scene_templates.path), 'utf8');
   const starts = new Map(capacityApproval.approved_successors.map(({ start }) =>
     [start.path, readFileSync(resolve(root, start.path), 'utf8')]));
+  const placementCandidateBytes = readFileSync(resolve(root, `${base}m2c-natural-placement/candidate.json`), 'utf8');
   const repins = deriveApprovedNaturalSceneRepins({ capacityApproval, sceneTemplateBytes,
-    startBytesByPath: starts });
-  assert.equal(repins.size, 6);
+    startBytesByPath: starts, placementCandidateBytes,
+    placementApproval: JSON.parse(readFileSync(resolve(root, `${base}m2c-sol-data-approval.json`))) });
+  assert.equal(repins.size, 32);
   const records = buildG4NaturalCompiledRecords({ candidateBytes: naturalBytes,
     approvedCandidateBytes: approvedNaturalBytes, approval, approvedSceneRepins: repins });
   const originals = buildG4NaturalCompiledRecords({ candidateBytes: naturalBytes,
     approvedCandidateBytes: approvedNaturalBytes, approval });
-  assert.equal([...repins.values()].reduce((count, refs) => count + refs.size, 0), 7);
+  assert.equal([...repins.values()].reduce((count, refs) => count + refs.size, 0),
+    JSON.parse(placementCandidateBytes).placements.length);
   for (const record of records) {
     assert.ok(['clear', 'partial', 'none'].includes(approvedNaturalStableCover(record.payload)));
     const refs = record.payload.exact_scene_features.canonical_scene_template_refs;
@@ -76,7 +79,12 @@ test('approved scene v2 starts retain exact scene v1 natural placement for gener
     sourceCandidateBytes, approvedStartBytesByPath: starts, capacityApproval, sceneTemplateBytes,
     approval: JSON.parse(readFileSync(resolve(root, `${base}m2c-sol-data-approval.json`))) }));
   const source = JSON.parse(sourceCandidateBytes);
-  assert.equal(successor.placements.length, source.placements.length + capacityApproval.approved_successors.length);
+  assert.equal(successor.placements.length, source.placements.length * 2);
+  for (const original of source.placements) {
+    assert.deepEqual(successor.placements.find((row) => row.id === `${original.id}__scene_v1`),
+      { ...original, id: `${original.id}__scene_v1` });
+    assert.equal(successor.placements.find((row) => row.id === original.id).scene_template_ref.version, 2);
+  }
   for (const { start } of capacityApproval.approved_successors) {
     const approved = JSON.parse(starts.get(start.path));
     const ref = approved.initial_perception_rule?.placement_candidate?.placement_ref

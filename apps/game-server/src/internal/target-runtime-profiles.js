@@ -96,15 +96,18 @@ export async function loadTargetFiniteFirstEntryProfile({ rootDir = process.cwd(
     sources.set(pin.path, bytes);
   }
   const stageB = await loadTargetFiniteStageB({ read, worldRevisionId, baseProfile: rows[0].payload.profile });
+  const capacityApproval = JSON.parse(await read(`${root}/live-world-runtime-v17/capacity-v2-start-successors/data-approval.json`));
+  const sceneTemplateBytes = await read(capacityApproval.source_pins?.scene_templates?.path);
   return freeze({ schema: 'rus.live_world_runtime.target_finite_first_entry_profile.v1',
     world_revision_id: worldRevisionId, candidate_sha256: hash(baseBytes),
     catalog_pin: verifiedCatalog.pin, profile: stageB.profile,
     stage_b_approval: stageB.receipt,
     naturalSourceAuthoring: { candidateBytes: itemBytes,
-      approval: JSON.parse(await read(`${root}/m2c-items/approval-attestation.json`)) },
+      approval: JSON.parse(await read(`${root}/m2c-items/approval-attestation.json`)),
+      capacityApproval, sceneTemplateBytes },
     propertySourceAuthoring: { candidateBytes: propertyBytes,
       approval: JSON.parse(await read(`${root}/m2c-items/property-context-approval.json`)),
-      sourceBytesByPath: Object.fromEntries(sources) } });
+      sourceBytesByPath: Object.fromEntries(sources), capacityApproval, sceneTemplateBytes } });
 }
 
 async function loadTargetFiniteStageB({ read, worldRevisionId, baseProfile }) {

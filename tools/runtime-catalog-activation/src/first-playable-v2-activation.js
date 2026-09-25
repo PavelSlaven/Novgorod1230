@@ -181,8 +181,10 @@ async function targetPresentationRows(root) {
     'm2c-scene-movement-edges/open-capacity-v2-import/spatial_v3_scene_templates.json'), 'utf8');
   const startBytesByPath = new Map(await Promise.all(capacityStartApproval.approved_successors
     .map(async ({ start }) => [start.path, await readFile(resolve(root, start.path), 'utf8')])));
+  const placementSourceBytes = await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8');
   const approvedSceneRepins = deriveApprovedNaturalSceneRepins({ capacityApproval: capacityStartApproval,
-    sceneTemplateBytes, startBytesByPath });
+    sceneTemplateBytes, startBytesByPath, placementCandidateBytes: placementSourceBytes,
+    placementApproval: approval });
   const naturalSuccessors = buildG4NaturalCompiledRecords({ candidateBytes: naturalSuccessorBytes,
     approvedCandidateBytes: approvedBytes(successorApproval.candidates.natural.path), approval: successorApproval,
     approvedSceneRepins });
@@ -194,7 +196,7 @@ async function targetPresentationRows(root) {
   const placementPath = 'm2c-natural-placement/scene-template-v2-successor-candidate.json';
   const placementSuccessor = buildG4NaturalPlacementCompiledRecords({
     candidateBytes: await readFile(resolve(base, placementPath), 'utf8'),
-    sourceCandidateBytes: await readFile(resolve(base, 'm2c-natural-placement/candidate.json'), 'utf8'),
+    sourceCandidateBytes: placementSourceBytes,
     approvedStartBytesByPath: startBytesByPath,
     sceneTemplateBytes,
     capacityApproval: capacityStartApproval, approval,

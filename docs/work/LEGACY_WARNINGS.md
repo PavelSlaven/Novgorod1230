@@ -44,6 +44,7 @@
 | 037 | `data/world-catalogs/novgorod/` | утверждения данных разбросаны | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 038 | `tools/world-catalog-workflow/` | tool импортируется runtime | — |
 | 039 | `universal_category_classification_policy.md` и ещё 3 | обрезанные документы корпуса | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
+| 042 | `npc_generation_profiles.txt`, `code_driven_world_materialization_architecture.md`, `items_and_property.txt` | ACTIVE-нормы main против PC §9.1 до #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 
 ## Записи
 
@@ -132,7 +133,7 @@
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-029 — ordinary-профили v17 выключены (ветка PR #98)
-- **Что.** `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 есть только отдельный профиль конечных природных источников при первом входе (`finite_first_entry`). `items_and_property.txt` и `code_driven_world_materialization_architecture.md` описывают эти профили как active: они действуют только на пути v16 / Lower Dvina Trace.
+- **Что.** `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 загружены только профиль конечных природных источников при первом входе (`finite_first_entry`), A1 (`actionProductionProfile`) и N1 (`ordinary_profiles.n1`). `items_and_property.txt` и `code_driven_world_materialization_architecture.md` описывают эти профили как active: они действуют только на пути v16 / Lower Dvina Trace.
 - **Как жить.** Не «подключать существующий профиль» к v17 и не подгонять тесты под фикстуры v16. Обобщение профилей на все классы — M2c.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
@@ -184,3 +185,8 @@
 - **Что.** 4 документа нормативного корпуса содержат буквальный маркер «…tokens truncated…»: в `universal_category_classification_policy.md` потеряны разделы 10–11.4 (ландшафт, вода, землепользование, животные); в `formulas.md`, `base_turn_orchestration.txt` и `movement_locations_regions.txt` повреждены архивные приложения v2. Целая копия политики — `data/knowledge-source/imports/universal-category-classification-2026-07-15/`.
 - **Как жить.** До восстановления разделы 10–11.4 политики читать из импорта только как справку: не как норму и не как вход materializer. Восстановление — CR норм M2c через CORPUS_EDIT.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
+
+### LW-042 — ACTIVE-нормы main против PC §9.1 до CR норм M2c
+- **Что.** На main `npc_generation_profiles.txt:7` («LLM не создаёт NPC»), D-005 и строка 176 `code_driven_world_materialization_architecture.md` и `items_and_property.txt:10` (direct action не создаёт «ценные» предметы) расходятся с PC §9.1 и решениями владельца ([5836830425](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425), [5839745154](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)): обычного NPC по запросу игрока создаёт код по сохранённому броску и лимиту места, изготовить можно всё реалистичное, typed gap — только для вещей по authority-записи. `knowledge:query` на main выдаёт старые формулировки. Нормы правит #146 на ветке PR #98; на main они придут с merge PR #98.
+- **Как жить.** При конфликте действуют PC §9.1 и решения #133. Эти формулировки не закреплять новыми тестами и не цитировать в CR как норму.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)

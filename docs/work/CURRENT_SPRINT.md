@@ -1,6 +1,6 @@
 # Current sprint
 
-> **Производная выжимка.** Истина — GitHub Issues и milestones, для Runtime — описание Draft PR #98. Статусов, HEAD и CI здесь нет: «сделано» = issue закрыт. Проверено: 2026-09-25, commit 21bd0938.
+> **Производная выжимка.** Истина — GitHub Issues и milestones, для Runtime — описание Draft PR #98. Статусов, HEAD и CI здесь нет: «сделано» = issue закрыт. Проверено: 2026-09-26, commit b51ac023.
 
 ## Цели
 
@@ -22,11 +22,20 @@
 
 Единица работы и проверки — задача с CR, а не весь этап: ревью после каждой задачи. Исполнитель — Cursor, ревьюер — Claude; порядок работы — [HOW_WE_WORK](../process/HOW_WE_WORK.md).
 
+Текущие задачи-CR по порядку (порядок — техническая зависимость; решения владельца 2026-09-26 — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)):
+
+1. [#144](https://github.com/PavelSlaven/Novgorod1230/issues/144) — RAG нормативного корпуса только лексический, затем статус и приоритет manifest из CONTRACT_INDEX; на main. Идёт первым: после него статус в manifest выводится скриптом, и перевод политики категорий в ACTIVE (#146, шаг 1) не блокирует `knowledge:status`.
+2. Синхронизация main → PR #98 (merge, без rebase).
+3. [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) — карты v17 и план этапа на ветке PR #98; закрывается после независимого Contract Auditor.
+4. [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) — нормы M2c через CORPUS_EDIT на ветке PR #98; каждый шаг — отдельная сдача на ревью.
+5. CR реализации M2c (код и данные) — после шага 1 #146.
+
 ### Backlog — сначала
 
 Приоритетные долги (#111, #113, #115) закрыты. Перед и во время M2c:
 
 1. [#126](https://github.com/PavelSlaven/Novgorod1230/issues/126) — остаток non-gate проверок: устаревшие sha-пины p12 dependency-closure (перегенерация — утверждённый data-пакет), `spatial-v3:check-p02`.
+2. [#147](https://github.com/PavelSlaven/Novgorod1230/issues/147) — осиротевшие тестовые Docker-контейнеры убитых прогонов (main); файлы ветки PR #98 с `docker run` конвертируются при следующей синхронизации main → PR #98.
 
 Остальное (`P3`) — по мере работы с затронутыми путями; ссылки на issue стоят у записей [LEGACY_WARNINGS](LEGACY_WARNINGS.md). После merge #98 разблокируются [#117](https://github.com/PavelSlaven/Novgorod1230/issues/117) и [#118](https://github.com/PavelSlaven/Novgorod1230/issues/118).
 

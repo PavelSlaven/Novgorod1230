@@ -68,6 +68,10 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         execution: enabled?.execution_context,
         objective: enabled?.objective_context,
         targetRef: request?.operation?.target_refs?.[0],
+        query: request?.operation?.query,
+        visibleObjects: request?.request?.player_safe_state
+          ?.current_visible_context?.visible_objects,
+        positionRef: request?.committed_state?.position?.position_id,
         locationRef: request?.committed_state?.position?.location_ref,
         scopeRef
       });
@@ -126,8 +130,26 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
     }
   });
 }
-function selectDiscoveryContext({ execution, objective, targetRef, locationRef, scopeRef }) {
+function selectDiscoveryContext({ execution, objective, targetRef, query,
+  visibleObjects, positionRef, locationRef, scopeRef }) {
   if (!validExecution(execution) || typeof targetRef !== 'string') return null;
+  if ((targetRef === positionRef || targetRef === locationRef)
+      && normalized(query)) {
+    const visible = new Set((Array.isArray(visibleObjects) ? visibleObjects : [])
+      .filter(({ entity_ref: ref, display_label: label, visible_status: status }) =>
+        ref?.entity_kind === 'ordinary_resource_source'
+          && status === 'known' && normalized(label) === normalized(query))
+      .map(({ entity_ref }) => entity_ref.entity_id));
+    const matches = (execution.context_bound_capabilities ?? []).filter(
+      ({ source_ref: ref, public_name: name, disclosure_state: disclosure,
+        access_decision: access, finite_source_authority: authority,
+        constrained_natural_resource_profile: constrained }) =>
+        visible.has(ref) && normalized(name) === normalized(query)
+          && disclosure === 'visible' && access === 'allow'
+          && (authority ?? constrained)?.finite_source?.position_ref === positionRef);
+    if (matches.length > 1) return null;
+    if (matches.length === 1) targetRef = matches[0].source_ref;
+  }
   if (execution.candidate_context.target_ref === targetRef
       || targetRef === locationRef
         && execution.candidate_context.target_ref === scopeRef?.entity_id) {
@@ -158,6 +180,10 @@ function selectDiscoveryContext({ execution, objective, targetRef, locationRef, 
     finite_source_authority: selected.finite_source_authority ?? null }),
   objective: { ...objective, context_refs: selected.context_refs,
     policy_refs: selected.policy_refs } };
+}
+
+function normalized(value) {
+  return typeof value === 'string' ? value.trim().replace(/\s+/gu, ' ').toLocaleLowerCase('ru') : null;
 }
 
 function bindCommittedFiniteSource(execution) {

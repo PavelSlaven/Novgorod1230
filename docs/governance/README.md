@@ -19,6 +19,7 @@
 | 7. Роль кода | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
 | 8. Самостоятельный мир, NPC и время | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
 | 9. Реализм и историческая рамка | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
+| 9.1. Материализуемый мир (добавлен после переноса) | [PC — PRODUCT_CONSTITUTION.md](PRODUCT_CONSTITUTION.md) |
 | 10. Материализация мира | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
 | 11. Каноническая география и semantic freedom | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
 | 12. Свободный крафт и физические результаты действий | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
@@ -32,9 +33,12 @@
 | 19. Изучение репозитория и инструменты | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 20. Документация и её владельцы | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 21. Реализация и изменение контрактов | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
+| 21.1. Утверждение данных (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 22. Отладка | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 23. Persistence, concurrency и БД | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
 | 24. Тестирование и проверки | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
+| 24.1. Обязательный отчёт настоящего gameplay run (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
+| 24.2. Проверки не подгоняются под реализацию (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 25. Субагенты и независимый аудит | [AR — AUDIT_RULES.md](AUDIT_RULES.md) |
 | 26. Git, GitHub и stacked PR | [GS — GIT_SAFETY_RULES.md](GIT_SAFETY_RULES.md) |
 | 27. Защита пользовательской работы и опасные действия | [GS — GIT_SAFETY_RULES.md](GIT_SAFETY_RULES.md) |

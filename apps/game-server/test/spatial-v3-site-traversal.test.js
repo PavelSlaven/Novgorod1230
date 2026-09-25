@@ -5,6 +5,8 @@ import { createSpatialV3SiteTraversalRuntime } from
   '../src/runtime/spatial-v3-site-traversal-runtime.js';
 import { applySiteTraversalTransition, siteTraversalWrites } from
   '../src/infrastructure/postgres/spatial-v3-site-traversal-commit.js';
+import { applyS1LocalPositionTransition } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-step-commit-projections.js';
 import { recheckSiteConnectionTraversal } from
   '../src/infrastructure/postgres/first-playable/recheck-site-connection-traversal.js';
 
@@ -96,6 +98,9 @@ for (const conditionRef of [connection.availability_condition_set_ref, null]) te
   assert.equal(consequence.spatial_v3_traversal.result.result_kind, 'completed');
   assert.equal(consequence.position_transition.to_position_ref, 'position:target');
   const snapshot = structuredClone(state);
+  applyS1LocalPositionTransition({ snapshot, state,
+    transition: consequence.position_transition });
+  assert.deepEqual(snapshot.position, state.position);
   assert.equal(applySiteTraversalTransition({ snapshot, state, consequence }), true);
   assert.deepEqual(snapshot.position, { g4_id: 'g4', site_id: 'site:target',
     g6_instance_id: 'g6:target', position_id: 'position:target' });

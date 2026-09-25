@@ -1,4 +1,5 @@
 import { serverError } from '../../errors.js';
+import { SITE_TRAVERSAL_OWNER } from './spatial-v3-site-traversal-commit.js';
 
 export function backgroundNpcPlanMatchesEnvelope(plan, envelope, state) {
   const identity = plan.causal_identity;
@@ -35,7 +36,7 @@ export function projectBackgroundNpcRemainder({ visibleContext, remainder }) {
 }
 
 export function applyS1LocalPositionTransition({ snapshot, state, transition }) {
-  if (transition == null) return;
+  if (transition == null || transition.owner === SITE_TRAVERSAL_OWNER) return;
   if (transition.owner !== '@rus/movement-routes'
       || transition.actor_id !== state.actor_id
       || transition.from_position_ref !== state.position?.position_id

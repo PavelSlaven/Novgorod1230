@@ -91,6 +91,20 @@ test('local movement follows only committed directed edges; P16 changes exact po
     state: committed })).map(({ edge_id: id }) => id), ['departure:focus']);
 });
 
+test('S1 projection still rejects a stale committed position', () => {
+  const committed = state('departure');
+  assert.throws(() => applyS1LocalPositionTransition({
+    snapshot: structuredClone(committed), state: committed,
+    transition: { owner: '@rus/movement-routes', actor_id: 'actor',
+      from_position_ref: 'focus', to_position_ref: 'arrival' }
+  }), { code: 'TRACE_S1_MOVEMENT_TRANSITION_INVALID' });
+  assert.throws(() => applyS1LocalPositionTransition({
+    snapshot: structuredClone(committed), state: committed,
+    transition: { owner: 'unknown', actor_id: 'actor',
+      from_position_ref: 'departure', to_position_ref: 'focus' }
+  }), { code: 'TRACE_S1_MOVEMENT_TRANSITION_INVALID' });
+});
+
 test('local action movement keeps exact clock; route traversal owns its elapsed time', async () => {
   const clock = { whole_minutes: '10', subminute_numerator: '0',
     subminute_denominator: '1' };

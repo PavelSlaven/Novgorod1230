@@ -70,8 +70,8 @@ export async function loadSpatialV3TargetProductionRelease({
     // Activation reads use the locked transaction. Later public reads must own
     // their connection through the pool, never retain that released client.
     const runtime = Object.freeze({ ...starts[0], starts: Object.freeze(starts.map((start) => Object.freeze({
-      ...start, worldBaseReader: createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) }) }))),
-      worldBaseReader: createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) }) });
+      ...start, worldBaseReader: createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool), generatedTemplateVersion: 2 }) }))),
+      worldBaseReader: createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool), generatedTemplateVersion: 2 }) });
     return Object.freeze({ release, readback, runtime });
   });
 }

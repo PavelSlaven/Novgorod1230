@@ -35,6 +35,9 @@ test('approved M2c open capacity successor imports through P12 without overwriti
     await pool.query(await readFile(`infra/world-base/schema/${match[1]}`, 'utf8'));
   await pool.query(await buildTransactionalImportSql({
     manifestPath: 'data/world-catalogs/novgorod/m2c-acoustic-import-manifest.json' }));
+  await pool.query(await buildTransactionalImportSql({
+    manifestPath: 'data/world-catalogs/novgorod/m2c-npc-import-manifest.json' }));
+  await pool.query(await readFile('scripts/live-world-v17-generated-npc-versioned-index.sql', 'utf8'));
   const sql = await buildTransactionalImportSql({ manifestPath });
   await pool.query(sql);
   await pool.query(sql);
@@ -115,8 +118,31 @@ test('approved M2c open capacity successor imports through P12 without overwriti
   assert.equal(expansionBinding.ok, true, JSON.stringify(expansionBinding.error));
   const expansionClosure = await reader.readPinnedG4ExpansionClosure(expansionBinding.value);
   assert.equal(expansionClosure.ok, true, JSON.stringify(expansionClosure.error));
+  assert.ok(expansionClosure.value.slot_templates.every((row) => row.template_version === 1));
+  const v17Reader = createSpatialV3WorldBaseReader({ query: pool.query.bind(pool),
+    generatedTemplateVersion: 2 });
+  const v17Closure = await v17Reader.readPinnedG4ExpansionClosure(expansionBinding.value);
+  assert.equal(v17Closure.ok, true, JSON.stringify(v17Closure.error));
+  assert.ok(v17Closure.value.slot_templates.length > 0);
+  assert.ok(v17Closure.value.slot_templates.every((row) => row.template_version === 2));
+  assert.ok(v17Closure.value.scene_materialization_candidates.every((row) =>
+    row.scene_template_version === 2));
   assert.ok(expansionClosure.value.entry_scene_endpoints.some((row) =>
     row.profile_version === 2 && row.scene_template_version === 2));
+  const npcBinding = (await pool.query(`SELECT c.g4_id,g.canonical_digest AS g4_digest,
+    t.id AS template_id,t.canonical_digest AS template_digest
+    FROM world_base.spatial_v3_g4_npc_composition_bindings c
+    JOIN world_base.spatial_v3_nodes g ON g.id=c.g4_id AND g.version=c.g4_version
+    JOIN world_base.spatial_v3_g5_generation_templates t
+      ON t.id=c.generation_template_id AND t.version=c.generation_template_version
+    WHERE c.version=2 AND c.g4_id='g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge'
+    LIMIT 1`)).rows[0];
+  const npc = await v17Reader.readPinnedG4NpcCompositionClosure({
+    g4: { id: npcBinding.g4_id, version: 1, world_revision_id: g4.world_revision_id,
+      canonical_digest: npcBinding.g4_digest },
+    generation_template: { id: npcBinding.template_id, version: 2,
+      world_revision_id: g4.world_revision_id, canonical_digest: npcBinding.template_digest } });
+  assert.equal(npc.ok, true, JSON.stringify(npc.error));
   for (const version of [1, 2]) {
     const selected = await reader.readPinnedCanonicalG5SceneBinding({
       id: binding.id, version: binding.version, world_revision_id: binding.world_revision_id,

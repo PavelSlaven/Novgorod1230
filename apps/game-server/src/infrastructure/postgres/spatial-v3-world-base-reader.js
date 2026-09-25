@@ -84,7 +84,7 @@ function exactReactionRef(ref) {
 }
 
 /** Read-only authoring reader. Every lookup requires one explicit version and revision pin. */
-export function createSpatialV3WorldBaseReader({ query } = {}) {
+export function createSpatialV3WorldBaseReader({ query, generatedTemplateVersion = 1 } = {}) {
   async function read({ kind, ref } = {}) {
     if (!SOURCES[kind] || !exact(ref)) return failure('authoring_dependency_pin_missing', kind ?? 'authoring', ref?.id, { kind });
     if (typeof query !== 'function') return failure('generated_schema_mismatch', kind, ref.id, { reason: 'read-only query port is required' });
@@ -927,8 +927,8 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
       return failure('route_plan_snapshot_missing', 'profile', profile.id, { reason: 'g4_expansion_slots_invalid_or_missing' });
     }
     const [slotTemplatesResult, limitResult] = await Promise.all([
-      query(`SELECT st.slot_id,st.slot_version,st.template_id,st.template_version,st.selection_weight,st.compatibility_rule_id,st.compatibility_rule_version,t.world_revision_id AS template_world_revision_id,t.g5_class_id,t.regional_template_id,t.regional_template_version,t.scene_materialization_profile_id,t.scene_materialization_profile_version,t.status AS template_status,t.canonical_digest AS template_digest,av.canonical_digest AS template_authoring_digest FROM world_base.spatial_v3_expansion_slot_templates st JOIN unnest($1::text[],$2::int[]) AS wanted(id,version) ON wanted.id=st.slot_id AND wanted.version=st.slot_version JOIN world_base.spatial_v3_g5_generation_templates t ON t.id=st.template_id AND t.version=st.template_version JOIN world_base.spatial_v3_authoring_versions av ON av.entity_kind='g5_generation_template' AND av.entity_id=t.id AND av.version=t.version AND av.world_revision_id=t.world_revision_id AND av.status='approved' AND av.canonical_digest=t.canonical_digest WHERE t.world_revision_id=$3 ORDER BY st.slot_id,st.template_id`, [slots.map((s) => s.id), slots.map((s) => s.version), revision]),
-      query(`SELECT profile_id,profile_version,template_id,template_version,max_count FROM world_base.spatial_v3_expansion_profile_template_limits WHERE profile_id=$1 AND profile_version=$2 ORDER BY template_id`, [profile.id, profile.version])
+      query(`SELECT st.slot_id,st.slot_version,st.template_id,st.template_version,st.selection_weight,st.compatibility_rule_id,st.compatibility_rule_version,t.world_revision_id AS template_world_revision_id,t.g5_class_id,t.regional_template_id,t.regional_template_version,t.scene_materialization_profile_id,t.scene_materialization_profile_version,t.status AS template_status,t.canonical_digest AS template_digest,av.canonical_digest AS template_authoring_digest FROM world_base.spatial_v3_expansion_slot_templates st JOIN unnest($1::text[],$2::int[]) AS wanted(id,version) ON wanted.id=st.slot_id AND wanted.version=st.slot_version JOIN world_base.spatial_v3_g5_generation_templates t ON t.id=st.template_id AND t.version=st.template_version JOIN world_base.spatial_v3_authoring_versions av ON av.entity_kind='g5_generation_template' AND av.entity_id=t.id AND av.version=t.version AND av.world_revision_id=t.world_revision_id AND av.status='approved' AND av.canonical_digest=t.canonical_digest WHERE t.world_revision_id=$3 AND st.template_version=$4 ORDER BY st.slot_id,st.template_id`, [slots.map((s) => s.id), slots.map((s) => s.version), revision, generatedTemplateVersion]),
+      query(`SELECT profile_id,profile_version,template_id,template_version,max_count FROM world_base.spatial_v3_expansion_profile_template_limits WHERE profile_id=$1 AND profile_version=$2 AND template_version=$3 ORDER BY template_id`, [profile.id, profile.version, generatedTemplateVersion])
     ]);
     const slotTemplates = slotTemplatesResult?.rows;
     const limits = limitResult?.rows;

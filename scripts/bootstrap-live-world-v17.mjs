@@ -42,7 +42,9 @@ const gate1 = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1'
 const p12 = 'data/world-catalogs/novgorod/m2c-p12-v17-after-gate1-v1';
 const nature = 'data/world-catalogs/novgorod/m2c-natural';
 const capacityManifest = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
-const capacityManifestSha256 = '80d3c420583307197c8118a4c07b86fe0cea47eb5486a4e09d38429a1bd7e20d';
+const capacityManifestSha256 = '55b9893171bb8368293857fc2c87e1ca04210c472430d6d5572d2f9ac81e9057';
+const generatedNpcIndexMigration = 'scripts/live-world-v17-generated-npc-versioned-index.sql';
+const generatedNpcIndexMigrationSha256 = '27d527784f11a512cea2863b719dc416bcccbc3a483bcfac3145e05e1761538f';
 const naturePins = {
   script: '2da6132c6bf46fe482a0a675ded4ca672c176b094a3312de1f8c3d0ada936952',
   natural: '58e0d2be66df86a79faf76d4ef57d3d020ba778711736a61b4478c255d8cbef7',
@@ -118,6 +120,7 @@ export async function checkV17BootstrapInputs() {
       || sqlBytes !== request.sql_builder.combined_sql_bytes)
     throw new Error('V17_P12_COMBINED_SQL_MISMATCH');
   await exact(capacityManifest, capacityManifestSha256);
+  await exact(generatedNpcIndexMigration, generatedNpcIndexMigrationSha256);
   execFileSync(process.execPath,
     [`${v17}/additional-start-artifacts/owner-coverage.mjs`, '--check'],
     { cwd: root, encoding: 'utf8' });
@@ -298,6 +301,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       throw new Error('V17_P12_SOURCE_READBACK_MISMATCH');
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
+    await world.query((await exact(generatedNpcIndexMigration, generatedNpcIndexMigrationSha256)).toString());
     const capacity = await json(capacityManifest);
     const pinnedTables = ['spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles'];
     const previous = {};

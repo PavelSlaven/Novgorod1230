@@ -41,6 +41,38 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
   const generated = (await old('spatial_v3_g5_generation_templates')).map((row) => ({
     ...row, version: 2, scene_materialization_profile_version: 2,
   }));
+  const limits = (await old('spatial_v3_expansion_profile_template_limits'))
+    .map((row) => version(row, 'template_version'));
+  const slotTemplates = (await old('spatial_v3_expansion_slot_templates'))
+    .map((row) => version(row, 'template_version'));
+  const successors = (await old('spatial_v3_g5_successor_frontier_rules'))
+    .map((row) => version(row, 'g5_template_version'));
+  const npcRegional = (await json(`${catalog}/m2c-npc/datasets/spatial_v3_npc_regional_context_profiles.json`))
+    .map((row) => {
+      const next = { ...row, version: 2, payload: { ...row.payload, version: 2,
+        applicability: row.payload.applicability.map((item) => item.generation_template_ref
+          ? { ...item, generation_template_ref: { ...item.generation_template_ref, version: 2 } }
+          : item) } };
+      delete next.canonical_digest;
+      return digest(next);
+    });
+  const npcBindings = (await json(`${catalog}/m2c-npc/datasets/spatial_v3_npc_runtime_profiles.json`))
+    .filter((row) => row.profile_kind === 'npc_binding')
+    .map((row) => {
+      const next = { ...row, version: 2, payload: { ...row.payload,
+        regional_context_refs: row.payload.regional_context_refs.map((ref) =>
+          ({ ...ref, version: 2 })) } };
+      delete next.canonical_digest;
+      return digest(next);
+    });
+  const npcCompositions = (await json(`${catalog}/m2c-npc/datasets/spatial_v3_g4_npc_composition_bindings.json`))
+    .map((row) => {
+      const next = { ...row, version: 2, generation_template_version: 2,
+        payload: { ...row.payload, weighted_profile_refs: row.payload.weighted_profile_refs
+          .map((entry) => ({ ...entry, profile_ref: { ...entry.profile_ref, version: 2 } })) } };
+      delete next.canonical_digest;
+      return digest(next);
+    });
   const acoustics = (await json(`${catalog}/m2c-acoustic/approved/spatial_v3_g6_acoustic_baselines.json`))
     .map((row) => {
       const next = { ...row, version: 2, scene_template_version: 2 };
@@ -64,6 +96,13 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
     ...generated.map((row) => ({ entity_kind: 'g5_generation_template', entity_id: row.id,
       version: 2, world_revision_id: row.world_revision_id, status: row.status,
       canonical_digest: row.canonical_digest, provenance_ref: row.provenance_ref })),
+    ...npcCompositions.map((row) => ({ entity_kind: row.entity_kind, entity_id: row.id,
+      version: 2, world_revision_id: row.world_revision_id, status: row.status,
+      canonical_digest: row.canonical_digest, provenance_ref: row.provenance_ref })),
+    ...[...npcBindings, ...npcRegional].map((row) => ({ entity_kind: row.entity_kind,
+      entity_id: row.id, version: 2, world_revision_id: row.world_revision_id,
+      status: row.status, canonical_digest: row.canonical_digest,
+      provenance_ref: row.provenance_ref })),
     ...acoustics.map((row) => ({ entity_kind: row.entity_kind, entity_id: row.id,
       version: 2, world_revision_id: row.world_revision_id, status: row.status,
       canonical_digest: row.canonical_digest, provenance_ref: row.provenance_ref })),
@@ -80,12 +119,20 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
     ['spatial_v3_scene_materialization_profiles', profiles],
     ['spatial_v3_scene_materialization_candidates', candidates],
     ['spatial_v3_g5_generation_templates', generated],
+    ['spatial_v3_expansion_profile_template_limits', limits],
+    ['spatial_v3_expansion_slot_templates', slotTemplates],
+    ['spatial_v3_g5_successor_frontier_rules', successors],
+    ['spatial_v3_g4_npc_composition_bindings', npcCompositions],
+    ['spatial_v3_npc_runtime_profiles', npcBindings],
+    ['spatial_v3_npc_regional_context_profiles', npcRegional],
     ['spatial_v3_g6_acoustic_baselines', acoustics],
     ['spatial_v3_local_movement_eligibility_profiles', movement],
     ['spatial_v3_authoring_versions', authoring],
   ]);
   const provenance = 'm2c_open_capacity_v2_approved';
   const sourceRecord = [...await json(`${source}/local-movement-eligibility-v1/datasets/source_records.json`),
+    ...(await json(`${catalog}/m2c-npc/datasets/source_records.json`)).filter((row) =>
+      row.id === 'm2c_npc_editorial_001'),
     { id: provenance, title: 'M2c open capacity successor',
     source_type: 'project_note', file_reference: candidatePath,
     page_or_section: `candidate_sha256:${sha(candidateBytes)}`,
@@ -100,6 +147,8 @@ export async function promoteM2cOpenCapacity({ check = false } = {}) {
     'spatial_v3_scene_applicability_rules']);
   const order = sourceManifest.datasets.map((row) => row.table)
     .filter((table) => replacements.has(table) || shared.has(table));
+  order.push('spatial_v3_g4_npc_composition_bindings');
+  order.push('spatial_v3_npc_runtime_profiles', 'spatial_v3_npc_regional_context_profiles');
   order.push('spatial_v3_local_movement_eligibility_profiles');
   const registry = await json('data/contracts/spatial-v3/world-base-import-registry.v1.json');
   const rank = new Map(registry.dependency_order.flat().map((table, index) => [table, index]));

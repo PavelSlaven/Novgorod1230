@@ -8,6 +8,7 @@ import {
   createOrdinaryAggregate
 } from '@rus/materialization';
 import { createPostgresOrdinaryMaterializationAggregateStore } from '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-aggregate-store.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 60_000 });
 const name = `ordinary-aggregate-${process.pid}`;
@@ -24,7 +25,7 @@ const close = (aggregate, request_identity = 'close-a') => applyOrdinaryAggregat
 test('ordinary aggregate PostgreSQL adapter is exact, CAS-only, and rollback-safe', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required for isolated PostgreSQL test');
   t.after(() => docker(['rm', '-fv', name]));
-  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary', '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary', '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   let ready = false;
   for (let attempt = 0; attempt < 50; attempt += 1) {

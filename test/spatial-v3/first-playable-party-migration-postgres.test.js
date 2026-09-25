@@ -6,6 +6,7 @@ import {
   runSpatialV3TargetMigrations,
   SPATIAL_V3_TARGET_MIGRATIONS
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input = null) => spawnSync(
   'docker',
@@ -30,7 +31,7 @@ test('016 enforces one semantic trace per NPC and same-time batch',
       docker(['rm', '-fv', conflictContainerName]);
     });
     const started = docker([
-      'run', '-d', '--name', conflictContainerName,
+      'run', ...testContainerLabel(), '-d', '--name', conflictContainerName,
       '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=conflict_local',
       '-e', 'POSTGRES_USER=conflict',
@@ -133,7 +134,7 @@ test('017 is rolled back when the in-transaction readiness gate fails',
       docker(['rm', '-fv', rollbackContainerName]);
     });
     const started = docker([
-      'run', '-d', '--name', rollbackContainerName,
+      'run', ...testContainerLabel(), '-d', '--name', rollbackContainerName,
       '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=rollback_local',
       '-e', 'POSTGRES_USER=rollback',
@@ -182,7 +183,7 @@ test('011 applies to isolated PostgreSQL and permits transport departure without
   }
   t.after(() => docker(['rm', '-fv', containerName]));
   const started = docker([
-    'run', '-d', '--name', containerName,
+    'run', ...testContainerLabel(), '-d', '--name', containerName,
     '-e', 'POSTGRES_PASSWORD=first_playable_local',
     '-e', 'POSTGRES_USER=first_playable',
     '-e', 'POSTGRES_DB=first_playable',

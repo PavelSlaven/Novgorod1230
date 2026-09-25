@@ -26,6 +26,7 @@ import {
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 
@@ -41,7 +42,7 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
     docker(['rm', '-fv', name]);
   });
   const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=phase1a',
     '-e', 'POSTGRES_DB=phase1a',

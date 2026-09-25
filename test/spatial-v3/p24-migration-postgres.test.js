@@ -4,12 +4,13 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
 import { applySpatialV3PartyMigration, buildSpatialV3MigrationInventory, readV2PartySource } from '../../tools/spatial-v3/p24-migration.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const port = 56600 + (process.pid % 500); const name = `p24-${process.pid}`;
 test('P24 party migration reads actual v2 relation, applies exact reviewed mapping, dry-runs and rolls back an earlier write on failure', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
-  t.after(() => docker(['rm', '-fv', name])); assert.equal(docker(['run','-d','--name',name,'-p',`${port}:5432`,'-e','POSTGRES_PASSWORD=p24','-e','POSTGRES_USER=p24','-e','POSTGRES_DB=p24','postgres:16-alpine']).status, 0);
+  t.after(() => docker(['rm', '-fv', name])); assert.equal(docker(['run',...testContainerLabel(),'-d','--name',name,'-p',`${port}:5432`,'-e','POSTGRES_PASSWORD=p24','-e','POSTGRES_USER=p24','-e','POSTGRES_DB=p24','postgres:16-alpine']).status, 0);
   const pool = new pg.Pool({ host:'127.0.0.1', port, user:'p24', password:'p24', database:'p24' }); t.after(() => pool.end());
   for (let i=0;i<40;i+=1) { try { await pool.query('SELECT 1'); break; } catch { await new Promise((r)=>setTimeout(r,250)); if(i===39) throw new Error('postgres unavailable'); } }
   for (const file of ['001_party_runtime.sql','002_party_runtime_v3.sql','003_party_runtime_v3_planning.sql','004_party_runtime_v3_journeys.sql','005_party_runtime_v3_domain.sql','006_party_runtime_v3_migration.sql']) await pool.query(await readFile(`schemas/party-db/${file}`,'utf8'));

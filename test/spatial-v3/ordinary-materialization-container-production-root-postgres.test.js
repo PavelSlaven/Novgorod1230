@@ -10,6 +10,7 @@ import {
   SPATIAL_V3_PRODUCTION_RELEASE,
   createSpatialV3ProductionCompositionRoot
 } from '../../apps/game-server/src/composition/production-spatial-v3.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { PARTY_RUNTIME_CATALOG_MIGRATION } from
@@ -44,7 +45,7 @@ test('production root provisions active O2b and S1 in the first-entry P16',
       if (pool && !closed) await pool.end();
       docker(['rm','-fv',containerName]);
     });
-    const started=docker(['run','-d','--name',containerName,
+    const started=docker(['run',...testContainerLabel(),'-d','--name',containerName,
       '-p','127.0.0.1::5432','-e','POSTGRES_PASSWORD=ordinary',
       '-e','POSTGRES_USER=ordinary','-e','POSTGRES_DB=ordinary',
       'postgres:16-alpine']);

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 30_000 });
 const name = `p09-ddl-${process.pid}`;
@@ -9,7 +10,7 @@ const name = `p09-ddl-${process.pid}`;
 test('P09 applies fresh, reapplies part 12, and rejects invalid deferred spatial-core mutations', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker is required for isolated PostgreSQL P09 DDL test');
   t.after(() => docker(['rm', '-fv', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p09_local_only', '-e', 'POSTGRES_USER=p09', '-e', 'POSTGRES_DB=p09', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p09_local_only', '-e', 'POSTGRES_USER=p09', '-e', 'POSTGRES_DB=p09', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let attempt = 0; attempt < 30; attempt += 1) {
     if (docker(['exec', name, 'pg_isready', '-U', 'p09', '-d', 'p09']).status === 0) {

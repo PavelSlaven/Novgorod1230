@@ -8,6 +8,7 @@ import pg from 'pg';
 import { loadApprovedActorProfileCatalog } from '@rus/runtime-catalog';
 import { buildLowerDvinaBoundaryV1ImportSql } from '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildCharacterAppearanceV1ImportSql } from '../../tools/spatial-v3/character-appearance-v1-importer.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const container = `character-appearance-${randomUUID().slice(0, 12)}`;
 const docker = (args, input, timeout = 60_000) => spawnSync('docker', args, { input, encoding: 'utf8', timeout });
@@ -20,7 +21,7 @@ test('world migration 21 and character appearance v4 import replay in isolated P
     docker(['rm', '-fv', container]);
   });
   assert.equal(docker([
-    'run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=appearance', '-e', 'POSTGRES_USER=appearance',
     '-e', 'POSTGRES_DB=world', 'postgres:16-alpine'
   ]).status, 0);

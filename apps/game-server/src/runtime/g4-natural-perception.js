@@ -26,7 +26,7 @@ export function prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin, cur
     if (binding.schema === 'rus.verified_canonical_scene_natural_source.v1') {
       if (binding.verified !== true || binding.party_id !== scene.party_id
         || binding.actor_id !== observer?.actor_id
-        || binding.position_id !== positions[0].id || binding.position_id !== observer.position_id
+        || binding.position_id !== observer.position_id
         || binding.g5_site_id !== scene.site_id || binding.baseline_id !== scene.baseline_id
         || binding.source_slot_key !== source_endpoint.slot_key) perceptionGap('verified_canonical_scene_source_required');
     } else {

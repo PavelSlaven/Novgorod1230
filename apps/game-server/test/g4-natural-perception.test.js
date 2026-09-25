@@ -59,3 +59,28 @@ test('unadmitted source, missing current light and ambiguous committed endpoint 
     assert.throws(() => prepareG4NaturalScenePerceptionInput(input), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
   }
 });
+
+test('current canonical scene source follows actor focus while initial source stays at arrival', async () => {
+  const { input } = await approvedNaturalPerceptionFixture({ canonical: true });
+  const facts = input.currentFacts;
+  const initialBinding = facts.canonical_source_binding;
+  facts.observer.position_id = 'position:inside';
+  facts.canonical_source_binding = {
+    schema: 'rus.verified_canonical_scene_natural_source.v1', verified: true,
+    party_id: 'party:1', actor_id: 'player:1', position_id: 'position:inside',
+    g5_site_id: 'site', baseline_id: 'baseline', source_slot_key: facts.source_endpoint.slot_key
+  };
+  assert.ok(project(input).ok);
+  for (const mutate of [
+    (v) => { v.currentFacts.canonical_source_binding.position_id = 'position:shore'; },
+    (v) => { v.currentFacts.canonical_source_binding.actor_id = 'other'; },
+    (v) => { v.currentFacts.canonical_source_binding.source_slot_key = 'other'; }
+  ]) {
+    const changed = structuredClone(input); mutate(changed);
+    assert.throws(() => prepareG4NaturalScenePerceptionInput(changed),
+      { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+  }
+  facts.canonical_source_binding = initialBinding;
+  assert.throws(() => prepareG4NaturalScenePerceptionInput(input),
+    { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
+});

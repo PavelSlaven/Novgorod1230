@@ -19,6 +19,7 @@ export function phase2InitialCurrentVisibleContext({
   initialState,
   scenePresentation = null,
   canonicalInitialState = false,
+  initialNaturalPerceptionRulePin = null,
   naturalScenePerceptionInput = null
 }) {
   try {
@@ -37,7 +38,7 @@ export function phase2InitialCurrentVisibleContext({
       && typeof binding.source_slot_key === 'string' && binding.source_slot_key.length > 0;
     const initialSource = binding?.schema === 'rus.verified_canonical_initial_natural_source.v1'
       && binding.scenario_id === initialState.scenario_id;
-    if ((!currentSceneSource && !initialSource)
+    if (!(initialNaturalPerceptionRulePin == null ? currentSceneSource : initialSource)
       || binding.verified !== true || binding.party_id !== initialState.party_id
       || binding.actor_id !== initialState.actor_id
       || binding.position_id !== initialState.position?.position_id) {

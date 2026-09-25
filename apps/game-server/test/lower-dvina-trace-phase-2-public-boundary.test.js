@@ -154,7 +154,8 @@ test('canonical initial turn uses current P22 without historical scene or raw en
     environment_snapshot: { schema: 'rus.approved_initial_environment.v1', season: 'summer',
       light_state: 'daylight', weather_state: { weather_state_id: 'PRIVATE_WEATHER_STATE' } } };
   const input = { screen, openingScreenDigest: canonicalDigest(screen), initialState,
-    canonicalInitialState: true, naturalScenePerceptionInput: { ...perception,
+    canonicalInitialState: true, initialNaturalPerceptionRulePin: { key: 'initial-rule' },
+    naturalScenePerceptionInput: { ...perception,
       entity_observations: [{ entity_kind: 'npc', entity_id: 'npc:raw',
         visibility: 'clear', display_label: 'человек', exterior: {
           sex_category: 'male', age_category: 'adult', appearance: { build: 'lean' },
@@ -184,6 +185,13 @@ test('canonical initial turn uses current P22 without historical scene or raw en
     assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
       naturalScenePerceptionInput: wrong }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
   }
+  const sceneSource = structuredClone(perception);
+  sceneSource.canonical_source_binding = { ...sceneSource.canonical_source_binding,
+    schema: 'rus.verified_canonical_scene_natural_source.v1',
+    g5_site_id: sceneSource.scene.site_id,
+    baseline_id: sceneSource.scene.baseline_id, source_slot_key: 'arrival' };
+  assert.throws(() => phase2InitialCurrentVisibleContext({ ...input,
+    naturalScenePerceptionInput: sceneSource }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
 });
 
 test('canonical start without initial rule uses exact verified current scene source', async () => {
@@ -205,6 +213,13 @@ test('canonical start without initial rule uses exact verified current scene sou
   const current = phase2InitialCurrentVisibleContext(args);
   assert.equal(current.visible_scene, perception.scene.visible_scene);
   assert.equal(JSON.stringify(current).includes('старое место'), false);
+  const initialSource = structuredClone(perception);
+  initialSource.canonical_source_binding = { ...initialSource.canonical_source_binding,
+    schema: 'rus.verified_canonical_initial_natural_source.v1',
+    scenario_id: 'scenario:other' };
+  assert.throws(() => phase2InitialCurrentVisibleContext({ ...args,
+    initialState: { ...args.initialState, scenario_id: 'scenario:other' },
+    naturalScenePerceptionInput: initialSource }), { code: 'NATURAL_SCENE_PERCEPTION_DATA_GAP' });
   for (const key of ['party_id', 'actor_id', 'position_id', 'g5_site_id',
     'baseline_id', 'source_slot_key']) {
     const wrong = structuredClone(perception);

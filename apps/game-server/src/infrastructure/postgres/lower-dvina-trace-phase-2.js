@@ -138,6 +138,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
           openingScreenDigest: row.stage26_result.opening_screen_digest,
           initialState: initial,
           canonicalInitialState,
+          initialNaturalPerceptionRulePin: naturalPin,
           naturalScenePerceptionInput,
           scenePresentation: canonicalInitialState ? null : await loadLowerDvinaTraceScenePresentation({
             scenarioDefinitionRevision: initial.materialization_trace?.seed_context

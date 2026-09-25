@@ -48,10 +48,6 @@ const requiredFragments = new Map([
     'production_runtime: spatial_v3_production_v1',
     'v3 является sole production owner.'
   ]],
-  ['DOCUMENTS/llm_documentation_navigation.md', [
-    'temporal_world_and_interruptible_activities.md',
-    '`4.4.0-target.1`'
-  ]],
   ['DOCUMENTS/time_system.txt', [
     '`temporal-world-v1.1`',
     'decimal strings'

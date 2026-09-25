@@ -53,9 +53,9 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 
 ## Маршрутизация: задача → контекст
 
-Легенда: [GR](docs/governance/README.md) — преамбула, §1.2, карта §N; [PC](docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30; [AI](docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28; [WR](docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §29; [AR](docs/governance/AUDIT_RULES.md) — §25, §25.1; [GS](docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27; IDX — CONTRACT_INDEX; ctx — `docs/context/`.
+Легенда: [GR](docs/governance/README.md) — преамбула, §1.2, карта §N; [PC](docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30; [AI](docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28; [WR](docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §21.1, §24, §24.1, §24.2, §29; [AR](docs/governance/AUDIT_RULES.md) — §25, §25.1; [GS](docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27; IDX — CONTRACT_INDEX; ctx — `docs/context/`.
 
-- **Код:** WR §2, §18, §19, §21, §24, §29; AI §16; GS §26, §27.
+- **Код:** WR §2, §18, §19, §21, §21.1, §24, §24.2, §29; AI §16; GS §26, §27.
 - **Docs:** WR §2, §18, §20, §24, §29; GS §26, §27.
 - **Домен:** «Код» + PC целиком + AI §13–17, §28 + строка IDX §8.1 + MODULE.md владельцев.
 
@@ -78,13 +78,14 @@ Novgorod1230 — открытая текстовая ролевая игра в 
 | world-catalog | Домен | AI §10, §11; IDX «Historical/knowledge grounding» | — |
 | bugfix | Код + строка области | WR §22; ctx EDGE_CASES | — |
 | release / Git | Код | GS §26.1 | PC |
+| gameplay run / playtest | Код + строка области | WR §22, §24.1; [docs/playtests/README.md](docs/playtests/README.md) | — |
 | многоэтапный план | по задаче | [CURRENT_SPRINT](docs/work/CURRENT_SPRINT.md) и его ссылки | — |
 
 **Contract Auditor.** Триггеры (сжато): создаются, меняются, переносятся, удаляются или повышаются в статусе governing/normative документы, IDX, `MODULE.md`; active release/profile/manifest/binding; public schema, operation, API/export, DDL, persistence, transaction, idempotency, replay; domain owner или handoff; LLM authority, prompt, plan contract, model-call topology, repair policy; free actions, materialization, items, Spatial, NPC decisions/conversation/combat, time, visibility/knowledge/perception, speech, narration; план ссылается на proposed/target/migration; описания current behavior расходятся; final acceptance. Независимый аудит (§25) также обязателен при риске повреждения или потери данных, critical orchestration и сложной логике без достаточных тестов. Исключение — только локальный fix, для которого доказано, что не меняются public behavior, contracts, owner boundary, persistence/schema, LLM authority и active profile status. Полный и обязательный текст — AR §25, §25.1; AR загружается, если триггер сработал или его нельзя исключить.
 
 ## Рабочий цикл
 
-Процедура — [WORKFLOW](docs/process/WORKFLOW.md): (0) в начале спринта — проверка, синхронизация и использование CBM (WR §19); (1) одна задача = новая сессия, вход — issue/CR; (2) CR для нетривиальной задачи; (3) context pack по строке маршрутизации + `rg` по [LEGACY_WARNINGS](docs/work/LEGACY_WARNINGS.md); (4) короткие итерации с focused-тестами; (5) проверки и Contract Auditor по триггерам; (6) фиксация: CHANGELOG, LW, «Closes #N», отчёт WR §29.
+Обзор системы — [HOW_WE_WORK](docs/process/HOW_WE_WORK.md). Процедура — [WORKFLOW](docs/process/WORKFLOW.md): (0) в начале спринта — проверка, синхронизация и использование CBM (WR §19); (1) одна задача = новая сессия, вход — issue/CR; (2) CR для нетривиальной задачи; (3) context pack по строке маршрутизации + `rg` по [LEGACY_WARNINGS](docs/work/LEGACY_WARNINGS.md); (4) короткие итерации с focused-тестами; (5) проверки и Contract Auditor по триггерам; (6) фиксация: CHANGELOG, LW, «Closes #N», отчёт WR §29.
 
 ## Процедуры (skills)
 

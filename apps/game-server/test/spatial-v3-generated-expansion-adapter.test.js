@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSpatialV3GeneratedExpansionAdapter } from '../src/infrastructure/postgres/spatial-v3-generated-expansion-adapter.js';
+import { SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF } from '../src/runtime/spatial-v3-current-visible-context.js';
 
 test('generated expansion requires a committed party snapshot in its P16 transaction', async () => {
   const queries = [];
@@ -91,8 +92,6 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
           : [{ slot_key: 'in', endpoint_role: 'arrival', required_position_slot_key: 'arrival',
             required_position_instance_ordinal: 0 }] } }) },
     committer: { prepareExpansion: async ({ prepare }) => prepare({ transaction }) },
-    projectionPolicyRef: { entity_ref: {
-      entity_kind: 'visibility_modifier', entity_id: 'test-only' }, authoring_version: '1' },
     admitGeneration: async () => ({ ok: true, validation_report: { status: 'pass' },
       commit_rechecks: [], recheck: async () => ({ ok: true }) }),
     projectVisible: async (input) => { visibleInput = input; return { ok: true, envelope: visibleEnvelope }; }
@@ -121,8 +120,7 @@ test('visible owner receives exact expansion facts and missing policy blocks P16
   assert.ok(visibleInput.dependency_pins.pins.some((pin) =>
     pin.entity_ref.entity_kind === 'expansion_terminal_policy'));
   assert.equal(visibleInput.package_id, `visible:${visibleInput.change_set_id}`);
-  visibleEnvelope = { projection_policy_ref: { entity_ref: {
-    entity_kind: 'visibility_modifier', entity_id: 'test-only' }, authoring_version: '1' } };
+  visibleEnvelope = { projection_policy_ref: SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF };
   const malformed = await adapter.prepareExpansion({ party_id: 'party', g4, profile,
     slot_ref: { id: slot.id, version: slot.version },
     directional_exit: { id: exit.id, version: exit.version }, candidate_ordinal: 0,

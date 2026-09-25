@@ -267,7 +267,6 @@ export function assertDisplayedMovementRoute(turns) {
     assert.equal(refs.length, 1, 'displayed route has one visible committed movement ref');
     const isExit = refs[0].entity_ref.entity_kind === 'g4_directional_exit';
     assert.equal(turn.error, undefined, 'visible movement must reach the production movement owner');
-    assert.notEqual(turn.result.movement, null);
     assert.notDeepEqual(turn.after.positions, turn.before.positions, 'movement must change committed position');
     assert.equal(turn.after.party.state_version, turn.before.party.state_version + 1);
     if (!isExit) {
@@ -275,6 +274,7 @@ export function assertDisplayedMovementRoute(turns) {
       assert.equal(Number(turn.after.sites), Number(turn.before.sites));
       assert.equal(turn.after.site?.id, turn.before.site?.id, 'local movement stays in its G5');
     } else {
+      assert.notEqual(turn.result.movement, null, 'directional exit must return a movement result');
       const connections = (turn.after.connections ?? []).filter((connection) =>
         connection.from_site_id === turn.before.site?.id
         && connection.to_site_id === turn.after.site?.id

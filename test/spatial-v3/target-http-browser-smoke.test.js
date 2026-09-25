@@ -31,7 +31,7 @@ function movement(previous, optionId, label, destinationOrigin = null) {
     connections: isExit ? [{ id: 'connection', from_site_id: 'source', to_site_id: 'target', status: 'active' }] : [],
     party: { state_version: 2 } };
   return { args: [1, { raw_text: label }], before, after, result: {
-    movement: {}, screen: emptyScreen() } };
+    movement: isExit ? { status: 'completed' } : null, screen: emptyScreen() } };
 }
 
 function emptyScreen() { return { panels: { route: { data: { movement: { options: [] } } } },
@@ -93,6 +93,23 @@ test('terminal ordinal zero reaches canonical G5, with or without preceding loca
   exit.args[1].raw_text = 'Непоказанный путь';
   assert.throws(() => assertDisplayedMovementRoute([observation, local, exit]),
     /exact currently displayed approved movement label/);
+});
+
+test('two committed local passages may return null movement before a completed directional exit', () => {
+  const observation = { result: { screen: emptyScreen() } };
+  const first = movement(observation, 'local_scene_edge:one', 'Проход 1');
+  const second = movement(first, 'local_scene_edge:two', 'Проход 2');
+  second.before = structuredClone(first.after);
+  second.after.positions = [3];
+  second.after.position_slot = 'departure';
+  second.after.party.state_version = 3;
+  const exit = movement(second, 'directional_exit:current', 'Продолжить путь — выход 2', 'generated');
+  exit.before = structuredClone(second.after);
+  exit.after.party.state_version = 4;
+  assert.deepEqual(assertDisplayedMovementRoute([observation, first, second, exit]), { generated: true });
+  exit.result.movement = null;
+  assert.throws(() => assertDisplayedMovementRoute([observation, first, second, exit]),
+    /directional exit must return a movement result/);
 });
 
 test('exit rejects wrong connection even when destination origin and count look valid', () => {

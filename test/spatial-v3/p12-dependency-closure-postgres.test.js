@@ -6,6 +6,7 @@ import test from 'node:test';
 import pg from 'pg';
 import { buildTransactionalImportSql } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
 import { buildP12V11PhysicalProjectionSql, compileP12V11PhysicalRows } from '../../tools/spatial-v3/p12-v1_1-physical-projection.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const port = 57500 + (process.pid % 300);
@@ -31,7 +32,7 @@ const snapshotImportedTables = async (pool, tables) => {
 test('P12 dependency-closure DDL applies fresh/reapplies and enforces selector, applicability and regional-basis FKs', async (t) => {
   if (docker(['version']).status !== 0) t.skip('Docker required');
   t.after(() => docker(['rm', '-fv', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p12', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p12', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p12', password: 'p12', database: 'p12' });
   t.after(() => pool.end());
   for (let attempt = 0; attempt < 50; attempt += 1) {
@@ -63,7 +64,7 @@ test('P12 imports the complete closure bundle idempotently and rolls back a cano
   if (docker(['version']).status !== 0) t.skip('Docker required');
   const isolatedName = `${name}-import`; const isolatedPort = port + 1;
   t.after(() => docker(['rm', '-fv', isolatedName]));
-  assert.equal(docker(['run', '-d', '--name', isolatedName, '-p', `${isolatedPort}:5432`, '-e', 'POSTGRES_PASSWORD=p12', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', isolatedName, '-p', `${isolatedPort}:5432`, '-e', 'POSTGRES_PASSWORD=p12', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
   const pool = new pg.Pool({ host: '127.0.0.1', port: isolatedPort, user: 'p12', password: 'p12', database: 'p12' }); t.after(() => pool.end());
   for (let attempt = 0; attempt < 50; attempt += 1) { try { await pool.query('SELECT current_database()'); break; } catch { await new Promise((resolve) => setTimeout(resolve, 200)); if (attempt === 49) throw new Error('postgres unavailable'); } }
   assert.equal((await pool.query('SELECT current_database() AS db')).rows[0].db, 'p12');

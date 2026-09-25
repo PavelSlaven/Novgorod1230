@@ -14,6 +14,7 @@ import {
   runSpatialV3RollbackDrill,
   runSpatialV3StructuralShadow
 } from '../../tools/spatial-v3/p25-activation-tooling.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const observation = (overrides = {}) => ({ endpoints: { departure: 'a', arrival: 'b' }, time: { numerator: 5, denominator: 1 }, visibility: { mode: 'known' }, errors: [], migration_classifications: ['canonical_projection'], ...overrides });
 const bindings = (...entries) => entries;
@@ -107,7 +108,7 @@ test('P25 local PostgreSQL snapshot/restore drill refuses silent v3-to-v2 reinte
   }
   const port = 57600 + (process.pid % 300); const name = `p25-${process.pid}`;
   t.after(() => docker(['rm', '-fv', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p25', '-e', 'POSTGRES_USER=p25', '-e', 'POSTGRES_DB=p25', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p25', '-e', 'POSTGRES_USER=p25', '-e', 'POSTGRES_DB=p25', 'postgres:16-alpine']).status, 0);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p25', password: 'p25', database: 'p25' }); t.after(() => pool.end());
   for (let i = 0; i < 50; i += 1) { try { await pool.query('SELECT 1'); break; } catch { await new Promise((resolve) => setTimeout(resolve, 200)); if (i === 49) throw new Error('postgres unavailable'); } }
   await pool.query('CREATE TABLE target_state (id text PRIMARY KEY, value text NOT NULL)'); await pool.query("INSERT INTO target_state VALUES ('before','v2')");

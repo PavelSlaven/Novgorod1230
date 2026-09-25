@@ -48,6 +48,7 @@ import {
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { TRACE_REVISION26_PHASE_1A_MANIFEST_DIGEST } from
   '../../apps/game-server/src/internal/lower-dvina-trace-revision-26-publication.js';
 import { installLowerDvinaTraceV6World, lowerDvinaTraceV6World as world } from
@@ -69,7 +70,7 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     docker(['rm', '-fv', name]);
   });
   const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=phase3',
     '-e', 'POSTGRES_DB=phase3',

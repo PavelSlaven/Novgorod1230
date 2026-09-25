@@ -17,6 +17,7 @@ import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-p
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { createM2ConversationModels } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
 import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
@@ -29,7 +30,7 @@ test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback a
   const name = `lower-dvina-phase-5-${process.pid}`;
   let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
-  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase5', '-e', 'POSTGRES_DB=phase5', 'postgres:16-alpine']);
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432', '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase5', '-e', 'POSTGRES_DB=phase5', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   await waitForPostgres(name);
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);

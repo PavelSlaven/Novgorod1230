@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { RUNTIME_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/migrations.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 45_000 });
 const name = `p14-party-${process.pid}`;
@@ -15,7 +16,7 @@ test('P14 target migration is re-applicable and enforces planning/history state 
   assert.ok(SPATIAL_V3_TARGET_MIGRATIONS.length >= 3, 'P14 remains the target-only 001→003 prefix');
   if (docker(['version']).status !== 0) t.skip('Docker required for isolated PostgreSQL test');
   t.after(() => docker(['rm', '-fv', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p14_local', '-e', 'POSTGRES_USER=p14', '-e', 'POSTGRES_DB=p14', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p14_local', '-e', 'POSTGRES_USER=p14', '-e', 'POSTGRES_DB=p14', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-U', 'p14', '-d', 'p14']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-U', 'p14', '-d', 'p14']).status === 0) { ready = true; break; } } }
   assert.equal(ready, true);

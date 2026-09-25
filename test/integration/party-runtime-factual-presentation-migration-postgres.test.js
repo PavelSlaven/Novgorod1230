@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { runPartyRuntimeCatalogMigration } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 
@@ -22,7 +23,7 @@ test('factual presentation migration preserves predecessor checks and accepts on
     docker(['rm', '-fv', name]);
   });
   const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=factual_migration',
     '-e', 'POSTGRES_DB=factual_migration', 'postgres:16-alpine'

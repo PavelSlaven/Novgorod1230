@@ -7,6 +7,7 @@ import test from 'node:test';
 import {
   buildLowerDvinaV2ImportSql
 } from '../../tools/spatial-v3/lower-dvina-v2-importer.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const container = `lower-dvina-v2-import-${randomUUID().slice(0, 12)}`;
 const docker = (args, input, timeout = 60_000) =>
@@ -16,7 +17,7 @@ test('full v2 snapshot imports transactionally and reads back in disposable Post
   if (docker(['version']).status !== 0) t.skip('Docker required');
   t.after(() => docker(['rm', '-fv', container]));
   assert.equal(docker([
-    'run', '-d', '--name', container,
+    'run', ...testContainerLabel(), '-d', '--name', container,
     '-e', 'POSTGRES_PASSWORD=lower_dvina',
     '-e', 'POSTGRES_USER=lower_dvina',
     '-e', 'POSTGRES_DB=world',

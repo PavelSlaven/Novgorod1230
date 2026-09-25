@@ -52,6 +52,7 @@ import {
 import {
   createM2ConversationModels
 } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 
@@ -71,7 +72,7 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
     docker(['rm', '-fv', name]);
   });
   const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase4',
     '-e', 'POSTGRES_DB=phase4', 'postgres:16-alpine'
   ]);

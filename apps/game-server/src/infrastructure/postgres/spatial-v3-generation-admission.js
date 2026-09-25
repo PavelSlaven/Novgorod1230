@@ -28,9 +28,16 @@ export function createSpatialV3GenerationAdmission({ worldBaseReader, verifiedCa
       scene_template_ref = { id: candidate.scene_template_id, version: candidate.scene_template_version };
     } else if (selection.status === 'terminal') {
       const exit = selection.directional_exit;
+      const target = snapshot.sites.find((row) => row.origin === 'canonical' && row.status === 'active'
+        && row.canonical_g5_ref?.entity_id === exit.exit_canonical_g5_id
+        && Number(row.canonical_g5_ref.authoring_version) === exit.exit_canonical_g5_version);
+      const baseline = snapshot.scene_baselines.find((row) => row.host_kind === 'g5_site'
+        && row.host_id === target?.id && row.status === 'active');
       const canonical = await worldBaseReader.readPinnedCanonicalG5SceneBinding({
         id: exit.exit_canonical_g5_id, version: exit.exit_canonical_g5_version,
-        world_revision_id: request.g4.world_revision_id });
+        world_revision_id: request.g4.world_revision_id,
+        ...(baseline && { scene_template_ref: { id: baseline.scene_template_ref.entity_id,
+          version: Number(baseline.scene_template_ref.authoring_version) } }) });
       if (!canonical?.ok || canonical.value.parent_id !== request.g4.id
         || canonical.value.parent_version !== request.g4.version) gap('exact_terminal_scene_required');
       approvedSceneRules = approvedRules(canonical.value, canonical.value.scene_rules, request.g4.world_revision_id);

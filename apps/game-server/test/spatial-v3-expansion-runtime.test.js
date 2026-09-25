@@ -120,3 +120,39 @@ test('generation admission checks all natural layers and rechecks exact actor/Te
   await assert.rejects(admit({ ...args, closure: { ...args.closure, scene_rules: [] } }),
     (error) => error.details.reason === 'approved_scene_rule_pin_required');
 });
+
+test('terminal admission pins the committed canonical destination scene', async () => {
+  const { input } = await approvedNaturalPerceptionFixture();
+  const g4 = input.currentFacts.scene.g4_ref;
+  const scene = input.currentFacts.scene.scene_template_ref;
+  const canonical = { id: 'canonical', version: 1, parent_id: g4.id,
+    parent_version: g4.version, scene_template_id: scene.id, scene_template_version: scene.version,
+    selection_rule_id: 'scene_selection_single_candidate_v1', selection_rule_version: 1,
+    applicability_rule_id: 'scene_applicability_exact_source_ref_v1', applicability_rule_version: 1,
+    scene_rules: [['scene_selection_rule', 'scene_selection_single_candidate_v1'],
+      ['scene_applicability_rule', 'scene_applicability_exact_source_ref_v1']].map(([entity_kind, id]) => ({
+      entity_kind, id, version: 1, status: 'approved', world_revision_id: g4.world_revision_id,
+      canonical_digest: 'a'.repeat(64) })) };
+  let pinned;
+  const admit = createSpatialV3GenerationAdmission({ verifiedCatalog: input.verifiedCatalog,
+    pin: input.pin, readCurrentEnvironment: async () => input.currentFacts.current_environment,
+    worldBaseReader: { readPinnedCanonicalG5SceneBinding: async (request) => {
+      pinned = request;
+      return request.scene_template_ref?.id === scene.id
+        && request.scene_template_ref.version === scene.version
+        ? { ok: true, value: canonical } : { ok: false };
+    } } });
+  const result = await admit({ transaction: { query: async () => ({ rows: [{ turn_number: 4 }] }) },
+    request: { party_id: 'party', actor_id: 'actor', source_position_id: 'departure',
+      source_site_id: 'source-site', g4 },
+    snapshot: { sites: [{ id: 'target-site', origin: 'canonical', status: 'active',
+      canonical_g5_ref: { entity_id: canonical.id, authoring_version: '1' } }],
+    scene_baselines: [{ host_kind: 'g5_site', host_id: 'target-site', status: 'active',
+      scene_template_ref: { entity_id: scene.id, authoring_version: String(scene.version) } }],
+    journey_locations: [{ id: 'location', party_id: 'party', owner_kind: 'actor',
+      owner_id: 'actor', location_kind: 'scene', scene_position_id: 'departure' }] },
+    selection: { status: 'terminal', directional_exit: { exit_canonical_g5_id: canonical.id,
+      exit_canonical_g5_version: canonical.version } }, dependency_pins: { pins: [] } });
+  assert.equal(result.ok, true);
+  assert.deepEqual(pinned.scene_template_ref, scene);
+});

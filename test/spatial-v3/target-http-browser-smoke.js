@@ -3,6 +3,7 @@ import { createServer } from 'node:http';
 import { writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import { createHttpHandler } from '../../apps/game-server/src/http/handler.js';
 import { createStaticAssetResolver } from '../../apps/game-server/src/http/static-assets.js';
 import { turnStepOperationChoices } from '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-operation-choices.js';
@@ -153,45 +154,7 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
   try {
     await finished;
     assert.ok(report.browser, 'Chromium must finish the explicit smoke');
-    const turns = report.calls.filter((entry) => entry.method === 'submitTurn');
-    assert.ok(turns.length >= 3, 'HTTP observation, identical retry and directional exit required');
-    assert.equal(turns[0].args[1].raw_text, TARGET_SMOKE_INPUT);
-    assert.deepEqual(turns[0].args, turns[1].args);
-    assert.equal(turns[0].error, undefined, 'approved target observation must reach its existing owner');
-    assert.equal(turns[1].error, undefined);
-    assert.equal(turns[0].result.screen.screen_status, 'ready');
-    assert.deepEqual(turns[1].result, turns[0].result, 'successful HTTP retry is idempotent');
-    assert.deepEqual(turns[1].after, turns[0].after, 'retry adds no gameplay write');
-    assert.equal(turns[0].after.party.state_version, turns[0].before.party.state_version + 1);
-    if (realProvider) assert.ok(turns[0].after.clock.whole_minutes > turns[0].before.clock.whole_minutes);
-    else assert.equal(turns[0].after.clock.whole_minutes, turns[0].before.clock.whole_minutes + 1);
-    for (const key of ['body', 'positions', 'entity_placements', 'materialization_runs', 'sites']) {
-      assert.deepEqual(turns[0].after[key], turns[0].before[key], `observation preserves ${key}`);
-    }
-    assert.equal(turns[0].result.movement, null);
-    const visibleNpcs = turns[0].result.screen.visible_context.visible_npc;
-    assert.equal(visibleNpcs.length, 1);
-    const [visibleNpc] = visibleNpcs;
-    assert.deepEqual(Object.keys(visibleNpc).sort(),
-      ['display_label', 'entity_ref', 'observable_cues', 'recognition']);
-    assert.equal(visibleNpc.display_label, 'человек');
-    assert.equal(visibleNpc.recognition, 'unrecognized');
-    assert.equal(visibleNpc.entity_ref.entity_kind, 'npc');
-    assert.equal(visibleNpc.observable_cues.identity.display_name, 'человек');
-    assert.equal(typeof visibleNpc.observable_cues.identity.appearance, 'object');
-    assert.ok(Array.isArray(visibleNpc.observable_cues.equipment));
-    assert.deepEqual(turns[0].result.screen.panels.people.data.visible_npcs.map(
-      ({ display_label, status }) => ({ display_label, status })),
-    [{ display_label: 'человек', status: undefined }]);
-    assert.equal(turns[0].after.position_slot, 'arrival');
-    const replayIndex = report.calls.indexOf(turns[1]);
-    assert.ok(report.calls.slice(replayIndex + 1, report.calls.indexOf(turns[2]))
-      .some((entry) => entry.method === 'getPartyScreen'), 'reload must fetch current screen before movement');
-    const parties = [...new Set(turns.map((turn) => turn.args[0]))];
-    report.movement_routes = parties.map((partyId) => ({ party_id: partyId,
-      ...assertDisplayedMovementRoute(turns.filter((turn) => turn.args[0] === partyId)) }));
-    assert.ok(report.movement_routes.some(({ generated }) => generated),
-      'at least one ordinary UI party must enter a committed generated G5');
+    report.movement_routes = assertTargetTurnEvidence(report.calls, realProvider);
     assert.ok(report.calls.find((entry) => entry.method === 'startNewGame')?.result);
     assert.ok(report.calls.find((entry) => entry.method === 'acknowledgeOpening')?.result);
     assert.ok(report.calls.some((entry) => entry.method === 'getPartyScreen'));
@@ -204,6 +167,71 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
     clearTimeout(timeout); if (!realProvider) globalThis.fetch = provider;
     await new Promise((done) => server.close(done));
   }
+}
+
+export function assertTargetTurnEvidence(calls, realProvider = false) {
+  const turns = calls.filter((entry) => entry.method === 'submitTurn');
+  const parties = [...new Set(turns.map((turn) => turn.args[0]))];
+  let retryFound = false;
+  const routes = [];
+  for (const partyId of parties) {
+    const partyTurns = turns.filter((turn) => turn.args[0] === partyId);
+    assert.equal(partyTurns[0].args[1].raw_text, TARGET_SMOKE_INPUT,
+      'each ordinary UI party begins with target observation');
+    const uniqueTurns = [];
+    for (const turn of partyTurns) {
+      const previous = uniqueTurns.find((candidate) => isDeepStrictEqual(candidate.args, turn.args));
+      if (previous) {
+        assert.equal(turn.error, undefined, 'successful HTTP retry must reach its existing owner');
+        assert.deepEqual(turn.result, previous.result, 'successful HTTP retry is idempotent');
+        assert.deepEqual(turn.after, previous.after, 'retry adds no gameplay write');
+        if (turn.args[1].raw_text === TARGET_SMOKE_INPUT) {
+          const nextMovement = partyTurns.find((candidate) => partyTurns.indexOf(candidate) > partyTurns.indexOf(turn)
+            && candidate.args[1].raw_text !== TARGET_SMOKE_INPUT);
+          if (nextMovement) assert.ok(calls.slice(calls.indexOf(turn) + 1, calls.indexOf(nextMovement))
+            .some((entry) => entry.method === 'getPartyScreen' && entry.args[0] === partyId),
+          'reload must fetch current screen before movement');
+          retryFound = true;
+        }
+        continue;
+      }
+      uniqueTurns.push(turn);
+      if (turn.args[1].raw_text === TARGET_SMOKE_INPUT) assertTargetObservation(turn, realProvider);
+    }
+    if (uniqueTurns.some((turn) => turn.args[1].raw_text !== TARGET_SMOKE_INPUT)) {
+      routes.push({ party_id: partyId, ...assertDisplayedMovementRoute(uniqueTurns) });
+    }
+  }
+  assert.ok(retryFound, 'at least one party needs an exact identical HTTP retry');
+  assert.ok(routes.some(({ generated }) => generated),
+    'at least one ordinary UI party must enter a committed generated G5');
+  return routes;
+}
+
+function assertTargetObservation(turn, realProvider) {
+  assert.equal(turn.error, undefined, 'approved target observation must reach its existing owner');
+  assert.equal(turn.result.screen.screen_status, 'ready');
+  assert.equal(turn.after.party.state_version, turn.before.party.state_version + 1);
+  if (realProvider) assert.ok(turn.after.clock.whole_minutes > turn.before.clock.whole_minutes);
+  else assert.equal(turn.after.clock.whole_minutes, turn.before.clock.whole_minutes + 1);
+  for (const key of ['body', 'positions', 'entity_placements', 'materialization_runs', 'sites']) {
+    assert.deepEqual(turn.after[key], turn.before[key], `observation preserves ${key}`);
+  }
+  assert.equal(turn.result.movement, null);
+  const visibleNpcs = turn.result.screen.visible_context.visible_npc;
+  for (const visibleNpc of visibleNpcs) {
+    assert.deepEqual(Object.keys(visibleNpc).sort(),
+      ['display_label', 'entity_ref', 'observable_cues', 'recognition']);
+    assert.equal(visibleNpc.display_label, 'человек');
+    assert.equal(visibleNpc.recognition, 'unrecognized');
+    assert.equal(visibleNpc.entity_ref.entity_kind, 'npc');
+    assert.equal(visibleNpc.observable_cues.identity.display_name, 'человек');
+    assert.equal(typeof visibleNpc.observable_cues.identity.appearance, 'object');
+    assert.ok(Array.isArray(visibleNpc.observable_cues.equipment));
+  }
+  assert.deepEqual(turn.result.screen.panels.people.data.visible_npcs.map(
+    ({ display_label, status }) => ({ display_label, status })),
+  visibleNpcs.map(({ display_label }) => ({ display_label, status: undefined })));
 }
 
 export async function readStage23AuditOutput(response) {
@@ -222,9 +250,10 @@ export async function readStage23AuditOutput(response) {
 export function assertDisplayedMovementRoute(turns) {
   let exited = false;
   let generated = false;
-  for (let index = 2; index < turns.length; index += 1) {
+  for (let index = 1; index < turns.length; index += 1) {
     if (exited) break;
     const turn = turns[index];
+    if (turn.args[1].raw_text === TARGET_SMOKE_INPUT) continue;
     const previous = turns[index - 1];
     const screen = previous.result.screen;
     const offered = (screen.panels?.route?.data?.movement?.options ?? []).filter((action) =>

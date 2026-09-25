@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assertDisplayedMovementRoute, readStage23AuditOutput } from './target-http-browser-smoke.js';
+import { assertDisplayedMovementRoute, assertTargetTurnEvidence, readStage23AuditOutput,
+  TARGET_SMOKE_INPUT } from './target-http-browser-smoke.js';
 
 test('real-provider Stage 23 capture keeps only diagnostic audit fields', async () => {
   const response = (output) => new Response(JSON.stringify({ choices: [{ message: {
@@ -36,24 +37,37 @@ function movement(previous, optionId, label, destinationOrigin = null) {
 function emptyScreen() { return { panels: { route: { data: { movement: { options: [] } } } },
   visible_context: { visible_objects: [] } }; }
 
-test('displayed exit accepts generated destination after observation retry', () => {
+function observation(partyId, requestId, visibleNpcs = []) {
+  const screen = emptyScreen();
+  screen.screen_status = 'ready';
+  screen.visible_context.visible_npc = visibleNpcs;
+  screen.panels.people = { data: { visible_npcs: visibleNpcs.map(({ display_label }) => ({ display_label })) } };
+  const before = { party: { state_version: 1 }, clock: { whole_minutes: 10 }, positions: [1],
+    body: [], entity_placements: [], materialization_runs: '1', sites: '1' };
+  const after = { ...before, party: { state_version: 2 }, clock: { whole_minutes: 11 } };
+  return { method: 'submitTurn', args: [partyId, { raw_text: TARGET_SMOKE_INPUT,
+    request_id: requestId, idempotency_key: requestId }], before, after,
+  result: { movement: null, screen } };
+}
+
+test('displayed exit accepts generated destination after observation', () => {
   const observation = { result: { screen: emptyScreen() } };
   const exit = movement(observation, 'directional_exit:current', 'Иду по показанному пути', 'generated');
-  assert.deepEqual(assertDisplayedMovementRoute([observation, observation, exit]), { generated: true });
+  assert.deepEqual(assertDisplayedMovementRoute([observation, exit]), { generated: true });
 });
 
 test('terminal ordinal zero reaches canonical G5, with or without preceding local movement', () => {
   const directObservation = { result: { screen: emptyScreen() } };
   const directExit = movement(directObservation, 'directional_exit:current', 'Иду дальше', 'canonical');
-  assert.deepEqual(assertDisplayedMovementRoute([directObservation, directObservation, directExit]), { generated: false });
+  assert.deepEqual(assertDisplayedMovementRoute([directObservation, directExit]), { generated: false });
   const observation = { result: { screen: emptyScreen() } };
   const local = movement(observation, 'local_scene_edge:current', 'Иду к опушке');
   const exit = movement(local, 'directional_exit:current', 'Иду дальше', 'canonical');
-  assert.deepEqual(assertDisplayedMovementRoute([observation, observation, local, exit]), { generated: false });
-  assert.throws(() => assertDisplayedMovementRoute([observation, observation, local]),
+  assert.deepEqual(assertDisplayedMovementRoute([observation, local, exit]), { generated: false });
+  assert.throws(() => assertDisplayedMovementRoute([observation, local]),
     /displayed directional exit must reach a committed G5/);
   exit.args[1].raw_text = 'Непоказанный путь';
-  assert.throws(() => assertDisplayedMovementRoute([observation, observation, local, exit]),
+  assert.throws(() => assertDisplayedMovementRoute([observation, local, exit]),
     /exact currently displayed approved movement label/);
 });
 
@@ -61,7 +75,7 @@ test('exit rejects wrong connection even when destination origin and count look 
   const observation = { result: { screen: emptyScreen() } };
   const exit = movement(observation, 'directional_exit:current', 'Иду дальше', 'generated');
   exit.after.connections[0].from_site_id = 'other';
-  assert.throws(() => assertDisplayedMovementRoute([observation, observation, exit]),
+  assert.throws(() => assertDisplayedMovementRoute([observation, exit]),
     /exit must commit one connection from current to destination site/);
 });
 
@@ -69,5 +83,26 @@ test('actions after the committed exit do not change route proof', () => {
   const observation = { result: { screen: emptyScreen() } };
   const exit = movement(observation, 'directional_exit:current', 'Иду по показанному пути', 'generated');
   const laterAction = { args: [1, { raw_text: 'Собираю хворост' }], result: { screen: emptyScreen() } };
-  assert.doesNotThrow(() => assertDisplayedMovementRoute([observation, observation, exit, laterAction]));
+  assert.doesNotThrow(() => assertDisplayedMovementRoute([observation, exit, laterAction]));
+});
+
+test('occluded observation may show no NPC or route while another party reaches generated G5', () => {
+  const occluded = observation('forest', 'look-forest');
+  const traveller = observation('river', 'look-river', [{ display_label: 'человек',
+    entity_ref: { entity_kind: 'npc' }, recognition: 'unrecognized',
+    observable_cues: { identity: { display_name: 'человек', appearance: {} }, equipment: [] } }]);
+  const exit = movement(traveller, 'directional_exit:current', 'Иду дальше', 'generated');
+  const retry = structuredClone(traveller);
+  exit.method = 'submitTurn'; exit.args[0] = 'river';
+  assert.deepEqual(assertTargetTurnEvidence([occluded, traveller, retry,
+    { method: 'getPartyScreen', args: ['river'] }, exit]),
+    [{ party_id: 'river', generated: true }]);
+});
+
+test('different observation identities do not count as an HTTP retry', () => {
+  const first = observation('river', 'look-one');
+  const second = observation('river', 'look-two');
+  const exit = movement(second, 'directional_exit:current', 'Иду дальше', 'generated');
+  exit.method = 'submitTurn'; exit.args[0] = 'river';
+  assert.throws(() => assertTargetTurnEvidence([first, second, exit]), /exact identical HTTP retry/);
 });

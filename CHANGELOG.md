@@ -4,7 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
-- feat(knowledge-source): RAG нормативного корпуса только лексический; убран embedding-слой и semantic coverage (#144) LW-008 updated
+- feat(knowledge-source): lexical-only normative RAG; status/priority_tier from CONTRACT_INDEX (#144, PR #150) LW-008 updated
 - fix(test): тестовый `docker run` несёт метку pid владельца (`testContainerLabel()`); контейнеры убитых прогонов удаляет следующий Docker-тест; страж #142 требует метку (#147, PR #148)
 - docs(process): обзор HOW_WE_WORK; замысел материализуемого мира (PC §9.1); правила об источниках истины (WR §2), скриптах и имеющихся знаниях (WR §19), утверждении данных (WR §21.1), регрессии плейтеста (WR §22), отчёте gameplay run (WR §24.1 из PR #98) и честности проверок (WR §24.2); поле уровня качества в CR; context dump на ветке этапа; исправлены неверные факты о `legacy/src` (#143) LW-026…LW-039 added
 - fix(test): PostgreSQL-тесты удаляют контейнер вместе с anonymous volume (`docker rm -fv`, GS §26); страж в `test:tools` (#142)

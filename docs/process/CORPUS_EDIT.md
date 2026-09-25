@@ -32,10 +32,13 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
 1. **Правка** документа. Перед ней — `rg` по имени файла в [LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md) и в
    списке закреплённых фраз ниже.
 2. **`npm run knowledge:repin`.** Для `native` пересчитывает `sha256`/`bytes` в
-   [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json), закрепляет SHA-256 новых байтов
-   manifest в [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json) и вызывает
-   `docs:generate`. Изменённый документ с legacy provenance требует отдельной процедуры выше; команда
-   останавливается без переписывания его записи. Generated вручную не править (KSP «Изменение корпуса»).
+   [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json), выводит `status` и
+   `priority_tier` из [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md),
+   синхронизирует `priority_tier` в [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json),
+   закрепляет SHA-256 manifest в policy baseline и вызывает `docs:generate`. Изменённый документ с legacy
+   provenance требует отдельной процедуры выше; команда останавливается без переписывания его записи.
+   Generated вручную не править (KSP «Изменение корпуса»). Ручная правка `status`/`priority_tier` в manifest
+   запрещена: `knowledge:check` падает при расхождении с CONTRACT_INDEX.
 3. **Проверки:** `knowledge:check-corpus`, `knowledge:check`, `knowledge:controls`, `knowledge:status`,
    `temporal-v4:check-docs` (baseline на 21bd0938 — `conflict_count: 0`), `docs:check`, `test:knowledge-source`, `test:tools`, `git diff --check`.
    Полный `npm test` — в CI (AGENTS §24).

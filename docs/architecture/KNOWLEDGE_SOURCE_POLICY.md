@@ -2,7 +2,7 @@
 
 ## Источник истины
 
-Единственный канонический runtime-корпус находится в `data/knowledge-source/corpus/DOCUMENTS`. Manifest v2 различает `proposed`, `active` и `deprecated`; production reader по умолчанию видит только `active`. Legacy-файлы остаются rollback evidence, а актуализированный канонический документ хранит отдельный digest legacy provenance.
+Единственный канонический runtime-корпус находится в `data/knowledge-source/corpus/DOCUMENTS`. Manifest v2 различает `proposed`, `active` и `deprecated`; поля `status` и `priority_tier` в `corpus-manifest.json` выводит `knowledge:repin` из меток [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md) (ACTIVE → `active` и верхний приоритет; UNDECLARED / REFERENCE / REDIRECT — не `active`). Ручная правка этих полей запрещена. Production reader по умолчанию видит только `active`. Legacy-файлы остаются rollback evidence, а актуализированный канонический документ хранит отдельный digest legacy provenance.
 
 ## Разделение source и generated
 

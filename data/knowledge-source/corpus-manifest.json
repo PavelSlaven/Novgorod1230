@@ -10,8 +10,9 @@
       "file_name": "base_turn_orchestration.txt",
       "sha256": "fcafa6795354b0007fae42637d537ecde8e54a454607a3d2f822a0e25555616d",
       "bytes": 46391,
-      "status": "active",
-      "provenance_mode": "native"
+      "status": "deprecated",
+      "provenance_mode": "native",
+      "priority_tier": "reference"
     },
     {
       "document_id": "character-inventory-equipment",
@@ -19,11 +20,12 @@
       "file_name": "character_inventory_equipment.txt",
       "sha256": "066de1d99a1e7ad6a88b54d4bb1d3ca4fb2eff4f73cceb16744a687173b46845",
       "bytes": 24192,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_inventory_equipment.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "b1618bcfa43bfc2cbd92bf1f0f464c28459e652b94ef763d36fdb996cbe80e87",
-      "source_legacy_bytes": 18244
+      "source_legacy_bytes": 18244,
+      "priority_tier": "reference"
     },
     {
       "document_id": "character-parameters",
@@ -31,11 +33,12 @@
       "file_name": "character_parameters.txt",
       "sha256": "5350e2f908558e89ee510aa55473d8912b7907cf92a56728cd457b04eadd1e6c",
       "bytes": 23130,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_parameters.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "7a84abd27da7898c20abf8e493342fb0a6c5dca1852098063e8ffaffa9a29b30",
-      "source_legacy_bytes": 21167
+      "source_legacy_bytes": 21167,
+      "priority_tier": "reference"
     },
     {
       "document_id": "code-critic-invocation-rule",
@@ -43,8 +46,9 @@
       "file_name": "code_critic_invocation_rule.txt",
       "sha256": "28ba80280ca128a287ba1552e448df5182e1ebf89a14d08d0972ee735c756046",
       "bytes": 800,
-      "status": "active",
-      "provenance_mode": "native"
+      "status": "deprecated",
+      "provenance_mode": "native",
+      "priority_tier": "navigation"
     },
     {
       "document_id": "code-driven-world-materialization-architecture",
@@ -53,7 +57,8 @@
       "sha256": "acd01fedf4ac05db065326c2f26591ff60ece105f3043a1819ad5e0578522b78",
       "bytes": 44572,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "combat-system",
@@ -65,7 +70,8 @@
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/combat_system.md",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "a5b566d638e7e0666dc80e32805a89aedc7dcaaad305db978bc46c77eefad8a3",
-      "source_legacy_bytes": 58749
+      "source_legacy_bytes": 58749,
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "contract-index",
@@ -74,7 +80,8 @@
       "sha256": "ced9931b0aa8a1e3a1ac1626433284e127ce9aebb365b53d9f971f2a6b1b4cb5",
       "bytes": 25165,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "navigation"
     },
     {
       "document_id": "development-rules",
@@ -82,8 +89,9 @@
       "file_name": "development_rules.txt",
       "sha256": "368379f18b731c7c90ee7e792af4a4f470ef2296a95bb05c08871deb8acf231e",
       "bytes": 46637,
-      "status": "active",
-      "provenance_mode": "native"
+      "status": "deprecated",
+      "provenance_mode": "native",
+      "priority_tier": "reference"
     },
     {
       "document_id": "documentation-corpus-readme",
@@ -91,11 +99,12 @@
       "file_name": "README.md",
       "sha256": "205df565f8ffa57dc5b685175ef3b082779f74b2fd128aa29f879f9dcff986a5",
       "bytes": 1228,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/README.md",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "c96e46b1a29da96e0272c089786fbddafe324e2f34937e5a7c41450d072fbdb9",
-      "source_legacy_bytes": 4274
+      "source_legacy_bytes": 4274,
+      "priority_tier": "navigation"
     },
     {
       "document_id": "formulas",
@@ -103,11 +112,12 @@
       "file_name": "formulas.md",
       "sha256": "503c874ed64b5159ac1503d326a1e0701c82d59b63f94c78b6da930d682df1d5",
       "bytes": 44933,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/formulas.md",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "6a077a511b198351c8dd39eedb223cdeb4f69659b0457c3bda9d14677b6dcbaa",
-      "source_legacy_bytes": 108044
+      "source_legacy_bytes": 108044,
+      "priority_tier": "reference"
     },
     {
       "document_id": "g1-g5-generation-rules",
@@ -115,8 +125,9 @@
       "file_name": "g1_g5_generation_rules.txt",
       "sha256": "702556cde309f0d8a2bf26b9b1daff8f81d34e73b6b61f291ac5babda88168be",
       "bytes": 2962,
-      "status": "active",
-      "provenance_mode": "native"
+      "status": "deprecated",
+      "provenance_mode": "native",
+      "priority_tier": "reference"
     },
     {
       "document_id": "historical-events-and-figures",
@@ -124,11 +135,12 @@
       "file_name": "historical_events_and_figures.txt",
       "sha256": "1487d4d4c8167ea4948d846204d048966a1700cd08f9ad1e350709277b8757a7",
       "bytes": 11165,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/historical_events_and_figures.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "68e6e4cebddb4590d5c22d2dadf739d54e8ab1da077807f03bcdf6ffca44d88a",
-      "source_legacy_bytes": 9432
+      "source_legacy_bytes": 9432,
+      "priority_tier": "reference"
     },
     {
       "document_id": "information-sources-llm-prompts",
@@ -136,11 +148,12 @@
       "file_name": "information_sources_llm_prompts.md",
       "sha256": "c6be1d3384bfae941201276896af7669ca2a6b40080486ed4c5c568f70087458",
       "bytes": 62292,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/information_sources_llm_prompts.md",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "6dd11ad27a5d5cf0cf2a10672b92bba3056a78b2f7a08782666641e1f5cdfd4d",
-      "source_legacy_bytes": 55409
+      "source_legacy_bytes": 55409,
+      "priority_tier": "reference"
     },
     {
       "document_id": "interface-ux",
@@ -148,11 +161,12 @@
       "file_name": "interface_ux.md",
       "sha256": "42eb778ff1bf1b69b2427aca1749a9c2098076c1b24378caf6755a10ab63b98b",
       "bytes": 66158,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/interface_ux.md",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "5d1c25a77db458f83a1f678d80fd7c6ac4f48470910be12317a3b3ce4ded6728",
-      "source_legacy_bytes": 64507
+      "source_legacy_bytes": 64507,
+      "priority_tier": "reference"
     },
     {
       "document_id": "items-and-property",
@@ -164,7 +178,8 @@
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/items_and_property.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "adedfc10485108516f6c48a76ffde0a179e334bd3618fb1f7e55a2f19ab6537d",
-      "source_legacy_bytes": 33159
+      "source_legacy_bytes": 33159,
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "llm-agent-prompt-templates",
@@ -172,11 +187,12 @@
       "file_name": "llm_agent_prompt_templates.md",
       "sha256": "e1788ee5717fdb80589b198336f4fe4b83f82bbf67b400d8261f62ff33ba6f1e",
       "bytes": 56801,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_agent_prompt_templates.md",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "d370aeab9771b514573b0a986969ed84c4ecc6c84196eaf4f9802f0f9be12b1d",
-      "source_legacy_bytes": 50220
+      "source_legacy_bytes": 50220,
+      "priority_tier": "reference"
     },
     {
       "document_id": "llm-documentation-navigation",
@@ -184,11 +200,12 @@
       "file_name": "llm_documentation_navigation.md",
       "sha256": "4264797dc42d4ed499edea6bbad37b1a6813c25a1e13341754d619138441fff0",
       "bytes": 838,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "fbbefcb2a5ccf4441a8426e397a8fc91d029c3a24ad87bc1a5515a088770abba",
-      "source_legacy_bytes": 28635
+      "source_legacy_bytes": 28635,
+      "priority_tier": "navigation"
     },
     {
       "document_id": "map-g0-g4-workflow",
@@ -197,7 +214,8 @@
       "sha256": "45572b8ecd9e94c70e48da9acba441a8cac281a0e03c9f6c692a6b7f2ad8301c",
       "bytes": 86043,
       "status": "deprecated",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "reference"
     },
     {
       "document_id": "movement-locations-regions",
@@ -205,11 +223,12 @@
       "file_name": "movement_locations_regions.txt",
       "sha256": "595fa769fca6b3a2d21a12198ca4b8a375314f39402e936dadd067df29cc0ac9",
       "bytes": 48708,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/movement_locations_regions.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "30f0cc88277c827d7480ebb2b9bd421db73d83254f5c10056d520b7e12fe789a",
-      "source_legacy_bytes": 52411
+      "source_legacy_bytes": 52411,
+      "priority_tier": "reference"
     },
     {
       "document_id": "new-game-start-pipeline",
@@ -217,8 +236,9 @@
       "file_name": "new_game_start_pipeline.txt",
       "sha256": "3b945a048eb1104fbc830479464c82324e8e58aa0a323c9bd57e3d6ad31db535",
       "bytes": 6169,
-      "status": "active",
-      "provenance_mode": "native"
+      "status": "deprecated",
+      "provenance_mode": "native",
+      "priority_tier": "reference"
     },
     {
       "document_id": "npc-autonomous-decision-contract",
@@ -227,7 +247,8 @@
       "sha256": "7cd7e30b736ebab4db1d1b1e1dbf880747522419255024016aef4f79db2e14bd",
       "bytes": 102965,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "npc-combat-and-trigger-contract",
@@ -236,7 +257,8 @@
       "sha256": "565b3f7e8616a7028759bdaa0691334610e4e7533f18a677e68ba47e5ca944cc",
       "bytes": 97666,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "npc-conversation-mode-contract",
@@ -245,7 +267,8 @@
       "sha256": "f76b3880169006996a46ad287e5504e233298dd1ec54eddbe000fcc9aa255fb3",
       "bytes": 118994,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "npc-generation-profiles",
@@ -253,11 +276,12 @@
       "file_name": "npc_generation_profiles.txt",
       "sha256": "cb507321db132d736f307083fb49f08309e5a0eb006c75e0757d3e103628f21e",
       "bytes": 27557,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_generation_profiles.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "ca906167838b4faa6b3c27dc43f7a22c7ad5c04df07c5518403fcf9f572dbde2",
-      "source_legacy_bytes": 21177
+      "source_legacy_bytes": 21177,
+      "priority_tier": "reference"
     },
     {
       "document_id": "npc-inventory-item-marks",
@@ -265,11 +289,12 @@
       "file_name": "npc_inventory_item_marks.txt",
       "sha256": "114386ccd1825af56556a76939f539c646aef9b8db31e1057c2072bfe123f10d",
       "bytes": 9381,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_inventory_item_marks.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "0422429fff076f229beb9eed79adc0d1d1b8c85d43bf331b1ab2aa79175a3a06",
-      "source_legacy_bytes": 8051
+      "source_legacy_bytes": 8051,
+      "priority_tier": "reference"
     },
     {
       "document_id": "player-character-generation",
@@ -277,11 +302,12 @@
       "file_name": "player_character_generation.txt",
       "sha256": "3c9b11cd9c5e195fe11e015d20546f2b21e0162568d1c18d80086ecf486d8497",
       "bytes": 47736,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/player_character_generation.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "4d0f6e4cdc2ecbb2b1ccd1bd5f84d903fd0aa62999a27bfc57848782aa79d68f",
-      "source_legacy_bytes": 44986
+      "source_legacy_bytes": 44986,
+      "priority_tier": "reference"
     },
     {
       "document_id": "read-only-database-and-graph-architecture",
@@ -290,7 +316,8 @@
       "sha256": "c839a7f21ef2af6375ada54a39413b7aaaa1040e7f1a661c29ffd16c80d67719",
       "bytes": 13576,
       "status": "deprecated",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "reference"
     },
     {
       "document_id": "semantic-world-actions-materialization-and-processes-contract",
@@ -299,7 +326,8 @@
       "sha256": "6bf33f8fc0b5f92c906d00fc4382b02320bcf62623102a5ec7b8090e0aec7f39",
       "bytes": 187383,
       "status": "proposed",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "profile_normative"
     },
     {
       "document_id": "situational-prose-requirements",
@@ -308,7 +336,8 @@
       "status": "active",
       "provenance_mode": "native",
       "sha256": "eece47276d0a853b8e4e1bbf1347ef935632e00ae3d9007ab0b91997bf7f5862",
-      "bytes": 62692
+      "bytes": 62692,
+      "priority_tier": "highest_materialization_normative"
     },
     {
       "document_id": "spatial-architecture-standard-g0-g6",
@@ -317,7 +346,8 @@
       "sha256": "2f4d7b3c8359061a203224620e39f6709891833c8e08c6255507630a82bfc52a",
       "bytes": 330674,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",
@@ -326,7 +356,8 @@
       "sha256": "941a9792ae3cc22fbb8e66d452616c800e5c426755027663ff4a85f514734e3b",
       "bytes": 7537,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "highest_materialization_normative"
     },
     {
       "document_id": "spatial-v3-target-map-g0-g4-workflow",
@@ -335,7 +366,8 @@
       "sha256": "4e5042c41bea2e985dc03e3169805a11bcacb35779c6c1381ac349b20bcb1940",
       "bytes": 3565,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "highest_materialization_normative"
     },
     {
       "document_id": "spatial-v3-target-read-only-database-and-graph-architecture",
@@ -344,7 +376,8 @@
       "sha256": "3c96781c0e3fdfa317ddf7a01dfd83e4b90d04531bfb64874a6bd507e4ed24cc",
       "bytes": 4185,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "highest_materialization_normative"
     },
     {
       "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
@@ -353,7 +386,8 @@
       "sha256": "b6c9d4422684fe7bb48e76d9a3e40ea542e72076a50a594838de4cd3478040ab",
       "bytes": 5327,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "highest_materialization_normative"
     },
     {
       "document_id": "temporal-world-and-interruptible-activities",
@@ -362,7 +396,8 @@
       "sha256": "9d289fbd3003972a563fc54f6310c3387b45c46a1fed210be939f59defc6f264",
       "bytes": 143923,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "time-system",
@@ -370,11 +405,12 @@
       "file_name": "time_system.txt",
       "sha256": "77d8cc4579cdd77da594fdb423848cbf2761a3c1caed04e5dd560a907f19fe7b",
       "bytes": 16970,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/time_system.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "cf94af950566ba0f79f6b90c3761a624ac14d5d3a339b631b5c30c4770b65323",
-      "source_legacy_bytes": 16226
+      "source_legacy_bytes": 16226,
+      "priority_tier": "reference"
     },
     {
       "document_id": "turn-step-llm-contract",
@@ -383,7 +419,8 @@
       "sha256": "fbc521452f83b6779602f0fc58352ec659834de47ef4d3cba80897624f75befb",
       "bytes": 118926,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "universal-category-classification-policy",
@@ -392,7 +429,8 @@
       "sha256": "cc1005f3199eeb5e266c7c478a360fdc9f8264a34ee5f2b393dcdbe24b9206f1",
       "bytes": 40492,
       "status": "proposed",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "profile_normative"
     },
     {
       "document_id": "universal-category-classification-references",
@@ -400,8 +438,9 @@
       "file_name": "universal_category_classification_references.md",
       "sha256": "cb7b537cab5c7e16642f479eadf719bbcfc4f2a33790034eba5ed8db42c8da48",
       "bytes": 7621,
-      "status": "proposed",
-      "provenance_mode": "native"
+      "status": "deprecated",
+      "provenance_mode": "native",
+      "priority_tier": "reference"
     },
     {
       "document_id": "weapons-and-armor",
@@ -409,9 +448,10 @@
       "file_name": "weapons_and_armor.txt",
       "sha256": "644a41b98cd8a1bb37aee27185aa99e746af68c14df87ff7b5d4d908fecfaecf",
       "bytes": 48437,
-      "status": "active",
+      "status": "deprecated",
       "provenance_mode": "legacy_mirror",
-      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/weapons_and_armor.txt"
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/weapons_and_armor.txt",
+      "priority_tier": "reference"
     },
     {
       "document_id": "world-base-materialization-table-requirements",
@@ -420,7 +460,8 @@
       "sha256": "d098780c889eef922266c940adaf640a5ea1e039f09c17ad22a30b00425c1903",
       "bytes": 26134,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "world-generation-and-turns",
@@ -428,11 +469,12 @@
       "file_name": "world_generation_and_turns.txt",
       "sha256": "4f312c7002c4da57155e312d05ee24457084add336a6960ee3e251ec9304d5cf",
       "bytes": 83737,
-      "status": "active",
+      "status": "deprecated",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_generation_and_turns.txt",
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "b1fbf6343d479a2f5c9296b7c5dc2f35f0b93e2eb15fab867d23b9201bd01b3e",
-      "source_legacy_bytes": 71231
+      "source_legacy_bytes": 71231,
+      "priority_tier": "reference"
     },
     {
       "document_id": "world-knowledge-platform-implementation-contract",
@@ -441,7 +483,8 @@
       "sha256": "beb3a9aae8dd146af1455d8ea814ab2fb754eecc03a77f0dc808a396036c79d6",
       "bytes": 152650,
       "status": "active",
-      "provenance_mode": "native"
+      "provenance_mode": "native",
+      "priority_tier": "technical_contract"
     },
     {
       "document_id": "world-regions",
@@ -449,9 +492,10 @@
       "file_name": "world_regions.txt",
       "sha256": "9d82d0dcd39047fdfd11516458a57e5e0f1de312da975b5840e5149718855b55",
       "bytes": 13189,
-      "status": "active",
+      "status": "deprecated",
       "provenance_mode": "legacy_mirror",
-      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_regions.txt"
+      "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_regions.txt",
+      "priority_tier": "reference"
     }
   ]
 }

@@ -72,9 +72,9 @@
 - **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112)
 
 ### LW-008 — три системы статусов
-- **Что.** Метки CONTRACT_INDEX §2, поле `status` (`active/proposed/deprecated`) записей `data/knowledge-source/corpus-manifest.json` (фильтр RAG — `default_statuses` в `retrieval-policy.json`) и строки «Status:» в шапках документов корпуса и ADR.
-- **Ловушки.** (1) `corpus-manifest.json` даёт `active` 14 UNDECLARED-гайдам, 3 redirect-заглушкам и 5 REFERENCE-документам, поэтому `npm run knowledge:query` по умолчанию показывает их как действующие и может ставить выше ACTIVE-контрактов (исправление статуса из CONTRACT_INDEX — шаг 2 #144). (2) Обратное: `universal_category_classification_policy.md` и `semantic_world_actions_materialization_and_processes_contract.md` — PROPOSED, хотя их механизмы работают в коде; запрос по умолчанию их не видит. (3) ACTIVE-документы называют себя «целевыми», версии вида `4.4.0-target.1` — идентификаторы, а не статус.
-- **Как жить.** Нормативный статус — только CONTRACT_INDEX; retrieval-статус влияет только на выдачу RAG. Поиск корпуса лексический (`knowledge:status` = `ready` без embedding-слоя). Для proposed-документов — `npm run knowledge:query -- --statuses active,proposed --query "…"`, затем чтение исходника.
+- **Что.** Метки CONTRACT_INDEX §2, поле `status` / `priority_tier` записей `data/knowledge-source/corpus-manifest.json` (фильтр RAG — `default_statuses` в `retrieval-policy.json`; оба поля пишет `knowledge:repin` из CONTRACT_INDEX, #144 шаг 2) и строки «Status:» в шапках документов корпуса и ADR.
+- **Ловушки.** (1) Шапки документов и ADR по-прежнему могут расходиться с индексом — статус для RAG брать из manifest после repin, нормативную роль — только из CONTRACT_INDEX. (2) PROPOSED-документы (`universal_category_classification_policy.md`, `semantic_world_actions_…`) механизмы в коде могут уже работать; запрос по умолчанию их не видит. (3) ACTIVE-документы называют себя «целевыми», версии вида `4.4.0-target.1` — идентификаторы, а не статус.
+- **Как жить.** Нормативный статус — только CONTRACT_INDEX; `knowledge:repin` выводит retrieval-статус и priority_tier; `knowledge:check` ловит расхождение. Поиск корпуса лексический (`knowledge:status` = `ready` без embedding-слоя). Для proposed — `npm run knowledge:query -- --statuses active,proposed --query "…"`, затем чтение исходника.
 - **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112), [#144](https://github.com/PavelSlaven/Novgorod1230/issues/144)
 
 ### LW-010 — evidence, которое читают tools

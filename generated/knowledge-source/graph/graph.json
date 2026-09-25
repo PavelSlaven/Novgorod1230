@@ -2,54 +2,6 @@
   "schema_version": "rus.knowledge_graph.v1",
   "nodes": [
     {
-      "id": "canonical-document:base-turn-orchestration",
-      "type": "canonical_document",
-      "label": "base_turn_orchestration.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/base_turn_orchestration.txt",
-      "source_location": {
-        "file": "base_turn_orchestration.txt",
-        "line_start": 1,
-        "line_end": 800
-      }
-    },
-    {
-      "id": "canonical-document:character-inventory-equipment",
-      "type": "canonical_document",
-      "label": "character_inventory_equipment.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/character_inventory_equipment.txt",
-      "source_location": {
-        "file": "character_inventory_equipment.txt",
-        "line_start": 1,
-        "line_end": 382
-      }
-    },
-    {
-      "id": "canonical-document:character-parameters",
-      "type": "canonical_document",
-      "label": "character_parameters.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/character_parameters.txt",
-      "source_location": {
-        "file": "character_parameters.txt",
-        "line_start": 1,
-        "line_end": 270
-      }
-    },
-    {
-      "id": "canonical-document:code-critic-invocation-rule",
-      "type": "canonical_document",
-      "label": "code_critic_invocation_rule.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/code_critic_invocation_rule.txt",
-      "source_location": {
-        "file": "code_critic_invocation_rule.txt",
-        "line_start": 1,
-        "line_end": 14
-      }
-    },
-    {
       "id": "canonical-document:code-driven-world-materialization-architecture",
       "type": "canonical_document",
       "label": "code_driven_world_materialization_architecture.md",
@@ -86,90 +38,6 @@
       }
     },
     {
-      "id": "canonical-document:development-rules",
-      "type": "canonical_document",
-      "label": "development_rules.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/development_rules.txt",
-      "source_location": {
-        "file": "development_rules.txt",
-        "line_start": 1,
-        "line_end": 677
-      }
-    },
-    {
-      "id": "canonical-document:documentation-corpus-readme",
-      "type": "canonical_document",
-      "label": "README.md",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/README.md",
-      "source_location": {
-        "file": "README.md",
-        "line_start": 1,
-        "line_end": 18
-      }
-    },
-    {
-      "id": "canonical-document:formulas",
-      "type": "canonical_document",
-      "label": "formulas.md",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/formulas.md",
-      "source_location": {
-        "file": "formulas.md",
-        "line_start": 1,
-        "line_end": 1041
-      }
-    },
-    {
-      "id": "canonical-document:g1-g5-generation-rules",
-      "type": "canonical_document",
-      "label": "g1_g5_generation_rules.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/g1_g5_generation_rules.txt",
-      "source_location": {
-        "file": "g1_g5_generation_rules.txt",
-        "line_start": 1,
-        "line_end": 45
-      }
-    },
-    {
-      "id": "canonical-document:historical-events-and-figures",
-      "type": "canonical_document",
-      "label": "historical_events_and_figures.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/historical_events_and_figures.txt",
-      "source_location": {
-        "file": "historical_events_and_figures.txt",
-        "line_start": 1,
-        "line_end": 193
-      }
-    },
-    {
-      "id": "canonical-document:information-sources-llm-prompts",
-      "type": "canonical_document",
-      "label": "information_sources_llm_prompts.md",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/information_sources_llm_prompts.md",
-      "source_location": {
-        "file": "information_sources_llm_prompts.md",
-        "line_start": 1,
-        "line_end": 1091
-      }
-    },
-    {
-      "id": "canonical-document:interface-ux",
-      "type": "canonical_document",
-      "label": "interface_ux.md",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/interface_ux.md",
-      "source_location": {
-        "file": "interface_ux.md",
-        "line_start": 1,
-        "line_end": 1223
-      }
-    },
-    {
       "id": "canonical-document:items-and-property",
       "type": "canonical_document",
       "label": "items_and_property.txt",
@@ -179,54 +47,6 @@
         "file": "items_and_property.txt",
         "line_start": 1,
         "line_end": 405
-      }
-    },
-    {
-      "id": "canonical-document:llm-agent-prompt-templates",
-      "type": "canonical_document",
-      "label": "llm_agent_prompt_templates.md",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/llm_agent_prompt_templates.md",
-      "source_location": {
-        "file": "llm_agent_prompt_templates.md",
-        "line_start": 1,
-        "line_end": 1107
-      }
-    },
-    {
-      "id": "canonical-document:llm-documentation-navigation",
-      "type": "canonical_document",
-      "label": "llm_documentation_navigation.md",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/llm_documentation_navigation.md",
-      "source_location": {
-        "file": "llm_documentation_navigation.md",
-        "line_start": 1,
-        "line_end": 18
-      }
-    },
-    {
-      "id": "canonical-document:movement-locations-regions",
-      "type": "canonical_document",
-      "label": "movement_locations_regions.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/movement_locations_regions.txt",
-      "source_location": {
-        "file": "movement_locations_regions.txt",
-        "line_start": 1,
-        "line_end": 932
-      }
-    },
-    {
-      "id": "canonical-document:new-game-start-pipeline",
-      "type": "canonical_document",
-      "label": "new_game_start_pipeline.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/new_game_start_pipeline.txt",
-      "source_location": {
-        "file": "new_game_start_pipeline.txt",
-        "line_start": 1,
-        "line_end": 92
       }
     },
     {
@@ -263,42 +83,6 @@
         "file": "npc_conversation_mode_contract.md",
         "line_start": 1,
         "line_end": 3123
-      }
-    },
-    {
-      "id": "canonical-document:npc-generation-profiles",
-      "type": "canonical_document",
-      "label": "npc_generation_profiles.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/npc_generation_profiles.txt",
-      "source_location": {
-        "file": "npc_generation_profiles.txt",
-        "line_start": 1,
-        "line_end": 255
-      }
-    },
-    {
-      "id": "canonical-document:npc-inventory-item-marks",
-      "type": "canonical_document",
-      "label": "npc_inventory_item_marks.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/npc_inventory_item_marks.txt",
-      "source_location": {
-        "file": "npc_inventory_item_marks.txt",
-        "line_start": 1,
-        "line_end": 167
-      }
-    },
-    {
-      "id": "canonical-document:player-character-generation",
-      "type": "canonical_document",
-      "label": "player_character_generation.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/player_character_generation.txt",
-      "source_location": {
-        "file": "player_character_generation.txt",
-        "line_start": 1,
-        "line_end": 886
       }
     },
     {
@@ -386,18 +170,6 @@
       }
     },
     {
-      "id": "canonical-document:time-system",
-      "type": "canonical_document",
-      "label": "time_system.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/time_system.txt",
-      "source_location": {
-        "file": "time_system.txt",
-        "line_start": 1,
-        "line_end": 263
-      }
-    },
-    {
       "id": "canonical-document:turn-step-llm-contract",
       "type": "canonical_document",
       "label": "turn_step_llm_contract.md",
@@ -407,18 +179,6 @@
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
         "line_end": 1910
-      }
-    },
-    {
-      "id": "canonical-document:weapons-and-armor",
-      "type": "canonical_document",
-      "label": "weapons_and_armor.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/weapons_and_armor.txt",
-      "source_location": {
-        "file": "weapons_and_armor.txt",
-        "line_start": 1,
-        "line_end": 643
       }
     },
     {
@@ -434,18 +194,6 @@
       }
     },
     {
-      "id": "canonical-document:world-generation-and-turns",
-      "type": "canonical_document",
-      "label": "world_generation_and_turns.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/world_generation_and_turns.txt",
-      "source_location": {
-        "file": "world_generation_and_turns.txt",
-        "line_start": 1,
-        "line_end": 1581
-      }
-    },
-    {
       "id": "canonical-document:world-knowledge-platform-implementation-contract",
       "type": "canonical_document",
       "label": "world_knowledge_platform_implementation_contract.md",
@@ -455,18 +203,6 @@
         "file": "world_knowledge_platform_implementation_contract.md",
         "line_start": 1,
         "line_end": 3928
-      }
-    },
-    {
-      "id": "canonical-document:world-regions",
-      "type": "canonical_document",
-      "label": "world_regions.txt",
-      "structural_only": true,
-      "source_file": "DOCUMENTS/world_regions.txt",
-      "source_location": {
-        "file": "world_regions.txt",
-        "line_start": 1,
-        "line_end": 382
       }
     }
   ],

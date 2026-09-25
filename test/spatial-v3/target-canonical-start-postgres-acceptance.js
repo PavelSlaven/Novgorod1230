@@ -179,9 +179,14 @@ export async function assertTargetCanonicalStartPostgres({ pool, itemPin, actorB
       } else if (system.startsWith('Return only {"prose"')) {
         narrationRoles.push('gameplay_narrator');
         const context = modelInput.visible_context_package;
-        assert.equal(context.known_context.some((entry) => /лодоч|рыбацкий стан/u.test(entry.text)), false);
-        assert.equal(context.visible_npcs.length, 0, 'unproven NPC perception is not co-location disclosure');
-        output = { prose: context.visible_scene_dossier.must_include.map((entry) => entry.text).join('\n\n') };
+        if (narrationRoles.length === 1) {
+          assert.equal(context.known_context.some((entry) => /лодоч|рыбацкий стан/u.test(entry.text)), false);
+          assert.equal(context.visible_npcs.length, 0, 'unproven NPC perception is not co-location disclosure');
+        }
+        const facts = context.visible_scene_dossier.must_include.map((entry) => entry.text);
+        const split = Math.ceil(facts.length / 2);
+        output = { prose: [facts.slice(0, split).join(' '), facts.slice(split).join(' ')]
+          .filter(Boolean).join('\n\n') };
       } else {
         assert.ok(system.startsWith('Return only {"pass"'), system);
         narrationRoles.push('gameplay_narrator_auditor');

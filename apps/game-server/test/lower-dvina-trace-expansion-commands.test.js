@@ -56,6 +56,7 @@ test('approved exit is a selectable exact server operation; topology input is ID
       operation_choice: choices[0].choice_id, operation_family: 'request_movement'
     }, choices);
     const command = definitions[0];
+    assert.deepEqual(command.writeTargets(), []);
     assert.equal(command.semantic_binding.matches(selected), true);
     assert.equal(command.semantic_binding.matches({ operation: {
       ...selected.operation, description: 'Иду по лесной тропе' } }), true);

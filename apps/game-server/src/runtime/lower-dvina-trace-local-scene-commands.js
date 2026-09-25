@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
-import { actorMovementBlocked, available, mode, phase3WriteTargets } from
+import { actorMovementBlocked, available, mode } from
   './lower-dvina-trace-phase-3-command-shared.js';
 import { serverError } from '../errors.js';
 
@@ -53,7 +53,7 @@ export async function createTraceLocalSceneCommands({ state, inputDigest,
         return spatialLocalSceneRuntime.prepareLocalMovement({ ...identity,
           state: current, edgeId, playerInput, inputDigest });
       },
-      writeTargets: phase3WriteTargets
+      writeTargets: () => []
     };
   });
 }

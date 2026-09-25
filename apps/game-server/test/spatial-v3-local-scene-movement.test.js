@@ -173,6 +173,7 @@ test('local command binds exact current edge and rejects stale state', async () 
     state_changes: [], suggested_actions: [] }; } };
   const [command] = await createTraceLocalSceneCommands({ state: committed,
     inputDigest: 'digest', spatialLocalSceneRuntime: runtime });
+  assert.deepEqual(command.writeTargets(), []);
   assert.equal(command.semantic_binding.operation_dto.target_ref, 'arrival:focus');
   const actionSet = await createTurnAvailableActionSet({
     registry: createTurnCommandRegistry([command]), committedState: committed,

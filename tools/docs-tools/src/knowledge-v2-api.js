@@ -90,11 +90,37 @@ export async function verifyKnowledgeSourceMigrationV2({ root = '.' } = {}) {
 
   const corpusHasIndex = (manifest.documents ?? []).some((record) => record.file_name === 'CONTRACT_INDEX.md');
   if (corpusHasIndex) {
-    const statusByFile = await loadContractIndexCorpusStatuses({ root: projectRoot }).catch((error) => {
+    try {
+      const statusByFile = await loadContractIndexCorpusStatuses({ root: projectRoot });
+      errors.push(...diffCorpusStatusesAgainstIndex(manifest.documents ?? [], statusByFile));
+    } catch (error) {
       errors.push(`CONTRACT_INDEX status load failed: ${error.message}`);
-      return new Map();
-    });
-    errors.push(...diffCorpusStatusesAgainstIndex(manifest.documents ?? [], statusByFile));
+    }
+  }
+
+  const policyBytes = await readFile(join(projectRoot, SOURCE_ROOT, 'retrieval-policy.json')).catch((error) => {
+    errors.push(`retrieval policy missing: ${error.message}`);
+    return null;
+  });
+  if (policyBytes) {
+    try {
+      const policy = JSON.parse(policyBytes.toString('utf8'));
+      const defaults = Array.isArray(policy.default_statuses) ? policy.default_statuses : [];
+      const expectedDefaults = ['active', 'reference'];
+      if (defaults.length !== expectedDefaults.length || expectedDefaults.some((status, index) => defaults[index] !== status)) {
+        errors.push(`retrieval policy default_statuses must be ${JSON.stringify(expectedDefaults)} (got ${JSON.stringify(defaults)}); run knowledge:repin`);
+      }
+      for (const item of policy.documents ?? []) {
+        if (item && Object.hasOwn(item, 'priority_tier')) {
+          errors.push(`${item.document_id ?? '<unknown>'}: retrieval policy must not declare priority_tier; ranking reads corpus-manifest`);
+        }
+      }
+      if (policy.baseline_manifest_sha256 !== sha256(manifestBytes)) {
+        errors.push('retrieval policy baseline_manifest_sha256 does not match corpus-manifest; run knowledge:repin');
+      }
+    } catch (error) {
+      errors.push(`retrieval policy: ${error.message}`);
+    }
   }
 
   const expected = await buildKnowledgeSourceOutputsV2({ root: projectRoot }).catch((error) => {

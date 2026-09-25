@@ -95,31 +95,33 @@ test('knowledge materializer includes changed proposed documents lexically witho
   assert.equal(graph.nodes.some((node) => node.id === `canonical-document:${proposed.document_id}`), false);
 });
 
-test('unseen-equivalent: new active document stays lexical and readiness stays ready', async () => {
+test('unseen-equivalent: index row then repin/generate/check yields reference without manual status edits', async () => {
   const fixtureRoot = await materializerFixture();
   const sourceRoot = join(fixtureRoot, 'data/knowledge-source');
+  const indexPath = join(sourceRoot, 'corpus/DOCUMENTS/CONTRACT_INDEX.md');
+  const fileName = 'unseen_equivalent_lexical.md';
+  const documentId = 'unseen-equivalent-lexical';
+  const text = Buffer.from('# Unseen Equivalent\n\nNew undeclared guide for lexical RAG readiness.\n');
+  await writeFile(join(sourceRoot, 'corpus/DOCUMENTS', fileName), text);
+  const indexText = await readFile(indexPath, 'utf8');
+  await writeFile(indexPath, `${indexText.trimEnd()}\n| [\`${fileName}\`](${fileName}) | \`UNDECLARED / DOMAIN GUIDE\` | unseen equivalent |\n`);
   const manifestPath = join(sourceRoot, 'corpus-manifest.json');
   const policyPath = join(sourceRoot, 'retrieval-policy.json');
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
   const policy = JSON.parse(await readFile(policyPath, 'utf8'));
-  const text = Buffer.from('# Unseen Equivalent\n\nNew active document for lexical RAG readiness.\n');
-  const fileName = 'unseen_equivalent_lexical.md';
-  const documentId = 'unseen-equivalent-lexical';
-  await writeFile(join(sourceRoot, 'corpus/DOCUMENTS', fileName), text);
   manifest.documents.push({
     document_id: documentId,
     canonical_path: `corpus/DOCUMENTS/${fileName}`,
     file_name: fileName,
-    sha256: sha256(text),
-    bytes: text.length,
+    sha256: '0'.repeat(64),
+    bytes: 0,
     status: 'active',
     priority_tier: 'technical_contract',
     provenance_mode: 'native'
   });
   policy.documents.push({
     document_id: documentId,
-    document_type: 'technical_contract',
-    priority_tier: 'technical_contract',
+    document_type: 'reference',
     subsystems: ['knowledge-source'],
     related_document_ids: ['contract-index'],
     related_module_paths: ['packages/knowledge-source'],
@@ -128,11 +130,22 @@ test('unseen-equivalent: new active document stays lexical and readiness stays r
     conflicts_with_document_ids: []
   });
   await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-  policy.baseline_manifest_sha256 = sha256(await readFile(manifestPath));
   await writeFile(policyPath, `${JSON.stringify(policy, null, 2)}\n`);
+
+  const { repinCanonicalCorpus } = await import('../src/knowledge-corpus-repin.js');
+  await repinCanonicalCorpus({ root: fixtureRoot });
+  const afterRepin = JSON.parse(await readFile(manifestPath, 'utf8'));
+  const record = afterRepin.documents.find((item) => item.document_id === documentId);
+  assert.equal(record.status, 'reference');
+  assert.equal(record.priority_tier, 'reference');
+  assert.equal(record.sha256, sha256(text));
 
   const { writeKnowledgeSourceOutputsV2 } = await import('../src/knowledge-materializer-v2.js');
   await writeKnowledgeSourceOutputsV2({ root: fixtureRoot });
+  const { verifyCanonicalCorpus } = await import('../src/knowledge-corpus-verifier.js');
+  const check = await verifyCanonicalCorpus({ root: fixtureRoot });
+  assert.equal(check.ok, true, check.errors.join('\n'));
+
   const { createFileSystemKnowledgeSourceStorage } = await import('../../../packages/knowledge-source/src/adapters/filesystem-storage.js');
   const { createKnowledgeRagReader } = await import('../../../packages/knowledge-source/src/services/rag-reader.js');
   const storage = createFileSystemKnowledgeSourceStorage({
@@ -141,8 +154,7 @@ test('unseen-equivalent: new active document stays lexical and readiness stays r
   });
   const status = await createKnowledgeRagReader({ storage }).getReadinessStatus();
   assert.equal(status.status, 'ready');
-  const ragManifest = JSON.parse(await readFile(join(fixtureRoot, 'generated/knowledge-source/rag/manifest.json'), 'utf8'));
-  const coverage = ragManifest.coverage.find((item) => item.document_id === documentId);
-  assert.equal(coverage.lexical_indexed, true);
-  assert.ok(!Object.hasOwn(coverage, 'semantic_indexed'));
+  const search = await createKnowledgeRagReader({ storage }).searchKnowledge({ query: 'unseen equivalent lexical' });
+  assert.ok(search.reference_results.some((item) => item.document_id === documentId));
+  assert.ok(search.results.every((item) => item.document_id !== documentId));
 });

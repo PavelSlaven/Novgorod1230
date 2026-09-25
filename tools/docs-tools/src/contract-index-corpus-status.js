@@ -8,37 +8,41 @@ const PRIORITY_TIERS = new Set([
   'development_process_normative',
   'technical_contract',
   'navigation',
+  'proposed',
   'reference'
 ]);
 
+/** Exact CONTRACT_INDEX status labels → corpus retrieval fields. Unknown label → throw. */
+const INDEX_LABEL_MAP = Object.freeze({
+  ACTIVE: { status: 'active', priority_tier: 'technical_contract' },
+  'ACTIVE SPECIALIZATION': { status: 'active', priority_tier: 'highest_materialization_normative' },
+  'ACTIVE DOMAIN NORM': { status: 'active', priority_tier: 'technical_contract' },
+  GOVERNING: { status: 'active', priority_tier: 'technical_contract' },
+  'ACTIVE / navigation index': { status: 'active', priority_tier: 'navigation' },
+  PROPOSED: { status: 'proposed', priority_tier: 'proposed' },
+  'PROPOSED UMBRELLA TARGET': { status: 'proposed', priority_tier: 'proposed' },
+  'UNDECLARED / DOMAIN GUIDE': { status: 'reference', priority_tier: 'reference' },
+  REFERENCE: { status: 'reference', priority_tier: 'reference' },
+  'REFERENCE / DOMAIN GUIDE': { status: 'reference', priority_tier: 'reference' },
+  'REFERENCE / KNOWLEDGE GUIDE': { status: 'reference', priority_tier: 'reference' },
+  'REFERENCE / TEMPLATE': { status: 'reference', priority_tier: 'reference' },
+  'REFERENCE FOR PROPOSED POLICY': { status: 'reference', priority_tier: 'reference' },
+  'REFERENCE / LEGACY': { status: 'deprecated', priority_tier: 'reference' },
+  'SUPERSEDED / REDIRECT': { status: 'deprecated', priority_tier: 'navigation' },
+  REDIRECT: { status: 'deprecated', priority_tier: 'navigation' },
+  'MIGRATION / ROLLBACK': { status: 'deprecated', priority_tier: 'reference' }
+});
+
 /**
  * Map CONTRACT_INDEX label → corpus-manifest retrieval status + priority_tier.
- * ACTIVE* → active; PROPOSED* → proposed; UNDECLARED / non-legacy REFERENCE → reference;
- * REFERENCE/LEGACY, REDIRECT, SUPERSEDED, MIGRATION/ROLLBACK → deprecated.
- * Unknown label → throw (knowledge:check fails).
+ * Exact labels only; unknown label → throw (knowledge:check fails).
  */
 export function mapIndexLabelToCorpusFields(indexLabel) {
-  const label = String(indexLabel ?? '').trim().toUpperCase();
+  const label = String(indexLabel ?? '').trim();
   if (!label) throw new Error('Empty CONTRACT_INDEX status label.');
-  if (label.startsWith('ACTIVE') || label === 'GOVERNING') {
-    const priority_tier = label.includes('SPECIALIZATION')
-      ? 'highest_materialization_normative'
-      : 'technical_contract';
-    return { status: 'active', priority_tier, index_status: indexLabel.trim() };
-  }
-  if (label.startsWith('PROPOSED')) {
-    return { status: 'proposed', priority_tier: 'profile_normative', index_status: indexLabel.trim() };
-  }
-  if (label.includes('REDIRECT') || label.startsWith('SUPERSEDED')) {
-    return { status: 'deprecated', priority_tier: 'navigation', index_status: indexLabel.trim() };
-  }
-  if (label.startsWith('MIGRATION') || label.includes('ROLLBACK') || label.startsWith('REFERENCE / LEGACY')) {
-    return { status: 'deprecated', priority_tier: 'reference', index_status: indexLabel.trim() };
-  }
-  if (label.startsWith('REFERENCE') || label.startsWith('UNDECLARED')) {
-    return { status: 'reference', priority_tier: 'reference', index_status: indexLabel.trim() };
-  }
-  throw new Error(`Unsupported CONTRACT_INDEX status label: ${indexLabel}`);
+  const mapped = INDEX_LABEL_MAP[label];
+  if (!mapped) throw new Error(`Unsupported CONTRACT_INDEX status label: ${indexLabel}`);
+  return { ...mapped, index_status: label };
 }
 
 export function documentIdForCorpusFile(fileName) {
@@ -51,9 +55,17 @@ export function parseContractIndexCorpusStatuses(markdown) {
   const rowPattern = /^\|\s*\[`?([^`\]]+\.(?:md|txt))`?\]\([^)]+\)\s*\|\s*`([^`]+)`/gmu;
   for (const match of String(markdown ?? '').matchAll(rowPattern)) {
     const fileName = basenamePath(match[1]);
-    if (fileName.includes('/')) continue;
-    if (byFile.has(fileName)) continue; // first table row wins (§4 before weaker §5 repeats)
-    byFile.set(fileName, mapIndexLabelToCorpusFields(match[2]));
+    const fields = mapIndexLabelToCorpusFields(match[2]);
+    if (byFile.has(fileName)) {
+      const previous = byFile.get(fileName);
+      if (previous.index_status !== fields.index_status) {
+        throw new Error(
+          `${fileName}: duplicate CONTRACT_INDEX rows with different labels (${previous.index_status} vs ${fields.index_status})`
+        );
+      }
+      continue;
+    }
+    byFile.set(fileName, fields);
   }
   // CONTRACT_INDEX itself is the navigation owner; header marks it active.
   if (!byFile.has('CONTRACT_INDEX.md')) {
@@ -76,7 +88,9 @@ export function expectedCorpusFieldsForRecord(record, statusByFile) {
   const fileName = String(record?.file_name ?? '').trim();
   const derived = statusByFile.get(fileName);
   if (!derived) {
-    throw new Error(`${record?.document_id ?? fileName}: file is not listed in CONTRACT_INDEX tables and has no default`);
+    throw new Error(
+      `${record?.document_id ?? fileName}: not listed in CONTRACT_INDEX; add a table row before knowledge:repin`
+    );
   }
   return derived;
 }

@@ -31,20 +31,22 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
 
 1. **Правка** документа. Перед ней — `rg` по имени файла в [LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md) и в
    списке закреплённых фраз ниже.
-2. **`npm run knowledge:repin`.** Для `native` пересчитывает `sha256`/`bytes` в
+2. **CONTRACT_INDEX** — обновить в том же PR, если документ создан, повышен, переименован, перемещён, заменён или
+   существенно изменён (CONTRACT_INDEX §10). Сам индекс — `native`-документ: его правка идёт по этим же шагам.
+   Строка в CONTRACT_INDEX должна существовать **до** `knowledge:repin`: иначе repin остановится с понятной ошибкой CLI.
+3. **`npm run knowledge:repin`.** Для `native` пересчитывает `sha256`/`bytes` в
    [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json), выводит `status` и
    `priority_tier` из [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)
    (`active` / `proposed` / `reference` / `deprecated`; см. KSP и LW-008),
-   синхронизирует `priority_tier` в [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json),
+   пишет канонический `default_statuses` = `["active","reference"]` в
+   [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json) (без `priority_tier` в policy),
    закрепляет SHA-256 manifest в policy baseline и вызывает `docs:generate`. Изменённый документ с legacy
    provenance требует отдельной процедуры выше; команда останавливается без переписывания его записи.
    Generated вручную не править (KSP «Изменение корпуса»). Ручная правка `status`/`priority_tier` в manifest
-   запрещена: `knowledge:check` падает при расхождении с CONTRACT_INDEX.
-3. **Проверки:** `knowledge:check-corpus`, `knowledge:check`, `knowledge:controls`, `knowledge:status`,
+   или `default_statuses`/`priority_tier` в policy запрещена: `knowledge:check` падает.
+4. **Проверки:** `knowledge:check-corpus`, `knowledge:check`, `knowledge:controls`, `knowledge:status`,
    `temporal-v4:check-docs` (baseline на 21bd0938 — `conflict_count: 0`), `docs:check`, `test:knowledge-source`, `test:tools`, `git diff --check`.
    Полный `npm test` — в CI (AGENTS §24).
-4. **CONTRACT_INDEX** — обновить в том же PR, если документ создан, повышен, переименован, перемещён, заменён или
-   существенно изменён (CONTRACT_INDEX §10). Сам индекс — `native`-документ: его правка идёт по этим же шагам.
 5. **Коммит generated** вместе с правкой: CI делает `git diff --exit-code -- generated/ …` после `docs:generate`
    ([test.yml](../../.github/workflows/test.yml)).
 

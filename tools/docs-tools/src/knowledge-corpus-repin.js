@@ -34,19 +34,21 @@ export async function repinCanonicalCorpus({ root = '.' } = {}) {
     if (error?.code === 'ENOENT') return null;
     throw error;
   });
-  const statusChanged = statusByFile
-    ? applyContractIndexStatusesToDocuments(manifest.documents, statusByFile)
-    : 0;
+  let statusChanged = 0;
+  if (statusByFile) {
+    try {
+      statusChanged = applyContractIndexStatusesToDocuments(manifest.documents, statusByFile);
+    } catch (error) {
+      throw new Error(`knowledge:repin failed: ${error.message}`);
+    }
+  }
   const manifestBytes = Buffer.from(stableJson(manifest));
   const manifestDigest = sha256(manifestBytes);
   const policy = await readJson(policyPath);
   if (!policy || typeof policy !== 'object') throw new Error('Invalid retrieval policy.');
   if (Array.isArray(policy.documents)) {
-    const byId = new Map(manifest.documents.map((record) => [record.document_id, record]));
     for (const item of policy.documents) {
-      const record = byId.get(item.document_id);
-      if (!record?.priority_tier) continue;
-      item.priority_tier = record.priority_tier;
+      if (item && Object.hasOwn(item, 'priority_tier')) delete item.priority_tier;
     }
   }
   policy.default_statuses = ['active', 'reference'];

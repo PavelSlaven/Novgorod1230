@@ -13,8 +13,10 @@ const PRIORITY_TIERS = new Set([
   'development_process_normative',
   'technical_contract',
   'navigation',
+  'proposed',
   'reference'
 ]);
+const CANONICAL_DEFAULT_STATUSES = Object.freeze(['active', 'reference']);
 
 export async function verifyCanonicalCorpus({ root = '.' } = {}) {
   const projectRoot = resolve(root);
@@ -81,13 +83,38 @@ export async function verifyCanonicalCorpus({ root = '.' } = {}) {
     if (!ids.has(id)) errors.push(`alias ${alias} references unknown document ${id}`);
   }
 
+  const policyBytes = await readFile(join(sourceRoot, 'retrieval-policy.json')).catch((error) => {
+    errors.push(`retrieval policy missing: ${error.message}`);
+    return null;
+  });
+  if (policyBytes) {
+    const policy = parseJson(policyBytes, 'retrieval policy', errors);
+    if (policy) {
+      const defaults = Array.isArray(policy.default_statuses) ? policy.default_statuses : [];
+      if (defaults.length !== CANONICAL_DEFAULT_STATUSES.length
+        || CANONICAL_DEFAULT_STATUSES.some((status, index) => defaults[index] !== status)) {
+        errors.push(`retrieval policy default_statuses must be ${JSON.stringify([...CANONICAL_DEFAULT_STATUSES])} (got ${JSON.stringify(defaults)}); run knowledge:repin`);
+      }
+      for (const item of policy.documents ?? []) {
+        if (item && Object.hasOwn(item, 'priority_tier')) {
+          errors.push(`${item.document_id ?? '<unknown>'}: retrieval policy must not declare priority_tier; ranking reads corpus-manifest`);
+        }
+      }
+      const expectedBaseline = sha256(manifestBytes);
+      if (policy.baseline_manifest_sha256 !== expectedBaseline) {
+        errors.push('retrieval policy baseline_manifest_sha256 does not match corpus-manifest; run knowledge:repin');
+      }
+    }
+  }
+
   const corpusHasIndex = (manifest.documents ?? []).some((record) => record.file_name === 'CONTRACT_INDEX.md');
   if (corpusHasIndex) {
-    const statusByFile = await loadContractIndexCorpusStatuses({ root: projectRoot }).catch((error) => {
+    try {
+      const statusByFile = await loadContractIndexCorpusStatuses({ root: projectRoot });
+      errors.push(...diffCorpusStatusesAgainstIndex(manifest.documents, statusByFile));
+    } catch (error) {
       errors.push(`CONTRACT_INDEX status load failed: ${error.message}`);
-      return new Map();
-    });
-    errors.push(...diffCorpusStatusesAgainstIndex(manifest.documents, statusByFile));
+    }
   }
 
   return freezeResult({ errors, documentCount: manifest.documents.length, activeCount, proposedCount, legacyCount, manifestSha256: sha256(manifestBytes) });

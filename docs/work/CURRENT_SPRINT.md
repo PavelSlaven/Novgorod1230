@@ -27,7 +27,7 @@
 1. [#144](https://github.com/PavelSlaven/Novgorod1230/issues/144) — RAG нормативного корпуса только лексический, затем статус и приоритет manifest из CONTRACT_INDEX; на main. Идёт первым: после него статус в manifest выводится скриптом, и перевод политики категорий в ACTIVE (#146, шаг 1) не блокирует `knowledge:status`.
 2. Синхронизация main → PR #98 (merge, без rebase).
 3. [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) — карты v17 и план этапа на ветке PR #98; закрывается после независимого Contract Auditor.
-4. [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) — нормы M2c через CORPUS_EDIT на ветке PR #98; каждый шаг — отдельная сдача на ревью.
+4. [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) — нормы M2c через CORPUS_EDIT на ветке PR #98; каждый шаг — отдельная сдача на ревью. Текст #146 сначала правится по решениям D1, D3, D5–D10.
 5. CR реализации M2c (код и данные) — после шага 1 #146.
 
 ### Backlog — сначала

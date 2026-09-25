@@ -44,6 +44,8 @@
 | 037 | `data/world-catalogs/novgorod/` | утверждения данных разбросаны | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 038 | `tools/world-catalog-workflow/` | tool импортируется runtime | — |
 | 039 | `universal_category_classification_policy.md` и ещё 3 | обрезанные документы корпуса | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
+| 040 | `infra/world-base/README.md` | README пишет 201 таблиц при 208 в схеме | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
+| 041 | `first-playable-party-migration.test.js` | тест ожидает 35 миграций при 36 | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 
 ## Записи
 
@@ -184,3 +186,13 @@
 - **Что.** 4 документа нормативного корпуса содержат буквальный маркер «…tokens truncated…»: в `universal_category_classification_policy.md` потеряны разделы 10–11.4 (ландшафт, вода, землепользование, животные); в `formulas.md`, `base_turn_orchestration.txt` и `movement_locations_regions.txt` повреждены архивные приложения v2. Целая копия политики — `data/knowledge-source/imports/universal-category-classification-2026-07-15/`.
 - **Как жить.** До восстановления разделы 10–11.4 политики читать из импорта только как справку: не как норму и не как вход materializer. Восстановление — CR норм M2c через CORPUS_EDIT.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
+
+### LW-040 — README world_base пишет 201 таблиц (ветка PR #98)
+- **Что.** `infra/world-base/README.md` всё ещё говорит «201 таблиц»; фактические `EXPECTED_TABLE_COUNT`, CI `table_count` и `SCHEMA_REFERENCE` — **208** (`01.sql`–`26.sql`).
+- **Как жить.** Счёт брать из `scripts/check-world-base-schema.mjs` / DB_SCHEMA / CI, не из README. Правка README — вместе с docs-sync схемы.
+- **Issue.** [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145)
+
+### LW-041 — стейл-тест длины миграций party (ветка PR #98)
+- **Что.** `test/spatial-v3/first-playable-party-migration.test.js` ожидает `SPATIAL_V3_TARGET_MIGRATIONS.length === 35`, тогда как манифест и диск — **36** (до `036_party_runtime_visibility_modifiers.sql`).
+- **Как жить.** Не чинить в docs-задаче карт; починить в CR реализации M2c вместе с обновлением ожидания теста.
+- **Issue.** [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145)

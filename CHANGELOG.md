@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(context): context dump v17 на ветке PR #98 — карты, pipelines, OWNERSHIP_MAP, TOOLS_INVENTORY, план/задание M2c (#145) LW-040 LW-041 added
 - docs(process): обзор HOW_WE_WORK; замысел материализуемого мира (PC §9.1); правила об источниках истины (WR §2), скриптах и имеющихся знаниях (WR §19), утверждении данных (WR §21.1), регрессии плейтеста (WR §22), отчёте gameplay run (WR §24.1 из PR #98) и честности проверок (WR §24.2); поле уровня качества в CR; context dump на ветке этапа; исправлены неверные факты о `legacy/src` (#143) LW-026…LW-039 added
 - fix(test): PostgreSQL-тесты удаляют контейнер вместе с anonymous volume (`docker rm -fv`, GS §26); страж в `test:tools` (#142)
 - feat(spatial): M2c — authoring профилей расширения G4 и основа atomic generation/traversal (#98)

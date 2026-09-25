@@ -1,6 +1,6 @@
 # Архитектура репозитория: карта
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-25, commit 59c1a33c.
 
 Это карта со ссылками на владельцев. Правила здесь не копируются и не создаются: норма живёт в источнике,
 указанном рядом с фактом. Статусы и precedence документов определяет
@@ -10,14 +10,14 @@
 
 | Папка | Назначение | Источник |
 |---|---|---|
-| `apps/` | composition roots: `apps/game-server` (production composition, единственный владелец физической PostgreSQL-транзакции) и `apps/game-web` (browser-клиент) | [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md), [MODULE_INDEX](../../MODULE_INDEX.md) |
+| `apps/` | composition roots: `apps/game-server` (production composition и единственный владелец физической PostgreSQL-транзакции; на ветке PR #98 значимая доменная логика всё ещё в `runtime/lower-dvina-trace-*` — долг, LW-026) и `apps/game-web` | [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md), [MODULE_INDEX](../../MODULE_INDEX.md), [game-server MODULE.md](../../apps/game-server/MODULE.md) |
 | `packages/` | модули `@rus/*`: workflow/presentation, domain и platform слои | [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md), [MODULE_INDEX](../../MODULE_INDEX.md) |
 | `tools/` | автономные CLI (docs, architecture, world-catalog, local-play и др.); production runtime их не импортирует, кроме `tools/world-catalog-workflow`, который импортируют стадии 7, 8, 13, 16 `packages/new-game` (LW-038) | [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md), [TOOLS_INVENTORY](../modules/TOOLS_INVENTORY.md) |
 | `data/` | нормативный корпус (`data/knowledge-source`), world-catalogs, approved seeds; не место для generated output | [data/README.md](../../data/README.md) |
 | `schemas/` | DDL: `schemas/party-db` (party runtime), JSON-схемы knowledge-source/materialization/world-catalogs | [CONTRACT_POLICY](../architecture/CONTRACT_POLICY.md) («DB DDL — `schemas/`») |
 | `infra/` | `infra/world-base` (read-only схема канонического мира, seeds, SCHEMA_REFERENCE), `infra/party-db` (справочные таблицы схемы партии), `infra/operator-control` (SQL) | [infra/world-base/README.md](../../infra/world-base/README.md), [infra/party-db/README_PARTY_DATABASE.md](../../infra/party-db/README_PARTY_DATABASE.md) |
 | `generated/` | детерминированные build-продукты (`schema-reference`, `module-index.json`, `generated/knowledge-source`, `generated-manifest.json`); коммитятся, вручную не правятся, создаются `npm run docs:generate` | [CONTRACT_POLICY](../architecture/CONTRACT_POLICY.md), [.gitignore](../../.gitignore) |
-| `docs/` | `architecture`, `domain`, `pipelines`, `adr`, `modules`, `setup`, `plans`, `implementation`, `work`, `migration` (архив завершённой миграции), `context` (эти карты) | [docs/migration/README.md](../migration/README.md), [CANONICAL_PATHS.json](../migration/CANONICAL_PATHS.json) |
+| `docs/` | `architecture`, `domain`, `pipelines`, `adr`, `modules`, `setup`, `plans`, `playtests`, `implementation`, `work`, `migration` (архив), `context` (эти карты) | [docs/README.md](../README.md), [playtests/README.md](../playtests/README.md), [CANONICAL_PATHS.json](../migration/CANONICAL_PATHS.json) |
 | `test/` | репозиторные тесты: `test/modules`, `test/integration`, `test/acceptance`, `test/e2e`, `test/shadow`, `test/cutover`, `test/spatial-v3`, `test/fixtures`, `test/helpers`. Корневые `test/*.test.js` в основном импортируют `src/` и не входят ни в один `test:*` скрипт | [package.json](../../package.json) |
 | `legacy/` | карантин до-модульного runtime: `legacy/src`, `legacy/test` (`npm run test:legacy`), `legacy/scripts`, `legacy/DOCUMENTS`; новые функции в нём не создаются. production до `legacy/src` не доходит: [legacy-adapter.js](../../packages/new-game/src/legacy-adapter.js) подключают только `stages/stage-{3..7}-*/compat.js`, которые не импортирует ни один модуль `apps/` и `packages/` (LW-003); `legacy/DOCUMENTS` — зеркало `canonicalized_from_legacy` | [MODULE_RULES](../architecture/MODULE_RULES.md) п.10, [legacy/README.md](../../legacy/README.md) |
 | `src/` | вторая, расходящаяся копия до-модульного runtime (отличается от `legacy/src`); production её не импортирует. Читатели: корневые `test/*.test.js` (55 из 61 файла), `test/fixtures/new-game-pipeline-stage*.js`, gate-тест `test/modules/party-runtime-preflight-v2.test.js` и операторские `scripts/*.js` (`src/env.js`) | фактический `diff -rq src legacy/src`; импорты; [LW-001](../work/LEGACY_WARNINGS.md) |
@@ -34,7 +34,50 @@
 Игнорируются git: `node_modules/`, `artifacts/*`, `releases/*`, `.codebase-memory/`, `.tmp.driveupload/` —
 см. [.gitignore](../../.gitignore).
 
-⚠ PR #98 меняет: добавляет `docs/playtests/` (отчёты плейтестов) и `docs/plans/Novgorod1230_Runtime_Plan.md`.
+## 1.1. Цепочка хода v17 (фактический путь)
+
+```text
+HTTP /api/v1/parties/:id/turns
+  → apps/game-server/src/http/handler.js
+  → createSpatialV3ProductionCompositionRoot
+       (apps/game-server/src/composition/production-spatial-v3.js)
+  → bindings.createPublicRuntimeFacade
+       (runtime/releases/spatial-v3-production-v{16|17}-bindings.js)
+  → phase-2 / lower-dvina-trace runtime ports (LW-026)
+  → @rus/turn runTurnStepLoop (packages/turn/src/turn-step-loop.js)
+       + WK grounding (runtime/world-knowledge-grounding.js)
+       + grounding auditor (lower-dvina-trace-turn-step-grounding-audit.js)
+  → P16 combined atomic committer
+       (infrastructure/postgres/spatial-v3-combined-atomic-committer.js /
+        lower-dvina-trace-phase-2-commit-p16.js)
+  → @rus/narration (post-commit prose from persisted visible package)
+```
+
+Default binding без env — v16; v17 — `RUS_SPATIAL_V3_BINDINGS_MODULE` / пара БД v17 в `play:local` ([DB_SCHEMA](DB_SCHEMA.md) §1.1, LW-033).
+
+## 1.2. Цепочка заполнения места (first entry / generated G5)
+
+```text
+G4 expansion profile / scene template (world_base)
+  → generation admission + generated expansion adapter
+  → first-entry provisioners (ordinary / spatial-semantic / target-generated)
+  → @rus/materialization (+ target-runtime-profiles.js; O2a/O2b/F1/S1 на v17 null — LW-029)
+  → P16 write set → party_runtime
+  → visibility / factual context → opening projection → narrator
+```
+
+Владельцы: `@rus/materialization`, `@rus/items-property`, `@rus/npc-runtime`, `@rus/runtime-catalog`; commit — game-server. См. [OWNERSHIP_MAP](../domain/OWNERSHIP_MAP.md).
+
+## 1.3. World Knowledge → игровая LLM
+
+| Слой | Путь | Источник |
+|---|---|---|
+| Pack | `data/world-catalogs/novgorod/world-knowledge/production-v1/` | [world-knowledge-production.js](../../apps/game-server/src/internal/world-knowledge-production.js) |
+| Embedding | `…/embedding-profiles/giga-480m-0826-v1.json` | тот же loader |
+| Pure core | `@rus/world-knowledge` | [MODULE.md](../../packages/world-knowledge/MODULE.md) |
+| Encoder Giga | `createGigaQueryEncoder` | [giga-query-encoder.js](../../apps/game-server/src/infrastructure/embedding/giga-query-encoder.js); [WORLD_KNOWLEDGE_GIGA_EMBEDDINGS.md](../setup/WORLD_KNOWLEDGE_GIGA_EMBEDDINGS.md) |
+| Pins релиза | pack_ref / revision / embedding_profile_ref | `spatial-v3-production-v17-bindings.js` |
+| Потребители | ход, NPC semantic/autonomous models через grounder ports | v17 bindings `createNpcRuntimePorts` |
 
 ## 2. Слои и владельцы (только ссылки)
 
@@ -59,7 +102,7 @@
 | Правило | Нормативный источник | Машинная проверка |
 |---|---|---|
 | Целевой размер файла 100–300 строк | [MODULE_RULES](../architecture/MODULE_RULES.md) п.7 | `apps/*/src/**/*.js` — 300 строк; в пакетах и tools, перечисленных в скрипте, — 500 (domain modules, temporal owners, narration/presentation, g5-scene/time-light/visible-context, стадии new-game, отдельные tools), turn — 300/500, оркестратор new-game — 350; остальные пакеты по строкам не проверяются |
-| Жёсткий предел 25 КБ | MODULE_RULES п.7 («нового исходника») | `hardBytes = 25 * 1024` для всех `.js`/`.mjs` в `apps/` и `packages/` |
+| Жёсткий предел 25 КБ / строковые ориентиры | MODULE_RULES п.7 | `hardBytes = 25 * 1024`; превышения размера и строковых ориентиров → `warnings` в [check-boundaries.mjs](../../tools/architecture/check-boundaries.mjs). Запреты импортов, allowlist корневых `.md`, лимит экспортов — violations |
 | Публичный API пакета ≤15 экспортов | MODULE_RULES п.8 | считает вхождения слова `export` в `packages/*/src/index.js` (> 15 — violation); строже: turn ≤12, оркестратор new-game ≤5, стадии new-game ≤8 |
 | `packages` ↛ `apps` | MODULE_RULES п.2, DEPENDENCY_RULES | импорт с `/apps/` из `packages/` — violation |
 | `game-web` ↛ `game-server` | DEPENDENCY_RULES | импорт с `game-server` из `apps/game-web/` — violation; кроме того в `apps/game-web/src` запрещена строка `@rus/` |
@@ -68,10 +111,6 @@
 | Корневые `.md` — только allowlist: `AGENTS.md`, `README.md`, `CHANGELOG.md`, `MIGRATION_PHASES_SHORT.md`, `MIGRATION_STATUS.md`, `MODULE_INDEX.md` | нормативного текста нет; реестр путей — [CANONICAL_PATHS.json](../migration/CANONICAL_PATHS.json) (category `root`, без `AGENTS.md` и — после DOC-01 — без `CHANGELOG.md`) | один список `ROOT_MARKDOWN_ALLOWLIST` в [documentation.js](../../tools/docs-tools/src/documentation.js); его проверяют `docs:check` и [check-boundaries.mjs](../../tools/architecture/check-boundaries.mjs) |
 | `generated/` не редактируется вручную | [CONTRACT_POLICY](../architecture/CONTRACT_POLICY.md), DEPENDENCY_RULES | `docs:check` сравнивает с повторной генерацией |
 | Новый пакет: `MODULE.md`, `package.json`, `src/index.js` | DEPENDENCY_RULES (публичные entrypoints) | check-boundaries требует набор файлов для перечисленных в нём пакетов/apps/tools |
-
-⚠ PR #98 меняет: в `check-boundaries.mjs` все лимиты размера (25 КБ и все строковые лимиты выше, включая
-оркестраторы и legacy-фасады) переводятся из violations в warnings; лимит 15 экспортов,
-запреты импортов и allowlist корневых `.md` остаются violations.
 
 Куда класть новое:
 - доменная логика — в пакет-владелец по [OWNERSHIP_MAP](../domain/OWNERSHIP_MAP.md), наружу только через `src/index.js`
@@ -91,7 +130,7 @@
 | owner / владелец | единственный authoritative модуль ответственности | AGENTS.md §15, [OWNERSHIP_MAP](../domain/OWNERSHIP_MAP.md) |
 | authoritative / ordinary | авторская/значимая истина против обычной детали мира | AGENTS.md §10.1, §10.4 |
 | authoritative envelope | рамка, внутри которой допустима semantic freedom | AGENTS.md §11 |
-| G0–G5 | каноническая пространственная иерархия | AGENTS.md §11, `@rus/space-map` в MODULE_INDEX |
+| G0–G5 | каноническая пространственная иерархия | AGENTS.md §11; см. [OWNERSHIP_MAP](../domain/OWNERSHIP_MAP.md) |
 | `world_base` | read-only база канонического мира | MODULE_RULES п.5, [infra/world-base/README.md](../../infra/world-base/README.md) |
 | party runtime | изменяемое состояние партии, запись только через `@rus/party-store` | MODULE_RULES п.5, `schemas/party-db` |
 | composition root | `apps/*`: wiring без доменной логики | DEPENDENCY_RULES |

@@ -1,10 +1,12 @@
 import { createHash } from 'node:crypto';
 import { deepFreeze, validateAliases, validateCorpusManifest } from '../domain/manifest.js';
-import { validateRetrievalPolicy } from '../domain/retrieval-policy.js';
+import { CANONICAL_DEFAULT_STATUSES, validateRetrievalPolicy } from '../domain/retrieval-policy.js';
 import { rankKnowledgeChunks } from '../domain/retrieval.js';
 import { knowledgeSourceError } from '../errors.js';
 
-export function createKnowledgeRagReader({ storage, allowedStatuses = ['active', 'reference'] } = {}) {
+const NORM_RESULT_STATUSES = Object.freeze(new Set(['active', 'proposed', 'deprecated']));
+
+export function createKnowledgeRagReader({ storage, allowedStatuses = CANONICAL_DEFAULT_STATUSES } = {}) {
   assertStorage(storage);
   const visibleStatuses = normalizeStatuses(allowedStatuses);
   return Object.freeze({
@@ -28,29 +30,34 @@ async function search(storage, input = {}, visibleStatuses) {
   const requestedStatuses = requestedStatusSet(input.statuses, context.policy.default_statuses, visibleStatuses);
   const selectedDocuments = context.manifest.documents.filter((item) => requestedStatuses.has(item.status));
   const allowed = normalizeAllowed(input.allowed_document_ids, selectedDocuments, context.aliases);
-  const selected = allowed ? selectedDocuments.filter((item) => allowed.has(item.document_id)) : selectedDocuments;
+  const select = (predicate) => {
+    const docs = selectedDocuments.filter(predicate);
+    return allowed ? docs.filter((item) => allowed.has(item.document_id)) : docs;
+  };
   const metadataById = new Map(context.policy.documents.map((item) => [item.document_id, item]));
-  const documentsByFile = new Map(selected.map((item) => [item.file_name, item]));
-  const ranked = rankKnowledgeChunks({
+  const resultLimit = normalizeLimit(input.limit);
+
+  // Independent norm search: same ranking/limit as 6a68f140, no document dedupe.
+  const normDocuments = select((item) => NORM_RESULT_STATUSES.has(item.status));
+  const results = rankKnowledgeChunks({
     query,
     chunks: context.chunks,
-    documentsByFile,
+    documentsByFile: new Map(normDocuments.map((item) => [item.file_name, item])),
     metadataById,
-    limit: 100
-  });
-  const normStatuses = new Set(['active', 'proposed']);
-  const wantReference = requestedStatuses.has('reference');
-  const wantDeprecated = requestedStatuses.has('deprecated');
-  const normRanked = ranked.filter((item) => normStatuses.has(item.document.status) && requestedStatuses.has(item.document.status));
-  const referenceRanked = wantReference
-    ? dedupeByDocument(ranked.filter((item) => item.document.status === 'reference'))
+    limit: resultLimit
+  }).map(mapResult);
+
+  // Independent reference search: dedupe by document, up to 3.
+  const reference_results = requestedStatuses.has('reference')
+    ? dedupeByDocument(rankKnowledgeChunks({
+      query,
+      chunks: context.chunks,
+      documentsByFile: new Map(select((item) => item.status === 'reference').map((item) => [item.file_name, item])),
+      metadataById,
+      limit: 100
+    })).slice(0, 3).map(mapResult)
     : [];
-  const deprecatedRanked = wantDeprecated
-    ? dedupeByDocument(ranked.filter((item) => item.document.status === 'deprecated'))
-    : [];
-  const resultLimit = normalizeLimit(input.limit);
-  const results = [...dedupeByDocument(normRanked), ...deprecatedRanked].slice(0, resultLimit).map(mapResult);
-  const reference_results = referenceRanked.slice(0, 3).map(mapResult);
+
   const conflictSource = [...results, ...reference_results];
   const conflictIds = new Set(conflictSource.flatMap((item) => metadataById.get(item.document_id)?.conflicts_with_document_ids ?? []));
   const conflicts = [...conflictIds].map((id) => context.documentsById.get(id))

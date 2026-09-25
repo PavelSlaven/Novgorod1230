@@ -13,12 +13,28 @@ function jsonBytes(value) {
   return Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
 }
 
-function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlExpected = ['active'], includeDeprecated = false, includeReference = false, defaultStatuses = ['active', 'reference'], proposedTier = 'proposed' } = {}) {
+function makeFixture({
+  staleRagCorpusPin = false,
+  activeConflicts = [],
+  controlExpected = ['active'],
+  includeDeprecated = false,
+  includeReference = false,
+  defaultStatuses = ['active', 'reference'],
+  proposedTier = 'proposed',
+  alignProposedWithActive = false,
+  extraActiveChunks = 0
+} = {}) {
+  const activeBody = 'Code materializes instances from approved profiles.';
+  const proposedBody = alignProposedWithActive ? activeBody : 'Future perception engine proposal.';
+  const proposedSection = alignProposedWithActive ? 'Active' : 'Proposed';
+  const proposedTerms = alignProposedWithActive
+    ? ['approved profiles', 'materializes instances']
+    : ['future perception'];
   const texts = {
-    'active.md': Buffer.from('# Active\n\nCode materializes instances from approved profiles.'),
-    'proposed.md': Buffer.from('# Proposed\n\nFuture perception engine proposal.'),
+    'active.md': Buffer.from(`# Active\n\n${activeBody}`),
+    'proposed.md': Buffer.from(`# ${proposedSection}\n\n${proposedBody}`),
     'deprecated.md': Buffer.from('# Deprecated\n\nHistoric reference vocabulary.'),
-    'reference.md': Buffer.from('# Reference guide\n\nShared topic phrase materializes instances from approved profiles.')
+    'reference.md': Buffer.from('# Reference guide\n\nNPC generation profiles and shared topic phrase materializes instances from approved profiles.')
   };
   const manifest = {
     schema_version: 'rus.knowledge_corpus_manifest.v2', corpus_id: 'test', release: 'test',
@@ -34,16 +50,26 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlE
     schema_version: 'rus.knowledge_retrieval_policy.v1', policy_version: '1.0.0', baseline_manifest_sha256: sha(manifestBytes), default_statuses: defaultStatuses,
     documents: [
       { document_id: 'active', document_type: 'architecture', subsystems: ['materialization'], related_document_ids: [], related_module_paths: ['packages/materialization'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: activeConflicts },
-      { document_id: 'proposed', document_type: 'proposal', subsystems: ['perception'], related_document_ids: ['active'], related_module_paths: ['packages/perception'], related_contracts: [], search_terms: ['future perception'], conflicts_with_document_ids: [] },
-      ...(includeReference ? [{ document_id: 'reference', document_type: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: [] }] : []),
+      { document_id: 'proposed', document_type: 'proposal', subsystems: ['perception'], related_document_ids: ['active'], related_module_paths: ['packages/perception'], related_contracts: [], search_terms: proposedTerms, conflicts_with_document_ids: [] },
+      ...(includeReference ? [{ document_id: 'reference', document_type: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['NPC generation', 'approved profiles', 'materializes instances'], conflicts_with_document_ids: [] }] : []),
       ...(includeDeprecated ? [{ document_id: 'deprecated', document_type: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['historic reference'], conflicts_with_document_ids: [] }] : [])
     ],
     control_queries: [{ query_id: 'materialization-owner', query: 'approved profiles materializes instances', expected_document_ids: controlExpected, top_k: 3 }]
   };
+  const extraChunks = Array.from({ length: extraActiveChunks }, (_item, index) => ({
+    id: `active:extra:${index}`,
+    file: 'active.md',
+    section: `Active extra ${index}`,
+    line_start: 1,
+    line_end: 3,
+    text: `# Active\n${activeBody} filler ${index}`,
+    char_count: 80
+  }));
   const lexical = { schema_version: 'rus.lexical_index.v1', chunks: [
-    { id: 'active:0', file: 'active.md', section: 'Active', line_start: 1, line_end: 3, text: '# Active\nCode materializes instances from approved profiles.', char_count: 60 },
-    { id: 'proposed:0', file: 'proposed.md', section: 'Proposed', line_start: 1, line_end: 3, text: '# Proposed\nFuture perception engine proposal.', char_count: 45 },
-    ...(includeReference ? [{ id: 'reference:0', file: 'reference.md', section: 'Reference guide', line_start: 1, line_end: 3, text: '# Reference guide\nShared topic phrase materializes instances from approved profiles.', char_count: 84 }] : []),
+    { id: 'active:0', file: 'active.md', section: 'Active', line_start: 1, line_end: 3, text: `# Active\n${activeBody}`, char_count: 60 },
+    ...extraChunks,
+    { id: 'proposed:0', file: 'proposed.md', section: proposedSection, line_start: 1, line_end: 3, text: `# ${proposedSection}\n${proposedBody}`, char_count: 45 },
+    ...(includeReference ? [{ id: 'reference:0', file: 'reference.md', section: 'Reference guide', line_start: 1, line_end: 3, text: '# Reference guide\nNPC generation profiles and shared topic phrase materializes instances from approved profiles.', char_count: 110 }] : []),
     ...(includeDeprecated ? [{ id: 'deprecated:0', file: 'deprecated.md', section: 'Deprecated', line_start: 1, line_end: 3, text: '# Deprecated\nHistoric reference vocabulary.', char_count: 42 }] : [])
   ] };
   const lexicalBytes = jsonBytes(lexical);
@@ -102,12 +128,91 @@ test('proposed documents require an explicit status request and remain labelled'
 });
 
 test('proposed ranks below active on equal topical match', async () => {
-  const reader = createKnowledgeRagReader({
-    storage: makeFixture({ defaultStatuses: ['active', 'proposed'] }).storage,
-    allowedStatuses: ['active', 'proposed']
-  });
+  // Active keeps a lower tier so STATUS_RANK (not score) is what keeps it first.
+  const texts = {
+    'active.md': Buffer.from('# Topic\n\nShared topical phrase materializes instances from approved profiles.'),
+    'proposed.md': Buffer.from('# Topic\n\nShared topical phrase materializes instances from approved profiles.')
+  };
+  const manifest = {
+    schema_version: 'rus.knowledge_corpus_manifest.v2', corpus_id: 'test', release: 'test',
+    documents: [
+      { document_id: 'active', canonical_path: 'corpus/DOCUMENTS/active.md', file_name: 'active.md', sha256: sha(texts['active.md']), bytes: texts['active.md'].length, status: 'active', priority_tier: 'technical_contract', provenance_mode: 'native' },
+      { document_id: 'proposed', canonical_path: 'corpus/DOCUMENTS/proposed.md', file_name: 'proposed.md', sha256: sha(texts['proposed.md']), bytes: texts['proposed.md'].length, status: 'proposed', priority_tier: 'highest_materialization_normative', provenance_mode: 'native' }
+    ]
+  };
+  const manifestBytes = jsonBytes(manifest);
+  const policy = {
+    schema_version: 'rus.knowledge_retrieval_policy.v1', policy_version: '1.0.0', baseline_manifest_sha256: sha(manifestBytes),
+    default_statuses: ['active', 'proposed'],
+    documents: [
+      { document_id: 'active', document_type: 'architecture', subsystems: ['materialization'], related_document_ids: [], related_module_paths: ['packages/materialization'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: [] },
+      { document_id: 'proposed', document_type: 'proposal', subsystems: ['materialization'], related_document_ids: ['active'], related_module_paths: ['packages/materialization'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: [] }
+    ],
+    control_queries: [{ query_id: 'materialization-owner', query: 'approved profiles materializes instances', expected_document_ids: ['active'], top_k: 3 }]
+  };
+  const lexical = { schema_version: 'rus.lexical_index.v1', chunks: [
+    { id: 'active:0', file: 'active.md', section: 'Topic', line_start: 1, line_end: 3, text: '# Topic\nShared topical phrase materializes instances from approved profiles.', char_count: 70 },
+    { id: 'proposed:0', file: 'proposed.md', section: 'Topic', line_start: 1, line_end: 3, text: '# Topic\nShared topical phrase materializes instances from approved profiles.', char_count: 70 }
+  ] };
+  const lexicalBytes = jsonBytes(lexical);
+  const ragManifest = {
+    schema_version: 'rus.knowledge_rag_manifest.v1',
+    corpus_manifest_sha256: sha(manifestBytes),
+    lexical_index_sha256: sha(lexicalBytes),
+    coverage: [
+      { document_id: 'active', file_name: 'active.md', lexical_indexed: true },
+      { document_id: 'proposed', file_name: 'proposed.md', lexical_indexed: true }
+    ]
+  };
+  const wrap = (value) => ({ value, bytes: jsonBytes(value) });
+  const storage = {
+    readCorpusManifest: async () => ({ value: manifest, bytes: manifestBytes }),
+    readAliases: async () => wrap({ schema_version: 'rus.knowledge_source_aliases.v1', aliases: {} }),
+    readRetrievalPolicy: async () => wrap(policy),
+    readDocument: async (canonicalPath) => {
+      const record = manifest.documents.find((item) => item.canonical_path === canonicalPath);
+      const bytes = texts[record.file_name];
+      return { bytes, sha256: sha(bytes) };
+    },
+    readGeneratedManifest: async () => wrap(ragManifest),
+    readGeneratedArtifact: async () => ({ bytes: lexicalBytes, sha256: sha(lexicalBytes) })
+  };
+  const reader = createKnowledgeRagReader({ storage, allowedStatuses: ['active', 'proposed'] });
   const result = await reader.searchKnowledge({ query: 'approved profiles materializes instances', statuses: ['active', 'proposed'], limit: 5 });
+  assert.equal(result.results.length, 2);
   assert.equal(result.results[0].document_id, 'active');
+  assert.equal(result.results[1].document_id, 'proposed');
+  assert.ok(result.results[1].score > result.results[0].score);
+});
+
+test('reference_results stay filled when norm fragments exceed the shared ceiling', async () => {
+  const reader = createKnowledgeRagReader({
+    storage: makeFixture({
+      includeReference: true,
+      defaultStatuses: ['active', 'reference'],
+      extraActiveChunks: 120
+    }).storage
+  });
+  const crowded = await reader.searchKnowledge({ query: 'materializes instances', limit: 8 });
+  assert.equal(crowded.results.length, 8);
+  assert.ok(crowded.results.every((item) => item.status === 'active'));
+  assert.ok(crowded.reference_results.some((item) => item.document_id === 'reference'));
+
+  const npc = await reader.searchKnowledge({ query: 'NPC generation', limit: 8 });
+  assert.ok(npc.reference_results.some((item) => item.document_id === 'reference'));
+});
+
+test('results length equals min(limit, matched norm fragments) without document dedupe', async () => {
+  const reader = createKnowledgeRagReader({
+    storage: makeFixture({
+      defaultStatuses: ['active'],
+      extraActiveChunks: 4
+    }).storage,
+    allowedStatuses: ['active']
+  });
+  const result = await reader.searchKnowledge({ query: 'materializes instances', limit: 3 });
+  assert.equal(result.results.length, 3);
+  assert.ok(result.results.every((item) => item.document_id === 'active'));
 });
 
 test('deprecated documents are lexical and require an explicit status request', async () => {

@@ -83,7 +83,7 @@ Overlay «LLM» и стартовый экран на этой ветке: OpenA
 | В `apps/game-web/src/features/**` запрещены `document.`, `querySelector`, `innerHTML =` | check-boundaries: «feature renderer may not mutate DOM directly» |
 | Во всём `apps/game-web/src` запрещены строка `@rus/`, `legacy/`, `pg`, SQL, `Math.random(`; внешние импорты кроме `node:` не одобрены (пустой allowlist) | check-boundaries, блок `game-web` |
 | Game-web не импортирует `game-server` | check-boundaries; [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md) |
-| Файл в `apps/` и `packages/` > 25 КБ → warning; лимиты строк — только для оркестраторов стадий new-game | check-boundaries: превышение размера → `warnings`, не hard fail ([check-boundaries.mjs](../../tools/architecture/check-boundaries.mjs)); строковые лимиты — оркестраторы стадий new-game |
+| Файл в `apps/` и `packages/` > 25 КБ → warning; лимиты строк — `tools/architecture/check-boundaries.mjs:758` (300 для `apps/*/src`) и `:496` (500 для доменных модулей); оркестраторы стадий new-game — свои лимиты строк в том же файле | check-boundaries: превышение размера → `warnings`, не hard fail ([check-boundaries.mjs](../../tools/architecture/check-boundaries.mjs)) |
 | Hidden/private/write-plan/audit поле в payload блокирует обновление UI | [MODULE.md](../../apps/game-web/MODULE.md); [CONTRACT_POLICY](../architecture/CONTRACT_POLICY.md) «Hidden/visible boundary» |
 | Ввод игрока отправляется как intent (`intent_not_fact`), не как факт | MODULE.md; check-boundaries проверяет `bootstrap.js` и `contracts.js` |
 | Браузер не бросает кубик и не считает total/outcome | MODULE.md, «Инварианты» |

@@ -6,7 +6,8 @@
 
 - docs(process): обзор HOW_WE_WORK; замысел материализуемого мира (PC §9.1); правила об источниках истины (WR §2), скриптах и имеющихся знаниях (WR §19), утверждении данных (WR §21.1), регрессии плейтеста (WR §22), отчёте gameplay run (WR §24.1 из PR #98) и честности проверок (WR §24.2); поле уровня качества в CR; context dump на ветке этапа; исправлены неверные факты о `legacy/src` (#143) LW-026…LW-039 added
 - fix(test): PostgreSQL-тесты удаляют контейнер вместе с anonymous volume (`docker rm -fv`, GS §26); страж в `test:tools` (#142)
-- feat(spatial): M2c — authoring профилей расширения G4 и основа atomic generation/traversal (#145, PR #98) LW-040 LW-041 added
+- feat(spatial): M2c — authoring профилей расширения G4 и основа atomic generation/traversal (#98)
+- docs(context): карты v17, OWNERSHIP/pipelines/plan sync по #145 (#145, PR #98) LW-040 LW-041 added
 - docs(work): CURRENT_SPRINT — Runtime-трек начинается с M2c (#133) по решению владельца (#134)
 - fix(game-web): маркер готовности `data-scene-hydrated` у текущего кадра; browser e2e ждёт его вместо устаревшего кадра (#139, PR #141)
 - fix(tooling): на Windows `tar` вызывается как System32 bsdtar в p10/p12-инструментах, тестах и staging-скриптах (#126, PR #140)

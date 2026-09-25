@@ -74,7 +74,8 @@ G4 expansion profile / scene template (world_base)
   → infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js
        (createTargetFiniteFirstEntryPorts)
   → internal/target-runtime-profiles.js (O2a/O2b/F1/S1 на v17 null — LW-029;
-       на v17 ordinary- и spatial-semantic-провижинеры не строятся: targetContext == null)
+       ordinary- и spatial-semantic-провижинеры строятся при `targetContext == null`,
+       то есть на v16 — `production-spatial-v3.js:259–272`; на v17 с targetContext — нет)
   → infrastructure/postgres/spatial-v3-combined-atomic-committer.js
   → visibility / factual context → opening projection → narrator
 ```

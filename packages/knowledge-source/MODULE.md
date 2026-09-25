@@ -70,7 +70,7 @@ Legacy runtime, apps, provider SDK, party state, world-base, UI и скрыты�
 
 Текст документа возвращается byte-faithful после проверки SHA-256. Generated index считается current только при совпадении хеша corpus manifest и SHA-256 фактического graph/RAG-артефакта с его generated manifest. CLI использует те же readers и не имеет обходного пути к corpus или generated files.
 
-Каждый документ, зарегистрированный в canonical corpus manifest, независимо от статуса, обязан иметь retrieval-policy metadata и ровно одну запись generated RAG coverage. Генератор создаёт deterministic lexical chunks с byte-faithful provenance для всех зарегистрированных статусов; это не меняет статус документа и не создаёт embedding. Default query и default reader остаются active-only. Для видимости non-active документа требуется явный `--statuses`, а изменение его текста делает generated RAG stale до штатной пересборки.
+Каждый документ, зарегистрированный в canonical corpus manifest, независимо от статуса, обязан иметь retrieval-policy metadata и ровно одну запись generated RAG coverage. Генератор создаёт deterministic lexical chunks с byte-faithful provenance для всех зарегистрированных статусов; это не меняет статус документа и не создаёт embedding. Default query читает `default_statuses` из retrieval-policy (`active` + `reference`): нормы попадают в `results`, справочники — в `reference_results` (до 3). `deprecated` и `proposed` требуют явного `--statuses`. Изменение текста документа делает generated RAG stale до штатной пересборки.
 
 Архивный фрагмент внутри сохраняемого canonical документа может быть исключён
 только из generated retrieval следующей сбалансированной парой на отдельных

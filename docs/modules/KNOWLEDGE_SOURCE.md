@@ -31,7 +31,10 @@ The public `@rus/docs-tools.writeKnowledgeSourceOutputs` API and both `knowledge
 ## Public API
 
 - `listDocuments({})`;
+- `getCorpusManifest({})`;
 - `getDocument({ document_id })`;
 - `resolveSourceLocation({ document_id, section | start_line/end_line })`;
-- `searchDocuments({ query, limit? })`;
-- `createKnowledgeRagReader({ storage })` — ranked lexical retrieval, controls, readiness.
+- `searchDocuments({ query, limit?, allowed_document_ids?, search_mode? })`;
+- `verifyCorpus({})`;
+- `getGeneratedIndexStatus({})`;
+- `createKnowledgeRagReader({ storage })` — ranked lexical retrieval (`results` + `reference_results`), controls, readiness.

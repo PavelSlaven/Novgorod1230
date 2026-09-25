@@ -618,15 +618,15 @@
   ],
   "external_schemas": [
     {
-      "bytes": 1818,
+      "bytes": 2428,
       "path": "schemas/knowledge-source/corpus-manifest.schema.json",
-      "sha256": "94a9625532c33d20da0ebb032dd6e964f6a8bb501751470993d1e08a3ff20f4a",
+      "sha256": "69bf9a69cc9050cb2af1a42ebd036f0746ef60efc14bad5139d5627f87eddc7b",
       "type": "json"
     },
     {
-      "bytes": 1076,
+      "bytes": 1339,
       "path": "schemas/knowledge-source/graph-manifest.schema.json",
-      "sha256": "b1a7a96fffec9843630415c5e6b456f58f50ab5be97be1c1bd86232874fda4ca",
+      "sha256": "21338115b735b891b91c469c2c9d2aca8853bf885848d79ac9b5fb2935c29025",
       "type": "json"
     },
     {
@@ -636,9 +636,9 @@
       "type": "json"
     },
     {
-      "bytes": 1154,
+      "bytes": 1525,
       "path": "schemas/knowledge-source/rag-manifest.schema.json",
-      "sha256": "a02253c557403a0b9e021611692fda448c74011f8e2a255341ebdefa27fb190d",
+      "sha256": "b59135e6022063c7d40dfe46cc5c3990bdd89887936232cccf926abe694d7c3b",
       "type": "json"
     },
     {

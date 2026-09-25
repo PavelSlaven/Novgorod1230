@@ -46,10 +46,12 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    - `@rus/turn` with `@rus/party-store` — availability, placement, capacity,
      access and consequences (ADR-004 deliberately creates no place/access
      package);
-   - weather/light — current read path uses `target-current-factual-context` in
-     game-server (`apps/game-server/src/infrastructure/postgres/target-current-factual-context.js`);
-     `@rus/environment-state` is removed per [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5837624476) п.6;
-     target owner of weather/light is `@rus/materialization` (not yet implemented);
+   - weather/light — current projection: `@rus/materialization`
+     `projectApprovedCurrentEnvironment` via
+     `apps/game-server/src/infrastructure/postgres/target-current-factual-context.js`
+     (v17); live weather change not yet implemented
+     ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5837624476)
+     п.6–8); `@rus/environment-state` will be removed (not yet removed);
    - `@rus/time-events-history` — historical phases and due event effects;
    - `@rus/npc-runtime` — schedule, perception and generic NPC signal
      proposals (`npc_decision_signal_v1`);

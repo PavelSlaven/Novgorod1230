@@ -31,7 +31,7 @@ migration/rollback source.
 |---|---|---|
 | Имена БД | `novgorod_world_v17` / `novgorod_party_v17` | [local-postgres.js](../../tools/local-play/local-postgres.js) `LOCAL_V17_DATABASES`; [bootstrap-live-world-v17.mjs](../../scripts/bootstrap-live-world-v17.mjs) |
 | Каталог данных | `%LOCALAPPDATA%\Novgorod1230` (`localDataRoot`); подкаталог кластера — `data\postgres-16.14.0-utf8` | [local-postgres.js](../../tools/local-play/local-postgres.js) |
-| MSIX / packaged apps | в процессах из MSIX (Codex, Claude Desktop) `%LOCALAPPDATA%` перенаправлен в LocalCache пакета: пара БД, созданная оттуда, не видна `play:local` из обычного терминала, и тот молча берёт v16 (LW-033). Bootstrap и play — из обычного терминала | LW-033; GS §26 |
+| MSIX / packaged apps | в процессах из MSIX (Codex, Claude Desktop) `%LOCALAPPDATA%` перенаправлен в LocalCache пакета: пара БД, созданная оттуда, не видна `play:local` из обычного терминала, и тот молча берёт v16 (LW-033). Bootstrap и play — из обычного терминала | LW-033; [`tools/local-play/local-postgres.js`](../../tools/local-play/local-postgres.js) |
 | Выбор релиза `play:local` | обе БД v17 есть → release 17; ни одной → 16 (`novgorod_world`/`novgorod_party`); ровно одна → `LOCAL_POSTGRES_V17_PAIR_INCOMPLETE` | `selectLocalRelease` в том же файле; LW-033 |
 | Bootstrap | `node scripts/bootstrap-live-world-v17.mjs` (npm-скрипта нет); входы — каталоги `data/world-catalogs/novgorod/live-world-runtime-v17`, `m2c-*`, runtime-catalog gate1 и др. | сам скрипт; LW-035 (без temporal-v4) |
 | Default binding сервера | без env — `builtin:spatial-v3-production-v16`; v17 — через `RUS_SPATIAL_V3_BINDINGS_MODULE` | [load-spatial-v3-bindings.js](../../apps/game-server/src/runtime/load-spatial-v3-bindings.js) |

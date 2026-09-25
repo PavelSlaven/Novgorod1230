@@ -36,7 +36,7 @@
 |---|---|---|
 | PostgreSQL | 16 | см. ниже |
 | CI | docker-контейнер `postgres:16` внутри job | [test.yml](../../.github/workflows/test.yml) |
-| Локальная игра | `embedded-postgres` (PostgreSQL 16.14.0) поднимает `npm run play:local`; данные в `%LOCALAPPDATA%\Novgorod1230\data\postgres-16.14.0-utf8`. В MSIX/packaged apps `%LOCALAPPDATA%` перенаправлен — пара БД оттуда не видна обычному `play:local` (молчит → v16, LW-033); без личных путей машины | [local-postgres.js](../../tools/local-play/local-postgres.js), [local-play MODULE.md](../../tools/local-play/MODULE.md), [DB_SCHEMA](DB_SCHEMA.md) §1.1 |
+| Локальная игра | `embedded-postgres` (PostgreSQL 16.14.0) поднимает `npm run play:local`; данные в `%LOCALAPPDATA%\Novgorod1230\data\postgres-16.14.0-utf8`. В MSIX/packaged apps `%LOCALAPPDATA%` перенаправлен — пара БД оттуда не видна обычному `play:local`, и тот молча берёт v16 (LW-033) | [local-postgres.js](../../tools/local-play/local-postgres.js), [local-play MODULE.md](../../tools/local-play/MODULE.md), [DB_SCHEMA](DB_SCHEMA.md) §1.1 |
 | Пара БД v17 | `novgorod_world_v17` / `novgorod_party_v17`; bootstrap — `scripts/bootstrap-live-world-v17.mjs` | [DB_SCHEMA.md](DB_SCHEMA.md) §1.1 |
 | Dev-only compose | `postgres:16` + `nocodb/nocodb:2026.09.0` (ручное заполнение world_base в NocoDB); `npm run world-db:up` | [docker-compose.yml](../../docker-compose.yml) |
 | Драйвер | `pg` (node-postgres) | [package.json](../../package.json) |

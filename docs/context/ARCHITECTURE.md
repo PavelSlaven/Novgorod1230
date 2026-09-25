@@ -85,7 +85,12 @@ G4 expansion profile / scene template (world_base)
 
 ### v16 (к удалению после M2c, LW-033)
 
-Тот же Spatial v3 temporal/materialization контур на bindings v16; не расширять.
+На v16 `spatialExpansionRuntime` = null ([`production-spatial-v3.js`](../../apps/game-server/src/composition/production-spatial-v3.js));
+заполнение места идёт через
+[`createOrdinaryMaterializationFirstEntryProvisioner`](../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js)
+и
+[`createSpatialSemanticFirstEntryProvisioner`](../../apps/game-server/src/infrastructure/postgres/spatial-semantic-first-entry-provisioning.js)
+внутри committer с профилями lower-dvina.
 Удаление v16 и привязок v2–v15 — [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425).
 
 Владельцы: `@rus/materialization`, `@rus/items-property`, `@rus/npc-runtime`, `@rus/runtime-catalog`; commit — game-server. См. [OWNERSHIP_MAP](../domain/OWNERSHIP_MAP.md).

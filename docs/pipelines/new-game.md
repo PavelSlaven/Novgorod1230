@@ -11,21 +11,39 @@
 [DB_SCHEMA](../context/DB_SCHEMA.md) §1.1. Цепочки заполнения места и хода —
 [ARCHITECTURE](../context/ARCHITECTURE.md) §1.1–1.2.
 
-Старт v17 вызывает (имена стадий modular pipeline — ориентир, не sole entry):
+Старт партии v17:
 - phase-1b → phase-1a: [`infrastructure/postgres/lower-dvina-trace-phase-1b.js`](../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js),
   [`internal/lower-dvina-trace-phase-1a.js`](../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js)
   (player validation — [`internal/lower-dvina-trace-player-validation.js`](../../apps/game-server/src/internal/lower-dvina-trace-player-validation.js));
-- NPC first-entry: [`infrastructure/postgres/generated-npc-first-entry.js`](../../apps/game-server/src/infrastructure/postgres/generated-npc-first-entry.js);
 - opening narration: [`runtime/authored-opening-narration.js`](../../apps/game-server/src/runtime/authored-opening-narration.js).
-Стадии 11/12/16/22/23/24/25 modular table ниже на этом пути вызываются через эти модули, а не как sole runner.
+
+Первый вход сгенерированной сцены (не старт партии):
+[`infrastructure/postgres/generated-npc-first-entry.js`](../../apps/game-server/src/infrastructure/postgres/generated-npc-first-entry.js)
+вызывается из
+[`infrastructure/postgres/target-generated-first-entry.js`](../../apps/game-server/src/infrastructure/postgres/target-generated-first-entry.js).
+
+Стадии 11/12/16/22/23/24/25 ниже — живые на этом пути (вызываются через модули выше).
+
+## Живые стадии на production path v17
+
+| Stage | Имя | Результат |
+|---:|---|---|
+| 11 | player-character | персонаж игрока |
+| 12 | player-character-audit | аудит персонажа |
+| 16 | item-placement | code-only item/container/property instances |
+| 22 | narrator-prose | черновик прозы |
+| 23 | narrator-prose-audit | аудит прозы |
+| 24 | party-db-write-plan | утверждённый physical write plan |
+| 25 | party-commit | идемпотентный commit |
 
 ## Modular stage table (legacy / removable)
 
-Таблица стадий и `runModularNewGamePipeline` описывают **модульный** конвейер `@rus/new-game`
+Таблица и `runModularNewGamePipeline` описывают **модульный** конвейер `@rus/new-game`
 через `@rus/pipeline-engine` — мёртвый оркестратор в смысле production entry
 ([#127](https://github.com/PavelSlaven/Novgorod1230/issues/127)). **Production его не вызывает**
 (`adapters/workflows.js` только реэкспортируется из [`src/index.js`](../../apps/game-server/src/index.js)).
-Не расширять этот путь новой gameplay-логикой.
+Не расширять этот путь новой gameplay-логикой. Ниже — только мёртвые стадии
+(оркестратор; 2–10, 13–15, 17–21, 26).
 
 | Stage | Имя | Результат |
 |---:|---|---|
@@ -38,21 +56,14 @@
 | 8 | item-profile-candidates | кандидаты предметных профилей |
 | 9 | start-node-selection | выбранный стартовый узел |
 | 10 | start-place-audit | аудит места старта |
-| 11 | player-character | персонаж игрока |
-| 12 | player-character-audit | аудит персонажа |
 | 13 | g5-materialization | code-only G5 instances и trace |
 | 14 | g5-audit | аудит G5 |
 | 15 | npc-placement | code-only NPC instances из profile sets |
-| 16 | item-placement | code-only item/container/property instances |
 | 17 | time-light-gate | согласование времени и света |
 | 18 | character-knowledge-map | карта знаний персонажа |
 | 19 | hidden-state | полный hidden scene state |
 | 20 | visible-context | visible context package |
 | 21 | visible-context-audit | аудит visible context |
-| 22 | narrator-prose | черновик прозы |
-| 23 | narrator-prose-audit | аудит прозы |
-| 24 | party-db-write-plan | утверждённый physical write plan |
-| 25 | party-commit | идемпотентный commit |
 | 26 | first-game-screen | versioned FirstGameScreen result |
 
 ## Исполнение (modular, removable)

@@ -1,10 +1,9 @@
 # Tools inventory
 
-REFERENCE. Каталоги `tools/*` — автономные CLI; production runtime их не импортирует,
-кроме исключения LW-038 (`tools/world-catalog-workflow` из отдельных стадий
-`packages/new-game`). Граница tools/runtime и полный список пакетов —
-[MODULE_INDEX](../../MODULE_INDEX.md); запись в БД и operator flows — `MODULE.md`
-соответствующего tool (например [tools/runtime-catalog-activation/MODULE.md](../../tools/runtime-catalog-activation/MODULE.md)).
+REFERENCE. tools с MODULE.md — [MODULE_INDEX](../../MODULE_INDEX.md); граница tools/runtime —
+[`docs/architecture/DEPENDENCY_RULES.md`](../architecture/DEPENDENCY_RULES.md) (+LW-038).
+Запись в БД и operator flows — `MODULE.md` соответствующего tool
+(например [tools/runtime-catalog-activation/MODULE.md](../../tools/runtime-catalog-activation/MODULE.md)).
 
 Числа таблиц/миграций сюда не копируются — [DB_SCHEMA](../context/DB_SCHEMA.md).
 

@@ -2,14 +2,8 @@ import { deepFreeze } from './manifest.js';
 import { knowledgeSourceError } from '../errors.js';
 
 const SCHEMA = 'rus.knowledge_retrieval_policy.v1';
-const PRIORITY_TIERS = new Set([
-  'highest_materialization_normative',
-  'profile_normative',
-  'development_process_normative',
-  'technical_contract',
-  'navigation',
-  'reference'
-]);
+export const CANONICAL_DEFAULT_STATUSES = Object.freeze(['active', 'reference']);
+
 export function validateRetrievalPolicy(value, manifest) {
   if (!value || typeof value !== 'object' || value.schema_version !== SCHEMA) {
     throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `Retrieval policy must use ${SCHEMA}.`);
@@ -28,11 +22,12 @@ export function validateRetrievalPolicy(value, manifest) {
     });
   }
   const controls = normalizeControlQueries(value.control_queries, knownIds);
+  const defaultStatuses = normalizeStatuses(value.default_statuses ?? CANONICAL_DEFAULT_STATUSES, 'default_statuses');
   return deepFreeze({
     schema_version: SCHEMA,
     policy_version: requiredText(value.policy_version, 'policy_version'),
     baseline_manifest_sha256: validateDigest(value.baseline_manifest_sha256, 'baseline_manifest_sha256'),
-    default_statuses: normalizeStatuses(value.default_statuses ?? ['active', 'reference'], 'default_statuses'),
+    default_statuses: defaultStatuses,
     documents,
     control_queries: controls
   });
@@ -46,9 +41,8 @@ function normalizeMetadata(item, index, knownIds, metadataIds) {
   if (!knownIds.has(id)) throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `Unknown retrieval document_id: ${id}`);
   if (metadataIds.has(id)) throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `Duplicate retrieval document_id: ${id}`);
   metadataIds.add(id);
-  const priorityTier = requiredText(item.priority_tier, `documents[${index}].priority_tier`);
-  if (!PRIORITY_TIERS.has(priorityTier)) {
-    throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `Invalid priority_tier for ${id}: ${priorityTier}`);
+  if (Object.hasOwn(item, 'priority_tier')) {
+    throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `${id} must not declare priority_tier; ranking reads corpus-manifest.`);
   }
   if (Object.hasOwn(item, 'semantic_coverage_disposition')) {
     throw knowledgeSourceError('RETRIEVAL_POLICY_INVALID', `${id} must not declare semantic_coverage_disposition.`);
@@ -71,7 +65,6 @@ function normalizeMetadata(item, index, knownIds, metadataIds) {
   return {
     document_id: id,
     document_type: requiredText(item.document_type, `${id}.document_type`),
-    priority_tier: priorityTier,
     subsystems,
     related_document_ids: relatedDocumentIds,
     related_module_paths: relatedModulePaths,

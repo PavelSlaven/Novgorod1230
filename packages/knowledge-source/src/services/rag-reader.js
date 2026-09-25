@@ -30,14 +30,54 @@ async function search(storage, input = {}, visibleStatuses) {
   const allowed = normalizeAllowed(input.allowed_document_ids, selectedDocuments, context.aliases);
   const selected = allowed ? selectedDocuments.filter((item) => allowed.has(item.document_id)) : selectedDocuments;
   const metadataById = new Map(context.policy.documents.map((item) => [item.document_id, item]));
+  const documentsByFile = new Map(selected.map((item) => [item.file_name, item]));
   const ranked = rankKnowledgeChunks({
     query,
     chunks: context.chunks,
-    documentsByFile: new Map(selected.map((item) => [item.file_name, item])),
+    documentsByFile,
     metadataById,
-    limit: input.limit
+    limit: 100
   });
-  const results = ranked.map(({ chunk, document, metadata, score }) => ({
+  const normStatuses = new Set(['active', 'proposed']);
+  const wantReference = requestedStatuses.has('reference');
+  const wantDeprecated = requestedStatuses.has('deprecated');
+  const normRanked = ranked.filter((item) => normStatuses.has(item.document.status) && requestedStatuses.has(item.document.status));
+  const referenceRanked = wantReference
+    ? dedupeByDocument(ranked.filter((item) => item.document.status === 'reference'))
+    : [];
+  const deprecatedRanked = wantDeprecated
+    ? dedupeByDocument(ranked.filter((item) => item.document.status === 'deprecated'))
+    : [];
+  const resultLimit = normalizeLimit(input.limit);
+  const results = [...dedupeByDocument(normRanked), ...deprecatedRanked].slice(0, resultLimit).map(mapResult);
+  const reference_results = referenceRanked.slice(0, 3).map(mapResult);
+  const conflictSource = [...results, ...reference_results];
+  const conflictIds = new Set(conflictSource.flatMap((item) => metadataById.get(item.document_id)?.conflicts_with_document_ids ?? []));
+  const conflicts = [...conflictIds].map((id) => context.documentsById.get(id))
+    .filter(Boolean)
+    .map(({ record, line_count }) => ({
+      document_id: record.document_id,
+      canonical_path: record.canonical_path,
+      status: record.status,
+      source_sha256: record.sha256,
+      start_line: 1,
+      end_line: line_count,
+      priority_tier: record.priority_tier
+    }));
+  return deepFreeze({
+    schema_version: 'rus.knowledge_ranked_search_result.v1',
+    query,
+    requested_statuses: [...requestedStatuses],
+    retrieval_policy_version: context.policy.policy_version,
+    rag_status: context.readiness.status,
+    results,
+    reference_results,
+    conflicts
+  });
+}
+
+function mapResult({ chunk, document, metadata, score }) {
+  return {
     document_id: document.document_id,
     canonical_path: document.canonical_path,
     status: document.status,
@@ -49,36 +89,28 @@ async function search(storage, input = {}, visibleStatuses) {
     score,
     retrieval_method: 'ranked_lexical_over_committed_rag_chunks',
     document_type: metadata.document_type,
-    priority_tier: metadata.priority_tier,
+    priority_tier: document.priority_tier,
     subsystems: metadata.subsystems,
     related_document_ids: metadata.related_document_ids,
     related_module_paths: metadata.related_module_paths,
     related_contracts: metadata.related_contracts
-  }));
-  const conflictIds = new Set(results.flatMap((item) => metadataById.get(item.document_id)?.conflicts_with_document_ids ?? []));
-  const conflicts = [...conflictIds].map((id) => context.documentsById.get(id))
-    .filter(Boolean)
-    .map(({ record, line_count }) => {
-      const metadata = metadataById.get(record.document_id);
-      return {
-        document_id: record.document_id,
-        canonical_path: record.canonical_path,
-        status: record.status,
-        source_sha256: record.sha256,
-        start_line: 1,
-        end_line: line_count,
-        priority_tier: metadata.priority_tier
-      };
-    });
-  return deepFreeze({
-    schema_version: 'rus.knowledge_ranked_search_result.v1',
-    query,
-    requested_statuses: [...requestedStatuses],
-    retrieval_policy_version: context.policy.policy_version,
-    rag_status: context.readiness.status,
-    results,
-    conflicts
-  });
+  };
+}
+
+function dedupeByDocument(ranked) {
+  const seen = new Set();
+  const unique = [];
+  for (const item of ranked) {
+    if (seen.has(item.document.document_id)) continue;
+    seen.add(item.document.document_id);
+    unique.push(item);
+  }
+  return unique;
+}
+
+function normalizeLimit(value) {
+  const limit = Number(value ?? 8);
+  return Number.isInteger(limit) && limit > 0 ? Math.min(limit, 100) : 8;
 }
 
 async function runControls(storage, input = {}, visibleStatuses) {

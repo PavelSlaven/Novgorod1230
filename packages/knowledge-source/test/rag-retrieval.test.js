@@ -13,7 +13,7 @@ function jsonBytes(value) {
   return Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
 }
 
-function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlExpected = ['active'], includeDeprecated = false, includeReference = false, defaultStatuses = ['active'] } = {}) {
+function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlExpected = ['active'], includeDeprecated = false, includeReference = false, defaultStatuses = ['active', 'reference'], proposedTier = 'proposed' } = {}) {
   const texts = {
     'active.md': Buffer.from('# Active\n\nCode materializes instances from approved profiles.'),
     'proposed.md': Buffer.from('# Proposed\n\nFuture perception engine proposal.'),
@@ -24,7 +24,7 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlE
     schema_version: 'rus.knowledge_corpus_manifest.v2', corpus_id: 'test', release: 'test',
     documents: [
       { document_id: 'active', canonical_path: 'corpus/DOCUMENTS/active.md', file_name: 'active.md', sha256: sha(texts['active.md']), bytes: texts['active.md'].length, status: 'active', priority_tier: 'highest_materialization_normative', provenance_mode: 'native' },
-      { document_id: 'proposed', canonical_path: 'corpus/DOCUMENTS/proposed.md', file_name: 'proposed.md', sha256: sha(texts['proposed.md']), bytes: texts['proposed.md'].length, status: 'proposed', priority_tier: 'profile_normative', provenance_mode: 'native' },
+      { document_id: 'proposed', canonical_path: 'corpus/DOCUMENTS/proposed.md', file_name: 'proposed.md', sha256: sha(texts['proposed.md']), bytes: texts['proposed.md'].length, status: 'proposed', priority_tier: proposedTier, provenance_mode: 'native' },
       ...(includeReference ? [{ document_id: 'reference', canonical_path: 'corpus/DOCUMENTS/reference.md', file_name: 'reference.md', sha256: sha(texts['reference.md']), bytes: texts['reference.md'].length, status: 'reference', priority_tier: 'reference', provenance_mode: 'native' }] : []),
       ...(includeDeprecated ? [{ document_id: 'deprecated', canonical_path: 'corpus/DOCUMENTS/deprecated.md', file_name: 'deprecated.md', sha256: sha(texts['deprecated.md']), bytes: texts['deprecated.md'].length, status: 'deprecated', priority_tier: 'reference', provenance_mode: 'native' }] : [])
     ]
@@ -33,10 +33,10 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlE
   const policy = {
     schema_version: 'rus.knowledge_retrieval_policy.v1', policy_version: '1.0.0', baseline_manifest_sha256: sha(manifestBytes), default_statuses: defaultStatuses,
     documents: [
-      { document_id: 'active', document_type: 'architecture', priority_tier: 'highest_materialization_normative', subsystems: ['materialization'], related_document_ids: [], related_module_paths: ['packages/materialization'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: activeConflicts },
-      { document_id: 'proposed', document_type: 'proposal', priority_tier: 'profile_normative', subsystems: ['perception'], related_document_ids: ['active'], related_module_paths: ['packages/perception'], related_contracts: [], search_terms: ['future perception'], conflicts_with_document_ids: [] },
-      ...(includeReference ? [{ document_id: 'reference', document_type: 'reference', priority_tier: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: [] }] : []),
-      ...(includeDeprecated ? [{ document_id: 'deprecated', document_type: 'reference', priority_tier: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['historic reference'], conflicts_with_document_ids: [] }] : [])
+      { document_id: 'active', document_type: 'architecture', subsystems: ['materialization'], related_document_ids: [], related_module_paths: ['packages/materialization'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: activeConflicts },
+      { document_id: 'proposed', document_type: 'proposal', subsystems: ['perception'], related_document_ids: ['active'], related_module_paths: ['packages/perception'], related_contracts: [], search_terms: ['future perception'], conflicts_with_document_ids: [] },
+      ...(includeReference ? [{ document_id: 'reference', document_type: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['approved profiles', 'materializes instances'], conflicts_with_document_ids: [] }] : []),
+      ...(includeDeprecated ? [{ document_id: 'deprecated', document_type: 'reference', subsystems: ['history'], related_document_ids: ['active'], related_module_paths: ['packages/history'], related_contracts: [], search_terms: ['historic reference'], conflicts_with_document_ids: [] }] : [])
     ],
     control_queries: [{ query_id: 'materialization-owner', query: 'approved profiles materializes instances', expected_document_ids: controlExpected, top_k: 3 }]
   };
@@ -79,7 +79,7 @@ function makeFixture({ staleRagCorpusPin = false, activeConflicts = [], controlE
 }
 
 test('ranked RAG search defaults to active documents and returns source metadata', async () => {
-  const reader = createKnowledgeRagReader({ storage: makeFixture().storage, allowedStatuses: ['active', 'proposed'] });
+  const reader = createKnowledgeRagReader({ storage: makeFixture({ defaultStatuses: ['active'] }).storage, allowedStatuses: ['active', 'proposed'] });
   const result = await reader.searchKnowledge({ query: 'approved profiles' });
   assert.deepEqual(result.requested_statuses, ['active']);
   assert.equal(result.results[0].document_id, 'active');
@@ -88,11 +88,12 @@ test('ranked RAG search defaults to active documents and returns source metadata
   assert.equal(Object.hasOwn(result.results[0], 'semantic_coverage_gap'), false);
   assert.equal(result.results[0].priority_tier, 'highest_materialization_normative');
   assert.equal(result.rag_status, 'ready');
+  assert.deepEqual(result.reference_results, []);
   assert.equal(Object.isFrozen(result), true);
 });
 
 test('proposed documents require an explicit status request and remain labelled', async () => {
-  const reader = createKnowledgeRagReader({ storage: makeFixture().storage, allowedStatuses: ['active', 'proposed'] });
+  const reader = createKnowledgeRagReader({ storage: makeFixture({ defaultStatuses: ['active'] }).storage, allowedStatuses: ['active', 'proposed'] });
   assert.equal((await reader.searchKnowledge({ query: 'future perception' })).results.length, 0);
   const visible = await reader.searchKnowledge({ query: 'future perception', statuses: ['proposed'] });
   assert.equal(visible.results[0].document_id, 'proposed');
@@ -100,14 +101,23 @@ test('proposed documents require an explicit status request and remain labelled'
   assert.equal(Object.hasOwn(visible.results[0], 'semantic_coverage_gap'), false);
 });
 
+test('proposed ranks below active on equal topical match', async () => {
+  const reader = createKnowledgeRagReader({
+    storage: makeFixture({ defaultStatuses: ['active', 'proposed'] }).storage,
+    allowedStatuses: ['active', 'proposed']
+  });
+  const result = await reader.searchKnowledge({ query: 'approved profiles materializes instances', statuses: ['active', 'proposed'], limit: 5 });
+  assert.equal(result.results[0].document_id, 'active');
+});
+
 test('deprecated documents are lexical and require an explicit status request', async () => {
-  const reader = createKnowledgeRagReader({ storage: makeFixture({ includeDeprecated: true }).storage, allowedStatuses: ['active', 'deprecated'] });
+  const reader = createKnowledgeRagReader({ storage: makeFixture({ includeDeprecated: true, defaultStatuses: ['active'] }).storage, allowedStatuses: ['active', 'deprecated'] });
   assert.equal((await reader.searchKnowledge({ query: 'historic reference' })).results.length, 0);
   const visible = await reader.searchKnowledge({ query: 'historic reference', statuses: ['deprecated'] });
   assert.equal(visible.results[0].document_id, 'deprecated');
 });
 
-test('unseen-equivalent: reference is visible by default below active; deprecated redirect stays out', async () => {
+test('unseen-equivalent: reference lands in reference_results; deprecated redirect stays out', async () => {
   const reader = createKnowledgeRagReader({
     storage: makeFixture({
       includeReference: true,
@@ -116,15 +126,23 @@ test('unseen-equivalent: reference is visible by default below active; deprecate
     }).storage
   });
   const result = await reader.searchKnowledge({ query: 'materializes instances from approved profiles', limit: 5 });
-  const ids = result.results.map((item) => item.document_id);
   assert.deepEqual([...result.requested_statuses].sort(), ['active', 'reference']);
-  assert.ok(ids.includes('reference'), `reference visible: ${ids.join(',')}`);
-  assert.ok(!ids.includes('deprecated'), `deprecated out of default: ${ids.join(',')}`);
-  assert.ok(ids.indexOf('active') < ids.indexOf('reference'), `active before reference: ${ids.join(',')}`);
+  assert.ok(result.results.every((item) => item.status === 'active'));
+  assert.ok(result.reference_results.some((item) => item.document_id === 'reference'));
+  assert.ok(result.reference_results.every((item) => item.status === 'reference'));
+  assert.ok(!result.results.some((item) => item.document_id === 'deprecated'));
+  assert.ok(!result.reference_results.some((item) => item.document_id === 'deprecated'));
+});
+
+test('retrieval policy rejects priority_tier copies', () => {
+  const { manifest, policy } = makeFixture();
+  const invalid = structuredClone(policy);
+  invalid.documents[0].priority_tier = 'highest_materialization_normative';
+  assert.throws(() => validateRetrievalPolicy(invalid, manifest), (error) => error.code === 'RETRIEVAL_POLICY_INVALID');
 });
 
 test('RAG retrieval rejects semantic coverage markers in generated coverage', async () => {
-  const { storage } = makeFixture();
+  const { storage } = makeFixture({ defaultStatuses: ['active'] });
   const readGeneratedManifest = storage.readGeneratedManifest;
   storage.readGeneratedManifest = async () => {
     const raw = await readGeneratedManifest();
@@ -219,7 +237,7 @@ test('RAG retrieval rejects a generated chunk with an invalid source location', 
 });
 
 test('RAG conflict reporting preserves provenance across status isolation', async () => {
-  const reader = createKnowledgeRagReader({ storage: makeFixture({ activeConflicts: ['proposed'] }).storage });
+  const reader = createKnowledgeRagReader({ storage: makeFixture({ activeConflicts: ['proposed'], defaultStatuses: ['active'] }).storage });
   const result = await reader.searchKnowledge({ query: 'approved profiles' });
   assert.deepEqual(result.requested_statuses, ['active']);
   assert.deepEqual(result.results.map((item) => item.document_id), ['active']);
@@ -230,24 +248,24 @@ test('RAG conflict reporting preserves provenance across status isolation', asyn
     source_sha256: result.conflicts[0].source_sha256,
     start_line: 1,
     end_line: 3,
-    priority_tier: 'profile_normative'
+    priority_tier: 'proposed'
   }]);
 });
 
 test('control queries verify authoritative document presence in top-k', async () => {
-  const report = await createKnowledgeRagReader({ storage: makeFixture().storage }).runControlQueries();
+  const report = await createKnowledgeRagReader({ storage: makeFixture({ defaultStatuses: ['active'] }).storage }).runControlQueries();
   assert.equal(report.ok, true);
   assert.deepEqual(report.checks[0].matched_document_ids, ['active']);
 });
 
 test('control-query failure is returned as a failed report', async () => {
-  const report = await createKnowledgeRagReader({ storage: makeFixture({ controlExpected: ['proposed'] }).storage }).runControlQueries();
+  const report = await createKnowledgeRagReader({ storage: makeFixture({ controlExpected: ['proposed'], defaultStatuses: ['active'] }).storage }).runControlQueries();
   assert.equal(report.ok, false);
   assert.equal(report.checks[0].ok, false);
 });
 
 test('readiness is ready for lexical-only coverage', async () => {
-  const status = await createKnowledgeRagReader({ storage: makeFixture().storage, allowedStatuses: ['active', 'proposed'] }).getReadinessStatus();
+  const status = await createKnowledgeRagReader({ storage: makeFixture({ defaultStatuses: ['active'] }).storage, allowedStatuses: ['active', 'proposed'] }).getReadinessStatus();
   assert.equal(status.status, 'ready');
   assert.equal(Object.hasOwn(status, 'semantic_coverage_gap_document_ids'), false);
   assert.equal(Object.hasOwn(status, 'semantic_coverage_blocker_document_ids'), false);
@@ -255,12 +273,12 @@ test('readiness is ready for lexical-only coverage', async () => {
 
 test('ranked retrieval resolves equal scores deterministically by document id and chunk id', () => {
   const documentsByFile = new Map([
-    ['b.md', { document_id: 'b', file_name: 'b.md' }],
-    ['a.md', { document_id: 'a', file_name: 'a.md' }]
+    ['b.md', { document_id: 'b', file_name: 'b.md', status: 'reference', priority_tier: 'reference' }],
+    ['a.md', { document_id: 'a', file_name: 'a.md', status: 'reference', priority_tier: 'reference' }]
   ]);
   const metadataById = new Map([
-    ['a', { priority_tier: 'reference', search_terms: [], subsystems: [] }],
-    ['b', { priority_tier: 'reference', search_terms: [], subsystems: [] }]
+    ['a', { search_terms: [], subsystems: [] }],
+    ['b', { search_terms: [], subsystems: [] }]
   ]);
   const chunks = [
     { id: 'b:1', file: 'b.md', section: '', text: 'token' },

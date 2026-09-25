@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "ced9931b0aa8a1e3a1ac1626433284e127ce9aebb365b53d9f971f2a6b1b4cb5",
-      "bytes": 25165,
+      "sha256": "e952f05692d945b9f5edbcd3051bb7638a9511881c2b9ca7d4bdf05374e8f3bf",
+      "bytes": 25169,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -327,7 +327,7 @@
       "bytes": 187383,
       "status": "proposed",
       "provenance_mode": "native",
-      "priority_tier": "profile_normative"
+      "priority_tier": "proposed"
     },
     {
       "document_id": "situational-prose-requirements",
@@ -430,7 +430,7 @@
       "bytes": 40492,
       "status": "proposed",
       "provenance_mode": "native",
-      "priority_tier": "profile_normative"
+      "priority_tier": "proposed"
     },
     {
       "document_id": "universal-category-classification-references",

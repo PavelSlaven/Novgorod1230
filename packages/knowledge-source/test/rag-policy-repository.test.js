@@ -67,7 +67,8 @@ test('repository registers active spatial v3 specializations and excludes deprec
   const indexMetadata = policy.documents.find((document) => document.document_id === 'contract-index');
   assert.equal(indexDocument?.status, 'active');
   assert.equal(indexMetadata?.document_type, 'navigation');
-  assert.equal(indexMetadata?.priority_tier, 'navigation');
+  assert.equal(Object.hasOwn(indexMetadata ?? {}, 'priority_tier'), false);
+  assert.equal(indexDocument?.priority_tier, 'navigation');
   assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('contract-index')));
 
   const reader = createKnowledgeRagReader({
@@ -77,6 +78,7 @@ test('repository registers active spatial v3 specializations and excludes deprec
   const defaultResult = await reader.searchKnowledge({ query: 'finite party-generated G5' });
   assert.ok(defaultResult.results.some((result) => activeV3Ids.includes(result.document_id)));
   assert.ok(defaultResult.results.every((result) => !deprecatedV2Ids.includes(result.document_id)));
+  assert.ok(defaultResult.results.every((result) => result.status === 'active' || result.status === 'proposed'));
 
   const deprecatedResult = await reader.searchKnowledge({ query: 'migration rollback G0 G4', statuses: ['deprecated'] });
   assert.ok(deprecatedResult.results.length > 0);
@@ -99,7 +101,7 @@ test('repository registers the audited spatial architecture standard as an activ
     status: 'active'
   });
   assert.equal(metadata?.document_type, 'target_normative');
-  assert.equal(metadata?.priority_tier, 'technical_contract');
+  assert.equal(Object.hasOwn(metadata ?? {}, 'priority_tier'), false);
   assert.equal(document?.priority_tier, 'technical_contract');
   assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('spatial-architecture-standard-g0-g6')));
 });

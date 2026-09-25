@@ -56,7 +56,8 @@ test('read accepts query line ranges and sections, rejecting unknown sections', 
   assert.match(section.text, /## 1\. Обязательный порядок чтения/u);
   const headinglessQuery = parseJson(runCli(['query', '--root', root, '--query', 'генерация',
     '--statuses', 'reference', '--document-ids', 'g1-g5-generation-rules', '--limit', '1']));
-  const headinglessHit = headinglessQuery.results[0];
+  const headinglessHit = headinglessQuery.reference_results[0] ?? headinglessQuery.results[0];
+  assert.ok(headinglessHit, 'reference query must return a hit');
   const headinglessSection = parseJson(runCli(['read', '--root', root, '--document-id', headinglessHit.document_id,
     '--statuses', 'reference', '--section', headinglessHit.section]));
   assert.equal(headinglessSection.source_sha256, headinglessHit.source_sha256);
@@ -77,7 +78,7 @@ test('active-only query excludes proposed classification policy while explicit s
   const activeOnly = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'active']));
   assert.ok(activeOnly.results.every((item) => item.document_id !== 'universal-category-classification-policy'));
 
-  const explicit = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'active,proposed']));
+  const explicit = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'proposed', '--limit', '5']));
   assert.ok(explicit.results.some((item) => item.document_id === 'universal-category-classification-policy'));
   assert.equal(
     explicit.results.find((item) => item.document_id === 'universal-category-classification-policy').status,

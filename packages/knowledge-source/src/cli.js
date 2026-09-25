@@ -10,11 +10,15 @@ const command = args[0] ?? '';
 
 try {
   const root = resolve(option(args, '--root') ?? '.');
-  const statuses = csvOption(args, '--statuses') ?? ['active', 'reference'];
   const storage = createFileSystemKnowledgeSourceStorage({
     sourceRoot: resolve(root, 'data/knowledge-source'),
     generatedRoot: resolve(root, 'generated/knowledge-source')
   });
+  const policyRaw = await storage.readRetrievalPolicy();
+  const defaultStatuses = Array.isArray(policyRaw?.value?.default_statuses) && policyRaw.value.default_statuses.length > 0
+    ? policyRaw.value.default_statuses
+    : ['active', 'reference'];
+  const statuses = csvOption(args, '--statuses') ?? defaultStatuses;
   const sourceReader = createKnowledgeSourceReader({ storage, allowedStatuses: statuses });
   const ragReader = createKnowledgeRagReader({ storage, allowedStatuses: statuses });
 

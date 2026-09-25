@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "66e468d2899d58601c72f1574394385806351498a397f38ab615f7b58418ca34",
+  "baseline_manifest_sha256": "b861935ae8d7df61f5bb6a106dbcd6508e187a43462a3cdee82677c1792b2aaa",
   "default_statuses": [
     "active",
     "reference"
@@ -10,7 +10,6 @@
     {
       "document_id": "universal-category-classification-policy",
       "document_type": "canonical_normative",
-      "priority_tier": "profile_normative",
       "subsystems": [
         "classification",
         "world-base",
@@ -40,7 +39,6 @@
     {
       "document_id": "universal-category-classification-references",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "classification",
         "editorial"
@@ -66,7 +64,6 @@
     {
       "document_id": "base-turn-orchestration",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "turn",
         "orchestration"
@@ -90,7 +87,6 @@
     {
       "document_id": "character-inventory-equipment",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "inventory",
         "character"
@@ -116,7 +112,6 @@
     {
       "document_id": "character-parameters",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "character",
         "checks",
@@ -144,7 +139,6 @@
     {
       "document_id": "code-critic-invocation-rule",
       "document_type": "navigation",
-      "priority_tier": "navigation",
       "subsystems": [
         "development",
         "audit"
@@ -169,7 +163,6 @@
     {
       "document_id": "code-driven-world-materialization-architecture",
       "document_type": "canonical_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "materialization",
         "architecture"
@@ -197,7 +190,6 @@
     {
       "document_id": "combat-system",
       "document_type": "canonical_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "combat"
       ],
@@ -222,7 +214,6 @@
     {
       "document_id": "development-rules",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "development",
         "modules",
@@ -249,7 +240,6 @@
     {
       "document_id": "documentation-corpus-readme",
       "document_type": "navigation",
-      "priority_tier": "navigation",
       "subsystems": [
         "documentation"
       ],
@@ -272,7 +262,6 @@
     {
       "document_id": "contract-index",
       "document_type": "navigation",
-      "priority_tier": "navigation",
       "subsystems": [
         "documentation",
         "contracts",
@@ -301,7 +290,6 @@
     {
       "document_id": "formulas",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "formulas",
         "checks"
@@ -319,14 +307,16 @@
       "search_terms": [
         "формулы",
         "d20",
-        "расчёт"
+        "расчёт",
+        "формула",
+        "урон",
+        "урона"
       ],
       "conflicts_with_document_ids": []
     },
     {
       "document_id": "g1-g5-generation-rules",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "map",
         "materialization"
@@ -353,7 +343,6 @@
     {
       "document_id": "historical-events-and-figures",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "history"
       ],
@@ -376,7 +365,6 @@
     {
       "document_id": "information-sources-llm-prompts",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "knowledge",
         "llm",
@@ -403,7 +391,6 @@
     {
       "document_id": "interface-ux",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "ui",
         "visibility"
@@ -429,7 +416,6 @@
     {
       "document_id": "items-and-property",
       "document_type": "canonical_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "items",
         "property"
@@ -455,7 +441,6 @@
     {
       "document_id": "llm-agent-prompt-templates",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "llm",
         "prompts"
@@ -480,7 +465,6 @@
     {
       "document_id": "llm-documentation-navigation",
       "document_type": "navigation",
-      "priority_tier": "navigation",
       "subsystems": [
         "documentation",
         "navigation"
@@ -504,7 +488,6 @@
     {
       "document_id": "map-g0-g4-workflow",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "map",
         "authoring",
@@ -533,7 +516,6 @@
     {
       "document_id": "movement-locations-regions",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "movement",
         "map"
@@ -559,7 +541,6 @@
     {
       "document_id": "new-game-start-pipeline",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "new-game"
       ],
@@ -583,7 +564,6 @@
     {
       "document_id": "npc-generation-profiles",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "npc"
       ],
@@ -607,7 +587,6 @@
     {
       "document_id": "npc-inventory-item-marks",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "npc",
         "items"
@@ -632,7 +611,6 @@
     {
       "document_id": "player-character-generation",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "player-character",
         "new-game"
@@ -657,7 +635,6 @@
     {
       "document_id": "read-only-database-and-graph-architecture",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "database",
         "graph",
@@ -687,7 +664,6 @@
     {
       "document_id": "temporal-world-and-interruptible-activities",
       "document_type": "target_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "time",
         "turn",
@@ -735,7 +711,6 @@
     {
       "document_id": "time-system",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "time"
       ],
@@ -760,7 +735,6 @@
     {
       "document_id": "weapons-and-armor",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "combat",
         "items"
@@ -785,7 +759,6 @@
     {
       "document_id": "world-base-materialization-table-requirements",
       "document_type": "canonical_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "database",
         "materialization"
@@ -811,7 +784,6 @@
     {
       "document_id": "world-generation-and-turns",
       "document_type": "canonical_normative",
-      "priority_tier": "reference",
       "subsystems": [
         "world",
         "turn",
@@ -840,7 +812,6 @@
     {
       "document_id": "world-regions",
       "document_type": "reference",
-      "priority_tier": "reference",
       "subsystems": [
         "regions",
         "map"
@@ -865,7 +836,6 @@
     {
       "document_id": "npc-autonomous-decision-contract",
       "document_type": "target_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "npc",
         "turn",
@@ -910,7 +880,6 @@
     {
       "document_id": "npc-combat-and-trigger-contract",
       "document_type": "target_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "combat",
         "npc",
@@ -959,7 +928,6 @@
     {
       "document_id": "npc-conversation-mode-contract",
       "document_type": "target_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "npc",
         "conversation",
@@ -1005,7 +973,6 @@
     {
       "document_id": "turn-step-llm-contract",
       "document_type": "target_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "turn",
         "orchestration",
@@ -1043,7 +1010,6 @@
     {
       "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",
       "document_type": "target_normative",
-      "priority_tier": "highest_materialization_normative",
       "subsystems": [
         "materialization",
         "architecture",
@@ -1081,7 +1047,6 @@
     {
       "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
       "document_type": "target_normative",
-      "priority_tier": "highest_materialization_normative",
       "subsystems": [
         "database",
         "materialization",
@@ -1119,7 +1084,6 @@
     {
       "document_id": "spatial-v3-target-read-only-database-and-graph-architecture",
       "document_type": "target_normative",
-      "priority_tier": "highest_materialization_normative",
       "subsystems": [
         "database",
         "graph",
@@ -1156,7 +1120,6 @@
     {
       "document_id": "spatial-v3-target-map-g0-g4-workflow",
       "document_type": "target_normative",
-      "priority_tier": "highest_materialization_normative",
       "subsystems": [
         "map",
         "authoring",
@@ -1195,7 +1158,6 @@
     {
       "document_id": "semantic-world-actions-materialization-and-processes-contract",
       "document_type": "target_normative",
-      "priority_tier": "profile_normative",
       "subsystems": [
         "turn",
         "materialization",
@@ -1246,7 +1208,6 @@
     {
       "document_id": "situational-prose-requirements",
       "document_type": "canonical_normative",
-      "priority_tier": "highest_materialization_normative",
       "subsystems": [
         "narration",
         "presentation",
@@ -1283,7 +1244,6 @@
     {
       "document_id": "world-knowledge-platform-implementation-contract",
       "document_type": "target_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "world-knowledge",
         "turn",
@@ -1316,7 +1276,6 @@
     {
       "document_id": "spatial-architecture-standard-g0-g6",
       "document_type": "target_normative",
-      "priority_tier": "technical_contract",
       "subsystems": [
         "spatial",
         "topology",

@@ -8,6 +8,7 @@ const PRIORITY_TIERS = new Set([
   'development_process_normative',
   'technical_contract',
   'navigation',
+  'proposed',
   'reference'
 ]);
 

@@ -212,7 +212,15 @@ export function assertTargetObservation(turn, realProvider = false) {
   assert.equal(turn.error, undefined, 'approved target observation must reach its existing owner');
   assert.equal(turn.result.screen.screen_status, 'ready');
   assert.equal(turn.after.party.state_version, turn.before.party.state_version + 1);
-  if (realProvider) assert.ok(turn.after.clock.whole_minutes > turn.before.clock.whole_minutes);
+  if (realProvider) {
+    const before = turn.before.clock;
+    const after = turn.after.clock;
+    const numerator = (clock) => BigInt(clock.whole_minutes) * BigInt(clock.subminute_denominator)
+      + BigInt(clock.subminute_numerator);
+    assert.ok(numerator(after) * BigInt(before.subminute_denominator)
+      > numerator(before) * BigInt(after.subminute_denominator),
+    'real-provider observation must advance exact clock');
+  }
   else assert.equal(turn.after.clock.whole_minutes, turn.before.clock.whole_minutes + 1);
   for (const key of ['body', 'positions', 'entity_placements', 'materialization_runs', 'sites']) {
     assert.deepEqual(turn.after[key], turn.before[key], `observation preserves ${key}`);

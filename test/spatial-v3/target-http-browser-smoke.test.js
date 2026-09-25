@@ -74,6 +74,18 @@ test('observation accepts zero, one, or distinctly numbered unrecognized NPC lab
   assert.throws(() => assertTargetObservation(two));
 });
 
+test('real-provider observation advances exact clock within one whole minute', () => {
+  const turn = observation('forest', 'fractional');
+  turn.before.clock = { whole_minutes: 261121, subminute_numerator: 1, subminute_denominator: 3 };
+  turn.after.clock = { whole_minutes: 261121, subminute_numerator: 1, subminute_denominator: 2 };
+  assert.doesNotThrow(() => assertTargetObservation(turn, true));
+  turn.after.clock.subminute_numerator = 2;
+  turn.after.clock.subminute_denominator = 6;
+  assert.throws(() => assertTargetObservation(turn, true), /must advance exact clock/);
+  turn.after.clock.subminute_numerator = 1;
+  assert.throws(() => assertTargetObservation(turn, true), /must advance exact clock/);
+});
+
 test('displayed exit accepts generated destination after observation', () => {
   const observation = { result: { screen: emptyScreen() } };
   const exit = movement(observation, 'directional_exit:current', 'Иду по показанному пути', 'generated');

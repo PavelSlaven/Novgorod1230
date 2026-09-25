@@ -301,6 +301,25 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       throw new Error('V17_P12_SOURCE_READBACK_MISMATCH');
     // The importer compares every pinned primary-key row, including existing rows.
     await world.query(`${p12Request.sql_builder.concatenation.prefix}${parts.join('')}ROLLBACK;\n`);
+    const graphCheck = (await world.query(`SELECT pg_get_constraintdef(c.oid) AS definition
+      FROM pg_catalog.pg_constraint c
+      JOIN pg_catalog.pg_class t ON t.oid = c.conrelid
+      JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace
+      WHERE n.nspname = 'world_base' AND t.relname = 'graph_nodes'
+        AND c.conname = 'graph_nodes_scale_level_check'`)).rows;
+    if (graphCheck.length !== 1) throw new Error('V17_GRAPH_NODES_CHECK_MISSING');
+    if (!graphCheck[0].definition.includes("ARRAY['G0'::text, 'G1'::text, 'G2'::text, 'G3'::text, 'G4'::text]")) {
+      const finalize = 'tools/runtime-catalog-activation/migrations/world/000_legacy_world_bridge_finalize.sql';
+      await world.query((await exact(finalize,
+        'd23d16cba41b66b3071febe8058d4ced1d606995b97faaaa94674ef670017a60')).toString());
+    }
+    await applyCatalogDdl(world, 'world_base', [
+      WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
+      ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP
+    ],
+      ['schema_migrations', 'catalog_baseline_registrations', 'domain_catalog_revisions',
+        'catalog_import_records', 'catalog_import_dependency_assertions',
+        'runtime_catalog_activation_events', 'actor_base_attribute_profiles']);
     await world.query((await exact(generatedNpcIndexMigration, generatedNpcIndexMigrationSha256)).toString());
     const capacity = await json(capacityManifest);
     const pinnedTables = ['spatial_v3_scene_templates', 'spatial_v3_scene_materialization_profiles'];
@@ -347,25 +366,6 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
           throw new Error(`V17_APPEARANCE_ROW_MISMATCH:${dataset.table}:${row.id}`);
       }
     }
-    const graphCheck = (await world.query(`SELECT pg_get_constraintdef(c.oid) AS definition
-      FROM pg_catalog.pg_constraint c
-      JOIN pg_catalog.pg_class t ON t.oid = c.conrelid
-      JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace
-      WHERE n.nspname = 'world_base' AND t.relname = 'graph_nodes'
-        AND c.conname = 'graph_nodes_scale_level_check'`)).rows;
-    if (graphCheck.length !== 1) throw new Error('V17_GRAPH_NODES_CHECK_MISSING');
-    if (!graphCheck[0].definition.includes("ARRAY['G0'::text, 'G1'::text, 'G2'::text, 'G3'::text, 'G4'::text]")) {
-      const finalize = 'tools/runtime-catalog-activation/migrations/world/000_legacy_world_bridge_finalize.sql';
-      await world.query((await exact(finalize,
-        'd23d16cba41b66b3071febe8058d4ced1d606995b97faaaa94674ef670017a60')).toString());
-    }
-    await applyCatalogDdl(world, 'world_base', [
-      WORLD_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
-      ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP
-    ],
-      ['schema_migrations', 'catalog_baseline_registrations', 'domain_catalog_revisions',
-        'catalog_import_records', 'catalog_import_dependency_assertions',
-        'runtime_catalog_activation_events', 'actor_base_attribute_profiles']);
     await applyCatalogDdl(party, 'party_runtime', [
       PARTY_RUNTIME_CATALOG_MIGRATION_V17_BOOTSTRAP,
       ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION_V17_BOOTSTRAP

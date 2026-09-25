@@ -176,16 +176,10 @@ export async function createSpatialV3ProductionCompositionRoot({
       destinationPositionId, destinationSiteId, current } = {}) => {
       const positionId = destinationPosition?.id ?? destinationPositionId;
       const siteId = destinationSite?.id ?? destinationSiteId;
-      let closure = context?.closure;
-      if (!closure) {
-        const binding = await targetContext.runtime.worldBaseReader.readG4ExpansionBinding({
-          g4_id: current?.destination_g4_id, world_revision_id: release.world_revision_id });
-        if (binding?.ok) {
-          const loaded = await targetContext.runtime.worldBaseReader.readPinnedG4ExpansionClosure(binding.value);
-          closure = loaded?.ok ? loaded.value : null;
-        }
-      }
-      if (!positionId || !siteId || !Array.isArray(closure?.directional_exits)) {
+      const directionalExits = await readDestinationDirectionalExits({
+        context, current, worldBaseReader: targetContext.runtime.worldBaseReader,
+        worldRevisionId: release.world_revision_id });
+      if (!positionId || !siteId || !Array.isArray(directionalExits)) {
         throw serverError('SPATIAL_V3_SITE_TRAVERSAL_DATA_GAP',
           'Approved destination visibility sources are required.', { status: 409 });
       }
@@ -196,7 +190,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           journey_location: { scene_position_id: positionId } };
         const sources = await currentVisibility.readCurrentSources({ transaction: client,
           partyId, actorId, positionId, observedPositionId: positionId, siteId,
-          state, directionalExits: closure.directional_exits });
+          state, directionalExits });
         const visible_context = projectSpatialV3CurrentVisibleContext({ ...sources,
           partyId, actorId, positionId });
         if (!transaction) await client.query('COMMIT');
@@ -415,6 +409,16 @@ export async function createSpatialV3ProductionCompositionRoot({
     await pools.close().catch(() => {});
     throw error;
   }
+}
+
+export async function readDestinationDirectionalExits({ context, current, worldBaseReader,
+  worldRevisionId } = {}) {
+  if (context?.closure) return context.closure.directional_exits;
+  const binding = await worldBaseReader.readG4ExpansionBinding({
+    g4_id: current?.destination_g4_id, world_revision_id: worldRevisionId });
+  if (!binding?.ok) return null;
+  const exits = await worldBaseReader.readApprovedG4DirectionalExits(binding.value);
+  return exits?.ok ? exits.value : null;
 }
 
 /** Expansion changes topology while the actor stays at the committed source position. */

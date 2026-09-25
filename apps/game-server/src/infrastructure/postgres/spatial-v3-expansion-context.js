@@ -21,6 +21,15 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
   const current = result.rows[0];
   if (current.world_revision_id !== release?.world_revision_id
     || current.world_catalog_digest !== release?.world_catalog_digest) gap('active_release_pin_mismatch');
+  const scene = await worldBaseReader.readPinnedSceneTemplateClosure({
+    id: current.baseline.scene_template_ref.entity_id,
+    version: Number(current.baseline.scene_template_ref.authoring_version), world_revision_id: current.world_revision_id });
+  if (!scene?.ok) gap('approved_source_scene_required', scene?.error);
+  if (!scene.value.endpoint_slots.some((row) => ['departure', 'both'].includes(row.endpoint_role)
+    && row.required_position_slot_key === current.position.template_slot_key
+    && row.required_position_instance_ordinal === current.position.template_instance_ordinal)) {
+    return { ...current, scene: scene.value, partyId, actorId };
+  }
   const binding = await worldBaseReader.readG4ExpansionBinding({ g4_id: current.site.parent_g4_id,
     world_revision_id: current.world_revision_id });
   if (!binding?.ok) gap('approved_g4_expansion_binding_required', binding?.error);
@@ -29,10 +38,6 @@ export async function readSpatialV3ExpansionContext({ transaction, worldBaseRead
   const loaded = await createSpatialV3Repository({ transaction }).loadExpansionState({
     party_id: partyId, g4_id: current.site.parent_g4_id });
   if (!loaded.ok) gap('committed_expansion_snapshot_required', loaded.error);
-  const scene = await worldBaseReader.readPinnedSceneTemplateClosure({
-    id: current.baseline.scene_template_ref.entity_id,
-    version: Number(current.baseline.scene_template_ref.authoring_version), world_revision_id: current.world_revision_id });
-  if (!scene?.ok) gap('approved_source_scene_required', scene?.error);
   return { ...current, ...binding.value, closure: closure.value, snapshot: loaded.snapshot,
     scene: scene.value, partyId, actorId };
 }

@@ -19,7 +19,7 @@ export function visibleNpc(npc, position, visibleLabels) {
   }
   return {
     entity_ref: { entity_kind: 'npc', entity_id: entityId },
-    display_label: text(displayLabel) ? displayLabel : genericNpcLabel(npc),
+    display_label: text(displayLabel) ? displayLabel : 'человек',
     recognition: text(displayLabel) ? prior?.recognition ?? 'recognized' : 'unrecognized'
   };
 }
@@ -39,9 +39,3 @@ function samePositionScope(npc, position) {
     npc[npcKey] === position?.[positionKey]);
 }
 function text(value) { return typeof value === 'string' && value.length > 0; }
-
-function genericNpcLabel(npc) {
-  const publicRole = [npc?.role_ref, npc?.occupation_ref]
-    .filter(text).join(' ').toLowerCase();
-  return publicRole.includes('fisher') ? 'рыбак' : 'человек';
-}

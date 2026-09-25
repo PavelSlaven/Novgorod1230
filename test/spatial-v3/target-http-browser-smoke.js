@@ -169,7 +169,20 @@ export async function serveTargetHttpBrowserSmoke({ root, pool, realProvider = f
       assert.deepEqual(turns[0].after[key], turns[0].before[key], `observation preserves ${key}`);
     }
     assert.equal(turns[0].result.movement, null);
-    assert.deepEqual(turns[0].result.screen.visible_context.visible_npc, []);
+    const visibleNpcs = turns[0].result.screen.visible_context.visible_npc;
+    assert.equal(visibleNpcs.length, 1);
+    const [visibleNpc] = visibleNpcs;
+    assert.deepEqual(Object.keys(visibleNpc).sort(),
+      ['display_label', 'entity_ref', 'observable_cues', 'recognition']);
+    assert.equal(visibleNpc.display_label, 'человек');
+    assert.equal(visibleNpc.recognition, 'unrecognized');
+    assert.equal(visibleNpc.entity_ref.entity_kind, 'npc');
+    assert.equal(visibleNpc.observable_cues.identity.display_name, 'человек');
+    assert.equal(typeof visibleNpc.observable_cues.identity.appearance, 'object');
+    assert.ok(Array.isArray(visibleNpc.observable_cues.equipment));
+    assert.deepEqual(turns[0].result.screen.panels.people.data.visible_npcs.map(
+      ({ display_label, status }) => ({ display_label, status })),
+    [{ display_label: 'человек', status: undefined }]);
     assert.equal(turns[0].after.position_slot, 'arrival');
     const replayIndex = report.calls.indexOf(turns[1]);
     assert.ok(report.calls.slice(replayIndex + 1, report.calls.indexOf(turns[2]))

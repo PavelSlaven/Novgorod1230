@@ -138,7 +138,8 @@ test('current scene never promotes an authored NPC name into player knowledge', 
   const state = committedState();
   state.npcs.push({
     instance_id: 'unknown', location_ref: 'shed', anchor_id: 'shed-anchor',
-    zone_ref: 'yard', identity_state: { display_name: 'Незнакомое имя' }
+    zone_ref: 'yard', role_ref: 'fisher', occupation_ref: 'fisher',
+    identity_state: { display_name: 'Незнакомое имя' }
   });
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
@@ -160,19 +161,23 @@ test('current scene maps actor age into the player-safe portrait vocabulary', ()
     .observable_cues.identity.age_category, 'young');
 });
 
-test('current scene exposes the visible NPC current activity', () => {
+test('current scene keeps private NPC schedule summaries out of observations', () => {
   const state = committedState();
   state.npcs[0].machine_state.current_activity = {
     status: 'active', can_continue_automatically: true,
-    activity_ref: 'unseen-routine', summary: 'Чинит рыболовную сеть.'
+    activity_ref: 'unseen-routine', summary: 'Private schedule instruction.'
   };
 
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
   });
 
-  assert.equal(current.current_visible_context.visible_npc[0].visible_status,
-    'Чинит рыболовную сеть.');
+  const npc = current.current_visible_context.visible_npc[0];
+  assert.equal(Object.hasOwn(npc, 'visible_status'), false);
+  assert.equal(npc.observable_cues.identity.appearance.build, 'stocky');
+  assert.equal(npc.observable_cues.equipment.length, 1);
+  assert.equal(JSON.stringify(current.current_visible_context)
+    .includes('Private schedule instruction.'), false);
 });
 
 test('version zero scene retains safe labels and gains observable cues', () => {

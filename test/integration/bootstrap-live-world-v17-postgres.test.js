@@ -71,7 +71,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
           schema: 'rus.actor_base_attributes_successor_import_attestation.v1',
           request_digest: request.request_digest,
           decision: 'approve_exact_actor_base_attributes_successor_import',
-          reviewed_repository_head: request.subject_commit,
+          reviewed_source_digest: request.compatible_world.compatible_world_pin_manifest_digest,
           independence_basis: 'Test-only approval fixture',
           database_mutated: false,
           authority: { import_authorized: true, activation_authorized: false,
@@ -82,7 +82,8 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
           schema: 'rus.actor_base_attributes_successor_activation_attestation.v1',
           request_digest: request.request_digest,
           decision: 'approve_exact_actor_base_attributes_new_production_activation',
-          reviewed_repository_head: request.subject_commit,
+          reviewed_source_digest:
+            request.import_request.compatible_world.compatible_world_pin_manifest_digest,
           independence_basis: 'Test-only approval fixture',
           database_mutated: false,
           authority: { import_authorized: false, activation_authorized: true,

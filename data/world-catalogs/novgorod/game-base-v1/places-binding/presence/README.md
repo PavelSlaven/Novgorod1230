@@ -10,7 +10,7 @@
 | `presence_rules.csv` | Таблица правил наличия. Её собирает `scripts/build-presence-rules.mjs` из пулов других групп; вручную её не правят. |
 | `people_presence_authoring.csv` | Авторские candidate-привязки людей к 16 PF, сезону и времени суток. Тот же сборщик разворачивает их в `presence_rules.csv`. |
 
-Сколько строк на данный момент, показывает `reports/presence-rules-report.json`. После пересборки C001 — 10 555 правил из 6 038 принятых строк двух пулов (`items-household-personal` и `fauna-mammals-birds`). Сезонные строки развернуты в 11 459 сезонных кандидатов; 904 дубля слиты только внутри одного сезона. 16 620 строк items без категории отклонены. Классы: 2 001 common, 3 758 contextual, 635 ubiquitous, 4 161 rare.
+Актуальные счётчики находятся в `reports/presence-rules-report.json`. Текущая пересборка даёт 10 223 категориальных и 69 правил людей из двух пулов (`items-household-personal` и `fauna-mammals-birds`).
 
 ## Правило перевода (`presence_ppm_from_frequency_class@1`)
 
@@ -48,6 +48,8 @@
 
 Необязательные поля: `region_id` (пусто = общемировое), `count_limit` / `max_count` / `count_limit_rule`, `allowed_seasons` / `season_period` / `seasons` / `season`, `refresh_class`, `confidence`.
 
+Для `items-household-personal/items/item_place_frequency.csv` условия `entry_visible_if` и `search_only_if` обязательны. Они переносятся в одно правило категории без превращения в безусловную видимость: частота означает возможность присутствия, а способ обнаружения зависит от фактического размещения экземпляра. Для `pf_class=wild` также требуется `wild_arrival_cause_required=prior_visitor_loss_or_discard`; без установленной причины рукотворная вещь не появляется. У правил fauna и people эти три колонки пусты. Слияние категориальных строк допускается только при совпадении всех трёх условий.
+
 `source_refs` обязателен.
 
 Сборщик проверяет каждую строку:
@@ -66,14 +68,14 @@
 
 ## Правки C002 — люди
 
-К 10 555 категориальным правилам добавлены candidate-правила для всех 16 PF, используемых 32 G4 и 195 G5 в `places/node_binding.csv`. `subject_kind=social_role|occupation`, `subject_ref` проверяется по `data/novgorod-region/novgorod_social_roles_v1.tsv` или `novgorod_occupations_v1.tsv`; `category_ref` у людей пуст. Ключ включает subject, сезон и время суток (`morning|day|evening|night`); прежние category ID сохранены. Для категорий `allowed_times=all`.
+К категориальным правилам добавлены 69 candidate-правил людей для всех 16 PF, используемых 32 G4 и 195 G5 в `places/node_binding.csv`. `subject_kind=social_role|occupation`, `subject_ref` проверяется по `data/novgorod-region/novgorod_social_roles_v1.tsv` или `novgorod_occupations_v1.tsv`; `category_ref` у людей пуст. Ключ включает subject, сезон и время суток (`morning|day|evening|night`); для категорий `allowed_times=all`.
 
 Число `probability_ppm=250000` следует из существующего `frequency_rule.json` для `contextual`. Это редакционное candidate-правило без измеренного числового источника (`no_source` для вероятности), не историческая частота. `source_refs` указывает словарный профиль занятия/роли; он поддерживает тип человека, но не число. `count_limit=1` — редакционный candidate-лимит, не численность жителей. `guards` — условия применимости перед броском; их значения пока авторский текст, runtime evaluator здесь не заявлен. `refresh_class` задаётся явно. `place_family` и времена суток требуют отдельного согласования с DDL §8.1, где этих полей пока нет; все строки остаются `candidate`.
 
 ## Известные пробелы
 
 - **Файлы, которые пока не подходят под контракт** (список — в `frequency_files_not_matching_pool_contract` отчёта, на пересборке 2026-09-26 — 15 файлов, включая новые группы fauna-fish-invertebrates-livestock, flora-herbs-berries-mushrooms и flora-trees-shrubs, появившиеся после прежней сборки): у большинства есть scope, но нет категории; у food-drink `ingredients.csv` наоборот; у части (adornment, personal_names, погодные, hazards) нет ни того, ни другого.
-- **У пула предметов не хватает категорий.** В `item_place_frequency.csv` 16 620 строк без `category_ref`.
+- **У пула предметов не хватает категорий.** Актуальное число отклонённых строк см. в `reports/presence-rules-report.json`.
 - **MASTER-проверка не ловит рассогласование scope-архетипа.** Cобранная 2026-09-26 проверка (см. выше) сверяет заявленный класс с MASTER-связями, но не проверяет, что цитируемая связь MASTER относится к тому же `location_archetype`, что и заявленный `pf_id` пула. Пример: строки гребня `it_ps_comb_double` в `item_place_frequency.csv` заявляют присутствие в `church_interior`/`fishing_camp`, но все цитируемые `master_link` относятся к MASTER-архетипу `scribe_area`/`fishing_site` (близкие, но не тот же `pf_id`). Числовая проверка это пропускает, потому что среди цитат есть MASTER-связь другого материального компонента гребня с `spawn_frequency=ubiquitous`. Исправление принадлежит `items-household-personal` (их выбор, как схлопывать материальные компоненты составного предмета в pf_id), не этой группе.
 - **Реестр категорий неполон.** После пересборки 2026-09-26 остаются пустыми домены food, behavior, motive, knowledge, activity (flora и fauna уже подхватились — см. `categories/README.md`). Пулы этих доменов нельзя перевести в правила, пока группы не дадут категории.
 - **Слияние «максимум ppm» при дублях по (scope, category, сезон)** может выбрать значение от другого предмета той же категории, а не от того, чья MASTER-связь точнее. Правило заявлено (см. скрипт), но калибровка и сам принцип «максимум» требуют решения владельца.

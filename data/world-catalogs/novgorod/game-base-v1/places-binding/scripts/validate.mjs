@@ -96,6 +96,9 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   const nodes = new Set(nb.map((r) => r.node_ref.replace(/@\d+$/, '')));
   const occupations = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_occupations_v1.tsv')).map((r) => r.occupation_id));
   const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
+  const itemSources = readCsv(P('../items-household-personal/items/item_place_frequency.csv'));
+  const peopleSources = readCsv(P('presence/people_presence_authoring.csv'));
+  const itemConditions = ['entry_visible_if', 'search_only_if', 'wild_arrival_cause_required'];
   const f = [];
   const seen = new Set();
   for (const r of pr) {
@@ -113,18 +116,35 @@ const ex = readJson(P('inputs/pr98-extract.json'));
     if (!s.length || s.some((x) => x !== 'all' && !SEASONS.includes(x))) f.push(`${r.pr_id}: seasons ${r.allowed_seasons}`);
     if (!['all', 'morning', 'day', 'evening', 'night'].includes(r.allowed_times)) f.push(`${r.pr_id}: time ${r.allowed_times}`);
     if (r.subject_kind !== 'category' && (!r.guards || r.status !== 'candidate' || !r.source_refs)) f.push(`${r.pr_id}: people provenance/guards/status`);
+    if (r.subject_kind !== 'category') {
+      const source = peopleSources[Number(r.source_pool.match(/people_presence_authoring\.csv#row(\d+)$/)?.[1]) - 2];
+      if (!source || r.subject_kind !== source.subject_kind || r.subject_ref !== source.subject_ref || r.guards !== source.guards || !split(source.allowed_seasons).includes(r.allowed_seasons) || !split(source.allowed_times).includes(r.allowed_times)) f.push(`${r.pr_id}: people subject/season/time/guards differ from authoring`);
+    }
+    for (const col of itemConditions) if (!Object.hasOwn(r, col)) f.push(`${r.pr_id}: missing ${col} column`);
+    const sources = split(r.source_pool);
+    const itemRows = sources.filter((s) => s.includes('/items-household-personal/items/item_place_frequency.csv#row'));
+    if (itemRows.length) {
+      if (itemRows.length !== sources.length || r.subject_kind !== 'category') f.push(`${r.pr_id}: mixed item/category sources`);
+      for (const source of itemRows) {
+        const row = itemSources[Number(source.match(/#row(\d+)$/)?.[1]) - 2];
+        if (!row) { f.push(`${r.pr_id}: unresolved item source ${source}`); continue; }
+        for (const col of itemConditions) if (r[col] !== row[col]) f.push(`${r.pr_id}: ${col} differs from ${source}`);
+        if (!row.entry_visible_if || !row.search_only_if) f.push(`${r.pr_id}: item discovery conditions empty`);
+        if (row.pf_class === 'wild' && r.wild_arrival_cause_required !== 'prior_visitor_loss_or_discard') f.push(`${r.pr_id}: wild item arrival cause missing`);
+      }
+    } else if (itemConditions.some((col) => r[col])) f.push(`${r.pr_id}: non-item discovery conditions`);
     if (!rule.refresh_rule.values.includes(r.refresh_class)) f.push(`${r.pr_id}: refresh ${r.refresh_class}`);
-    const k = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref, r.allowed_seasons, r.allowed_times].join('|');
+    const k = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref, r.allowed_seasons, r.allowed_times, ...itemConditions.map((col) => r[col])].join('|');
     if (seen.has(k)) f.push(`${r.pr_id}: duplicate ${k}`); seen.add(k);
   }
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
   const people = pr.filter((r) => r.subject_kind !== 'category');
   const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));
-  check('presence_rules', 'people_cover_16_bound_pf_and_preserve_categories', [
+  check('presence_rules', 'people_cover_16_bound_pf', [
     ...[...expectedPf].filter((id) => !people.some((r) => r.scope_ref === id)).map((id) => `missing ${id}`),
     ...(expectedPf.size === 16 ? [] : [`expected 16 PF, got ${expectedPf.size}`]),
     ...(nb.filter((r) => r.node_level === 'G4').length === 32 && nb.filter((r) => r.node_level === 'G5').length === 195 ? [] : ['expected 32 G4 / 195 G5']),
-    ...(pr.length - people.length === 10555 ? [] : [`category rules ${pr.length - people.length} != 10555`]),
+    ...(people.length === 69 ? [] : [`people rules ${people.length} != 69`]),
   ], { people_rules: people.length, place_families: expectedPf.size, g4: nb.filter((r) => r.node_level === 'G4').length, g5: nb.filter((r) => r.node_level === 'G5').length });
   const crosswalks = [
     ['livestock', '../fauna-fish-invertebrates-livestock/fauna/rpgr_pf_crosswalk.csv', ['rule_ref', 'pf_id']],

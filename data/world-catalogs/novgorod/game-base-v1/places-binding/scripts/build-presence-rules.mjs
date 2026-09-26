@@ -117,11 +117,16 @@ export function build() {
       if (cl && !(Number.isInteger(+cl) && +cl >= 1)) errs.push(`count_limit '${cl}' not an integer >= 1`);
       if (r.count_limit_rule && !ruleLimit && !statedLimit) errs.push('count_limit_rule unrecognised');
       if (!r.source_refs) errs.push('source_refs empty');
+      const itemPool = path.basename(f) === 'item_place_frequency.csv';
+      if (itemPool && (!r.entry_visible_if || !r.search_only_if)) errs.push('item discovery conditions empty');
+      if (itemPool && r.pf_class === 'wild' && r.wild_arrival_cause_required !== 'prior_visitor_loss_or_discard') errs.push('wild item arrival cause missing');
       if (errs.length) { rejects.push({ where, row_id: rowId, errors: errs }); return; }
       for (const [k, ref] of scopes) pools.push({
         scope_kind: k, scope_ref: ref, region_id: r.region_id || '', category_ref: cat, frequency_class: fc.cls, probability_ppm: fc.ppm,
         probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: cl ? +cl : 1, count_limit_basis: statedLimit ? 'pool_row' : ruleLimit ? 'pool_count_limit_rule' : 'default_minimum_1',
         allowed_seasons: s.ok, refresh_class: refresh, source_pool: where, source_row_id: rowId, source_refs: r.source_refs,
+        entry_visible_if: itemPool ? r.entry_visible_if : '', search_only_if: itemPool ? r.search_only_if : '',
+        wild_arrival_cause_required: itemPool ? r.wild_arrival_cause_required : '',
         // probability_ppm is always derived by the unapproved, uncalibrated frequency_rule.json convention
         // (confidence C, see its basis[]), regardless of how confident the pool was in the underlying item/place
         // link. confidence here can never be stronger than that. pool_confidence keeps the pool's own rating for
@@ -134,7 +139,7 @@ export function build() {
   }
   // Keep seasonal frequencies separate, including when one source states multiple seasons.
   const seasonalPools = pools.flatMap((p) => p.allowed_seasons.includes('all') ? [p] : p.allowed_seasons.map((s) => ({ ...p, allowed_seasons: [s] })));
-  const key = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.category_ref, p.allowed_seasons.join(';')].join('|');
+  const key = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.category_ref, p.allowed_seasons.join(';'), p.entry_visible_if, p.search_only_if, p.wild_arrival_cause_required].join('|');
   const merged = new Map(), conflicts = [];
   for (const p of seasonalPools) {
     const k = key(p), prev = merged.get(k);
@@ -167,11 +172,11 @@ export function build() {
       peopleKeys.add(k);
       rows.push({ pr_id: `pr_${String(rows.length + 1).padStart(6, '0')}`, scope_kind: p.scope_kind, scope_ref: p.scope_ref, region_id: 'region_novgorod_land', category_ref: '', subject_kind: p.subject_kind, subject_ref: p.subject_ref,
         frequency_class: fc.cls, class_capped_from: '', probability_ppm: fc.ppm, probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: +p.count_limit, count_limit_basis: 'people_authoring',
-        allowed_seasons: season, allowed_times: time, guards: p.guards, refresh_class: p.refresh_class, contract_scope_kind: 'no_needs_cr', source_pool: where, source_row_id: `${i + 2}`, source_refs: p.source_refs,
+        allowed_seasons: season, allowed_times: time, guards: p.guards, entry_visible_if: '', search_only_if: '', wild_arrival_cause_required: '', refresh_class: p.refresh_class, contract_scope_kind: 'no_needs_cr', source_pool: where, source_row_id: `${i + 2}`, source_refs: p.source_refs,
         confidence: p.confidence, pool_confidence: '', status: p.status });
     }
   }
-  const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
+  const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'entry_visible_if', 'search_only_if', 'wild_arrival_cause_required', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
   const n = writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows);
   const cappedRows = rows.filter((r) => r.class_capped_from);
   const report = {

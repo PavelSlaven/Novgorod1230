@@ -131,11 +131,11 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 10624
+      "rows": 10292
     },
     {
       "domain": "presence_rules",
-      "name": "people_cover_16_bound_pf_and_preserve_categories",
+      "name": "people_cover_16_bound_pf",
       "pass": true,
       "failures": 0,
       "sample": [],
@@ -165,7 +165,7 @@
       "domain": "presence_rules",
       "name": "input_pool_rows_rejected (external)",
       "pass": false,
-      "failures": 16620,
+      "failures": 10818,
       "sample": [
         "x",
         "x",
@@ -185,10 +185,10 @@
       ],
       "external": true,
       "reasons": {
-        "category_ref empty": 16620
+        "category_ref empty": 10818
       },
       "by_file": {
-        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 16620
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 10818
       }
     },
     {

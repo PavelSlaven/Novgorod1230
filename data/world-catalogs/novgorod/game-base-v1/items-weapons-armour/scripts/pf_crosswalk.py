@@ -52,7 +52,7 @@ for row in read(GROUP / 'military/security.csv'):
                     links.setdefault((role, key[1], pf), set()).add(row['ms_id'])
             for profile in profiles:
                 for entry in equipment[profile]:
-                    if entry['role_id'] == role:
+                    if role == entry['role_id'] or role in split(entry['base_role_ids']):
                         key = (role, weapon_tier[entry['wp_id']], pf)
                         assert key[:2] in access, (row['ms_id'], entry['entry_id'], key)
                         equipped.setdefault(key, set()).add(entry['entry_id'])
@@ -75,6 +75,26 @@ writer.writerows(rows)
 expected = buf.getvalue().encode('utf-8')
 if '--check' in sys.argv:
     assert TARGET.read_bytes() == expected, 'role_tier_pf_crosswalk.csv differs from source data'
+    actual = read(TARGET)
+    security_rows = read(GROUP / 'military/security.csv')
+    for row in actual:
+        if row['basis'] == 'no_source':
+            assert not row['security_ids'] and not row['equipment_entry_ids'], row
+            continue
+        matching_security = [security for security in security_rows
+                             if row['role_id'] in split(security['roles'])
+                             and row['pf_id'] in {'pf_' + pf for pf in split(security['pf_ids'])}]
+        assert set(row['security_ids'].split(';')) == {security['ms_id'] for security in matching_security}, row
+        relevant = {
+            entry['entry_id']
+            for security in matching_security
+            for profile in split(security['equipment_profile_ref'])
+            for entry in equipment[profile]
+            if row['role_id'] in ([entry['role_id']] + split(entry['base_role_ids']))
+            and weapon_tier[entry['wp_id']] == row['tier']
+        }
+        assert row['basis'] == ('source' if relevant else 'rule'), row
+        assert set(filter(None, row['equipment_entry_ids'].split(';'))) == relevant, row
 else:
     TARGET.write_bytes(expected)
 print(f'PASS weapons role-tier crosswalk: {len(rows)} rows, {len(families)} PF, 16 kinds')

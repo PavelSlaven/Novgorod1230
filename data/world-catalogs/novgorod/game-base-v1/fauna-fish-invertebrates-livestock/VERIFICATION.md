@@ -113,3 +113,18 @@
 
 - Добавлен `fauna/rpgr_pf_crosswalk.csv`: 130 связей `rpgr_*` → PF по RPGR-PF-PT-1, 14 явных `no_source`; статус каждой строки `candidate`.
 - `python -B scripts/build.py`: PASS; проверка `rpgr_pf_crosswalk=true`, все 44 полных `pf_*` покрыты, пары уникальны, ID разрешаются. Точные 16 PF из bridge input покрыты: 32 исходные связи и 7 строк `no_source`. Связь означает совместимость шаблона места, не присутствие животного.
+
+## Независимая проверка C001b/C002 (Claude Opus 5.5, коммит fe11f19b)
+
+Второй проход, отдельный от автора правок. `rework` — возвращено исполнителю; `approve_with_limits` — годно для M2c с перечисленными ограничениями; статус данных `candidate` до утверждения набора.
+
+### fauna/rpgr_pf_crosswalk.csv — approve_with_limits
+
+Проверено: Claude Opus 5.5 (независимая проверка C001b/C002, коммит fe11f19b).
+
+- **Что проверено.** Своим скриптом (только чтение) заново посчитаны пересечения `historical_plausibility_rules[].allowed_place_template_ids` из `tools/rus13-novgorod-place-generation-rules/…_v2_expanded.tsv` (38 правил) с `place_families.place_template_refs` (44 PF). Результат: 130 пар, ровно тот же набор, что в таблице. Дублей пар 0. Покрыты все 44 PF, из них 14 строк `no_source`. Все 144 строки `candidate`.
+- **Выборка.** Просмотрены все 130 связей с общим шаблоном, по которому они построены (например, `hunting_camp → pf_conifer_woodland` по `pt_hunting_camp`, `village_arable_meadow → pf_rural_yard` по `pt_village`/`pt_nucleated_village`, `crossroads → pf_road` по `pt_crossroads`). У каждой связи есть общий `pt_*`. Выдуманных связей нет.
+- **16 стартовых PF** (`start-territory.json`). Счёт автора подтверждён: 32 связи и 7 `no_source` (bog, floodplain_meadow, forest_edge, forest_track, marshy_stream, river_channel, winter_ice_crossing). Правило RPGR-PF-PT-1 записано в README. В README также прямо сказано, что связь означает совместимость шаблона, а не наличие скота.
+- **Прежние замечания.** Не было: артефакт новый. Вход C001 `place_type_livestock.csv` (разбор «малый скот») сюда не входит.
+- **Замечания (minor).** (1) Шесть правил (`ford_place`, `pilgrimage_shrine`, `portage_place`, `saltworks`, `toll_customs_post`, `watchpost_guard_post`) не имеют в таблице ни одной строки, даже `no_source`. Их скот не доходит ни до одного PF: нужна строка `no_source` с причиной или вопрос к places-binding. (2) Колонка `rule_ref` здесь хранит id `rpgr_*`, а в `sf_pf_crosswalk.csv` колонка с тем же именем означает правило сопоставления.
+- **Ограничения.** Качество связей наследуется от `place_template_refs`. Выпас, луг и лёд (7 стартовых PF, а также pasture и hay_meadow) этим путём скота не получают.

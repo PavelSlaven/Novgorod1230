@@ -29,7 +29,7 @@ node scripts/validate.cjs   # проверки и резолв ссылок -> v
 
 ## Правки C002
 
-`items/role_tier_pf_crosswalk.csv` соединяет `security.roles` и `security.pf_ids` с `weapon_status_access` по роли: роль × уровень оружия → семейство места. `source` означает, что связанный профиль снаряжения содержит оружие данного уровня; его строки указаны в `equipment_entry_ids`. `rule` означает связь только по роли и праву доступа. `access_level` сохраняет ограничение доступа; строка не утверждает наличие конкретного оружия в месте. `security_ids` показывают основание места. Отсутствие связи фиксируется `no_source`; все строки `candidate`.
+`items/role_tier_pf_crosswalk.csv` соединяет `security.roles` и `security.pf_ids` с `weapon_status_access` по роли: роль × уровень оружия → семейство места. `source` означает, что связанный профиль снаряжения содержит оружие данного уровня для `role_id` или `base_role_ids`; его строки указаны в `equipment_entry_ids`. `rule` означает связь только по роли и праву доступа. `access_level` сохраняет ограничение доступа; строка не утверждает наличие конкретного оружия в месте. `security_ids` показывают основание места. Отсутствие связи фиксируется `no_source`; все строки `candidate`.
 
 Сборка: `python -B scripts/pf_crosswalk.py`; проверка разрешения ID, полноты 44 PF и 16 видов, уникальности и побайтной воспроизводимости: `python -B scripts/pf_crosswalk.py --check`.
 

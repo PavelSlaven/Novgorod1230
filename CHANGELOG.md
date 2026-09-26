@@ -4,8 +4,9 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(corpus): #146 шаг 3 — промпты→схема+владелец кода; spatial specialization H1; «целевой»→«действующий»; погода D7; проза блокирует приёмку этапа; CONTRACT_INDEX §2/§3/§4 WK/§8.1; LW-042 norms closed on branch (#146, PR #98) LW-042 updated LW-043 added
 - docs(corpus): #146 шаг 2 REVIEW-026 — N1–N6/F11 (отслеживаемый в §5/§6/§9; set_entity_mechanics proposal; долг v17 на D9/D14; §17 нейтральный заголовок; D9 в npc §18.1; полная ссылка §3A.7) (#146, PR #98) LW-042 updated
-- docs(corpus): #146 шаг 2 REVIEW-025 — F1–F15 (отслеживаемый ≠ significant/D10; O2b D3; subject_kind seed; D9 в схемах; долг v17; informational; D14; LW-042) (#146, PR #98) LW-028 LW-042 updated
+- docs(corpus): #146 шаг 2 REVIEW-025 — F1–F15 (отслеживаемый ≠ significant/D10; O2b D3; subject_kind seed; D9 в схемах; долг v17; informational; D14; LW-042) (#146, PR #98) LW-042 updated
 - docs(corpus): #146 шаг 2 — O1/O2b, снятие классового запрета оружия/денег/документов, опознавательный текст и владение (D9/D14), обычный NPC (D1/D8), `subject_kind`, combat/NPC mechanics от кода (#146, PR #98) LW-028 LW-042 updated
 - docs(corpus): #146 шаг 1 — политика категорий ACTIVE (восстановлены §10–11.4), нормы наличия в `code_driven` §3A и world-base presence-таблица; CONTRACT_INDEX §4/§5/§8.1; REVIEW-023 (F1/F2/F4: proposed-self-contradiction, меч-в-лесу, facets, LW-008/042) (#146, PR #98) LW-039 updated
 - feat(knowledge-source): lexical-only normative RAG; status/priority_tier from CONTRACT_INDEX; `reference` + `reference_results`; independent norm/reference search; drop semantic CLI/readiness fields; CONTRACT_INDEX §5 label align to `ACTIVE SPECIALIZATION` (owner acceptance pending) (#144, PR #150) LW-008 updated

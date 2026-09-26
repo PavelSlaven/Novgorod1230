@@ -47,6 +47,7 @@
 | 040 | `infra/world-base/README.md` | README пишет 201 таблиц при 208 в схеме | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 | 041 | `first-playable-party-migration.test.js` | тест ожидает 35 миграций при 36 | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 | 042 | `code_driven_world_materialization_architecture.md`, `items_and_property.txt`, `turn_step_llm_contract.md` (+ гайд `npc_generation_profiles.txt`) | ACTIVE-нормы main против PC §9.1 до #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 043 | `scripts/m2c-capacity-successor.mjs`, `spatial_architecture_standard_g0_g6.md` | pin sha spatial_architecture после шага 3 #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 
 ## Записи
 
@@ -199,6 +200,11 @@
 - **Issue.** [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145)
 
 ### LW-042 — ACTIVE-нормы main против PC §9.1 до CR норм M2c
-- **Что.** На ветке PR #98 шаги 1–2 #146 закрыли расхождение норм с PC §9.1 / D1–D10 / D14 (presence §3A, O1/O2b, классовый запрет, D-005/D8, опознавательный текст). На ветке §20 `turn_step_llm_contract.md` (~:1692) и §25 `npc_autonomous_decision_contract.md` (~:1962) ещё держат классовый запрет до шага 3 #146. На main до merge #98 ACTIVE-корпус ещё старый: D-005, `items_and_property.txt:10`, гайд `npc_generation_profiles.txt:7`, хвост O2a/`turn_step` §20 (строки вроде бывшего 1706 — их целиком меняет шаг 3). `knowledge:query` на main выдаёт старые формулировки.
-- **Как жить.** При конфликте — PC §9.1 и #133; на ветке #98 — корпус после шагов #146. Старые формулировки main не закреплять новыми тестами.
+- **Что.** На ветке PR #98 шаги 1–3 #146 закрыли расхождение норм с PC §9.1 / D1–D10 / D14 (presence §3A, O1/O2b, классовый запрет, D-005/D8, опознавательный текст, промпты→схема+владелец кода, погода D7). Классовый запрет в §20 `turn_step` / §25 `npc_autonomous` на ветке снят шагом 3. На main до merge #98 ACTIVE-корпус ещё старый: D-005, `items_and_property.txt:10`, гайд `npc_generation_profiles.txt:7`, старые «канонические промпты». `knowledge:query` на main выдаёт старые формулировки.
+- **Как жить.** При конфликте — PC §9.1 и #133; на ветке #98 — корпус после шагов #146. Старые формулировки main не закреплять новыми тестами. Запись держится до merge #98 в main.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+### LW-043 — pin `spatial_architecture_standard` в `m2c-capacity-successor.mjs`
+- **Что.** `scripts/m2c-capacity-successor.mjs:14` закрепляет sha256 `data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md`. После шага 3 #146 («целевой»→«действующий» в §0.1) pin расходится; проверка не gate. Перепинивать в docs-задаче нельзя (повторное утверждение данных).
+- **Как жить.** Не чинить в #146; обновить pin в CR данных/реализации M2c вместе с утверждением по WR §21.1.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)

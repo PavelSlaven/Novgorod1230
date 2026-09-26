@@ -34,7 +34,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 211
+        "line_end": 224
       }
     },
     {
@@ -58,7 +58,7 @@
       "source_location": {
         "file": "npc_autonomous_decision_contract.md",
         "line_start": 1,
-        "line_end": 2420
+        "line_end": 2062
       }
     },
     {
@@ -70,7 +70,7 @@
       "source_location": {
         "file": "npc_combat_and_trigger_contract.md",
         "line_start": 1,
-        "line_end": 2973
+        "line_end": 2861
       }
     },
     {
@@ -94,7 +94,7 @@
       "source_location": {
         "file": "situational_prose_requirements.md",
         "line_start": 1,
-        "line_end": 461
+        "line_end": 463
       }
     },
     {
@@ -142,7 +142,7 @@
       "source_location": {
         "file": "spatial_v3_target_read_only_database_and_graph_architecture.md",
         "line_start": 1,
-        "line_end": 59
+        "line_end": 58
       }
     },
     {
@@ -166,7 +166,7 @@
       "source_location": {
         "file": "temporal_world_and_interruptible_activities.md",
         "line_start": 1,
-        "line_end": 3083
+        "line_end": 3094
       }
     },
     {
@@ -178,7 +178,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1903
+        "line_end": 1727
       }
     },
     {

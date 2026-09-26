@@ -1,10 +1,10 @@
-# Архитектура кодовой материализации мира
+# Специализация Spatial v3: архитектура кодовой материализации мира
 
 **Статус:** active production normative после завершённого
 `versioned production activation cutover`; historical P28 evidence само
 runtime не активировало.
 **Версия target:** spatial v3 / G0–G6 v4.2.0.
-**Приоритет:** высший норматив границы authoring data, кода, LLM, `world_base` и `party_runtime`.
+**Приоритет:** ACTIVE SPECIALIZATION Spatial v3 поверх общего [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md); детали хода и NPC — в [`turn_step_llm_contract.md`](turn_step_llm_contract.md), NPC-контрактах и `code_driven`. Не претендует на «высший норматив» всего корпуса и не задаёт закрытый список ролей LLM.
 
 **Temporal amendment:** active target normative
 `temporal_world_and_interruptible_activities.md`,

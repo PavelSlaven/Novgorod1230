@@ -32,16 +32,27 @@
 
 ## 2. Статусы
 
+Метки ниже — ровно те, что стоят в таблицах этого индекса и есть в `INDEX_LABEL_MAP` (`tools/docs-tools/src/contract-index-corpus-status.js`). Новых меток не вводить; код карты не менять.
+
 | Статус | Значение |
 |---|---|
 | `GOVERNING` | стабильная продуктовая и административная норма; высший уровень — governing-корпус root `AGENTS.md` (роутер и `docs/governance/*.md`, `AGENTS.md` §1.3) |
 | `ACTIVE` | действующий норматив текущей production-семантики в заявленной области |
 | `ACTIVE SPECIALIZATION` | действующий более узкий норматив; имеет приоритет над общим документом только в своём scope |
-| `PROPOSED / UMBRELLA TARGET` | целевое предложение; не описывает production само по себе |
-| `MIGRATION / ROLLBACK` | источник для миграции, rollback или исторической интерпретации; не production fallback |
-| `REFERENCE / DOMAIN GUIDE` | полезная справка; сама по себе не доказывает active behavior |
+| `ACTIVE DOMAIN NORM` | действующая доменная норма текущей active revision |
+| `ACTIVE / navigation index` | navigation owner индекса (CONTRACT_INDEX) |
+| `PROPOSED` | предложенный норматив; не production сам по себе |
+| `PROPOSED UMBRELLA TARGET` | целевое umbrella-предложение; не описывает production само по себе |
+| `UNDECLARED / DOMAIN GUIDE` | доменный гайд без явного production status; Contract Auditor устанавливает роль по active owner/binding |
+| `REFERENCE` | справка; сама по себе не доказывает active behavior |
+| `REFERENCE / DOMAIN GUIDE` | доменная справка; не active behavior |
+| `REFERENCE / KNOWLEDGE GUIDE` | knowledge-справка |
+| `REFERENCE / TEMPLATE` | шаблон/образец |
+| `REFERENCE FOR PROPOSED POLICY` | справка к proposed policy |
+| `REFERENCE / LEGACY` | legacy-справка; active temporal/contract имеет приоритет |
 | `SUPERSEDED / REDIRECT` | совместимый filename, направляющий к актуальному владельцу |
-| `UNDECLARED` | файл не имеет достаточно ясного status header; Contract Auditor обязан установить его роль по active owner/binding до использования как нормы |
+| `REDIRECT` | redirect к актуальному владельцу |
+| `MIGRATION / ROLLBACK` | источник для миграции, rollback или исторической интерпретации; не production fallback |
 
 При конфликте применяется наиболее высокий и наиболее узкий applicable источник. Proposed, migration, reference и undeclared документы не могут отменять governing/active contract.
 
@@ -56,7 +67,7 @@ Governing-корпус `AGENTS.md` (§1.3) также включает:
 - [`docs/governance/README.md`](../../../../docs/governance/README.md) — преамбула, §1.2, карта старых разделов;
 - [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30;
 - [`docs/governance/ARCHITECTURE_INVARIANTS.md`](../../../../docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28;
-- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §24.1, §29;
+- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §21.1, §24, §24.1, §24.2, §29;
 - [`docs/governance/AUDIT_RULES.md`](../../../../docs/governance/AUDIT_RULES.md) — §25, §25.1;
 - [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.
 
@@ -89,15 +100,17 @@ Contract Auditor не копирует весь generated module index сюда 
 | [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |
 | [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |
 | [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |
+| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Default gameplay model — exact `qwen3.8-27b-uncensored-w4a16-tp2` через настроенный пользователем OpenAI-compatible vLLM endpoint; managed gameplay provider и fallback отсутствуют. Readiness, persistence и UI принадлежат game-server/game-web/local-play MODULE owners. Runtime wiring spatial-v3 production v16 активирован как sole production owner и определяется actual release/binding. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |
 | [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `ACTIVE` | универсальные категории и фасеты; presence-правила только на иерархический фасет домена (`object_type` / `container_form`); [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146), PC §9.1 |
 
 Active status applies only to the scope stated by each header and active profile. Exact schema/operation names must be verified against current code and tests.
+
+**Применимость к v17.** ACTIVE-контракты этого раздела применяются к production runtime v17 (пара `novgorod_world_v17` / `novgorod_party_v17`) в заявленном scope; где код v17 ещё расходится с нормой (ordinary presence, погода D7, D9/D14 и др.), это долг CR реализации M2c (LW-028/LW-029), а не основание читать норму как proposed. Umbrella [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) остаётся `PROPOSED UMBRELLA TARGET`; его разделы O2a/O2b/F1/S1/N1 — входные материалы для шагов 1–2 #146, не active сами по себе.
 
 ## 5. Explicit non-production, migration and supporting contracts
 
 | Документ | Статус | Правило применения |
 |---|---|---|
-| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Default gameplay model — exact `qwen3.8-27b-uncensored-w4a16-tp2` через настроенный пользователем OpenAI-compatible vLLM endpoint; managed gameplay provider и fallback отсутствуют. Readiness, persistence и UI принадлежат game-server/game-web/local-play MODULE owners. Runtime wiring spatial-v3 production v16 активирован как sole production owner и определяется actual release/binding. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |
 | [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) | `PROPOSED UMBRELLA TARGET` | не active как единый контракт; активированные profile semantics берутся из их actual cutover/bindings/active contracts/code/tests, а не из старого umbrella snapshot |
 | [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE` | источники/обоснования ACTIVE classification policy |
 | [`read_only_database_and_graph_architecture.md`](read_only_database_and_graph_architecture.md) | `MIGRATION / ROLLBACK` | materialization v2; active owner — Spatial v3 specialization |
@@ -157,10 +170,10 @@ An undeclared guide may still be relevant, but it must not silently override an 
 | Authored materialization | `code_driven_world_materialization_architecture.md` (в т.ч. раздел о наличии), `universal_category_classification_policy.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |
 | Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, `code_driven_world_materialization_architecture.md` (наличие при первом прибытии/открытии), `universal_category_classification_policy.md`, `world_base_materialization_table_requirements.md` (presence-правила), active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |
 | Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |
-| NPC agency | `npc_autonomous_decision_contract.md`, `turn_step_llm_contract.md`, temporal/perception owners |
+| NPC agency | `npc_autonomous_decision_contract.md`, `turn_step_llm_contract.md`, `code_driven_world_materialization_architecture.md` §3A.5 (люди по времени суток и расписания мест), temporal/perception owners |
 | Conversation | NPC autonomous + `npc_conversation_mode_contract.md` + speech/perception/time contracts |
 | Combat | `npc_combat_and_trigger_contract.md`, `combat_system.md`, NPC autonomous, items/body/time owners |
-| Time/activities/processes | `temporal_world_and_interruptible_activities.md`, relevant time/world-process MODULEs, persistence contract/schema |
+| Time/activities/processes | `temporal_world_and_interruptible_activities.md` (в т.ч. погода D7), `code_driven_world_materialization_architecture.md` §3A.5 (люди по времени суток и расписания мест), relevant time/world-process MODULEs, persistence contract/schema |
 | DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |
 | Historical/knowledge grounding | `universal_category_classification_policy.md`, active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |
 | World Knowledge | `world_knowledge_platform_implementation_contract.md`, active WK pack/profile/bindings, `@rus/world-knowledge` and affected consumer MODULEs |

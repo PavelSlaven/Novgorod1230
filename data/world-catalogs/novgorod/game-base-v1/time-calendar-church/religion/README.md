@@ -25,8 +25,9 @@ ssh servak "cat /srv/novgorod-work/data/books/evidence/time-calendar-church.csv"
 («Вспомогательные исторические дисциплины», 2009), плюс отдельные записи по
 Новгороду (монастыри, владыки, берестяные ярлыки).
 
-**Соблюдён copyright-лимит**: сырой evidence CSV (с полем `quote` —
-собственно цитатой) **не скопирован в репозиторий**. Скрипт берёт для
+Сборщик теперь читает версионированный
+`data/world-catalogs/novgorod/sources/books-evidence-v1/time-calendar-church.csv`.
+В выходные таблицы поле `quote` не переносится. Скрипт берёт для
 `name_ru`/`note` только уже-перефразированное поле `value` из evidence
 (описание факта своими словами верификатора), обрезая до ≤400 символов;
 поле `quote` не используется вовсе. `source_refs` — библиографическая
@@ -46,10 +47,10 @@ confidence, period, status, note`.
 
 | kind | строк | правило |
 |---|---|---|
-| practice | 69 | fact_type use/technique/description/presence_in_region, без institution/rite-ключей |
-| institution | 47 | ключи «монастырь, собор, владык, епитимь, суд, казна, десятин, устав, поставлен, избрание, низложение, изгнание, приход» + fact_type=event |
-| belief | 22 | fact_type = taboo_or_custom |
-| rite | 10 | ключи «исповед, причасти, погребен, крещен, венчан, постриг, отпеван, поминов» |
+| practice | 70 | fact_type use/technique/description/presence_in_region, без institution/rite-ключей; Варлаам — биографическая запись |
+| institution | 46 | ключи «монастырь, собор, владык, епитимь, суд, казна, десятин, устав, поставлен, избрание, низложение, изгнание, приход» + fact_type=event |
+| belief | 23 | fact_type = taboo_or_custom; волхв 1071 г. — исторический фон |
+| rite | 9 | ключи «исповед, причасти, погребен, крещен, венчан, постриг, отпеван, поминов» |
 
 `sensory_cues` и `calendar_refs` — тоже скриптовые (небольшой словарь
 ключевых слов → звон/пение/запах ладана; ссылки на движимые даты
@@ -80,7 +81,7 @@ sensory_cues, attestation, source_refs, confidence, period, status, note`.
 привязаны к `pf_ids=["g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area"]`
 — закрывает явно названный в критике пробел: у стартового погребального
 места G4 Заостровья теперь есть непустой пул содержимого с source_refs
-(confidence A, археологическая аналогия).
+(confidence C, археологическая аналогия).
 
 Свадьба (сватовство/ряд/приданое) как экономико-правовой институт уже
 собрана в `households-psychology-speech/households_kinship/
@@ -88,10 +89,9 @@ marriage_inheritance_rules.csv` — здесь **не дублируется**; 
 только обрядовая/видимая/сенсорная сторона свадьбы (поп на свадьбах и пирах,
 венчание для бояр и князей).
 
-Строки, не датируемые точным годом (`period` пуст или помечен
-`ethnographic_late`/`medieval_general`), получили `confidence=C` и `note` с
-явной оговоркой — проверено `check_religion.py` (акцептанс: «недатированные
-обычаи имеют confidence C с note»). Проверен denylist на поздние надгробия
+Строки с `period=ethnographic_late`/`medieval_general` и три WK-аналога
+получили `confidence=C` и `note` с явной оговоркой — проверено
+`check_religion.py`. Проверен denylist на поздние надгробия
 с надписями («надпись», «плита с надписью», «памятник») — 0 совпадений
 среди 19 строк.
 

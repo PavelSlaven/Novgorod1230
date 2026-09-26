@@ -34,11 +34,9 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.dirname(HERE)
 # Evidence CSV lives only in the scratchpad (never copied into the repo).
-EVIDENCE_CSV = (
-    "C:/Users/Slaven/AppData/Local/Temp/claude/"
-    "C--Users-Slaven-Documents-Novgorod/ff9acd1f-6ccd-44a9-bc42-216c6bc662b8/"
-    "scratchpad/gb-collect-time-calendar-church/book-evidence.csv"
-)
+EVIDENCE_CSV = os.path.abspath(os.path.join(
+    HERE, "../../../../sources/books-evidence-v1/time-calendar-church.csv"
+))
 
 WK_SOCIAL = (
     "C:/Users/Slaven/Documents/Novgorod-game-base/data/world-catalogs/"
@@ -63,8 +61,9 @@ LIFECYCLE_KEYWORDS = {
     "birth": ["кормилица и пост перед крещением"],
     "baptism": ["крещение младенцев", "крещение у варяжского попа", "сорокадневный пост перед крещением",
                 "пост матери перед крещением", "препятствия к крещению", "крещение не во все недели"],
-    "wedding": ["венчание — для бояр и князей", "попы на свадьбах и пирах", "супружество в великий пост"],
-    "death": ["поп: вдовство и прелюбодеяние попадьи", "епитимья за некрещёного умершего ребёнка",
+    "wedding": ["венчание — для бояр и князей", "попы на свадьбах и пирах", "супружество в великий пост",
+                "поп: вдовство и прелюбодеяние попадьи"],
+    "death": ["епитимья за некрещёного умершего ребёнка",
               "самоубийцы: погребение и поминовение", "погребение посадников в св. софии и юрьеве"],
     "commemoration": ["радуница — поминовение предков", "кутья и сорокоуст"],
 }
@@ -101,7 +100,7 @@ def classify_kind(fact_type: str, entity_ru: str, value: str) -> str:
 
 
 SENSORY_MAP = [
-    (["звон", "колокол", "било", "клепало"], "звон/удар в било или клепало"),
+    (["колокол", "било", "клепало"], "звон/удар в било или клепало"),
     (["пение", "литург"], "церковное пение"),
     (["ладан", "кандил", "лампад", "хорос"], "свет и запах масляных лампад"),
     (["кадил"], "запах ладана"),
@@ -140,7 +139,14 @@ def note_from(row):
     n = (row.get("note") or "").strip()
     period = row.get("period") or ""
     prefix = f"period={period}. " if period else ""
-    return (prefix + n).strip()
+    analogy = "Аналогия для 1230 г., не прямое свидетельство. " if period in {"medieval_general", "ethnographic_late"} else ""
+    if row["entity_ru"] == "Варлаам Хутынский":
+        analogy = "Почитание засвидетельствовано с конца XIII в.; праздник для 1230 г. не утверждать. "
+    return (prefix + analogy + n).strip()
+
+
+def confidence_from(row):
+    return "C" if row.get("period") in {"medieval_general", "ethnographic_late"} or row["entity_ru"] == "Варлаам Хутынский" else row["confidence"]
 
 
 def main():
@@ -170,7 +176,7 @@ def main():
                 "sensory_cues": json.dumps(sensory_cues(r["entity_ru"] + " " + r["value"]), ensure_ascii=False),
                 "attestation": r["fact_type"],
                 "source_refs": source_ref(r),
-                "confidence": r["confidence"],
+                "confidence": confidence_from(r),
                 "period": r.get("period", ""),
                 "status": "candidate",
                 "note": note_from(r),
@@ -180,17 +186,21 @@ def main():
             continue  # non-lifecycle calendar rows go to calendar_1230_1250.csv, not here
         ch_i += 1
         kind = classify_kind(r["fact_type"], r["entity_ru"], r["value"])
+        if r["entity_ru"] == "Варлаам Хутынский":
+            kind = "practice"
+        elif r["entity_ru"] == "волхв в Новгороде при Глебе":
+            kind = "belief"
         church_rows.append({
             "rl_id": f"rl_{ch_i:03d}",
             "kind": kind,
             "name_ru": r["entity_ru"],
             "roles": json.dumps([], ensure_ascii=False),
             "pf_ids": json.dumps([], ensure_ascii=False),
-            "calendar_refs": json.dumps(calendar_refs(r["entity_ru"] + " " + r["value"]), ensure_ascii=False),
+            "calendar_refs": json.dumps([] if r["entity_ru"] == "любовная магия: омовение водой" else calendar_refs(r["entity_ru"] + " " + r["value"]), ensure_ascii=False),
             "items_refs": json.dumps([], ensure_ascii=False),
-            "sensory_cues": json.dumps(sensory_cues(r["entity_ru"] + " " + r["value"]), ensure_ascii=False),
+            "sensory_cues": json.dumps(["звон бубенчиков"] if r["entity_ru"] == "бубенчики-обереги" else sensory_cues(r["entity_ru"] + " " + r["value"]), ensure_ascii=False),
             "source_refs": source_ref(r),
-            "confidence": r["confidence"],
+            "confidence": confidence_from(r),
             "period": r.get("period", ""),
             "status": "candidate",
             "note": note_from(r) + (" | " + r["value"][:300] if r["value"] else ""),
@@ -201,25 +211,30 @@ def main():
     with open(WK_SOCIAL, encoding="utf-8") as f:
         wk = json.load(f)
     burial_claims = [c for c in wk["claims"] if c.get("claim_ref", "").startswith("claim:burial-")]
+    burial_descriptions = {
+        "claim:burial-plank-coffin-nails": ("Дощатый гроб на гвоздях", "Доски погребального ящика сбиты гвоздями."),
+        "claim:burial-coffin-lid-transverse-plank": ("Крышка гроба с поперечной доской", "На повреждённой крышке гроба видна поперечная доска."),
+        "claim:burial-hollowed-log-container": ("Долблёная колода для погребения", "Один погребённый лежал в долблёной колоде; по размеру, возможно, ребёнок."),
+    }
     for c in burial_claims:
         lc_i += 1
         lifecycle_rows.append({
             "lr_id": f"lr_{lc_i:03d}",
             "rite_kind": "burial",
-            "name_ru": c["claim_ref"].replace("claim:", "").replace("-", " "),
+            "name_ru": burial_descriptions[c["claim_ref"]][0],
             "roles": json.dumps([], ensure_ascii=False),
             "pf_ids": json.dumps(["g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area"], ensure_ascii=False),
             "calendar_refs": json.dumps([], ensure_ascii=False),
             "items_refs": json.dumps([c.get("subject_ref", "")], ensure_ascii=False),
-            "visible_traces": "burial container form (see WK claim payload for the full description)",
+            "visible_traces": burial_descriptions[c["claim_ref"]][1],
             "sensory_cues": json.dumps([], ensure_ascii=False),
             "attestation": "archaeological",
             "source_refs": f"wk:social-institutions.json#{c['claim_ref']} (approved) -- evidence:ilinskii-burial-containers",
-            "confidence": "A",
+            "confidence": "C",
             "period": "c1230_analogy",
             "status": "candidate",
-            "note": "Уже approved claim в WK; здесь только привязка к домену lifecycle_rites_burial и к G4 zaostrovye_burial_area, "
-                     "полный payload не копируется.",
+            "note": "WK claim approved, но confidence medium и directness inferred; находка Ильинского II предварительная. "
+                     "Применение к G4 zaostrovye_burial_area — региональная аналогия, не находка в Заостровье.",
         })
 
     for path, fields, rows in (
@@ -227,7 +242,7 @@ def main():
         (os.path.join(OUT_DIR, "lifecycle_rites_burial.csv"), LIFECYCLE_FIELDS, lifecycle_rows),
     ):
         with open(path, "w", encoding="utf-8", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=fields)
+            w = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
             w.writeheader()
             for row in rows:
                 w.writerow(row)

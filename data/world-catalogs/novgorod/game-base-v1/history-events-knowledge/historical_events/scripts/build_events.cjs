@@ -42,6 +42,7 @@ const bookVerifiedEvents = {
   ],
   nov_hist_1230_002: [
     'book:667380 §Приложение 2 Свод летописных известий о Новгородской земле ¶486 (распря Степана Твердиславича с Иваном Тимошкиничем и посадника Внезда Водовика; вече, разграбление двора)',
+    'book:301539 §ПРОДОЛЖЕНИЕ МЕЖДОУСОБИЙ ¶4365 (Иванко убит и брошен в Волхов)',
   ],
   nov_hist_1230_003: [
     'book:667380 §Приложение 2 Свод летописных известий о Новгородской земле ¶486 (14 сент. 1230 мороз побил озими, цены поднялись)',
@@ -62,6 +63,13 @@ const bookVerifiedEvents = {
 const eventMap = new Map(); // ev_id -> first-seen metadata
 const phaseRows = [];
 let bookVerifiedCount = 0;
+const correctedEvents = {
+  nov_hist_1230_004: { title: 'Расправа в Новгороде, бегство в Торжок и возвращение Ярослава', chronicle: '8 декабря Водовик и Ростислав уехали в Торжок; 9 декабря Семён Борисович убит в Новгороде; 30 декабря вернулся Ярослав' },
+  nov_hist_1243_001: { title: 'Смерть Варлаама (Вячеслава Прокшинича) и погребение на Хутыни', chronicle: '4 мая 1243 умер Варлаам, в миру Вячеслав Прокшинич, погребён на Хутыни', source: 'book:667380 §Приложение 2 ¶499' },
+  nov_hist_1242_002: { title: 'Поездка Ярослава к Батыю в 1243 году', chronicle: 'В 1243 году Батый вручил Ярославу ярлык на старшинство', source: 'book:220871 §Новгород во времена Александра Невского ¶393' },
+  nov_hist_1245_001: { title: 'Казнь Михаила Черниговского 20 сентября 1246 года', chronicle: '20 сентября 1246 года казнён Михаил Черниговский', source: 'no_source: точная постраничная ссылка не найдена в доступных книжных свидетельствах группы' },
+};
+const phaseOrder = ['background', 'omens', 'escalation', 'impact', 'aftermath'];
 
 for (const p of d.timeline) {
   if (!eventMap.has(p.event_id)) {
@@ -101,23 +109,42 @@ for (const p of d.timeline) {
 
   const needsReview = p.status === 'needs_review';
   const needsReviewNote = needsReview ? (p.audit_notes || []).join(' ') : '';
+  const corrected = correctedEvents[p.event_id];
+  const phaseIndex = phaseOrder.indexOf(p.phase);
+  let dateRange = p.assigned_game_datetime || '';
+  let seasonRange = p.season_range || '';
+  if (p.event_id === 'nov_hist_1231_002' && phaseIndex >= 0) {
+    dateRange = '1231';
+    seasonRange = 'autumn';
+  }
+  if (p.event_id === 'nov_hist_1242_002') dateRange = '1243';
+  if (p.event_id === 'nov_hist_1245_001') dateRange = p.phase === 'impact' ? '1246-09-20' : '1246';
+  if (p.event_id === 'nov_hist_1230_003' && p.phase === 'background') {
+    dateRange = '1230-09-14' + dateRange.slice(10);
+    seasonRange = 'autumn';
+  }
+  if (p.event_id === 'nov_hist_1230_003' && p.phase === 'aftermath') {
+    dateRange = '1231';
+    seasonRange = '';
+  }
 
   phaseRows.push({
     ev_id: p.event_id,
     phase_id: p.phase_id,
-    date_range: p.assigned_game_datetime || '',
-    is_game_time_anchor: p.assigned_datetime_is_game_anchor ? 'true' : 'false',
-    season_range: p.season_range || '',
+    date_range: dateRange,
+    is_game_time_anchor: dateRange.includes('T') ? (p.assigned_datetime_is_game_anchor ? 'true' : 'false') : 'false',
+    season_range: seasonRange,
     event_type: p.event_type,
     phase: p.phase,
-    event_title: p.event_title,
-    summary: p.summary || '',
-    historical_context: p.historical_context || '',
+    event_title: corrected ? corrected.title : p.event_title,
+    summary: corrected ? corrected.chronicle : (p.event_id === 'nov_hist_1230_003' && p.phase === 'aftermath' ? 'В 1231 году немцы привезли в Новгород хлеб; точный день и месяц не известны.' : p.summary || ''),
+    historical_context: corrected ? corrected.chronicle : p.historical_context || '',
     visible_signs: (p.visible_signs || []).join('|'),
     rumors: rumors,
     effect_roads: roads,
     effect_market: market,
     market_goods_affected: (p.market_effects && p.market_effects.goods_affected || []).join('|'),
+    regions_affected: JSON.stringify(p.regions_affected || []),
     effect_power: power,
     effect_npc: npc,
     effect_items: items,
@@ -125,8 +152,8 @@ for (const p of d.timeline) {
     forbidden_knowledge: (p.forbidden_player_knowledge || []).join('|'),
     node_refs_v6: nodeRefsV6,
     node_refs_v17: '', // GAP: v6->v17 G2/G3/G4 id mapping not built in this pass (~11k v6 nodes; needs place_names/spatial owner)
-    chronicle_ref: chronicleRef,
-    source_refs: sourceRefs + (bookRefNote ? ('|' + bookRefNote) : ''),
+    chronicle_ref: corrected ? `уточнение по книжному свидетельству: ${corrected.chronicle}` : chronicleRef,
+    source_refs: sourceRefs + (bookRefNote ? ('|' + bookRefNote) : '') + (corrected && corrected.source ? ('|' + corrected.source) : ''),
     confidence: confidence,
     status: 'candidate',
     needs_review: needsReview ? 'true' : 'false',
@@ -135,6 +162,28 @@ for (const p of d.timeline) {
       ? 'построчно сверено с книжными свидетельствами группы (servak history-events-knowledge.csv) в проходе 2026-09-26, см. source_refs'
       : 'не сверено построчно с текстом НПЛ ни по sqlite, ни по книжным свидетельствам в этом проходе; требует полного аудита (см. README gaps)',
   });
+}
+
+// ¶487 and ¶186 date these distinct late consequences only to the source year 1231.
+// Do not turn a year-level attestation into an invented spring day.
+const famineAftermath = phaseRows.find(r => r.phase_id === 'nov_hist_1230_003_aftermath');
+if (famineAftermath) {
+  Object.assign(famineAftermath, {
+    phase: 'german_bread_1231',
+    summary: 'В 1231 году немцы привезли в Новгород хлеб; точный день и месяц не известны.',
+    chronicle_ref: 'book:667380 ¶487: приезд немцев с хлебом в 1231 году',
+    source_refs: famineAftermath.source_refs + '|book:667380 ¶487',
+  });
+  for (const [suffix, summary, ref] of [
+    ['mortality_1231', 'Голод и мор продолжались в 1231 году; точный день и месяц не известны.', 'book:667380 ¶487'],
+    ['skudelnitsa_1231', 'В 1231 году появились вторая и третья скудельницы; точный день и месяц не известны.', 'book:556930 ¶186'],
+  ]) {
+    phaseRows.push({ ...famineAftermath, phase_id: `nov_hist_1230_003_${suffix}`, phase: suffix,
+      summary, historical_context: summary, visible_signs: '', rumors: '', effect_roads: '',
+      effect_market: '', market_goods_affected: '', effect_power: '', effect_npc: '', effect_items: '',
+      player_knowable: '', forbidden_knowledge: '', chronicle_ref: `${ref}: ${summary}`,
+      source_refs: ref, audit_note: 'Событие датировано источником только 1231 годом; точный день и месяц не установлены.' });
+  }
 }
 
 const eventRows = [...eventMap.values()].map(e => ({
@@ -155,7 +204,7 @@ writeCsv(path.join(OUT_DIR, 'events.csv'),
 writeCsv(path.join(OUT_DIR, 'event_phases.csv'),
   ['ev_id', 'phase_id', 'date_range', 'is_game_time_anchor', 'season_range', 'event_type', 'phase', 'event_title',
    'summary', 'historical_context', 'visible_signs', 'rumors',
-   'effect_roads', 'effect_market', 'market_goods_affected', 'effect_power', 'effect_npc', 'effect_items',
+   'effect_roads', 'effect_market', 'market_goods_affected', 'regions_affected', 'effect_power', 'effect_npc', 'effect_items',
    'player_knowable', 'forbidden_knowledge', 'node_refs_v6', 'node_refs_v17', 'chronicle_ref', 'source_refs',
    'confidence', 'status', 'needs_review', 'needs_review_note', 'audit_note'],
   phaseRows);

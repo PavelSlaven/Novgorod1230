@@ -17,7 +17,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from paschalia import gauss_julian_easter, meeus_julian_easter  # noqa: E402
+from paschalia import add_days, gauss_julian_easter, meeus_julian_easter  # noqa: E402
 
 CSV_PATH = os.path.join(OUT_DIR, "calendar_1230_1250.csv")
 PASCHALIA_JSON = os.path.join(OUT_DIR, "paschalia_1230_1250.json")
@@ -45,6 +45,10 @@ for year in range(FIRST_YEAR, LAST_YEAR + 1):
         errors.append(f"{year}: gauss/meeus disagree ({gm}/{gd} vs {mm}/{md})")
     if easter_rows[y] != expected:
         errors.append(f"{year}: CSV Easter {easter_rows[y]!r} != recomputed {expected!r}")
+    rusal = next((r for r in rows if r["cal_id"] == f"cal_mv_rusalnaya_{year}"), None)
+    ry, rm, rd = add_days(year, gm, gd, 43)
+    if not rusal or rusal["date_or_rule"] != f"julian:{ry:04d}-{rm:02d}-{rd:02d}..+6d":
+        errors.append(f"{year}: rusalian week must begin Easter+43")
 
 # Check 2: every year covered by movable rows.
 years_present = {r["year"] for r in rows if r["year"]}

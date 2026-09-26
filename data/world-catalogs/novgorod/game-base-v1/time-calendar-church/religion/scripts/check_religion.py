@@ -35,6 +35,8 @@ for r in church:
     roles = json.loads(r["roles"])
     if not isinstance(roles, list):
         errors.append(f"{r['rl_id']}: roles is not a list")
+    if r["period"] in {"medieval_general", "ethnographic_late"} and r["confidence"] != "C":
+        errors.append(f"{r['rl_id']}: late/general analogy must have confidence C")
 
 # ANACHRONISM DENYLIST -- reject items/practices attested only after ~1300
 # or explicitly marked later in the source's own note (script-checked, not
@@ -60,6 +62,10 @@ for r in burial_area_rows:
         errors.append(f"{r['lr_id']}: burial_area row missing source_refs")
 
 for r in lifecycle:
+    if r["period"] in {"medieval_general", "ethnographic_late", "c1230_analogy"} and r["confidence"] != "C":
+        errors.append(f"{r['lr_id']}: analogy must have confidence C")
+    if r["rite_kind"] == "burial" and ("see WK claim" in r["visible_traces"] or not r["visible_traces"]):
+        errors.append(f"{r['lr_id']}: burial row has no visible content")
     has_calendar = bool(json.loads(r["calendar_refs"]))
     is_life_event = r["rite_kind"] in {"birth", "baptism", "wedding", "death", "burial", "commemoration"}
     if not (has_calendar or is_life_event):

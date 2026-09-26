@@ -19,6 +19,7 @@ Writes: ../calendar_1230_1250.csv, prints row counts.
 import csv
 import json
 import os
+from paschalia import add_days
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.dirname(HERE)
@@ -61,7 +62,7 @@ FIXED_FEASTS = [
     ("cal_feast_epiphany", "01-06", "Крещение (Богоявление)", "church"),
     ("cal_feast_sretenie", "02-02", "Сретение", "church"),
     ("cal_feast_annunciation", "03-25", "Благовещение", "church"),
-    ("cal_feast_yuriev_spring", "04-23", "Юрьев день весенний (первый выгон скота)", "church,work"),
+    ("cal_feast_yuriev_spring", "04-23", "Юрьев день весенний", "church"),
     ("cal_feast_nikola_spring", "05-09", "Николин весенний (перенесение мощей, 1087)", "church"),
     ("cal_feast_boris_gleb", "05-02", "Борис и Глеб (Борис-хлебник, праздник первых ростков)", "church,work"),
     ("cal_feast_kupala", "06-24", "Купала (позднее Иван Купала)", "folk"),
@@ -69,73 +70,73 @@ FIXED_FEASTS = [
     ("cal_feast_preobrazhenie", "08-06", "Преображение (Спас, праздник первых плодов)", "church,food"),
     ("cal_feast_zazhinki", "08-07", "Зажинки (окончание жатвы)", "work"),
     ("cal_feast_uspenie", "08-15", "Успение Богородицы", "church"),
-    ("cal_feast_semenov_den", "09-01", "Семёнов день (новолетие по мартовскому счёту -- см. note)", "church"),
+    ("cal_feast_semenov_den", "09-01", "Семёнов день (начало сентябрьского года)", "church"),
     ("cal_feast_rozhdestvo_bogorod", "09-08", "Рождество Богородицы", "church"),
-    ("cal_feast_vozdvizhenie", "09-14", "Воздвижение", "church,food"),
     ("cal_feast_pokrov", "10-01", "Покров Богородицы (установлен во Владимирской земле при Андрее Боголюбском)", "church,folk"),
     ("cal_feast_vvedenie", "11-21", "Введение", "church"),
     ("cal_feast_yuriev_autumn", "11-26", "Юрьев день осенний", "church,work"),
-    ("cal_feast_nikola_winter", "12-06", "Николин зимний (Никольщина)", "church,folk"),
+    ("cal_feast_nikola_winter", "12-06", "Николин зимний", "church"),
     ("cal_feast_nativity", "12-25", "Рождество Христово", "church"),
 ]
 for cal_id, md, name_ru, effects in FIXED_FEASTS:
+    sources = {
+        "cal_feast_boris_gleb": f"{BOOK_122328} ¶3622",
+        "cal_feast_kupala": f"{BOOK_122328} ¶3626",
+        "cal_feast_preobrazhenie": f"{BOOK_122328} ¶3631",
+        "cal_feast_zazhinki": f"{BOOK_122328} ¶3631",
+        "cal_feast_pokrov": "book:378072 §Нашествие иноземцев ¶596",
+    }
+    source = sources.get(cal_id, f"{BOOK_356156} ¶1321")
+    analogy = cal_id in {"cal_feast_boris_gleb", "cal_feast_kupala", "cal_feast_preobrazhenie", "cal_feast_zazhinki"}
     add(cal_id, f"julian:{md}", None, "feast", name_ru, effects,
-        "fixed_rule", f"{BOOK_356156} ¶1321", "B")
+        "fixed_rule", source, "C" if analogy else "B",
+        note="Южнорусская реконструкция Рыбакова; для Новгорода 1230 г. только аналогия." if analogy else "")
 
 add("cal_feast_intercession_omen", "julian:10-01", None, "belief",
     "Народная примета Покрова", "belief_only",
-    "fixed_rule", f"{BOOK_356156} ¶1321; book:? Покров-примета (households-psychology-speech VERIFICATION cross-check)", "C",
+    "fixed_rule", "book:168527 ¶113", "C",
     note="«Снег на Покров предвещает много свадеб» -- народная примета, не церковное правило; см. religion/church_practice.csv rl_belief_pokrov_snow.")
 
 add("cal_feast_svyatki_start", "julian:12-25", None, "feast",
     "Зимние святки, начало (12-дневные игрища)", "folk,fasting_free",
-    "fixed_rule", f"{BOOK_122328}", "B")
+    "fixed_rule", f"{BOOK_122328} ¶3658", "C", note="Средневековая общая аналогия для 1230 г.")
 add("cal_feast_svyatki_end", "julian:01-06", None, "feast",
     "Зимние святки, конец", "folk,fasting_free",
-    "fixed_rule", f"{BOOK_122328}", "B")
+    "fixed_rule", f"{BOOK_122328} ¶3658", "C", note="Средневековая общая аналогия для 1230 г.")
 
-add("cal_belief_koляda_march", "julian:03-01", None, "belief",
+add("cal_belief_kolyada_march", "julian:03-01", None, "belief",
     "Коляда 1 марта (упомянута в Новгородской Кормчей 1280 г. как торжество начала мартовского года)", "folk",
     "fixed_rule", f"{BOOK_122328}", "C",
     note="Кормчая 1280 г. -- позже целевого периода; для 1230-х применимость по аналогии.")
 
-add("cal_belief_ярилин", "julian:06-04", None, "belief",
+add("cal_belief_yarilin", "julian:06-04", None, "belief",
     "Ярилин день (реконструкция аграрно-языческого календаря молений о дожде)", "folk",
     "fixed_rule", f"{BOOK_122328}", "C",
     note="Реконструкция Рыбакова; сам он оговаривает гипотетичность привязки к точной дате.")
 
 add("cal_belief_semik", "julian:movable", None, "belief",
     "Семик (летний русальский праздник, четверг седьмой недели по Пасхе)", "folk",
-    "derived:easter+45..49 (Thursday of week 7 after Easter)", f"{BOOK_122328} ¶3714 area", "C",
-    note='«По всей вероятности» -- Рыбаков сам маркирует гипотезу; движим от Пасхи, день недели не уточнён точной датой в источнике.')
+    "derived:easter+46 (Thursday of week 7 after Easter)", f"{BOOK_122328} ¶3720", "C",
+    note='Четверг седьмой недели по Пасхе; точная привязка обычая для Новгорода 1230 г. не засвидетельствована.')
 
 # ---------------------------------------------------------------------------
 # 2. Fixed fasts (dates do not move with Easter).
 # ---------------------------------------------------------------------------
 add("cal_fast_uspensky", "julian:08-01..08-14", None, "fast",
     "Успенский пост", "food,church",
-    "fixed_rule", f"{BOOK_356156} ¶1322", "B",
+    "fixed_rule", f"{BOOK_356156} ¶1322", "C",
     note="Сроки по позднейшему уставу; для XIII в. длительность могла отличаться (источник сам это оговаривает).")
 add("cal_fast_filippov", "julian:11-15..12-24", None, "fast",
     "Филиппов (Рождественский) пост", "food,church",
-    "fixed_rule", f"{BOOK_356156} ¶1322", "B",
+    "fixed_rule", f"{BOOK_356156} ¶1322", "C",
     note="Сроки по позднейшему уставу; см. тот же caveat.")
 
 # Weekly fasts (recurring rule, not a date range).
 add("cal_fast_weekly_wed_fri", "weekly:Wed,Fri", None, "fast",
     "Еженедельный пост в среду и пятницу", "food",
     "fixed_rule",
-    f"{BOOK_122328} (спор о постах в среду/пятницу при господских праздниках, XII в.)", "B",
-    note="Отменяется во время сплошных недель (Святки, Масленица, Пасхальная и Троицкая седмицы) -- см. cal_fastfree_week_* ниже.")
-
-for cal_id, rule, name_ru in [
-    ("cal_fastfree_svyatki", "julian:12-25..01-06", "Сплошная неделя: Святки"),
-    ("cal_fastfree_maslenitsa", "derived:easter-55..easter-49", "Сплошная неделя: Масленица (сырная седмица)"),
-    ("cal_fastfree_bright_week", "derived:easter+0..easter+6", "Сплошная неделя: Светлая (Пасхальная) седмица"),
-    ("cal_fastfree_trinity_week", "derived:easter+49..easter+55", "Сплошная неделя: Троицкая седмица"),
-]:
-    add(cal_id, rule, None, "fast_exception", name_ru, "food",
-        "fixed_rule_or_derived", f"{BOOK_356156} ¶1321-1324; {BOOK_122328}", "B")
+    "book:512565 §Глава пятая «Отцы духовные» ¶318", "C",
+    note="Источник описывает спор о посте в среду и пятницу при совпадении с господским праздником; единого правила для сплошных седмиц здесь не подтверждает.")
 
 # ---------------------------------------------------------------------------
 # 3. Movable feasts/fasts, per year 1230-1250 (script-computed, see paschalia.py)
@@ -149,7 +150,7 @@ MOVABLE_MAP = [
     ("palm_sunday", "cal_mv_palm_sunday", "feast", "Вербное (Цветоносное) воскресенье", "church"),
     ("holy_thursday", "cal_mv_holy_thursday", "feast", "Великий четверг", "church"),
     ("good_friday", "cal_mv_good_friday", "fast", "Великая пятница (строгий пост)", "food,church"),
-    ("holy_saturday", "cal_mv_holy_saturday", "feast", "Великая субхота", "church"),
+    ("holy_saturday", "cal_mv_holy_saturday", "feast", "Великая суббота", "church"),
     ("easter_sunday", "cal_mv_easter", "feast", "Пасха", "church,fasting_free"),
     ("fomino_antipascha", "cal_mv_fomino", "feast", "Фомина неделя (Антипасха)", "church"),
     ("radunitsa", "cal_mv_radunitsa", "belief", "Радуница (поминовение предков)", "folk,burial"),
@@ -167,10 +168,12 @@ for y in years:
         add(f"{cal_id_prefix}_{year}", f"julian:{y[key]}", year, kind, name_ru, effects,
             computation_ref, easter_source, "B" if kind != "belief" else "C")
 
-    add(f"cal_mv_rusalnaya_{year}", f"julian:{y['rusalnaya_nedelya_start']}..+6d", year, "belief",
+    easter_y, easter_m, easter_d = map(int, y["easter_sunday"].split("-"))
+    rusal_y, rusal_m, rusal_d = add_days(easter_y, easter_m, easter_d, 43)
+    add(f"cal_mv_rusalnaya_{year}", f"julian:{rusal_y:04d}-{rusal_m:02d}-{rusal_d:02d}..+6d", year, "belief",
         "Русальная неделя (седьмая неделя по Пасхе, начало игрищ у воды)", "folk",
-        computation_ref, f"{BOOK_122328} ('русальная неделя' -- седьмая неделя после Пасхи, летопись XII в.)", "C",
-        note="Точная граница недели (считать ли от Троицы или от Пасхи) расходится между источниками; помечено C.")
+        computation_ref, f"{BOOK_122328} ¶3720", "C",
+        note="Седьмая неделя по Пасхе, до Троицы; обычай для Новгорода 1230 г. дан по аналогии.")
 
     add(f"cal_mv_petrov_start_{year}", f"julian:{y['peter_fast_start']}", year, "fast",
         "Петров пост, начало (понедельник после Всех святых)", "food,church",
@@ -191,32 +194,25 @@ add("cal_market_friday", "weekly:Fri", None, "market",
     "fixed_rule", f"{BOOK_122328} (Рыбаков предполагает пятницу как древний общерусский торговый день)", "C",
     note="Источник сам маркирует это как предположение ('Рыбаков предполагает'), не как документально засвидетельствованный устав; Новгород вёл, помимо того, регулярный вечевой/торговый оборот на Торгу почти ежедневно -- еженедельный 'торговый день' не отменяет обычную торговлю.")
 
-add("cal_market_gost_reading", "julian:autumn_first_ship..spring_last_ship (2x/year)", None, "market",
+add("cal_market_gost_reading", "season:winter_and_summer_guests (2x/year)", None, "market",
     "Скра (устав Немецкого двора) читается дважды в год -- для зимних и летних гостей", "trade",
-    "fixed_rule", f"{BOOK_122328}", "B")
+    "fixed_rule", "book:392896 ¶245", "C", note="Скра засвидетельствована со второй половины XIII в.; для 1230 г. только поздняя аналогия.")
 add("cal_market_winter_guests", "season:autumn_last_navigation..spring_first_navigation", None, "market",
     "Зимние немецкие гости (прибывали с последней осенней навигацией, уезжали с первым весенним ходом)", "trade",
-    "fixed_rule", f"{BOOK_122328}", "B")
+    "fixed_rule", "book:392896 ¶504", "C", note="Сведения о зимних гостях относятся преимущественно к XIV–XV вв.; для 1230 г. аналогия.")
 add("cal_market_summer_guests", "season:spring_navigation_open..autumn_navigation_close", None, "market",
     "Летние немецкие гости", "trade",
-    "fixed_rule", f"{BOOK_122328}", "B")
+    "fixed_rule", "book:392896 ¶504", "C", note="Сведения о летних гостях относятся преимущественно к XIV–XV вв.; для 1230 г. аналогия.")
 
 WORK_SEASON = [
-    ("cal_work_spring_plowing", "julian:04-23..05-15", "Пахота и сев ярового овса (после Юрьева дня, первый выгон скота)", "work",
-     f"{BOOK_122328}", "C"),
-    ("cal_work_autumn_sowing", "julian:08-15..09-14", "Сев озимой ржи", "work", f"{BOOK_122328}", "C"),
-    ("cal_work_hay_harvest", "julian:06-24..07-20", "Сенокос (между Купалой и Ильиным днём, по агрокалендарному аналогу)", "work", f"{BOOK_122328}", "C"),
-    ("cal_work_grain_harvest", "julian:07-20..08-07", "Жатва, заканчивается зажинками 7 августа", "work", f"{BOOK_122328}", "C"),
-    ("cal_work_threshing", "julian:09-01..11-01", "Молотьба (после жатвы, до устойчивых заморозков)", "work", "regional analogy, no exact date attested", "C"),
-    ("cal_work_slash_burn_clearing", "season:spring_before_sowing", "Расчистка подсеки 'кто где поспел' (соседствует с трёхпольем в Новгородской земле)", "work", f"{BOOK_122328}", "B"),
-    ("cal_nav_ice_breakup", "season:variable_march_april", "Ледоход, открытие речной навигации (Волхов/Мста/Ловать)", "trade,work", "regional analogy; exact yearly date not attested for 1230-1250", "C"),
-    ("cal_nav_ice_freeze", "season:variable_november", "Ледостав, конец навигации, начало санного пути", "trade,work", "regional analogy; exact yearly date not attested for 1230-1250", "C"),
-    ("cal_fish_spring_spawning_run", "season:march_april_ice_breakup", "Весенний нерестовый ход рыбы (открытие путины после ледохода)", "work", "regional analogy (fauna-fish domain cross-ref)", "C"),
-    ("cal_fish_autumn_run", "season:september_october", "Осенний ход рыбы перед ледоставом", "work", "regional analogy", "C"),
-    ("cal_hunt_fur_season_open", "julian:10-01..02-01", "Пушной промысел (зимний сезон, шкура в полном мехе)", "work", "regional analogy (fauna-mammals domain cross-ref)", "C"),
+    ("cal_work_spring_plowing", "season:spring", "Пахота и сев ярового овса", "work", "book:849577 ¶719 (позднее описание Новгородской земли)", "C"),
+    ("cal_work_autumn_sowing", "season:autumn", "Сев озимой ржи", "work", "book:849577 ¶719 (позднее описание Новгородской земли)", "C"),
+    ("cal_work_grain_harvest", "season:summer", "Жатва", "work", f"{BOOK_122328} ¶3631 (аграрный календарь; южнорусская реконструкция)", "C"),
+    ("cal_work_slash_burn_clearing", "season:spring_before_sowing", "Расчистка подсеки 'кто где поспел'", "work", "book:849577 ¶719 (позднее описание Новгородской земли)", "C"),
 ]
 for cal_id, rule, name_ru, effects, source_refs, conf in WORK_SEASON:
-    add(cal_id, rule, None, "work_season", name_ru, effects, "fixed_rule_regional_analogy", source_refs, conf)
+    add(cal_id, rule, None, "work_season", name_ru, effects, "qualitative_seasonal_analogy", source_refs, conf,
+        note="Качественный сезон по поздней или региональной аналогии; точные дни для Новгорода 1230–1250 гг. не установлены.")
 
 # 1230 famine phase -- state-of-world cross-reference only, not duplicated.
 add("cal_event_famine_1230_frost", "julian:1230-09-14", 1230, "event",
@@ -226,7 +222,7 @@ add("cal_event_famine_1230_frost", "julian:1230-09-14", 1230, "event",
 
 # ---------------------------------------------------------------------------
 with open(OUT_CSV, "w", encoding="utf-8", newline="") as f:
-    w = csv.DictWriter(f, fieldnames=FIELDS)
+    w = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n")
     w.writeheader()
     for r in rows:
         w.writerow(r)

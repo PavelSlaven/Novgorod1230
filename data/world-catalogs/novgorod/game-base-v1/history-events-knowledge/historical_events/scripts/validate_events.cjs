@@ -32,18 +32,23 @@ const OUT = process.argv[2];
 const phases = parseCsv(path.join(OUT, 'event_phases.csv'));
 let noChronicleRef = 0, badDate = 0, unresolvedNodeRefsV17 = 0, needsReviewCount = 0;
 const rejected = [];
+const phaseIds = new Set();
 
 for (const r of phases) {
-  let bad = false;
+  let reason = '';
   // 2026-09-26: chronicle_ref no longer claims to be a quotation (see build_events.cjs); the "missing"
   // sentinel text changed with it.
-  if (!r.chronicle_ref || r.chronicle_ref.startsWith('нет даже чернового пересказа')) { noChronicleRef++; bad = true; }
+  if (!r.chronicle_ref || r.chronicle_ref.startsWith('нет даже чернового пересказа')) { noChronicleRef++; reason = 'no_chronicle_ref'; }
   const dateStr = r.date_range || '';
   const year = parseInt((dateStr.match(/^(\d{4})/) || [])[1], 10);
-  if (!year || year < 1230 || year > 1250) { badDate++; bad = true; }
+  if (!year || year < 1230 || year > 1250) { badDate++; reason = 'date_out_of_range'; }
+  if (phaseIds.has(r.phase_id)) reason = 'duplicate_phase_id';
+  if (r.confidence === 'B' && !r.source_refs.includes('book:')) reason = 'missing_book_reference';
+  if (r.ev_id === 'nov_hist_1230_003' && dateStr < '1230-09-14') reason = 'famine_before_frost';
+  phaseIds.add(r.phase_id);
   if (!r.node_refs_v17) { unresolvedNodeRefsV17++; } // known gap, not counted as reject
   if (r.needs_review === 'true') needsReviewCount++;
-  if (bad) rejected.push({ phase_id: r.phase_id, reason: (!r.chronicle_ref || r.chronicle_ref.startsWith('нет даже')) ? 'no_chronicle_ref' : 'date_out_of_range' });
+  if (reason) rejected.push({ phase_id: r.phase_id, reason });
 }
 
 console.log('phases total:', phases.length);

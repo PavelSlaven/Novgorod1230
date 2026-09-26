@@ -1,4 +1,5 @@
 import { projectCalendar } from '@rus/time-events-history/calendar';
+import { startedHistoricalEventIds } from '@rus/time-events-history';
 import { WorldKnowledgeError } from '@rus/world-knowledge';
 
 export function localeOf(request, bundle) {
@@ -83,11 +84,13 @@ export function authoritativeContextOf(request, authoritative, defaults) {
   const safe = request.npc_safe_state ?? request.player_safe_state ?? {};
   const timestamp = authoritative?.clock ?? safe.clock ?? request.requested_at
     ?? request.occurred_at;
-  const explicitYear = authoritative?.year ?? request.historical_context?.year;
+  // Party calendar (timestamp + profile) wins; request.historical_context.year
+  // is legacy fallback only when no calendar projection is available (D18).
   const projectedYear = timestamp != null && defaults.calendarProfile != null
     ? Number(projectCalendar(timestamp, defaults.calendarProfile).year) : null;
-  const year = Number.isInteger(explicitYear) ? explicitYear
-    : Number.isInteger(projectedYear) ? projectedYear : defaults.year;
+  const legacyYear = authoritative?.year ?? request.historical_context?.year;
+  const year = Number.isInteger(projectedYear) ? projectedYear
+    : Number.isInteger(legacyYear) ? legacyYear : defaults.year;
   const placeRefs = new Set(defaults.placeRefs);
   for (const ref of [
     ...(authoritative?.place_refs ?? []),
@@ -97,8 +100,23 @@ export function authoritativeContextOf(request, authoritative, defaults) {
     request.objective_context?.context_refs?.region_ref,
     request.objective_context?.scope_ref?.entity_id
   ]) if (typeof ref === 'string' && ref) placeRefs.add(ref);
+  const conditions = { ...(authoritative?.conditions ?? {}) };
+  const startedIds = startedHistoricalIdsOf(authoritative, timestamp);
+  if (startedIds != null) conditions.started_historical_events = startedIds;
   return { time: { year }, place_refs: [...placeRefs].sort(),
-    actor_facets: actorFacetsOf(request, authoritative) };
+    actor_facets: actorFacetsOf(request, authoritative),
+    ...(Object.keys(conditions).length > 0 ? { conditions } : {}) };
+}
+
+function startedHistoricalIdsOf(authoritative, timestamp) {
+  if (Array.isArray(authoritative?.started_historical_events)) {
+    return [...authoritative.started_historical_events]
+      .filter((id) => typeof id === 'string' && id);
+  }
+  if (!Array.isArray(authoritative?.historical_events) || timestamp == null) {
+    return null;
+  }
+  return [...startedHistoricalEventIds(timestamp, authoritative.historical_events)];
 }
 
 function ordinaryMaterializationText(request) {

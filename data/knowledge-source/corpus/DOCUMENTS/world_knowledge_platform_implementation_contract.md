@@ -885,7 +885,9 @@ knowledge access
 conditions
 ```
 
-Общие физические/химические факты могут иметь явно объявленный `context_scope: universal` либо другое строгое pack-defined значение. Пустая applicability не должна неявно означать «истинно везде».
+`conditions` — pack-specific facet map. Для event/state-change semantics (не путать с годовым периодом применимости нормы) используется facet `started_historical_events` со значением `event_id`: claim видим только если authoritative context несёт это событие среди уже начавшихся к дате партии. Годовой `applicability.time` остаётся периодом действия нормы; дата события/смены состояния не кодируется месяцем/днём в WK.
+
+Общие физические/химические факты могут иметь явно объявленный `context_scope: universal` либо другое строгое pack-defined значение. Пустая applicability не должна неявно означать «истинно везде». Условие `started_historical_events` проверяется и для `context_scope: universal`.
 
 Для технического pack возможны:
 
@@ -924,6 +926,14 @@ knowledge_access
 classes facet values не задают. Runtime применяет value-match только к actor-facing
 `npc_decision`/`conversation`/`narration`; historical applicability и
 materialization-support от него не зависят.
+
+Зарегистрированный condition facet для event semantics:
+
+```text
+started_historical_events
+```
+
+Runtime передаёт `context.conditions.started_historical_events` как массив `event_id`, начавшихся к дате партии (источник — `@rus/time-events-history.startedHistoricalEventIds`, не WK).
 
 Temporal precision:
 
@@ -2286,6 +2296,8 @@ catalog revision
 
 После planner orchestrator добавляет authoritative context из committed/working state и actor-safe projections.
 
+Authoritative context merge включает `year` (календарь партии), `place_refs`, `actor_facets` и `conditions` (в том числе `started_historical_events`). `request.historical_context.year` не перекрывает календарную проекцию партии.
+
 ---
 
 # 54. Runtime query
@@ -2304,7 +2316,8 @@ catalog revision
   "context": {
     "time": {"year": 1230},
     "place_refs": ["region_novgorod_land"],
-    "actor_facets": {}
+    "actor_facets": {},
+    "conditions": {"started_historical_events": []}
   },
   "budget": {
     "max_facts": 24,

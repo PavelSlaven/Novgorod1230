@@ -7,6 +7,7 @@
 ## Владеет
 
 - Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, двусторонней календарной проекцией `projectCalendar` / `resolveGameTimestampFromCalendarDate`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade).
+- Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`).
 
 ## Не владеет
 
@@ -14,7 +15,7 @@
 
 ## Public API
 
-- `.`: exact-time primitives `normalizeGameTimestamp`, `normalizeElapsedTime`, rational arithmetic, `addElapsedTime`, `subtractGameTimestamp`, `compareGameTimestamp`, `countCrossedWholeMinuteBoundaries`, `computeTemporalDigest`; historical-phase exports.
+- `.`: exact-time primitives `normalizeGameTimestamp`, `normalizeElapsedTime`, rational arithmetic, `addElapsedTime`, `subtractGameTimestamp`, `compareGameTimestamp`, `countCrossedWholeMinuteBoundaries`, `computeTemporalDigest`; historical-phase exports; `startedHistoricalEventsAndPhases`, `startedHistoricalEventIds`.
 - `./calendar`: `projectCalendar(timestamp, approvedProfile)`, `resolveGameTimestampFromCalendarDate(exactCalendarDate, approvedProfile)`.
 - `./temporal-boundaries`: `TEMPORAL_RESOLUTION_POLICY_VERSION`, order, `TemporalBoundaryError`, normalization, earliest-batch selection и `resolveSameTimeCascade`.
 - `./legacy`: compatibility-only clock/timer helpers; не является target temporal execution API.
@@ -52,4 +53,4 @@ candidate продолжает active process, а completed process его не 
 
 ## Тесты
 
-`test/exact-time.test.js`, `calendar.test.js`, `temporal-boundaries.test.js`, `historical-phases.test.js`, `domain.test.js` проверяют exact arithmetic, profile gaps, ordering/cascades, phase boundary и legacy-compatible pure helpers.
+`node --test packages/time-events-history/test/*.test.js` проверяют exact arithmetic, profile gaps, ordering/cascades, phase boundary, started-historical date gate и legacy-compatible pure helpers.

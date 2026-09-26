@@ -64,6 +64,9 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       const semanticInput = semanticInputOf(request);
       const situationSummary = situationSummaryOf(request, authoritative);
       const actorFacets = actorFacetsOf(request, authoritative);
+      const context = authoritativeContextOf(request, authoritative, {
+        year, placeRefs, calendarProfile: worldKnowledge.calendar_profile
+      });
       const plannerRequest = {
         schema: 'world_knowledge_query_planner_request_v1',
         pack_ref: bundle.manifest.pack_ref,
@@ -74,7 +77,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         allowed_domains: domains,
         available_knowledge_refs: candidateWorldKnowledgeFocusRefs(bundle,
           `${focusInputOf(request, authoritative)} ${Object.values(actorFacets).join(' ')}`,
-          queryLocale, domains, 96),
+          queryLocale, domains, { limit: 96, purpose, context }),
         planner_limits: { max_domains: 3, max_search_hints: 8,
           max_focus_refs: 8 }
       };
@@ -104,9 +107,6 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         };
         usedDefaultQuery = true;
       }
-      const context = authoritativeContextOf(request, authoritative, {
-        year, placeRefs, calendarProfile: worldKnowledge.calendar_profile
-      });
       const query = {
         schema: 'world_knowledge_query_v1',
         pack_ref: bundle.manifest.pack_ref,

@@ -42,7 +42,9 @@ LLM calls, filesystem/network/DB, party state, presence/materialization, actor d
 
 ## API
 
-- `candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit)`;
+- `candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit|options)`;
+  optional `options.{limit,purpose,context}` applies the same `isApplicable` /
+  `canAccess` date/access gate as Core before offering concepts to the planner;
 - `createWorldKnowledgeCore(bundle)` → frozen `{ resolveWorldKnowledge(query) }`;
 - `createWorldKnowledgeFlatVectorIndex(metadata, bytes,
   { conceptToClaimRefs? })` → frozen `{ search(vector, options) }`; optional

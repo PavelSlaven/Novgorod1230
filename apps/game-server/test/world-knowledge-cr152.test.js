@@ -111,6 +111,71 @@ test('N1 semantic_input uses production observable_cues nested leaves', () => {
   assert.doesNotMatch(text, /[{}]/);
 });
 
+test('party calendar year wins over request.historical_context.year', async () => {
+  const { authoritativeContextOf } = await import(
+    '../src/runtime/world-knowledge-request-context.js');
+  const { projectCalendar } = await import('@rus/time-events-history/calendar');
+  const calendarProfile = {
+    profile_id: 'novgorod-calendar', version: '1', status: 'approved',
+    provenance: { source_id: 'chronicle-x', source_version: '1' },
+    epoch: {
+      game_timestamp: { whole_minutes: '0', subminute_numerator: '0',
+        subminute_denominator: '1' },
+      year: '1230', month: '1', day: '1'
+    },
+    calendar_system: 'source-backed',
+    month_rules: { month_lengths: ['30', '30'] },
+    leap_rules: { cycle_years: '4', leap_year_indexes: ['3'], leap_month: '2',
+      leap_days: '1' },
+    day_start_rule: { local_minute: '360' },
+    local_offset_rule: { offset_minutes: '0' },
+    daypart_rule: { ranges: [
+      { id: 'night', start_minute: '0', end_minute: '360' },
+      { id: 'day', start_minute: '360', end_minute: '1080' },
+      { id: 'evening', start_minute: '1080', end_minute: '1440' }
+    ] },
+    season_rule: { ranges: [
+      { id: 'cold', start_day: '1', end_day: '30' },
+      { id: 'warm', start_day: '31', end_day: '61' }
+    ] },
+    daylight_rule: { ranges: [
+      { id: 'dark', start_day: '1', end_day: '30' },
+      { id: 'light', start_day: '31', end_day: '61' }
+    ] }
+  };
+  // ~2 years of 60-day years in this tiny profile → year advances past 1230.
+  const timestamp = { whole_minutes: String(60 * 1440 * 2),
+    subminute_numerator: '0', subminute_denominator: '1' };
+  const projected = Number(projectCalendar(timestamp, calendarProfile).year);
+  assert.ok(Number.isInteger(projected));
+  assert.notEqual(projected, 1200);
+  const context = authoritativeContextOf({
+    historical_context: { year: 1200 },
+    occurred_at: timestamp
+  }, null, { year: 1230, placeRefs: [], calendarProfile });
+  assert.equal(context.time.year, projected);
+  assert.notEqual(context.time.year, 1200);
+});
+
+test('started_historical_events enter authoritative conditions', async () => {
+  const { authoritativeContextOf } = await import(
+    '../src/runtime/world-knowledge-request-context.js');
+  const context = authoritativeContextOf({
+    remaining_intent: 'голод'
+  }, {
+    clock: { whole_minutes: '500', subminute_numerator: '0',
+      subminute_denominator: '1' },
+    historical_events: [{
+      id: 'event:famine',
+      phases: [{ id: 'start', start_at_minutes: 100 }]
+    }, {
+      id: 'event:future',
+      phases: [{ id: 'start', start_at_minutes: 900 }]
+    }]
+  }, { year: 1230, placeRefs: [], calendarProfile: null });
+  assert.deepEqual(context.conditions.started_historical_events, ['event:famine']);
+});
+
 test('unknown schema without text fields throws typed semantic_input error', () => {
   assert.throws(() => semanticInputOf({ schema: 'unknown_request_v1', id: 1 }),
     (error) => error instanceof WorldKnowledgeError

@@ -24,3 +24,8 @@ export {
   projectHistoricalPhaseVisibleEffects,
   provideHistoricalPhaseBoundaries
 } from './historical-phases.js';
+
+export {
+  startedHistoricalEventIds,
+  startedHistoricalEventsAndPhases
+} from './started-historical.js';

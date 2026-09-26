@@ -44,3 +44,38 @@ test('Russian exact and anchored stem postings form one union with stable domain
   assert.deepEqual(candidateWorldKnowledgeFocusRefs(source, 'лампы', 'ru', ['material']), ['concept:b']);
   assert.deepEqual(candidateWorldKnowledgeFocusRefs(source, 'лампы', 'ru', ['unrelated']), []);
 });
+
+test('focus candidates require an applicable claim under party date and access', () => {
+  const source = bundle();
+  source.claims = [
+    { claim_ref: 'claim:one', domain: 'material',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'general', required_facets: [] } },
+    { claim_ref: 'claim:two', domain: 'material',
+      applicability: {
+        conditions: [{ facet: 'started_historical_events', operator: 'includes',
+          value: 'event:future' }]
+      },
+      knowledge_access: { class: 'general', required_facets: [] } },
+    { claim_ref: 'claim:three', domain: 'material',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'domain_internal_only', required_facets: [] } },
+    { claim_ref: 'claim:four', domain: 'other',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'general', required_facets: [] } }
+  ];
+  const context = { time: { year: 1230 }, place_refs: [], actor_facets: {},
+    conditions: { started_historical_events: [] } };
+  // claim:two (event-gated) and claim:three (domain_internal) stay out for conversation.
+  assert.deepEqual(candidateWorldKnowledgeFocusRefs(source, 'обычный', 'ru',
+    ['material'], { limit: 8, purpose: 'conversation', context }),
+    ['concept:a', 'concept:e']);
+  assert.deepEqual(candidateWorldKnowledgeFocusRefs(source, 'лампы', 'ru',
+    ['material'], { limit: 8, purpose: 'conversation', context }), []);
+  context.conditions.started_historical_events = ['event:future'];
+  const withEvent = candidateWorldKnowledgeFocusRefs(source, 'обычный', 'ru',
+    ['material'], { limit: 8, purpose: 'conversation', context });
+  assert.ok(withEvent.includes('concept:d'), withEvent);
+  assert.ok(withEvent.includes('concept:a'), withEvent);
+  assert.equal(withEvent.includes('concept:b'), false);
+});

@@ -377,7 +377,10 @@ test('grounded common Stage B does not treat WK facts as a positive whitelist',
       stageBApprovalReceipt: approval,
       worldKnowledgeGrounder: { async ground(input, purpose, authoritative) {
         assert.equal(purpose, 'materialization_support');
-        assert.deepEqual(authoritative, { semantic_context: semanticContext });
+        assert.deepEqual(authoritative, {
+          semantic_context: semanticContext,
+          clock: null
+        });
         return { ...input, world_knowledge: grounded.world_knowledge };
       } },
       roleRunner: { async run(input) {

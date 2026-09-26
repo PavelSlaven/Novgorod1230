@@ -916,3 +916,9 @@ gap. The historical initial read retains its existing projection path.
 verified target item/world tuple. Manifest digest связывает все policy pins;
 он не равен raw SHA initial-perception candidate. Loader не выдаёт operational
 approval, не меняет default release и сохраняет historical authored catalog.
+
+## World Knowledge grounding (D18 / #153 part A)
+
+- Party calendar clock wins over `request.historical_context.year`.
+- `partyHistoricalEventsOf(committedState)` + `withPartyHistoricalEvents(model, stateOf)` — server port: adapters pass `historical_events` explicitly in grounder `authoritative` / model-call context from committed party state (F1/F2). No `request_id` Map and no request-body injection. Turn step: `buildLowerDvinaTracePhase2Services` wraps `turnStepModel` per request as `(req, repair) => model(req, repair, { historical_events })` (3rd arg; no mutable function property). Conversation exchange wraps `npcSemanticModel` with exchange `context.state` (party state at exchange start; working overlay does not own `historical_events`). `partyWorldKnowledgeAuthoritative` always rebuilds `started_historical_events` from those events + party clock via `@rus/time-events-history` (never accepts a ready id list).
+- Focus refs are filtered by claim `conditions` / access before the planner wire.

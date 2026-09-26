@@ -83,7 +83,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         plan: await requestAndValidateTurnStepPlan({
           request,
           turnStepModel: async (safeRequest) => {
-            const output = await turnStepModel(modelRequest ?? safeRequest, repairContext);
+            const output = await turnStepModel(modelRequest ?? safeRequest,
+              repairContext);
             repairedOutput = structuredClone(output);
             return output;
           },

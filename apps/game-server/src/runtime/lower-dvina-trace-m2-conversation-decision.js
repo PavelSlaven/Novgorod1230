@@ -164,6 +164,7 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
           requiredSupportingOperation) })
     }
   });
+  // historical_events: exchange wraps npcSemanticModel with party state (F1).
   const persistedTrace = (context.state.npc_semantic_decision_traces ?? [])
     .find(({ boundary_id: boundaryId }) =>
       boundaryId === boundary.boundary_id) ?? null;

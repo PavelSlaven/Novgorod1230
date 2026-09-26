@@ -56,8 +56,14 @@ export function createLowerDvinaTraceSemanticResolver({ roleRunner } = {}) {
 export function createLowerDvinaTraceTurnStepModel({ roleRunner,
   worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
-  const model = async function planTurnStep(request, repairContext = null) {
-    const input = await groundTurnRequest(worldKnowledgeGrounder, request);
+  const model = async function planTurnStep(request, repairContext = null,
+    modelCallContext = null) {
+    // Explicit party events from services wrapper 3rd arg (N1); no function props.
+    const historicalEvents = Array.isArray(modelCallContext?.historical_events)
+      ? modelCallContext.historical_events : [];
+    const input = await groundTurnRequest(worldKnowledgeGrounder, request, {
+      historical_events: historicalEvents
+    });
     const wireInput = plannerRequestWire(input);
     const repairing = repairContext != null;
     const payload = repairing
@@ -68,7 +74,8 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             structuredClone(repairContext.structural_errors ?? [])
         }
       : wireInput;
-    const operationChoices = turnStepOperationChoices(request, repairContext);
+    const operationChoices = turnStepOperationChoices(request,
+      repairing ? repairContext : null);
     const activeConversationExample = activeConversationChoiceExample(
       request, operationChoices);
     const visibleConversationExamples = visibleConversationChoiceExamples(

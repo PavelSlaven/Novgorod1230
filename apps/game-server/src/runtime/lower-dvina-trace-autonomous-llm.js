@@ -64,8 +64,15 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner,
   return async function planNpcAutonomousAction(request, context = {}) {
     const repair = context.repair ?? null;
     const genericCheckAvailable = hasAllowedAttributeRefs(request);
+    // Explicit party events from model-call context / phase-7 wrap (F2).
+    const historicalEvents = Array.isArray(context.historical_events)
+      ? context.historical_events
+      : [];
     const grounded = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'npc_decision');
+      : await worldKnowledgeGrounder.ground(request, 'npc_decision', {
+        clock: request.occurred_at ?? null,
+        historical_events: historicalEvents
+      });
     const modelRequest = omitWorldKnowledgeContextText(grounded);
     const response = await roleRunner.run({
       scope: 'turn_runtime',

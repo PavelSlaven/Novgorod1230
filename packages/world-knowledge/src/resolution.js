@@ -4,7 +4,13 @@ export function lexicalCandidates(bundle, query) {
   return lexicalScores(bundle, query.search_hints.join(' '), query.query_locale, false);
 }
 
-export function candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit = 256) {
+export function candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains,
+  limitOrOptions = 256) {
+  const options = typeof limitOrOptions === 'object' && limitOrOptions != null
+    ? limitOrOptions : { limit: limitOrOptions };
+  const limit = Number.isInteger(options.limit) ? options.limit : 256;
+  const purpose = options.purpose ?? null;
+  const context = options.context ?? null;
   const scores = lexicalScores(bundle, String(input), locale, true);
   const domainSet = new Set(domains);
   const claims = new Map(bundle.claims.map(claim => [claim.claim_ref, claim]));
@@ -12,7 +18,21 @@ export function candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains,
     const refs = bundle.exact_indexes.concept_to_claim_refs[concept.concept_ref] ?? [];
     if (!domainSet.has(concept.domain)
         && !refs.some(ref => domainSet.has(claims.get(ref)?.domain))) return [];
-    const score = Math.max(0, ...refs.map(ref => scores.get(ref) ?? 0));
+    const eligibleRefs = context == null ? refs : refs.filter((ref) => {
+      const claim = claims.get(ref);
+      if (claim == null || !domainSet.has(claim.domain)) return false;
+      // §13: missing applicability / knowledge_access is not fail-open (A-11b).
+      if (claim.applicability == null
+          || !isApplicable(claim.applicability, context)) return false;
+      if (purpose != null) {
+        if (claim.knowledge_access == null) return false;
+        if (!canAccess(claim.knowledge_access, context.actor_facets ?? {},
+          purpose)) return false;
+      }
+      return true;
+    });
+    if (eligibleRefs.length === 0) return [];
+    const score = Math.max(0, ...eligibleRefs.map(ref => scores.get(ref) ?? 0));
     return score > 0 ? [{ ref: concept.concept_ref, score }] : [];
   }).sort((a, b) => b.score - a.score || a.ref.localeCompare(b.ref))
     .slice(0, limit).map(({ ref }) => ref);
@@ -89,12 +109,14 @@ export function packCandidates(claims, limit) {
 }
 
 export function isApplicable(applicability, context) {
+  // Conditions (e.g. started_historical_events) still gate universal claims (D18).
+  if (applicability.conditions && !applicability.conditions.every((condition) =>
+    conditionMatches(condition, context.conditions ?? {}))) return false;
   if (applicability.context_scope === 'universal') return true;
   const time = applicability.time;
   if (time && !timeMatches(time, context.time?.year)) return false;
   if (applicability.places && !applicability.places.some((place) => context.place_refs.includes(place.place_ref))) return false;
   if (applicability.actors && !Object.entries(applicability.actors).every(([key, expected]) => matchesFacet(context.actor_facets[key], expected))) return false;
-  if (applicability.conditions && !applicability.conditions.every((condition) => conditionMatches(condition, context.conditions))) return false;
   return true;
 }
 

@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery } from '../src/index.js';
+import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery,
+  isValidCondition } from '../src/index.js';
 
 const bundlePath = new URL('../../../data/world-catalogs/novgorod/world-knowledge/pilot-v1/runtime-bundle.json', import.meta.url);
 const baseBundle = JSON.parse(await readFile(bundlePath, 'utf8'));
@@ -407,4 +408,51 @@ test('production hard exclusion rejects anachronistic legal backport', () => {
   assert.equal(slice.verdict, 'excluded');
   assert.equal(slice.hard_constraints[0].claim_ref,
     'claim:later-novgorod-judicial-charter');
+});
+
+test('empty started_historical_events means nothing begun yet (A-01)', () => {
+  const ok = validateWorldKnowledgeQuery(query({
+    context: { time: { year: 1230 }, place_refs: [], actor_facets: {},
+      conditions: { started_historical_events: [] } }
+  }), baseBundle);
+  assert.equal(ok.ok, true, ok.errors);
+  const slice = createWorldKnowledgeCore(baseBundle).resolveWorldKnowledge(query({
+    context: { time: { year: 1230 }, place_refs: [], actor_facets: {},
+      conditions: { started_historical_events: [] } }
+  }));
+  assert.ok(Array.isArray(slice.facts));
+});
+
+test('started_historical_events claim condition requires includes + string (A-09)', () => {
+  const bundle = structuredClone(baseBundle);
+  const source = bundle.claims[0];
+  const bad = { ...structuredClone(source), claim_ref: 'claim:test:bad-event',
+    applicability: { conditions: [{ facet: 'started_historical_events',
+      operator: 'equals', value: ['event:x'] }] } };
+  bundle.claims.push(bad);
+  assert.throws(() => createWorldKnowledgeCore(bundle));
+});
+
+test('isValidCondition rejects padded started_historical_events value (N-3)', () => {
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'includes', value: 'event:x'
+  }), true);
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'includes', value: ' event:x '
+  }), false);
+});
+
+test('started_historical_events forbids present operator (F4)', () => {
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'present', value: null
+  }), false);
+  const bundle = structuredClone(baseBundle);
+  const source = bundle.claims[0];
+  bundle.claims.push({
+    ...structuredClone(source),
+    claim_ref: 'claim:test:present-event',
+    applicability: { conditions: [{ facet: 'started_historical_events',
+      operator: 'present', value: null }] }
+  });
+  assert.throws(() => createWorldKnowledgeCore(bundle));
 });

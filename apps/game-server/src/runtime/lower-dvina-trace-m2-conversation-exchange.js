@@ -2,6 +2,8 @@ import { requestPlayerConversationContribution, runConversationExchange } from
   '@rus/turn';
 import { buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
+import { withPartyHistoricalEvents } from
+  './world-knowledge-request-context.js';
 import { buildNpcResponseBoundaryBatch } from
   './lower-dvina-trace-m2-conversation-boundaries.js';
 import {
@@ -197,7 +199,13 @@ export async function executeM2ConversationExchange(context, {
       decisions.set(decision.request.request_id, decision);
       return decision;
     },
-    npcSemanticModel: context.npcSemanticModel,
+    npcSemanticModel: withPartyHistoricalEvents(
+      context.npcSemanticModel,
+      // F5: exchange context.state is party state at exchange start (committed).
+      // workingConversationContext merges working overlay for NPC positions;
+      // historical_events live on party state root and are not working-only.
+      () => context.state
+    ),
     ...(context.validateNpcPlan === undefined ? {} : {
       validateNpcPlan: context.validateNpcPlan
     }),

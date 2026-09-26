@@ -1,3 +1,4 @@
+import { CONDITION_FACETS, isValidCondition } from '@rus/world-knowledge';
 import { digestValue, stableStringify } from './digest.js';
 
 const AUTHORING_SCHEMA = 'world_knowledge_authoring_pack_v1';
@@ -28,7 +29,6 @@ const PROFILE_PURPOSES = new Set(['semantic_resolution', 'materialization_suppor
 const RUNTIME_REQUIREMENTS = new Set(['not_active', 'optional', 'required_when_selected']);
 const GUARD_MODES = new Set(['advisory', 'explicit_exclusion', 'reference_required']);
 const ACTOR_FACETS = new Set(['occupation_ref', 'role_ref', 'social_status', 'sex_category', 'age_category']);
-const CONDITION_FACETS = new Set(['season', 'climate', 'location_type', 'material_state', 'temperature_state', 'moisture_state', 'process_ref']);
 const ACCESS_FACETS_BY_CLASS = Object.freeze({
   general_physical: new Set(),
   common_cultural: new Set(),
@@ -565,12 +565,16 @@ function validateConditions(value, label, errors) {
     const itemLabel = `${label}[${index}]`;
     if (!isObject(condition)) { errors.push(`${itemLabel} must be an object`); continue; }
     exactKeys(condition, ['facet', 'operator', 'value'], itemLabel, errors);
-    if (!CONDITION_FACETS.has(condition.facet) || !['equals', 'includes', 'present'].includes(condition.operator)) errors.push(`${itemLabel} is invalid`);
-    if (condition.operator === 'present' && condition.value != null) errors.push(`${itemLabel}.present forbids value`);
-    if (condition.operator !== 'present') {
-      const validValue = requiredText(condition.value) || typeof condition.value === 'boolean' || Number.isFinite(condition.value)
-        || (Array.isArray(condition.value) && condition.value.length > 0 && condition.value.every(requiredText));
-      if (!validValue) errors.push(`${itemLabel}.value is invalid`);
+    // Shared rule from @rus/world-knowledge (N-3); keep specific messages (F3).
+    if (isValidCondition(condition)) continue;
+    if (!CONDITION_FACETS.has(condition.facet)
+        || !['equals', 'includes', 'present'].includes(condition.operator)
+        || condition.facet === 'started_historical_events') {
+      errors.push(`${itemLabel} is invalid`);
+    } else if (condition.operator === 'present' && condition.value != null) {
+      errors.push(`${itemLabel}.present forbids value`);
+    } else {
+      errors.push(`${itemLabel}.value is invalid`);
     }
   }
 }

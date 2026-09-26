@@ -50,14 +50,21 @@ export function createLowerDvinaTraceO2bContainerResolver({ partyId,
     if (committed.replay) return success([], null);
     let rawValue;
     try {
-      rawValue = await ordinaryMaterializationModel(committed.modelRequest,
-        {repair:null});
+      rawValue = await ordinaryMaterializationModel(committed.modelRequest, {
+        repair: null,
+        ...(committed.partyClock == null ? {} : { clock: committed.partyClock }),
+        ...(Array.isArray(committed.historicalEvents)
+          ? { historical_events: committed.historicalEvents } : {})
+      });
       let errors = validateOrdinaryMaterializationPlanV1(rawValue,
         committed.modelRequest);
       if (errors.length !== 0) {
         rawValue = await ordinaryMaterializationModel(committed.modelRequest, {
           repair:{schema:'ordinary_materialization_repair_context_v1',
-            original_output:null,validation_errors:errors}
+            original_output:null,validation_errors:errors},
+          ...(committed.partyClock == null ? {} : { clock: committed.partyClock }),
+          ...(Array.isArray(committed.historicalEvents)
+            ? { historical_events: committed.historicalEvents } : {})
         });
         errors = validateOrdinaryMaterializationPlanV1(rawValue,
           committed.modelRequest);
@@ -138,6 +145,9 @@ function committedInput(value, seed, binding, loadedProfile) {
     technical_limits:{max_new_entities:maxEntities,max_new_background_groups:1,
       max_resolution_records:aggregate.resolution_record_cap} };
   return { replay:false,value,context,objective,aggregate,identity,modelRequest,
+    partyClock: value.party_clock ?? null,
+    historicalEvents: Array.isArray(value.historical_events)
+      ? value.historical_events : [],
     admissionBases:value.supporting_bases.map((basis) => ({...basis,
       policy:{functional_buckets:basis.functional_buckets,
         allowed_admission_classes:basis.allowed_admission_classes,

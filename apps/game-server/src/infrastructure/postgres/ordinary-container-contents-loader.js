@@ -11,6 +11,8 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
             IS DISTINCT FROM journey.scene_position_id
           THEN pos.g5_anchor_id ELSE journey.scene_position_id
         END AS actor_position_ref,
+        snapshot.state_payload->'clock' AS party_clock,
+        snapshot.state_payload->'historical_events' AS historical_events,
         x.container_id,x.template_id,x.state_version AS container_state_version,
         x.closure_state,x.state AS container_state,x.anchor_id,
         x.parent_container_id,x.holder_npc_id,x.holder_character_id,
@@ -65,6 +67,9 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
     const capacitySnapshot = capacity.rows.map(capacityRow);
     const context = row.container_state?.ordinary_contents_context;
     return clone({ party_state_version:Number(row.party_state_version),
+      party_clock: row.party_clock ?? null,
+      historical_events: Array.isArray(row.historical_events)
+        ? row.historical_events : [],
       container:{ actor_id:row.actor_id,
         actor_position_ref:row.actor_position_ref,
         container_id:row.container_id,template_id:row.template_id,

@@ -1,5 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import { omitWorldKnowledgeContextText } from '@rus/turn';
+import { normalizeGameTimestamp } from '@rus/time-events-history';
 import { serverError } from '../errors.js';
 import {
   snapshotLowerDvinaTraceOrdinaryStageBJson
@@ -143,9 +144,10 @@ function ordinarySemanticShape(request) {
 function exactModelContext(context) {
   const snapshot = snapshotLowerDvinaTraceOrdinaryStageBJson(context);
   const keys = Object.keys(snapshot ?? {});
+  const allowed = ['repair', 'mechanics_policy', 'semantic_context',
+    'required_quantity', 'clock', 'historical_events'];
   if (snapshot == null || !Object.hasOwn(snapshot, 'repair')
-      || keys.some((key) => !['repair', 'mechanics_policy',
-        'semantic_context', 'required_quantity'].includes(key))) {
+      || keys.some((key) => !allowed.includes(key))) {
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
   }
   const repair = snapshot.repair;
@@ -163,8 +165,19 @@ function exactModelContext(context) {
     ? requiredQuantityOf(snapshot.required_quantity) : null;
   if (Object.hasOwn(snapshot, 'required_quantity') && requiredQuantity == null)
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  const clock = Object.hasOwn(snapshot, 'clock') ? snapshot.clock : null;
+  if (Object.hasOwn(snapshot, 'clock') && clock != null
+      && !isPartyClock(clock)) {
+    throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  }
+  const historicalEvents = Object.hasOwn(snapshot, 'historical_events')
+    ? snapshot.historical_events : undefined;
+  if (Object.hasOwn(snapshot, 'historical_events')
+      && !Array.isArray(historicalEvents)) {
+    throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  }
   if (repair === null) return { repair: null, mechanicsPolicy,
-    semanticContext, requiredQuantity };
+    semanticContext, requiredQuantity, clock, historicalEvents };
   if (repair == null || typeof repair !== 'object' || Array.isArray(repair)
       || Object.keys(repair).length !== 3
       || repair.schema !== 'ordinary_materialization_repair_context_v1'
@@ -173,7 +186,29 @@ function exactModelContext(context) {
       || repair.validation_errors.length === 0) {
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
   }
-  return { repair, mechanicsPolicy, semanticContext, requiredQuantity };
+  return { repair, mechanicsPolicy, semanticContext, requiredQuantity,
+    clock, historicalEvents };
+}
+
+/** Party clock: owner GameTimestamp / legacy total_minutes / non-neg int (N5). */
+function isPartyClock(value) {
+  if (typeof value === 'number') {
+    return Number.isInteger(value) && value >= 0;
+  }
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  if (Object.hasOwn(value, 'total_minutes')) {
+    return Object.keys(value).length === 1
+      && Number.isInteger(value.total_minutes)
+      && value.total_minutes >= 0;
+  }
+  try {
+    normalizeGameTimestamp(value);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function requiredQuantityOf(value) {

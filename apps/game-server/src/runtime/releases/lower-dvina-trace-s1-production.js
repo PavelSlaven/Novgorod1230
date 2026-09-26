@@ -63,9 +63,14 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
         worldKnowledge: worldKnowledgeGrounder == null ? null
           : (await worldKnowledgeGrounder.ground(prepared.model_request,
               'materialization_support', {
-                clock: request.player_safe_state?.clock,
+                clock: request.player_safe_state?.clock
+                  ?? value.committed_state?.clock
+                  ?? null,
                 place_refs: [target, preModel.envelope.position_ref,
-                  preModel.envelope.g5_ref]
+                  preModel.envelope.g5_ref],
+                historical_events: Array.isArray(
+                  value.committed_state?.historical_events)
+                  ? value.committed_state.historical_events : []
               })).world_knowledge
       }) });
     const atomic = createSpatialSemanticAtomicWritePlan({

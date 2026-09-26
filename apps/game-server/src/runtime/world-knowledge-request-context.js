@@ -1,5 +1,34 @@
 import { projectCalendar } from '@rus/time-events-history/calendar';
+import { startedHistoricalEventIds } from '@rus/time-events-history';
 import { WorldKnowledgeError } from '@rus/world-knowledge';
+
+/**
+ * Server port: committed party state → historical_events (A-02 / F1).
+ * No side channel: callers pass events explicitly in authoritative.
+ */
+export function partyHistoricalEventsOf(committedState) {
+  return Array.isArray(committedState?.historical_events)
+    ? committedState.historical_events : [];
+}
+
+/**
+ * Inject party historical_events into a semantic model call context (F1/F2).
+ * stateOf: committed/working party state object or () => state.
+ */
+export function withPartyHistoricalEvents(model, stateOf) {
+  if (typeof model !== 'function') return model;
+  const wrapped = async (request, callContext = {}) => {
+    const state = typeof stateOf === 'function' ? stateOf() : stateOf;
+    const historicalEvents = Array.isArray(callContext?.historical_events)
+      ? callContext.historical_events
+      : partyHistoricalEventsOf(state);
+    return model(request, { ...callContext, historical_events: historicalEvents });
+  };
+  if (typeof model.validateFreshPlan === 'function') {
+    wrapped.validateFreshPlan = (...args) => model.validateFreshPlan(...args);
+  }
+  return wrapped;
+}
 
 export function localeOf(request, bundle) {
   const candidate = request.locale ?? request.input_locale
@@ -79,26 +108,60 @@ export function actorFacetsOf(request, authoritative) {
   return result;
 }
 
+/**
+ * One factory for party date gates on every WK purpose (A-02 / F1).
+ * Always builds started_historical_events from events + clock (never accepts a
+ * ready id list). Events only from authoritative.historical_events (explicit
+ * adapter port); never from request body or a request_id side channel.
+ */
+export function partyWorldKnowledgeAuthoritative(request, authoritative = null) {
+  const base = authoritative != null && typeof authoritative === 'object'
+    && !Array.isArray(authoritative) ? { ...authoritative } : {};
+  delete base.started_historical_events;
+  const clock = base.clock
+    ?? request?.player_safe_state?.clock
+    ?? request?.npc_safe_state?.clock
+    ?? request?.requested_at
+    ?? request?.occurred_at
+    ?? null;
+  if (clock != null) base.clock = clock;
+  const events = Array.isArray(base.historical_events)
+    ? base.historical_events : [];
+  base.historical_events = events;
+  base.started_historical_events = clock != null
+    ? [...startedHistoricalEventIds(clock, events)]
+    : [];
+  return base;
+}
+
 export function authoritativeContextOf(request, authoritative, defaults) {
+  const merged = partyWorldKnowledgeAuthoritative(request, authoritative);
   const safe = request.npc_safe_state ?? request.player_safe_state ?? {};
-  const timestamp = authoritative?.clock ?? safe.clock ?? request.requested_at
+  const timestamp = merged.clock ?? safe.clock ?? request.requested_at
     ?? request.occurred_at;
-  const explicitYear = authoritative?.year ?? request.historical_context?.year;
+  // Party calendar (timestamp + profile) wins; request.historical_context.year
+  // is legacy fallback only when no calendar projection is available (D18).
   const projectedYear = timestamp != null && defaults.calendarProfile != null
     ? Number(projectCalendar(timestamp, defaults.calendarProfile).year) : null;
-  const year = Number.isInteger(explicitYear) ? explicitYear
-    : Number.isInteger(projectedYear) ? projectedYear : defaults.year;
+  const legacyYear = merged.year ?? request.historical_context?.year;
+  const year = Number.isInteger(projectedYear) ? projectedYear
+    : Number.isInteger(legacyYear) ? legacyYear : defaults.year;
   const placeRefs = new Set(defaults.placeRefs);
   for (const ref of [
-    ...(authoritative?.place_refs ?? []),
+    ...(merged.place_refs ?? []),
     ...positionRefs(safe.position),
     request.schema === 'npc_action_decision_request_v1'
       ? request.historical_context?.region : null,
     request.objective_context?.context_refs?.region_ref,
     request.objective_context?.scope_ref?.entity_id
   ]) if (typeof ref === 'string' && ref) placeRefs.add(ref);
+  const conditions = { ...(merged.conditions ?? {}) };
+  conditions.started_historical_events = [
+    ...merged.started_historical_events
+  ];
   return { time: { year }, place_refs: [...placeRefs].sort(),
-    actor_facets: actorFacetsOf(request, authoritative) };
+    actor_facets: actorFacetsOf(request, merged),
+    conditions };
 }
 
 function ordinaryMaterializationText(request) {

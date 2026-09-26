@@ -6,6 +6,7 @@ import path from 'node:path';
 import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry, WK_PLACE_FIRST, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
+import { build as buildPresenceRules } from './build-presence-rules.mjs';
 
 const checks = [];
 const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 15), external, ...extra });
@@ -91,6 +92,13 @@ const ex = readJson(P('inputs/pr98-extract.json'));
 {
   const rule = readJson(P('presence/frequency_rule.json'));
   const pr = readCsv(P('presence/presence_rules.csv'));
+  const rebuilt = buildPresenceRules({ write: false }).rows;
+  const columns = Object.keys(pr[0]);
+  const values = (row) => columns.map((column) => Array.isArray(row[column]) ? row[column].join(';') : String(row[column] ?? ''));
+  check('presence_rules', 'matches_current_input_pools', [
+    ...(pr.length === rebuilt.length ? [] : [`rows ${pr.length} != rebuilt ${rebuilt.length}`]),
+    ...pr.flatMap((row, i) => rebuilt[i] && JSON.stringify(values(row)) !== JSON.stringify(values(rebuilt[i])) ? [`row ${i + 2}: ${row.pr_id}`] : []),
+  ], { rows: pr.length, rebuilt_rows: rebuilt.length });
   const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
   const nb = readCsv(P('places/node_binding.csv'));
   const nodes = new Set(nb.map((r) => r.node_ref.replace(/@\d+$/, '')));

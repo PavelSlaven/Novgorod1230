@@ -64,7 +64,7 @@ function seasons(raw) {
   return { ok: out.has('all') ? ['all'] : RULE.season_rule.dictionary.filter((s) => out.has(s)) };
 }
 
-export function build() {
+export function build({ write = true } = {}) {
   const families = new Set(readCsv(path.join(GROUP, 'places/place_families.csv')).map((r) => r.pf_id));
   const nodes = readCsv(path.join(GROUP, 'places/node_binding.csv'));
   const g4 = new Set(nodes.filter((n) => n.node_level === 'G4').map((n) => n.node_ref.replace(/@\d+$/, '')));
@@ -177,7 +177,7 @@ export function build() {
     }
   }
   const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'entry_visible_if', 'search_only_if', 'wild_arrival_cause_required', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
-  const n = writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows);
+  const n = write ? writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows) : rows.length;
   const cappedRows = rows.filter((r) => r.class_capped_from);
   const report = {
     rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n, category_rules: n - peopleKeys.size, people_rules: peopleKeys.size,
@@ -190,8 +190,10 @@ export function build() {
     by_scope_kind: rows.reduce((a, r) => ((a[r.scope_kind] = (a[r.scope_kind] ?? 0) + 1), a), {}),
     by_class: rows.reduce((a, r) => ((a[r.frequency_class] = (a[r.frequency_class] ?? 0) + 1), a), {}),
   };
-  writeJson(path.join(GROUP, 'reports/presence-rules-report.json'), report);
-  console.log('presence rules', { pool_files: poolFiles.length, accepted: pools.length, written: n, rejected: rejects.length, reasons: report.reject_reasons });
-  return report;
+  if (write) {
+    writeJson(path.join(GROUP, 'reports/presence-rules-report.json'), report);
+    console.log('presence rules', { pool_files: poolFiles.length, accepted: pools.length, written: n, rejected: rejects.length, reasons: report.reject_reasons });
+  }
+  return { rows, report };
 }
 if (process.argv[1]?.endsWith('build-presence-rules.mjs')) build();

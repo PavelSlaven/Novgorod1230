@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 18,
-  "own_checks_total": 18,
+  "own_checks_passed": 19,
+  "own_checks_total": 19,
   "checks": [
     {
       "domain": "place_families",
@@ -126,6 +126,16 @@
     },
     {
       "domain": "presence_rules",
+      "name": "matches_current_input_pools",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "rows": 10292,
+      "rebuilt_rows": 10292
+    },
+    {
+      "domain": "presence_rules",
       "name": "rows_resolve_and_follow_rule",
       "pass": true,
       "failures": 0,
@@ -157,7 +167,7 @@
         "livestock": 144,
         "buildings": 89,
         "food": 52,
-        "tools": 238,
+        "tools": 174,
         "weapons": 628
       }
     },

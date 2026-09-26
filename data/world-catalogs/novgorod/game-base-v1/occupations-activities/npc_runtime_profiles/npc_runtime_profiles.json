@@ -1,0 +1,1209 @@
+{
+  "artifact_type": "npc_runtime_profiles_candidate",
+  "status": "candidate",
+  "approved": false,
+  "activation_authorized": false,
+  "policy": "Code selects facts and checks actor/role/season/property; LLM describes selected facts only.",
+  "appearance_policy_source": {
+    "required_facets": [
+      "sex_category",
+      "age_category",
+      "build",
+      "skin_tone",
+      "face_shape",
+      "hair_color",
+      "hair_length",
+      "hair_style",
+      "facial_hair",
+      "eye_color"
+    ],
+    "source_demographic_profile_ref": "novgorod_1200_1250_demographic_profile_v1",
+    "source_appearance_profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+    "source_status": "approved_in_v4_and_authoring_approved_carry_forward_to_v6",
+    "target_status": "unbound",
+    "directness": "direct_for_source_rows_analogical_for_target_transfer",
+    "confidence": "medium",
+    "origin_inference_from_appearance": "forbidden",
+    "ethnic_facet_weights": "not_authored",
+    "policy": "Use the existing diverse appearance options without inferring ethnicity or language; never substitute the adult male equipment set for a selected woman."
+  },
+  "g4_composition_source": {
+    "path": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json",
+    "count": 32,
+    "rule": "source candidate only; no new presence bindings"
+  },
+  "profiles": [
+    {
+      "profile_id": "m2c_npc_boatman_v1",
+      "occupation_ref": "nov_occ_boatman",
+      "role_ref": "nov_role_boatman",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": "novgorod_transport_guiding_equipment_v1",
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_boatman_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_boatman_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_fisher_v1",
+      "occupation_ref": "nov_occ_fisher",
+      "role_ref": "nov_role_fisher",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": "novgorod_fishing_water_equipment_v1",
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_fisher_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_fisher_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_guide_v1",
+      "occupation_ref": "nov_occ_route_guide",
+      "role_ref": "nov_role_guide",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": null,
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_guide_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_guide_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_hunter_v1",
+      "occupation_ref": "nov_occ_hunter_trapper",
+      "role_ref": "nov_role_hunter",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": null,
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_hunter_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_hunter_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_forest_worker_v1",
+      "occupation_ref": "nov_occ_forest_worker",
+      "role_ref": "nov_role_forest_promyslovik",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": null,
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_forest_worker_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_forest_worker_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_local_trader_v1",
+      "occupation_ref": "nov_occ_local_trader",
+      "role_ref": "nov_role_trader",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": null,
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_local_trader_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_local_trader_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_visiting_merchant_v1",
+      "occupation_ref": "nov_occ_long_distance_merchant",
+      "role_ref": "nov_role_merchant_guest",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": null,
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_visiting_merchant_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_visiting_merchant_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_foreign_merchant_v1",
+      "occupation_ref": "nov_occ_long_distance_merchant",
+      "role_ref": "nov_role_foreign_guest",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": null,
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_foreign_merchant_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_foreign_merchant_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "m2c_npc_household_servant_v1",
+      "occupation_ref": "nov_occ_household_servant",
+      "role_ref": "nov_role_servant",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select facets for concrete actor in code"
+      },
+      "clothing": {
+        "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+        "version": 1,
+        "status": "candidate_approval_pending"
+      },
+      "equipment": {
+        "authoring_source_ref": null,
+        "binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        }
+      },
+      "routine": {
+        "profile_ref": "ordinary_day_work_routine_v1@1",
+        "status": "proposed_analogy",
+        "seasonal_schedule_source_fields": [
+          "daily_schedule_winter",
+          "daily_schedule_spring_rasputitsa",
+          "daily_schedule_summer",
+          "daily_schedule_autumn"
+        ]
+      },
+      "source_refs": [
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#profiles.m2c_npc_household_servant_v1",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json#profiles.m2c_npc_household_servant_v1"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+        "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+        "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+        "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_jeweler_caster",
+      "occupation_ref": "occ_jeweler_caster",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "обычная городская одежда ремесленника; кожаный передник в мастерской",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "льячка, тигель, каменные и глиняные литейные формы, наковальня малая, зубила, напильник, весы для металла",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "дома/в мастерской при усадьбе с рассвета: разогрев тигля, литьё в каменную форму, доводка напильником; вечером — торг на дому или через посредника",
+        "spring": "работа не выходя со двора (бездорожье режет поставки металла и сбыт); долив запасов лома и монеты-сырья до распутицы",
+        "summer": "то же плюс поездки на торг и к заказчикам по ясной дороге; закупка привозного цветного металла у гостей",
+        "autumn": "интенсивная работа под зимние и рождественские заказы (кресты, колты, перстни, бубенчики)"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_jeweler_caster",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_bone_carver",
+      "occupation_ref": "occ_bone_carver",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "обычная городская одежда ремесленника",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "пилки, ножи-резцы, свёрла ручные (лучковые), точильный камень",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "распиловка и резьба кости (гребни, иглы, писала, шашки, рукояти) при дневном свете у окна мастерской",
+        "spring": "доработка запасов кости и рога, накопленных зимой (забой скота)",
+        "summer": "закупка свежей кости/рога у мясников и охотников; сбыт готовых гребней и накостных изделий на торгу",
+        "autumn": "основной сезон заготовки сырья — после осеннего забоя скота"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_bone_carver",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_wood_turner",
+      "occupation_ref": "occ_wood_turner",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "обычная ремесленная одежда, часто в стружке",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "лучковый токарный станок, резцы, скобель",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "точит на ручном (лучковом) станке чаши, веретёна, ручки инструмента из заготовленной осенью древесины",
+        "spring": "работа со двора не выходя; доводка запасов",
+        "summer": "заготовка свежей древесины (берёза, липа), сбыт токарных изделий на торгу",
+        "autumn": "основной сезон заготовки заготовок под зимнюю точку"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_wood_turner",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_furrier",
+      "occupation_ref": "occ_furrier",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "рабочая одежда, часто в шерсти и мехе на пробу",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "скобель/мездряк, иглы, нити (сухожилия/лён)",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "основной сезон: обработка зимних шкур (мездрение, выделка мехом, шитьё меховой подкладки/шапок/воротников)",
+        "spring": "доработка запасов, сбыт остатков перед распутицей",
+        "summer": "меньше сырья (не сезон пушнины); ремонт готовых меховых вещей",
+        "autumn": "закупка свежих шкур у охотников и с торга по мере начала промысла"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_furrier",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_dyer",
+      "occupation_ref": "occ_dyer",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "рабочая одежда с пятнами краски",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "чан, мешалка, ступа для растирания красителя",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "крашение пряжи/готовой ткани в чане с подогревом внутри дома или в клети",
+        "spring": "работа не выходя со двора; расход запасов краски",
+        "summer": "сбор местных красящих растений (в т.ч. лишайники, кора, растительные красители) и крашение на открытом воздухе",
+        "autumn": "крашение шерсти нового настрига перед зимним шитьём"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_dyer",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_ropemaker_netmaker",
+      "occupation_ref": "occ_ropemaker_netmaker",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "обычная рабочая одежда",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "верёвочное колесо/крюк, чесалка волокна",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "вьёт верёвки и канаты из запасенного зимой лыка/пеньки/лозы дома или в клети",
+        "spring": "работа не выходя со двора",
+        "summer": "заготовка сырья (лыко, пенька), сбыт готовых канатов лодейщикам к навигации",
+        "autumn": "основной сезон заготовки лыка и растительного волокна"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_ropemaker_netmaker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_netmaker",
+      "occupation_ref": "occ_netmaker",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "рабочая одежда рыбацкой слободы",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "челнок для вязки сети, распялка, грузила и поплавки",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "вяжет и чинит рыболовные сети дома при свете лучины/окна",
+        "spring": "ремонт сетей перед началом весеннего лова",
+        "summer": "активный ремонт после каждого лова; вязка новых сетей на заказ",
+        "autumn": "вязка сетей под зимний подлёдный лов"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_netmaker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_locksmith",
+      "occupation_ref": "occ_locksmith",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "кузнечная рабочая одежда, кожаный передник",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "малый горн, наковальня, зубила, напильники, свёрла",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "кузница: изготовление и ремонт замков, ключей, скоб, накладок сундуков",
+        "spring": "работа не выходя со двора, доводка запасов",
+        "summer": "то же плюс заказы на новые сундучные замки к торговому сезону",
+        "autumn": "то же"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_locksmith",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_bowyer",
+      "occupation_ref": "occ_bowyer",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "обычная ремесленная одежда",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "ножи, скобель, клей животный, тиски-прижимы, береста для обмотки",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "подготовка дерева, рога и жил, склейка и просушка составного лука в сухом месте",
+        "spring": "контроль сушки/склейки, не выходя со двора",
+        "summer": "заготовка древесины, рога и сухожилий на новую партию",
+        "autumn": "то же плюс сбыт готовых луков к осенней охоте"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_bowyer",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_arrowsmith",
+      "occupation_ref": "occ_arrowsmith",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "ремесленная рабочая одежда",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "малый горн, зубила, ножи для древка, клей и нить для оперения",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "кузнечная выковка наконечников малым горном + насад древков и оперение стрел дома",
+        "spring": "доводка запасов, не выходя со двора",
+        "summer": "заготовка древка (ровный сухой прут) и перьев (гусь/утка) для оперения",
+        "autumn": "то же, плюс заказы к осенней охоте"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_arrowsmith",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_mason",
+      "occupation_ref": "occ_mason",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "грубая рабочая одежда, часто в известковой пыли",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "тёсла, скарпели, отвес, известковый раствор и инструмент для его приготовления",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "сезон простоя стройки (кладка не ведётся в мороз); ремонт инструмента, заготовка тёсаного камня под навесом",
+        "spring": "ожидание проезда обозов с камнем и известью; подготовка площадки",
+        "summer": "основной строительный сезон: кладка стен церкви/крепости по найму артели, работа с известковым раствором",
+        "autumn": "завершение сезонной кладки до заморозков"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_mason",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_limeburner",
+      "occupation_ref": "occ_limeburner",
+      "role_ref": "nov_role_forest_promyslovik",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "грубая рабочая одежда, часто в известковой пыли",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "обжиговая печь/яма, лопаты, чаны для гашения извести",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "простой обжиговой печи (сезон стройки не идёт); ремонт печи-известеобжигательной ямы",
+        "spring": "заготовка известнякового камня и топлива к летнему обжигу",
+        "summer": "обжиг известняка в яме/печи несколько суток подряд, гашение извести водой, поставка на стройку",
+        "autumn": "последний обжиг сезона до заморозков"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_limeburner",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_icon_painter",
+      "occupation_ref": "occ_icon_painter",
+      "role_ref": "nov_role_church_scribe",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "скромная одежда мирянина или монашеская, часто в пятнах краски",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "кисти, доски-основы, левкас (грунт), яичная темпера, растёртые пигменты, олифа",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "работа при свете у окна мастерской/кельи: подготовка доски (левкас), письмо иконы слоями",
+        "spring": "то же, не выходя со двора",
+        "summer": "то же плюс поездки по заказу церквей и монастырей",
+        "autumn": "завершение заказов к престольным праздникам"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_icon_painter",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_brewer_meadmaker",
+      "occupation_ref": "occ_brewer_meadmaker",
+      "role_ref": "nov_role_servant",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "обычная рабочая/домашняя одежда",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "котёл, чаны для сусла и брожения, солодовня (проращивание зерна)",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "варка пива/мёда к зимним праздникам и братчинам (совместным пирам общины)",
+        "spring": "работа не выходя со двора; расход зимних запасов солода/мёда",
+        "summer": "заготовка хмеля и солода к новому сезону варки",
+        "autumn": "основная варка после осеннего урожая зерна и сбора мёда диких/бортных пчёл"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_brewer_meadmaker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_butcher",
+      "occupation_ref": "occ_butcher",
+      "role_ref": "nov_role_servant",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "грубая рабочая одежда, часто в пятнах крови",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "ножи для забоя и разруба, топор, чаны для засолки",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "основной сезон забоя (холод хранит мясо); разруб и продажа/засолка туш",
+        "spring": "минимум забоя; торговля запасённым засоленным/копчёным мясом",
+        "summer": "забой минимален (жара), в основном торговля живым скотом и малым забоем на заказ",
+        "autumn": "второй пик забоя после выгона на выпасе, перед зимой (нагул массы)"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_butcher",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_market_baker",
+      "occupation_ref": "occ_market_baker",
+      "role_ref": "nov_role_servant",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "обычная городская одежда, часто в муке",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "печь, квашня, деревянные лопаты для хлеба",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "выпечка хлеба с ночи/раннего утра в печи для продажи на торгу днём",
+        "spring": "то же, ограничен подвоз муки при распутице",
+        "summer": "то же, стабильный подвоз зерна/муки",
+        "autumn": "то же, пик — свежий помол нового урожая"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_market_baker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_fish_trader",
+      "occupation_ref": "occ_fish_trader",
+      "role_ref": "nov_role_trader",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "обычная торговая одежда, часто с рыбным запахом",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "весы, бочки и чаны для засолки",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "торгует подлёдным уловом и запасённой солёной/сушёной рыбой",
+        "spring": "торгует остатками запасов до открытия нового лова",
+        "summer": "закупает свежий улов у рыбаков ежедневно, часть засаливает про запас",
+        "autumn": "закупает крупный осенний улов, основной сезон засолки на зиму"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_fish_trader",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_wetnurse",
+      "occupation_ref": "occ_wetnurse",
+      "role_ref": "nov_role_servant",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "скромная женская одежда, обычно вдовы или бедной родственницы",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "пелёнки, колыбель, детская посуда",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "живёт в доме нанимателя, вскармливает и нянчит младенца, ведёт малый домашний труд по силам",
+        "spring": "то же, без выхода со двора",
+        "summer": "то же, иногда сопровождает семью на летние работы/выезды",
+        "autumn": "то же"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_wetnurse",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    },
+    {
+      "profile_id": "profile_occ_shield_maker",
+      "occupation_ref": "occ_shield_maker",
+      "role_ref": "nov_role_craftsman_master",
+      "status": "candidate",
+      "appearance": {
+        "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "binding": null,
+        "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"
+      },
+      "clothing": {
+        "occupation_source_field": "typical_clothing",
+        "value": "одежда ремесленника по достатку",
+        "no_source": "individual_clothing_items_and_variant"
+      },
+      "equipment": {
+        "occupation_source_field": "typical_tools",
+        "value": "тесло, пила, нож, сверло, шило, молоток, заклёпки",
+        "no_source": "individual_owned_item_binding"
+      },
+      "routine": {
+        "winter": "работа над щитами в мастерской при доступном свете",
+        "spring": "работа в мастерской; поставки материалов зависят от дороги",
+        "summer": "работа над щитами и передача заказов",
+        "autumn": "работа над щитами и подготовка материалов к зиме"
+      },
+      "source_refs": [
+        "occupations/occupations_additions.csv#occ_shield_maker",
+        "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#appearance_policy"
+      ],
+      "executable": false,
+      "typed_gaps": [
+        "individual_appearance_binding",
+        "individual_clothing_binding",
+        "individual_equipment_property_binding",
+        "candidate_occupation_not_approved"
+      ]
+    }
+  ]
+}

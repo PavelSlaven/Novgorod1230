@@ -1,106 +1,86 @@
 # -*- coding: utf-8 -*-
-"""
-Extract activity chains (prev/next) for the PRO#### ids cited as sources for
-occupations/occupations_additions.csv (this same collector), from the
-already-copied master-archive-v1 activities.csv (2442 rows, candidate).
-
-Scope note: this is a NARROW slice of the activities_observable domain
-(only the 27 PRO ids behind our 18 new occupations), not the full domain
-(2442 activities x 68+ occupations), which is out of this pass's budget and
-is priority M3 per the brief. See README.md gaps.
-
-Deterministic: pure filter + cycle check, no authored content.
-
-Run: python build_activities_for_new_occupations.py
-"""
+"""Build candidate observable cues for the collector's new occupations."""
 import csv
-import json
 import os
 
-SRC = os.path.join(
-    os.path.dirname(__file__), "..", "..", "..", "..", "sources",
-    "master-archive-v1", "data", "normalized_source_tables", "occupations",
-    "activities.csv",
-)
-OUT = os.path.join(os.path.dirname(__file__), "..", "activities_new_occupations.csv")
-
-# PRO ids cited in occupations_additions.csv source_refs
-TARGET_PROS = {
-    "PRO0017", "PRO0018", "PRO0051", "PRO0052", "PRO0053", "PRO0040", "PRO0028",
-    "PRO0128", "PRO0264", "PRO0066", "PRO0067", "PRO0115", "PRO0006", "PRO0311",
-    "PRO0009", "PRO0203", "PRO0072", "PRO0204", "PRO0077", "PRO0086", "PRO0087",
-    "PRO0090", "PRO0091", "PRO0084", "PRO0093", "PRO0094", "PRO0424",
-}
-
+HERE = os.path.dirname(__file__)
+OCC = os.path.join(HERE, "..", "..", "occupations", "occupations_additions.csv")
+OUT = os.path.join(HERE, "..", "activities_new_occupations.csv")
 FIELDS = [
-    "ac_id", "name_ru", "profession_ids", "prev_ref", "next_ref",
-    "season_scope", "duration_estimate", "observable_text_ru",
-    "source_refs", "confidence",
+    "ac_id", "occupation_ref", "pf_id", "name_ru", "season_scope",
+    "observable_text_ru", "inputs", "outputs", "previous_ac_id", "next_ac_id",
+    "source_refs", "confidence", "status",
 ]
+
+# Place families are candidate scene contexts, not presence/population bindings.
+PF = {
+    "occ_jeweler_caster": "pf_ordinary_workshop", "occ_bone_carver": "pf_ordinary_workshop",
+    "occ_wood_turner": "pf_ordinary_workshop", "occ_furrier": "pf_ordinary_workshop",
+    "occ_dyer": "pf_ordinary_workshop", "occ_ropemaker_netmaker": "pf_town_courtyard",
+    "occ_netmaker": "pf_town_courtyard", "occ_locksmith": "pf_smithy",
+    "occ_bowyer": "pf_ordinary_workshop", "occ_arrowsmith": "pf_smithy",
+    "occ_mason": "pf_churchyard", "occ_limeburner": "pf_outbuildings",
+    "occ_icon_painter": "pf_monastery_yard", "occ_brewer_meadmaker": "pf_town_courtyard",
+    "occ_butcher": "pf_market_square", "occ_market_baker": "pf_market_square",
+    "occ_fish_trader": "pf_market_square", "occ_wetnurse": "pf_dwelling_interior",
+    "occ_shield_maker": "pf_ordinary_workshop",
+}
+ITEM_FLOW = {
+    "occ_bone_carver": ("mt_bone", "it_ps_comb_double"),
+    "occ_wood_turner": ("mt_wood_generic", "it_hh_turned_bowl"),
+}
 
 
 def main():
-    with open(SRC, encoding="utf-8-sig") as f:
-        rows = list(csv.DictReader(f))
-
-    by_id = {}
-    kept = []
-    for r in rows:
-        pids = json.loads(r["profession_ids"]) if r["profession_ids"] else []
-        if any(p in TARGET_PROS for p in pids):
-            by_id[r["activity_id"]] = r
-            kept.append(r)
-
-    # cycle check within kept chains (prev/next restricted to kept set)
-    def neighbors(r, key):
-        try:
-            ids = json.loads(r[key]) if r[key] else []
-        except Exception:
-            ids = []
-        return [i for i in ids if i in by_id]
-
-    visiting, visited = set(), set()
-    cyclic = []
-
-    def dfs(node_id):
-        if node_id in visited:
-            return
-        if node_id in visiting:
-            cyclic.append(node_id)
-            return
-        visiting.add(node_id)
-        for nxt in neighbors(by_id[node_id], "next_activity_ids"):
-            dfs(nxt)
-        visiting.discard(node_id)
-        visited.add(node_id)
-
-    for aid in by_id:
-        dfs(aid)
-
-    out_rows = []
-    for r in kept:
-        out_rows.append({
-            "ac_id": "ac_" + r["activity_id"].lower(),
-            "name_ru": r["name_ru"],
-            "profession_ids": r["profession_ids"],
-            "prev_ref": r["previous_activity_ids"],
-            "next_ref": r["next_activity_ids"],
-            "season_scope": r["season_scope"],
-            "duration_estimate": r["duration_estimate"],
-            "observable_text_ru": r["description_ru"],
-            "source_refs": f"gb:sources/master-archive-v1/data/normalized_source_tables/occupations/activities.csv#{r['activity_id']}",
-            "confidence": r["historical_confidence"],
+    with open(OCC, encoding="utf-8") as f:
+        occupations = list(csv.DictReader(f))
+    rows = []
+    for occ in occupations:
+        oid = occ["occupation_id"]
+        seasons = "spring,summer,autumn" if oid == "occ_mason" else "winter,spring,summer,autumn"
+        rows.append({
+            "ac_id": "ac_" + oid,
+            "occupation_ref": oid,
+            "pf_id": PF[oid],
+            "name_ru": occ["occupation_title_ru"] + ": видимая работа",
+            "season_scope": seasons,
+            "observable_text_ru": occ["how_to_materialize_as_background_npc"],
+            "inputs": ITEM_FLOW.get(oid, ("", ""))[0],
+            "outputs": ITEM_FLOW.get(oid, ("", ""))[1],
+            "previous_ac_id": "", "next_ac_id": "",
+            "source_refs": occ["source_refs"] + ";rule:occupation_property_to_pf#" + PF[oid]
+                           + (";materials_registry/materials.csv#" + ITEM_FLOW[oid][0]
+                              + ";items-household-personal/items/"
+                              + ("personal.csv#" if ITEM_FLOW[oid][1].startswith("it_ps_") else "household.csv#")
+                              + ITEM_FLOW[oid][1]
+                              if oid in ITEM_FLOW else ";no_source:resolved_item_flow"),
+            "confidence": "C", "status": "candidate",
         })
-
+    # A two-step, observable chain: turned bowl at the workshop, then offered
+    # at the market. The second step transfers no goods until a real sale.
+    making = next(r for r in rows if r["occupation_ref"] == "occ_wood_turner")
+    making["next_ac_id"] = "ac_occ_wood_turner_offer"
+    making_sources = ";".join(
+        ref for ref in making["source_refs"].split(";")
+        if not ref.startswith("rule:occupation_property_to_pf#")
+    )
+    rows.append({
+        "ac_id": "ac_occ_wood_turner_offer", "occupation_ref": "occ_wood_turner",
+        "pf_id": "pf_market_square", "name_ru": "токарь предлагает точёную миску",
+        "season_scope": "winter,spring,summer,autumn",
+        "observable_text_ru": "Токарь показывает покупателю точёную миску на торгу.",
+        "inputs": "it_hh_turned_bowl", "outputs": "", "previous_ac_id": making["ac_id"],
+        "next_ac_id": "", "source_refs": making_sources + ";places-binding/places/place_families.csv#pf_market_square;rule:market_offer_no_committed_sale",
+        "confidence": "C", "status": "candidate",
+    })
+    assert len(rows) == len({r["ac_id"] for r in rows})
+    assert {r["occupation_ref"] for r in rows} == {r["occupation_id"] for r in occupations}
+    assert all(r["observable_text_ru"].strip() and "committed-состоянием" not in r["observable_text_ru"] for r in rows)
     with open(OUT, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=FIELDS)
-        w.writeheader()
-        w.writerows(out_rows)
-
-    print(f"wrote {len(out_rows)} rows to {OUT}")
-    print(f"cycle check: {len(cyclic)} nodes involved in a cycle" if cyclic else "cycle check: no cycles found")
-    missing_text = [r for r in out_rows if not r["observable_text_ru"].strip()]
-    print(f"rows missing observable_text_ru: {len(missing_text)}")
+        writer = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+    print(f"wrote {len(rows)} candidate cues")
 
 
 if __name__ == "__main__":

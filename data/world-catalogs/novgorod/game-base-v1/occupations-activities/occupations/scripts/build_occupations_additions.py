@@ -16,8 +16,10 @@ Writes ../occupations_additions.csv next to this script's parent dir.
 """
 import csv
 import os
+from pathlib import Path
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "occupations_additions.csv")
+PINNED = Path(__file__).resolve().parents[6] / "novgorod-region" / "novgorod_occupations_v1_enriched.tsv"
 
 FIELDS = [
     "occupation_id", "occupation_title_ru", "occupation_group", "historical_term",
@@ -33,6 +35,56 @@ FIELDS = [
     "status", "confidence", "source_refs", "notes",
 ]
 
+# The collector keeps its own candidate rows; these ids resolve against the
+# pinned occupation TSV and do not imply runtime approval.
+ARCHETYPES = {
+    "archetype_urban_craftsman": "craft_production",
+    "archetype_rural_or_periurban_craftsman": "craft_production",
+    "archetype_church_craftsman": "religious_literate",
+    "archetype_urban_or_household_craftsman": "craft_production",
+    "archetype_urban_trader": "trade_exchange",
+    "archetype_household_dependent": "domestic_service",
+}
+BOOK_REFS = {
+    "occ_bone_carver": "book:622242 ¶1851-1854",
+    "occ_wood_turner": "book:622242 ¶1712-1723",
+    "occ_ropemaker_netmaker": "book:622242 ¶1447",
+    "occ_netmaker": "book:622242 ¶1447",
+    "occ_locksmith": "book:622242 ¶1643",
+    "occ_butcher": "book:622242 ¶1480",
+    "occ_market_baker": "book:622242 ¶1480",
+    "occ_fish_trader": "book:622242 ¶1484;book:709382 ¶674-675",
+    "occ_wetnurse": "book:641351 ¶2768",
+}
+NO_DIRECT_SOURCE = {
+    "occ_furrier", "occ_arrowsmith", "occ_mason", "occ_limeburner",
+    "occ_icon_painter", "occ_brewer_meadmaker",
+}
+
+# Existing occupations supply regional runtime fields and admissible roles.
+# Each transfer is a candidate analogy, never an approval of the new occupation.
+ANALOGS = {
+    "occ_jeweler_caster": "nov_occ_blacksmith",
+    "occ_bone_carver": "nov_occ_carpenter",
+    "occ_wood_turner": "nov_occ_carpenter",
+    "occ_furrier": "nov_occ_leatherworker",
+    "occ_dyer": "nov_occ_weaver_cloth_worker",
+    "occ_ropemaker_netmaker": "nov_occ_weaver_cloth_worker",
+    "occ_netmaker": "nov_occ_weaver_cloth_worker",
+    "occ_locksmith": "nov_occ_blacksmith",
+    "occ_bowyer": "nov_occ_carpenter",
+    "occ_arrowsmith": "nov_occ_blacksmith",
+    "occ_mason": "nov_occ_carpenter",
+    "occ_limeburner": "nov_occ_pitch_tar_worker",
+    "occ_icon_painter": "nov_occ_scribe",
+    "occ_brewer_meadmaker": "nov_occ_cook_baker",
+    "occ_butcher": "nov_occ_cook_baker",
+    "occ_market_baker": "nov_occ_cook_baker",
+    "occ_fish_trader": "nov_occ_market_stall_seller",
+    "occ_wetnurse": "nov_occ_household_servant",
+    "occ_shield_maker": "nov_occ_carpenter",
+}
+
 ROWS = [
     dict(
         occupation_id="occ_jeweler_caster",
@@ -40,13 +92,13 @@ ROWS = [
         occupation_group="ремесло",
         historical_term="ювелир / литец",
         occupation_archetype_id="archetype_urban_craftsman",
-        daily_schedule_winter="дома/в мастерской при усадьбе с рассвета: разогрев тигля, литьё по восковой модели или в форму, доводка напильником; вечером — торг на дому или через посредника",
+        daily_schedule_winter="дома/в мастерской при усадьбе с рассвета: разогрев тигля, литьё в каменную форму, доводка напильником; вечером — торг на дому или через посредника",
         daily_schedule_spring_rasputitsa="работа не выходя со двора (бездорожье режет поставки металла и сбыт); долив запасов лома и монеты-сырья до распутицы",
         daily_schedule_summer="то же плюс поездки на торг и к заказчикам по ясной дороге; закупка привозного цветного металла у гостей",
         daily_schedule_autumn="интенсивная работа под зимние и рождественские заказы (кресты, колты, перстни, бубенчики)",
         how_to_materialize_as_background_npc="стук молоточка и запах горячего воска/металла из мастерской на усадьбе; лоток с готовыми колтами и перстнями на торгу",
-        how_to_materialize_as_scene_npc="показывает заказчику восковую модель или готовую вещь, называет цену в кунах/резанах, спорит о пробе металла",
-        how_to_materialize_as_key_npc="держатель редкого умения (литьё по выплавляемой модели, зернь, эмаль-выемка); источник подделок или, наоборот, экспертизы подлинности вещи",
+        how_to_materialize_as_scene_npc="показывает заказчику литейную форму или готовую вещь, называет цену в кунах/резанах, спорит о пробе металла",
+        how_to_materialize_as_key_npc="мастер литья в каменные формы; источник экспертизы подлинности литой вещи",
         typical_property="усадьба с отдельной мастерской или углом в доме, тигли, льячки, каменные/глиняные литейные формы",
         typical_tools="льячка, тигель, каменные и глиняные литейные формы, наковальня малая, зубила, напильник, весы для металла",
         typical_clothing="обычная городская одежда ремесленника; кожаный передник в мастерской",
@@ -56,12 +108,12 @@ ROWS = [
         common_relationships="зависит от гостей-купцов (привозная медь, олово, серебро); конкурирует с другими литейщиками; поставляет украшения боярским и купеческим домам",
         common_fears="обвинение в подмене металла (медь под серебро), кража готовых изделий, пожар в мастерской",
         common_goals="накопить запас цветного металла до распутицы; выполнить заказ до праздника",
-        llm_adaptation_rules="конкретный узор колта/перстня и состав сплава — импровизация в пределах новгородской ювелирной традиции (литьё по выплавляемой модели, зернь, эмаль); техника и инструмент — из типовых полей",
+        llm_adaptation_rules="конкретный узор литого изделия — в пределах подтверждённой новгородской традиции; техника и инструмент — из типовых полей",
         llm_forbidden_uses="не изображать штамповку листового металла прессом (анахронизм) и не изображать огранку драгоценных камней фасетами",
         status="candidate",
         confidence="B",
-        source_refs="gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0017(Ювелир,conf=A,SRC001|SRC062|SRC063|SRC085|SRC102);#PRO0018(Изготовитель металлической проволоки,conf=C)",
-        notes="Объединяет PRO0017 (ювелир) и функцию литья по восковой модели, засвидетельствованную новгородской археологией цветного металла (тигли, льячки, литейные формы — SRC001 и производные своды).",
+        source_refs="gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0017;book:622242 ¶1743,¶1748;book:709382 ¶705-707;wk:nonferrous-casting.json",
+        notes="Мастерская литейщика 1220–30-х; основной приём XII–XIII вв. — литьё в каменные формы. Тигли и льячки не свидетельствуют о литье по восковой модели.",
     ),
     dict(
         occupation_id="occ_bone_carver",
@@ -162,7 +214,7 @@ ROWS = [
         daily_schedule_autumn="крашение шерсти нового настрига перед зимним шитьём",
         how_to_materialize_as_background_npc="чан с окрашенной водой и разложенная на просушку окрашенная пряжа/ткань во дворе",
         how_to_materialize_as_scene_npc="показывает клиенту образцы окрашенной пряжи/сукна, называет цену за оттенок",
-        how_to_materialize_as_key_npc="держатель секрета устойчивого дорогого оттенка (синий, ярко-красный) — источник статусной ткани",
+        how_to_materialize_as_key_npc="мастер крашения пряжи и ткани; конкретный краситель требует отдельного источника",
         typical_property="двор с чаном для крашения, запас красящего сырья",
         typical_tools="чан, мешалка, ступа для растирания красителя",
         typical_clothing="рабочая одежда с пятнами краски",
@@ -175,9 +227,9 @@ ROWS = [
         llm_adaptation_rules="палитра и стойкость цвета — приглушённые природные тона по умолчанию (синий, зелёный, охристо-жёлтый), яркие насыщенные — только для дорогого заказа с привозным красителем",
         llm_forbidden_uses="не изображать анилиновые/синтетические яркие цвета (неоновый и т.п.) как обычные для 1230 года",
         status="candidate",
-        confidence="B",
-        source_refs="gb:sources/costume-dataset-v1/data/materials_palette.csv#COL005(Приглушённый синий,conf=B,SRC007|SRC010|SRC043);#COL006(Приглушённый зелёный,conf=B,SRC007|SRC010);#COL007(Охристо-жёлтый,conf=B,SRC007|SRC008)",
-        notes="В professions.csv отдельной строки 'красильщик' нет (проверено скриптом keyword-поиска, поиск на 'красильщ/краше' давал только ложное совпадение через 'украшение'); занятие восстановлено по палитре тканей costume-dataset (крашеная шерсть засвидетельствована с confidence B) — реальный источниковый разрыв, отмечен в README как требующий отдельной archaeology-проверки красильных мастерских.",
+        confidence="C",
+        source_refs="gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0062(conf=C);book:755331 ¶2737;book:622242 ¶1527",
+        notes="PRO0062 подтверждает кандидата с confidence C; новгородская специальность красильщика остаётся под вопросом. Цвета тканей сами по себе не доказывают местное ремесло.",
     ),
     dict(
         occupation_id="occ_ropemaker_netmaker",
@@ -272,28 +324,28 @@ ROWS = [
         occupation_group="ремесло",
         historical_term="лукодел",
         occupation_archetype_id="archetype_urban_craftsman",
-        daily_schedule_winter="склейка и просушка составного лука (дерево+кость+сухожилия) — процесс месяцами, требует сухого тёплого места",
+        daily_schedule_winter="подготовка дерева, рога и жил, склейка и просушка составного лука в сухом месте",
         daily_schedule_spring_rasputitsa="контроль сушки/склейки, не выходя со двора",
-        daily_schedule_summer="заготовка древесины, кости, рога и сухожилий на новую партию",
+        daily_schedule_summer="заготовка древесины, рога и сухожилий на новую партию",
         daily_schedule_autumn="то же плюс сбыт готовых луков к осенней охоте",
         how_to_materialize_as_background_npc="развешанные на просушку заготовки лука и берестяная обмотка в мастерской",
         how_to_materialize_as_scene_npc="подгоняет лук по силе натяжения под заказчика, показывает готовое изделие",
         how_to_materialize_as_key_npc="держатель умения делать сложный составной (композитный) лук — редкость, ценный заказчик (княжий двор, дружина)",
-        typical_property="сухая клеть/мастерская для многомесячной склейки лука",
+        typical_property="сухая клеть/мастерская для работы над луком",
         typical_tools="ножи, скобель, клей животный, тиски-прижимы, береста для обмотки",
         typical_clothing="обычная ремесленная одежда",
         typical_containers="короб для заготовок и готовых луков",
-        typical_local_knowledge="где взять качественную кость/рог/сухожилие и клей",
+        typical_local_knowledge="где взять качественный рог, жилы и клей",
         typical_route_knowledge="путь на торг и к дружинным/охотничьим заказчикам",
         common_relationships="снабжает дружину, охотников; зависит от изготовителя наконечников стрел (стрельника)",
-        common_fears="испорченная многомесячная склейка (влажность, брак) — потеря заказа и материала",
+        common_fears="испорченная склейка (влажность, брак) — потеря заказа и материала",
         common_goals="довести лук до нужной силы натяжения к сроку",
         llm_adaptation_rules="лук новгородского региона — простой цельнодеревянный или композитный степного/дружинного образца по контексту заказчика",
         llm_forbidden_uses="не изображать современный композитный/блочный лук",
         status="candidate",
-        confidence="A",
-        source_refs="gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0311(Лучник,conf=A,SRC031|SRC034|SRC035|SRC036|SRC037|SRC038|SRC071|SRC090|SRC102)",
-        notes="PRO0311 в источнике описывает воина-стрелка; здесь занятие переопределено на РЕМЕСЛЕННИКА-изготовителя лука (лукодел), как явно просит бриф ('лучник' в списке недостающих ремёсел, не военного); военный стрелок как роль уже покрыт военной группой occupation.",
+        confidence="B",
+        source_refs="book:755331 ¶2716",
+        notes="Лукодел подтверждён книжным свидетельством (дерево, рог, клей, жилы, пресс/тиски). PRO0311 описывает воина-стрелка и не является источником этой строки.",
     ),
     dict(
         occupation_id="occ_arrowsmith",
@@ -556,15 +608,72 @@ ROWS = [
         source_refs="gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0424(Кормилица,conf=C,SRC001|SRC008|SRC012|SRC028|SRC045|SRC067|SRC074|SRC097|SRC100)",
         notes="Confidence C наследуется от исходной historical_confidence=C в professions.csv; занятие плausible по общей практике знатных/зажиточных домов, но без прямой археологической фиксации по Новгороду 1230-х.",
     ),
+    dict(
+        occupation_id="occ_shield_maker", occupation_title_ru="щитник",
+        occupation_group="ремесло", historical_term="щитник",
+        occupation_archetype_id="archetype_urban_craftsman",
+        daily_schedule_winter="работа над щитами в мастерской при доступном свете",
+        daily_schedule_spring_rasputitsa="работа в мастерской; поставки материалов зависят от дороги",
+        daily_schedule_summer="работа над щитами и передача заказов",
+        daily_schedule_autumn="работа над щитами и подготовка материалов к зиме",
+        how_to_materialize_as_background_npc="мастер обрабатывает щит теслом и ножом; рядом лежат пила, сверло, шило, молоток и заклёпки",
+        how_to_materialize_as_scene_npc="обсуждает заказ на щит",
+        how_to_materialize_as_key_npc="мастер щитного дела, связанный с заказом по конкретному основанию",
+        typical_property="мастерская или рабочее место, если задано сценой",
+        typical_tools="тесло, пила, нож, сверло, шило, молоток, заклёпки",
+        typical_clothing="одежда ремесленника по достатку",
+        typical_containers="не установлены источником",
+        typical_local_knowledge="кто заказывает щиты в данной сцене, если задано",
+        typical_route_knowledge="путь к месту заказа, если задан",
+        common_relationships="заказчик щита и мастер; конкретные связи не установлены",
+        common_fears="не установлены источником",
+        common_goals="исполнить подтверждённый заказ",
+        llm_adaptation_rules="конкретный щит и заказ задавать только из состояния мира и подтверждённых материалов",
+        llm_forbidden_uses="не приписывать щитнику чужие занятия и неподтверждённые технологии",
+        status="candidate", confidence="B",
+        source_refs="book:709382 ¶650;book:755331 ¶2711,¶2773,¶4024;book:622242 ¶1539",
+        notes="Никифор Щитник упомянут под 1228 годом; Щитная улица и материалы ремесла засвидетельствованы. Частный распорядок остаётся реконструкцией.",
+    ),
 ]
 
 
 def main():
+    with PINNED.open(encoding="utf-8") as f:
+        reader = csv.DictReader(f, delimiter="\t")
+        pinned_fields = reader.fieldnames
+        pinned = {row["occupation_id"]: row for row in reader}
+    fields = list(dict.fromkeys(FIELDS + pinned_fields + ["runtime_basis_analog_ref", "runtime_basis_rule"]))
     with open(OUT, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=FIELDS)
+        w = csv.DictWriter(f, fieldnames=fields, lineterminator="\n")
         w.writeheader()
         for r in ROWS:
-            w.writerow(r)
+            r["occupation_archetype_id"] = ARCHETYPES[r["occupation_archetype_id"]]
+            if r["occupation_id"] in BOOK_REFS:
+                r["source_refs"] += ";" + BOOK_REFS[r["occupation_id"]]
+            if r["occupation_id"] in NO_DIRECT_SOURCE:
+                r["source_refs"] += ";no_source:direct_book_or_wk_occupation_attestation"
+            else:
+                assert "book:" in r["source_refs"] or "wk:" in r["source_refs"], r["occupation_id"]
+            analog_id = ANALOGS[r["occupation_id"]]
+            analog = pinned[analog_id]
+            basis = {field: "no_source" for field in pinned_fields}
+            for field in ("period", "region_id", "allowed_social_role_ids",
+                          "typical_status_range", "typical_g3_place_types",
+                          "typical_g4_location_types", "seasonality", "night_behavior",
+                          "mobility_pattern", "daily_schedule_market_day",
+                          "daily_schedule_church_day", "daily_schedule_crisis"):
+                basis[field] = analog[field]
+            basis.update(r)
+            basis["occupation_title"] = r["occupation_title_ru"]
+            basis["daily_schedule_normal"] = r["daily_schedule_summer"]
+            basis["where_work_happens"] = r["typical_property"]
+            basis["economic_basis"] = r["occupation_group"]
+            basis["llm_required_checks_before_use"] = analog["llm_required_checks_before_use"]
+            basis["runtime_basis_analog_ref"] = analog_id
+            basis["runtime_basis_rule"] = "regional role/place/schedule analogy only; unprovided pinned fields=no_source; candidate requires independent approval"
+            basis["sources"] = r["source_refs"] + ";rule:runtime_basis_analog_ref#" + analog_id
+            basis["source_note"] = basis["runtime_basis_rule"]
+            w.writerow(basis)
     print(f"wrote {len(ROWS)} rows to {OUT}")
 
 

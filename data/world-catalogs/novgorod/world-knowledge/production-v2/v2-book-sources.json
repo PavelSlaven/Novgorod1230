@@ -19,6 +19,22 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-301539",
+      "title": "Древняя русская история до монгольского ига. Том 2",
+      "authors": [
+        "Погодин Михаил Петрович"
+      ],
+      "publication": "Древняя русская история до монгольского ига. Том 2, 1999",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 301539, 1999; ссылка на строку: book:301539 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:book-315166",
       "title": "Археология и естественнонаучные методы. Сб. статей",
       "authors": [
@@ -123,6 +139,22 @@
       "publication": "Домострой",
       "source_kind": "primary_text",
       "citation": "fb2-библиотека владельца, book 474912; ссылка на строку: book:474912 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-556930",
+      "title": "Великий князь Александр Невский",
+      "authors": [
+        "Карпов Алексей Юрьевич"
+      ],
+      "publication": "Великий князь Александр Невский, 2010",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 556930, 2010; ссылка на строку: book:556930 §<раздел> ¶<абзац>",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_single_sentence_quotes"
@@ -251,6 +283,22 @@
       "publication": "Том 5 (XIII век, литература трагического века), 1997",
       "source_kind": "primary_text",
       "citation": "fb2-библиотека владельца, book 641352, 1997; ссылка на строку: book:641352 §<раздел> ¶<абзац>",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_single_sentence_quotes"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:book-667380",
+      "title": "Великие князья Владимирские и Владимиро-Московские. Великие и удельные князья Северной Руси в татарский период с 1238 по 1505 г.",
+      "authors": [
+        "Экземплярский Андрей Васильевич"
+      ],
+      "publication": "Великие князья Владимирские и Владимиро-Московские. Великие и удельные князья Северной Руси в татарский период с 1238 по 1505 г., 2019",
+      "source_kind": "scholarship",
+      "citation": "fb2-библиотека владельца, book 667380, 2019; ссылка на строку: book:667380 §<раздел> ¶<абзац>",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_single_sentence_quotes"

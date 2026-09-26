@@ -136,3 +136,7 @@ python scripts/build.py
 ```
 
 Скрипт читает `scripts/src/*.py` (авторские данные с источниками), WK production-v1, MASTER, шаблоны rus13, TSV g3 v6, rules v2 и `scripts/input_snapshots/`. В сеть не обращается. При провале любой проверки выходит с кодом 1.
+
+## Правки C002
+
+`fauna/rpgr_pf_crosswalk.csv` связывает `rpgr_*` из правил генерации с полными `pf_*` из `place_families.csv` по пересечению `allowed_place_template_ids` и `place_families.place_template_refs` (RPGR-PF-PT-1). Это совместимость типов места, а не утверждение о наличии скота в каждом PF. Для семейств без пересечения есть отдельная строка `no_source`; все строки остаются `candidate`. Сборка проверяет ID, уникальность пар, основание каждой связи и покрытие всего текущего реестра PF (44 семейства).

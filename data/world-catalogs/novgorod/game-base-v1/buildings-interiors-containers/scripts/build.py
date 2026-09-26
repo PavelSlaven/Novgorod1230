@@ -133,6 +133,13 @@ def main():
         ["sf_id", "name_ru", "level", "settlement_kind", "region_id", "pf_ids", "place_template_ids", "v6_template_type", "v6_g3_count", "v6_place_template_ids", "v6_household_estimate", "v6_household_mix",
          "area_m2_min", "area_m2_max", "yard_layout", "street_elements", "fence_types", "source_refs", "confidence", "status", "notes"])
     out("buildings/settlement_building_mix.csv", mix_rows, ["sf_id", "member_id", "count_min", "count_max", "count_rule", "basis_ref", "status"])
+    crosswalk_pf_ids = {f["pf_id"] for f in read_csv(os.path.join(REPO, "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv"))}
+    sf_pf_rows = [dict(sf_id=s["sf_id"], pf_id="pf_" + pf, source_refs=s["source_refs"], rule_ref="SF-PF-1", no_source="", status=STATUS)
+                  for s in sf_rows for pf in s["pf_ids"].split("|") if pf]
+    for pf in sorted(crosswalk_pf_ids - {r["pf_id"] for r in sf_pf_rows}):
+        sf_pf_rows.append(dict(sf_id="", pf_id=pf, source_refs="", rule_ref="", no_source="no settlement_form source for this PF", status=STATUS))
+    out("buildings/sf_pf_crosswalk.csv", sorted(sf_pf_rows, key=lambda r: (r["pf_id"], r["sf_id"])),
+        ["sf_id", "pf_id", "source_refs", "rule_ref", "no_source", "status"])
 
     # ---------------- interiors ----------------
     sc_rows, item_rows = [], []

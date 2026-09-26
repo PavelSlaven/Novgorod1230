@@ -412,8 +412,19 @@ for tok, n in sorted(tok_counter.items(), key=lambda x: -x[1]):
 # place type -> livestock from rules v2 typical_animals
 rules = rel("tools", "rus13-novgorod-place-generation-rules", "novgorod_region_place_generation_rules_v2_expanded.tsv")
 pt_rows = []
+rpgr_pf_rows = []
+pf_templates = {}
+with open(rel("data", "world-catalogs", "novgorod", "game-base-v1", "places-binding", "places", "place_families.csv"), encoding="utf-8") as f:
+    for family in csv.DictReader(f):
+        pf_templates[family["pf_id"]] = set(family["place_template_refs"].split(";")) - {""}
 with open(rules, encoding="utf-8") as f:
     for r in csv.DictReader(f, delimiter="\t"):
+        allowed = set()
+        for condition in json.loads(r["historical_plausibility_rules"] or "[]"):
+            allowed.update(condition.get("allowed_place_template_ids", []))
+        for pf in sorted(pf_templates):
+            if allowed & pf_templates[pf]:
+                rpgr_pf_rows.append(dict(rule_ref=r["id"], pf_id=pf, source_refs="src:rus13-place-rules-v2", mapping_rule="RPGR-PF-PT-1", no_source="", status=STATUS))
         items = json.loads(r["typical_animals"] or "[]")
         if not items:
             pt_rows.append(dict(pl_id=f"pl_{r['id']}__none", rule_ref=r["id"], template_type=r["template_type"], species_ref="none",
@@ -438,6 +449,9 @@ with open(rules, encoding="utf-8") as f:
                 pt_rows.append(dict(pl_id=pid, rule_ref=r["id"], template_type=r["template_type"], species_ref=sp, ownership=own,
                                     conditional=str(cond).lower(), source_text=it, source_refs=refs(["src:rus13-place-rules-v2"], r["id"]),
                                     confidence="C", status=STATUS))
+for pf in sorted(set(pf_templates) - {r["pf_id"] for r in rpgr_pf_rows}):
+    rpgr_pf_rows.append(dict(rule_ref="", pf_id=pf, source_refs="", mapping_rule="", no_source="no matching allowed place_template_id in rus13 rules v2", status=STATUS))
+rpgr_pf_rows.sort(key=lambda r: (r["pf_id"], r["rule_ref"]))
 
 # ---------------- denylist ----------------
 deny_rows = []
@@ -461,6 +475,7 @@ counts["livestock_identification_marks.csv"] = write_csv("livestock_identificati
 counts["herd_composition.csv"] = write_csv("herd_composition.csv", list(herd_rows[0].keys()), herd_rows)
 counts["household_type_crosswalk.csv"] = write_csv("household_type_crosswalk.csv", list(xw_rows[0].keys()), xw_rows)
 counts["place_type_livestock.csv"] = write_csv("place_type_livestock.csv", list(pt_rows[0].keys()), pt_rows)
+counts["rpgr_pf_crosswalk.csv"] = write_csv("rpgr_pf_crosswalk.csv", ["rule_ref", "pf_id", "source_refs", "mapping_rule", "no_source", "status"], rpgr_pf_rows)
 counts["anachronism_denylist_fauna.csv"] = write_csv("anachronism_denylist_fauna.csv", list(deny_rows[0].keys()), deny_rows)
 
 src_rows = []
@@ -518,6 +533,19 @@ if missing_prof:
 checks["all_source_refs_resolve"] = not problems.get("unresolved_source_ref")
 checks["no_empty_source_refs"] = not problems.get("empty_source_refs")
 checks["pf_ids_valid"] = not problems.get("unknown_pf_id")
+with open(rules, encoding="utf-8") as f:
+    rule_rows = list(csv.DictReader(f, delimiter="\t"))
+rule_ids = {r["id"] for r in rule_rows}
+expected_rpgr_pf = {(r["id"], pf) for r in rule_rows
+                    for condition in json.loads(r["historical_plausibility_rules"] or "[]")
+                    for pf in pf_templates if set(condition.get("allowed_place_template_ids", [])) & pf_templates[pf]}
+checks["rpgr_pf_crosswalk"] = (set(pf_templates) == {r["pf_id"] for r in rpgr_pf_rows}
+    and {(r["rule_ref"], r["pf_id"]) for r in rpgr_pf_rows if r["rule_ref"]} == expected_rpgr_pf
+    and {r["pf_id"] for r in rpgr_pf_rows if not r["rule_ref"]} == set(pf_templates) - {r["pf_id"] for r in rpgr_pf_rows if r["rule_ref"]}
+    and all(r["pf_id"] in pf_templates and r["rule_ref"] in rule_ids and r["source_refs"] == "src:rus13-place-rules-v2" and r["mapping_rule"] == "RPGR-PF-PT-1" and not r["no_source"]
+            if r["rule_ref"] else bool(r["no_source"]) and not r["source_refs"] and not r["mapping_rule"] for r in rpgr_pf_rows)
+    and len({(r["rule_ref"], r["pf_id"]) for r in rpgr_pf_rows}) == len(rpgr_pf_rows)
+    and all(r["status"] == STATUS for r in rpgr_pf_rows))
 checks["water_templates_valid_and_allowed"] = not problems.get("unknown_water_body_template") and not problems.get("water_body_template_not_allowed_in_region")
 checks["weights_match_class_rule"] = all(r["weight"] == WEIGHT[{v: k for k, v in CLASSNAME.items()}[r["frequency_class"]]] for r in pres_rows)
 allrows = fish_rows + inv_rows + sp_rows + lt_rows

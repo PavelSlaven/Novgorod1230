@@ -205,3 +205,8 @@ build.py детерминирован для всех файлов, кроме `
 - d. Класс профиля переносится на все его `pf_ids`, хотя основание касается одного места. Например, `cp_threshing_grain_basket` (common по SCN035 — гумно) даёт common в `cellar_granary` и `arable_field`. Утверждающему стоит решить, ограничивать ли вне первичного места класс до contextual.
 
 **Итог повторной проверки группы:** rework снят. `place_containers.csv` — approve_with_limits (пункты a–d). Остальные вердикты раздела «Вердикты по файлам» не пересматривались и остаются в силе.
+
+## Правки C002
+
+- Добавлен `buildings/sf_pf_crosswalk.csv`: 73 авторские связи `sf_*` → PF и 16 явных `no_source`; все строки `candidate`.
+- `python -B scripts/build.py` и `python -B scripts/validate.py`: PASS, 0 ошибок, 41 прежнее предупреждение о названиях landmarks. Валидатор проверяет все 44 полных `pf_*`, ID, уникальность пар, источники и соответствие `settlement_form.pf_ids`. Точные 16 PF из bridge input покрыты: 17 исходных связей и 9 строк `no_source`.

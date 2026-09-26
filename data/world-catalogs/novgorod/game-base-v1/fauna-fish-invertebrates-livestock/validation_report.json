@@ -16,6 +16,7 @@
   "herd_composition.csv": 78,
   "household_type_crosswalk.csv": 58,
   "place_type_livestock.csv": 113,
+  "rpgr_pf_crosswalk.csv": 144,
   "anachronism_denylist_fauna.csv": 11,
   "sources.csv": 68
  },
@@ -31,6 +32,7 @@
   "all_source_refs_resolve": true,
   "no_empty_source_refs": true,
   "pf_ids_valid": true,
+  "rpgr_pf_crosswalk": true,
   "water_templates_valid_and_allowed": true,
   "weights_match_class_rule": true,
   "confidence_in_ABC": true,

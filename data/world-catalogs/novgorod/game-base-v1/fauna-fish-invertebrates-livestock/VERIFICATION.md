@@ -108,3 +108,8 @@
 4. `livestock_ailments.csv`: разделить в `ail_famine_slaughter` то, что сказано в НПЛ (A), и что выведено (КРС, «дворы без скота» — C).
 5. `livestock_types.csv`: у `ls_horse_riding` поставить уверенность B.
 6. Владельцу решить: множители HERD-*, чёрная крыса как rare, неоднозначные метки в HH-XW-1.
+
+## Правки C002
+
+- Добавлен `fauna/rpgr_pf_crosswalk.csv`: 130 связей `rpgr_*` → PF по RPGR-PF-PT-1, 14 явных `no_source`; статус каждой строки `candidate`.
+- `python -B scripts/build.py`: PASS; проверка `rpgr_pf_crosswalk=true`, все 44 полных `pf_*` покрыты, пары уникальны, ID разрешаются. Точные 16 PF из bridge input покрыты: 32 исходные связи и 7 строк `no_source`. Связь означает совместимость шаблона места, не присутствие животного.

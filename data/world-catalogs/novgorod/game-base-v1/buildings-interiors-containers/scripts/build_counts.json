@@ -5,6 +5,7 @@
  "buildings/building_type_parts.csv": 288,
  "buildings/settlement_form.csv": 22,
  "buildings/settlement_building_mix.csv": 112,
+ "buildings/sf_pf_crosswalk.csv": 89,
  "interiors/scenes.csv": 69,
  "interiors/scene_items.csv": 795,
  "interiors/anti_patterns_ref.csv": 53,

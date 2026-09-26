@@ -186,6 +186,21 @@ for pf in RES_ECON_PF:
 
 # ================= settlement_form =================
 sfs = rd("buildings/settlement_form.csv"); sf_ids = {s["sf_id"] for s in sfs}
+sf_pf = rd("buildings/sf_pf_crosswalk.csv")
+crosswalk_pf_ids = {r["pf_id"] for r in build.read_csv(os.path.join(REPO, "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv"))}
+if {r["pf_id"] for r in sf_pf} != crosswalk_pf_ids: err("sf/PF crosswalk does not cover PF registry")
+if len({(r["sf_id"], r["pf_id"]) for r in sf_pf}) != len(sf_pf): err("sf/PF crosswalk duplicate pair")
+source_by_sf = {s["sf_id"]: s["source_refs"] for s in sfs}
+expected_sf_pf = {(s["sf_id"], "pf_" + pf) for s in sfs for pf in sp(s["pf_ids"])}
+if {(r["sf_id"], r["pf_id"]) for r in sf_pf if r["sf_id"]} != expected_sf_pf: err("sf/PF crosswalk differs from settlement_form")
+if {r["pf_id"] for r in sf_pf if not r["sf_id"]} != crosswalk_pf_ids - {pf for _, pf in expected_sf_pf}: err("sf/PF crosswalk no_source coverage differs from settlement_form")
+for r in sf_pf:
+    if r["status"] != "candidate" or r["pf_id"] not in crosswalk_pf_ids: err("sf/PF crosswalk invalid status or PF: %s" % r)
+    if r["sf_id"]:
+        if r["sf_id"] not in sf_ids or r["source_refs"] != source_by_sf.get(r["sf_id"]) or r["rule_ref"] != "SF-PF-1" or r["no_source"]:
+            err("sf/PF crosswalk invalid source row: %s" % r)
+    elif not r["no_source"] or r["source_refs"] or r["rule_ref"]:
+        err("sf/PF crosswalk invalid no_source row: %s" % r)
 mix = rd("buildings/settlement_building_mix.csv")
 check_refs(sfs, ["source_refs"], "settlement_form", "sf_id"); check_refs(mix, ["basis_ref"], "settlement_mix", "sf_id")
 rng = re.compile(r"(\d+)\s*[-–]\s*(\d+)|(?<![\d%])(\d+)(?![\d%\-–])")

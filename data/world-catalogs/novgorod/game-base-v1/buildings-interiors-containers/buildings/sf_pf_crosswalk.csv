@@ -1,0 +1,90 @@
+sf_id,pf_id,source_refs,rule_ref,no_source,status
+sf_village_derevnya,pf_arable_field,v6tsv:g3_places:деревня|matcult_scene:SCN008|wk:claim:rural-household-economy-context,SF-PF-1,,candidate
+sf_village_selo,pf_arable_field,v6tsv:g3_places:село|matcult_scene:SCN008|matcult_scene:SCN009,SF-PF-1,,candidate
+sf_yard_boyar,pf_bathhouse,matcult_scene:SCN005|nov1230db:B030|nov1230db:S11|nov1230db:S18,SF-PF-1,,candidate
+,pf_bog,,,no settlement_form source for this PF,candidate
+,pf_bridge_crossing,,,no settlement_form source for this PF,candidate
+,pf_broadleaf_woodland,,,no settlement_form source for this PF,candidate
+sf_foreign_court,pf_cellar_granary,nov1230db:B013|nov1230db:B014|nov1230db:S02|nov1230db:S10|matcult_scene:SCN024,SF-PF-1,,candidate
+sf_yard_boyar,pf_cellar_granary,matcult_scene:SCN005|nov1230db:B030|nov1230db:S11|nov1230db:S18,SF-PF-1,,candidate
+sf_yard_merchant_riverside,pf_cellar_granary,matcult_scene:SCN007|wk:claim:household-riverside-storage,SF-PF-1,,candidate
+sf_yard_urban_merchant,pf_cellar_granary,matcult_scene:SCN004|matcult_scene:SCN023,SF-PF-1,,candidate
+sf_yard_urban_ordinary,pf_cellar_granary,nov1230db:B027|nov1230db:B028|nov1230db:S09|wk:claim:composite-urban-quarter|matcult:STR0013,SF-PF-1,,candidate
+sf_foreign_court,pf_church_interior,nov1230db:B013|nov1230db:B014|nov1230db:S02|nov1230db:S10|matcult_scene:SCN024,SF-PF-1,,candidate
+sf_monastery,pf_church_interior,wk:claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually|matcult_scene:SCN049|matcult:ARC0016|nov1230db:B018|nov1230db:B019,SF-PF-1,,candidate
+sf_yard_church,pf_church_interior,matcult_scene:SCN009|wk:claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces,SF-PF-1,,candidate
+sf_detinets,pf_churchyard,nov1230db:B002|nov1230db:B003|nov1230db:B001|matcult_scene:SCN042,SF-PF-1,,candidate
+sf_monastery,pf_churchyard,wk:claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually|matcult_scene:SCN049|matcult:ARC0016|nov1230db:B018|nov1230db:B019,SF-PF-1,,candidate
+sf_pogost,pf_churchyard,v6tsv:g3_places:погост|nov1230db:I12|nov1230db:S19,SF-PF-1,,candidate
+sf_posad_quarter,pf_churchyard,v6tsv:g3_places:посад|nov1230db:S17|wk:claim:composite-urban-quarter,SF-PF-1,,candidate
+sf_quarter_urban_end,pf_churchyard,nov1230db:E01|nov1230db:E02|nov1230db:E03|nov1230db:E04|nov1230db:E05|nov1230db:I02|nov1230db:I03,SF-PF-1,,candidate
+sf_torg,pf_churchyard,nov1230db:B012|matcult:STR0006|matcult_scene:SCN022|wk:claim:civic-public-market|wk:claim:river-landing-market-approaches,SF-PF-1,,candidate
+sf_village_selo,pf_churchyard,v6tsv:g3_places:село|matcult_scene:SCN008|matcult_scene:SCN009,SF-PF-1,,candidate
+sf_yard_church,pf_churchyard,matcult_scene:SCN009|wk:claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces,SF-PF-1,,candidate
+,pf_conifer_woodland,,,no settlement_form source for this PF,candidate
+sf_yard_boyar,pf_dwelling_interior,matcult_scene:SCN005|nov1230db:B030|nov1230db:S11|nov1230db:S18,SF-PF-1,,candidate
+sf_yard_peasant,pf_dwelling_interior,matcult_scene:SCN008|wk:claim:rural-household-economy-context|wk:claim:rural-agriculture-crop-context,SF-PF-1,,candidate
+sf_yard_urban_craft,pf_dwelling_interior,matcult_scene:SCN003|nov1230db:B033|wk:claim:settlement-workshop-street|matcult_scene:SCN064,SF-PF-1,,candidate
+sf_yard_urban_merchant,pf_dwelling_interior,matcult_scene:SCN004|matcult_scene:SCN023,SF-PF-1,,candidate
+sf_yard_urban_ordinary,pf_dwelling_interior,nov1230db:B027|nov1230db:B028|nov1230db:S09|wk:claim:composite-urban-quarter|matcult:STR0013,SF-PF-1,,candidate
+sf_yard_urban_poor,pf_dwelling_interior,matcult_scene:SCN006|nov1230db:B027|matcult_scene:SCN001|matcult_scene:SCN002,SF-PF-1,,candidate
+sf_landing_pristan,pf_ferry_landing,v6tsv:g3_places:пристань|matcult:STR0011|matcult_scene:SCN025|matcult_scene:SCN026,SF-PF-1,,candidate
+,pf_field_margin,,,no settlement_form source for this PF,candidate
+sf_fishing_stan,pf_fishing_camp,v6tsv:g3_places:рыбный стан|matcult_scene:SCN029|master:spawn:SPN025,SF-PF-1,,candidate
+,pf_floodplain_meadow,,,no settlement_form source for this PF,candidate
+sf_hunting_stan,pf_forest_edge,v6tsv:g3_places:охотничий стан|matcult_scene:SCN036|master:spawn:SPN027,SF-PF-1,,candidate
+,pf_forest_track,,,no settlement_form source for this PF,candidate
+,pf_grain_drying_shed_ovin,,,no settlement_form source for this PF,candidate
+sf_village_derevnya,pf_hay_meadow,v6tsv:g3_places:деревня|matcult_scene:SCN008|wk:claim:rural-household-economy-context,SF-PF-1,,candidate
+sf_hunting_stan,pf_hunting_ground,v6tsv:g3_places:охотничий стан|matcult_scene:SCN036|master:spawn:SPN027,SF-PF-1,,candidate
+sf_fishing_stan,pf_lake_shore,v6tsv:g3_places:рыбный стан|matcult_scene:SCN029|master:spawn:SPN025,SF-PF-1,,candidate
+sf_posad_quarter,pf_market_square,v6tsv:g3_places:посад|nov1230db:S17|wk:claim:composite-urban-quarter,SF-PF-1,,candidate
+sf_torg,pf_market_square,nov1230db:B012|matcult:STR0006|matcult_scene:SCN022|wk:claim:civic-public-market|wk:claim:river-landing-market-approaches,SF-PF-1,,candidate
+,pf_marshy_stream,,,no settlement_form source for this PF,candidate
+,pf_mill,,,no settlement_form source for this PF,candidate
+sf_hunting_stan,pf_mixed_woodland,v6tsv:g3_places:охотничий стан|matcult_scene:SCN036|master:spawn:SPN027,SF-PF-1,,candidate
+sf_monastery,pf_monastery_yard,wk:claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually|matcult_scene:SCN049|matcult:ARC0016|nov1230db:B018|nov1230db:B019,SF-PF-1,,candidate
+sf_monastery,pf_orchard_garden,wk:claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually|matcult_scene:SCN049|matcult:ARC0016|nov1230db:B018|nov1230db:B019,SF-PF-1,,candidate
+sf_yard_peasant,pf_orchard_garden,matcult_scene:SCN008|wk:claim:rural-household-economy-context|wk:claim:rural-agriculture-crop-context,SF-PF-1,,candidate
+sf_yard_urban_craft,pf_ordinary_workshop,matcult_scene:SCN003|nov1230db:B033|wk:claim:settlement-workshop-street|matcult_scene:SCN064,SF-PF-1,,candidate
+sf_yard_boyar,pf_outbuildings,matcult_scene:SCN005|nov1230db:B030|nov1230db:S11|nov1230db:S18,SF-PF-1,,candidate
+sf_yard_peasant,pf_outbuildings,matcult_scene:SCN008|wk:claim:rural-household-economy-context|wk:claim:rural-agriculture-crop-context,SF-PF-1,,candidate
+sf_yard_urban_ordinary,pf_outbuildings,nov1230db:B027|nov1230db:B028|nov1230db:S09|wk:claim:composite-urban-quarter|matcult:STR0013,SF-PF-1,,candidate
+sf_village_derevnya,pf_pasture,v6tsv:g3_places:деревня|matcult_scene:SCN008|wk:claim:rural-household-economy-context,SF-PF-1,,candidate
+sf_pogost,pf_peasant_homestead,v6tsv:g3_places:погост|nov1230db:I12|nov1230db:S19,SF-PF-1,,candidate
+sf_single_homestead,pf_peasant_homestead,v6tsv:g3_places:двор|matcult_scene:SCN008,SF-PF-1,,candidate
+sf_village_derevnya,pf_peasant_homestead,v6tsv:g3_places:деревня|matcult_scene:SCN008|wk:claim:rural-household-economy-context,SF-PF-1,,candidate
+sf_village_selo,pf_peasant_homestead,v6tsv:g3_places:село|matcult_scene:SCN008|matcult_scene:SCN009,SF-PF-1,,candidate
+sf_yard_peasant,pf_peasant_homestead,matcult_scene:SCN008|wk:claim:rural-household-economy-context|wk:claim:rural-agriculture-crop-context,SF-PF-1,,candidate
+,pf_reality_batch_01_open_conditions,,,no settlement_form source for this PF,candidate
+,pf_reality_first_practical_conditions,,,no settlement_form source for this PF,candidate
+,pf_river_channel,,,no settlement_form source for this PF,candidate
+sf_landing_pristan,pf_river_wharf,v6tsv:g3_places:пристань|matcult:STR0011|matcult_scene:SCN025|matcult_scene:SCN026,SF-PF-1,,candidate
+sf_torg,pf_river_wharf,nov1230db:B012|matcult:STR0006|matcult_scene:SCN022|wk:claim:civic-public-market|wk:claim:river-landing-market-approaches,SF-PF-1,,candidate
+sf_yard_merchant_riverside,pf_river_wharf,matcult_scene:SCN007|wk:claim:household-riverside-storage,SF-PF-1,,candidate
+sf_fishing_stan,pf_riverbank,v6tsv:g3_places:рыбный стан|matcult_scene:SCN029|master:spawn:SPN025,SF-PF-1,,candidate
+sf_landing_pristan,pf_riverbank,v6tsv:g3_places:пристань|matcult:STR0011|matcult_scene:SCN025|matcult_scene:SCN026,SF-PF-1,,candidate
+,pf_road,,,no settlement_form source for this PF,candidate
+,pf_rural_yard,,,no settlement_form source for this PF,candidate
+sf_yard_urban_craft,pf_smithy,matcult_scene:SCN003|nov1230db:B033|wk:claim:settlement-workshop-street|matcult_scene:SCN064,SF-PF-1,,candidate
+sf_yard_peasant,pf_threshing_barn,matcult_scene:SCN008|wk:claim:rural-household-economy-context|wk:claim:rural-agriculture-crop-context,SF-PF-1,,candidate
+sf_detinets,pf_town_courtyard,nov1230db:B002|nov1230db:B003|nov1230db:B001|matcult_scene:SCN042,SF-PF-1,,candidate
+sf_foreign_court,pf_town_courtyard,nov1230db:B013|nov1230db:B014|nov1230db:S02|nov1230db:S10|matcult_scene:SCN024,SF-PF-1,,candidate
+sf_posad_quarter,pf_town_courtyard,v6tsv:g3_places:посад|nov1230db:S17|wk:claim:composite-urban-quarter,SF-PF-1,,candidate
+sf_quarter_urban_end,pf_town_courtyard,nov1230db:E01|nov1230db:E02|nov1230db:E03|nov1230db:E04|nov1230db:E05|nov1230db:I02|nov1230db:I03,SF-PF-1,,candidate
+sf_yard_boyar,pf_town_courtyard,matcult_scene:SCN005|nov1230db:B030|nov1230db:S11|nov1230db:S18,SF-PF-1,,candidate
+sf_yard_church,pf_town_courtyard,matcult_scene:SCN009|wk:claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces,SF-PF-1,,candidate
+sf_yard_merchant_riverside,pf_town_courtyard,matcult_scene:SCN007|wk:claim:household-riverside-storage,SF-PF-1,,candidate
+sf_yard_urban_craft,pf_town_courtyard,matcult_scene:SCN003|nov1230db:B033|wk:claim:settlement-workshop-street|matcult_scene:SCN064,SF-PF-1,,candidate
+sf_yard_urban_merchant,pf_town_courtyard,matcult_scene:SCN004|matcult_scene:SCN023,SF-PF-1,,candidate
+sf_yard_urban_ordinary,pf_town_courtyard,nov1230db:B027|nov1230db:B028|nov1230db:S09|wk:claim:composite-urban-quarter|matcult:STR0013,SF-PF-1,,candidate
+sf_yard_urban_poor,pf_town_courtyard,matcult_scene:SCN006|nov1230db:B027|matcult_scene:SCN001|matcult_scene:SCN002,SF-PF-1,,candidate
+sf_posad_quarter,pf_town_street,v6tsv:g3_places:посад|nov1230db:S17|wk:claim:composite-urban-quarter,SF-PF-1,,candidate
+sf_quarter_urban_end,pf_town_street,nov1230db:E01|nov1230db:E02|nov1230db:E03|nov1230db:E04|nov1230db:E05|nov1230db:I02|nov1230db:I03,SF-PF-1,,candidate
+sf_street_urban,pf_town_street,nov1230db:B026|nov1230db:B027|matcult:STR0007|matcult_scene:SCN038|matcult_scene:SCN039|wk:claim:settlement-wooden-paving|wk:claim:settlement-workshop-street|wk:claim:settlement-cart-transport|ref:arhitekto_2russ27,SF-PF-1,,candidate
+sf_detinets,pf_town_wall_edge,nov1230db:B002|nov1230db:B003|nov1230db:B001|matcult_scene:SCN042,SF-PF-1,,candidate
+sf_pogost,pf_village_lane,v6tsv:g3_places:погост|nov1230db:I12|nov1230db:S19,SF-PF-1,,candidate
+sf_single_homestead,pf_village_lane,v6tsv:g3_places:двор|matcult_scene:SCN008,SF-PF-1,,candidate
+sf_village_derevnya,pf_village_lane,v6tsv:g3_places:деревня|matcult_scene:SCN008|wk:claim:rural-household-economy-context,SF-PF-1,,candidate
+sf_village_selo,pf_village_lane,v6tsv:g3_places:село|matcult_scene:SCN008|matcult_scene:SCN009,SF-PF-1,,candidate
+,pf_winter_ice_crossing,,,no settlement_form source for this PF,candidate

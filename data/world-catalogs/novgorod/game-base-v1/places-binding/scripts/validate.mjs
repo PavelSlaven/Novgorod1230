@@ -171,6 +171,9 @@ const ex = readJson(P('inputs/pr98-extract.json'));
     const gapPf = new Set(gapRows.map((r) => r.pf_id).filter(Boolean));
     const accountedPf = new Set([...linkedPf, ...gapPf]);
     const rowKeys = rows.map((r) => keys.map((key) => r[key]).join('|'));
+    for (const row of linkedRows) {
+      for (const key of keys) if (!row[key]) crosswalkFailures.push(`${name}: linked row missing ${key}`);
+    }
     crosswalkCounts[name] = { rows: rows.length, linked_rows: linkedRows.length, no_source_rows: gapRows.length, linked_place_families: linkedPf.size, no_source_place_families: gapPf.size };
     for (const id of expectedPf) if (!accountedPf.has(id)) crosswalkFailures.push(`${name}: unaccounted ${id}`);
     for (const id of accountedPf) if (!pfSet.has(id)) crosswalkFailures.push(`${name}: unknown ${id}`);

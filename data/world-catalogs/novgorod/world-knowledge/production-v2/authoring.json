@@ -251,6 +251,11 @@
     "verification-final-static-r7-gap-repair-v1.json",
     "gameplay-cordage-reworking-v1.json",
     "verification-gameplay-cordage-reworking-v1.json",
-    "verification-v2-restored.json"
+    "verification-v2-restored.json",
+    "v2-book-sources.json",
+    "v2-g1-law-money.json",
+    "v2-g2-customs.json",
+    "v2-g3-daily-life.json",
+    "v2-g4-nature-health.json"
   ]
 }

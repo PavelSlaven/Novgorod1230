@@ -240,7 +240,7 @@
       "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
       "locale": "ru",
       "runtime_text": "Угарный газ может накапливаться в воздухе помещения. Это не устанавливает помещение, вентиляцию, концентрацию, длительность воздействия, человека, симптом, диагноз или исход в конкретной сцене.",
-      "search_aliases": []
+      "search_aliases": ["угар в бане","угорел рано закрыл печь","угарный газ в бане","надышаться угаром"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
@@ -254,7 +254,7 @@
       "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
       "locale": "ru",
       "runtime_text": "Погружение в холодную воду может вызвать переохлаждение от погружения. Это не устанавливает температуру воды, длительность, одежду, температуру тела, нарушение функций, травму, выживание или исход в конкретной сцене.",
-      "search_aliases": []
+      "search_aliases": ["увяз в трясине","выбраться из болота","изнеможение в холодной трясине"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

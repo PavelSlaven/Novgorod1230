@@ -278,7 +278,7 @@
       "claim_ref": "claim:practical-boat-weather-water",
       "locale": "ru",
       "runtime_text": "Вёсла дают ход без попутного ветра; ветер и течение могут помочь либо помешать ходу и управлению.",
-      "search_aliases": []
+      "search_aliases": ["долблёный челн","набойная лодка","вёсла лодка рыбака"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

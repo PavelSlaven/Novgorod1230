@@ -4857,7 +4857,7 @@
       "claim_ref": "claim:fauna-tawny-owl-hearing",
       "locale": "ru",
       "runtime_text": "Направленный слух помогает серой неясыти определять положение источника звука при ночной охоте.",
-      "search_aliases": []
+      "search_aliases": ["уханье совы ночью","ночные звуки в деревне"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

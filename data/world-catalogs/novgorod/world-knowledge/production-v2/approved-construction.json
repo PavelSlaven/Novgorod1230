@@ -1487,7 +1487,7 @@
       "claim_ref": "claim:construction-rjaz-bridge-support",
       "locale": "ru",
       "runtime_text": "В Новгороде X века засвидетельствован деревянный мост на ряжевых опорах; это историческая совместимость, не мост в текущей сцене.",
-      "search_aliases": []
+      "search_aliases": ["Великий мост","мост через Волхов","мост на ряжах"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
@@ -1763,7 +1763,7 @@
       "claim_ref": "claim:construction-compared-church-masonry",
       "locale": "ru",
       "runtime_text": "В сопоставленных храмах Новгородской земли разных заказчиков на рубеже XII–XIII веков авторы отмечают одинаковый характер плинфы, раствора и техники кладки. Это характеристика сравненного монументального корпуса, не единый обязательный рецепт, местный источник сырья или умение текущего строителя.",
-      "search_aliases": []
+      "search_aliases": ["каменная церковь","кладка храма","звон колокола"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

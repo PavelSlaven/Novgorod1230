@@ -33,36 +33,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-agriculture-fauna-ash-hunting-bow",
-      "claim_ref": "claim:agriculture-fauna-ash-hunting-bow",
-      "claim_digest": "7885d3f4c1b31329ef04e940d141a1ed976c1c3e08c576cd1ea0306f1ee8d178",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/agriculture-fauna.json#claim:agriculture-fauna-ash-hunting-bow",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:agriculture-fauna-hunting-bow"
-      ],
-      "review_ref": "verification/verification-agriculture-fauna-practices.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate AFP-04 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:agriculture-fauna.json#claim:agriculture-fauna-ash-hunting-bow). Second-quarter-XIII ash-bow find attests form/category only; no present bow, arrows, hunter, prey, access, range, damage or hunt result. No fresh source reopening is claimed by this reconciliation."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-agriculture-fauna-hunting-economic-context",
-      "claim_ref": "claim:agriculture-fauna-hunting-economic-context",
-      "claim_digest": "7df89340817c2d8c642fb6f1f556232ef48765fa197abf8b61c46491367aeb1c",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/agriculture-fauna.json#claim:agriculture-fauna-hunting-economic-context",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:agriculture-fauna-hunting-fur-context"
-      ],
-      "review_ref": "verification/verification-agriculture-fauna-practices.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate AFP-05 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:agriculture-fauna.json#claim:agriculture-fauna-hunting-economic-context). Regional economic synthesis only; no individual hunter, game/fur stock, skill, duty, right or result. No fresh source reopening is claimed by this reconciliation."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-agriculture-fauna-rural-tree-borts",
       "claim_ref": "claim:agriculture-fauna-rural-tree-borts",
       "claim_digest": "bb0898abaa2b456013b8904c8c6f105e8fa2860946fc19e46f91d939004b465b",
@@ -330,21 +300,6 @@
       "review_ref": "verification/verification-terrain-resource-context.md#contract-normalization-check",
       "verdict": "APPROVE",
       "limits": "Pre-Mongol monumental Novgorod-Land construction only; quarry procurement is modal/inferred and does not create a quarry, rock, amount, transport, price, access or permission. Review mapping: candidate=TRC-01."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-construction-compared-church-masonry",
-      "claim_ref": "claim:construction-compared-church-masonry",
-      "claim_digest": "11a288e3b86ad239673ea50ff33378fd4926b4ed29da54fec8ae854de7780862",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/approved-construction.json#claim:construction-compared-church-masonry",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:construction-bulkin-organisation"
-      ],
-      "review_ref": "verification/verification-terrain-resource-context.md#contract-normalization-check",
-      "verdict": "APPROVE",
-      "limits": "Compared XII–XIII monumental church corpus only; not a compulsory recipe, local deposit, church, builder skill or uniform rule. Review mapping: candidate=TRC-04."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -706,21 +661,6 @@
       "review_ref": "verification/verification-clothing.md",
       "verdict": "APPROVE",
       "limits": "Candidate CL18–27 / period-form follow-up (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:clothing.json#claim:clothing-shirt-principal-garment). Inferred/medium historical clothing compatibility only; no current inventory, mandatory outfit, dimensions, status inference, legal rule or actor skill."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-clothing-onuchi-wrap",
-      "claim_ref": "claim:clothing-onuchi-wrap",
-      "claim_digest": "b48a11546c4ab163171bf67783fed37aa2b5bf0befe64740ac03d7fd2e79ec0d",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/clothing.json#claim:clothing-onuchi-wrap",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:clothing-rabinovich-material"
-      ],
-      "review_ref": "verification/verification-clothing.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate CL18–27 / period-form follow-up (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:clothing.json#claim:clothing-onuchi-wrap). Inferred/medium historical clothing compatibility only; no current inventory, mandatory outfit, dimensions, status inference, legal rule or actor skill."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -1849,21 +1789,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-fuel-iron-splinter-holder-form",
-      "claim_ref": "claim:fuel-iron-splinter-holder-form",
-      "claim_digest": "5d3d53fbf31851b6a71e28a8179ab646656a40cde6e15b9dfa7002f9c8bf1b60",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/fuel-processes.json#claim:fuel-iron-splinter-holder-form",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:fuel-kolchin-lighting-cookware"
-      ],
-      "review_ref": "verification/verification-fuel-processes.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate K01–K07 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:fuel-processes.json#claim:fuel-iron-splinter-holder-form). Inferred/medium historical compatibility only; no numerical duration/yield/ratio, current fuel/holder/pan/oven, actor skill or successful result."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-fuel-iron-candlestick-form",
       "claim_ref": "claim:fuel-iron-candlestick-form",
       "claim_digest": "0ed2fee9ca480caa83f89ed46616e269cd93decd61db5693f1bfb2b875e75e49",
@@ -1954,21 +1879,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-transport-winter-sledge-1220",
-      "claim_ref": "claim:transport-winter-sledge-1220",
-      "claim_digest": "623c51f746988dc0a93c92c94eb96595482b5a8e8c71a4e9c2b7365f3c24a99d",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-processes.json#claim:transport-winter-sledge-1220",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:transport-winter-sledge-1220"
-      ],
-      "review_ref": "verification/verification-transport-operations.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate git:782a9b4162dbc2358ad947ea0b929beaa081ace6:historical-processes.json#claim:transport-winter-sledge-1220; reviewer row: **PASS_WITH_LIMITS.** `claim:transport-winter-sledge-1220` reuses existing `wk:material_culture:sledge` with literal named Tverdislav/1220 transport, Current claim remains contextual with inferred/medium qualifiers; no present entity, quantity, actor state, access, mechanics or outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-fibre-flax-breaker-shive",
       "claim_ref": "claim:fibre-flax-breaker-shive",
       "claim_digest": "c7f4a5a4facae765a05acc42cad415d317a683ef68feaa68a9dafa685f908329",
@@ -2041,21 +1951,6 @@
       "review_ref": "verification/verification-historical-processes.md#backfill-independently-checked",
       "verdict": "APPROVE",
       "limits": "Историческая совместимость/археологический контекст с датировочными пределами отчёта; не создаёт текущий материал, мастерскую, печь, товар, транспорт или действие. Review mapping: candidate=HP-25."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-transport-sledge-summer-cargo",
-      "claim_ref": "claim:transport-sledge-summer-cargo",
-      "claim_digest": "dbcf40d88baca4f416d940935ab4fe92bfc04175b03f6e7f8be4b2c665e2004f",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-processes.json#claim:transport-sledge-summer-cargo",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:transport-sledge-summer-cargo"
-      ],
-      "review_ref": "verification/verification-transport-operations.md#exact-normalization-check--production-v1historical-processesjson",
-      "verdict": "APPROVE",
-      "limits": "Кандидат и RU/EN сверены в отчёте; историческая/источниковая совместимость только в указанном датировочном пределе, без текущего предмета, маршрута, доступа, груза, работника или результата. Review mapping: candidate=TO-01."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2161,21 +2056,6 @@
       "review_ref": "verification/verification-oils-resins-adhesives.md",
       "verdict": "APPROVE",
       "limits": "Candidate HA / OFH-01 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:household-agriculture.json#claim:maslo-birchbark-718-account). Bounded archaeological or document context only; no current object/stock, workshop, recipe, owner, access, skill, price or outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-ha-firesteel-ignition",
-      "claim_ref": "claim:ha-firesteel-ignition",
-      "claim_digest": "737cbd9ed2f574f9cf6f225f629f769f0d9838565fb19d5d0f57f70aacec5d92",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/household-agriculture.json#claim:ha-firesteel-ignition",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:ha-firesteel"
-      ],
-      "review_ref": "verification/verification-household-agriculture.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate HA / OFH-01 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:household-agriculture.json#claim:ha-firesteel-ignition). Bounded archaeological or document context only; no current object/stock, workshop, recipe, owner, access, skill, price or outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2326,21 +2206,6 @@
       "review_ref": "verification/verification-household-agriculture.md",
       "verdict": "APPROVE",
       "limits": "Candidate HA / OFH-01 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:household-agriculture.json#claim:household-boat-repair-clamp). Bounded archaeological or document context only; no current object/stock, workshop, recipe, owner, access, skill, price or outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-household-ploughshare-tillage",
-      "claim_ref": "claim:household-ploughshare-tillage",
-      "claim_digest": "a723470c926f14fe060f27e9a8f3ee0c5d5ebc1fa7ea7fd28bce1d0af6fe2f2f",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/household-agriculture.json#claim:household-ploughshare-tillage",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:ha-desyatinny"
-      ],
-      "review_ref": "verification/verification-household-agriculture.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate HA / OFH-01 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:household-agriculture.json#claim:household-ploughshare-tillage). Bounded archaeological or document context only; no current object/stock, workshop, recipe, owner, access, skill, price or outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2551,21 +2416,6 @@
       "review_ref": "verification/verification-leather-plant-fibre-water.md",
       "verdict": "APPROVE",
       "limits": "Candidate git:782a9b4162dbc2358ad947ea0b929beaa081ace6:leather-plant-fibre-water.json#claim:material-water-hemp-cellulosic-fibre; reviewer row: | `claim:material-water-plant-fibre-cellulose` | Approved: it now contains only the broad cellulosic classification; `supported_fact`, universal scope, high/direct qualifiers and `domain_internal_only` fit the source and do not leak a historical or wet-strength claim. | | `claim:material-water-hemp-cellulosic-fibre` | Approved: the subject, literal relation and bilingual text preserve CCI’s hemp example among cellulosic fibres used to create fabrics. They distinguish fibre from yarn/fabric and exclude present or historical availability. | | `claim:material-water-linen-flax-origin` | Approved: the claim and bilingual text preserve the flax-fibre → linen-yarn/fabric origin relation without calling fibre itself a finished textile, asserting a prescribed method, or inferring water response or presence. | Current claim remains universal with direct/high qualifiers; no present entity, quantity, actor state, access, mechanics or outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-vegetable-tanning-collagen-stabilization",
-      "claim_ref": "claim:vegetable-tanning-collagen-stabilization",
-      "claim_digest": "b016e01f82f0f2ce2f28d3fde7102286c5864ce33805c142db6fe532a11043ca",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/leather-plant-fibre-water.json#claim:vegetable-tanning-collagen-stabilization",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:vegetable-tanning-collagen"
-      ],
-      "review_ref": "verification/verification-hide-processing.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate git:782a9b4162dbc2358ad947ea0b929beaa081ace6:leather-plant-fibre-water.json#claim:vegetable-tanning-collagen-stabilization; reviewer row: | `claim:vegetable-tanning-prepared-hide` | **MATCHES_APPROVAL.** It uses the existing `wk:material_culture:vegetable-tanned-leather` with a conditional `requires_condition` literal for prepared hide plus tannin-bearing plant material/liquor. Universal/high/direct and `domain_internal_only` correctly keep this as chemistry/process, without a Rus'/Novgorod time-place envelope. RU/EN text retains the non-recipe, no-plant/vessel/stock/access/duration/result, and distinct-process limits. | | `claim:vegetable-tanning-collagen-stabilization` | **MATCHES_APPROVAL.** Its `responds_to` literal confines the relation to collagen–vegetable-tannin stabilization against putrefaction; universal/high/direct and internal-only are correct. RU/EN text retains no all-leather inference, no completed hide, no water-resistance/strength/duration/ratio/plant/knowledge/history claim. | | `evidence:vegetable-tanning-collagen` | **MATCHES_APPROVAL.** The Falcão/Araújo source and §1 anchor are exact, and the evidence note preserves universal-only status and rejects both Rus'/Novgorod attestation and a mandatory preparation recipe. | Current claim remains universal with direct/high qualifiers; no present entity, quantity, actor state, access, mechanics or outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -3169,21 +3019,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-rural-household-economy-context",
-      "claim_ref": "claim:rural-household-economy-context",
-      "claim_digest": "a7c7c96f05bafa5d83ca40f0ed5aa5e94db78bcdb4d42f226d19b9aa7e077537",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/settlement-craft.json#claim:rural-household-economy-context",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:northern-village-economic-context"
-      ],
-      "review_ref": "verification/verification-rural-settlement-context.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate RSC-01/02 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:settlement-craft.json#claim:rural-household-economy-context). Northern-Rus comparative compatibility only; no current settlement, field, household, stock, activity, ownership or access."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-rural-agriculture-crop-context",
       "claim_ref": "claim:rural-agriculture-crop-context",
       "claim_digest": "43d067a6c67707a7a38fa28ed16c30ee02a0f2ad5ff6efa69998ba55b4172e3b",
@@ -3256,21 +3091,6 @@
       "review_ref": "research/verification-population-settlement-craft.md#disposition",
       "verdict": "APPROVE",
       "limits": "Средневековая городская новгородская совместимость; не доказывает строение, двор, запас, топливо, доступ, маршрут, работника, лёд или движение в сцене. Review mapping: candidate=SC-04."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-settlement-oven-heating",
-      "claim_ref": "claim:settlement-oven-heating",
-      "claim_digest": "75943c6aefcfd51901654c8d4edf781340ba4e5c6080e5e5318d008524dbfb79",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/settlement-craft.json#claim:settlement-oven-heating",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:kolchin-settlement"
-      ],
-      "review_ref": "research/verification-population-settlement-craft.md#disposition",
-      "verdict": "APPROVE",
-      "limits": "Средневековая городская новгородская совместимость; не доказывает строение, двор, запас, топливо, доступ, маршрут, работника, лёд или движение в сцене. Review mapping: candidate=SC-05."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -3529,21 +3349,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-social-grivna-accounting-unit",
-      "claim_ref": "claim:social-grivna-accounting-unit",
-      "claim_digest": "cc2cdaa451a525834a2aca03cbaf58bbda8c72e9f853fb3af40ddb04bb9af820",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/social-context.json#claim:social-grivna-accounting-unit",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:gramota73"
-      ],
-      "review_ref": "verification/verification-population-social-context.md#approved-integration-surface",
-      "verdict": "APPROVE",
-      "limits": "Одна корпусная грамота/фрагмент; документальный контекст, не текущий долг, лицо, право, полномочие, календарная обязанность, деньги или результат. Review mapping: candidate=SOC-09."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-social-guarantor-relates-transaction-obligation",
       "claim_ref": "claim:social-guarantor-relates-transaction-obligation",
       "claim_digest": "cd98ba6f5a73486779687995ebd42f0847bf82e3938fe365c65c70752ec2f55a",
@@ -3661,21 +3466,6 @@
       "review_ref": "verification/verification-population-social-context.md#approved-integration-surface",
       "verdict": "APPROVE",
       "limits": "Одна корпусная грамота/фрагмент; документальный контекст, не текущий долг, лицо, право, полномочие, календарная обязанность, деньги или результат. Review mapping: candidate=REL-03."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-probable-travel-chalice-communion",
-      "claim_ref": "claim:probable-travel-chalice-communion",
-      "claim_digest": "67ba7f89db0ca47158e1aa9b6d2a73e2372703eb07a12b53af6ec3ce2152f365",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/social-institutions.json#claim:probable-travel-chalice-communion",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:probable-travel-chalice-communion"
-      ],
-      "review_ref": "verification/verification-social-institutions.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate SIC-01–07 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:social-institutions.json#claim:probable-travel-chalice-communion). Dated-document category only; no current NPC relationship, obligation, title, debt, event, rate, jurisdiction or outcome. No fresh reopening is claimed."
     },
     {
       "schema": "world_knowledge_verification_v1",

@@ -540,7 +540,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -620,7 +620,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -660,7 +660,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -827,7 +827,7 @@
       "claim_ref": "claim:civic-public-market",
       "locale": "ru",
       "runtime_text": "В средневековом описании Торговой стороны Торг входит в общественное городское пространство.",
-      "search_aliases": []
+      "search_aliases": ["Ярославово дворище","Торг у дворища","вечевая площадь Торговой стороны"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
@@ -924,7 +924,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:river-landing-category",
       "locale": "ru",
-      "runtime_text": "В изложении Тихомирова вымол в новгородском подольском контексте обозначался как речная пристань. Это ограниченная историческая категория, не универсальное значение слова и не наличие конкретной пристани, её форма, материал, глубина, безопасность или право доступа.",
+      "runtime_text": "На Подоле в Новгороде вымолом называли место речной пристани.",
       "search_aliases": [
         "вымол речная пристань"
       ]
@@ -933,7 +933,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:river-landing-category",
       "locale": "en",
-      "runtime_text": "In Tikhomirov's exposition, a vymol in the Novgorod Podol context was designated as a river landing. This is a limited historical category, not a universal word meaning or a present landing, its form, material, depth, safety or access right.",
+      "runtime_text": "In the Podol of Novgorod, a vymol was the name for a place that served as a river landing.",
       "search_aliases": [
         "vymol river landing"
       ]
@@ -960,7 +960,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:river-landing-market-approaches",
       "locale": "ru",
-      "runtime_text": "В изложении Тихомирова мостовые вели от Великого ряда на торговой площади к вымолам. Эта историческая связь рынка и пристаней не задаёт маршрут партии, проходимость, материал или ширину мостовой, последовательность погрузки, груз, перевозчика или состоявшийся перенос.",
+      "runtime_text": "От Великого ряда на торгу мостовые вели к вымолам.",
       "search_aliases": [
         "торговая площадь подходы к пристаням"
       ]
@@ -969,7 +969,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:river-landing-market-approaches",
       "locale": "en",
-      "runtime_text": "In Tikhomirov's exposition, road surfaces led from the Great Row on the market square to the vymoly. This historical market-to-landing connection supplies no party route, passability, surface material or width, loading sequence, cargo, carrier or completed transfer.",
+      "runtime_text": "From the Great Row at the market, the paved roads led to the landings.",
       "search_aliases": [
         "market square landing approaches"
       ]
@@ -978,7 +978,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:river-landing-surfacing-allocation",
       "locale": "ru",
-      "runtime_text": "В изложении Тихомирова для определённых участков территории вымолов было предусмотрено, кто должен был их мостить. Это описанное историческое распределение работ, не общий режим содержания, налог, владелец, строительный стандарт, уже исправленная поверхность или обязанность конкретного actor.",
+      "runtime_text": "За разными участками вымолов было закреплено, кому их мостить.",
       "search_aliases": [
         "мощение вымолов распределение работ"
       ]
@@ -987,7 +987,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:river-landing-surfacing-allocation",
       "locale": "en",
-      "runtime_text": "In Tikhomirov's exposition, specified sections of vymoly territory had an allocation of who was to surface them. This is a described historical work allocation, not a general maintenance regime, tax, owner, construction standard, already repaired surface or a particular actor's obligation.",
+      "runtime_text": "Different stretches of the landings had it fixed who was to pave them.",
       "search_aliases": [
         "landing surfacing work allocation"
       ]

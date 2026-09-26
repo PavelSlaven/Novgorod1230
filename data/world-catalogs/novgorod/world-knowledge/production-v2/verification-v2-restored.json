@@ -108,22 +108,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-bathing-wooden-bathhouse-wood",
-      "claim_ref": "claim:bathing-wooden-bathhouse-wood",
-      "claim_digest": "397a911d299d4cdbda971d6410e1d28ecad88d189e306a9a77fcca06856babdb",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/bathing.json#claim:bathing-wooden-bathhouse-wood",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:bathing-pvl-andrew-description",
-        "evidence:bathing-stepanov-early-structure"
-      ],
-      "review_ref": "verification/verification-bathing.md#production-record-re-check",
-      "verdict": "APPROVE",
-      "limits": "Культурная совместимость Руси 1100–1300, inferred/medium; не доказывает конкретную баню, топливо, температуру, объём или источник воды. Review mapping: candidate=bathing-house→wood."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:macro-human-world-blindspots-v5-fever-definition",
       "claim_ref": "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
       "claim_digest": "636bf4fca93861475392410ed707ebaf3f2454a62656c00f1718dee5ae5ec51a",
@@ -424,21 +408,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-construction-rjaz-bridge-support",
-      "claim_ref": "claim:construction-rjaz-bridge-support",
-      "claim_digest": "d784d502027dc6f91ad9ae489bc6406cc6ae0dcbae4b95ae196a2ade5278e94a",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/approved-construction.json#claim:construction-rjaz-bridge-support",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:construction-ia-bridge"
-      ],
-      "review_ref": "verification/verification-construction.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate A01 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:approved-construction.json#claim:construction-rjaz-bridge-support). Excavated X-century log-crib support only; inferred/medium compatibility, not a 1230 bridge or capacity. No fresh source reopening is claimed by this reconciliation."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-domestic-animal-context",
       "claim_ref": "claim:domestic-animal-context",
       "claim_digest": "cd987bc0113dad4d51a2b0d6a9b33ed4622566aa221da46ed2f0a931dccb9fd2",
@@ -586,21 +555,6 @@
       "review_ref": "verification/verification-fauna-ecology-modern.md",
       "verdict": "APPROVE",
       "limits": "Candidate FEC-01–72 exact-normalization set (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:fauna-ecology.json#claim:fauna-mussel-filtration). Source-qualified taxon/life-stage/season/condition behavior only; no 1230 occurrence, present population, animal state, resource, actor knowledge, capture, injury, disease, food, stock, schedule or outcome. Current RU/EN preserve stated conditional language; no fresh reopening is claimed."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-fauna-tawny-owl-hearing",
-      "claim_ref": "claim:fauna-tawny-owl-hearing",
-      "claim_digest": "5c950c9deb5fb5d3f93fb21bcf0acc6f91e812f06371c97649b89e57cbf7c08a",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/fauna-ecology.json#claim:fauna-tawny-owl-hearing",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:fauna-tawny-owl-hearing"
-      ],
-      "review_ref": "verification/verification-fauna-ecology-modern.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate FEC-01–72 exact-normalization set (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:fauna-ecology.json#claim:fauna-tawny-owl-hearing). Source-qualified taxon/life-stage/season/condition behavior only; no 1230 occurrence, present population, animal state, resource, actor knowledge, capture, injury, disease, food, stock, schedule or outcome. Current RU/EN preserve stated conditional language; no fresh reopening is claimed."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -841,21 +795,6 @@
       "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
       "verdict": "APPROVE",
       "limits": "No deceit, truth, intent, admissibility or factual result."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:final-social-tysyatsky-interface",
-      "claim_ref": "claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact",
-      "claim_digest": "ccd88b72d93d5530e519cc92aa167a750de2a50de55c500ad9e83595499269f2",
-      "candidate_ref": "git:c0b9278757554052039041a823f06f6681414db6:data/world-catalogs/novgorod/world-knowledge/production-v1/final-social-gap-closure-v1.json#claim:final-social-tysyatsky-role-can-frame-urban-military-or-trade-contact",
-      "auditor_ref": "/root/pr92_final_auditor",
-      "independence_basis": "Independent editorial plausibility, boundary, localization and exact assembled-candidate review; auditor did not author the candidate.",
-      "evidence_checked": [
-        "evidence:final-social-institutions"
-      ],
-      "review_ref": "verification/final-social-gap-closure-v1.md#independent-review",
-      "verdict": "APPROVE",
-      "limits": "No command, market authority, jurisdiction, levy, duty or result."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -1444,21 +1383,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:static-historical-household-practice-v1-church-monthbook-day-commemoration",
-      "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
-      "claim_digest": "b72ea14b1ec7c4b1f50438bbf77e76caa40e40e6866aea798486834c42a6f35b",
-      "candidate_ref": "git:11940d7b8c207aa8e83718aad5984504125000c3:data/world-catalogs/novgorod/world-knowledge/production-v1/static-historical-household-practice-v1.json#claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
-      "auditor_ref": "/root/food_source_verifier",
-      "independence_basis": "Independent direct source review; auditor did not author this candidate.",
-      "evidence_checked": [
-        "evidence:research-xiii-century-church-monthbook-day-commemoration"
-      ],
-      "review_ref": "verification/static-historical-household-practice-v1.md#claimhistorical-xiii-century-church-monthbook-associates-days-with-commemorations",
-      "verdict": "APPROVE",
-      "limits": "Supports a thirteenth-century textual day-to-commemoration relation only; no local Novgorod use, observance, attendance, fasting, belief, character knowledge, or scene date follows."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:reconstructed-human-lifeways-v1-relationship-change-can-alter-household-arrangement",
       "claim_ref": "claim:human-life-relationship-change-can-alter-household-arrangement",
       "claim_digest": "0bff16775eb1dc4f984f2e2710d1013277563e9c85813ce817619a586fd645c7",
@@ -1516,21 +1440,6 @@
       "review_ref": "verification/macro-batch20-gap-closure-v1.md#independent-review",
       "verdict": "APPROVE",
       "limits": "Explicitly editorial ordinary reconstruction of observed residue only; no solvent, tool, timber, historical workshop practice, state, method, or successful cleaning."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-b21-wet-charcoal-forge-work",
-      "claim_ref": "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
-      "claim_digest": "8b178e89b9dfc14ed64f55f58db1d6044da8933e14af2a143b4021aebda4de42",
-      "candidate_ref": "git:4aead02810f79eed7ab716ba1f0e8375723a8172:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-batch21-gap-closure-v1.json#claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
-      "auditor_ref": "/root/macro_b21_gap_verifier",
-      "independence_basis": "Independent source, domain, scope, localization and evidence-boundary review of the exact candidate; auditor did not author it.",
-      "evidence_checked": [
-        "evidence:macro-b21-charcoal-forge-fuel"
-      ],
-      "review_ref": "verification/macro-batch21-gap-closure-v1.md#independent-review",
-      "verdict": "APPROVE",
-      "limits": "Wet-fuel heat-management premise only; no forge, charcoal stock, drier fuel, drying method, temperature, worker, tool or work result."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2266,21 +2175,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-processes-fur-exchange",
-      "claim_ref": "claim:population-processes-fur-exchange",
-      "claim_digest": "69af18ea4bdd74bb500621546e4cf1bbec76586d17f099c4ab2ff40b2a278aba",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-processes.json#claim:population-processes-fur-exchange",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:population-processes-fur-exchange"
-      ],
-      "review_ref": "verification/verification-historical-processes.md#backfill-independently-checked",
-      "verdict": "APPROVE",
-      "limits": "Историческая совместимость/археологический контекст с датировочными пределами отчёта; не создаёт текущий материал, мастерскую, печь, товар, транспорт или действие. Review mapping: candidate=HP-23."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-population-processes-weaving-device",
       "claim_ref": "claim:population-processes-weaving-device",
       "claim_digest": "0e60a21e1c0ca9af55b2891ec21ea467cafdbc74e07d9d650ac273b3a6dd359e",
@@ -2720,51 +2614,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:gov-law-v1-territorial-names",
-      "claim_ref": "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
-      "claim_digest": "98e16e709b121e8cf0b98e00aed197c737a6f1527923e3c7080935c0d7c3195e",
-      "candidate_ref": "git:aa9f0113d3eade9cb94bea0babd32c2184f08ec1:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v1.json#claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
-      "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent RU→EN localization reconciliation against unchanged Russian source-bounded claims and existing independent source verdict; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-government-law-v1-ends-streets"
-      ],
-      "review_ref": "verification/residual-government-law-v1.md#approved-dated-npl-episodes",
-      "verdict": "APPROVE",
-      "limits": "Dated names only; no number, formation date, assembly, jurisdiction, or uniform municipal structure."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:gov-law-v1-offices",
-      "claim_ref": "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
-      "claim_digest": "a8870adff987311f2f7ad950af57d7b951a52db9dc683c16552514b8e273f9ca",
-      "candidate_ref": "git:aa9f0113d3eade9cb94bea0babd32c2184f08ec1:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v1.json#claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
-      "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent RU→EN localization reconciliation against unchanged Russian source-bounded claims and existing independent source verdict; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-government-law-v1-1230-offices"
-      ],
-      "review_ref": "verification/residual-government-law-v1.md#approved-dated-npl-episodes",
-      "verdict": "APPROVE",
-      "limits": "1230 named crisis actors and offices only; no competence, holder, hierarchy, tenure or election rule."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:gov-law-v1-veche-oath",
-      "claim_ref": "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
-      "claim_digest": "17b6d7b981b38f00e296be213429ea1fe6f8200ea6c3357983d9f9cafdf052f5",
-      "candidate_ref": "git:aa9f0113d3eade9cb94bea0babd32c2184f08ec1:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v1.json#claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
-      "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent RU→EN localization reconciliation against unchanged Russian source-bounded claims and existing independent source verdict; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-government-law-v1-1230-veche-prince-oath"
-      ],
-      "review_ref": "verification/residual-government-law-v1.md#approved-dated-npl-episodes",
-      "verdict": "APPROVE",
-      "limits": "One 1230 conflict episode only; no constitutional model, current assembly, or general competence."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:gov-law-v1-germans",
       "claim_ref": "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans",
       "claim_digest": "bdc27c3c871273dff9b893cb0a42741211d0c2678e3dced5a1fe6eabdb30e394",
@@ -2777,21 +2626,6 @@
       "review_ref": "verification/residual-government-law-v1.md#approved-dated-npl-episodes",
       "verdict": "APPROVE",
       "limits": "1234 campaign and settlement account only; no standing policy, border, ally or present relation."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:gov-law-v2-1215-joint-delegation",
-      "claim_ref": "claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
-      "claim_digest": "ab39df4a44a409380a417a99a72b7b48884d78da210e26cef3bff1987da713f4",
-      "candidate_ref": "git:aa9f0113d3eade9cb94bea0babd32c2184f08ec1:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-1215-posadnik-and-tysyatsky-jointly-invite-prince",
-      "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent RU→EN localization reconciliation against unchanged Russian source-bounded claims and existing independent source verdict; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-government-law-v2-1215-joint-delegation"
-      ],
-      "review_ref": "verification/residual-government-law-v2.md#approved-nesin-dated-episodes",
-      "verdict": "APPROVE",
-      "limits": "1215 joint mission only; no permanent diplomatic competence, present delegation, officeholder or current world-state inference."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2825,66 +2659,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:residual-language-v1-styli-inner-surface",
-      "claim_ref": "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
-      "claim_digest": "95ca1930f23ad636c3c333d52b3c17e8e25dd22195da3c0a2ea36396007ed0ed",
-      "candidate_ref": "git:49c56c2b54ef6d22e0053da992fbba4feaffc5fe:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-language-education-v1.json#claim:residual-v1-birch-writing-used-styli-on-inner-surface",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Independent live reading of Zaliznyak's Gramoty.ru source and current RU/EN claim; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-v1-birch-writing-surface-stylus"
-      ],
-      "review_ref": "verification/residual-language-education-v1.md#approved-writing-practice-and-dating",
-      "verdict": "APPROVE",
-      "limits": "General documented corpus practice only; no current bark, stylus, writer, literacy, message, or materialization."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-river-landing-category",
-      "claim_ref": "claim:river-landing-category",
-      "claim_digest": "f9c54ca2ed29ef55ceedcb234121bd9450ccc5de04089aea28e6dce69c55a5db",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/civic-space.json#claim:river-landing-category",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:river-landing-ustav-reading"
-      ],
-      "review_ref": "verification/verification-river-landing.md#exact-normalization-check--production-v1civic-spacejson",
-      "verdict": "APPROVE",
-      "limits": "Тихомировское чтение Устава; только историческая категория/документальный контекст, не существующая пристань, маршрут, доступ, груз или обязанность. Review mapping: candidate=RL-01."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-river-landing-market-approaches",
-      "claim_ref": "claim:river-landing-market-approaches",
-      "claim_digest": "1302fb42a65b4dbb39b54f4008134cdbbba0ec84998ec784d0e2d9c523d56f81",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/civic-space.json#claim:river-landing-market-approaches",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:river-landing-ustav-reading"
-      ],
-      "review_ref": "verification/verification-river-landing.md#exact-normalization-check--production-v1civic-spacejson",
-      "verdict": "APPROVE",
-      "limits": "Тихомировское чтение Устава; только историческая категория/документальный контекст, не существующая пристань, маршрут, доступ, груз или обязанность. Review mapping: candidate=RL-03."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-river-landing-surfacing-allocation",
-      "claim_ref": "claim:river-landing-surfacing-allocation",
-      "claim_digest": "ca90798a8095ea6174db871a22b6f4662b774158750b59f8dc374d794f910656",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/civic-space.json#claim:river-landing-surfacing-allocation",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:river-landing-ustav-reading"
-      ],
-      "review_ref": "verification/verification-river-landing.md#exact-normalization-check--production-v1civic-spacejson",
-      "verdict": "APPROVE",
-      "limits": "Тихомировское чтение Устава; только историческая категория/документальный контекст, не существующая пристань, маршрут, доступ, груз или обязанность. Review mapping: candidate=RL-04."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-rp-caretaker-principal-goods",
       "claim_ref": "claim:rp-caretaker-principal-goods",
       "claim_digest": "f541270a0debf36f3593c2d1ae705c6c3ade7aa61de6f9c2b0f72113f5af0667",
@@ -2898,54 +2672,6 @@
       "review_ref": "verification/verification-household-obligations.md#exact-normalization-check--compiled-491",
       "verdict": "APPROVE",
       "limits": "Норма Русской Правды в источниковом контексте; не создаёт семью, имущество, наследство, опеку или применимое судебное решение. Review mapping: candidate=RP household art.93."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-rp-entrusted-goods-claim-relates-reference",
-      "claim_ref": "claim:rp-entrusted-goods-claim-relates-reference",
-      "claim_digest": "c94a94b52290b17322c8a996e07cac33833e731a2d7921f6c6086b06a92bc1dd",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/social-norms.json#claim:rp-entrusted-goods-claim-relates-reference",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:rp-art45",
-        "evidence:rp-dating"
-      ],
-      "review_ref": "verification/verification-social-norms.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate PN-01–04 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:social-norms.json#claim:rp-entrusted-goods-claim-relates-reference). Conditional Rus legal-text premise only; no operative 1230 law, authority, jurisdiction, proof or automatic outcome. No fresh reopening is claimed."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-rp-market-purchase-relates-proof-participant",
-      "claim_ref": "claim:rp-market-purchase-relates-proof-participant",
-      "claim_digest": "a5f813a23b060c309ca5606bcef42f7ceac2cb6febc112fe85805d29630a5482",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/social-norms.json#claim:rp-market-purchase-relates-proof-participant",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:rp-art32",
-        "evidence:rp-dating"
-      ],
-      "review_ref": "verification/verification-social-norms.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate PN-01–04 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:social-norms.json#claim:rp-market-purchase-relates-proof-participant). Conditional Rus legal-text premise only; no operative 1230 law, authority, jurisdiction, proof or automatic outcome. No fresh reopening is claimed."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-rp-merchant-credit-relates-third-party-goods",
-      "claim_ref": "claim:rp-merchant-credit-relates-third-party-goods",
-      "claim_digest": "66b3165a5a9067d2f5c0cdb7beff34b6f7fe981abcccd27564115b447654641d",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/social-norms.json#claim:rp-merchant-credit-relates-third-party-goods",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:rp-art50",
-        "evidence:rp-dating"
-      ],
-      "review_ref": "verification/verification-social-norms.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate PN-01–04 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:social-norms.json#claim:rp-merchant-credit-relates-third-party-goods). Conditional Rus legal-text premise only; no operative 1230 law, authority, jurisdiction, proof or automatic outcome. No fresh reopening is claimed."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2978,22 +2704,6 @@
       "review_ref": "verification/verification-household-obligations.md#exact-normalization-check--compiled-491",
       "verdict": "APPROVE",
       "limits": "Норма Русской Правды в источниковом контексте; не создаёт семью, имущество, наследство, опеку или применимое судебное решение. Review mapping: candidate=RP household art.96."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-rp-property-claim-relates-acquisition-chain",
-      "claim_ref": "claim:rp-property-claim-relates-acquisition-chain",
-      "claim_digest": "331c770fb51c02f001ff951e873a6bc3cb5265c736bee8969dd28a1a5f32d2b7",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/social-norms.json#claim:rp-property-claim-relates-acquisition-chain",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:rp-art29",
-        "evidence:rp-dating"
-      ],
-      "review_ref": "verification/verification-social-norms.md",
-      "verdict": "APPROVE",
-      "limits": "Candidate PN-01–04 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:social-norms.json#claim:rp-property-claim-relates-acquisition-chain). Conditional Rus legal-text premise only; no operative 1230 law, authority, jurisdiction, proof or automatic outcome. No fresh reopening is claimed."
     },
     {
       "schema": "world_knowledge_verification_v1",

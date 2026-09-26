@@ -1,18 +1,6 @@
 {
   "schema": "world_knowledge_authoring_fragment_v1",
   "verifications": [
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:gameplay-material-process-v3-water-class-a-cooling",
-      "claim_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame",
-      "claim_digest": "503f8ef315af10425b528ddd7aa568aac9ee0e921351e4769d4b5b5e1f597a1d",
-      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-material-process-v3.json#claim:water-can-cool-class-a-fire-fuel-and-flame",
-      "auditor_ref": "/root/flora_ecology_research",
-      "independence_basis": "Auditor independently read the official NIST abstract and extracted §1.1.1 from the same NISTIR PDF after browser viewer and web PDF-reader failures. §1.1.1 explicitly defines Class A ordinary combustibles as including wood and textiles and states water's primary mechanism is fuel cooling; auditor did not author the candidate commit.",
-      "evidence_checked": ["evidence:gmp3-nist-water-class-a-cooling"],
-      "review_ref": "verification/gameplay-material-process-v3.md#water-can-cool-class-a-fire-fuel-and-flame",
-      "verdict": "APPROVE",
-      "limits": "Conditional Class A mechanism only. NISTIR §1.1.1 defines Class A ordinary combustibles as including wood and textiles, but establishes no actual fire class, fuel state, water amount, apparatus, tactic, safety, success, other fire class, current fire or outcome."
-    }
+    
   ]
 }

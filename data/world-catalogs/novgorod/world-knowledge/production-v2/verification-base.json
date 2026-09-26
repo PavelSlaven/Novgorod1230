@@ -650,21 +650,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-pine-float",
-      "claim_ref": "claim:population-pine-float",
-      "claim_digest": "48b44623ad4bcb80b3fcd0b5b15ae376830c29d167967fd8eb79b9c8dc79d78f",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-pine-float",
-      "auditor_ref": "/root/ci_repair",
-      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
-      "evidence_checked": [
-        "evidence:population-fishing-224"
-      ],
-      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
-      "verdict": "APPROVE",
-      "limits": "candidate PHC-03; documented material/category only."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-population-wood-float",
       "claim_ref": "claim:population-wood-float",
       "claim_digest": "bf09ac962fb0dd2a22d2325318968af0b2951b9fb59d6beff67e180f56607cde",
@@ -673,36 +658,6 @@
       "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
       "evidence_checked": [
         "evidence:population-fishing-224"
-      ],
-      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
-      "verdict": "APPROVE",
-      "limits": "candidate PHC-03; documented material/category only."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-stone-weight",
-      "claim_ref": "claim:population-stone-weight",
-      "claim_digest": "da13208bf0246290a59fa9b6a4ed44ed8ea4b517e10b57dc976cbb3c71ab7796",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-stone-weight",
-      "auditor_ref": "/root/ci_repair",
-      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
-      "evidence_checked": [
-        "evidence:population-fishing-226"
-      ],
-      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
-      "verdict": "APPROVE",
-      "limits": "candidate PHC-03; documented material/category only."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-iron-hook",
-      "claim_ref": "claim:population-iron-hook",
-      "claim_digest": "49e2b11c781eb2aa975aee26da1d0bad7808b1fef11e22c29bc2e27a8f89bc59",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-iron-hook",
-      "auditor_ref": "/root/ci_repair",
-      "independence_basis": "Actual RU/EN/evidence reconciled with reopened-source PHC-03 approval.",
-      "evidence_checked": [
-        "evidence:population-fishing-221"
       ],
       "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
       "verdict": "APPROVE",

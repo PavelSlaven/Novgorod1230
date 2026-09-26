@@ -48,36 +48,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota600-date",
-      "claim_ref": "claim:candidate-v5-gramota600-is-near-1230-private-letter",
-      "claim_digest": "d68a6583b7f79527f61dafada118108fc92d89e7ed04fff11b7266c69a0c20e6",
-      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota600-is-near-1230-private-letter",
-      "auditor_ref": "/root/blindspot_v5_verifier",
-      "independence_basis": "Independent direct review of Gramoty.ru record 600; auditor did not author candidate.",
-      "evidence_checked": [
-        "evidence:candidate-v5-gramota600-date-genre"
-      ],
-      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-600",
-      "verdict": "APPROVE",
-      "limits": "One conditional 1220–1240 private-letter record with probable backward shift; unknown temporal applicability does not establish a 1230 communication, messenger, travel, lodging, or scene fact."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota600-khotynians",
-      "claim_ref": "claim:candidate-v5-gramota600-reports-khotynians-context",
-      "claim_digest": "d8e7efaaefe373f4602f4cf39ba5da439a1a5f4d82dc5a62de3109674b013ac4",
-      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota600-reports-khotynians-context",
-      "auditor_ref": "/root/blindspot_v5_verifier",
-      "independence_basis": "Independent direct review of Gramoty.ru record 600; auditor did not author candidate.",
-      "evidence_checked": [
-        "evidence:candidate-v5-gramota600-khotynians"
-      ],
-      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-600",
-      "verdict": "APPROVE",
-      "limits": "One corpus summary about named people only; no identity, place, authority, political relation, conflict, or current report."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota715-date",
       "claim_ref": "claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
       "claim_digest": "de8adbbcb5e74e75e2603ebc303a91ceecdffc2383247b0567c5de1ec9daa601",

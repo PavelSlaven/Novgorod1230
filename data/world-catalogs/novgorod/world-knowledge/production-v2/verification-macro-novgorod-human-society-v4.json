@@ -3,19 +3,6 @@
   "verifications": [
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-novgorod-human-society-v4-wife-cow-redemption-letter",
-      "claim_ref": "claim:candidate-gramota8-wife-cow-redemption-letter",
-      "claim_digest": "640d0b1984d48769da78f67b42c2c20fd6552ae29bedf15664ad8eab4bc15267",
-      "candidate_ref": "git:d83c80f4b580cc8499d15b7e5c458663250409fb:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-novgorod-human-society-v4.json#claim:candidate-gramota8-wife-cow-redemption-letter",
-      "auditor_ref": "/root/novgorod_v4_verifier",
-      "independence_basis": "Independent re-review of the corrected candidate against the directly reviewed Gramoty.ru catalogue record; auditor did not author the candidate.",
-      "evidence_checked": ["evidence:candidate-gramota8-wife-cow-redemption"],
-      "review_ref": "verification/macro-novgorod-human-society-v4.md#corrected-re-review",
-      "verdict": "APPROVE",
-      "limits": "Supports only one conditionally dated private-letter record, including its stated 1180–1200 date with probable forward shift. Unknown temporal applicability does not establish a 1230 transaction, marriage rule, property right, present cow, debt, or scene fact."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:macro-novgorod-human-society-v4-onfim-business-record-drawing",
       "claim_ref": "claim:candidate-gramota202-onfim-business-record-drawing",
       "claim_digest": "787ed62185338e3f5fd4ba09adcc92c52633961387db6f6f929be1d4d48e279e",
@@ -26,19 +13,6 @@
       "review_ref": "verification/macro-novgorod-human-society-v4.md#claim-candidate-gramota202-onfim-business-record-drawing",
       "verdict": "APPROVE",
       "limits": "Supports only the catalogue's later-thirteenth-century document description; it is not a 1230 child, school, curriculum, literacy rate, debt, drawing, or educational practice in a scene."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-novgorod-human-society-v4-official-obligations-document",
-      "claim_ref": "claim:candidate-gramota213-official-obligations-document",
-      "claim_digest": "3b2099a693cb436018562c14b1c468e53166cad658dc26cd80dee319f52138f0",
-      "candidate_ref": "git:d83c80f4b580cc8499d15b7e5c458663250409fb:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-novgorod-human-society-v4.json#claim:candidate-gramota213-official-obligations-document",
-      "auditor_ref": "/root/novgorod_v4_verifier",
-      "independence_basis": "Independent re-review of the corrected candidate against the directly reviewed Gramoty.ru catalogue record; auditor did not author the candidate.",
-      "evidence_checked": ["evidence:candidate-gramota213-official-obligations"],
-      "review_ref": "verification/macro-novgorod-human-society-v4.md#corrected-re-review",
-      "verdict": "APPROVE",
-      "limits": "Supports only one conditionally dated official-document record, including its stated 1240–1260 date with probable forward shift. Unknown temporal applicability does not establish a 1230 court, debt, sanction, procedure, jurisdiction, office-holder, or outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",

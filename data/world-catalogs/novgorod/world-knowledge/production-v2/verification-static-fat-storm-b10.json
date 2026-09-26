@@ -3,21 +3,6 @@
   "verifications": [
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
-      "claim_ref": "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
-      "claim_digest": "e71bbf1b306f833313fd174bbee48330ca44af922aedf6a0a0c09bcb5b4cbdc9",
-      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-fat-storm-b10.json#claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
-      "auditor_ref": "/root/static_b10_care_material_sources",
-      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
-      "evidence_checked": [
-        "evidence:static-fat-storm-b10-lightning-outdoor-exposure"
-      ],
-      "review_ref": "verification/static-fat-storm-b10.md#approved-premises",
-      "verdict": "APPROVE",
-      "limits": "A thunderstorm lightning threat leaves no safe outdoor position; isolated tall trees and open water are exposures to avoid. This is modern qualitative risk guidance, not a local forecast, procedure, safe alternative, or outcome guarantee. Modern care or analogy does not create historical availability or actor knowledge."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
       "claim_ref": "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
       "claim_digest": "cab0c6c5891fdc2e9ad93078a2f323e4a60cb25731d6e2d7ae2440bc4eb06175",

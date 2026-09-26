@@ -3096,7 +3096,7 @@
       "claim_ref": "claim:fauna-mammals-wolf-pack-sociality",
       "locale": "ru",
       "runtime_text": "Волки → могут жить и охотиться → семейными стаями.",
-      "search_aliases": []
+      "search_aliases": ["волки зимой в пути","стая волков","опасность волков на дороге"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

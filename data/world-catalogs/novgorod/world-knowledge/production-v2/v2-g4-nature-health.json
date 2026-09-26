@@ -1,0 +1,1830 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-cap-amanita",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-water-hemlock",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-ergot-rye-poisoning",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-cranberry-bog-berry",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-cloudberry-bog-berry",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-white-nights-summer",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-skylark-field-song",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:v2-hunting-snares-and-traps",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-roadside-weeds-plantain-nettle",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:v2-dye-and-medicinal-herbs-rus",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:v2-ice-fishing-net-technique",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-ilmen-fish-species",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-volkhov-rapids-pilots",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-baltic-sea-trade-route",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-cattle-winter-fodder-and-calving",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-from-cold-without-shelter",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-cap-amanita",
+      "locale": "ru",
+      "labels": [
+        "бледная поганка"
+      ],
+      "short_definition": "Смертельно ядовитый бледный гриб, похожий на съедобные шампиньоны и сыроежки.",
+      "search_aliases": [
+        "бледная поганка",
+        "поганка",
+        "ядовитый гриб"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-cap-amanita",
+      "locale": "en",
+      "labels": [
+        "death cap"
+      ],
+      "short_definition": "A deadly poisonous pale mushroom that resembles edible button mushrooms and russulas.",
+      "search_aliases": [
+        "death cap",
+        "pale toadstool",
+        "poisonous mushroom"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-water-hemlock",
+      "locale": "ru",
+      "labels": [
+        "вех ядовитый (цикута)"
+      ],
+      "short_definition": "Ядовитое растение болот и берегов водоёмов со сладковатым пахучим полым корневищем.",
+      "search_aliases": [
+        "вех",
+        "цикута",
+        "вех ядовитый"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-water-hemlock",
+      "locale": "en",
+      "labels": [
+        "water hemlock"
+      ],
+      "short_definition": "A poisonous marsh and waterside plant with a sweet-smelling hollow root.",
+      "search_aliases": [
+        "water hemlock",
+        "cowbane",
+        "poisonous root"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-ergot-rye-poisoning",
+      "locale": "ru",
+      "labels": [
+        "спорынья на ржи"
+      ],
+      "short_definition": "Порча ржаного зерна, при которой на колосьях чернеют рожки; хлеб из такой муки вызывает тяжёлую телесную болезнь.",
+      "search_aliases": [
+        "спорынья",
+        "чёрные рожки на ржи",
+        "порченая рожь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-ergot-rye-poisoning",
+      "locale": "en",
+      "labels": [
+        "ergot on rye"
+      ],
+      "short_definition": "A blight of rye grain that blackens the ears; bread made from such flour causes serious bodily illness.",
+      "search_aliases": [
+        "ergot",
+        "rye blight",
+        "spoiled rye bread sickness"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-cranberry-bog-berry",
+      "locale": "ru",
+      "labels": [
+        "клюква"
+      ],
+      "short_definition": "Кислая ягода на болотах, цветёт в мае-июне, зреет к осени.",
+      "search_aliases": [
+        "клюква",
+        "клюква болотная"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-cranberry-bog-berry",
+      "locale": "en",
+      "labels": [
+        "cranberry"
+      ],
+      "short_definition": "A sour bog berry that flowers in May-June and ripens toward autumn.",
+      "search_aliases": [
+        "cranberry",
+        "bog cranberry"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-cloudberry-bog-berry",
+      "locale": "ru",
+      "labels": [
+        "морошка"
+      ],
+      "short_definition": "Ягода верховых болот, поспевает в конце лета — в июле-августе.",
+      "search_aliases": [
+        "морошка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-cloudberry-bog-berry",
+      "locale": "en",
+      "labels": [
+        "cloudberry"
+      ],
+      "short_definition": "A high-bog berry that ripens in late summer — in July-August.",
+      "search_aliases": [
+        "cloudberry"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-white-nights-summer",
+      "locale": "ru",
+      "labels": [
+        "белые ночи"
+      ],
+      "short_definition": "На севере летними ночами вечерняя заря сходится с утренней, и полной темноты не бывает.",
+      "search_aliases": [
+        "белые ночи",
+        "светлая летняя ночь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-white-nights-summer",
+      "locale": "en",
+      "labels": [
+        "white nights"
+      ],
+      "short_definition": "In the north on summer nights the evening glow meets the morning glow and it never fully turns dark.",
+      "search_aliases": [
+        "white nights",
+        "midnight glow"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-skylark-field-song",
+      "locale": "ru",
+      "labels": [
+        "жаворонок полевой"
+      ],
+      "short_definition": "Птица открытых полей и лугов, чья звонкая песня льётся с высоты и далеко разносится.",
+      "search_aliases": [
+        "жаворонок",
+        "жаворонок полевой"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-skylark-field-song",
+      "locale": "en",
+      "labels": [
+        "skylark"
+      ],
+      "short_definition": "A bird of open fields and meadows whose ringing song pours down from on high and carries far.",
+      "search_aliases": [
+        "skylark",
+        "lark"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-hunting-snares-and-traps",
+      "locale": "ru",
+      "labels": [
+        "силки, тенета, кляпцы и перевес"
+      ],
+      "short_definition": "Названные в источниках виды ловчих снастей на зверя и птицу без лука.",
+      "search_aliases": [
+        "силки",
+        "тенета",
+        "кляпцы",
+        "перевес",
+        "ловчие снасти"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-hunting-snares-and-traps",
+      "locale": "en",
+      "labels": [
+        "snares and hunting traps"
+      ],
+      "short_definition": "Named types of hunting gear for catching animals and birds without a bow.",
+      "search_aliases": [
+        "snares",
+        "hunting traps",
+        "game nets"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-roadside-weeds-plantain-nettle",
+      "locale": "ru",
+      "labels": [
+        "подорожник и крапива у дорог"
+      ],
+      "short_definition": "Подорожник и крапива растут вдоль дорог и на пустырях возле жилья.",
+      "search_aliases": [
+        "подорожник",
+        "крапива",
+        "придорожные травы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-roadside-weeds-plantain-nettle",
+      "locale": "en",
+      "labels": [
+        "plantain and nettle by the road"
+      ],
+      "short_definition": "Plantain and nettle grow along roads and on waste ground near dwellings.",
+      "search_aliases": [
+        "plantain",
+        "nettle",
+        "roadside weeds"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-dye-and-medicinal-herbs-rus",
+      "locale": "ru",
+      "labels": [
+        "зверобой и другие травы для крашения и зелий"
+      ],
+      "short_definition": "Травы вроде зверобоя, василька и пижмы были известны на Руси для крашения и снадобий.",
+      "search_aliases": [
+        "зверобой",
+        "краска из трав",
+        "травяные снадобья"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-dye-and-medicinal-herbs-rus",
+      "locale": "en",
+      "labels": [
+        "St John's wort and other dye/medicinal herbs"
+      ],
+      "short_definition": "Herbs such as St John's wort, cornflower and tansy were known in Rus for dyeing and remedies.",
+      "search_aliases": [
+        "St John's wort",
+        "herbal dye",
+        "herbal remedy"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-ice-fishing-net-technique",
+      "locale": "ru",
+      "labels": [
+        "подлёдный лов сетью"
+      ],
+      "short_definition": "Сеть под лёд протаскивают жердями-релями из проруби в прорубь; наледь вычерпывают черпаком.",
+      "search_aliases": [
+        "подлёдный лов",
+        "жерди-рели",
+        "лов сетью подо льдом"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-ice-fishing-net-technique",
+      "locale": "en",
+      "labels": [
+        "under-ice net fishing"
+      ],
+      "short_definition": "A net is dragged under the ice with pole-rods from hole to hole; slush ice is scooped out with a ladle.",
+      "search_aliases": [
+        "under-ice fishing",
+        "ice fishing net"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-ilmen-fish-species",
+      "locale": "ru",
+      "labels": [
+        "рыба Ильменя: судак, лещ, щука"
+      ],
+      "short_definition": "В новгородских уловах первенствовал судак, за ним лещ и щука.",
+      "search_aliases": [
+        "судак",
+        "лещ",
+        "щука",
+        "рыба Ильменя"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-ilmen-fish-species",
+      "locale": "en",
+      "labels": [
+        "Ilmen fish: pikeperch, bream, pike"
+      ],
+      "short_definition": "In Novgorod's catches pikeperch came first, followed by bream and pike.",
+      "search_aliases": [
+        "pikeperch",
+        "bream",
+        "pike",
+        "Lake Ilmen fish"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-volkhov-rapids-pilots",
+      "locale": "ru",
+      "labels": [
+        "лоцманы волховских порогов"
+      ],
+      "short_definition": "Местные лоцманы сопровождают суда через волховские пороги на протяжении многих вёрст.",
+      "search_aliases": [
+        "волховские пороги",
+        "лоцман на порогах",
+        "порожане"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-volkhov-rapids-pilots",
+      "locale": "en",
+      "labels": [
+        "Volkhov rapids pilots"
+      ],
+      "short_definition": "Local pilots guide boats through the Volkhov rapids over many versts.",
+      "search_aliases": [
+        "Volkhov rapids",
+        "river pilot"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-baltic-sea-trade-route",
+      "locale": "ru",
+      "labels": [
+        "морской путь к готландским и немецким гостям"
+      ],
+      "short_definition": "Наряду с сухопутным путём существовал давний морской путь, которым ходили готландские и немецкие купцы.",
+      "search_aliases": [
+        "морской путь",
+        "путь к готландцам",
+        "путь за море к немцам"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-baltic-sea-trade-route",
+      "locale": "en",
+      "labels": [
+        "sea route to Gotland and German lands"
+      ],
+      "short_definition": "Alongside the overland route there was a long-used sea route travelled by Gotland and German merchants.",
+      "search_aliases": [
+        "sea route",
+        "route to Gotland",
+        "route to the Germans"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-cattle-winter-fodder-and-calving",
+      "locale": "ru",
+      "labels": [
+        "зимний корм коров и время отёла"
+      ],
+      "short_definition": "Всю зиму коров кормят соломой с овсом; сено дают лишь после отёла.",
+      "search_aliases": [
+        "корм коровам зимой",
+        "отёл",
+        "солома для скота"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-cattle-winter-fodder-and-calving",
+      "locale": "en",
+      "labels": [
+        "cattle winter fodder and calving"
+      ],
+      "short_definition": "Cattle are fed straw with oats through the winter; hay is given only after calving.",
+      "search_aliases": [
+        "cattle fodder",
+        "calving",
+        "winter straw feed"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-from-cold-without-shelter",
+      "locale": "ru",
+      "labels": [
+        "смерть от мороза без крова"
+      ],
+      "short_definition": "В очень лютую зиму люди без крова и защиты от мороза гибнут от холода.",
+      "search_aliases": [
+        "замёрзнуть насмерть",
+        "лютый мороз",
+        "смерть от мороза"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-from-cold-without-shelter",
+      "locale": "en",
+      "labels": [
+        "death from cold without shelter"
+      ],
+      "short_definition": "In a very harsh winter, people without shelter or protection from the frost die of the cold.",
+      "search_aliases": [
+        "freeze to death",
+        "death from frost",
+        "harsh winter cold"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-pale-toadstool-deadly",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-death-cap-amanita",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pale_toadstool_type_mushrooms_are_deadly_poisonous"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-pale-toadstool-deadly"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-vekh-identification",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-water-hemlock",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "water_hemlock_grows_by_water_with_a_thick_hollow_sweet_smelling_root"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-vekh-habitat",
+        "evidence:v2-g4-vekh-root-description",
+        "evidence:v2-g4-vekh-smell-lookalike"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-vekh-fast-acting-poison",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-water-hemlock",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "water_hemlock_poison_acts_within_minutes_regardless_of_cooking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-vekh-fast-onset"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-ergot-bread-causes-limb-loss",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-ergot-rye-poisoning",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "bread_from_ergot_infected_rye_can_make_fingers_and_limbs_wither_and_die"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-ergotism-gangrene"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-cranberry-season",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-cranberry-bog-berry",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cranberries_flower_in_may_june_and_ripen_by_september"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-cranberry-season"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-cloudberry-season",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-cloudberry-bog-berry",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cloudberries_ripen_in_late_july_to_august"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-cloudberry-season"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-white-nights-summer",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-white-nights-summer",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "on_northern_summer_nights_the_evening_and_morning_glow_meet_without_full_darkness"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-white-nights"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-skylark-song-over-fields",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-skylark-field-song",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "skylarks_sing_high_over_open_fields_and_meadows"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-skylark-song"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-snares-traps-terminology",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:v2-hunting-snares-and-traps",
+      "predicate": "historical_availability",
+      "object": {
+        "kind": "literal",
+        "value": "snares_nets_pin_traps_and_bird_nets_are_named_hunting_gear"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-snares-traps-terms"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-plantain-nettle-roadside",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-roadside-weeds-plantain-nettle",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "plantain_and_nettle_grow_along_roads_and_waste_ground_near_dwellings"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-plantain-roadside",
+        "evidence:v2-g4-nettle-roadside"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-dye-medicinal-herbs-zveroboy",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:v2-dye-and-medicinal-herbs-rus",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "st_johns_wort_and_similar_herbs_are_used_for_dyeing_and_remedies"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-dye-medicinal-herbs"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-ice-fishing-net-technique",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:v2-ice-fishing-net-technique",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "under_ice_nets_are_dragged_pole_to_pole_between_holes_cut_in_the_ice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_fisher"
+          ]
+        }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-ice-net-poles",
+        "evidence:v2-g4-ice-net-general"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-ilmen-fish-species-dominance",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-ilmen-fish-species",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pikeperch_bream_and_pike_dominate_novgorod_catches"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-ilmen-fish-dominance"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-volkhov-rapids-pilots",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-volkhov-rapids-pilots",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "local_pilots_guide_boats_through_the_volkhov_rapids"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-volkhov-rapids-pilots"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-sea-route-to-gotland",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-baltic-sea-trade-route",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "a_sea_route_to_gotland_and_german_lands_existed_alongside_the_overland_route"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-sea-route-gotland"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-cattle-winter-fodder-calving",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-cattle-winter-fodder-and-calving",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cattle_are_fed_straw_through_winter_and_get_hay_only_after_calving"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-cattle-winter-fodder"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-harsh-winter-cold-can-kill",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-death-from-cold-without-shelter",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "a_harsh_winter_without_shelter_or_warm_clothing_can_freeze_a_person_to_death"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-cold-death-galician"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-pale-toadstool-deadly",
+      "locale": "ru",
+      "runtime_text": "Есть поганки — бледные грибы, похожие на шампиньон или сыроежку. Кто их съест, почти всегда умирает.",
+      "search_aliases": [
+        "бледная поганка",
+        "ядовитый гриб",
+        "поганка",
+        "похож на шампиньон",
+        "смертельный гриб"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-pale-toadstool-deadly",
+      "locale": "en",
+      "runtime_text": "There are pale toadstools that look like button mushrooms or russulas. Whoever eats them almost always dies.",
+      "search_aliases": [
+        "death cap",
+        "poisonous mushroom",
+        "deadly mushroom",
+        "toadstool"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-vekh-identification",
+      "locale": "ru",
+      "runtime_text": "Вех растёт у воды — на болоте, у ручьёв и озёр. Корень у него толстый, пустой внутри, а пахнет он сладковато, вроде знакомой съедобной зелени вроде петрушки — оттого его по весне и путают со съедобным.",
+      "search_aliases": [
+        "вех",
+        "цикута",
+        "ядовитый корень у воды",
+        "корень пахнет петрушкой",
+        "болотный корень"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-vekh-identification",
+      "locale": "en",
+      "runtime_text": "Water hemlock grows by water — in bogs, by streams and lakes. Its root is thick and hollow inside, with a sweetish smell like familiar edible greens such as parsley — which is why people mistake it for something edible in spring.",
+      "search_aliases": [
+        "water hemlock",
+        "cowbane",
+        "poisonous root by water",
+        "hemlock root smell"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-vekh-fast-acting-poison",
+      "locale": "ru",
+      "runtime_text": "Отраву веха варкой или печью не унять: что сырой корень, что варёный, что печёный — человеку становится худо очень скоро, едва он проглотит первый кусок.",
+      "search_aliases": [
+        "вех варить",
+        "яд веха не проходит",
+        "отравление вехом",
+        "цикута варёная"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-vekh-fast-acting-poison",
+      "locale": "en",
+      "runtime_text": "Cooking does not take away water hemlock poison: raw, boiled or baked root all act on a person very soon after the first bite is swallowed.",
+      "search_aliases": [
+        "water hemlock poison",
+        "cooking does not destroy hemlock toxin",
+        "cicuta poisoning"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-ergot-bread-causes-limb-loss",
+      "locale": "ru",
+      "runtime_text": "Бывает, рожь на колосе почернеет, будто рожки повырастали, — зерно порченое. Кто долго ест хлеб из такой муки, у того сохнут и отмирают пальцы на руках и ногах.",
+      "search_aliases": [
+        "спорынья",
+        "чёрные рожки на ржи",
+        "порченый хлеб",
+        "сохнут пальцы от хлеба",
+        "отмирают пальцы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-ergot-bread-causes-limb-loss",
+      "locale": "en",
+      "runtime_text": "Sometimes rye ears turn black, as if little horns had grown on them — the grain has spoiled. Someone who eats bread from such flour for a long time gets fingers and toes that wither and die off.",
+      "search_aliases": [
+        "ergot",
+        "black horns on rye",
+        "spoiled rye bread illness",
+        "withering fingers from bread"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cranberry-season",
+      "locale": "ru",
+      "runtime_text": "Клюква на болоте цветёт в мае-июне, а поспевает к осени, в сентябре.",
+      "search_aliases": [
+        "клюква",
+        "когда зреет клюква",
+        "клюква на болоте",
+        "болотная ягода осенью"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cranberry-season",
+      "locale": "en",
+      "runtime_text": "Cranberries on the bog flower in May-June and ripen in autumn, by September.",
+      "search_aliases": [
+        "cranberry season",
+        "when cranberries ripen",
+        "bog berry autumn"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cloudberry-season",
+      "locale": "ru",
+      "runtime_text": "Морошка на болоте поспевает в конце лета — в июле да августе, раньше клюквы.",
+      "search_aliases": [
+        "морошка",
+        "когда зреет морошка",
+        "болотная ягода летом"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cloudberry-season",
+      "locale": "en",
+      "runtime_text": "Cloudberries on the bog ripen in late summer — in July and August, before cranberries.",
+      "search_aliases": [
+        "cloudberry season",
+        "when cloudberries ripen"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-white-nights-summer",
+      "locale": "ru",
+      "runtime_text": "На севере летней ночью вечерняя заря так и не гаснет — сходится прямо с утренней, и настоящей темноты не бывает.",
+      "search_aliases": [
+        "белые ночи",
+        "светлая ночь летом",
+        "заря не гаснет",
+        "летняя ночь на севере"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-white-nights-summer",
+      "locale": "en",
+      "runtime_text": "On summer nights in the north the evening glow never quite fades — it meets the morning glow, and true darkness never comes.",
+      "search_aliases": [
+        "white nights",
+        "summer night glow",
+        "northern summer night"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-skylark-song-over-fields",
+      "locale": "ru",
+      "runtime_text": "Жаворонок держится открытых полей и лугов — его звонкая песня льётся с высоты и далеко разносится по воздуху.",
+      "search_aliases": [
+        "жаворонок",
+        "песня жаворонка",
+        "жаворонок над полем",
+        "птица над пашней"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-skylark-song-over-fields",
+      "locale": "en",
+      "runtime_text": "The skylark keeps to open fields and meadows — its ringing song pours down from on high and carries far through the air.",
+      "search_aliases": [
+        "skylark",
+        "skylark song",
+        "lark over the field"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-snares-traps-terminology",
+      "locale": "ru",
+      "runtime_text": "На зверя и птицу без лука ставят силки, тенета, кляпцы да перевес — так это зовётся в здешних краях.",
+      "search_aliases": [
+        "силки",
+        "тенета",
+        "кляпцы",
+        "перевес",
+        "ловушка на зверя"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-snares-traps-terminology",
+      "locale": "en",
+      "runtime_text": "For catching animals and birds without a bow people set silki (snares), teneta (nets), klyaptsy (pin traps) and pereves (bird nets) — that is what they are called here.",
+      "search_aliases": [
+        "snares",
+        "hunting nets",
+        "pin traps",
+        "bird nets"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-plantain-nettle-roadside",
+      "locale": "ru",
+      "runtime_text": "Подорожник растёт вдоль дорог, а крапива — по дорогам да пустырям возле жилья.",
+      "search_aliases": [
+        "подорожник у дороги",
+        "крапива у жилья",
+        "придорожная трава",
+        "сорные травы у двора"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-plantain-nettle-roadside",
+      "locale": "en",
+      "runtime_text": "Plantain grows along roads, and nettle along roads and waste ground near dwellings.",
+      "search_aliases": [
+        "plantain by the road",
+        "nettle near a homestead",
+        "roadside weed"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-dye-medicinal-herbs-zveroboy",
+      "locale": "ru",
+      "runtime_text": "Зверобой да василёк, пижму да бруснишник знахарки берут и на краску, и в снадобья.",
+      "search_aliases": [
+        "зверобой",
+        "травы для краски",
+        "снадобье из трав",
+        "лечебные травы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-dye-medicinal-herbs-zveroboy",
+      "locale": "en",
+      "runtime_text": "St John's wort, cornflower, tansy and bilberry are herbs healers use both for dye and for remedies.",
+      "search_aliases": [
+        "St John's wort",
+        "dye herb",
+        "herbal remedy plant"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-ice-fishing-net-technique",
+      "locale": "ru",
+      "runtime_text": "Подо льдом сеть или невод тащат жердями-релями от проруби к проруби, а наледь из полыньи вычерпывают черпаком.",
+      "search_aliases": [
+        "подлёдный лов",
+        "сеть подо льдом",
+        "жерди-рели",
+        "ловля зимой на льду"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-ice-fishing-net-technique",
+      "locale": "en",
+      "runtime_text": "Under the ice a net is dragged pole-rod by pole-rod from one hole to the next, while slush ice in the hole is scooped out with a ladle.",
+      "search_aliases": [
+        "under-ice fishing",
+        "net under the ice",
+        "winter net fishing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-ilmen-fish-species-dominance",
+      "locale": "ru",
+      "runtime_text": "В новгородском улове первый — судак, следом лещ да щука.",
+      "search_aliases": [
+        "судак",
+        "лещ",
+        "щука",
+        "рыба на Ильмене",
+        "главная рыба Новгорода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-ilmen-fish-species-dominance",
+      "locale": "en",
+      "runtime_text": "In Novgorod's catch pikeperch comes first, followed by bream and pike.",
+      "search_aliases": [
+        "pikeperch",
+        "bream",
+        "pike",
+        "Novgorod fish catch"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-volkhov-rapids-pilots",
+      "locale": "ru",
+      "runtime_text": "На волховских порогах суда одним ходом не пускают — их через пороги, что тянутся не одну версту, ведут местные лоцманы.",
+      "search_aliases": [
+        "волховские пороги",
+        "лоцман на порогах",
+        "проводник через пороги",
+        "порожане"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-volkhov-rapids-pilots",
+      "locale": "en",
+      "runtime_text": "On the Volkhov rapids boats are not sent through alone — local pilots guide them through the rapids, which stretch for many versts.",
+      "search_aliases": [
+        "Volkhov rapids",
+        "river pilot",
+        "rapids guide"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-sea-route-to-gotland",
+      "locale": "ru",
+      "runtime_text": "За море к готландским и немецким гостям ходят издавна морским путём; есть и путь посуху, но морской — старше и привычнее.",
+      "search_aliases": [
+        "путь за море",
+        "морской путь к готландцам",
+        "путь к немцам",
+        "дорога купцов за море"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-sea-route-to-gotland",
+      "locale": "en",
+      "runtime_text": "Merchants have long gone overseas to the Gotland and German guests by the sea route; there is also an overland way, but the sea route is the older and more familiar one.",
+      "search_aliases": [
+        "sea route overseas",
+        "route to Gotland",
+        "route to the Germans",
+        "merchant sea road"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cattle-winter-fodder-calving",
+      "locale": "ru",
+      "runtime_text": "Всю зиму скотина ест яровую солому, овсом сдобренную, а до сена её допускают, только когда отелится.",
+      "search_aliases": [
+        "корм скоту зимой",
+        "солома для коровы",
+        "отёл коровы",
+        "сено после отёла"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cattle-winter-fodder-calving",
+      "locale": "en",
+      "runtime_text": "All winter the cattle eat spring-crop straw seasoned with oats, and are given hay only once they have calved.",
+      "search_aliases": [
+        "winter cattle feed",
+        "straw for cows",
+        "calving time",
+        "hay after calving"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-harsh-winter-cold-can-kill",
+      "locale": "ru",
+      "runtime_text": "В лютую зиму человек без крова, без огня и без тёплой одежи от мороза может насмерть замёрзнуть.",
+      "search_aliases": [
+        "замёрзнуть насмерть",
+        "лютый мороз",
+        "без крова зимой",
+        "смерть от холода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-harsh-winter-cold-can-kill",
+      "locale": "en",
+      "runtime_text": "In a very harsh winter, a person without shelter, fire, or warm clothing can freeze to death.",
+      "search_aliases": [
+        "freeze to death",
+        "death from cold",
+        "harsh winter without shelter"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-pale-toadstool-deadly",
+      "source_ref": "source:book-376895",
+      "anchor": {
+        "section": "35. Бледная поганка (мухомор зеленый) ¶177",
+        "record_id": "book:376895"
+      },
+      "note": "«Смертельно ядовитый вид.» — прямо подтверждает смертельную ядовитость бледной поганки.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-vekh-habitat",
+      "source_ref": "source:book-823030",
+      "anchor": {
+        "section": "ВЕХ ЯДОВИТЫЙ – CICUTA VIROSA L. ¶190",
+        "record_id": "book:823030"
+      },
+      "note": "«Растет на болотах, в воде у берегов рек, ручьев, озер.» — задаёт местообитание веха.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-vekh-root-description",
+      "source_ref": "source:book-823030",
+      "anchor": {
+        "section": "ВЕХ ЯДОВИТЫЙ – CICUTA VIROSA L. ¶189",
+        "record_id": "book:823030"
+      },
+      "note": "«Корневище толстое, вертикальное, цилиндрическое или округлое с немногочисленными шнуровидными, отходящими от него корнями.» — описывает корневище веха.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-vekh-smell-lookalike",
+      "source_ref": "source:book-823030",
+      "anchor": {
+        "section": "ВЕХ ЯДОВИТЫЙ – CICUTA VIROSA L. ¶193",
+        "record_id": "book:823030"
+      },
+      "note": "«Цикута привлекает к себе внимание совокупностью таких факторов, как естественное весной желание полакомиться свежей зеленью, своеобразный запах растения, напоминающий запах таких привычных суповых» — подтверждает запах, похожий на знакомую суповую зелень, и риск весной.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-vekh-fast-onset",
+      "source_ref": "source:book-823030",
+      "anchor": {
+        "section": "ВЕХ ЯДОВИТЫЙ – CICUTA VIROSA L. ¶194",
+        "record_id": "book:823030"
+      },
+      "note": "«Через 5-10 мин после того, как был проглочен первый кусок корневища (неважно, сырой он был, печеный или вареный), человеку уже становится не по себе.» — подтверждает быстрое действие яда независимо от способа приготовления.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-ergotism-gangrene",
+      "source_ref": "source:book-728823",
+      "anchor": {
+        "section": "Медицина Древней Руси > Глава I. Медицина Древней Руси (X–XIII вв.) ¶153",
+        "record_id": "book:728823"
+      },
+      "note": "«\"гангрена удов\" как результат питания бедного населения зараженным спорыньей хлебом и пр.[82]» — прямо связывает поедание заражённого спорыньей хлеба с отмиранием пальцев и конечностей у бедноты Древней Руси.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-cranberry-season",
+      "source_ref": "source:book-333580",
+      "anchor": {
+        "section": "Клюква ¶5892",
+        "record_id": "book:333580"
+      },
+      "note": "«Цветет клюква в мае-июне, созревает в сентябре.» — задаёт цветение и созревание клюквы.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-cloudberry-season",
+      "source_ref": "source:book-333580",
+      "anchor": {
+        "section": "Морошка ¶5880",
+        "record_id": "book:333580"
+      },
+      "note": "«Плоды созревают в конце июля-августе.» — задаёт время созревания морошки.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-white-nights",
+      "source_ref": "source:book-728823",
+      "anchor": {
+        "section": "Медицина у первоселов русского Севера > Глава I. Краткие историко-географические сведения о Севере ¶763",
+        "record_id": "book:728823"
+      },
+      "note": "«сходятся друг с другом – вечерняя зоря с утренней» — подтверждает, что на севере летней ночью вечерняя и утренняя заря сходятся без полной темноты.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-skylark-song",
+      "source_ref": "source:book-756195",
+      "anchor": {
+        "section": "21. Полевой жаворонок (Alauda arvensis) ¶127",
+        "record_id": "book:756195"
+      },
+      "note": "«Любитель открытых пространств, обитатель полей и лугов, чьи звенящие песни льются с высоты и далеко разносятся в воздухе.» — подтверждает пение жаворонка над полями и лугами.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-snares-traps-terms",
+      "source_ref": "source:book-622242",
+      "anchor": {
+        "section": "Глава пятая Земледелие и промыслы А.В. Чернецов, А.В. Куза, Н.А. Кирьянова ¶1498",
+        "record_id": "book:622242"
+      },
+      "note": "«В источниках также упоминаются силки, тенета, кляпцы, перевес.» — прямо перечисляет исторически засвидетельствованные виды ловчих снастей.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-plantain-roadside",
+      "source_ref": "source:book-315166",
+      "anchor": {
+        "section": "Археобиологические методы > Е. А. Спиридонова, А. С. Алешинская, М. Д. Кочанова Особенности природной среды в окрестностях Рюрикова городища и возде ¶982",
+        "record_id": "book:315166"
+      },
+      "note": "«Вокруг построек появилось много сорных растений из семейств маревых (Chenopodiaceae) и цикориевых (Cichoriaceae), а также растений произрастающих вдоль дорог — подорожник (Plantago), горец птичий» — подтверждает рост подорожника вдоль дорог в округе Новгорода.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-nettle-roadside",
+      "source_ref": "source:book-315166",
+      "anchor": {
+        "section": "Археобиологические методы > Е. А. Спиридонова, А. С. Алешинская, М. Д. Кочанова Особенности природной среды в окрестностях Рюрикова городища и возде ¶965",
+        "record_id": "book:315166"
+      },
+      "note": "«Также присутствуют рудеральные виды, растущие по дорогам и мусорным местам, так или иначе связанные с человеком: одуванчик, мятлик, крапива, крестовник.» — подтверждает рост крапивы у дорог и на пустырях близ жилья.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-dye-medicinal-herbs",
+      "source_ref": "source:book-728823",
+      "anchor": {
+        "section": "Индийская медицина в древнерусском врачевании > Лекарственные «зелия» Индии в древнерусской медицине ¶1376",
+        "record_id": "book:728823"
+      },
+      "note": "«Достаточно упомянуть такие растения, как василек, ястребинка, пижма, череда, купавка, подмаренник, зюзник, вьюнок, синюха, повилика, трифоль, горечавка, ясень, брусника, черника, ива, зверобой, липа,» — перечисляет зверобой среди известных на Руси лекарственных и красильных трав.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-ice-net-poles",
+      "source_ref": "source:book-622242",
+      "anchor": {
+        "section": "Глава пятая Земледелие и промыслы А.В. Чернецов, А.В. Куза, Н.А. Кирьянова ¶1460",
+        "record_id": "book:622242"
+      },
+      "note": "«жерди-рели, с помощью которых сеть протаскивалась из проруби в прорубь; костыль-сошило для пропихивания жердей; черпак для удаления наледи из полыньи и др.» — задаёт снаряжение и технику подлёдного лова сетью.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-ice-net-general",
+      "source_ref": "source:book-455907",
+      "anchor": {
+        "section": "Глава III. Промысловые орудия и снаряжение древнерусских рыбаков > Сети > а) Отцеживающие сети ¶168",
+        "record_id": "book:455907"
+      },
+      "note": "«Неводом можно было ловить как с берега или лодок, так и подо льдом.» — подтверждает ловлю неводом подо льдом.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-ilmen-fish-dominance",
+      "source_ref": "source:book-455907",
+      "anchor": {
+        "section": "Глава IV. Промысловые рыбы, сезоны и места лова. Способы хранения и переработки рыбы ¶254",
+        "record_id": "book:455907"
+      },
+      "note": "«Зато в Новгороде в уловах безраздельно господствовал судак, за ним следовали лещ и щука» — прямо задаёт судака как главную промысловую рыбу Новгорода, за ним лещ и щуку.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-volkhov-rapids-pilots",
+      "source_ref": "source:book-804838",
+      "anchor": {
+        "section": "III. Варяги на Руси > 6. Остров Хольмгард > 6.1. Путь по Волхову ¶3323",
+        "record_id": "book:804838"
+      },
+      "note": "«Специальные местные лоцманы должны были сопровождать суда на протяжении 19 км, вдоль которых тянулись пороги.» — подтверждает сопровождение судов местными лоцманами через волховские пороги.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-sea-route-gotland",
+      "source_ref": "source:book-392896",
+      "anchor": {
+        "section": "ГЛАВА III. ЗАПАДНОЕВРОПЕЙСКИЕ СВЯЗИ НОВГОРОДА В XIII веке > Доганзейский период ¶180",
+        "record_id": "book:392896"
+      },
+      "note": "«Это известие — первое свидетельство существования наряду с морским путем, которым готландские и немецкие купцы пользовались в XII в., торгового пути по суше («горою»).» — подтверждает существование более старого морского пути, которым пользовались готландские и немецкие купцы, наряду с сухопутным.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-cattle-winter-fodder",
+      "source_ref": "source:book-220871",
+      "anchor": {
+        "section": "Новгород на острие ордынского нашествия ¶376",
+        "record_id": "book:220871"
+      },
+      "note": "«Рогатый же скот обыкновенно в продолжение всей зимы довольствуется яровой соломою, изредка приправляемой овсяной подсыпкою.» — подтверждает зимний корм скота яровой соломой с овсом до отёла.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-cold-death-galician",
+      "source_ref": "source:book-641352",
+      "anchor": {
+        "section": "ГАЛИЦКО-ВОЛЫНСКАЯ ЛЕТОПИСЬ > ОРИГИНАЛ ¶1191",
+        "record_id": "book:641352"
+      },
+      "note": "«кто же выехашеть из города, овы избиваша, а друзии поимаша, а иныя излупивше, пущаху нагы, а теи от мороза изомроша, зане бысть зима люта велми» — прямо говорит, что люди, оставленные раздетыми на морозе в очень лютую зиму, замерзали насмерть.",
+      "review_status": "approved"
+    }
+  ]
+}

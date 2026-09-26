@@ -1772,7 +1772,7 @@
       "claim_ref": "claim:clothing-onuchi-wrap",
       "locale": "ru",
       "runtime_text": "Онучи могли быть полосами ткани, обматываемыми вокруг стопы и голени. Это не создаёт обувь или дорожную сцену.",
-      "search_aliases": []
+      "search_aliases": ["онучи","обмотки на ногу","зимняя обувь дружинника"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
@@ -1926,7 +1926,7 @@
       "claim_ref": "claim:clothing-sheepskin-kozhukh",
       "locale": "ru",
       "runtime_text": "Овчинный кожух описан как зимняя одежда мехом внутрь. Это историческая форма, не гарантированная защита от любого холода.",
-      "search_aliases": []
+      "search_aliases": ["кожух шуба зимой","меховая шапка рукавицы","ночлег в погосте"]
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

@@ -1,0 +1,2155 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-runaway-kholop-harboring",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-currency-counting",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-livestock-urok-valuation",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-grivna-serebra",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-hunting-grounds-ownership",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-vira-for-killing",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-dikaya-vira-community-liability",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-judicial-ordeal",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-berkovets-weight-unit",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-cloth-and-goods-measures",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-kad-grain-measure",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-seasonal-foreign-merchants",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-ustav-o-rezakh-interest-limits",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-monastery-landholding",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-runaway-kholop-harboring",
+      "locale": "ru",
+      "labels": [
+        "укрывательство беглого холопа"
+      ],
+      "short_definition": "Ответственность того, кто помог беглому холопу или робе хлебом, кровом или указанием пути.",
+      "search_aliases": [
+        "беглый холоп",
+        "укрыть холопа",
+        "плата за беглого"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-runaway-kholop-harboring",
+      "locale": "en",
+      "labels": [
+        "harboring a runaway kholop"
+      ],
+      "short_definition": "Liability of a person who helped a runaway kholop or female servant with bread, shelter or directions.",
+      "search_aliases": [
+        "runaway kholop",
+        "harbor a servant",
+        "payment for a runaway"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-currency-counting",
+      "locale": "ru",
+      "labels": [
+        "счёт гривен, кун, ногат и резан"
+      ],
+      "short_definition": "Соотношение денежных единиц Русской Правды — гривны, куны, ногаты и резаны.",
+      "search_aliases": [
+        "гривна куна ногата",
+        "деньги на Руси",
+        "счёт денег"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-currency-counting",
+      "locale": "en",
+      "labels": [
+        "counting grivny, kuna, nogata and rezana"
+      ],
+      "short_definition": "Ratios among the Russkaya Pravda money units — grivna, kuna, nogata and rezana.",
+      "search_aliases": [
+        "grivna kuna nogata",
+        "old rus money",
+        "counting coin"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-livestock-urok-valuation",
+      "locale": "ru",
+      "labels": [
+        "урок за скотину"
+      ],
+      "short_definition": "Установленные денежные оценки за потерянную или убитую домашнюю скотину.",
+      "search_aliases": [
+        "сколько стоит скотина",
+        "плата за скот",
+        "цена коня и коровы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-livestock-urok-valuation",
+      "locale": "en",
+      "labels": [
+        "urok payment for livestock"
+      ],
+      "short_definition": "Fixed compensation values for lost or killed domestic livestock.",
+      "search_aliases": [
+        "price of livestock",
+        "payment for cattle",
+        "cost of a horse and cow"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-grivna-serebra",
+      "locale": "ru",
+      "labels": [
+        "гривна серебра"
+      ],
+      "short_definition": "Крупная счётная единица серебром и её соотношение с гривной кунами.",
+      "search_aliases": [
+        "гривна серебра",
+        "серебро на куны",
+        "крупные деньги"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-grivna-serebra",
+      "locale": "en",
+      "labels": [
+        "grivna of silver"
+      ],
+      "short_definition": "The large silver accounting unit and its ratio to the grivna of kuna.",
+      "search_aliases": [
+        "silver grivna",
+        "silver to kuna",
+        "large sum of money"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-hunting-grounds-ownership",
+      "locale": "ru",
+      "labels": [
+        "принадлежность звериных и птичьих угодий"
+      ],
+      "short_definition": "Ловища, перевесища и иные промысловые угодья принадлежат селу, двору или хозяину, а не всем подряд.",
+      "search_aliases": [
+        "чьи угодья",
+        "охота в чужом лесу",
+        "ловища и перевесища"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-hunting-grounds-ownership",
+      "locale": "en",
+      "labels": [
+        "ownership of hunting and trapping grounds"
+      ],
+      "short_definition": "Hunting and trapping grounds belong to a village, household or owner rather than being open to everyone.",
+      "search_aliases": [
+        "whose hunting grounds",
+        "hunting on another's land",
+        "trapping grounds ownership"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-vira-for-killing",
+      "locale": "ru",
+      "labels": [
+        "вира за убийство"
+      ],
+      "short_definition": "Денежная плата за убийство свободного человека, различная по положению убитого.",
+      "search_aliases": [
+        "вира",
+        "плата за убийство",
+        "сколько вира"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-vira-for-killing",
+      "locale": "en",
+      "labels": [
+        "vira for killing"
+      ],
+      "short_definition": "Monetary payment for killing a free person, varying by the victim's standing.",
+      "search_aliases": [
+        "vira payment",
+        "wergeld",
+        "fine for killing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-dikaya-vira-community-liability",
+      "locale": "ru",
+      "labels": [
+        "дикая вира верви"
+      ],
+      "short_definition": "Плата верви (общины) за убийство, если сам убийца не найден или дело было открытым.",
+      "search_aliases": [
+        "дикая вира",
+        "вервь платит",
+        "община и убийство"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-dikaya-vira-community-liability",
+      "locale": "en",
+      "labels": [
+        "wild vira paid by the verv"
+      ],
+      "short_definition": "Payment by the verv community for a killing when the killer is unfound or the killing was open.",
+      "search_aliases": [
+        "wild vira",
+        "community pays vira",
+        "verv liability"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-judicial-ordeal",
+      "locale": "ru",
+      "labels": [
+        "суд испытанием"
+      ],
+      "short_definition": "Способ решить дело без свидетелей — испытанием железом, водой или судебной клятвой, смотря по размеру обвинения.",
+      "search_aliases": [
+        "испытание железом",
+        "испытание водой",
+        "судебная клятва"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-judicial-ordeal",
+      "locale": "en",
+      "labels": [
+        "trial by ordeal"
+      ],
+      "short_definition": "A way to settle a case without witnesses — ordeal by iron, by water, or a judicial oath, depending on the size of the accusation.",
+      "search_aliases": [
+        "ordeal by iron",
+        "ordeal by water",
+        "judicial oath"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-berkovets-weight-unit",
+      "locale": "ru",
+      "labels": [
+        "берковец"
+      ],
+      "short_definition": "Крупная мера веса для торговых товаров, вроде соли и воска.",
+      "search_aliases": [
+        "берковец",
+        "мера веса товара",
+        "берковец воска"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-berkovets-weight-unit",
+      "locale": "en",
+      "labels": [
+        "berkovets weight unit"
+      ],
+      "short_definition": "A large weight unit for trade goods such as salt and wax.",
+      "search_aliases": [
+        "berkovets",
+        "weight measure of goods",
+        "berkovets of wax"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-cloth-and-goods-measures",
+      "locale": "ru",
+      "labels": [
+        "меры длины и продажа сукна"
+      ],
+      "short_definition": "Локоть и сажень как меры длины; дорогое сукно продают целыми поставами.",
+      "search_aliases": [
+        "мера длины локоть",
+        "сажень локоть",
+        "постав сукна"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-cloth-and-goods-measures",
+      "locale": "en",
+      "labels": [
+        "length measures and cloth sale"
+      ],
+      "short_definition": "The cubit and sazhen as length units; costly cloth is sold in whole bolts.",
+      "search_aliases": [
+        "cubit length measure",
+        "sazhen cubit",
+        "bolt of cloth"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-kad-grain-measure",
+      "locale": "ru",
+      "labels": [
+        "кадь как мера зерна"
+      ],
+      "short_definition": "Кадь — мера, которой считают рожь и иное зерно.",
+      "search_aliases": [
+        "кадь ржи",
+        "мера зерна",
+        "сколько кадь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-kad-grain-measure",
+      "locale": "en",
+      "labels": [
+        "the kad as a grain measure"
+      ],
+      "short_definition": "The kad is the unit used to measure rye and other grain.",
+      "search_aliases": [
+        "kad of rye",
+        "grain measure",
+        "how much is a kad"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-seasonal-foreign-merchants",
+      "locale": "ru",
+      "labels": [
+        "зимние и летние иноземные гости"
+      ],
+      "short_definition": "Иноземные купцы приходят и уходят по сезону — зимние и летние гости сменяют друг друга.",
+      "search_aliases": [
+        "зимние гости купцы",
+        "летние гости",
+        "иноземные купцы приезд"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-seasonal-foreign-merchants",
+      "locale": "en",
+      "labels": [
+        "winter and summer foreign guests"
+      ],
+      "short_definition": "Foreign merchants arrive and leave by season — winter guests and summer guests take turns.",
+      "search_aliases": [
+        "winter guest merchants",
+        "summer guests",
+        "foreign merchant arrival"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-ustav-o-rezakh-interest-limits",
+      "locale": "ru",
+      "labels": [
+        "устав о резах"
+      ],
+      "short_definition": "Правило о дозволенном росте на заём и о потере права на сам долг после многократного взимания процентов.",
+      "search_aliases": [
+        "устав о резах",
+        "рост на заём",
+        "проценты за долг"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-ustav-o-rezakh-interest-limits",
+      "locale": "en",
+      "labels": [
+        "the statute on interest"
+      ],
+      "short_definition": "Rule on permitted interest on a loan and on losing the right to the principal after repeated interest collection.",
+      "search_aliases": [
+        "statute on interest",
+        "loan interest rule",
+        "interest on a debt"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-monastery-landholding",
+      "locale": "ru",
+      "labels": [
+        "монастырское село"
+      ],
+      "short_definition": "Село, дарованное монастырю князем, с зависимыми людьми, работающими на монастырь.",
+      "search_aliases": [
+        "монастырское село",
+        "село дано монастырю",
+        "зависимые люди на монастырь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-monastery-landholding",
+      "locale": "en",
+      "labels": [
+        "monastery-owned village"
+      ],
+      "short_definition": "A village granted to a monastery by a prince, with dependent people working it for the monastery.",
+      "search_aliases": [
+        "monastery village",
+        "village granted to monastery",
+        "monastery dependents"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-runaway-kholop-harborer-pays-owner",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-runaway-kholop-harboring",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "harborer_of_runaway_kholop_pays_owner_five_or_six_grivny"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-runaway-kholop-harborer"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-grivna-equals-twenty-nogata",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-currency-counting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "grivna_equals_twenty_nogata_by_old_count"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-grivna-twenty-nogata"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-kuna-now-same-as-rezana",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-currency-counting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "kuna_has_replaced_rezana_in_current_count"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-kuna-replaces-rezana"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-urok-values-for-livestock",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-livestock-urok-valuation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fixed_payment_values_for_lost_or_killed_livestock"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-urok-livestock-values"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-princely-horse-worth-more-than-smerd-horse",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-livestock-urok-valuation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "princely_branded_horse_valued_higher_than_smerd_horse"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-princely-vs-smerd-horse"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-grivna-serebra-worth-four-grivny-kun",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-grivna-serebra",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "grivna_of_silver_equals_about_four_grivny_kun"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-grivna-serebra-smolensk-1229",
+        "evidence:v2-g1-grivna-serebra-ratio-yanin"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-hunting-grounds-belong-to-an-owner",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-hunting-grounds-ownership",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hunting_and_trapping_grounds_belong_to_an_owner_trespass_is_a_wrong"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-hunting-grounds-belong-to-village"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-vira-forty-for-freeman-eighty-for-princely-man",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-vira-for-killing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "vira_forty_grivny_for_freeman_eighty_for_princely_man"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-vira-forty-eighty"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-woman-judged-same-as-man-unless-at-fault",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-vira-for-killing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "killing_a_woman_judged_as_killing_a_man_unless_she_was_at_fault"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-woman-vira-unless-at-fault"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-verv-pays-dikaya-vira-for-unfound-killer",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-dikaya-vira-community-liability",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "verv_pays_wild_vira_when_killer_is_not_found_in_installments"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-vira-forty-eighty",
+        "evidence:v2-g1-verv-pays-over-years"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-killer-pays-vira-with-community-if-open-quarrel",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-dikaya-vira-community-liability",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "killer_pays_vira_together_with_community_if_killing_was_open_at_quarrel_or_feast"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-open-quarrel-killer-pays-with-verv"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-ordeal-by-iron-water-or-oath-by-claim-size",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-judicial-ordeal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ordeal_by_iron_water_or_oath_chosen_by_size_of_accusation_when_no_witness"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-ordeal-by-iron-no-witness",
+        "evidence:v2-g1-ordeal-by-water-or-oath-by-size"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-berkovets-used-for-trade-goods",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-berkovets-weight-unit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "berkovets_used_as_real_weight_unit_for_trade_goods_like_salt_and_wax"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-berkovets-of-salt"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-berkovets-reckoned-as-ten-poods",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-berkovets-weight-unit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "berkovets_reckoned_as_roughly_ten_poods"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-berkovets-ten-poods"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-goods-measured-in-cubits",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-cloth-and-goods-measures",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "length_of_cloth_and_built_work_measured_in_cubits"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-sazhen-four-cubits",
+        "evidence:v2-g1-ivan-cubit-standard"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-fine-cloth-sold-in-sealed-postavy",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-cloth-and-goods-measures",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fine_imported_cloth_sold_whole_in_sealed_bulk_pieces_called_postava"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-cloth-sold-in-postavy"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-rye-measured-in-kad",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-kad-grain-measure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rye_and_grain_measured_by_the_kad_unit"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-kad-rye-chronicle"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-foreign-merchants-come-in-winter-and-summer-groups",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-seasonal-foreign-merchants",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "foreign_merchants_arrive_as_winter_guests_or_summer_guests_by_season"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-winter-summer-guests"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-annual-interest-cap-ten-kun-per-grivna",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-ustav-o-rezakh-interest-limits",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "lending_at_ten_kun_per_grivna_per_year_is_not_forbidden"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-ten-kun-per-grivna-allowed"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-lender-loses-principal-after-three-times-interest",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-ustav-o-rezakh-interest-limits",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "lender_who_collects_interest_three_times_may_not_also_take_the_principal"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-lose-principal-after-three-times"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g1-monastery-owns-village-with-dependents",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-monastery-landholding",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "monastery_can_own_a_whole_village_with_dependent_people_working_it"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g1-monastery-granted-village-immunity",
+        "evidence:v2-g1-monastery-village-granted-by-princes"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-runaway-kholop-harborer-pays-owner",
+      "locale": "ru",
+      "runtime_text": "Кто чужого беглого холопа укроет, накормит хлебом или укажет ему путь, тот платит за него хозяину пять гривен, а если это была роба — шесть гривен.",
+      "search_aliases": [
+        "беглый холоп",
+        "укрыть беглого холопа",
+        "накормить беглого",
+        "плата за беглого холопа"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-runaway-kholop-harborer-pays-owner",
+      "locale": "en",
+      "runtime_text": "Whoever shelters, feeds bread to, or shows the way to another man's runaway kholop must pay the owner five grivny for him, or six grivny if it was a female servant.",
+      "search_aliases": [
+        "runaway kholop",
+        "harbor a runaway servant",
+        "payment for hiding a servant",
+        "shelter a fugitive"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-grivna-equals-twenty-nogata",
+      "locale": "ru",
+      "runtime_text": "По старому счёту гривна равна двадцати ногатам.",
+      "search_aliases": [
+        "гривна и ногата",
+        "сколько ногат в гривне",
+        "старый счёт денег",
+        "куны и ногаты"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-grivna-equals-twenty-nogata",
+      "locale": "en",
+      "runtime_text": "By the old reckoning, one grivna equals twenty nogata.",
+      "search_aliases": [
+        "grivna and nogata",
+        "how many nogata in a grivna",
+        "old money count",
+        "kuna and nogata"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-kuna-now-same-as-rezana",
+      "locale": "ru",
+      "runtime_text": "Резаны теперь в счёте не осталось — где прежде считали резаной, там нынче считают куной.",
+      "search_aliases": [
+        "резана и куна",
+        "чем теперь считают вместо резаны",
+        "нынешний счёт денег",
+        "куны вместо резан"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-kuna-now-same-as-rezana",
+      "locale": "en",
+      "runtime_text": "The rezana is no longer used in reckoning — wherever one used to count in rezana, one now counts in kuna.",
+      "search_aliases": [
+        "rezana and kuna",
+        "what replaced the rezana",
+        "current money count",
+        "kuna instead of rezana"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-urok-values-for-livestock",
+      "locale": "ru",
+      "runtime_text": "За кобылу платят шестьдесят кун, за вола — гривну, за корову — сорок кун, за трёхлетку — тридцать кун, за годовалого телёнка — полгривны, за телёнка — пять кун, за свинью — пять кун, за поросёнка — ногату, за овцу — пять кун.",
+      "search_aliases": [
+        "сколько стоит корова",
+        "плата за скотину",
+        "цена лошади в кунах",
+        "сколько за вола"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-urok-values-for-livestock",
+      "locale": "en",
+      "runtime_text": "For a mare one pays sixty kuna, for an ox a grivna, for a cow forty kuna, for a three-year-old thirty kuna, for a yearling half a grivna, for a calf five kuna, for a pig five kuna, for a piglet a nogata, for a sheep five kuna.",
+      "search_aliases": [
+        "price of a cow",
+        "payment for livestock",
+        "cost of a horse in kuna",
+        "price of an ox"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-princely-horse-worth-more-than-smerd-horse",
+      "locale": "ru",
+      "runtime_text": "За княжьего коня с тавром платят три гривны, а за коня простого смерда — две гривны.",
+      "search_aliases": [
+        "конь князя цена",
+        "сколько за коня смерда",
+        "тавро на коне",
+        "цена лошади в гривнах"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-princely-horse-worth-more-than-smerd-horse",
+      "locale": "en",
+      "runtime_text": "For a prince's branded horse one pays three grivny, and for an ordinary smerd's horse, two grivny.",
+      "search_aliases": [
+        "prince's horse price",
+        "smerd's horse cost",
+        "branded horse value",
+        "horse price in grivny"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-grivna-serebra-worth-four-grivny-kun",
+      "locale": "ru",
+      "runtime_text": "За гривну серебра дают четыре гривны кунами.",
+      "search_aliases": [
+        "гривна серебра сколько кун",
+        "серебро на куны",
+        "цена гривны серебра",
+        "менять серебро на куны"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-grivna-serebra-worth-four-grivny-kun",
+      "locale": "en",
+      "runtime_text": "For a grivna of silver, one gets four grivny in kuna.",
+      "search_aliases": [
+        "silver grivna to kuna",
+        "exchange silver for kuna",
+        "value of silver grivna",
+        "silver grivna price"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-hunting-grounds-belong-to-an-owner",
+      "locale": "ru",
+      "runtime_text": "Ловища, перевесища, бобровые гоны и прочие угодья для звериной и птичьей ловли тянутся к какому-нибудь селу или двору — они не вольные, а чьи-то; ловить в чужом угодье без спроса — обида хозяину.",
+      "search_aliases": [
+        "чьи ловища",
+        "охота в чужом угодье",
+        "звериные ловы",
+        "перевесище бобровый гон"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-hunting-grounds-belong-to-an-owner",
+      "locale": "en",
+      "runtime_text": "Hunting grounds, snaring places, beaver runs and other such grounds belong to some village or household — they are not free for anyone; hunting in another's grounds without leave wrongs the owner.",
+      "search_aliases": [
+        "whose hunting grounds",
+        "hunting on another's land",
+        "trapping grounds owner",
+        "beaver run ownership"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-vira-forty-for-freeman-eighty-for-princely-man",
+      "locale": "ru",
+      "runtime_text": "За убитого княжьего мужа платят восемьдесят гривен, а за простого свободного человека — сорок гривен.",
+      "search_aliases": [
+        "вира за убийство",
+        "сколько платить за убитого",
+        "плата за княжего мужа",
+        "вира сорок гривен"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-vira-forty-for-freeman-eighty-for-princely-man",
+      "locale": "en",
+      "runtime_text": "For a slain man of the prince's household, eighty grivny are paid; for an ordinary free man, forty grivny.",
+      "search_aliases": [
+        "vira for killing",
+        "payment for a slain man",
+        "vira for a princely man",
+        "forty grivny vira"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-woman-judged-same-as-man-unless-at-fault",
+      "locale": "ru",
+      "runtime_text": "Убийство женщины судят тем же судом, что и убийство мужчины; а если сама она была виновна, то платят лишь полвиры — двадцать гривен.",
+      "search_aliases": [
+        "вира за женщину",
+        "полвиры",
+        "наказание за убийство женщины",
+        "двадцать гривен за женщину"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-woman-judged-same-as-man-unless-at-fault",
+      "locale": "en",
+      "runtime_text": "Killing a woman is judged by the same court as killing a man; but if she herself was at fault, only half the vira is paid — twenty grivny.",
+      "search_aliases": [
+        "vira for a woman",
+        "half vira",
+        "punishment for killing a woman",
+        "twenty grivny for a woman"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-verv-pays-dikaya-vira-for-unfound-killer",
+      "locale": "ru",
+      "runtime_text": "Если убийцу не находят, дикую виру платит вервь, на чьей земле лежал убитый; платит она в течение многих лет, потому что платит без самого убийцы.",
+      "search_aliases": [
+        "дикая вира",
+        "вервь платит виру",
+        "если убийцу не нашли",
+        "община платит за убийство"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-verv-pays-dikaya-vira-for-unfound-killer",
+      "locale": "en",
+      "runtime_text": "If the killer is not found, the wild vira is paid by the verv community on whose land the slain man lay; it pays over many years, since it pays without the actual killer.",
+      "search_aliases": [
+        "wild vira",
+        "verv pays vira",
+        "killer not found",
+        "community pays for killing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-killer-pays-vira-with-community-if-open-quarrel",
+      "locale": "ru",
+      "runtime_text": "А если убил открыто, в ссоре или на пиру, то платит виру вместе со своей вервью, потому что и сам он в эту виру вкладывается.",
+      "search_aliases": [
+        "убийство в ссоре",
+        "убил на пиру",
+        "платит вместе с вервью",
+        "открытое убийство"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-killer-pays-vira-with-community-if-open-quarrel",
+      "locale": "en",
+      "runtime_text": "But if he killed openly, during a quarrel or at a feast, he pays the vira together with his own verv, since he too contributes to that vira.",
+      "search_aliases": [
+        "killing in a quarrel",
+        "killed at a feast",
+        "pays vira with the verv",
+        "open killing punishment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-ordeal-by-iron-water-or-oath-by-claim-size",
+      "locale": "ru",
+      "runtime_text": "Если свидетеля не находят, а истец обвиняет в убийстве, судят испытанием железом; при исках поменьше — испытанием водой; а если иск до двух гривен — идут на судебную клятву.",
+      "search_aliases": [
+        "испытание железом",
+        "испытание водой",
+        "судебная клятва",
+        "суд без свидетелей"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-ordeal-by-iron-water-or-oath-by-claim-size",
+      "locale": "en",
+      "runtime_text": "If no witness can be found and the plaintiff accuses of killing, they are judged by the ordeal of iron; for lesser claims, by the ordeal of water; and if the claim is up to two grivny, one goes to the judicial oath.",
+      "search_aliases": [
+        "ordeal by iron",
+        "ordeal by water",
+        "judicial oath",
+        "trial without witnesses"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-berkovets-used-for-trade-goods",
+      "locale": "ru",
+      "runtime_text": "Соль и воск считают берковцами — так и говорят: пошли с берковец соли.",
+      "search_aliases": [
+        "берковец соли",
+        "мера воска берковец",
+        "берковец товара",
+        "сколько это берковец"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-berkovets-used-for-trade-goods",
+      "locale": "en",
+      "runtime_text": "Salt and wax are reckoned in berkovets — one says, send a berkovets of salt.",
+      "search_aliases": [
+        "berkovets of salt",
+        "wax measured in berkovets",
+        "berkovets of goods",
+        "how much is a berkovets"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-berkovets-reckoned-as-ten-poods",
+      "locale": "ru",
+      "runtime_text": "Берковец считают в десять пудов.",
+      "search_aliases": [
+        "берковец пуды",
+        "сколько пудов в берковце",
+        "мера веса берковец",
+        "берковец это сколько"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-berkovets-reckoned-as-ten-poods",
+      "locale": "en",
+      "runtime_text": "A berkovets is reckoned as ten poods.",
+      "search_aliases": [
+        "berkovets in poods",
+        "how many poods in a berkovets",
+        "berkovets weight",
+        "how much is a berkovets"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-goods-measured-in-cubits",
+      "locale": "ru",
+      "runtime_text": "Длину меряют локтями и саженями; в сажени — четыре локтя, а в локте — две пяди.",
+      "search_aliases": [
+        "мера длины локоть",
+        "сажень и локоть",
+        "сколько локтей в сажени",
+        "меряют сукно локтями"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-goods-measured-in-cubits",
+      "locale": "en",
+      "runtime_text": "Length is measured in cubits and sazhens; a sazhen holds four cubits, and a cubit two spans.",
+      "search_aliases": [
+        "cubit length measure",
+        "sazhen and cubit",
+        "how many cubits in a sazhen",
+        "measuring cloth by cubit"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-fine-cloth-sold-in-sealed-postavy",
+      "locale": "ru",
+      "runtime_text": "Дорогое заморское сукно продают не в разрез, а целыми поставами, и на каждом висит свинцовая печать.",
+      "search_aliases": [
+        "сукно постав",
+        "целый постав сукна",
+        "свинцовая печать на сукне",
+        "заморское сукно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-fine-cloth-sold-in-sealed-postavy",
+      "locale": "en",
+      "runtime_text": "Costly overseas cloth is sold not cut apart but in whole bolts called postava, each with a hanging lead seal.",
+      "search_aliases": [
+        "cloth sold by the bolt",
+        "whole postava of cloth",
+        "lead seal on cloth",
+        "overseas cloth trade"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-rye-measured-in-kad",
+      "locale": "ru",
+      "runtime_text": "Рожь мерят кадью — так и говорят: кадь ржи за столько-то гривен.",
+      "search_aliases": [
+        "кадь ржи",
+        "мера зерна кадь",
+        "сколько кадь стоит",
+        "рожь мерить кадью"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-rye-measured-in-kad",
+      "locale": "en",
+      "runtime_text": "Rye is measured by the kad — one speaks of a kad of rye for so many grivny.",
+      "search_aliases": [
+        "kad of rye",
+        "grain measured by kad",
+        "price of a kad",
+        "rye measured by kad"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-foreign-merchants-come-in-winter-and-summer-groups",
+      "locale": "ru",
+      "runtime_text": "Иноземные купцы приходят по-разному: зимние гости — осенью, последним речным путём или первым санным обозом, а уходят по весне; их сменяют летние гости.",
+      "search_aliases": [
+        "зимние гости купцы",
+        "летние гости",
+        "когда приходят немецкие купцы",
+        "иноземные купцы сезон"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-foreign-merchants-come-in-winter-and-summer-groups",
+      "locale": "en",
+      "runtime_text": "Foreign merchants come in two groups: winter guests arrive in autumn, by the last boats or the first sled-train, and leave in spring; summer guests take their place.",
+      "search_aliases": [
+        "winter guest merchants",
+        "summer guest merchants",
+        "when do foreign merchants arrive",
+        "seasonal foreign traders"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-annual-interest-cap-ten-kun-per-grivna",
+      "locale": "ru",
+      "runtime_text": "Кто берёт по десять кун роста на гривну за год, того не запрещают — это дозволено.",
+      "search_aliases": [
+        "рост на гривну",
+        "сколько можно брать в рост",
+        "проценты по закону",
+        "рез дозволенный"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-annual-interest-cap-ten-kun-per-grivna",
+      "locale": "en",
+      "runtime_text": "Whoever takes ten kuna of interest on a grivna per year is not forbidden — this is allowed.",
+      "search_aliases": [
+        "interest on a grivna",
+        "how much interest is allowed",
+        "lawful interest rate",
+        "allowed loan interest"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-lender-loses-principal-after-three-times-interest",
+      "locale": "ru",
+      "runtime_text": "А кто взял проценты уже три раза, тому и самого долга больше не брать.",
+      "search_aliases": [
+        "взял проценты трижды",
+        "долг после процентов",
+        "теряет ли заимодавец долг",
+        "устав о резах"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-lender-loses-principal-after-three-times-interest",
+      "locale": "en",
+      "runtime_text": "But whoever has already taken interest three times may no longer take the principal itself.",
+      "search_aliases": [
+        "took interest three times",
+        "debt after interest paid",
+        "lender loses the debt",
+        "statute on interest"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-monastery-owns-village-with-dependents",
+      "locale": "ru",
+      "runtime_text": "Монастырю может принадлежать целое село с данью, вирой и пошлинами с него — такое село дал ему князь, и на монастырь в нём трудятся зависимые люди.",
+      "search_aliases": [
+        "монастырское село",
+        "село дано монастырю",
+        "зависимые люди монастыря",
+        "вотчина монастыря"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g1-monastery-owns-village-with-dependents",
+      "locale": "en",
+      "runtime_text": "A monastery may own a whole village along with its tribute, vira and dues — such a village was granted to it by a prince, and dependent people of the monastery work it.",
+      "search_aliases": [
+        "monastery-owned village",
+        "village granted to a monastery",
+        "monastery dependents",
+        "monastery estate"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-runaway-kholop-harborer",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2866",
+        "record_id": "book:641351"
+      },
+      "note": "«Если холоп бежит, а господин объявит об этом, если кто, услышав об этом или зная о том, что он холоп, даст ему хлеба или укажет ему путь, то платить ему за холопа 5 гривен, а за робу 6 гривен» — прямо задаёт плату укрывателя беглого холопа хозяину.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-grivna-twenty-nogata",
+      "source_ref": "source:book-177850",
+      "anchor": {
+        "section": "Денежно-весовые системы домонгольской Руси > Глава II Денежная терминология и денежный счет домонгольской Руси ¶124",
+        "record_id": "book:177850"
+      },
+      "note": "«гривна = 20 ногатам = 25 кунам = 50 резанам» — задаёт счёт Краткой Правды XI в.; для XIII в. взято как аналогия, отмеченная в note самой строки.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-kuna-replaces-rezana",
+      "source_ref": "source:book-177850",
+      "anchor": {
+        "section": "Денежно-весовые системы домонгольской Руси > Глава II Денежная терминология и денежный счет домонгольской Руси ¶126",
+        "record_id": "book:177850"
+      },
+      "note": "«в нем полностью отсутствует резана, место которой везде занимает куна» — прямо подтверждает, что в счёте Пространной Правды (действующей ~1230) куна заменила резану.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-urok-livestock-values",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2797",
+        "record_id": "book:641351"
+      },
+      "note": "«За кобылу — 60 кун, а за вола — гривна, а за корову — 40 кун, а за трехлетку — 30 кун, за годовалого — полгривны, за теленка — 5 кун, за свинью — 5 кун, а за поросенка — ногата, за овцу — 5 кун» — прямо задаёт урок за перечисленную скотину.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-princely-vs-smerd-horse",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (КРАТКАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2598",
+        "record_id": "book:641351"
+      },
+      "note": "«А за княжеского коня, если тот с тавром, 3 гривны, а за коня смерда 2 гривны» — прямо задаёт разницу в оценке коня по владельцу.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-grivna-serebra-smolensk-1229",
+      "source_ref": "source:book-177850",
+      "anchor": {
+        "section": "Очерки истории денежной системы средневекового Новгорода [notes] ¶2340",
+        "record_id": "book:177850"
+      },
+      "note": "Торговый договор Смоленска с Ригой и Готским берегом 1229 г.: «а за гривну серебра по 4 гривны кунами или пенязи» — прямое современное 1230 году свидетельство соотношения серебро/куны.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-grivna-serebra-ratio-yanin",
+      "source_ref": "source:book-177850",
+      "anchor": {
+        "section": "Денежно-весовые системы домонгольской Руси > Глава II Денежная терминология и денежный счет домонгольской Руси ¶160",
+        "record_id": "book:177850"
+      },
+      "note": "«Гривна кун = гривне серебра: 4» — подтверждает то же соотношение отдельным подсчётом исследователя.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-hunting-grounds-belong-to-village",
+      "source_ref": "source:book-751267",
+      "anchor": {
+        "section": "Образование единого Русского государства > Общественно-экономический и политический строй Северо-Восточной Руси в период феодальной раздробленности > А.В. Куза. Новгородская земля ¶2636",
+        "record_id": "book:751267"
+      },
+      "note": "«К селу «тянули» различные угодья... ловища, «бортные ухожаи», бобровые гоны, «тетеревники», «гоголиные ловы», «перевесища»...» — подтверждает, что промысловые угодья принадлежат конкретному селу/двору, а не являются вольными; для Новгородской земли ~1230 применено как аналогия (источник о Северо-Восточной Руси).",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-vira-forty-eighty",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2754",
+        "record_id": "book:641351"
+      },
+      "note": "«Если кто убьет княжего мужа в разбое, а убийцу не ищут, то виру в 80 гривен платить верви, где лежит убитый, если же простой свободный человек, то 40 гривен» — прямо задаёт обе суммы виры и то, что платит вервь при неразысканном убийце.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-woman-vira-unless-at-fault",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2842",
+        "record_id": "book:641351"
+      },
+      "note": "«Если кто убьет женщину, то судить, таким же судом, что и за убийство мужчины; если же <убитый> будет виноват, то платить полвиры 20 гривен» — прямо задаёт правило и исключение.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-verv-pays-over-years",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2755",
+        "record_id": "book:641351"
+      },
+      "note": "«Если которая-либо вервь будет платить дикую виру, пусть выплачивает ту виру столько времени, сколько будет платить, потому что они платят без преступника» — подтверждает многолетнюю выплату вервью без самого убийцы.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-open-quarrel-killer-pays-with-verv",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2757",
+        "record_id": "book:641351"
+      },
+      "note": "«Но если <кто> убил открыто, во время ссоры или на пиру, то теперь ему так платить вместе с вервью, поскольку и он вкладывается в виру» — прямо задаёт совместную оплату убийцы и верви при открытом убийстве.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-ordeal-by-iron-no-witness",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2772",
+        "record_id": "book:641351"
+      },
+      "note": "«Если ищут свидетеля и не найдут, а истец обвиняет в убийстве, то рассудить их испытанием железом» — прямо задаёт испытание железом при отсутствии свидетеля.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-ordeal-by-water-or-oath-by-size",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2773",
+        "record_id": "book:641351"
+      },
+      "note": "«если же менее значительный иск, то к испытанию водой; если до двух гривен или менее, то идти ему на судебную клятву в отношение своих кун» — прямо задаёт градацию испытания водой и клятвой по размеру иска.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-berkovets-of-salt",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "БЕРЕСТЯНЫЕ ГРАМОТЫ > ПЕРЕВОД ¶2964",
+        "record_id": "book:641351"
+      },
+      "note": "«Да с берковец соли пошли сюда» — берестяная грамота прямо использует берковец как реальную меру для соли.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-berkovets-ten-poods",
+      "source_ref": "source:book-356156",
+      "anchor": {
+        "section": "Глава 5. Метрология > Метрология древнерусского государства (X — начало XII в.) ¶1118",
+        "record_id": "book:356156"
+      },
+      "note": "«В Уставной грамоте князя Всеволода в берковцах исчисляется вес воска... позднее берковец = 10 пудам» — задаёт соотношение берковца и пуда; note самой строки указывает, что точное соотношение для XIII в. не установлено, отсюда сниженная directness.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-sazhen-four-cubits",
+      "source_ref": "source:book-356156",
+      "anchor": {
+        "section": "Глава 5. Метрология > Метрология периода феодальной раздробленности Руси (XII–XV вв.) ¶1120",
+        "record_id": "book:356156"
+      },
+      "note": "«сажень равна 4 локтям или 8 пядям» — прямо задаёт соотношение мер длины, действующих в изучаемый период.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-ivan-cubit-standard",
+      "source_ref": "source:book-356156",
+      "anchor": {
+        "section": "Глава 5. Метрология > Метрология древнерусского государства (X — начало XII в.) ¶1083",
+        "record_id": "book:356156"
+      },
+      "note": "«эталон локтя в 44,1 см... хранившегося в церкви Ивана на Опоках» — подтверждает существование эталонного локтя как реальной меры длины в Новгороде.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-cloth-sold-in-postavy",
+      "source_ref": "source:book-392896",
+      "anchor": {
+        "section": "ГЛАВА VI. ЗАПАДНОЕВРОПЕЙСКИЕ НАХОДКИ И ИХ ТОПОГРАФИЯ > Западный импорт ¶688",
+        "record_id": "book:392896"
+      },
+      "note": "«Ткани поступали на новгородский рынок и продавались поставами (Stücke), запечатанными свинцовыми пломбами с геральдическими изображениями городов-производителей» — задаёт продажу сукна целыми поставами; period строки medieval_general, отсюда analogical.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-kad-rye-chronicle",
+      "source_ref": "source:book-618717",
+      "anchor": {
+        "section": "Часть первая «Конституционный проект» Романа Мстиславича > Глава шестая Память о Романе в Новгороде в устной традиции, произведениях литературы и искусства ¶328",
+        "record_id": "book:618717"
+      },
+      "note": "«купляхут кадь ржи по 4 гривне, а хлебъ по две ногате, а мед пуд по 10 кунъ» — новгородский летописец прямо использует кадь как единицу измерения ржи.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-winter-summer-guests",
+      "source_ref": "source:book-392896",
+      "anchor": {
+        "section": "ГЛАВА IV. НОВГОРОД И ГАНЗА В XIV—XV ВВ. > Ганзейская контора и ганзейское купечество в Новгороде ¶504",
+        "record_id": "book:392896"
+      },
+      "note": "«Купцы подразделялись на зимних и летних гостей, из которых первые прибывали в Новгород осенью во время последней навигации или с первым санным «поездом», а покидали город весной» — задаёт сезонное деление иноземных гостей; period строки medieval_general (контора описана для XIV–XV вв.), отсюда analogical для 1230 г.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-ten-kun-per-grivna-allowed",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2806",
+        "record_id": "book:641351"
+      },
+      "note": "«Если кто взимает по 10 кун на гривну за год, то этого не запрещать» — прямо задаёт дозволенную ставку годового роста.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-lose-principal-after-three-times",
+      "source_ref": "source:book-641351",
+      "anchor": {
+        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2805",
+        "record_id": "book:641351"
+      },
+      "note": "«если он возьмет проценты трижды, то <самого> долга ему не брать» — прямо задаёт потерю права на долг после троекратного взимания резов.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-monastery-granted-village-immunity",
+      "source_ref": "source:book-73687",
+      "anchor": {
+        "section": "Глава VII. Правительство и управление > 8. Поместье ¶828",
+        "record_id": "book:73687"
+      },
+      "note": "«Собственность была дарована «с данью, вирой и штрафами»» — про дарение Юрьеву монастырю волости Буйцы князем Мстиславом; подтверждает монастырское землевладение с судебным иммунитетом.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g1-monastery-village-granted-by-princes",
+      "source_ref": "source:book-220832",
+      "anchor": {
+        "section": "Новгородская феодальная вотчина ¶2001",
+        "record_id": "book:220832"
+      },
+      "note": "«эта волость была дана князьями Мстиславом Владимировичем» — подтверждает княжеский дар волости Юрьеву монастырю независимым исследованием (Янин).",
+      "review_status": "approved"
+    }
+  ]
+}

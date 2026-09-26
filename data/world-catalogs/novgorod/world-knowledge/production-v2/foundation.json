@@ -4,7 +4,7 @@
     "schema": "world_knowledge_pack_manifest_v1",
     "pack_ref": "wk-pack:novgorod-1230",
     "revision_id": "revision:production-v2",
-    "status": "reviewed",
+    "status": "production",
     "default_locale": "ru",
     "supported_locales": [
       "ru",
@@ -3316,7 +3316,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:psychology_behavior:production-v1",
       "domain": "psychology_behavior",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "context_scope": "universal"
       },
@@ -3341,7 +3341,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:social_behavior:production-v1",
       "domain": "social_behavior",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "context_scope": "universal"
       },
@@ -3366,7 +3366,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:environment:scientific-foundations-v1",
       "domain": "environment",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "context_scope": "universal"
       },
@@ -3391,7 +3391,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:architecture_settlement:production-v1",
       "domain": "architecture_settlement",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "time": {
           "from": 1220,
@@ -3421,7 +3421,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:biology_physiology:production-v1",
       "domain": "biology_physiology",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "context_scope": "universal"
       },
@@ -3449,7 +3449,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:chemistry_process:production-v1",
       "domain": "chemistry_process",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "context_scope": "universal"
       },
@@ -3476,7 +3476,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:craft_technology:production-v1",
       "domain": "craft_technology",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "time": {
           "from": 1220,
@@ -3507,7 +3507,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:environment:production-v1",
       "domain": "environment",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "time": {
           "from": 1220,
@@ -3539,7 +3539,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:material_culture:production-v1",
       "domain": "material_culture",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "time": {
           "from": 1220,
@@ -3571,7 +3571,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:npc_daily_life:production-v1",
       "domain": "npc_daily_life",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "time": {
           "from": 1220,
@@ -3603,7 +3603,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:physics_material_science:production-v1",
       "domain": "physics_material_science",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "context_scope": "universal"
       },
@@ -3629,7 +3629,7 @@
       "schema": "world_knowledge_profile_v1",
       "profile_ref": "wk-profile:social_law_economy:production-v1",
       "domain": "social_law_economy",
-      "status": "reviewed",
+      "status": "production",
       "scope": {
         "time": {
           "from": 1220,

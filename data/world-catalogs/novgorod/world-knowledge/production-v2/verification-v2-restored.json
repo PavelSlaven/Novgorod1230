@@ -5199,21 +5199,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-floating-shape",
-      "claim_ref": "claim:population-physics-floating-shape",
-      "claim_digest": "9267641456f27be8333a1dbfce10e2db701fe6f6a3a2cfe95ed5a7819699efaf",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-floating-shape",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-buoyancy"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-09; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-09."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-population-pine-float",
       "claim_ref": "claim:population-pine-float",
       "claim_digest": "48b44623ad4bcb80b3fcd0b5b15ae376830c29d167967fd8eb79b9c8dc79d78f",

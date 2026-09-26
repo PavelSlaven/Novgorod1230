@@ -2,7 +2,7 @@
 import json
 import re
 from collections import Counter, defaultdict
-from common import ITEMS, REPORTS, read_csv, split, load_place_families
+from common import ITEMS, REPORTS, ME, read_csv, split, load_place_families
 import rules as R
 
 KIND_OF_SLOT = {"own": {"owner_sign", "inscription"}, "mk": {"maker_mark", "inscription"}, "orn": {"ornament"},
@@ -67,6 +67,9 @@ def main():
     # --- frequency
     pfs = load_place_families()
     ipf = read_csv(ITEMS / "item_place_frequency.csv")
+    residues = {r["item_id"] for r in read_csv(ME / "material_entities.csv") if r["quantity_mode"] == "portion_or_local_accumulation"}
+    residue_links = {r["link_id"] for r in read_csv(ME / "item_location_links.csv") if r["item_id"] in residues}
+    residue_refs = {f"master_link:{x}" for x in residue_links} | {f"master_where_used:{x}" for x in residues}
     it_ids = {r["it_id"] for r in items}
     fail = []
     per_pf = defaultdict(set)
@@ -80,6 +83,10 @@ def main():
             fail.append(f"{r['ipf_id']}: item unresolved")
         if r["ref_kind"] == "master" and not r["item_or_category_ref"].startswith("n1230:material_item:"):
             fail.append(f"{r['ipf_id']}: master ref malformed")
+        if r["derivation_rule"] == "R_WK_COMPOSES" and (r["frequency_class"] != "rare" or r["confidence"] != "C"):
+            fail.append(f"{r['ipf_id']}: composed place must stay rare/C")
+        if r["ref_kind"] == "it" and residue_refs.intersection(split(r["source_refs"])):
+            fail.append(f"{r['ipf_id']}: residue used as whole-item evidence")
         per_pf[r["pf_id"]].add(r["item_or_category_ref"])
         if r["ref_kind"] == "it":
             per_pf_it[r["pf_id"]].add(r["item_or_category_ref"])
@@ -162,8 +169,8 @@ def main():
         "owner_kind": dict(Counter(r["owner_kind"] for r in own)),
         "mark_kind": dict(Counter(m["mark_kind"] for m in marks)),
     }
-    (REPORTS / "validation.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
-    (REPORTS / "counts.json").write_text(json.dumps(counts, ensure_ascii=False, indent=1), encoding="utf-8")
+    (REPORTS / "validation.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
+    (REPORTS / "counts.json").write_text(json.dumps(counts, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
     for k, v in res.items():
         print(k, "PASS" if v["pass"] else "FAIL", len(v["failures"]))
         for f in v["failures"][:15]:

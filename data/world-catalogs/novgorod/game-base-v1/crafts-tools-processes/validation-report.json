@@ -1,6 +1,6 @@
 {
   "checked_by": "scripts/validate.cjs",
-  "pass": 25,
+  "pass": 27,
   "fail": 0,
   "results": [
     {
@@ -57,6 +57,16 @@
       "id": "occupation_tools_resolve",
       "result": "PASS",
       "detail": "356 links resolve"
+    },
+    {
+      "id": "sole_matcult_tool_confidence",
+      "result": "PASS",
+      "detail": "sole matcult source capped at C"
+    },
+    {
+      "id": "occupation_link_confidence",
+      "result": "PASS",
+      "detail": "links do not exceed tool confidence"
     },
     {
       "id": "every_occupation_ge2_tools",

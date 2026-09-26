@@ -132,13 +132,13 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 2426
+      "rows": 10555
     },
     {
       "domain": "presence_rules",
       "name": "input_pool_rows_rejected (external)",
       "pass": false,
-      "failures": 16657,
+      "failures": 16620,
       "sample": [
         "x",
         "x",
@@ -158,10 +158,10 @@
       ],
       "external": true,
       "reasons": {
-        "category_ref empty": 16657
+        "category_ref empty": 16620
       },
       "by_file": {
-        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 16657
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 16620
       }
     },
     {

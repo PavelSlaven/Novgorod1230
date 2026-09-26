@@ -119,7 +119,8 @@ const minConf = (a, b) => {
   if (!a) return b; if (!b) return a;
   return (CONF_RANK[a] ?? 0) <= (CONF_RANK[b] ?? 0) ? a : b;
 };
-const toolMetaById = new Map(TOOLS.map(t => [t[0], { conf: t[13], srcs: t[12] }]));
+const toolConfidence = t => t[12] === 'src:matcult-catalog-v1' ? minConf(t[13], 'C') : t[13];
+const toolMetaById = new Map(TOOLS.map(t => [t[0], { conf: toolConfidence(t), srcs: t[12] }]));
 const occToolRows = []; const toolOcc = new Map();
 for (const [occ, carried, wp, loc, conf, note] of OCC) {
   if (!occById.has(occ)) warnings.push(`occupation map: unknown occupation ${occ}`);
@@ -130,7 +131,7 @@ for (const [occ, carried, wp, loc, conf, note] of OCC) {
       if (!meta) warnings.push(`occupation_tools: unknown tool ${t} for ${occ}`);
       const linkConf = meta ? minConf(conf, meta.conf) : conf;
       const linkSrc = meta && meta.srcs ? meta.srcs : 'src:occupations-v1';
-      occToolRows.push({ occupation_id: occ, occupation_title: occById.get(occ)?.occupation_title || '', tl_id: t, carry_kind: kind, work_location_note_ru: loc, confidence: linkConf, source_refs: linkSrc, status: STATUS, note });
+      occToolRows.push({ occupation_id: occ, occupation_title: occById.get(occ)?.occupation_title || '', tl_id: t, carry_kind: kind, work_location_note_ru: loc, confidence: linkConf, source_refs: linkSrc, status: STATUS, note: [note, 'Связь с конкретным инструментом — редакционное сопоставление занятия и подтверждённого инструмента.'].filter(Boolean).join(' ') });
     }
   }
 }
@@ -184,7 +185,7 @@ for (const t of TOOLS) {
     item_template_ref: tplId, wk_concept_ref: wkc ? `wk:material_culture:${wkc}` : '', matcult_refs: mc, material: matList.join(';'), material_class: mclass, size_class: size,
     mass_band: band, mass_band_range: MASS_BANDS[band], mass_basis: basis, mass_attested: massAtt, v5_policy_mass_g: v5mass ?? '', v5_policy_band: v5band,
     used_in_process_refs: procs.join(';'), used_by_occupations: [...(toolOcc.get(id) || [])].join(';'), in_workshops: [...(toolWs.get(id) || [])].join(';'),
-    workplace_pf_id: wp, condition_states: CONDITION[mclass], mark_slots: marks, region_id: '', source_refs: srcs, confidence: conf, status: STATUS, note,
+    workplace_pf_id: wp, condition_states: CONDITION[mclass], mark_slots: marks, region_id: '', source_refs: srcs, confidence: toolConfidence(t), status: STATUS, note,
   });
 }
 

@@ -24,13 +24,12 @@ const CONTRACT_SCOPES = ['landscape_template', 'place_template', 'scene_template
 // than any cited link actually attests is over-claiming; this caps it back down to what the cited
 // links support and flags it, instead of trusting the pool's own class blindly.
 const CLASS_RANK = { ubiquitous: 4, common: 3, contextual: 2, rare: 1 };
-const MASTER_LINKS_PATH = path.join(GAME_BASE, 'sources/master-archive-v1/data/normalized_source_tables/material_entities/item_location_links.csv');
-const MASTER_LINKS = fs.existsSync(MASTER_LINKS_PATH)
-  ? new Map(readCsv(MASTER_LINKS_PATH).map((r) => [r.link_id, r.spawn_frequency]))
-  : new Map();
+const MASTER_LINKS_PATH = path.join(GAME_BASE, '../sources/master-archive-v1/data/normalized_source_tables/material_entities/item_location_links.csv');
+const MASTER_LINKS = new Map(readCsv(MASTER_LINKS_PATH).map((r) => [r.link_id, r.spawn_frequency]));
 
 function capByMasterLinks(cls, sourceRefsRaw) {
   const ids = [...String(sourceRefsRaw || '').matchAll(/master_link:(ILO\d+)/g)].map((m) => m[1]);
+  for (const id of ids) if (!MASTER_LINKS.has(id)) throw new Error(`MASTER link ${id} not found in ${MASTER_LINKS_PATH}`);
   const attested = ids.map((id) => MASTER_LINKS.get(id)).filter((c) => CLASS_RANK[c]);
   if (!attested.length) return { cls, capped: false };
   const maxAttested = attested.reduce((best, c) => (CLASS_RANK[c] > CLASS_RANK[best] ? c : best), attested[0]);
@@ -105,7 +104,9 @@ export function build() {
       const s = seasons(r.allowed_seasons ?? r.season_period ?? r.seasons ?? r.season);
       const refreshRaw = (r.refresh_class || 'none').trim();
       const refresh = RULE.refresh_rule.values.includes(refreshRaw) ? refreshRaw : RULE.refresh_rule.aliases[refreshRaw];
-      const cl = r.count_limit || r.max_count;
+      const statedLimit = r.count_limit || r.max_count;
+      const ruleLimit = r.count_limit_rule ? /^\w+:max (\d+) instance-group per first-arrival roll;/.exec(r.count_limit_rule) : null;
+      const cl = statedLimit || ruleLimit?.[1];
       const errs = [];
       if (!cat) errs.push('category_ref empty'); else if (!cats.has(cat)) errs.push(`category_ref '${cat}' not in category_registry`);
       if (!fc) errs.push(`frequency_class '${r.frequency_class}' unknown`);
@@ -114,11 +115,12 @@ export function build() {
       if (s.error) errs.push(s.error);
       if (!refresh) errs.push(`refresh_class '${refreshRaw}' unknown`);
       if (cl && !(Number.isInteger(+cl) && +cl >= 1)) errs.push(`count_limit '${cl}' not an integer >= 1`);
+      if (r.count_limit_rule && !ruleLimit && !statedLimit) errs.push('count_limit_rule unrecognised');
       if (!r.source_refs) errs.push('source_refs empty');
       if (errs.length) { rejects.push({ where, row_id: rowId, errors: errs }); return; }
       for (const [k, ref] of scopes) pools.push({
         scope_kind: k, scope_ref: ref, region_id: r.region_id || '', category_ref: cat, frequency_class: fc.cls, probability_ppm: fc.ppm,
-        probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: cl ? +cl : 1, count_limit_basis: cl ? 'pool_row' : 'default_minimum_1',
+        probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: cl ? +cl : 1, count_limit_basis: statedLimit ? 'pool_row' : ruleLimit ? 'pool_count_limit_rule' : 'default_minimum_1',
         allowed_seasons: s.ok, refresh_class: refresh, source_pool: where, source_row_id: rowId, source_refs: r.source_refs,
         // probability_ppm is always derived by the unapproved, uncalibrated frequency_rule.json convention
         // (confidence C, see its basis[]), regardless of how confident the pool was in the underlying item/place
@@ -130,26 +132,26 @@ export function build() {
       });
     });
   }
-  // Deduplicate on (scope_kind, scope_ref, region_id, category_ref): keep the highest ppm, merge pool refs.
-  const key = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.category_ref].join('|');
+  // Keep seasonal frequencies separate, including when one source states multiple seasons.
+  const seasonalPools = pools.flatMap((p) => p.allowed_seasons.includes('all') ? [p] : p.allowed_seasons.map((s) => ({ ...p, allowed_seasons: [s] })));
+  const key = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.category_ref, p.allowed_seasons.join(';')].join('|');
   const merged = new Map(), conflicts = [];
-  for (const p of pools) {
+  for (const p of seasonalPools) {
     const k = key(p), prev = merged.get(k);
-    if (!prev) { merged.set(k, { ...p, source_pool: [p.source_pool], source_refs: [p.source_refs] }); continue; }
+    if (!prev) { merged.set(k, { ...p, source_pool: [p.source_pool], source_row_id: [p.source_row_id], source_refs: [p.source_refs] }); continue; }
     if (prev.probability_ppm !== p.probability_ppm || prev.count_limit !== p.count_limit) conflicts.push({ key: k, a: prev.source_pool[0], b: p.source_pool });
     if (p.probability_ppm > prev.probability_ppm) Object.assign(prev, { frequency_class: p.frequency_class, probability_ppm: p.probability_ppm });
     prev.count_limit = Math.max(prev.count_limit, p.count_limit);
     if (!prev.class_capped_from && p.class_capped_from) prev.class_capped_from = p.class_capped_from;
-    prev.allowed_seasons = prev.allowed_seasons.includes('all') || p.allowed_seasons.includes('all') ? ['all'] : RULE.season_rule.dictionary.filter((s) => prev.allowed_seasons.includes(s) || p.allowed_seasons.includes(s));
-    prev.source_pool.push(p.source_pool); prev.source_refs.push(p.source_refs);
+    prev.source_pool.push(p.source_pool); prev.source_row_id.push(p.source_row_id); prev.source_refs.push(p.source_refs);
   }
-  const rows = [...merged.values()].sort((a, b) => key(a).localeCompare(key(b))).map((p, i) => ({ pr_id: `pr_${String(i + 1).padStart(6, '0')}`, ...p, source_refs: [...new Set(p.source_refs)].join(' | '), status: 'candidate' }));
+  const rows = [...merged.values()].sort((a, b) => key(a).localeCompare(key(b))).map((p, i) => ({ pr_id: `pr_${String(i + 1).padStart(6, '0')}`, ...p, source_row_id: [...new Set(p.source_row_id)].join(';'), source_refs: [...new Set(p.source_refs)].join(' | '), status: 'candidate' }));
   const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
   const n = writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows);
   const cappedRows = rows.filter((r) => r.class_capped_from);
   const report = {
     rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n,
-    duplicates_merged: pools.length - n, conflicting_duplicates: conflicts.length, conflicts: conflicts.slice(0, 50),
+    seasonal_pool_rows: seasonalPools.length, duplicates_merged: seasonalPools.length - n, conflicting_duplicates: conflicts.length, conflicts: conflicts.slice(0, 50),
     rejected_rows: rejects.length, rejected_by_file: rejects.reduce((a, r) => { const f = r.where.split('#')[0]; a[f] = (a[f] ?? 0) + 1; return a; }, {}),
     reject_reasons: rejects.flatMap((r) => r.errors.map((e) => e.replace(/'[^']*'/g, "'…'"))).reduce((a, e) => ((a[e] = (a[e] ?? 0) + 1), a), {}),
     rejected_sample: rejects.slice(0, 50),

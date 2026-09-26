@@ -107,10 +107,11 @@ const ex = readJson(P('inputs/pr98-extract.json'));
       landscape_template: reg.get(r.scope_ref)?.kind === 'landscape', place_template: reg.get(r.scope_ref)?.kind === 'place', scene_template: ex.scene_templates.some((s) => s.id === r.scope_ref), container_template: /^container_tpl_/.test(r.scope_ref) }[r.scope_kind];
     if (!ok) f.push(`${r.pr_id}: scope ${r.scope_kind}:${r.scope_ref}`);
     if (!(Number.isInteger(+r.count_limit) && +r.count_limit >= 1)) f.push(`${r.pr_id}: count_limit`);
+    if (!['pool_row', 'pool_count_limit_rule', 'default_minimum_1'].includes(r.count_limit_basis)) f.push(`${r.pr_id}: count_limit_basis`);
     const s = split(r.allowed_seasons);
     if (!s.length || s.some((x) => x !== 'all' && !SEASONS.includes(x))) f.push(`${r.pr_id}: seasons ${r.allowed_seasons}`);
     if (!rule.refresh_rule.values.includes(r.refresh_class)) f.push(`${r.pr_id}: refresh ${r.refresh_class}`);
-    const k = [r.scope_kind, r.scope_ref, r.region_id, r.category_ref].join('|');
+    const k = [r.scope_kind, r.scope_ref, r.region_id, r.category_ref, r.allowed_seasons].join('|');
     if (seen.has(k)) f.push(`${r.pr_id}: duplicate ${k}`); seen.add(k);
   }
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });

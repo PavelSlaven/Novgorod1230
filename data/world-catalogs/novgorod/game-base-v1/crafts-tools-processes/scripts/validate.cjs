@@ -32,6 +32,11 @@ for (const [name, rows] of [['tools', tools], ['processes', procs], ['workshops'
 const byOcc = new Map(); occTools.forEach(r => { if (!byOcc.has(r.occupation_id)) byOcc.set(r.occupation_id, []); byOcc.get(r.occupation_id).push(r.tl_id); });
 const unresolvedOccTools = occTools.filter(r => !tl.has(r.tl_id)).map(r => `${r.occupation_id}:${r.tl_id}`);
 add('occupation_tools_resolve', !unresolvedOccTools.length, unresolvedOccTools.join(',') || `${occTools.length} links resolve`);
+const rank = { A: 3, B: 2, C: 1, D: 0 };
+const overconfidentTools = tools.filter(t => t.source_refs === 'src:matcult-catalog-v1' && t.confidence !== 'C').map(t => t.tl_id);
+add('sole_matcult_tool_confidence', !overconfidentTools.length, overconfidentTools.join(',') || 'sole matcult source capped at C');
+const overconfidentLinks = occTools.filter(r => tl.has(r.tl_id) && (rank[r.confidence] ?? 99) > (rank[tl.get(r.tl_id).confidence] ?? -1)).map(r => `${r.occupation_id}:${r.tl_id}`);
+add('occupation_link_confidence', !overconfidentLinks.length, overconfidentLinks.join(',') || 'links do not exceed tool confidence');
 const approved = occRows.filter(o => /approved/i.test(o.status));
 const lt2 = occRows.filter(o => new Set(byOcc.get(o.occupation_id) || []).size < 2).map(o => o.occupation_id);
 add('every_occupation_ge2_tools', !lt2.length, lt2.length ? lt2.join(',') : `${occRows.length}/${occRows.length} occupations (approved-status rows: ${approved.length}) have >=2 tools in tools_gear`);

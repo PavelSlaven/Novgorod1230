@@ -70,6 +70,9 @@ def main():
     own = {r["own_id"] for r in read_csv(ITEMS / "ownership_rules.csv")}
     items = read_csv(ITEMS / "household.csv") + read_csv(ITEMS / "personal.csv")
     canon2legacy = {v["canonical_id"]: k for k, v in master.items()}
+    # A residue can be linked to the same authored item, but does not attest the
+    # frequency or location of the intact object.
+    residue_units = {"portion_or_local_accumulation"}
     by_item = defaultdict(list)
     for l in links:
         by_item[l["item_id"]].append(l)
@@ -105,19 +108,27 @@ def main():
             link_superseded[lg] = it["it_id"]
             if excluded(lg):
                 continue
+            if me.get(lg, {}).get("quantity_mode") in residue_units:
+                continue
             for l in by_item.get(lg, []):
                 arch = l["location_archetype"]
                 for pf in R.ARCH_PF.get(arch, []):
-                    upd(acc, pf, l["spawn_frequency"], "R_MASTER_LINK", f"master_link:{l['link_id']}")
+                    a = upd(acc, pf, l["spawn_frequency"], "R_MASTER_LINK", f"master_link:{l['link_id']}")
+                    a["fanout"] = a.get("fanout", False) or len(R.ARCH_PF[arch]) > 1
             for arch, cls, prof in spawn_cls.get(lg, []):
                 for pf in R.ARCH_PF.get(arch, []):
-                    upd(acc, pf, cls, "R_SPAWN_PROFILE", f"master_spawn:{prof}:{lg}")
+                    a = upd(acc, pf, cls, "R_SPAWN_PROFILE", f"master_spawn:{prof}:{lg}")
+                    a["fanout"] = a.get("fanout", False) or len(R.ARCH_PF[arch]) > 1
         if not acc:
             for lg in legacy:
+                if me.get(lg, {}).get("quantity_mode") in residue_units:
+                    continue
                 wu = str(master[lg]["rec"].get("where_used") or "")
                 for rx, pfl, exrx in WHERE_KW:
                     if re.search(rx, wu, re.I) and not (exrx and re.search(exrx, wu, re.I)):
                         for pf in pfl:
+                            if it["item_group"] == "HH_TEXTILE_WORK" and pf in ("fishing_camp", "riverbank"):
+                                continue
                             upd(acc, pf, "contextual", "R_WHERE_USED_TEXT", f"master_where_used:{lg}")
         if not acc:
             for pf in GROUP_DEFAULT.get(it["item_group"], ["dwelling_interior"]):
@@ -138,7 +149,7 @@ def main():
                 cls = "rare"
                 rule = rule + "+R_RESIDUAL_RARE_DATING"
             link_conf = "B" if a["rule"] in ("R_MASTER_LINK", "R_SPAWN_PROFILE") else "C"
-            conf = max(it["confidence"], link_conf)  # 'C' > 'B' > 'A' lexically = weaker wins
+            conf = max(it["confidence"], link_conf, "C" if a.get("fanout") else "A")  # weaker wins
             basis = sorted(a["basis"])
             if it["it_id"] in RESIDUAL_RARE:
                 basis = basis + [f"residual_dating:{RESIDUAL_RARE[it['it_id']]}"]
@@ -170,9 +181,10 @@ def main():
         grp = R.ME_SUB_GROUP.get(sub) or (R.ME_GROUP.get(cat) if m["dataset"] == "material_entities" else R.OCC_GROUP.get(cat)) or "HH_TOOLS_SMALL"
         for pf in R.ARCH_PF[arch]:
             k = (lg, pf)
-            a = accB.setdefault(k, {"cls": l["spawn_frequency"], "links": [], "grp": grp})
+            a = accB.setdefault(k, {"cls": l["spawn_frequency"], "links": [], "grp": grp, "fanout": False})
             a["cls"] = best(a["cls"], l["spawn_frequency"])
             a["links"].append(l["link_id"])
+            a["fanout"] = a["fanout"] or len(R.ARCH_PF[arch]) > 1
     for (lg, pf), a in sorted(accB.items()):
         m = master[lg]
         cls_pf = R.PF_CLASS[pf]
@@ -193,7 +205,7 @@ def main():
             "owner_rule_ref": R.own_id(pf, ctx, "all" if ctx == "loose_dropped" else grp),
             "derivation_rule": rule, "wk_check": "pf in WK place-first-cartography; item not WK-checked (master candidate)",
             "superseded_by": link_superseded.get(lg, ""), "source_refs": ";".join(f"master_link:{x}" for x in a["links"][:6]),
-            "confidence": max(m["conf"], "B"), "status": "candidate",
+            "confidence": max(m["conf"], "C" if a["fanout"] else "B"), "status": "candidate",
         })
     # ---------- Part C: place families without a master archetype (stated rules, confidence C)
     have = {(r["item_or_category_ref"], r["pf_id"]) for r in rows}
@@ -227,8 +239,7 @@ def main():
         "mill": (r"жернов|\bмельн|помол|\bотруби\b|\bвысевк", None),
         "grain_drying_shed_ovin": (r"\bовин|\bсноп|\bколос|\bмякин|после обмолота|\bнеобмолоч|колосков", None),
         "hay_meadow": (r"\bсен[оа]\b|\bсенн|\bстог|\bкопн|\bкос[аы]\b|горбуш|\bграбл|\bвил[ыа]\b", r"прокладк|груз|упаковк"),
-        "pasture": (r"\bскот|\bпастух|\bпастуш|\bнавоз|\bботал|\bизгород|кольцо для привязи|\bпривязн|\bкнут\b|\bрожок",
-                     r"мостов|повозк|колея|улиц"),
+        "pasture": (r"\bскот|\bпастух|\bпастуш|\bботал|\bизгород|кольцо для привязи|\bпривязн|\bкнут\b|\bрожок", None),
         "field_margin": (r"\bмежев|\bизгород|\bканав|\bплетен|куча камн|\bжерд", None),
         "bridge_crossing": (r"\bмост\b|\bмоста\b|\bмостк|\bсва[яи]\b", r"смол|капл"),
         "town_wall_edge": (r"\bвал\b|частокол|\bтын\b|\bгородн|\bворот[аы]\b|\bворотн", None),
@@ -245,7 +256,6 @@ def main():
     # R_WK_COMPOSES: inherit catalog rows from families the target actually composes with in WK
     # place-first-cartography (pfs[pf]["composes_with"]), downgraded one class. Restricted to
     # sources that hold catalog items (ARCH_PF targets) so the rule stays checkable against WK.
-    DOWN = {"ubiquitous": "common", "common": "contextual", "contextual": "rare", "rare": "rare"}
     INHERIT_TARGETS = ["churchyard", "town_wall_edge", "bridge_crossing", "field_margin",
                         "hay_meadow", "pasture", "mill", "grain_drying_shed_ovin"]
     INHERIT = {pf: [s for s in pfs.get(pf, {}).get("composes_with", []) if s in R.PF_CLASS]
@@ -253,7 +263,7 @@ def main():
     for pf, srcs in INHERIT.items():
         for r in list(rows):
             if r["pf_id"] in srcs and r["ref_kind"] == "it":
-                add(r, pf, DOWN[r["frequency_class"]], "R_WK_COMPOSES", f"wk_composes:{r['pf_id']}->{pf}")
+                add(r, pf, "rare", "R_WK_COMPOSES", f"wk_composes:{r['pf_id']}->{pf};transferred_or_lost")
     rows += extra
     fields = list(rows[0])
     n = write_csv(ITEMS / "item_place_frequency.csv", rows, fields)

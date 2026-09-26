@@ -1,0 +1,6 @@
+effect_id,rule,source_refs
+status_low_accused_more,"Пришлый, зависимый, бедный или без поручителя чаще становится подозреваемым.",src_rus13tpl_local_conflict_templates_v1
+status_elite_shield,"Сильный двор может давить на свидетелей, но его действия видны и политически опасны.",src_rus13tpl_local_conflict_templates_v1
+church_space_protection,Церковное место повышает моральный и социальный риск насилия и кражи.,src_rus13tpl_local_conflict_templates_v1
+market_public_memory,"На торге больше свидетелей, слух быстрее переходит в память партии.",src_rus13tpl_local_conflict_templates_v1
+property_chain,Любой спор с вещью требует цепочки владелец → держатель → место → свидетель → метки.,src_rus13tpl_local_conflict_templates_v1

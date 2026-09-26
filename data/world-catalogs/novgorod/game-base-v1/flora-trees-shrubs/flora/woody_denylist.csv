@@ -1,0 +1,21 @@
+deny_id,name_lat,name_ru,keywords_ru,kind,wood_import_allowed,reason,source_refs,confidence,status
+fldeny_acer_negundo,Acer negundo,клён ясенелистный,ясенелистн,anachronism,no,"родина — Северная Америка; в Европу с XVII в., в России в культуре с конца XVIII в.",src:src_wiki_acer_negundo src:src_vinogradova_2010_black_book,B,candidate
+fldeny_robinia_pseudoacacia,Robinia pseudoacacia,робиния (белая акация),робини;белая акация,anachronism,no,родина — Северная Америка,src:src_wiki_robinia_pseudoacacia,B,candidate
+fldeny_aesculus_hippocastanum,Aesculus hippocastanum,конский каштан,конский каштан,anachronism,no,родина — Балканы; парковая культура Нового времени,src:src_wiki_aesculus_hippocastanum,B,candidate
+fldeny_syringa_vulgaris,Syringa vulgaris,сирень обыкновенная,сирень,anachronism,no,родина — Балканы; садовая культура Нового времени,src:src_wiki_syringa_vulgaris,B,candidate
+fldeny_populus_balsamifera,Populus balsamifera,тополь бальзамический,бальзамическ,anachronism,no,родина — Северная Америка,src:src_wiki_populus_balsamifera,B,candidate
+fldeny_quercus_rubra,Quercus rubra,дуб красный,дуб красный;красный дуб,anachronism,no,родина — Северная Америка,src:src_wiki_quercus_rubra,B,candidate
+fldeny_picea_pungens,Picea pungens,ель колючая (голубая),ель колючая;голубая ель,anachronism,no,родина — Северная Америка,src:src_wiki_picea_pungens,B,candidate
+fldeny_amelanchier_spicata,Amelanchier spicata,ирга колосистая,ирга,anachronism,no,"родина — Северная Америка; в европейских садах с начала XIX в., дичает",src:src_wiki_amelanchier_spicata src:src_vinogradova_2010_black_book,B,candidate
+fldeny_sorbaria_sorbifolia,Sorbaria sorbifolia,рябинник рябинолистный,рябинник,anachronism,no,"природный ареал — Азия (Южный Урал, Сибирь, Дальний Восток); в Европе интродуцирован",src:src_wiki_sorbaria_sorbifolia,B,candidate
+fldeny_caragana_arborescens,Caragana arborescens,карагана древовидная (жёлтая акация),карагана;жёлтая акация;желтая акация,anachronism,no,"природный ареал — Сибирь, Южный Урал, Казахстан, Кавказ",src:src_wiki_caragana_arborescens,B,candidate
+fldeny_ulmus_pumila,Ulmus pumila,вяз приземистый (карагач),приземист;карагач,anachronism,no,родина — Восточная Азия,src:src_wiki_ulmus_pumila,B,candidate
+fldeny_sambucus_racemosa,Sambucus racemosa,бузина красная,бузина,adventive,no,«Для Европейской части России бузина красная является адвентивным растением» (аборигенна в горах Европы),src:src_wiki_sambucus_racemosa,B,candidate
+fldeny_larix,Larix,лиственница,лиственниц,out_of_range,yes,ближайшее произрастание — восточнее Ладожского озера и Камский бассейн; в Новгороде только привозная древесина (25 изделий из 909),src:src_kolchin_1968,B,candidate
+fldeny_abies,Abies,пихта,пихт,out_of_range,yes,Колчин: привозная древесина (9 изделий из 909),src:src_kolchin_1968,B,candidate
+fldeny_pinus_sibirica,Pinus sibirica,кедр (сосна сибирская),кедр,out_of_range,yes,Колчин: привозная древесина (3 изделия); видовая атрибуция «кедра» не уточнена,src:src_kolchin_1968,C,candidate
+fldeny_buxus,Buxus,самшит,самшит,out_of_range,yes,"Колчин: привозили из лесов Кавказа, почти исключительно на двусторонние гребни (83 изделия)",src:src_kolchin_1968,A,candidate
+fldeny_taxus_baccata,Taxus baccata,тис,тис ,out_of_range,yes,Колчин: привозная древесина (3 изделия),src:src_kolchin_1968,B,candidate
+fldeny_castanea_sativa,Castanea sativa,каштан съедобный,каштан,out_of_range,yes,Колчин: привозная древесина (2 изделия),src:src_kolchin_1968,B,candidate
+fldeny_fagus,Fagus,бук,бук ,out_of_range,yes,Колчин: привозная древесина (1 изделие),src:src_kolchin_1968,B,candidate
+fldeny_juglans_regia,Juglans regia,орех грецкий,грецк,out_of_range,yes,Колчин: привозная древесина (1 изделие),src:src_kolchin_1968,B,candidate

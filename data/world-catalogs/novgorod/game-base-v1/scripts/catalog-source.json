@@ -1,0 +1,33 @@
+{
+  "schema": "rus.game_base_catalog.v1",
+  "version": "game-base-v1",
+  "created": "2026-09-26",
+  "status": "candidate_plan_not_approved",
+  "roots": {
+    "main": "C:/Users/Slaven/Documents/Novgorod (main checkout)",
+    "pr98": "C:/Users/Slaven/Documents/Novgorod-runtime (PR #98, codex/live-world-runtime, v17 runtime)",
+    "wk": "main:data/world-catalogs/novgorod/world-knowledge/production-v1 (WK, approved, в runtime-bundle 1032 concepts / 1723 claims)",
+    "world_db": "docker world-base-postgres-1, world_db.world_base (dev: старый gate1 seed, не v17)",
+    "v17": "БД novgorod_world_v17 в Codex MSIX LocalCache; счёты из readback-файлов pr98:data/world-catalogs/novgorod/live-world-runtime-v17/",
+    "master": "Downloads/Novgorod1230_MASTER_ARCHIVE_v1.zip (распакован во временный scratchpad/zips/Novgorod1230_MASTER_ARCHIVE_v1/…/data/)",
+    "costume": "Downloads/Novgorod1230_costume_dataset_v1.zip (data/catalog_items.csv 180, combinations.csv 46, foreigner_profiles.csv 10, materials_palette.csv, anti_patterns.csv 20, sources.csv 50)",
+    "matcult": "Downloads/Novgorod1230_material_culture_dataset_v1.zip (data/catalog_items.csv 1137, scenes.csv 66, sources.csv)",
+    "audit": "C:/Users/Slaven/Documents/Одним ПРОМТОМ/data/rus13-base-staging/nov_region_audit (draft, LLM, требует аудита)",
+    "rus13tpl": "main:tools/rus13-novgorod-regional-templates (16 JSON + TSV, draft, requires_human_audit)",
+    "v6tsv": "main:DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/source_tsv (граф v6: g3_places 911, g4_locations 9332, naming_register)",
+    "risovalka": "C:/Users/Slaven/Documents/РИСОВАЛКА ВЕБ/novgorod_character_1230.md (авторская библия персонажа, A/B/C, 15 ссылок)",
+    "mia65": "C:/Users/Slaven/Documents/Новгород_PR92_restack/.tmp-pr92-sources/MIA_65.pdf (МИА №65, 1959; скан без текста, нужен OCR)"
+  },
+  "conventions": {
+    "id": "Стабильный slug с префиксом домена (колонка id_prefix в key_fields), латиница, snake_case; не переиспользуется после удаления.",
+    "frequency_class": "ubiquitous/common/contextual/rare -> вес 8/4/2/1 (политика richness M2c). Иные числа только по заявленному правилу из заявленной основы.",
+    "confidence": "A — первоисточник/археология; B — научная вторичная литература; C — правдоподобная реконструкция/аналогия (с note).",
+    "source_refs": "WK concept/claim id, либо путь файла + id строки, либо библиографическая ссылка с URL. Без source_refs строка не принимается.",
+    "keys": "Каждый пул ключуется на place_family_id (домен place_families) и season_period (календарь time-events-history: winter, spring_rasputitsa, summer, autumn и т.д.).",
+    "anachronism": "Общий denylist (картофель, кукуруза, томат, подсолнечник, табак, индейка, кролик как скот, тяжеловозы, чай, кофе, сахар-песок, огнестрел и др.) проверяется скриптом по всем доменам.",
+    "item_identity": "D9/D14: владельца вещи и приметы (клеймо, узор, починка, износ) задаёт код из пулов; опознавательный текст (имена, даты, текст грамоты, клеймо) — только из пулов кода или сущностей, не от LLM.",
+    "approval": "Автор не утверждает сам себя: каждый домен — отдельный проход утверждения (Opus high или владелец) по WR §21.1; механические переносы проверяются тестами.",
+    "priority": "M2c — нужно для 32 G4 / 195 G5 стартовой территории v17 и богатства первого прибытия; M3 — свободная конкретизация; later — после M3."
+  },
+  "summary_ru": "Каталог игровой базы game-base-v1: {{n_domains}} доменов в {{n_groups}} узких группах-сборщиках. Основа — три карты (схема world_base, потребители v17, дизайн владельца) и прежние обзоры (sweep-d4, archive-sweep, flora-fauna, documents-review). Главное: (1) одобренных фактов много (WK 1723 claims), но почти нет пулов «что есть в каком месте и как часто» — их собирают скриптами из WK, MASTER и кандидатов с весами 8/4/2/1; (2) для флоры, фауны, еды, ремёсел и здоровья в world_base нет таблиц вообще, а таблицы имён, экономики, законов, религии, погоды, расписаний, истории, одежды и материальной культуры пусты — новые таблицы требуют CR и Contract Auditor; (3) многие заполненные таблицы v17 не читает (имена, история, member_selection природы, approved_runtime_basis NPC, WK для narration) — данные таких доменов окупятся только после кодовой проводки, это отмечено в consumers; (4) сразу окупаются без кода: утверждённые WK claims (после пересборки бандла), профили NPC для 37 одобренных занятий, варианты одежды, тексты природных слоёв по G4×сезону, тексты observable_activity; (5) для предметов по решениям владельца D9/D14 введены домены правил владения и пулов примет/опознавательного текста. По приоритетам: M2c — {{n_M2c}}, M3 — {{n_M3}}, later — {{n_later}}."
+}

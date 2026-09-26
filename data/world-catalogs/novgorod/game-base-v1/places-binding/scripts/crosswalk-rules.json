@@ -1,0 +1,1071 @@
+{
+  "schema": "places_binding_crosswalk_rules_v1",
+  "status": "candidate",
+  "method": "Hand-authored semantic crosswalk (confidence C). Keys are exact ids from the source tables; values are pf ids (without pf_ prefix) or the string not_applicable with a reason. Coverage and resolution are checked by validate.mjs.",
+  "v6_g4_location_types": {
+    "source": "DOCUMENTS/documents-kg/corpus/DOCUMENTS/novgorod_graphify_g1_g4_full/source_tsv/novgorod_g2_g4_70_cells_v6_g4_locations.tsv (column g4_location_type)",
+    "map": {
+      "administrative_yard": [
+        "town_courtyard"
+      ],
+      "approach_road": [
+        "village_lane",
+        "road"
+      ],
+      "approach_slope": [
+        "town_wall_edge",
+        "road"
+      ],
+      "approach_track": [
+        "village_lane",
+        "forest_track"
+      ],
+      "back_gate": [
+        "town_courtyard"
+      ],
+      "back_path": [
+        "village_lane"
+      ],
+      "bank_path": [
+        "riverbank",
+        "ferry_landing"
+      ],
+      "barn_klet_strip": [
+        "outbuildings",
+        "cellar_granary"
+      ],
+      "barns_kleti": [
+        "outbuildings",
+        "cellar_granary"
+      ],
+      "boat_shelter": [
+        "riverbank",
+        "outbuildings"
+      ],
+      "boat_zone": [
+        "ferry_landing"
+      ],
+      "boats": [
+        "fishing_camp"
+      ],
+      "boiling_house": [
+        "ordinary_workshop"
+      ],
+      "boyar_estate_belts": [
+        "town_courtyard"
+      ],
+      "brine_source": "not_applicable: brine spring has no place-first family (salt-making family missing in WK place-first; gap)",
+      "camp_fire": [
+        "riverbank",
+        "hunting_ground"
+      ],
+      "cargo_slope": [
+        "river_wharf"
+      ],
+      "cargo_stack": [
+        "ferry_landing"
+      ],
+      "cargo_waiting": [
+        "river_wharf"
+      ],
+      "cart_loading": [
+        "road"
+      ],
+      "cart_stand": [
+        "road"
+      ],
+      "cattle_corner": [
+        "peasant_homestead",
+        "outbuildings"
+      ],
+      "cattle_pens": [
+        "outbuildings",
+        "pasture"
+      ],
+      "cattle_waiting": [
+        "riverbank",
+        "pasture"
+      ],
+      "cattle_yard": [
+        "outbuildings",
+        "pasture"
+      ],
+      "cells": [
+        "monastery_yard",
+        "dwelling_interior"
+      ],
+      "cemetery_edge": [
+        "churchyard"
+      ],
+      "chapel_or_cross": [
+        "churchyard"
+      ],
+      "church": [
+        "church_interior",
+        "churchyard"
+      ],
+      "church_courts": [
+        "churchyard",
+        "town_courtyard"
+      ],
+      "church_gate": [
+        "churchyard"
+      ],
+      "church_yard": [
+        "churchyard"
+      ],
+      "churchyard": [
+        "churchyard"
+      ],
+      "city_gate_spine": [
+        "town_street",
+        "town_wall_edge"
+      ],
+      "clerks_corner": [
+        "town_courtyard",
+        "dwelling_interior"
+      ],
+      "common_yards": [
+        "peasant_homestead",
+        "rural_yard"
+      ],
+      "craft_quarters": [
+        "town_street",
+        "ordinary_workshop"
+      ],
+      "craft_repair_corner": [
+        "ordinary_workshop"
+      ],
+      "craft_street": [
+        "town_street",
+        "ordinary_workshop"
+      ],
+      "craft_yards": [
+        "town_courtyard",
+        "ordinary_workshop"
+      ],
+      "crossing_center": [
+        "road"
+      ],
+      "crossing_line": [
+        "river_channel",
+        "riverbank"
+      ],
+      "dense_posad_yards": [
+        "town_courtyard"
+      ],
+      "dense_yards": [
+        "town_courtyard"
+      ],
+      "detinets_bishop_core": [
+        "churchyard",
+        "town_courtyard"
+      ],
+      "drying_racks": [
+        "fishing_camp"
+      ],
+      "dwelling_yard": [
+        "peasant_homestead"
+      ],
+      "east_west_road": [
+        "road"
+      ],
+      "edge_poor_yards": [
+        "peasant_homestead"
+      ],
+      "elder_yard": [
+        "peasant_homestead"
+      ],
+      "entry_street": [
+        "town_street"
+      ],
+      "entry_track": [
+        "village_lane"
+      ],
+      "estate_approach": [
+        "road",
+        "village_lane"
+      ],
+      "ferry_mooring": [
+        "ferry_landing"
+      ],
+      "ferryman_shed": [
+        "ferry_landing",
+        "outbuildings"
+      ],
+      "field_edge": [
+        "field_margin",
+        "arable_field"
+      ],
+      "field_forest_exit": [
+        "field_margin",
+        "forest_edge"
+      ],
+      "field_road": [
+        "village_lane",
+        "arable_field"
+      ],
+      "ford_slope": [
+        "riverbank"
+      ],
+      "forest_detour": [
+        "forest_track"
+      ],
+      "forest_exit": [
+        "forest_edge",
+        "forest_track"
+      ],
+      "forest_or_river_exit": [
+        "forest_edge",
+        "riverbank"
+      ],
+      "front_yard": [
+        "town_courtyard"
+      ],
+      "fuel_yard": [
+        "outbuildings"
+      ],
+      "garden_backyards": [
+        "orchard_garden"
+      ],
+      "garden_orchard": [
+        "orchard_garden"
+      ],
+      "garden_patch": [
+        "orchard_garden"
+      ],
+      "garden_strip": [
+        "orchard_garden"
+      ],
+      "gardens": [
+        "orchard_garden",
+        "monastery_yard"
+      ],
+      "gardens_and_hemp": [
+        "orchard_garden"
+      ],
+      "gardens_hay_edge": [
+        "orchard_garden",
+        "hay_meadow"
+      ],
+      "gate_gap": [
+        "town_wall_edge"
+      ],
+      "gate_yard": [
+        "town_courtyard"
+      ],
+      "guard_place": [
+        "town_courtyard"
+      ],
+      "guest_waiting": [
+        "town_courtyard"
+      ],
+      "guest_yard": [
+        "town_courtyard"
+      ],
+      "hidden_lane_network": [
+        "town_street"
+      ],
+      "hidden_passage": [
+        "town_street"
+      ],
+      "holy_gate": [
+        "monastery_yard"
+      ],
+      "household_yards": [
+        "peasant_homestead"
+      ],
+      "hut_or_shelter": [
+        "dwelling_interior",
+        "hunting_ground"
+      ],
+      "inner_yard": [
+        "town_courtyard"
+      ],
+      "judgement_hall": [
+        "town_courtyard",
+        "dwelling_interior"
+      ],
+      "kitchen_service": [
+        "dwelling_interior",
+        "outbuildings"
+      ],
+      "klet_and_barn": [
+        "outbuildings",
+        "cellar_granary"
+      ],
+      "klet_barn_zone": [
+        "outbuildings",
+        "cellar_granary",
+        "threshing_barn"
+      ],
+      "landing_or_bridge": [
+        "river_wharf",
+        "bridge_crossing"
+      ],
+      "landing_or_river": [
+        "river_wharf"
+      ],
+      "landing_planks": [
+        "river_wharf",
+        "riverbank"
+      ],
+      "livestock_corner": [
+        "market_square"
+      ],
+      "main_lane": [
+        "village_lane"
+      ],
+      "main_street": [
+        "town_street"
+      ],
+      "market_link": [
+        "road"
+      ],
+      "market_square": [
+        "market_square"
+      ],
+      "master_corner": [
+        "ordinary_workshop"
+      ],
+      "master_house": [
+        "dwelling_interior",
+        "town_courtyard"
+      ],
+      "master_yard": [
+        "rural_yard",
+        "outbuildings"
+      ],
+      "measure_place": [
+        "market_square"
+      ],
+      "meeting_torg_spot": [
+        "market_square",
+        "churchyard"
+      ],
+      "merchant_guest_yards": [
+        "town_courtyard"
+      ],
+      "merchant_yards": [
+        "town_courtyard",
+        "market_square"
+      ],
+      "monastery_approach": [
+        "road",
+        "monastery_yard"
+      ],
+      "nets_and_tackle": [
+        "fishing_camp"
+      ],
+      "north_south_road": [
+        "road"
+      ],
+      "opposite_landing": [
+        "ferry_landing"
+      ],
+      "opposite_road": [
+        "road"
+      ],
+      "opposite_route": [
+        "road"
+      ],
+      "outer_bank": [
+        "town_wall_edge"
+      ],
+      "outer_gate": [
+        "town_courtyard"
+      ],
+      "outer_road_exit": [
+        "road"
+      ],
+      "outgoing_tracks": [
+        "road",
+        "forest_track"
+      ],
+      "poor_burnt_edges": [
+        "town_street"
+      ],
+      "poor_edge": [
+        "town_street"
+      ],
+      "poor_edge_yards": [
+        "peasant_homestead"
+      ],
+      "posad_yards": [
+        "town_courtyard"
+      ],
+      "priest_yard": [
+        "churchyard",
+        "rural_yard"
+      ],
+      "private_chambers": [
+        "dwelling_interior"
+      ],
+      "ravine_edge": [
+        "town_wall_edge"
+      ],
+      "refectory": [
+        "monastery_yard",
+        "dwelling_interior"
+      ],
+      "repair_shelter": [
+        "ordinary_workshop"
+      ],
+      "resource_line": [
+        "hunting_ground",
+        "forest_track"
+      ],
+      "rich_yards": [
+        "town_courtyard"
+      ],
+      "river_edge": [
+        "riverbank"
+      ],
+      "river_exit": [
+        "riverbank",
+        "road"
+      ],
+      "river_landings": [
+        "river_wharf"
+      ],
+      "river_or_market_exit": [
+        "town_street",
+        "river_wharf"
+      ],
+      "road_approach": [
+        "road"
+      ],
+      "road_entry": [
+        "road"
+      ],
+      "road_exit": [
+        "road"
+      ],
+      "road_exits": [
+        "road"
+      ],
+      "road_or_landing_exit": [
+        "road",
+        "riverbank"
+      ],
+      "road_to_ilmen": [
+        "road"
+      ],
+      "road_to_volkhov_north": [
+        "road"
+      ],
+      "roadside_shrine": [
+        "road",
+        "churchyard"
+      ],
+      "salt_storage": [
+        "cellar_granary"
+      ],
+      "secret_forest_path": [
+        "forest_track"
+      ],
+      "senior_yard": [
+        "peasant_homestead"
+      ],
+      "servant_yards": [
+        "town_courtyard"
+      ],
+      "service_admin_yards": [
+        "town_courtyard"
+      ],
+      "service_yard": [
+        "churchyard",
+        "outbuildings"
+      ],
+      "shallow_marker": [
+        "river_channel"
+      ],
+      "shelter_huts": [
+        "dwelling_interior"
+      ],
+      "shelter_shed": [
+        "outbuildings"
+      ],
+      "shore_approach": [
+        "riverbank",
+        "lake_shore",
+        "fishing_camp"
+      ],
+      "slipway": [
+        "riverbank",
+        "ordinary_workshop"
+      ],
+      "small_church_corner": [
+        "churchyard"
+      ],
+      "sofia_side_spine": [
+        "town_street"
+      ],
+      "stable_cattle": [
+        "outbuildings"
+      ],
+      "stable_yard": [
+        "outbuildings",
+        "town_courtyard"
+      ],
+      "storage_granary_belts": [
+        "cellar_granary"
+      ],
+      "storage_klet": [
+        "cellar_granary"
+      ],
+      "storage_kleti": [
+        "cellar_granary"
+      ],
+      "storage_shed": [
+        "outbuildings"
+      ],
+      "store_shed": [
+        "outbuildings"
+      ],
+      "store_yard": [
+        "cellar_granary",
+        "town_courtyard"
+      ],
+      "storehouses": [
+        "cellar_granary"
+      ],
+      "street_connection": [
+        "town_street"
+      ],
+      "suburban_gardens": [
+        "orchard_garden"
+      ],
+      "tar_pitch_corner": [
+        "ordinary_workshop"
+      ],
+      "threshing_floor": [
+        "threshing_barn"
+      ],
+      "timber_stack": [
+        "ordinary_workshop",
+        "outbuildings"
+      ],
+      "tool_shed": [
+        "outbuildings"
+      ],
+      "tool_storage": [
+        "outbuildings"
+      ],
+      "town_gate": [
+        "town_wall_edge"
+      ],
+      "track_entry": [
+        "forest_track"
+      ],
+      "trade_rows": [
+        "market_square"
+      ],
+      "trade_side_spine": [
+        "town_street"
+      ],
+      "treasury_klet": [
+        "cellar_granary"
+      ],
+      "upstream_path": [
+        "riverbank"
+      ],
+      "village_passage": [
+        "village_lane"
+      ],
+      "volkhov_bridge_axis": [
+        "bridge_crossing",
+        "town_street"
+      ],
+      "waiting_bank": [
+        "riverbank",
+        "ferry_landing"
+      ],
+      "waiting_shelter": [
+        "road"
+      ],
+      "watch_and_fire_points": [
+        "town_wall_edge"
+      ],
+      "watch_corner": [
+        "town_wall_edge"
+      ],
+      "watch_place": [
+        "market_square",
+        "town_wall_edge"
+      ],
+      "water_channel": [
+        "river_channel"
+      ],
+      "water_drain": [
+        "marshy_stream"
+      ],
+      "water_edge": [
+        "riverbank"
+      ],
+      "water_or_landing": [
+        "riverbank",
+        "monastery_yard"
+      ],
+      "water_place": [
+        "riverbank",
+        "marshy_stream"
+      ],
+      "water_route_exit": [
+        "river_channel"
+      ],
+      "water_spot": [
+        "marshy_stream",
+        "riverbank"
+      ],
+      "weir_or_sadki": [
+        "fishing_camp",
+        "river_channel"
+      ],
+      "well_or_bank": [
+        "riverbank",
+        "village_lane"
+      ],
+      "well_or_pond": [
+        "rural_yard"
+      ],
+      "well_or_spring": [
+        "town_courtyard"
+      ],
+      "well_or_stream": [
+        "village_lane",
+        "marshy_stream"
+      ],
+      "well_place": [
+        "town_street"
+      ],
+      "wood_stack": [
+        "outbuildings",
+        "hunting_ground"
+      ],
+      "work_sheds": [
+        "ordinary_workshop",
+        "outbuildings"
+      ],
+      "work_yard": [
+        "rural_yard",
+        "outbuildings"
+      ],
+      "work_yards": [
+        "town_courtyard",
+        "ordinary_workshop"
+      ],
+      "worker_huts": [
+        "dwelling_interior"
+      ],
+      "working_bank": [
+        "fishing_camp"
+      ],
+      "working_yard": [
+        "ordinary_workshop"
+      ],
+      "yard_gate": [
+        "peasant_homestead"
+      ],
+      "yaroslav_court_market_core": [
+        "market_square",
+        "town_courtyard"
+      ]
+    }
+  },
+  "scene_templates": {
+    "source": "pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_scene_templates.json",
+    "map": {
+      "stfv3__g5_boundary_access_v1": [
+        "town_wall_edge",
+        "field_margin",
+        "forest_edge"
+      ],
+      "stfv3__g5_burial_ritual_buffer_v1": [
+        "churchyard"
+      ],
+      "stfv3__g5_dry_route_v1": [
+        "road",
+        "forest_track",
+        "village_lane"
+      ],
+      "stfv3__g5_exploration_concealment_v1": [
+        "mixed_woodland",
+        "marshy_stream",
+        "forest_edge"
+      ],
+      "stfv3__g5_general_hazard_v1": [
+        "reality_batch_01_open_conditions"
+      ],
+      "stfv3__g5_habitation_v1": [
+        "peasant_homestead",
+        "rural_yard",
+        "dwelling_interior"
+      ],
+      "stfv3__g5_landing_transition_v1": [
+        "ferry_landing",
+        "riverbank",
+        "river_wharf"
+      ],
+      "stfv3__g5_observation_orientation_v1": [
+        "riverbank",
+        "forest_edge"
+      ],
+      "stfv3__g5_resource_hazard_v1": [
+        "bog",
+        "marshy_stream"
+      ],
+      "stfv3__g5_resource_v1": [
+        "hunting_ground",
+        "mixed_woodland",
+        "riverbank"
+      ],
+      "stfv3__g5_route_approach_v1": [
+        "road",
+        "forest_track",
+        "riverbank"
+      ],
+      "stfv3__g5_seasonal_route_hazard_v1": [
+        "winter_ice_crossing",
+        "floodplain_meadow"
+      ],
+      "stfv3__g5_shelter_rest_v1": [
+        "fishing_camp",
+        "forest_edge"
+      ],
+      "stfv3__g5_water_hazard_v1": [
+        "river_channel"
+      ],
+      "stfv3__g5_water_navigation_v1": [
+        "river_channel"
+      ],
+      "stfv3__g5_wetland_flood_v1": [
+        "floodplain_meadow",
+        "bog"
+      ],
+      "stfv3__g5_work_storage_social_v1": [
+        "outbuildings",
+        "cellar_granary",
+        "rural_yard"
+      ]
+    }
+  },
+  "master_location_archetypes": {
+    "source": "data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/material_entities/item_location_links.csv (location_archetype) + spawn_profiles.csv (location_archetypes)",
+    "map": {
+      "bathhouse": [
+        "bathhouse"
+      ],
+      "boat": [
+        "river_channel",
+        "fishing_camp"
+      ],
+      "byre": [
+        "outbuildings"
+      ],
+      "cart_or_sledge": [
+        "road"
+      ],
+      "cellar": [
+        "cellar_granary"
+      ],
+      "church": [
+        "church_interior",
+        "churchyard"
+      ],
+      "construction_site": [
+        "town_courtyard",
+        "peasant_homestead"
+      ],
+      "field": [
+        "arable_field",
+        "orchard_garden",
+        "threshing_barn"
+      ],
+      "fishing_site": [
+        "fishing_camp"
+      ],
+      "forest": [
+        "mixed_woodland",
+        "conifer_woodland",
+        "broadleaf_woodland",
+        "forest_edge"
+      ],
+      "forge": [
+        "smithy"
+      ],
+      "hearth": [
+        "dwelling_interior"
+      ],
+      "hunting_camp": [
+        "hunting_ground"
+      ],
+      "leather_workshop": [
+        "ordinary_workshop"
+      ],
+      "military_camp": "not_applicable: no place-first family for a military camp or baggage train (WK military-first-cartography is separate; gap)",
+      "monastery": [
+        "monastery_yard"
+      ],
+      "pier": [
+        "river_wharf",
+        "ferry_landing"
+      ],
+      "pottery_workshop": [
+        "ordinary_workshop"
+      ],
+      "refuse_area": [
+        "town_courtyard",
+        "peasant_homestead"
+      ],
+      "riverbank": [
+        "riverbank",
+        "lake_shore"
+      ],
+      "road": [
+        "road"
+      ],
+      "scribe_area": [
+        "dwelling_interior",
+        "church_interior"
+      ],
+      "stable": [
+        "outbuildings"
+      ],
+      "storehouse": [
+        "cellar_granary",
+        "outbuildings"
+      ],
+      "street": [
+        "town_street"
+      ],
+      "textile_work_area": [
+        "dwelling_interior",
+        "ordinary_workshop"
+      ],
+      "torg": [
+        "market_square"
+      ],
+      "urban_house": [
+        "dwelling_interior",
+        "town_courtyard"
+      ],
+      "workshop": [
+        "ordinary_workshop"
+      ],
+      "yard": [
+        "town_courtyard",
+        "peasant_homestead",
+        "rural_yard"
+      ],
+      "poor_house": [
+        "dwelling_interior"
+      ],
+      "wealthy_house": [
+        "dwelling_interior"
+      ]
+    }
+  },
+  "node_binding": {
+    "source": "pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json natural_profiles[].authoring_axes (landscape, land_use, function)",
+    "g4_function_to_pf": {
+      "rule": "Primary pf of a v17 G4 = map of its authoring_axes.function; the function axis is marked direct/high in the source. Unmapped or ambiguous functions stay a gap.",
+      "map": {
+        "channel_split": "river_channel",
+        "river_reach": "river_channel",
+        "side_channel": "river_channel",
+        "tributary_mouth": "river_channel",
+        "estuary_mixing": "river_channel",
+        "outer_exposed": "river_channel",
+        "backwater": "river_channel",
+        "island_head": "riverbank",
+        "driftwood_bar": "riverbank",
+        "shoal_field": "riverbank",
+        "island_ridge": "floodplain_meadow",
+        "floodplain_basin": "floodplain_meadow",
+        "pine_ridge": "conifer_woodland",
+        "forest_tract": {
+          "by_landscape_axis": {
+            "forest": "conifer_woodland",
+            "settlement_landscape": "forest_edge"
+          }
+        },
+        "dry_ridge_route": "road",
+        "forest_stream": "marshy_stream",
+        "old_channel": "marshy_stream",
+        "reed_backwater": "marshy_stream",
+        "landing_terrace": "ferry_landing",
+        "local_landing": "ferry_landing",
+        "vikhtuy_locality": "peasant_homestead",
+        "archaeological_settlement": "peasant_homestead",
+        "burial_area": "gap: no place-first family for a burial ground / cemetery outside a churchyard (lifecycle rites and burial domain missing)"
+      }
+    },
+    "g5_suffix_rules": {
+      "rule": "G5 pf: (1) first keyword rule whose token occurs in the G5 id suffix (after the parent G4 id) gives the pf; @parent means the parent G4 pf; (2) else the parent pf if it is in the scene-template crosswalk of the G5; (3) else the first scene-template pf that is in the parent family composes_with (WK); (4) else inherit the parent pf. Parent gap -> G5 gap.",
+      "keywords": [
+        {
+          "tokens": [
+            "open_pool",
+            "deep_pool",
+            "still_water",
+            "shallow_pool",
+            "resource_patch",
+            "_pool",
+            "dry_cap"
+          ],
+          "pf": "@parent"
+        },
+        {
+          "tokens": [
+            "water_approach",
+            "river_approach",
+            "river_side",
+            "water_source",
+            "water_access"
+          ],
+          "pf": "riverbank"
+        },
+        {
+          "tokens": [
+            "ice_edge",
+            "winter_thin_ice",
+            "winter_crack",
+            "ice_break_zone"
+          ],
+          "pf": "winter_ice_crossing"
+        },
+        {
+          "tokens": [
+            "household_cluster",
+            "household_zone",
+            "habitation_terrace",
+            "occupation_terrace"
+          ],
+          "pf": "peasant_homestead"
+        },
+        {
+          "tokens": [
+            "work_storage",
+            "storage_zone",
+            "work_zone"
+          ],
+          "pf": "outbuildings"
+        },
+        {
+          "tokens": [
+            "meeting_area"
+          ],
+          "pf": "rural_yard"
+        },
+        {
+          "tokens": [
+            "landing_edge",
+            "landing_candidate",
+            "boat_drawing",
+            "_landing"
+          ],
+          "pf": "ferry_landing"
+        },
+        {
+          "tokens": [
+            "bog_edge",
+            "bog_crossing"
+          ],
+          "pf": "bog"
+        },
+        {
+          "tokens": [
+            "reed_margin",
+            "reed_edge",
+            "reed_channel",
+            "bird_shallows"
+          ],
+          "pf": "marshy_stream"
+        },
+        {
+          "tokens": [
+            "wet_hollow",
+            "shallow_basin",
+            "flood_edge",
+            "flood_limit",
+            "overflow",
+            "_inlet"
+          ],
+          "pf": "floodplain_meadow"
+        },
+        {
+          "tokens": [
+            "game_trail"
+          ],
+          "pf": "hunting_ground"
+        },
+        {
+          "tokens": [
+            "pine_stand"
+          ],
+          "pf": "conifer_woodland"
+        },
+        {
+          "tokens": [
+            "forest_edge",
+            "forest_shelter"
+          ],
+          "pf": "forest_edge"
+        },
+        {
+          "tokens": [
+            "lee_bank",
+            "observation_bank",
+            "high_bank",
+            "mud_bank",
+            "emergency_bank",
+            "bank_path",
+            "willow_bank",
+            "marsh_bank",
+            "muddy_shore",
+            "shoal_margin",
+            "islet_margin",
+            "river_edge"
+          ],
+          "pf": "riverbank"
+        },
+        {
+          "tokens": [
+            "deep_thread",
+            "fast_branch",
+            "slow_branch",
+            "narrow_reach",
+            "quiet_reach",
+            "open_water",
+            "current_shear",
+            "split_point",
+            "rejoin_reach",
+            "downstream_tail",
+            "upstream_tip",
+            "east_channel",
+            "west_channel"
+          ],
+          "pf": "river_channel"
+        },
+        {
+          "tokens": [
+            "forest_path",
+            "hinterland_path",
+            "path_to_settlement"
+          ],
+          "pf": "village_lane"
+        },
+        {
+          "tokens": [
+            "inland_path",
+            "ridge_path",
+            "ridge_crest",
+            "ridge_top"
+          ],
+          "pf": "road"
+        }
+      ]
+    }
+  }
+}

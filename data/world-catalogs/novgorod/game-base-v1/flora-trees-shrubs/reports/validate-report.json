@@ -1,0 +1,77 @@
+{
+  "generated_by": "scripts/validate.mjs",
+  "ok": true,
+  "taxa": 37,
+  "presence_rows": 840,
+  "checks": [
+    {
+      "name": "presence_rows_valid",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0
+    },
+    {
+      "name": "ids_unique",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0
+    },
+    {
+      "name": "lat_unique",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0
+    },
+    {
+      "name": "source_refs_resolve",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0,
+      "refs_checked": 1423
+    },
+    {
+      "name": "no_denylist_taxa",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0
+    },
+    {
+      "name": "forest_pf_min5_per_season",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0,
+      "counts": {
+        "pf_conifer_woodland/winter": 15,
+        "pf_conifer_woodland/spring": 15,
+        "pf_conifer_woodland/summer": 15,
+        "pf_conifer_woodland/autumn": 15,
+        "pf_mixed_woodland/winter": 26,
+        "pf_mixed_woodland/spring": 26,
+        "pf_mixed_woodland/summer": 26,
+        "pf_mixed_woodland/autumn": 26,
+        "pf_broadleaf_woodland/winter": 17,
+        "pf_broadleaf_woodland/spring": 17,
+        "pf_broadleaf_woodland/summer": 17,
+        "pf_broadleaf_woodland/autumn": 17
+      }
+    },
+    {
+      "name": "phenology_confidence_status",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0
+    },
+    {
+      "name": "categories_consistent",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0
+    },
+    {
+      "name": "kolchin_table1_sum_909",
+      "ok": true,
+      "failures": [],
+      "failure_count": 0
+    }
+  ]
+}

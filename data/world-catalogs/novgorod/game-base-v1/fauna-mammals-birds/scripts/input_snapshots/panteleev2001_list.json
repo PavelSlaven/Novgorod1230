@@ -1,0 +1,1271 @@
+{
+ "source": "SRC_PANT2001",
+ "count": 253,
+ "species": {
+  "Gavia stellata": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Gavia arctica": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Суханова, Мищенко 1990; Мищенко и др. 1991, 1994; Мищенко, Суханова 1996, 1998а.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Podiceps cristatus": {
+   "refs": "Петров 1885; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Podiceps grisegena": {
+   "refs": "Петров 1885; (?)Хлебников 1889; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Podiceps auritus": {
+   "refs": "Петров 1885; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Phalacrocorax carbo": {
+   "refs": "[Бианки 1910].",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "?Casmerodius alba": {
+   "refs": "Хлебников 1889.",
+   "petrov_1885": false,
+   "doubtful": true
+  },
+  "Ardea cinerea": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Мищенко и др. 1991; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Ixobrychus minuta": {
+   "refs": "Петров 1885; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Botaurus stellaris": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Ciconia ciconia": {
+   "refs": "Петров 1885; Бианки 1910, 1915; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Ciconia nigra": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1984, 1985; Мищенко и др. 1991; Mischenko, Sukhanova 1993; Мищенко, Суханова 1996, 1998а; Ильинский, Фёдоров 1997; Богданов 1998; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Phoenicopterus roseus": {
+   "refs": "JIeye 1972.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Cygnus cygnus": {
+   "refs": "Петров 1885; Бианки 1910; Кооль- 1913; Коротков, Морозов 1985; Богданов 1998.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Cygnus bemckii": {
+   "refs": "[Бианки 1910]; Кооль- 1913; Коротков, Морозов 1985; Мищенко, Суханова 1998а; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Anser albifrons": {
+   "refs": "[Бианки 1910]; Кооль- 1911а; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Anser brachyrrhynchus": {
+   "refs": "Кооль- 1911а; Бианки 1915.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Anser erythropus": {
+   "refs": "Бианки 1910, 1915; Кооль- 1911а; Мищенко, Суханова 1998а.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Anser fabalis": {
+   "refs": "Петров 1885; Бианки 1910; Кооль- 1911а; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anser anser": {
+   "refs": "Петров 1885; Бианки 1910; Кооль- 1911а; Мищенко, Суханова 1998а; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Branla bernicla": {
+   "refs": "(Бианки 1910); Кооль- 1911а; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Branta leucopsis": {
+   "refs": "Кооль- 1911а.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Anasplatyrhynchos": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anas сгесса": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anas strepera": {
+   "refs": "Петров 1885; Бианки 1910; Кооль- 1912в; Ризнич 1968; Ильинский, Фёдоров 1997; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anas penelope": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anas acuta": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anas querquedula": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anas clypeata": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "?Marmoronetta angustirostris": {
+   "refs": "Петров 1885; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": true
+  },
+  "Aythya ferina": {
+   "refs": "Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Aythya fuligula": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Мантейфель 1949; Коротков, Морозов 1984, 1985; Ильинский, Фёдоров 1997; Пчелинцев 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Aythya marila": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985; Пчелинцев 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Melanitta fusca": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985; Пчелинцев 1997.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Melanitta nigra": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1984, 1985; Пчелинцев 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Bucephala clangula": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Кооль-1912в; Коротков, Морозов 1985; Ильинский, Фёдоров 1997; Пчелинцев 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Clangula hyemalis": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1984, 1985; Пчелинцев 1997.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Mergus albellus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Mergus serrator": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Mergus merganser": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 1912в; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Pandion haliaetus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Суханова, Мищенко 1990; Мищенко, Суханова 1993, 1996, 1999; Ильинский, Фёдоров 1997; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Pernis apivorus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Снигиревский 1926; Коротков, Морозов 1985; Суханова, Мищенко 1990; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Milvus migrans": {
+   "refs": "Петров 1885; Исполатов 1903; Бианки 1910; Снигиревский 1926; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Accipiter nisus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Accipiter gentilis": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Haliaeetus albicilla": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мищенко, Суханова 1993, 1996, 1998а, 1999; Ильинский, Фёдоров 1997; Богданов 1998.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Aquila chrysaetus": {
+   "refs": "Хлебников 1889; Бианки 1910, 1915; Коротков, Морозов 1985; Суханова, Мищенко 1990; Мищенко и др. 1991, 1994; Мищенко, Суханова, 1993, 1996, 1998а, 1999.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Aquila pomarina": {
+   "refs": "Бианки 1910; Мищенко, Суханова 1996, 1998а, 1999.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Aquila clanga": {
+   "refs": "[Бианки 1910]; Коротков, Морозов 1984, 1985; Суханова, Мищенко 1990; Мищенко и др. 1994; Мищенко, Суханова 1993, 1996, 1998а, 1999.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Circaetus gallicus": {
+   "refs": "(Бианки 1910); Мищенко, Суханова 1996.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Buteo buteo": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Ильинский, Фёдоров 1997; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Buteo lagopus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Circus macrurus": {
+   "refs": "Бианки 1910.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Circus pygargus": {
+   "refs": "Петров 1885; Бианки [1910], 1915; Суханова, Мищенко 1990; Мищенко и др. 1991; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Circus cyaneus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, (1915); Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Circus aeruginosus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Falco peregrinus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1984, 1985; Суханова, Мищенко 1990; Мищенко, Суханова 1993, 1996, 1998а, 1999.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Falco rusticolus": {
+   "refs": "[Бианки 1910]; Коротков, Морозов 1984, 1985; Мищенко, Суханова 1998а.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Falco vespertinus": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910; Суханова, Мищенко 1990; Мищенко, Суханова 1999.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Cerchneis tinnunculus": {
+   "refs": "(Бианки 1910); Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Hypotriorchis subbuteo": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Aesalon columbarius": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1984, 1985; Мищенко и др. 1991, 1994; Мищенко, Суханова 1998а; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Lyrurus tetrix": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Tetrao urogallus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Lagopus lagopus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Суханова, Мищенко 1990; Мищенко и др. 1991, 1994; Мищенко, Суханова 1996, 1998а.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Tetrastes bonasia": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Perdix perdix": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Coturnix coturnix": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Grus grus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Мантейфель 1949; Коротков, Морозов 1985; Мищенко и др. 1991, 1994.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Сгех сгех": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1911в; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Rallus aquaticus": {
+   "refs": "Петров 1885; Бианки 1910; Кооль- 1911в; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Porzana porzana": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1911в; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Gallinula chloropus": {
+   "refs": "Петров 1885; Бианки 1910; Кооль- 1911в; Коротков, Морозов 1984, 1985; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Fulica atra": {
+   "refs": "Петров 1885; Бианки 1910; Кооль- 1911в; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Squatarolla squatarolla": {
+   "refs": "Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Pluvialis apricarius": {
+   "refs": "Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Мищенко и др. 1991, 1994; Мищенко 1995; Мищенко, Суханова 1998а,б; Mischenko, Sukhanova 1998; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Charadrius hiaticula": {
+   "refs": "Бианки 1910; Коротков, Морозов 1984, 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Charadrius dubius": {
+   "refs": "Хлебников 1889; Бианки 1910; Коткин 1980; Коротков, Морозов 1985; Суханова 1995; Мищенко, Суханова 19986.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Charadrius morinellus": {
+   "refs": "[Бианки 1910].",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Vanellus vanellus": {
+   "refs": "Хлебников 1889; Бианки 1910; Мантейфель 1949; Коткин 1980; Коротков, Морозов 1985; Мищенко 1995; Суханова 1995; Ильинский, Фёдоров 1997; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Haematopus ostralegus": {
+   "refs": "Бианки 1910; Кооль- 19116; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Phalaropus lobatus": {
+   "refs": "Бианки 1910; Кооль- 19116; Суханова, Мищенко 1992; Суханова 1995; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Arenaria interpres": {
+   "refs": "Кооль- 19116.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Tringa ochropus": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19116; Коротков, Морозов 1985; Ильинский, Фёдоров 1997; Мищенко, Суханова 19986.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Tringa glareola": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19116; Коткин 1980; Коротков, Морозов 1985; Мищенко и др. 1994; Мищенко 1995; Ильинский, Фёдоров 1997; Мищенко, Суханова 19986.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Tringa nebularia": {
+   "refs": "Бианки 1910; Кооль- 19116; Коротков, Морозов 1985; Мищенко и др. 1994; Мищенко 1995; Мищенко, Суханова 19986.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Tringa totanus": {
+   "refs": "Хлебников 1889; Кооль- 19116; Коткин 1980; Суханова 1995; Ильинский, Фёдоров 1997; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Tringa stagnatilis": {
+   "refs": "(?)Хлебников 1889; Бианки 1910; Кооль- 19116; Суханова 1995; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Tringa erythropus": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19116; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Actitis hypoleucos": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19116; Коротков, Морозов 1985; Ильинский, Фёдоров 1997; Мищенко, Суханова 19986.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Xenus cinereus": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19116; Коротков, Морозов 1985; Суханова 1995; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Philomachus pugnax": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19116; Коткин 1980; Коротков, Морозов 1985; Мищенко и др. 1994; Мищенко 1995; Суханова 1995; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calidris alba": {
+   "refs": "[Бианки 1910]; Кооль- 19116.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calidris maritima": {
+   "refs": "Кооль- 19116.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calidris canutus": {
+   "refs": "[Бианки 1910]; Кооль- 19116.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calidris testacea": {
+   "refs": "Бианки 1910; Кооль- 19116.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calidris alpina": {
+   "refs": "Бианки 1910; Кооль- 19116; Коротков, Морозов 1985; Суханова 1995; Мищенко, Суханова 1996, 1998а,6; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calidris minutus": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19116; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calidris ferruginea": {
+   "refs": "Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calidris temminckii": {
+   "refs": "Бианки 1910; Кооль- 19116; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Limicola falcinellus": {
+   "refs": "Бианки 1910; Кооль- 19116.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Limnocryptes minima": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19116; Коротков, Морозов 1984, 1985; Мищенко, Суханова 19986; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Gallinago gallinago": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 19116; Коткин 1980; Коротков, Морозов 1985; Мищенко 1995; Суханова 1995; Ильинский, Фёдоров 1997; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Gallinago media": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 19116; Коротков, Морозов 1985; Суханова 1995; Ильинский, Фёдоров 1997; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Scolopax rusticola": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910, 1915; Кооль- 19116; Коротков, Морозов 1985; Мищенко, Суханова 19986.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Numenius arquata": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 19116; Коткин 1980; Коротков, Морозов 1985; Мищенко и др. 1991, 1994; Мищенко 1995; Суханова 1995; Мищенко, Суханова 1998а,6; Mischenko, Sukhanova 1998.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Numeniusphaeopus": {
+   "refs": "Петров 1885; (?)Хлебников 1889; Бианки 1910; Кооль- 19116; Мищенко и др. 1991, 1994; Мищенко 1995; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Limosa limosa": {
+   "refs": "Бианки 1910; Кооль- 19116; Коткин 1980; Коротков, Морозов 1984, 1985; Мищенко и др. 1991; Мищенко 1995; Суханова 1995; Мищенко, Суханова 19986; Mischenko, Sukhanova 1998.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Limosa lapponica": {
+   "refs": "Бианки 1910; Кооль- 19116.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Stercorarius pomarinus": {
+   "refs": "Петров 1885; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Stercorariusparasiticus": {
+   "refs": "Петров 1885; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Larus canus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Мищенко и др. 1991; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Larus argentatus": {
+   "refs": "Ильинский, Фёдоров 1997; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Larus fuscus": {
+   "refs": "Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Larus marinus": {
+   "refs": "Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Larus ridibundus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Мищенко и др. 1991; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Larus minutus": {
+   "refs": "Петров 1885; Бианки 1910; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Sterna hirundo": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Sterna albifrons": {
+   "refs": "Мищенко, Суханова 1996.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Chlidonias nigra": {
+   "refs": "Петров 1885; Бианки 1910; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Chlidonias hybrida": {
+   "refs": "Бианки 1915.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Chlidonias leucoptera": {
+   "refs": "Петров 1885; Бианки 1910; Мищенко и др. 1991.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Hydroprogne caspia": {
+   "refs": "Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Columba livia": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Columba oenas": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19126; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Columba palumbus": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 19126; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Streptopelia turtur": {
+   "refs": "Кооль- 19126; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Cuculus canorus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, (1915); Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Bubo bubo": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1984, 1985; Мищенко, Суханова 1998а.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Nyctea scandiaca": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, (1915).",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Strix aluco": {
+   "refs": "Петров 1885; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Strix uralensis": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, (1915).",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Strix nebulosa": {
+   "refs": "Петров 1885; Бианки 1910; Богданов 1998.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Asió otus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Asió flammeus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Surnia ulula": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Glaucidium passerinum": {
+   "refs": "Петров 1885; Бианки 1910, (1915); Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Aegolius funereus": {
+   "refs": "Петров 1885; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Caprimulgus europaeus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Apus apus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949;   Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Upupa epops": {
+   "refs": "(Бианки 1910); Мантейфель 1949; Коротков, Морозов 1984, 1985; Мищенко и др. 1991.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Coradas garrulus": {
+   "refs": "Хлебников 1889; Бианки 1910; Коротков, Морозов 1984, 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Alcedo atthis": {
+   "refs": "Коротков, Морозов 1984, 1985; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Junx tor quilla": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Picus viridis": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910, 1915; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Picus earns": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1984, 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Dendrocopos major": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Снигиревский 1926; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Dendrocopos leucotos": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Мищенко и др. 1991; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Dendrocopos minor": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985; Ильинский, Фёдоров 1997; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Picoides tridactylus": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910, (1915); Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Dryocopus martius": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910, (1915); Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Calandrella brachydactyla": {
+   "refs": "Бианки 1910.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Galerida cristata": {
+   "refs": "Петров 1885; Бианки 1910; Снигиревский 1926; Т. Мищенко 1998.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Lullula arborеа": {
+   "refs": "Петров 1885; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Alauda arvensis": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Eremophila alpestris": {
+   "refs": "Бианки 1910.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Riparia riparia": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Hirundo rustica": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Delichon urbica": {
+   "refs": "Петров 1885; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Motacilla flava": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Motacilla alba": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anthus campestris": {
+   "refs": "[Бианки 1910]; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Anthus trivialis": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anthus pratensis": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, (1915); Мантейфель 1949.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Anthus cervina": {
+   "refs": "[Бианки 1910]; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Lanius collurio": {
+   "refs": "Петров 1885; Хлебников, 1889; Бианки 1910, (1915); Коротков, Морозов 1985; Мантейфель 1949.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Lanius excubitor": {
+   "refs": "Хлебников 1889; Бианки 1910, (1915); Коротков, Морозов 1985; Суханова, Мищенко 1990; Мищенко и др. 1991, 1994.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Bombycilla garrulus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, (1915); Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Troglodytes troglodytes": {
+   "refs": "Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Cinclus cinclus": {
+   "refs": "Бианки (1910), 1915; Коротков, Морозов 1984, 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Prunella modularis": {
+   "refs": "Исполатов 1903; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Erithacus rubecula": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Luscinia luscinia": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Cyanosylvia svecica": {
+   "refs": "Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Phoenicurus phoenicurus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Saxícola rubetra": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Saxícola torquata": {
+   "refs": "Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Oenanthe oenanthe": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Turdus merula": {
+   "refs": "(Бианки 1910); Кооль- 1912а; Снигиревский 1926; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Turdus torquatus": {
+   "refs": "[Бианки 1910]; Кооль- 1912а.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Turdus pilaris": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912а; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Turdus iliacus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912а; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Turdus philomelos": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Кооль- 1912а; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Turdus viscivorus": {
+   "refs": "Хлебников 1889; Бианки 1910; Кооль- 1912а; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Locustella naevia": {
+   "refs": "(Бианки 1910); Снигиревский 1926; Мантейфель 1949; Коротков, Морозов 1985; Мищенко и др. 1991.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Locustella fluviatilis": {
+   "refs": "[Бианки 1910]; Снигиревский 1926; Коротков, Морозов 1985; Ильинский, Фёдоров 1997; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Acrocephalus dumetorum": {
+   "refs": "(Бианки 1910); Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Acrocephalus palustris": {
+   "refs": "[Бианки 1910]; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Acrocephalus scirpaceus": {
+   "refs": "Коротков, Морозов 1985; Мищенко и др. 1991.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Acroceephalus arundinaceus": {
+   "refs": "[Бианки 1910]; Коротков, Морозов 1985; Мищенко и др. 1991.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Acrocephalus schoenobaenus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Hippolais icterina": {
+   "refs": "Хлебников 1889; Исполатов 1903; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Sylvia borin": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Sylvia atricapilla": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Sylvia communis": {
+   "refs": "Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Sylvia curruca": {
+   "refs": "Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Sylvia nisoria": {
+   "refs": "Хлебников 1889; Бианки 1910; Снигиревский 1926; Мантейфель 1949; Мищенко и др. 1991.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Phylloscopus trochilus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Phylloscopus collybita": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Phylloscopus sibilatrix": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Phylloscopus inornatus": {
+   "refs": "[Бианки 1910].",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Phylloscopus borealis": {
+   "refs": "(Исполатов 1903); (Бианки 1910).",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Phylloscopus trochiloides": {
+   "refs": "(Исполатов 1903); (Бианки 1910); Мантейфель 1949;   Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Regulus regulus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, (1915); Мантейфель 1949; Коротков, Морозов 1985; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Muscícapa striata": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Ficedula hypoleuca": {
+   "refs": "Петров 1885; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Siphia parva": {
+   "refs": "(Исполатов 1903); (Бианки 1910); Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Aegithalos caudatus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Parus palustris": {
+   "refs": "Ильинский, Фёдоров 1997; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Parus montanus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Parus cinctus": {
+   "refs": "[Бианки 1910].",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Parus ater": {
+   "refs": "(Бианки 1910); Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Parus cristatus": {
+   "refs": "Хлебников 1889; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Parus major": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Parus caeruleus": {
+   "refs": "Петров 1885; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Parus су anus": {
+   "refs": "Петров 1885; Бианки 1910.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Certhia familiaris": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Sitta еигораеа": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997; Пантелеев 2001.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Emberiza calandra": {
+   "refs": "Мантейфель 1949.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Emberiza citrinella": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Emberiza aureola": {
+   "refs": "Бианки 1910.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Emberiza rustica": {
+   "refs": "(Исполатов 1903); (Бианки 1910); Коротков, Морозов 1984, 1985; Суханова, Мищенко 1990.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Emberiza schoeniclus": {
+   "refs": "Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Calcarius lapponicus": {
+   "refs": "Хлебников 1889; Бианки 1910; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Plectrophenax nivalis": {
+   "refs": "Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Fringilla coelebs": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Fringilla montifringilla": {
+   "refs": "Петров 1885; Исполатов 1903; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Chloris chloris": {
+   "refs": "Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Acanthis flammea": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Acanthis hornemanni": {
+   "refs": "Бианки 1910.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Spinus spinus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Carduelis carduelis": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Снигиревский 1926; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Cannabina cannabina": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Cannabina flavirostris": {
+   "refs": "[Бианки 1910].",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Carpodacus erythrinus": {
+   "refs": "Петров 1885; Исполатов 1903; Бианки 1910; Снигиревский 1926; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Pinícola enucleator": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Снигиревский 1926; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Loxia curvirostra": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Loxia pityopsittacus": {
+   "refs": "(Бианки 1910).",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Loxia leucopterus": {
+   "refs": "Бианки 1910.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Pyrrhula pyrrhula": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Снигиревский 1926; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Coccothraustes coccothraustes": {
+   "refs": "[Бианки 1910]; Мантейфель 1949; Мищенко и др. 1991; Пантелеев 2001.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Passer domesticus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Passer montanus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Oriolus oriolus": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Sturnus vulgaris": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Garrulus glandarius": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Perisoreus infaustus": {
+   "refs": "Петров 1885; Хлебников 1889; Исполатов 1903; Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Pica pica": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Nucifraga caryocatactes": {
+   "refs": "Бианки 1910; Коротков, Морозов 1985.",
+   "petrov_1885": false,
+   "doubtful": false
+  },
+  "Corvus monedula": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Corvus frugilegus": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Голованова 1966; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Corvus cornix": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910; Мантейфель 1949; Коротков, Морозов 1985; Ильинский, Фёдоров 1997.",
+   "petrov_1885": true,
+   "doubtful": false
+  },
+  "Corvus согах": {
+   "refs": "Петров 1885; Хлебников 1889; Бианки 1910, 1915; Мантейфель 1949; Коротков, Морозов 1985.",
+   "petrov_1885": true,
+   "doubtful": false
+  }
+ }
+}

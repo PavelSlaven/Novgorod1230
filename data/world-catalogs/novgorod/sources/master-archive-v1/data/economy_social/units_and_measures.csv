@@ -1,0 +1,20 @@
+﻿unit_id,historical_name,physical_quantity,regional_variant,period,conversion,source_ids,historical_confidence,evidence_class
+n1230:unit:gram_silver_equivalent,грамм серебряного эквивалента,mass/value normalization,required where applicable,around 1230; source-specific,1 g by definition in model,[],C,GAMEPLAY_NORMALIZATION
+n1230:unit:novgorod_grivna_weight,новгородская гривна как вес/слиток,mass,required where applicable,around 1230; source-specific,variants; no universal exact conversion,"[""n1230:source:s0042""]",B,RUS_GENERAL_EVIDENCE
+n1230:unit:grivna_account,гривна счёта,account,required where applicable,around 1230; source-specific,not a physical measure by default,"[""n1230:source:s0042""]",B,RUS_GENERAL_EVIDENCE
+n1230:unit:pood,пуд,mass,required where applicable,around 1230; source-specific,historical/regional conversion variant required,"[""n1230:source:s0042""]",B,RUS_GENERAL_EVIDENCE
+n1230:unit:berkovets,берковец,mass,required where applicable,around 1230; source-specific,comparative long-distance trade measure; applicability by source,"[""n1230:source:s0042""]",C,COMPARATIVE_EVIDENCE
+n1230:unit:kad,кадь,dry capacity,required where applicable,around 1230; source-specific,regional and vessel variation; no forced litre value,"[""n1230:source:s0042""]",A,DIRECT_NOVGOROD_EVIDENCE
+n1230:unit:quarter_kad,четверть кади,dry capacity,required where applicable,around 1230; source-specific,textual fraction; physical volume depends on kad variant,"[""n1230:source:s0042""]",A,DIRECT_NOVGOROD_EVIDENCE
+n1230:unit:korobya,коробья,dry capacity,required where applicable,around 1230; source-specific,regional and chronological variant,"[""n1230:source:s0042""]",C,COMPARATIVE_EVIDENCE
+n1230:unit:chetvert,четверть — мера,dry capacity/fraction,required where applicable,around 1230; source-specific,term requires source-specific interpretation,"[""n1230:source:s0042""]",C,COMPARATIVE_EVIDENCE
+n1230:unit:vedro_like,ведро/сосудная мера — осторожный профиль,liquid capacity,required where applicable,around 1230; source-specific,not assigned a universal exact volume,"[""n1230:source:s0042""]",C,RECONSTRUCTION
+n1230:unit:small_liquid_measure,малая мера жидкости,liquid capacity,required where applicable,around 1230; source-specific,catalogue-level contextual measure,"[""n1230:source:s0042""]",C,RECONSTRUCTION
+n1230:unit:sazhen,сажень,length,required where applicable,around 1230; source-specific,variant by region and practice,"[""n1230:source:s0042""]",B,RUS_GENERAL_EVIDENCE
+n1230:unit:lokot,локоть,length,required where applicable,around 1230; source-specific,variant by object and local standard,"[""n1230:source:s0042""]",B,RUS_GENERAL_EVIDENCE
+n1230:unit:pyad,пядь,length,required where applicable,around 1230; source-specific,anthropometric variation,"[""n1230:source:s0042""]",B,RUS_GENERAL_EVIDENCE
+n1230:unit:vershok_like,малая долевая мера длины,length,required where applicable,around 1230; source-specific,technical comparison only unless source names term,"[""n1230:source:s0042""]",D,COMPARATIVE_EVIDENCE
+n1230:unit:desyatina_not_default,десятина площади — поздняя стандартизация не переносится автоматически,area,required where applicable,around 1230; source-specific,do not use as default 1230 cadastral unit,"[""n1230:source:s0042""]",D,COMPARATIVE_EVIDENCE
+n1230:unit:day_labor_unskilled,день неквалифицированного труда,comparative economic unit,required where applicable,around 1230; source-specific,"technical comparison, not fixed workday",[],C,GAMEPLAY_NORMALIZATION
+n1230:unit:day_labor_craftsman,день труда ремесленника,comparative economic unit,required where applicable,around 1230; source-specific,"technical comparison, not historical payroll period",[],C,GAMEPLAY_NORMALIZATION
+n1230:unit:household_month_equivalent,месячный эквивалент домохозяйства,comparative period,required where applicable,around 1230; source-specific,technical aggregation only,[],C,GAMEPLAY_NORMALIZATION

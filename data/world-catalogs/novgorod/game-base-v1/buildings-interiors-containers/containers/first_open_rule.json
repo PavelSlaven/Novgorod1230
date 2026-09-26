@@ -1,0 +1,45 @@
+{
+  "rule_id": "d3_first_open_v1",
+  "status": "candidate",
+  "decision_ref": "Issue #133 D3 (owner decision 2026-09-26): «Содержимое контейнера определяется при первом открытии»; D6 season refresh class",
+  "trigger": "first time any actor opens the container instance (not on arrival, not on inspection from outside)",
+  "profile_selection": "content_profiles row with ct_id = instance form and pf_id = place family of the instance location; fallback pf '*' (carried); if several match — most specific bt_ids match wins; no match -> container is empty (never LLM-invented)",
+  "roll": {
+    "seed": "hash(party_seed, container_instance_id, 'first_open', season_period_index if refresh_class=='per_season' else 0)",
+    "empty_check": "if empty_allowed=1: container is empty with probability 1/(1+sum(weights of entries)) — i.e. empty competes as one weight-1 outcome",
+    "entry_inclusion": "each entry included independently with probability weight/8 (ubiquitous always)",
+    "quantity": "uniform integer in [qty_min_slots, qty_max_slots], then capped so that total slots <= container capacity_slots (entries processed in seq order)",
+    "concretization": "code picks category; a concrete item inside the category may come from example_items or from the item domain; LLM only describes, never adds"
+  },
+  "persistence": "result stored once as party fact; later openings read it; no reroll within a period (D3, D6)",
+  "refresh_class_default": "none",
+  "refresh_class_allowed": [
+    "none",
+    "per_season"
+  ],
+  "modifiers": [
+    {
+      "id": "famine_1230",
+      "applies_when": "presence:famine_1230 phase active (temporal rule novgorod_famine_1230, approved)",
+      "effect": "frequency_class of content_grain, content_flour, content_food_dry, content_vegetables, content_meat, content_fish lowered one step (common->contextual->rare; rare -> excluded)",
+      "source_refs": [
+        "nov1230db:S01",
+        "nov1230db:B031",
+        "matcult_scene:SCN060",
+        "nov1230db:famine_prices"
+      ],
+      "confidence": "B"
+    }
+  ],
+  "ownership": "owner of contents = owner of container (D14; domain item_ownership_rules); rus13tpl owner_and_holder_split draft rule noted",
+  "never": [
+    "contents created by player request",
+    "contents created by LLM",
+    "reroll on second opening",
+    "hidden stash without causal basis"
+  ],
+  "source_refs": [
+    "rus13tpl:container:resolve_before_opening_if_significant",
+    "v5:container_content_profiles"
+  ]
+}

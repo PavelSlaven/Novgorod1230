@@ -1,0 +1,38 @@
+{
+ "generated_by": "_shared/scripts/run-all.mjs",
+ "checks_passed": true,
+ "counts": {
+  "natural_materials_soils": {
+   "access_tools.csv": 13,
+   "g4_ground_and_materials.csv": 360,
+   "ground_types.csv": 34,
+   "landscape_ground_binding.csv": 34,
+   "material_landscape_presence.csv": 258,
+   "natural_materials.csv": 22,
+   "finite_source_profiles_ext.json": "21 profiles"
+  },
+  "weather_climate": {
+   "climate_monthly_normals.csv": 12,
+   "ground_water_condition_rules.csv": 11,
+   "historical_weather_1224_1231.csv": 5,
+   "light_profile_by_month.csv": 12,
+   "local_landscape_modifiers.csv": 5,
+   "precipitation_phase_and_bands.csv": 9,
+   "realized_weather_matrix.csv": 15,
+   "seasonal_phenomena.csv": 17,
+   "temperature_anomalies.csv": 5,
+   "temperature_anomaly_transitions.csv": 40,
+   "temperature_profile.csv": 48,
+   "weather_season_climatology.csv": 36,
+   "weather_states.csv": 9,
+   "weather_state_temperature_modifiers.csv": 9,
+   "weather_transitions.csv": 315,
+   "weather_transition_profile_v2.candidate.json": "9 states"
+  },
+  "natural_presentation_texts": {
+   "habitat_allowlist.csv": 142,
+   "member_phrases.csv": 123,
+   "presentation_texts.csv": 3998
+  }
+ }
+}

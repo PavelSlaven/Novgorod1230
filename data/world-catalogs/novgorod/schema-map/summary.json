@@ -1,0 +1,545 @@
+{
+ "generated_by": "scripts/build-schema-map.cjs",
+ "ddl_tables": 208,
+ "world_db_nonempty_tables": 31,
+ "v17_nonempty_tables_snapshot": 122,
+ "v17_tables_imported": 123,
+ "content_tables": 154,
+ "content_tables_empty_in_v17": 60,
+ "by_kind": {
+  "content": 154,
+  "world_instance": 5,
+  "provenance_infra": 18,
+  "migration_evidence": 3,
+  "spatial_structure": 26,
+  "legacy_deprecated": 2
+ },
+ "by_domain": {
+  "buildings": {
+   "tables": 13,
+   "content_tables": 12,
+   "content_empty_in_v17": 1,
+   "v17_rows": 165,
+   "world_db_rows": 0,
+   "empty": [
+    "building_layout_edges",
+    "place_buildings"
+   ],
+   "filled": [
+    "building_layout_nodes=9",
+    "building_layout_templates=9",
+    "building_templates=9",
+    "g4_materialization_bindings=9",
+    "g4_materialization_layout_edges=18",
+    "g4_materialization_profiles=9",
+    "g5_anchor_templates=27",
+    "g5_edge_templates=9",
+    "g5_minilocation_templates=9",
+    "materialization_slot_rules=48",
+    "room_templates=9"
+   ]
+  },
+  "categories": {
+   "tables": 7,
+   "content_tables": 7,
+   "content_empty_in_v17": 3,
+   "v17_rows": 1056,
+   "world_db_rows": 0,
+   "empty": [
+    "category_scheme_mappings",
+    "classification_schemes",
+    "universal_parameter_definitions"
+   ],
+   "filled": [
+    "category_labels=146",
+    "region_category_options=404",
+    "universal_categories=465",
+    "universal_category_relations=41"
+   ]
+  },
+  "clothing_appearance": {
+   "tables": 5,
+   "content_tables": 5,
+   "content_empty_in_v17": 1,
+   "v17_rows": 39,
+   "world_db_rows": 0,
+   "empty": [
+    "region_clothing_profiles"
+   ],
+   "filled": [
+    "region_appearance_profile_entries=36",
+    "region_appearance_profiles=1",
+    "region_equipment_profile_entries=1",
+    "region_equipment_profiles=1"
+   ]
+  },
+  "containers": {
+   "tables": 8,
+   "content_tables": 7,
+   "content_empty_in_v17": 0,
+   "v17_rows": 412,
+   "world_db_rows": 0,
+   "empty": [],
+   "filled": [
+    "container_content_category_relations=94",
+    "container_content_profile_entries=4",
+    "container_content_profiles=18",
+    "container_template_facet_bindings=170",
+    "container_template_inventory_profiles=18",
+    "container_template_source_bindings=72",
+    "container_templates=18",
+    "g4_container_materialization_rules=18"
+   ]
+  },
+  "decisions_llm": {
+   "tables": 6,
+   "content_tables": 5,
+   "content_empty_in_v17": 5,
+   "v17_rows": 0,
+   "world_db_rows": 0,
+   "empty": [
+    "decision_command_catalog",
+    "decision_policy_options",
+    "decision_policy_profiles",
+    "llm_context_packs",
+    "llm_validation_rules",
+    "region_gaps"
+   ],
+   "filled": []
+  },
+  "economy": {
+   "tables": 2,
+   "content_tables": 2,
+   "content_empty_in_v17": 2,
+   "v17_rows": 0,
+   "world_db_rows": 0,
+   "empty": [
+    "price_bands",
+    "region_economy"
+   ],
+   "filled": []
+  },
+  "history_events": {
+   "tables": 4,
+   "content_tables": 2,
+   "content_empty_in_v17": 2,
+   "v17_rows": 28,
+   "world_db_rows": 28,
+   "empty": [
+    "historical_event_phases",
+    "historical_events",
+    "historical_figures"
+   ],
+   "filled": [
+    "historical_anchors=28"
+   ]
+  },
+  "items": {
+   "tables": 12,
+   "content_tables": 10,
+   "content_empty_in_v17": 2,
+   "v17_rows": 1681,
+   "world_db_rows": 0,
+   "empty": [
+    "item_classification_migration_inventory",
+    "location_object_rules",
+    "region_material_culture"
+   ],
+   "filled": [
+    "g4_item_materialization_rules=9",
+    "item_profile_entries=102",
+    "item_profile_sets=9",
+    "item_template_category_bindings=842",
+    "item_template_inventory_profiles=102",
+    "item_template_quantity_profiles=102",
+    "item_template_source_bindings=408",
+    "item_templates=102",
+    "quantity_unit_definitions=5"
+   ]
+  },
+  "knowledge_rumors": {
+   "tables": 4,
+   "content_tables": 4,
+   "content_empty_in_v17": 4,
+   "v17_rows": 0,
+   "world_db_rows": 0,
+   "empty": [
+    "graph_edge_knowledge_rules",
+    "region_knowledge_profiles",
+    "region_npc_knowledge",
+    "rumor_templates"
+   ],
+   "filled": []
+  },
+  "law": {
+   "tables": 2,
+   "content_tables": 2,
+   "content_empty_in_v17": 1,
+   "v17_rows": 8,
+   "world_db_rows": 8,
+   "empty": [
+    "region_laws"
+   ],
+   "filled": [
+    "legal_status_archetypes=8"
+   ]
+  },
+  "names": {
+   "tables": 2,
+   "content_tables": 2,
+   "content_empty_in_v17": 2,
+   "v17_rows": 0,
+   "world_db_rows": 0,
+   "empty": [
+    "region_name_pool_entries",
+    "region_name_pools"
+   ],
+   "filled": []
+  },
+  "nature": {
+   "tables": 6,
+   "content_tables": 6,
+   "content_empty_in_v17": 0,
+   "v17_rows": 218,
+   "world_db_rows": 218,
+   "empty": [],
+   "filled": [
+    "graph_edge_modifiers=49",
+    "landscape_templates=70",
+    "procedural_scene_compiled_records=0",
+    "region_landscape_templates=34",
+    "region_water_body_templates=24",
+    "water_body_templates=41"
+   ]
+  },
+  "occupations_skills": {
+   "tables": 5,
+   "content_tables": 5,
+   "content_empty_in_v17": 0,
+   "v17_rows": 136,
+   "world_db_rows": 136,
+   "empty": [],
+   "filled": [
+    "occupation_archetypes=15",
+    "occupation_skill_defaults=15",
+    "region_occupations=68",
+    "role_occupation_rules=26",
+    "skill_catalog=12"
+   ]
+  },
+  "people_social": {
+   "tables": 19,
+   "content_tables": 19,
+   "content_empty_in_v17": 7,
+   "v17_rows": 315,
+   "world_db_rows": 178,
+   "empty": [
+    "g4_npc_materialization_rules",
+    "region_behavior_profiles",
+    "region_npc_archetypes",
+    "region_npc_generation_rules",
+    "region_npc_profile_sets",
+    "region_relationship_profiles",
+    "universal_archetype_proposals"
+   ],
+   "filled": [
+    "class_role_rules=29",
+    "dependency_archetypes=14",
+    "mobility_archetypes=8",
+    "region_demographic_profile_entries=6",
+    "region_demographic_profiles=1",
+    "region_social_roles=71",
+    "social_classes=10",
+    "social_position_archetypes=30",
+    "social_role_archetypes=16",
+    "spatial_v3_g4_npc_composition_bindings=71",
+    "spatial_v3_npc_regional_context_profiles=11",
+    "spatial_v3_npc_runtime_profiles=48"
+   ]
+  },
+  "places": {
+   "tables": 39,
+   "content_tables": 9,
+   "content_empty_in_v17": 2,
+   "v17_rows": 44367,
+   "world_db_rows": 41805,
+   "empty": [
+    "place_generation_limits",
+    "place_locations",
+    "place_minilocations",
+    "places",
+    "region_place_generation_rules",
+    "scene_anchors",
+    "spatial_v3_boundary_crossing_contracts",
+    "spatial_v3_movement_orientation_profile_points",
+    "spatial_v3_movement_orientation_profiles",
+    "spatial_v3_node_facets",
+    "spatial_v3_orientation_reference_frames",
+    "spatial_v3_relative_orientations",
+    "spatial_v3_spatial_transition_allowed_route_kinds",
+    "spatial_v3_spatial_transition_contracts"
+   ],
+   "filled": [
+    "graph_edges=30248",
+    "graph_nodes=11359",
+    "graph_scale_rules=6",
+    "land_use_templates=45",
+    "place_templates=64",
+    "region_land_use_templates=31",
+    "region_neighbors=6",
+    "region_place_templates=39",
+    "regions=7",
+    "spatial_v3_canonical_g5_connection_bindings=908",
+    "spatial_v3_canonical_g5_connection_profiles=15",
+    "spatial_v3_g1_grid_cells=1",
+    "spatial_v3_g4_directional_exits=86",
+    "spatial_v3_g4_entry_endpoint_bindings=32",
+    "spatial_v3_node_classes=276",
+    "spatial_v3_node_parents=275",
+    "spatial_v3_nodes=276",
+    "spatial_v3_topological_direction_contexts=86",
+    "spatial_v3_topological_exit_orientation_rules=1",
+    "spatial_v3_topological_movement_orientation_profiles=4",
+    "spatial_v3_world_route_endpoint_bindings=172",
+    "spatial_v3_world_route_points=172",
+    "spatial_v3_world_route_segment_spatial_contexts=86",
+    "spatial_v3_world_route_segments=86",
+    "spatial_v3_world_routes=86"
+   ]
+  },
+  "property_ownership": {
+   "tables": 2,
+   "content_tables": 2,
+   "content_empty_in_v17": 0,
+   "v17_rows": 38,
+   "world_db_rows": 0,
+   "empty": [],
+   "filled": [
+    "property_profile_rules=19",
+    "property_profiles=19"
+   ]
+  },
+  "provenance": {
+   "tables": 14,
+   "content_tables": 0,
+   "content_empty_in_v17": 0,
+   "v17_rows": 9069,
+   "world_db_rows": 183,
+   "empty": [
+    "audit_log",
+    "catalog_import_tables",
+    "catalog_imports",
+    "spatial_v3_controlled_vocabulary_bindings",
+    "spatial_v3_graph_node_migration_inventory",
+    "spatial_v3_migration_coverage_artifacts"
+   ],
+   "filled": [
+    "record_sources=303",
+    "source_records=222",
+    "spatial_v3_approved_physical_source_pairs=358",
+    "spatial_v3_authoring_dependency_edges=4860",
+    "spatial_v3_authoring_versions=3217",
+    "spatial_v3_external_dependency_versions=99",
+    "spatial_v3_world_revisions=1",
+    "world_revisions=9"
+   ]
+  },
+  "religion": {
+   "tables": 1,
+   "content_tables": 1,
+   "content_empty_in_v17": 1,
+   "v17_rows": 0,
+   "world_db_rows": 0,
+   "empty": [
+    "religious_context"
+   ],
+   "filled": []
+  },
+  "risks_conflicts": {
+   "tables": 2,
+   "content_tables": 2,
+   "content_empty_in_v17": 2,
+   "v17_rows": 0,
+   "world_db_rows": 0,
+   "empty": [
+    "conflict_templates",
+    "region_risks"
+   ],
+   "filled": []
+  },
+  "scenes_g5_g6": {
+   "tables": 27,
+   "content_tables": 27,
+   "content_empty_in_v17": 5,
+   "v17_rows": 2225,
+   "world_db_rows": 0,
+   "empty": [
+    "spatial_v3_acoustic_edge_templates",
+    "spatial_v3_portal_state_template_behaviors",
+    "spatial_v3_portal_templates",
+    "spatial_v3_stable_structure_templates",
+    "spatial_v3_visibility_link_templates"
+   ],
+   "filled": [
+    "spatial_v3_continuation_length_candidates=4",
+    "spatial_v3_continuation_length_rules=1",
+    "spatial_v3_expansion_profile_template_limits=64",
+    "spatial_v3_expansion_rule_sets=3",
+    "spatial_v3_expansion_slot_templates=172",
+    "spatial_v3_expansion_slots=86",
+    "spatial_v3_g4_expansion_profiles=32",
+    "spatial_v3_g5_generation_templates=50",
+    "spatial_v3_g5_successor_frontier_rules=172",
+    "spatial_v3_g6_acoustic_baselines=146",
+    "spatial_v3_g6_template_slots=34",
+    "spatial_v3_local_movement_eligibility_profiles=136",
+    "spatial_v3_regional_scene_template_bases=17",
+    "spatial_v3_scene_applicability_rules=1",
+    "spatial_v3_scene_endpoint_slots=68",
+    "spatial_v3_scene_materialization_candidates=440",
+    "spatial_v3_scene_materialization_profiles=440",
+    "spatial_v3_scene_movement_edge_templates=136",
+    "spatial_v3_scene_position_templates=102",
+    "spatial_v3_scene_selection_rules=1",
+    "spatial_v3_scene_templates=34",
+    "spatial_v3_terminal_policies=86"
+   ]
+  },
+  "time_calendar_schedules": {
+   "tables": 7,
+   "content_tables": 4,
+   "content_empty_in_v17": 4,
+   "v17_rows": 0,
+   "world_db_rows": 0,
+   "empty": [
+    "region_activity_profiles",
+    "region_schedule_profiles",
+    "seasonal_rules",
+    "temporal_authoring_records",
+    "temporal_normalized_references",
+    "temporal_provenance",
+    "temporal_source_history"
+   ],
+   "filled": []
+  },
+  "transport_movement": {
+   "tables": 20,
+   "content_tables": 20,
+   "content_empty_in_v17": 15,
+   "v17_rows": 74,
+   "world_db_rows": 21,
+   "empty": [
+    "spatial_v3_action_contracts",
+    "spatial_v3_activity_contracts",
+    "spatial_v3_dynamic_recheck_policy_points",
+    "spatial_v3_movement_method_cost_options",
+    "spatial_v3_movement_mode_transition_contracts",
+    "spatial_v3_recovery_transition_templates",
+    "spatial_v3_traversal_availability_policies",
+    "spatial_v3_traversal_availability_values",
+    "spatial_v3_traversal_check_policies",
+    "spatial_v3_traversal_check_triggers",
+    "spatial_v3_traversal_consequence_policies",
+    "spatial_v3_traversal_risk_check_bindings",
+    "spatial_v3_traversal_risk_hazards",
+    "spatial_v3_traversal_risk_profiles",
+    "transport_templates"
+   ],
+   "filled": [
+    "route_templates=21",
+    "spatial_v3_dynamic_recheck_policies=4",
+    "spatial_v3_g4_traversal_profiles=32",
+    "spatial_v3_movement_method_cost_profiles=9",
+    "spatial_v3_transition_environment_profiles=8"
+   ]
+  },
+  "weather": {
+   "tables": 1,
+   "content_tables": 1,
+   "content_empty_in_v17": 1,
+   "v17_rows": 0,
+   "world_db_rows": 0,
+   "empty": [
+    "weather_profiles"
+   ],
+   "filled": []
+  }
+ },
+ "extra": {
+  "not_in_ddl_but_in_v17": "catalog_baseline_registrations, domain_catalog_revisions, catalog_import_records, catalog_import_dependency_assertions, runtime_catalog_activation_events, schema_migrations, actor_base_attribute_profiles (added by tools/runtime-catalog-activation/migrations/world/001,002 during bootstrap; infra except actor_base_attribute_profiles = people content, profile novgorod_ordinary_actor_base_attributes_v1)",
+  "world_db_docker_tables_not_in_v17_ddl": [
+   "catalog_baseline_registrations",
+   "catalog_import_dependency_assertions",
+   "catalog_import_records",
+   "domain_catalog_revisions",
+   "runtime_catalog_activation_events",
+   "schema_migrations"
+  ],
+  "v17_ddl_tables_missing_in_world_db_docker": [
+   "region_demographic_profile_entries",
+   "region_appearance_profile_entries",
+   "procedural_scene_compiled_records",
+   "spatial_v3_expansion_rule_sets",
+   "spatial_v3_g6_acoustic_baselines",
+   "spatial_v3_g4_npc_composition_bindings",
+   "spatial_v3_npc_runtime_profiles",
+   "spatial_v3_npc_regional_context_profiles",
+   "spatial_v3_local_movement_eligibility_profiles"
+  ],
+  "universal_categories_v17": {
+   "distinct": 465,
+   "by_domain_facet": {
+    "actor_appearance/age_category": 4,
+    "actor_appearance/build": 3,
+    "actor_appearance/eye_color": 5,
+    "actor_appearance/face_shape": 5,
+    "actor_appearance/facial_hair": 4,
+    "actor_appearance/hair_color": 7,
+    "actor_appearance/hair_length": 4,
+    "actor_appearance/hair_style": 4,
+    "actor_appearance/sex_category": 2,
+    "actor_appearance/skin_tone": 4,
+    "container/access_model": 14,
+    "container/capacity_band": 15,
+    "container/closure_type": 17,
+    "container/condition": 1,
+    "container/container_form": 18,
+    "container/content_compatibility": 18,
+    "container/material": 11,
+    "container/portability": 6,
+    "g5_anchor/anchor_type": 1,
+    "g5_edge/passage_type": 1,
+    "g5_zone/zone_type": 1,
+    "item/condition": 1,
+    "item/content_type": 28,
+    "item/manufacturing_technique": 55,
+    "item/material": 27,
+    "item/object_type": 102,
+    "item/primary_function": 8,
+    "item/property_category": 10,
+    "item/size_band": 23,
+    "item/use_context": 8,
+    "item_property/property_model": 1,
+    "spatial_materialization/boundary_function": 1,
+    "spatial_materialization/candidate_function": 14,
+    "spatial_materialization/geometry": 2,
+    "spatial_materialization/hazard_function": 7,
+    "spatial_materialization/resource_function": 2,
+    "spatial_materialization/ritual_function": 1,
+    "spatial_materialization/route_function": 9,
+    "spatial_materialization/spatial_function": 10,
+    "spatial_structure/structural_g0": 1,
+    "spatial_structure/structural_g1": 1,
+    "spatial_structure/structural_g2": 1,
+    "spatial_structure/structural_g3": 6,
+    "spatial_structure/structural_g4": 1,
+    "spatial_structure/structural_g5": 1
+   }
+  },
+  "region_category_options_v17_by_category_domain": {
+   "container": 100,
+   "item": 262,
+   "actor_appearance": 42
+  }
+ }
+}

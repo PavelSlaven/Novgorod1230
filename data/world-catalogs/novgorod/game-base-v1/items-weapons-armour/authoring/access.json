@@ -1,0 +1,46 @@
+{
+  "_note": "Правило права ношения. Класс права роли выводится скриптом из точного текста поля weapon_rights в data/novgorod-region/novgorod_social_roles_v1_enriched.tsv; уровень доступа = матрица класс права × tier вида оружия. Толкование каждого класса опирается только на текст TSV и правило statusrules:status_weapon. overrides — ожидаемое снаряжение по службе с источником.",
+  "rights_classes": [
+    {"class": "R_elite", "weapon_rights_text": "оружие допустимо как знак власти и охраны, но его применение политически рискованно"},
+    {"class": "R_status", "weapon_rights_text": "оружие возможно по статусу, службе или дороге; в городе риск свидетелей высок"},
+    {"class": "R_service", "weapon_rights_text": "нож, посох или служебное оружие допустимы по обстоятельствам; боевое оружие требует основания"},
+    {"class": "R_tool", "weapon_rights_text": "обычно нож, топор, посох или инструмент; боевое оружие подозрительно без причины"},
+    {"class": "R_order", "weapon_rights_text": "оружие только по работе, охране или приказу; самостоятельное ношение опасно"},
+    {"class": "R_outcast", "weapon_rights_text": "любое оружие повышает риск обвинения"},
+    {"class": "R_variable", "weapon_rights_text": "зависит от поручителя, статуса, места и причины"}
+  ],
+  "access_levels": {
+    "expected": "ожидаемо вооружён этим по службе (override с источником)",
+    "permitted": "ношение не вызывает вопросов",
+    "permitted_with_reason": "допустимо по статусу, службе или дороге; в городе при свидетелях — риск",
+    "requires_grounds": "боевое оружие требует основания (служба, приказ, дорога)",
+    "suspicious_without_reason": "без видимой причины вызывает подозрение",
+    "by_order_only": "только по работе, охране или приказу хозяина; самостоятельно — опасно",
+    "raises_accusation_risk": "любое оружие повышает риск обвинения",
+    "depends_on_guarantor": "зависит от поручителя, статуса, места и причины"
+  },
+  "matrix": {
+    "R_elite":    {"tool_weapon": "permitted", "common_war": "permitted", "elite_war": "permitted"},
+    "R_status":   {"tool_weapon": "permitted", "common_war": "permitted_with_reason", "elite_war": "permitted_with_reason"},
+    "R_service":  {"tool_weapon": "permitted", "common_war": "requires_grounds", "elite_war": "requires_grounds"},
+    "R_tool":     {"tool_weapon": "permitted", "common_war": "suspicious_without_reason", "elite_war": "suspicious_without_reason"},
+    "R_order":    {"tool_weapon": "by_order_only", "common_war": "by_order_only", "elite_war": "by_order_only"},
+    "R_outcast":  {"tool_weapon": "raises_accusation_risk", "common_war": "raises_accusation_risk", "elite_war": "raises_accusation_risk"},
+    "R_variable": {"tool_weapon": "depends_on_guarantor", "common_war": "depends_on_guarantor", "elite_war": "depends_on_guarantor"}
+  },
+  "status_access_levels_listed": ["expected", "permitted", "permitted_with_reason"],
+  "overrides": [
+    {"role_id": "nov_role_princely_druzhinnik", "tiers": ["common_war", "elite_war"], "level": "expected", "source_refs": ["statusrules:status_weapon", "tsv:occ:nov_occ_druzhina_warrior#weapon_access", "bible:§11 Роль №7 — дружинник", "sqlite:social_groups:княжеская дружина"], "confidence": "B", "note": "«дружинник ожидаемо вооружён»; основания — свод правил, TSV, библия и sqlite, а не первичный или археологический источник (верификация 2026-09-26)"},
+    {"role_id": "nov_role_junior_druzhinnik", "tiers": ["common_war"], "level": "expected", "source_refs": ["statusrules:status_weapon", "tsv:occ:nov_occ_druzhina_warrior#weapon_access", "tsv:occ:nov_occ_junior_retainer#weapon_access"], "confidence": "B", "note": "служебное оружие по приказу"},
+    {"role_id": "nov_role_prince", "tiers": ["common_war", "elite_war"], "level": "expected", "source_refs": ["wk:claim:candidate-v9-veche-elected-prince-chiefly-military-commander", "sqlite:institutions:I07"], "confidence": "B", "note": "князь — прежде всего военный предводитель; WK-claim опирается на Britannica с confidence medium, не первичный или археологический источник (верификация 2026-09-26)"},
+    {"role_id": "nov_role_guard", "tiers": ["common_war"], "level": "permitted_with_reason", "source_refs": ["tsv:occ:nov_occ_gate_guard#weapon_access", "tsv:occ:nov_occ_market_guard#weapon_access", "costume:AR017"], "confidence": "C", "note": "на посту — служебное оружие по приказу; вне поста действует общий класс R_tool"},
+    {"role_id": "nov_role_boyar", "tiers": ["elite_war"], "level": "expected", "source_refs": ["sqlite:social_groups:бояре", "costume:AR004"], "confidence": "B", "note": "в походе; дружинное вооружение у части мужчин боярских родов"},
+    {"role_id": "nov_role_hunter", "tiers": ["tool_weapon"], "level": "expected", "source_refs": ["tsv:occ:nov_occ_hunter_trapper#weapon_access", "wk:claim:agriculture-fauna-ash-hunting-bow"], "confidence": "B", "note": "охотничье орудие — лук, стрелы, рогатина, нож (M2c)"},
+    {"role_id": "nov_role_archbishop", "tiers": ["common_war", "elite_war"], "level": "raises_accusation_risk", "source_refs": ["lit:sokolov_2016_ancient_church_clergy_weapons", "lit:guryev_2020_alexander_nevsky_clergy_weapons"], "confidence": "C", "note": "личное боевое оружие клирику не положено (восточное каноническое право — под страхом отлучения); текст TSV «знак власти и охраны» описывает его вооружённую охрану (nov_role_bishop_man), а не личное ношение. Вооружённая охрана и знак власти — через override ролей bishop_man/church_guard, не через личный доступ архиепископа. Исправление верификации 2026-09-26"},
+    {"role_id": "nov_role_igumen", "tiers": ["common_war", "elite_war"], "level": "raises_accusation_risk", "source_refs": ["lit:sokolov_2016_ancient_church_clergy_weapons", "lit:guryev_2020_alexander_nevsky_clergy_weapons"], "confidence": "C", "note": "личное боевое оружие игумену не положено (восточное каноническое право); охрана монастыря — отдельная служебная роль, не личный доступ игумена. Исправление верификации 2026-09-26"},
+    {"role_id": "nov_role_priest", "tiers": ["common_war", "elite_war"], "level": "raises_accusation_risk", "source_refs": ["lit:sokolov_2016_ancient_church_clergy_weapons", "lit:guryev_2020_alexander_nevsky_clergy_weapons"], "confidence": "C", "note": "личное боевое оружие священнику не положено (восточное каноническое право под страхом отлучения), в отличие от R_service-доступа к ножу/посоху. Исправление верификации 2026-09-26"},
+    {"role_id": "nov_role_deacon", "tiers": ["common_war", "elite_war"], "level": "raises_accusation_risk", "source_refs": ["lit:sokolov_2016_ancient_church_clergy_weapons", "lit:guryev_2020_alexander_nevsky_clergy_weapons"], "confidence": "C", "note": "личное боевое оружие дьякону не положено (восточное каноническое право). Исправление верификации 2026-09-26"},
+    {"role_id": "nov_role_monk", "tiers": ["common_war", "elite_war"], "level": "raises_accusation_risk", "source_refs": ["lit:sokolov_2016_ancient_church_clergy_weapons", "lit:guryev_2020_alexander_nevsky_clergy_weapons"], "confidence": "C", "note": "личное боевое оружие монаху не положено (восточное каноническое право). Исправление верификации 2026-09-26"},
+    {"role_id": "nov_role_boyar_house_mistress", "tiers": ["common_war", "elite_war"], "level": "suspicious_without_reason", "source_refs": ["statusrules:status_weapon"], "confidence": "C", "note": "TSV даёт класс R_status (personal boевое оружие permitted_with_reason), но она не боевая роль; временный override до правки роли в домене social_strata (известный пробел, items/README.md). Исправление верификации 2026-09-26"}
+  ]
+}

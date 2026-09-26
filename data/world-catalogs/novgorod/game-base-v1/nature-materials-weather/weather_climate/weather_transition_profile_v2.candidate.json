@@ -1,0 +1,1010 @@
+{
+ "record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2_inertia",
+ "family_id": "weather_transition_profiles_processes",
+ "record_kind": "weather_transition_profile",
+ "status": "candidate",
+ "version": "2",
+ "supersedes": "record:weather_transition_profiles_processes:novgorod_weather_v2 (version 1, equal weights)",
+ "applicability": [
+  "novgorod"
+ ],
+ "payload": {
+  "weather_profile_id": "novgorod_six_hour_inertia_climatology_v2",
+  "decision_ref": "Issue #133 decision D7 (owner, 2026-09-26): погода держится 1–3 дня; держащееся отклонение температуры; вид осадков зависит от температуры; одна цепочка на G0 с местными поправками по ландшафту; интервал 6 ч",
+  "region_season_applicability": {
+   "region": "novgorod",
+   "calendar_system": "Julian",
+   "calendar_seasons": {
+    "winter": [
+     "12",
+     "1",
+     "2"
+    ],
+    "spring": [
+     "3",
+     "4",
+     "5"
+    ],
+    "summer": [
+     "6",
+     "7",
+     "8"
+    ],
+    "autumn": [
+     "9",
+     "10",
+     "11"
+    ]
+   }
+  },
+  "exact_duration_or_boundary_ranges": {
+   "boundary_grid_minutes_from_local_midnight": [
+    "0",
+    "360",
+    "720",
+    "1080",
+    "1440"
+   ],
+   "transition_interval_minutes": "360"
+  },
+  "weather_states": [
+   {
+    "weather_state_id": "wx_clear",
+    "sky": "clear",
+    "precipitation_regime": "none",
+    "wind": "weak",
+    "visibility": "none",
+    "movement_factor": "1/1"
+   },
+   {
+    "weather_state_id": "wx_partly_cloudy",
+    "sky": "broken",
+    "precipitation_regime": "none",
+    "wind": "weak",
+    "visibility": "none",
+    "movement_factor": "1/1"
+   },
+   {
+    "weather_state_id": "wx_overcast",
+    "sky": "overcast",
+    "precipitation_regime": "none",
+    "wind": "weak",
+    "visibility": "none",
+    "movement_factor": "1/1"
+   },
+   {
+    "weather_state_id": "wx_fog",
+    "sky": "obscured",
+    "precipitation_regime": "none",
+    "wind": "none",
+    "visibility": "heavily_reduced",
+    "movement_factor": "5/4"
+   },
+   {
+    "weather_state_id": "wx_precip_light",
+    "sky": "overcast",
+    "precipitation_regime": "light",
+    "wind": "weak",
+    "visibility": "reduced",
+    "movement_factor": "5/4"
+   },
+   {
+    "weather_state_id": "wx_precip_steady",
+    "sky": "overcast",
+    "precipitation_regime": "steady",
+    "wind": "moderate",
+    "visibility": "reduced",
+    "movement_factor": "3/2"
+   },
+   {
+    "weather_state_id": "wx_convective_storm",
+    "sky": "cumulonimbus",
+    "precipitation_regime": "shower",
+    "wind": "strong",
+    "visibility": "heavily_reduced",
+    "movement_factor": "2/1"
+   },
+   {
+    "weather_state_id": "wx_windy_dry",
+    "sky": "variable",
+    "precipitation_regime": "none",
+    "wind": "strong",
+    "visibility": "none",
+    "movement_factor": "5/4"
+   },
+   {
+    "weather_state_id": "wx_windy_precip",
+    "sky": "overcast",
+    "precipitation_regime": "wind_driven",
+    "wind": "dangerous",
+    "visibility": "blocked",
+    "movement_factor": "2/1"
+   }
+  ],
+  "transition_rules": {
+   "method": "deterministic weighted selection from the row of the previous committed state in the current season; weights are integers; self weight encodes persistence",
+   "persistence_rule": "self = (4 x persistence_days - 1) x Σ(weights of other available states) => expected run length persistence_days (geometric)",
+   "weights_meaning": "entry weight of target = round(100 x climatological slot fraction / persistence_days) from 20th-century Novgorod station day counts; not measured 1230 probabilities",
+   "seasonal_rows": {
+    "winter": {
+     "wx_clear": {
+      "wx_clear": "177",
+      "wx_partly_cloudy": "10",
+      "wx_overcast": "14",
+      "wx_fog": "5",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "6",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "9"
+     },
+     "wx_partly_cloudy": {
+      "wx_clear": "5",
+      "wx_partly_cloudy": "594",
+      "wx_overcast": "14",
+      "wx_fog": "5",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "6",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "9"
+     },
+     "wx_overcast": {
+      "wx_clear": "5",
+      "wx_partly_cloudy": "10",
+      "wx_overcast": "350",
+      "wx_fog": "5",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "6",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "9"
+     },
+     "wx_fog": {
+      "wx_clear": "5",
+      "wx_partly_cloudy": "10",
+      "wx_overcast": "14",
+      "wx_fog": "177",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "6",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "9"
+     },
+     "wx_precip_light": {
+      "wx_clear": "5",
+      "wx_partly_cloudy": "10",
+      "wx_overcast": "14",
+      "wx_fog": "5",
+      "wx_precip_light": "150",
+      "wx_precip_steady": "6",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "9"
+     },
+     "wx_precip_steady": {
+      "wx_clear": "5",
+      "wx_partly_cloudy": "10",
+      "wx_overcast": "14",
+      "wx_fog": "5",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "174",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "9"
+     },
+     "wx_convective_storm": {
+      "wx_clear": "5",
+      "wx_partly_cloudy": "10",
+      "wx_overcast": "14",
+      "wx_fog": "5",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "6",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "9"
+     },
+     "wx_windy_dry": {
+      "wx_clear": "5",
+      "wx_partly_cloudy": "10",
+      "wx_overcast": "14",
+      "wx_fog": "5",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "6",
+      "wx_windy_dry": "189",
+      "wx_windy_precip": "9"
+     },
+     "wx_windy_precip": {
+      "wx_clear": "5",
+      "wx_partly_cloudy": "10",
+      "wx_overcast": "14",
+      "wx_fog": "5",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "6",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "165"
+     }
+    },
+    "spring": {
+     "wx_clear": {
+      "wx_clear": "165",
+      "wx_partly_cloudy": "16",
+      "wx_overcast": "12",
+      "wx_fog": "4",
+      "wx_precip_light": "12",
+      "wx_precip_steady": "7",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_partly_cloudy": {
+      "wx_clear": "12",
+      "wx_partly_cloudy": "561",
+      "wx_overcast": "12",
+      "wx_fog": "4",
+      "wx_precip_light": "12",
+      "wx_precip_steady": "7",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_overcast": {
+      "wx_clear": "12",
+      "wx_partly_cloudy": "16",
+      "wx_overcast": "165",
+      "wx_fog": "4",
+      "wx_precip_light": "12",
+      "wx_precip_steady": "7",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_fog": {
+      "wx_clear": "12",
+      "wx_partly_cloudy": "16",
+      "wx_overcast": "12",
+      "wx_fog": "189",
+      "wx_precip_light": "12",
+      "wx_precip_steady": "7",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_precip_light": {
+      "wx_clear": "12",
+      "wx_partly_cloudy": "16",
+      "wx_overcast": "12",
+      "wx_fog": "4",
+      "wx_precip_light": "165",
+      "wx_precip_steady": "7",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_precip_steady": {
+      "wx_clear": "12",
+      "wx_partly_cloudy": "16",
+      "wx_overcast": "12",
+      "wx_fog": "4",
+      "wx_precip_light": "12",
+      "wx_precip_steady": "180",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_convective_storm": {
+      "wx_clear": "12",
+      "wx_partly_cloudy": "16",
+      "wx_overcast": "12",
+      "wx_fog": "4",
+      "wx_precip_light": "12",
+      "wx_precip_steady": "7",
+      "wx_convective_storm": "198",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_windy_dry": {
+      "wx_clear": "12",
+      "wx_partly_cloudy": "16",
+      "wx_overcast": "12",
+      "wx_fog": "4",
+      "wx_precip_light": "12",
+      "wx_precip_steady": "7",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "198",
+      "wx_windy_precip": "2"
+     },
+     "wx_windy_precip": {
+      "wx_clear": "12",
+      "wx_partly_cloudy": "16",
+      "wx_overcast": "12",
+      "wx_fog": "4",
+      "wx_precip_light": "12",
+      "wx_precip_steady": "7",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "195"
+     }
+    },
+    "summer": {
+     "wx_clear": {
+      "wx_clear": "156",
+      "wx_partly_cloudy": "17",
+      "wx_overcast": "6",
+      "wx_fog": "4",
+      "wx_precip_light": "8",
+      "wx_precip_steady": "10",
+      "wx_convective_storm": "5",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "1"
+     },
+     "wx_partly_cloudy": {
+      "wx_clear": "13",
+      "wx_partly_cloudy": "528",
+      "wx_overcast": "6",
+      "wx_fog": "4",
+      "wx_precip_light": "8",
+      "wx_precip_steady": "10",
+      "wx_convective_storm": "5",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "1"
+     },
+     "wx_overcast": {
+      "wx_clear": "13",
+      "wx_partly_cloudy": "17",
+      "wx_overcast": "177",
+      "wx_fog": "4",
+      "wx_precip_light": "8",
+      "wx_precip_steady": "10",
+      "wx_convective_storm": "5",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "1"
+     },
+     "wx_fog": {
+      "wx_clear": "13",
+      "wx_partly_cloudy": "17",
+      "wx_overcast": "6",
+      "wx_fog": "183",
+      "wx_precip_light": "8",
+      "wx_precip_steady": "10",
+      "wx_convective_storm": "5",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "1"
+     },
+     "wx_precip_light": {
+      "wx_clear": "13",
+      "wx_partly_cloudy": "17",
+      "wx_overcast": "6",
+      "wx_fog": "4",
+      "wx_precip_light": "171",
+      "wx_precip_steady": "10",
+      "wx_convective_storm": "5",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "1"
+     },
+     "wx_precip_steady": {
+      "wx_clear": "13",
+      "wx_partly_cloudy": "17",
+      "wx_overcast": "6",
+      "wx_fog": "4",
+      "wx_precip_light": "8",
+      "wx_precip_steady": "165",
+      "wx_convective_storm": "5",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "1"
+     },
+     "wx_convective_storm": {
+      "wx_clear": "13",
+      "wx_partly_cloudy": "17",
+      "wx_overcast": "6",
+      "wx_fog": "4",
+      "wx_precip_light": "8",
+      "wx_precip_steady": "10",
+      "wx_convective_storm": "180",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "1"
+     },
+     "wx_windy_dry": {
+      "wx_clear": "13",
+      "wx_partly_cloudy": "17",
+      "wx_overcast": "6",
+      "wx_fog": "4",
+      "wx_precip_light": "8",
+      "wx_precip_steady": "10",
+      "wx_convective_storm": "5",
+      "wx_windy_dry": "192",
+      "wx_windy_precip": "1"
+     },
+     "wx_windy_precip": {
+      "wx_clear": "13",
+      "wx_partly_cloudy": "17",
+      "wx_overcast": "6",
+      "wx_fog": "4",
+      "wx_precip_light": "8",
+      "wx_precip_steady": "10",
+      "wx_convective_storm": "5",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "192"
+     }
+    },
+    "autumn": {
+     "wx_clear": {
+      "wx_clear": "180",
+      "wx_partly_cloudy": "13",
+      "wx_overcast": "11",
+      "wx_fog": "6",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "12",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_partly_cloudy": {
+      "wx_clear": "4",
+      "wx_partly_cloudy": "561",
+      "wx_overcast": "11",
+      "wx_fog": "6",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "12",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_overcast": {
+      "wx_clear": "4",
+      "wx_partly_cloudy": "13",
+      "wx_overcast": "371",
+      "wx_fog": "6",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "12",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_fog": {
+      "wx_clear": "4",
+      "wx_partly_cloudy": "13",
+      "wx_overcast": "11",
+      "wx_fog": "174",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "12",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_precip_light": {
+      "wx_clear": "4",
+      "wx_partly_cloudy": "13",
+      "wx_overcast": "11",
+      "wx_fog": "6",
+      "wx_precip_light": "150",
+      "wx_precip_steady": "12",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_precip_steady": {
+      "wx_clear": "4",
+      "wx_partly_cloudy": "13",
+      "wx_overcast": "11",
+      "wx_fog": "6",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "156",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_convective_storm": {
+      "wx_clear": "4",
+      "wx_partly_cloudy": "13",
+      "wx_overcast": "11",
+      "wx_fog": "6",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "12",
+      "wx_convective_storm": "189",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "2"
+     },
+     "wx_windy_dry": {
+      "wx_clear": "4",
+      "wx_partly_cloudy": "13",
+      "wx_overcast": "11",
+      "wx_fog": "6",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "12",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "189",
+      "wx_windy_precip": "2"
+     },
+     "wx_windy_precip": {
+      "wx_clear": "4",
+      "wx_partly_cloudy": "13",
+      "wx_overcast": "11",
+      "wx_fog": "6",
+      "wx_precip_light": "14",
+      "wx_precip_steady": "12",
+      "wx_convective_storm": "1",
+      "wx_windy_dry": "1",
+      "wx_windy_precip": "186"
+     }
+    }
+   },
+   "random_source": {
+    "algorithm_id": "mulberry32_v1",
+    "key": "(party seed, G0 zone, 6-hour interval number)",
+    "owner": "@rus/turn selects; @rus/environment-state validates and applies (D7)"
+   }
+  },
+  "temperature": {
+   "formula": "T = normal(julian_month, interval) + anomaly.delta + state_modifier(interval)",
+   "normals_by_julian_month_interval": {
+    "1": [
+     -12,
+     -9,
+     -5.8,
+     -9
+    ],
+    "2": [
+     -10.8,
+     -7.1,
+     -3.8,
+     -7.1
+    ],
+    "3": [
+     -5.4,
+     -1.7,
+     1.8,
+     -1.7
+    ],
+    "4": [
+     1.6,
+     5.5,
+     10.1,
+     5.5
+    ],
+    "5": [
+     7.7,
+     12.5,
+     17.9,
+     12.5
+    ],
+    "6": [
+     10.5,
+     16.1,
+     21.2,
+     16.1
+    ],
+    "7": [
+     11.8,
+     16.9,
+     21.8,
+     16.9
+    ],
+    "8": [
+     10.1,
+     14.3,
+     19.6,
+     14.3
+    ],
+    "9": [
+     5.8,
+     9.1,
+     13.4,
+     9.1
+    ],
+    "10": [
+     0.8,
+     3.7,
+     6.4,
+     3.7
+    ],
+    "11": [
+     -4.4,
+     -2,
+     0.1,
+     -2
+    ],
+    "12": [
+     -9.7,
+     -6.7,
+     -3.7,
+     -6.7
+    ]
+   },
+   "anomaly_states": [
+    {
+     "id": "an_severe_cold",
+     "delta_c": -10,
+     "delta_winter_c": -13,
+     "seasons": [
+      "winter"
+     ]
+    },
+    {
+     "id": "an_cold",
+     "delta_c": -5,
+     "delta_winter_c": -7,
+     "seasons": [
+      "winter",
+      "spring",
+      "summer",
+      "autumn"
+     ]
+    },
+    {
+     "id": "an_normal",
+     "delta_c": 0,
+     "delta_winter_c": 0,
+     "seasons": [
+      "winter",
+      "spring",
+      "summer",
+      "autumn"
+     ]
+    },
+    {
+     "id": "an_warm",
+     "delta_c": 5,
+     "delta_winter_c": 8,
+     "seasons": [
+      "winter",
+      "spring",
+      "summer",
+      "autumn"
+     ]
+    },
+    {
+     "id": "an_hot",
+     "delta_c": 7,
+     "delta_winter_c": 7,
+     "seasons": [
+      "summer"
+     ]
+    }
+   ],
+   "anomaly_transitions": {
+    "winter": {
+     "an_severe_cold": {
+      "an_severe_cold": "44",
+      "an_cold": "4"
+     },
+     "an_cold": {
+      "an_cold": "99",
+      "an_severe_cold": "1",
+      "an_normal": "8"
+     },
+     "an_normal": {
+      "an_normal": "88",
+      "an_cold": "4",
+      "an_warm": "4"
+     },
+     "an_warm": {
+      "an_warm": "88",
+      "an_normal": "8"
+     },
+     "an_hot": {
+      "an_warm": "4"
+     }
+    },
+    "spring": {
+     "an_severe_cold": {
+      "an_cold": "4"
+     },
+     "an_cold": {
+      "an_cold": "88",
+      "an_normal": "8"
+     },
+     "an_normal": {
+      "an_normal": "88",
+      "an_cold": "4",
+      "an_warm": "4"
+     },
+     "an_warm": {
+      "an_warm": "88",
+      "an_normal": "8"
+     },
+     "an_hot": {
+      "an_warm": "4"
+     }
+    },
+    "summer": {
+     "an_severe_cold": {
+      "an_cold": "4"
+     },
+     "an_cold": {
+      "an_cold": "88",
+      "an_normal": "8"
+     },
+     "an_normal": {
+      "an_normal": "88",
+      "an_cold": "4",
+      "an_warm": "4"
+     },
+     "an_warm": {
+      "an_warm": "99",
+      "an_normal": "8",
+      "an_hot": "1"
+     },
+     "an_hot": {
+      "an_hot": "44",
+      "an_warm": "4"
+     }
+    },
+    "autumn": {
+     "an_severe_cold": {
+      "an_cold": "4"
+     },
+     "an_cold": {
+      "an_cold": "88",
+      "an_normal": "8"
+     },
+     "an_normal": {
+      "an_normal": "88",
+      "an_cold": "4",
+      "an_warm": "4"
+     },
+     "an_warm": {
+      "an_warm": "88",
+      "an_normal": "8"
+     },
+     "an_hot": {
+      "an_warm": "4"
+     }
+    }
+   },
+   "state_modifiers": {
+    "wx_clear": [
+     -2,
+     0,
+     1,
+     0
+    ],
+    "wx_partly_cloudy": [
+     -1,
+     0,
+     0,
+     0
+    ],
+    "wx_overcast": [
+     1,
+     0,
+     -1,
+     0
+    ],
+    "wx_fog": [
+     0,
+     -1,
+     -1,
+     0
+    ],
+    "wx_precip_light": [
+     1,
+     0,
+     -1,
+     0
+    ],
+    "wx_precip_steady": [
+     1,
+     -1,
+     -2,
+     0
+    ],
+    "wx_convective_storm": [
+     0,
+     0,
+     -4,
+     -2
+    ],
+    "wx_windy_dry": [
+     1,
+     0,
+     0,
+     0
+    ],
+    "wx_windy_precip": [
+     1,
+     -1,
+     -2,
+     0
+    ]
+   },
+   "bands": [
+    {
+     "band": "severe_cold",
+     "max_c": -15
+    },
+    {
+     "band": "cold",
+     "min_c": -15,
+     "max_c": -3
+    },
+    {
+     "band": "cool",
+     "min_c": -3,
+     "max_c": 5
+    },
+    {
+     "band": "mild",
+     "min_c": 5,
+     "max_c": 15
+    },
+    {
+     "band": "warm",
+     "min_c": 15,
+     "max_c": 24
+    },
+    {
+     "band": "hot",
+     "min_c": 24
+    }
+   ]
+  },
+  "precipitation_phase_rule": [
+   {
+    "phase": "snow",
+    "max_c": -1,
+    "contract_precipitation": "snow"
+   },
+   {
+    "phase": "sleet",
+    "min_c": -1,
+    "max_c": 2,
+    "contract_precipitation": "sleet"
+   },
+   {
+    "phase": "rain",
+    "min_c": 2,
+    "contract_precipitation": "rain"
+   }
+  ],
+  "local_modifiers_ref": "local_landscape_modifiers.csv",
+  "ground_and_water_rules_ref": "ground_water_condition_rules.csv"
+ },
+ "stationary_distribution_report": {
+  "winter": {
+   "wx_clear": {
+    "stationary": 0.057,
+    "target_fraction": 0.05
+   },
+   "wx_partly_cloudy": {
+    "stationary": 0.311,
+    "target_fraction": 0.315
+   },
+   "wx_overcast": {
+    "stationary": 0.268,
+    "target_fraction": 0.283
+   },
+   "wx_fog": {
+    "stationary": 0.057,
+    "target_fraction": 0.052
+   },
+   "wx_precip_light": {
+    "stationary": 0.134,
+    "target_fraction": 0.141
+   },
+   "wx_precip_steady": {
+    "stationary": 0.067,
+    "target_fraction": 0.06
+   },
+   "wx_convective_storm": {
+    "stationary": 0,
+    "target_fraction": 0
+   },
+   "wx_windy_dry": {
+    "stationary": 0.012,
+    "target_fraction": 0.008
+   },
+   "wx_windy_precip": {
+    "stationary": 0.095,
+    "target_fraction": 0.091
+   }
+  },
+  "spring": {
+   "wx_clear": {
+    "stationary": 0.123,
+    "target_fraction": 0.117
+   },
+   "wx_partly_cloudy": {
+    "stationary": 0.457,
+    "target_fraction": 0.493
+   },
+   "wx_overcast": {
+    "stationary": 0.123,
+    "target_fraction": 0.122
+   },
+   "wx_fog": {
+    "stationary": 0.047,
+    "target_fraction": 0.035
+   },
+   "wx_precip_light": {
+    "stationary": 0.123,
+    "target_fraction": 0.117
+   },
+   "wx_precip_steady": {
+    "stationary": 0.078,
+    "target_fraction": 0.074
+   },
+   "wx_convective_storm": {
+    "stationary": 0.012,
+    "target_fraction": 0.009
+   },
+   "wx_windy_dry": {
+    "stationary": 0.012,
+    "target_fraction": 0.008
+   },
+   "wx_windy_precip": {
+    "stationary": 0.024,
+    "target_fraction": 0.025
+   }
+  },
+  "summer": {
+   "wx_clear": {
+    "stationary": 0.131,
+    "target_fraction": 0.133
+   },
+   "wx_partly_cloudy": {
+    "stationary": 0.475,
+    "target_fraction": 0.523
+   },
+   "wx_overcast": {
+    "stationary": 0.069,
+    "target_fraction": 0.062
+   },
+   "wx_fog": {
+    "stationary": 0.047,
+    "target_fraction": 0.041
+   },
+   "wx_precip_light": {
+    "stationary": 0.088,
+    "target_fraction": 0.078
+   },
+   "wx_precip_steady": {
+    "stationary": 0.107,
+    "target_fraction": 0.096
+   },
+   "wx_convective_storm": {
+    "stationary": 0.058,
+    "target_fraction": 0.054
+   },
+   "wx_windy_dry": {
+    "stationary": 0.012,
+    "target_fraction": 0.006
+   },
+   "wx_windy_precip": {
+    "stationary": 0.012,
+    "target_fraction": 0.006
+   }
+  },
+  "autumn": {
+   "wx_clear": {
+    "stationary": 0.045,
+    "target_fraction": 0.043
+   },
+   "wx_partly_cloudy": {
+    "stationary": 0.374,
+    "target_fraction": 0.391
+   },
+   "wx_overcast": {
+    "stationary": 0.219,
+    "target_fraction": 0.213
+   },
+   "wx_fog": {
+    "stationary": 0.065,
+    "target_fraction": 0.056
+   },
+   "wx_precip_light": {
+    "stationary": 0.132,
+    "target_fraction": 0.143
+   },
+   "wx_precip_steady": {
+    "stationary": 0.117,
+    "target_fraction": 0.117
+   },
+   "wx_convective_storm": {
+    "stationary": 0.012,
+    "target_fraction": 0.003
+   },
+   "wx_windy_dry": {
+    "stationary": 0.012,
+    "target_fraction": 0.013
+   },
+   "wx_windy_precip": {
+    "stationary": 0.023,
+    "target_fraction": 0.02
+   }
+  }
+ }
+}

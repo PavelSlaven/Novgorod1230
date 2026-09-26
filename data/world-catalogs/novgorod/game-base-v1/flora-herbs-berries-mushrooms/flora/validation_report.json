@@ -1,0 +1,102 @@
+{
+ "info": [
+  {
+   "kiryanova_table2_novgorod": {
+    "Рожь": "++",
+    "Пшеница": "+",
+    "Ячмень": "+",
+    "Овес": "+",
+    "Просо": "+",
+    "Бобы": "+",
+    "Горох": "+",
+    "Чечевица": "+",
+    "Конопля": "+"
+   }
+  }
+ ],
+ "checked_at": "2026-09-26",
+ "counts": {
+  "herbs": 184,
+  "berries_mushrooms": 56,
+  "cultivated": 42,
+  "presence_rows": 4353,
+  "refs_checked": 807
+ },
+ "family_coverage": {
+  "bog": {
+   "family": "bog",
+   "summer": 47,
+   "winter": 29
+  },
+  "marshy_stream": {
+   "family": "bog",
+   "summer": 61,
+   "winter": 24
+  },
+  "floodplain_meadow": {
+   "family": "meadow",
+   "summer": 53,
+   "winter": 14
+  },
+  "hay_meadow": {
+   "family": "meadow",
+   "summer": 34,
+   "winter": 4
+  },
+  "pasture": {
+   "family": "meadow",
+   "summer": 21,
+   "winter": 4
+  },
+  "riverbank": {
+   "family": "riparian",
+   "summer": 49,
+   "winter": 18
+  },
+  "lake_shore": {
+   "family": "riparian",
+   "summer": 58,
+   "winter": 19
+  },
+  "conifer_woodland": {
+   "family": "forest",
+   "summer": 41,
+   "winter": 30
+  },
+  "mixed_woodland": {
+   "family": "forest",
+   "summer": 43,
+   "winter": 23
+  },
+  "broadleaf_woodland": {
+   "family": "forest",
+   "summer": 30,
+   "winter": 14
+  },
+  "forest_edge": {
+   "family": "forest",
+   "summer": 32,
+   "winter": 18
+  }
+ },
+ "fails": [],
+ "warns": [
+  "edible fungus without any lookalike: fl_fu_leccinum_aurantiacum",
+  "edible fungus without any lookalike: fl_fu_leccinum_versipelle",
+  "edible fungus without any lookalike: fl_fu_xerocomus_subtomentosus",
+  "edible fungus without any lookalike: fl_fu_suillus_luteus",
+  "edible fungus without any lookalike: fl_fu_suillus_bovinus",
+  "edible fungus without any lookalike: fl_fu_suillus_variegatus",
+  "edible fungus without any lookalike: fl_fu_cantharellus_cibarius",
+  "edible fungus without any lookalike: fl_fu_lactarius_torminosus",
+  "edible fungus without any lookalike: fl_fu_lactarius_deterrimus",
+  "edible fungus without any lookalike: fl_fu_lactarius_rufus",
+  "edible fungus without any lookalike: fl_fu_pleurotus_ostreatus",
+  "edible fungus without any lookalike: fl_fu_coprinus_comatus",
+  "edible fungus without any lookalike: fl_fu_laetiporus_sulphureus",
+  "fl_hb_bryoria_furcellata: 0 GBIF occurrences in NW bbox",
+  "fl_fu_lactarius_resimus: 0 GBIF occurrences in NW bbox",
+  "fl_fu_russula_emetica: 0 GBIF occurrences in NW bbox",
+  "fl_fu_entoloma_sinuatum: 0 GBIF occurrences in NW bbox"
+ ]
+}

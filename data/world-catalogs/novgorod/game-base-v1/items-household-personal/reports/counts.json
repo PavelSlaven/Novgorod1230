@@ -1,0 +1,65 @@
+{
+ "household.csv": 111,
+ "personal.csv": 79,
+ "item_categories.csv": 160,
+ "item_categories_proposed_new": 121,
+ "item_place_frequency.csv": 18452,
+ "item_place_frequency_it": 1823,
+ "item_place_frequency_master": 16629,
+ "ownership_rules.csv": 1614,
+ "recognizers.csv": 28,
+ "mark_pools.csv": 86,
+ "identifying_text_pools.csv": 18,
+ "mass_policy.csv": 6,
+ "condition_vocab.csv": 11,
+ "archetype_pf_map.csv": 32,
+ "reports/frequency_dropped.csv": 1371,
+ "confidence_items": {
+  "A": 98,
+  "B": 70,
+  "C": 22
+ },
+ "confidence_frequency": {
+  "B": 14568,
+  "C": 3884
+ },
+ "frequency_class_it": {
+  "ubiquitous": 91,
+  "contextual": 834,
+  "common": 340,
+  "rare": 558
+ },
+ "derivation_rule_it": {
+  "R_MASTER_LINK": 406,
+  "R_WHERE_USED_TEXT": 433,
+  "R_SPAWN_PROFILE": 108,
+  "R_GROUP_DEFAULT": 11,
+  "R_WHERE_USED_TEXT+R_LOSS_DOWNGRADE": 18,
+  "R_MASTER_LINK+R_LOSS_DOWNGRADE": 27,
+  "R_GROUP_DEFAULT+R_RESIDUAL_RARE_DATING": 3,
+  "R_SPAWN_PROFILE+R_LOSS_DOWNGRADE": 2,
+  "R_MASTER_LINK+R_RESIDUAL_RARE_DATING": 7,
+  "R_WHERE_USED_TEXT+R_RESIDUAL_RARE_DATING": 3,
+  "R_ALIAS": 101,
+  "R_NAME_KEYWORD": 3,
+  "R_WK_COMPOSES": 701
+ },
+ "owner_kind": {
+  "household": 673,
+  "master": 148,
+  "ownerless": 60,
+  "church": 111,
+  "lost_unknown": 484,
+  "trader": 70,
+  "authority": 68
+ },
+ "mark_kind": {
+  "owner_sign": 5,
+  "inscription": 12,
+  "maker_mark": 6,
+  "ornament": 17,
+  "repair": 14,
+  "wear": 17,
+  "damage": 15
+ }
+}

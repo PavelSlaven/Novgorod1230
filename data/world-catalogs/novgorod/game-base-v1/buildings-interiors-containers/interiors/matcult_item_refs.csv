@@ -1,0 +1,459 @@
+item_id,exists,name_ru,category,historical_confidence,generation_policy,dimensions,source_ids
+AGR0001,1,Деревянное ведро для доения,agriculture,B,safe_with_constraints,ручной размер,SRC044 | SRC045 | SRC046 | SRC005 | SRC040
+AGR0002,1,Ясли для сена,agriculture,C,reference_required,по стойлу,SRC044 | SRC045 | SRC046 | SRC005
+AGR0003,1,Деревянная лопата,agriculture,A,safe_with_record_specific_reference,около 1–1.5 м,SRC044 | SRC045 | SRC046 | SRC005
+AGR0008,1,Закром амбарный,agriculture,B,safe_with_constraints,по помещению,SRC044 | SRC045 | SRC046 | SRC005
+AGR0009,1,Зерновой ларь,agriculture,B,safe_with_constraints,сотни литров по хозяйству; без точной нормы,SRC044 | SRC045 | SRC046 | SRC005
+AGR0010,1,Корзина зерновая,agriculture,B,safe_with_constraints,от ручной до крупной,SRC044 | SRC045 | SRC046 | SRC005
+AGR0011,1,Мешок зерновой,agriculture,A,safe_with_record_specific_reference,переносимый человеком/на вьюке,SRC044 | SRC045 | SRC046 | SRC005 | SRC028 | SRC027
+AGR0012,1,Железный серп,agriculture,A,safe_with_record_specific_reference,клинок порядка 20–35 см,SRC044 | SRC045 | SRC046 | SRC005 | SRC032
+AGR0016,1,Деревянные вилы из развилки,agriculture,A,safe_with_record_specific_reference,около 1.5–2.5 м,SRC044 | SRC045 | SRC046 | SRC005
+AGR0017,1,Ручные жернова,agriculture,B,safe_with_constraints,переносимый или стационарный малый комплект,SRC044 | SRC045 | SRC046 | SRC005 | SRC008
+AGR0019,1,Водяная мельница — осторожная локальная реконструкция,agriculture,C,reference_required,"строение и механизм, несколько метров",SRC044 | SRC045 | SRC046 | SRC005 | SRC008
+AGR0021,1,Цеп для обмолота,agriculture,B,safe_with_constraints,общая длина около человеческого роста и более,SRC044 | SRC045 | SRC046 | SRC005 | SRC008
+AGR0023,1,Соха деревянная с железными сошниками,agriculture,B,safe_with_constraints,"человеко-/лошадиноразмерное орудие, несколько метров",SRC044 | SRC045 | SRC046 | SRC005 | SRC008
+AGR0026,1,Деревянная кормушка для скота,agriculture,A,safe_with_record_specific_reference,по стойлам,SRC044 | SRC045 | SRC046 | SRC005 | SRC040
+AGR0035,1,Навозная куча двора,agriculture,A,safe_with_record_specific_reference,по числу животных,SRC044 | SRC045 | SRC046 | SRC005 | SRC040
+AGR0037,1,Посевной лукошко/корзина,agriculture,B,safe_with_constraints,примерно 10–20 л,SRC044 | SRC045 | SRC046 | SRC005
+AGR0039,1,Сноп зерна,agriculture,A,safe_with_record_specific_reference,охапка одного человека,SRC044 | SRC045 | SRC046 | SRC005
+AGR0042,1,Ток для обмолота,agriculture,B,safe_with_constraints,по хозяйству,SRC044 | SRC045 | SRC046 | SRC005
+AGR0044,1,Деревянные грабли,agriculture,A,safe_with_record_specific_reference,1.5–2 м,SRC044 | SRC045 | SRC046 | SRC005
+ARC0001,1,Конюшня городской/усадебной постройки,architecture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0002,1,Хлев для крупного и мелкого скота,architecture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089 | SRC007
+ARC0003,1,Георгиевский собор Юрьева монастыря,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC020 | SRC021 | SRC001 | SRC003 | SRC005 | SRC012
+ARC0004,1,Николо-Дворищенский собор в облике XII–начала XIII века,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC018 | SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0005,1,Софийский собор в облике около 1230 года,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC017 | SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0006,1,Церковь Благовещения в Аркажах около 1230 года,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089 | SRC008
+ARC0007,1,Церковь Петра и Павла на Синичьей горе около 1230 года,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC022 | SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0008,1,Церковь Спаса на Нередице в 1230 году,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC019 | SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0009,1,Небольшая деревянная церковь — осторожная реконструкция,architecture,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0010,1,Дощатая дверь на деревянных навесах/петлях,architecture,B,safe_with_constraints,по проему; без современного стандарта,SRC001 | SRC003 | SRC005 | SRC012 | SRC089 | SRC065
+ARC0011,1,Многокамерные деревянные хоромы,architecture,B,reference_required,размер задавать по конкретному плану усадьбы; универсальную площадь 150–250 м² не считать установленной,SRC001 | SRC003 | SRC005 | SRC089
+ARC0012,1,Лестница-шегла,architecture,C,reference_required,"около 2,7 м у поздне-XIII-векового примера",SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0013,1,Простое деревянное крыльцо/всход,architecture,B,safe_with_constraints,минимально необходимая ширина для одного человека; по высоте входа,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0014,1,Частокол усадебной границы,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089 | SRC019
+ARC0015,1,Дворовые ворота в частоколе,architecture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0016,1,Деревянная монастырская келья,architecture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0017,1,Легкий хозяйственный сарай,architecture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0018,1,Клеть-амбар,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0019,1,Двухкамерный сруб-пятистенок,architecture,A,safe_with_record_specific_reference,порядка 40–100 м² по сводным новгородским данным,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0020,1,Однокамерный отапливаемый срубный дом,architecture,A,safe_with_record_specific_reference,обычно примерно 16–80 м² по археологическим примерам; отдельный дом чаще в нижней части диапазона,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0021,1,Жилая клеть,architecture,B,safe_with_constraints,обычно один срубной модуль около 4–6 м по стороне; конкретный план по раскопу,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0022,1,Низкий подклет под жилым этажом,architecture,B,safe_with_constraints,"ориентир высоты около 1,5 м; не полноценный высокий каменный цоколь",SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0023,1,Сени между срубами,architecture,B,safe_with_constraints,по конкретному плану; обычно уже основной жилой камеры,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0024,1,Двускатная деревянная крыша жилого сруба,architecture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0025,1,Усадебная уборная/отхожее место,architecture,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0026,1,Срубный погреб/холодное хранилище,architecture,B,safe_with_constraints,"известны глубокие срубные погреба; конкретная глубина по плану, не универсальна",SRC001 | SRC003 | SRC005 | SRC012 | SRC089 | SRC017
+ARC0027,1,Срубный колодец,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089 | SRC017
+ARC0028,1,Деревянная ставня для малого окна,architecture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0029,1,Малое волоковое оконное отверстие,architecture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0030,1,Остекленное окно богатого жилого дома — спорная реконструкция,architecture,D,research_only,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089
+ARC0031,1,Дворовая ремесленная мастерская,architecture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC005 | SRC012 | SRC089 | SRC019
+ARM0001,1,Кожаная защита предплечья лучника,armor,C,reference_required,по внутренней стороне предплечья,SRC061 | SRC084 | SRC036 | SRC037 | SRC008
+ARM0019,1,Кольчужная бармица,armor,B,safe_with_constraints,до плеч или короче,SRC036 | SRC037 | SRC008
+CON0001,1,Железная дверная петля,construction,A,safe_with_record_specific_reference,десятки сантиметров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0002,1,Железный дверной пробой/накладка,construction,A,safe_with_record_specific_reference,ладонный–предплечный размер,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0003,1,Строительная верёвка,construction,A,safe_with_record_specific_reference,метры–десятки метров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0004,1,Деревянное ведро строительное,construction,A,safe_with_record_specific_reference,десятки литров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0005,1,Корзина для раствора/щебня,construction,B,safe_with_constraints,переносимый размер,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0007,1,Куча строительной щепы,construction,A,safe_with_record_specific_reference,россыпь/куча,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0008,1,Снятая кора,construction,A,safe_with_record_specific_reference,куча/полосы,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0009,1,Деревянный нагель,construction,A,safe_with_record_specific_reference,несколько–десятки сантиметров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0010,1,Кованый гвоздь малый,construction,A,safe_with_record_specific_reference,несколько сантиметров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0011,1,Кованый гвоздь строительный крупный,construction,A,safe_with_record_specific_reference,десятки сантиметров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0012,1,Подкладное бревно/лежень,construction,A,safe_with_record_specific_reference,по стене,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0013,1,Свая деревянная,construction,A,safe_with_record_specific_reference,от нескольких метров; диаметр по нагрузке,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0015,1,Бревно с чашей угловой рубки,construction,A,safe_with_record_specific_reference,по диаметру и стене,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0016,1,Валун фундаментный,construction,A,safe_with_record_specific_reference,от кулака до тяжёлого валуна,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0020,1,Известково-песчаный раствор,construction,A,safe_with_record_specific_reference,по кладке,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0022,1,Минеральный пигмент строительный/фресковый,construction,A,safe_with_record_specific_reference,малые порции,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0023,1,Фресковая штукатурка,construction,A,safe_with_record_specific_reference,миллиметры–сантиметры толщиной,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0024,1,Жердь строительная,construction,A,safe_with_record_specific_reference,несколько метров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0025,1,Береста кровельная/гидроизоляционная,construction,B,safe_with_constraints,по кровле/конструкции,SRC026 | SRC027 | SRC001 | SRC003 | SRC005 | SRC017
+CON0026,1,Дёрн кровельный — осторожная реконструкция,construction,C,reference_required,по крыше,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0027,1,Кровельный тес,construction,A,safe_with_record_specific_reference,длина по скату; ширина зависит от расколотой/тесаной заготовки,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0028,1,Горбыль/обапол,construction,A,safe_with_record_specific_reference,по бревну,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0029,1,Венцовое бревно с чашей и пазом,construction,A,safe_with_record_specific_reference,по стене,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0030,1,Дрань/щеповая кровля,construction,B,safe_with_constraints,обычно десятки сантиметров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0031,1,Лемех деревянный кровельный — осторожно,construction,C,reference_required,десятки сантиметров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0032,1,Моховая конопатка сруба,construction,A,safe_with_record_specific_reference,линейный материал,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0033,1,Плаха — расколотое бревно,construction,A,safe_with_record_specific_reference,широкая длинная половина/сегмент,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0034,1,Строительное бревно окорённое,construction,A,safe_with_record_specific_reference,от нескольких до десятка метров,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0035,1,Тёсаная доска,construction,A,safe_with_record_specific_reference,"длина по заготовке, ширина 10–40+ см",SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0036,1,Известковый раствор с наполнителем,construction,A,safe_with_record_specific_reference,пластичная масса,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0037,1,Известняковый камень строительный,construction,A,safe_with_record_specific_reference,от щебня до крупного блока,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0041,1,Плинфа,construction,A,safe_with_record_specific_reference,по конкретному памятнику; не современный кирпич,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0042,1,Верёвочный подъёмный блок,construction,B,safe_with_constraints,ручной блок,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0043,1,Деревянные строительные леса,construction,B,safe_with_constraints,по высоте здания,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0044,1,Приставная строительная лестница,construction,A,safe_with_record_specific_reference,2–8+ м,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0046,1,Глина строительная,construction,A,safe_with_record_specific_reference,сыпучая/пластичная масса,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CON0047,1,Железная скоба строительная,construction,A,safe_with_record_specific_reference,10–60 см,SRC001 | SRC003 | SRC005 | SRC017 | SRC078 | SRC089
+CRF0001,1,Тесло втульчатое,crafts,A,safe_with_record_specific_reference,ручной/двуручный размер,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0002,1,Наковальня-колода,crafts,B,safe_with_constraints,примерно до колена/бедра кузнеца,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0003,1,Пекарная печь,crafts,B,safe_with_constraints,примерно 1–2 м,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC008
+CRF0015,1,Косторезная пила/ножовка,crafts,A,safe_with_record_specific_reference,ручной размер,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0017,1,Сусловарочный котёл,crafts,C,reference_required,десятки–сотни литров,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC008
+CRF0020,1,Плотницкий топор узколезвийный,crafts,A,safe_with_record_specific_reference,рукоять около 45–75 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0022,1,Литейная форма глиняная,crafts,A,safe_with_record_specific_reference,малый размер,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC062
+CRF0030,1,Ложечное сверло,crafts,A,safe_with_record_specific_reference,десятки сантиметров,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0039,1,Кузнечная вода в кадке,crafts,B,safe_with_constraints,десятки литров,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0049,1,Шнур разметочный,crafts,B,safe_with_constraints,несколько метров,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0050,1,Кожевенная игла,crafts,A,safe_with_record_specific_reference,несколько сантиметров,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0063,1,Сушильная полка для сосудов,crafts,C,reference_required,по мастерской,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC024
+CRF0079,1,Кузнечный молот,crafts,A,safe_with_record_specific_reference,головка ручного размера; рукоять около 25–45 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0082,1,Кузнечные клещи плоскогубые,crafts,A,safe_with_record_specific_reference,примерно 30–70 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0091,1,Глиняная заготовка сосуда,crafts,A,safe_with_record_specific_reference,по сосуду,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC024
+CRF0093,1,Гончарная печь,crafts,B,safe_with_constraints,стационарная печь примерно 1–3 м,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC024
+CRF0096,1,Ручной гончарный круг,crafts,B,safe_with_constraints,диск примерно 30–60 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC024
+CRF0098,1,Долото плотницкое,crafts,A,safe_with_record_specific_reference,15–40 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0102,1,Тесло,crafts,A,safe_with_record_specific_reference,ручной инструмент 30–80 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0106,1,Кожевенное шило,crafts,A,safe_with_record_specific_reference,10–20 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0110,1,Дубильная яма или кадь,crafts,B,safe_with_constraints,крупная хозяйственная ёмкость,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0112,1,Скребок кожевника,crafts,A,safe_with_record_specific_reference,20–60 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0114,1,Косторезный нож,crafts,A,safe_with_record_specific_reference,10–25 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0121,1,Кузнечный горн,crafts,A,safe_with_record_specific_reference,обычно малый стационарный очаг в мастерской,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC067
+CRF0123,1,Наковальня-вставка,crafts,A,safe_with_record_specific_reference,ладонная или несколько десятков сантиметров,SRC032 | SRC033 | SRC005 | SRC061 | SRC089
+CRF0127,1,Гребень для расчёсывания волокна,crafts,B,safe_with_constraints,20–60 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC045
+CRF0130,1,Пивоваренный чан,crafts,B,safe_with_constraints,десятки–сотни литров,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC008
+CRF0131,1,Сушильня/солодовня,crafts,C,reference_required,небольшая постройка,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC045
+CRF0132,1,Глиняное пряслице,crafts,A,safe_with_record_specific_reference,2–6 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC024
+CRF0133,1,Деревянное веретено,crafts,A,safe_with_record_specific_reference,20–40 см,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC008
+CRF0138,1,Отвес,crafts,B,safe_with_constraints,ручной,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC053
+CRF0147,1,Малые равноплечие весы ювелира,crafts,A,safe_with_record_specific_reference,складной ручной комплект,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC053
+CRF0152,1,Ювелирный глиняный тигель,crafts,A,safe_with_record_specific_reference,ладонный и меньше,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC024
+CRF0153,1,Ювелирный молоток,crafts,A,safe_with_record_specific_reference,ручной,SRC032 | SRC033 | SRC005 | SRC061 | SRC089 | SRC062
+FOD0025,1,Жидкий мёд,food,A,safe_with_record_specific_reference,малый сосуд/бочка,SRC028 | SRC040 | SRC041 | SRC044 | SRC075 | SRC050
+FOD0037,1,Соль крупная,food,A,safe_with_record_specific_reference,ценный малый/товарный запас,SRC028 | SRC040 | SRC041 | SRC044 | SRC075 | SRC050
+FOD0039,1,Лён-семя,food,A,safe_with_record_specific_reference,малый запас,SRC028 | SRC040 | SRC041 | SRC044 | SRC075 | SRC046
+FOD0049,1,Густая зерновая каша в горшке,food,B,safe_with_constraints,бытовой горшок,SRC024 | SRC080 | SRC028 | SRC040 | SRC041 | SRC044
+FOD0050,1,Зерно овса,food,A,safe_with_record_specific_reference,сыпучая масса,SRC028 | SRC040 | SRC041 | SRC044 | SRC075 | SRC046
+FOD0051,1,Зерно ржи,food,A,safe_with_record_specific_reference,сыпучая масса,SRC028 | SRC040 | SRC041 | SRC044 | SRC075
+FOD0052,1,Мука в мешке,food,A,safe_with_record_specific_reference,мешок/малая ёмкость,SRC028 | SRC040 | SRC041 | SRC044 | SRC075
+FOD0056,1,Импортное вино в амфоре/бочке — редкий товар,food,C,reference_required,по сосуду,SRC028 | SRC040 | SRC041 | SRC044 | SRC075 | SRC052
+FOD0059,1,Пиво/брага в клёпочной кадке,food,B,safe_with_constraints,кадка/кружка,SRC028 | SRC040 | SRC041 | SRC044 | SRC075 | SRC008
+FOD0061,1,Дичь,food,A,safe_with_record_specific_reference,по виду,SRC028 | SRC040 | SRC041 | SRC044 | SRC075 | SRC046
+FOR0001,1,Ров раннего Детинца — неопределенное состояние к 1230,fortifications,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0002,1,Деревянный переход через оборонительный ров,fortifications,C,reference_required,по ширине проезда,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0003,1,Деревянные ворота Детинца — осторожная реконструкция,fortifications,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0004,1,Деревянный засов крепостных/усадебных ворот,fortifications,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC014 | SRC015 | SRC016 | SRC071 | SRC031 | SRC001
+FOR0005,1,Опорный столб и пятник воротной створки,fortifications,B,safe_with_constraints,строительный узел,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0006,1,Деревянная створка крепостных ворот,fortifications,C,reference_required,по ширине ворот; точные размеры неизвестны,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0007,1,Деревянный караульный навес у ворот,fortifications,C,reference_required,малое помещение или навес,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0011,1,Береговая срубная подпорная конструкция,fortifications,B,safe_with_constraints,локальный участок берега,SRC014 | SRC015 | SRC016 | SRC071 | SRC031 | SRC003
+FOR0012,1,Острожная стена из вертикального частокола,fortifications,C,reference_required,высота и толщина не нормируются без конкретного археологического профиля,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0013,1,Дубовая срубная стена раннего Детинца,fortifications,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0014,1,Срубная клетчатая конструкция деревянной стены,fortifications,B,safe_with_constraints,по археологическому разрезу; универсальная высота не задаётся,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0015,1,Внутренняя деревянная лестница на боевой ход,fortifications,C,reference_required,узкая и крутая; точный размер по реконструкции стены,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FOR0016,1,Деревянная дозорная/боевая площадка на стене,fortifications,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC014 | SRC015 | SRC016 | SRC071 | SRC031
+FRN0001,1,Балтийский бронзовый подвес/фурнитура как контактный предмет,foreign_material_culture,B,safe_with_constraints,малый предмет,SRC048 | SRC049 | SRC050 | SRC051 | SRC075 | SRC076
+FRN0002,1,Ливонский/балтийский боевой наконечник как импорт/личная вещь,foreign_material_culture,C,reference_required,по находке,SRC048 | SRC049 | SRC050 | SRC051 | SRC075 | SRC035
+FRN0019,1,Западная поливная керамика,foreign_material_culture,A,safe_with_record_specific_reference,сосуд/фрагмент,SRC024 | SRC080 | SRC048 | SRC049 | SRC050 | SRC051
+FRN0025,1,Русский предмет из другого княжества,foreign_material_culture,B,safe_with_constraints,по предмету,SRC048 | SRC049 | SRC050 | SRC051 | SRC075 | SRC008
+FRN0028,1,Импортная дубовая бочка,foreign_material_culture,A,safe_with_record_specific_reference,десятки–сотни литров,SRC048 | SRC049 | SRC050 | SRC051 | SRC075
+FRN0042,1,Готландский купеческий дорожный сундук,foreign_material_culture,B,safe_with_constraints,переносимый одним-двумя людьми,SRC048 | SRC050 | SRC049 | SRC051 | SRC075
+FSH0001,1,Деревянный колот/дубинка для рыбы,fishing,C,reference_required,ручной размер,SRC025 | SRC039 | SRC005 | SRC032
+FSH0003,1,Рама для вяления рыбы,fishing,B,safe_with_constraints,по двору/стану,SRC025 | SRC039 | SRC005 | SRC032 | SRC045
+FSH0004,1,Трёхзубая рыболовная острога,fishing,A,safe_with_record_specific_reference,"древко несколько метров, головка ладонная",SRC025 | SRC039 | SRC005 | SRC032
+FSH0006,1,Железный рыболовный крючок,fishing,A,safe_with_record_specific_reference,несколько сантиметров,SRC025 | SRC039 | SRC005 | SRC032
+FSH0007,1,Берестяной поплавок сети,fishing,A,safe_with_record_specific_reference,несколько сантиметров,SRC026 | SRC027 | SRC025 | SRC039 | SRC005 | SRC032
+FSH0013,1,Каменное грузило сети,fishing,A,safe_with_record_specific_reference,от десятков до сотен граммов,SRC025 | SRC039 | SRC005 | SRC032
+FSH0017,1,Деревянная кадка для рыбы,fishing,A,safe_with_record_specific_reference,от бытовой до торговой,SRC025 | SRC039 | SRC005 | SRC032
+FSH0024,1,Плетёная корзина для рыбы,fishing,A,safe_with_record_specific_reference,переносится одним человеком,SRC025 | SRC039 | SRC005 | SRC032 | SRC045
+FSH0027,1,Ставная сеть,fishing,A,safe_with_record_specific_reference,от нескольких до десятков метров; ячея по виду рыбы,SRC025 | SRC039 | SRC005 | SRC032
+FSH0028,1,Стол/доска для разделки рыбы,fishing,B,safe_with_constraints,рабочее место одного–двух человек,SRC025 | SRC039 | SRC005 | SRC032
+FUR0001,1,Деревянная колыбель подвесная,furniture,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0002,1,Длинная лавка на ножках,furniture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0003,1,Долбленый ларь,furniture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0004,1,Книжная подставка простого типа,furniture,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC020
+FUR0005,1,Колыбель на полозьях,furniture,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC039 | SRC084 | SRC005 | SRC006 | SRC008 | SRC089
+FUR0006,1,Ларь крупный,furniture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0007,1,Настенная открытая полка,furniture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0008,1,Низкий рабочий столик,furniture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0009,1,Подставка под сосуд,furniture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0010,1,Подставка-козлы,furniture,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0011,1,Стол на четырех врубных ножках,furniture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0012,1,Сундук с выпуклой крышкой,furniture,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0013,1,Трехногий табурет,furniture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0014,1,Угловая полка,furniture,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0015,1,Короткая переносная скамья,furniture,A,safe_with_record_specific_reference,длина 0.8–2 м,SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0016,1,Кресло/стул со спинкой элитного типа,furniture,C,reference_required,человеческий масштаб,SRC005 | SRC006 | SRC008 | SRC089 | SRC021 | SRC001
+FUR0017,1,Низкий табурет,furniture,A,safe_with_record_specific_reference,высота 25–45 см,SRC005 | SRC006 | SRC008 | SRC089
+FUR0018,1,Встроенная лавка вдоль стены,furniture,B,safe_with_constraints,длина вдоль стены; ширина 30–60 см ориентировочно,SRC005 | SRC006 | SRC008 | SRC089
+FUR0019,1,Деревянная кроватная рама,furniture,C,reference_required,по длине человека,SRC005 | SRC006 | SRC008 | SRC089
+FUR0020,1,Спальный настил,furniture,B,safe_with_constraints,"по длине человека, ширина зависит от числа спящих",SRC005 | SRC006 | SRC008 | SRC089
+FUR0021,1,Прямоугольный стол на козлах,furniture,B,safe_with_constraints,"длина 1–2.5 м, ширина 0.5–0.9 м ориентировочно",SRC005 | SRC006 | SRC008 | SRC089 | SRC001
+FUR0022,1,Стол на рамном основании,furniture,B,safe_with_constraints,вариативно,SRC005 | SRC006 | SRC008 | SRC089
+FUR0023,1,Ларь или зерновой короб,furniture,B,safe_with_constraints,крупнее сундука; точный размер по помещению,SRC005 | SRC006 | SRC008 | SRC089
+FUR0024,1,Малый ларец,furniture,A,safe_with_record_specific_reference,20–50 см,SRC005 | SRC006 | SRC008 | SRC089 | SRC032
+FUR0025,1,Открытый стеллаж,furniture,C,reference_required,по стене мастерской/склада,SRC005 | SRC006 | SRC008 | SRC089
+FUR0026,1,Сундук дощатый с плоской крышкой,furniture,A,safe_with_record_specific_reference,от малого 40–60 см до крупного более 1 м,SRC005 | SRC006 | SRC008 | SRC089 | SRC032 | SRC001
+HLM0001,1,Шлем с креплением бармицы,helmets,B,safe_with_constraints,по типу шлема,SRC036 | SRC037 | SRC008
+HLM0007,1,Сфероконический шлем из железа,helmets,B,safe_with_constraints,высота купола обычно порядка 18–30 см; по находке,SRC036 | SRC037 | SRC008
+HLM0017,1,Наносник шлема,helmets,B,safe_with_constraints,"по лицу, обычно узкий",SRC036 | SRC037 | SRC008
+HNT0001,1,Охотничья стрела с тупым наконечником,hunting,B,safe_with_constraints,по стреле,SRC040 | SRC045 | SRC046 | SRC037
+HNT0002,1,Охотничья стрела с широким наконечником,hunting,A,safe_with_record_specific_reference,по комплекту,SRC040 | SRC045 | SRC046 | SRC037
+HNT0003,1,Охотничий лук простой,hunting,B,safe_with_constraints,"по охотнику, без точной нормы",SRC040 | SRC045 | SRC046 | SRC037
+HNT0005,1,Охотничье копьё/рогатина,hunting,B,safe_with_constraints,около 1.8–2.5 м,SRC040 | SRC045 | SRC046 | SRC037 | SRC035
+HNT0015,1,Охотничья сеть,hunting,B,safe_with_constraints,несколько–десятки метров,SRC025 | SRC040 | SRC045 | SRC046 | SRC037 | SRC008
+HNT0021,1,Связка пушных шкур,hunting,A,safe_with_record_specific_reference,по виду и счёту,SRC040 | SRC045 | SRC046 | SRC037 | SRC072 | SRC050
+HNT0025,1,Охотничий нож,hunting,A,safe_with_record_specific_reference,клинок примерно 12–22 см,SRC040 | SRC045 | SRC046 | SRC037 | SRC032
+HNT0026,1,Охотничья лыжа,hunting,A,safe_with_record_specific_reference,"примерно 1.5–2.5 м, ширина по типу",SRC040 | SRC045 | SRC046 | SRC037 | SRC005
+HNT0027,1,Скребок для мездрения шкуры,hunting,A,safe_with_record_specific_reference,ручной,SRC040 | SRC045 | SRC046 | SRC037 | SRC032
+HOU0001,1,Деревянное ведро с обручами,household_items,A,safe_with_record_specific_reference,объём от нескольких до примерно 15 л,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC032
+HOU0002,1,Железный дверной замок,household_items,A,safe_with_record_specific_reference,ладонный или крупнее,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC032
+HOU0003,1,Ключ от замка,household_items,A,safe_with_record_specific_reference,5–20 см,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC032
+HOU0005,1,Точильный камень малый,household_items,A,safe_with_record_specific_reference,"ручной, обычно 5–20 см",SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC032
+HOU0010,1,Ковш,household_items,A,safe_with_record_specific_reference,обычно 15–35 см,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0011,1,Кремень и трут,household_items,B,safe_with_constraints,малый набор,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC008
+HOU0012,1,Огниво,household_items,A,safe_with_record_specific_reference,ладонный размер,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC032
+HOU0013,1,Железный нож хозяйственный,household_items,A,safe_with_record_specific_reference,обычно клинок около 8–18 см; варианты шире,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC032
+HOU0014,1,Деревянная миска,household_items,A,safe_with_record_specific_reference,диаметр примерно 15–35 см,SRC024 | SRC080 | SRC001 | SRC005 | SRC006 | SRC061
+HOU0015,1,Мешок тканевый,household_items,A,safe_with_record_specific_reference,от малого до грузового; объём по содержимому,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0016,1,Плетёная корзина,household_items,B,safe_with_constraints,ручной размер до крупной корзины,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC025
+HOU0017,1,Метла из прутьев,household_items,B,safe_with_constraints,около 0.7–1.5 м,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0018,1,Веревка пеньковая или льняная,household_items,A,safe_with_record_specific_reference,от короткого шнура до длинного каната,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC025
+HOU0019,1,Корыто долбленое,household_items,A,safe_with_record_specific_reference,0.6–2 м,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0021,1,Берестяной короб,household_items,A,safe_with_record_specific_reference,малый или средний контейнер,SRC026 | SRC027 | SRC001 | SRC005 | SRC006 | SRC061
+HOU0022,1,Берестяной туес,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC026 | SRC027 | SRC001 | SRC005 | SRC006 | SRC061
+HOU0023,1,Берестяной чехол,household_items,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC026 | SRC027 | SRC001 | SRC005 | SRC006 | SRC061
+HOU0024,1,Бочка дубовая,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC039
+HOU0025,1,Бочонок малый,household_items,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0026,1,Гребень двусторонний костяной,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC039
+HOU0027,1,Гребень односторонний костяной,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC039
+HOU0031,1,Долбленое ведро,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0032,1,Железная скоба,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0034,1,Игла железная,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC039
+HOU0035,1,Игла костяная,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC053
+HOU0036,1,Кадка клепочная,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0037,1,Кожаный чехол для ножа или инструмента,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC061 | SRC084 | SRC001 | SRC005 | SRC006 | SRC089
+HOU0038,1,Костяная игольница,household_items,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC053
+HOU0039,1,Куча щепы и древесных отходов,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC008
+HOU0040,1,Лохань клепочная,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0041,1,Мешочек для мелочей,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0042,1,Наперсток металлический,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089 | SRC039
+HOU0043,1,Небольшая деревянная коробочка,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0044,1,Поленница,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0048,1,Тюк товара в тканевой обертке,household_items,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HOU0049,1,Шило с деревянной рукоятью,household_items,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC006 | SRC061 | SRC089
+HRS0001,1,Удила с псалиями,horse_equipment,A,safe_with_record_specific_reference,по находке,SRC038 | SRC039 | SRC061 | SRC077
+HRS0002,1,Деревянный валёк,horse_equipment,B,safe_with_constraints,примерно 0.5–1 м,SRC038 | SRC039 | SRC061 | SRC077
+HRS0034,1,Шпора с шипом,horse_equipment,A,safe_with_record_specific_reference,по пятке,SRC038 | SRC039 | SRC061 | SRC077
+HRS0035,1,Кожаная узда,horse_equipment,A,safe_with_record_specific_reference,по голове небольшой лошади,SRC061 | SRC084 | SRC038 | SRC039 | SRC077
+INT0001,1,Глинобитная печь на деревянном/грунтовом основании,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC048 | SRC050 | SRC001 | SRC005 | SRC008 | SRC067
+INT0002,1,Глиняная подпечная площадка,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0003,1,Деревянный крюк или колышек в стене,interiors,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0004,1,Детский угол с игрушками и учебной берестой,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC026 | SRC027 | SRC001 | SRC005 | SRC008 | SRC067
+INT0005,1,Домашняя молельная зона,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0006,1,Дымный интерьер без развитого кирпичного дымохода,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0007,1,Каменно-глиняная печь,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0008,1,Место хранения дров у печи,interiors,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0009,1,Низкий деревянный настил для сна,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0010,1,Открытый очаг хозяйственной постройки,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0011,1,Подвесная деревянная сушильная жердь,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0012,1,Подвесной котел над очагом,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0013,1,Полка на стене,interiors,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0014,1,Потолочная балка,interiors,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0015,1,Припечная рабочая зона,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0016,1,Соломенный или травяной мат,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0017,1,Спальное место на широкой лавке,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0018,1,Тканевая или войлочная завеса,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0019,1,Угол ремесленной работы в жилом доме,interiors,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC003
+INT0020,1,Угол хранения рыболовных снастей,interiors,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC025 | SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0021,1,Шерстяное покрывало,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0022,1,Деревянная дверь на петлях или пятах,interiors,B,safe_with_constraints,"человеческий проём, часто низкий по современным меркам",SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC032
+INT0023,1,Дверной деревянный засов,interiors,A,safe_with_record_specific_reference,по ширине полотна,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC032
+INT0024,1,Малая оконная проёмина со ставней,interiors,B,safe_with_constraints,"малый проём, значительно меньше современного окна",SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC012
+INT0025,1,Светопрозрачная вставка элитного/церковного окна,interiors,C,reference_required,небольшие фрагменты,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC017
+INT0026,1,Восковая свеча,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0027,1,Деревянная лопата для печи,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0028,1,Деревянный светец,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0029,1,Железный светец,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0030,1,Зольный совок деревянный,interiors,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0031,1,Керамический масляный светильник,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC001 | SRC005 | SRC008 | SRC067
+INT0032,1,Кочерга железная,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0033,1,Кремневый огниво-комплект,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0034,1,Кресало,interiors,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0035,1,Лучина,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0036,1,Металлическая лампада церковная,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC018
+INT0037,1,Подсвечник из медного сплава,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0038,1,Простой железный подсвечник-штырь,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0039,1,Сальная свеча,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0040,1,Трут,interiors,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0041,1,Щипцы для углей,interiors,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0042,1,Печь-каменка бани,interiors,C,reference_required,малый/средний очаг,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0043,1,Глинобитная или глиняная печь в жилом доме,interiors,B,safe_with_constraints,занимает угол или значительную часть помещения; точный размер по раскопу,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0044,1,Открытый очаг хозяйственного помещения,interiors,B,safe_with_constraints,малый очаг,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0045,1,Дощатый пол,interiors,A,safe_with_record_specific_reference,по площади помещения,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC012
+INT0046,1,Пол из плах или тёсаных брёвен,interiors,A,safe_with_record_specific_reference,по площади помещения,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0047,1,Утрамбованный земляной пол,interiors,B,safe_with_constraints,по площади помещения,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0048,1,Настенная полка,interiors,B,safe_with_constraints,длина 0.5–2 м ориентировочно,SRC001 | SRC005 | SRC008 | SRC067 | SRC089
+INT0049,1,Настенный колышек или крюк,interiors,A,safe_with_record_specific_reference,малый предмет,SRC001 | SRC005 | SRC008 | SRC067 | SRC089 | SRC032
+LIV0001,1,Кошка домашняя,livestock,A,safe_with_record_specific_reference,"обычный домашний размер, без породной массивности",SRC040 | SRC041 | SRC042 | SRC043
+LIV0002,1,Средневековый бык,livestock,A,safe_with_record_specific_reference,меньше многих современных мясных пород,SRC040 | SRC041 | SRC042 | SRC043
+LIV0003,1,Телёнок,livestock,A,safe_with_record_specific_reference,возрастной размер,SRC040 | SRC041 | SRC042 | SRC043
+LIV0005,1,Домашняя курица,livestock,A,safe_with_record_specific_reference,меньше бройлера,SRC040 | SRC041 | SRC042 | SRC043 | SRC046
+LIV0006,1,Петух,livestock,A,safe_with_record_specific_reference,небольшой/средний,SRC040 | SRC041 | SRC042 | SRC043
+LIV0007,1,Средняя хозяйственная собака,livestock,A,safe_with_record_specific_reference,"широкий диапазон, но не гигантские современные породы",SRC040 | SRC041 | SRC042 | SRC043 | SRC046
+LIV0012,1,Домашний гусь,livestock,B,safe_with_constraints,"средний, по костным данным",SRC040 | SRC041 | SRC042 | SRC043 | SRC046
+LIV0016,1,Средневековая свинья,livestock,A,safe_with_record_specific_reference,меньше/подвижнее современной беконной свиньи,SRC040 | SRC041 | SRC042 | SRC043 | SRC046
+LIV0023,1,Крупная сторожевая собака,livestock,B,safe_with_constraints,"выше типичных 40–50 см, но по конкретному остеологическому аналогу",SRC040 | SRC041 | SRC042 | SRC043
+LIV0024,1,Невысокая домашняя корова северного средневекового типа,livestock,A,safe_with_record_specific_reference,заметно мельче современной голштинской коровы; конкретную высоту задавать только по исследованию,SRC040 | SRC041 | SRC042 | SRC043 | SRC046
+LIV0030,1,Обозная лошадь,livestock,A,safe_with_record_specific_reference,небольшая/средняя,SRC040 | SRC041 | SRC042 | SRC043
+LTR0001,1,Деревянная ось телеги,land_transport,A,safe_with_record_specific_reference,по ширине повозки,SRC039 | SRC005 | SRC028 | SRC084
+LTR0002,1,Кузов телеги дощатый,land_transport,B,safe_with_constraints,по телеге,SRC039 | SRC005 | SRC028 | SRC084
+LTR0007,1,Волокуша из двух жердей,land_transport,B,safe_with_constraints,несколько метров,SRC039 | SRC005 | SRC028 | SRC084 | SRC045
+LTR0017,1,Двухколёсная грузовая телега,land_transport,A,safe_with_record_specific_reference,ширина по колее и нагрузке; кузов обычно 1.5–3 м длиной,SRC039 | SRC005 | SRC028 | SRC084 | SRC045
+LTR0028,1,Поперечина саней,land_transport,A,safe_with_record_specific_reference,по ширине саней,SRC039 | SRC005 | SRC028 | SRC084
+LTR0030,1,Телега с дощатым коробом,land_transport,B,safe_with_constraints,небольшая городская/сельская телега,SRC039 | SRC005 | SRC028 | SRC084
+MIL0001,1,Связка запасных стрел,military_equipment,B,safe_with_constraints,обычно малый переносимый пучок,SRC036 | SRC037 | SRC038 | SRC061
+MIL0002,1,Запасная тетива,military_equipment,B,safe_with_constraints,по длине лука,SRC036 | SRC037 | SRC038 | SRC061
+MIL0003,1,Оружейная стойка из жердей,military_equipment,C,reference_required,по помещению,SRC036 | SRC037 | SRC038 | SRC061 | SRC005 | SRC008
+MIL0007,1,Походный котёл с дужкой,military_equipment,B,safe_with_constraints,"по группе/отряду, не стандартизирован",SRC036 | SRC037 | SRC038 | SRC061 | SRC008 | SRC034
+MIL0008,1,Лагерная верёвка,military_equipment,A,safe_with_record_specific_reference,несколько метров; разный диаметр,SRC036 | SRC037 | SRC038 | SRC061 | SRC005 | SRC008
+MIL0011,1,Точильный брусок воина,military_equipment,A,safe_with_record_specific_reference,ручной размер,SRC036 | SRC037 | SRC038 | SRC061 | SRC032
+MIL0016,1,Деревянная походная фляга/бутыль,military_equipment,B,safe_with_constraints,портативный,SRC036 | SRC037 | SRC038 | SRC061 | SRC005 | SRC039
+MIL0017,1,Кожаные ножны боевого/хозяйственного ножа,military_equipment,A,safe_with_record_specific_reference,чуть длиннее клинка,SRC061 | SRC084 | SRC036 | SRC037 | SRC038 | SRC032
+MIL0021,1,Поясная воинская сумка,military_equipment,A,safe_with_record_specific_reference,примерно с ладонь/две ладони; по находке,SRC036 | SRC037 | SRC038 | SRC061 | SRC008
+MIL0025,1,Воинский дорожный мешок,military_equipment,A,safe_with_record_specific_reference,примерно 15–35 см,SRC036 | SRC037 | SRC038 | SRC061 | SRC008
+MIL0027,1,Колчан для стрел,military_equipment,B,safe_with_constraints,"под длину стрел, обычно 60–90 см",SRC036 | SRC037 | SRC038 | SRC061
+MSC0001,1,Соломенная подстилка,miscellaneous,B,safe_with_constraints,по стойлу,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0002,1,Куча коры,miscellaneous,A,safe_with_record_specific_reference,куча,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0003,1,Обрезки кожи,miscellaneous,A,safe_with_record_specific_reference,россыпь/мешок,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0004,1,Сгнившая доска настила,miscellaneous,A,safe_with_record_specific_reference,по настилу,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0005,1,Уголья и головни,miscellaneous,A,safe_with_record_specific_reference,малые куски,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0007,1,Глина в яме/куче,miscellaneous,A,safe_with_record_specific_reference,куча/яма,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0010,1,Песок строительный,miscellaneous,B,safe_with_constraints,куча,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0011,1,Городская мусорная яма,miscellaneous,A,safe_with_record_specific_reference,от небольшой ямы до участка двора,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0014,1,Наледь на сходнях/причале,miscellaneous,B,safe_with_constraints,локальная,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0015,1,Верёвочный узел/обрывок каната,miscellaneous,A,safe_with_record_specific_reference,ручной отрезок,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0016,1,Выброшенный плавник,miscellaneous,B,safe_with_constraints,разный размер,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0017,1,Обломок лодочной доски,miscellaneous,A,safe_with_record_specific_reference,от ладонного до многометрового,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0018,1,Бочка пустая на боку,miscellaneous,A,safe_with_record_specific_reference,десятки–сотни литров,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0021,1,Свинцовая пломба потерянная,miscellaneous,A,safe_with_record_specific_reference,1–4 см,SRC053 | SRC087 | SRC001 | SRC003 | SRC005 | SRC025
+MSC0022,1,Грязь с щепой на мостовой,miscellaneous,A,safe_with_record_specific_reference,по улице,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0023,1,Лужа в колее,miscellaneous,A,safe_with_record_specific_reference,локальная,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0024,1,Дровница под навесом,miscellaneous,B,safe_with_constraints,по запасу двора,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0025,1,Зола и угли очага,miscellaneous,A,safe_with_record_specific_reference,локальный слой/куча,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0027,1,Куча сена,miscellaneous,A,safe_with_record_specific_reference,от пучка до кучи,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0028,1,Пень с рубочными следами,miscellaneous,A,safe_with_record_specific_reference,30–80 см,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0030,1,Солома,miscellaneous,A,safe_with_record_specific_reference,сыпучая/связки,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0031,1,Снежный вал у зимней мостовой,miscellaneous,B,safe_with_constraints,по улице/двору,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0035,1,Щепа плотницкого двора,miscellaneous,A,safe_with_record_specific_reference,рассыпной слой,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0036,1,Куча древесного угля,miscellaneous,A,safe_with_record_specific_reference,куча/мешок,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0038,1,"Сеть, развешенная для сушки и ремонта",miscellaneous,A,safe_with_record_specific_reference,несколько метров,SRC025 | SRC001 | SRC003 | SRC005 | SRC067 | SRC089
+MSC0039,1,Рыбья чешуя и кости,miscellaneous,A,safe_with_record_specific_reference,мелкий локальный слой,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0040,1,Навоз в конюшне/хлеву,miscellaneous,A,safe_with_record_specific_reference,локальные пятна/куча,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0041,1,Смешанный дворовый мусор,miscellaneous,A,safe_with_record_specific_reference,локальная яма/слой,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0042,1,Пустые мешки,miscellaneous,A,safe_with_record_specific_reference,разные,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0043,1,Связка жердей,miscellaneous,A,safe_with_record_specific_reference,1–5 м,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0046,1,Колотые дрова,miscellaneous,A,safe_with_record_specific_reference,30–100 см по назначению,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MSC0047,1,Уличная грязь между настилами,miscellaneous,A,safe_with_record_specific_reference,локальные зоны,SRC001 | SRC003 | SRC005 | SRC025 | SRC067 | SRC089
+MUS0001,1,Шахматная ладья,music_and_games,A,safe_with_record_specific_reference,несколько сантиметров,SRC058 | SRC059 | SRC060 | SRC005
+MUS0012,1,Астрагал для игры,music_and_games,A,safe_with_record_specific_reference,несколько сантиметров,SRC058 | SRC059 | SRC060 | SRC005 | SRC008
+MUS0016,1,Деревянный волчок,music_and_games,A,safe_with_record_specific_reference,5–15 см,SRC058 | SRC059 | SRC060 | SRC005 | SRC006
+MUS0017,1,Деревянный конь-игрушка,music_and_games,A,safe_with_record_specific_reference,ладонный,SRC058 | SRC059 | SRC060 | SRC005 | SRC006
+MUS0019,1,Кожаный мяч с набивкой,music_and_games,A,safe_with_record_specific_reference,с кулак или больше,SRC061 | SRC084 | SRC058 | SRC059 | SRC060 | SRC005
+MUS0029,1,Новгородская волынка XII–XIII века,music_and_games,A,safe_with_record_specific_reference,ручной инструмент,SRC060 | SRC058 | SRC059 | SRC005
+MUS0030,1,Свирель деревянная,music_and_games,A,safe_with_record_specific_reference,15–60 см,SRC058 | SRC059 | SRC060 | SRC005
+MUS0032,1,Варган,music_and_games,B,safe_with_constraints,5–15 см,SRC058 | SRC059 | SRC060 | SRC005
+MUS0033,1,Крыловидные гусли,music_and_games,A,safe_with_record_specific_reference,примерно 40–90 см,SRC058 | SRC059 | SRC060 | SRC005
+POT0001,1,Деревянная крышка сосуда,pottery_and_vessels,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC005 | SRC008 | SRC080 | SRC001
+POT0002,1,Деревянная ложка,pottery_and_vessels,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC005 | SRC008 | SRC080 | SRC001
+POT0003,1,Деревянная ложка длинноручная,pottery_and_vessels,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC005 | SRC008 | SRC080 | SRC001
+POT0014,1,Керамическая крышка,pottery_and_vessels,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC005 | SRC008 | SRC066
+POT0015,1,Керамическая миска,pottery_and_vessels,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC005 | SRC008 | SRC066
+POT0016,1,Керамическая солонка,pottery_and_vessels,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC005 | SRC008 | SRC066
+POT0018,1,Керамический горшок крупный,pottery_and_vessels,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC005 | SRC008 | SRC066
+POT0019,1,Керамический горшок малый,pottery_and_vessels,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC005 | SRC008 | SRC066
+POT0020,1,Керамический кувшин,pottery_and_vessels,C,reference_required,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC005 | SRC008 | SRC066
+POT0021,1,Керамический кухонный горшок,pottery_and_vessels,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC005 | SRC008 | SRC066
+POT0023,1,Керамический сосуд для хранения жира/масла,pottery_and_vessels,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC080 | SRC005 | SRC008 | SRC066
+POT0025,1,Клепочный деревянный сосуд,pottery_and_vessels,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC024 | SRC005 | SRC008 | SRC080 | SRC001
+REL0001,1,Деревянная икона,religious_items,B,safe_with_constraints,от малой домашней до храмовой,SRC017 | SRC018 | SRC019 | SRC020 | SRC062
+REL0002,1,Малый церковный колокол,religious_items,B,safe_with_constraints,от ручного до небольшого подвесного,SRC017 | SRC018 | SRC019 | SRC020 | SRC062
+REL0004,1,Церковная книга на аналое,religious_items,B,safe_with_constraints,книга 20–50 см; аналой по росту,SRC017 | SRC018 | SRC019 | SRC020 | SRC062 | SRC026
+REL0008,1,Нательный крест,religious_items,A,safe_with_record_specific_reference,2–8 см,SRC017 | SRC018 | SRC019 | SRC020 | SRC062
+REL0013,1,Кадило,religious_items,B,safe_with_constraints,ручной подвесной предмет,SRC017 | SRC018 | SRC019 | SRC020 | SRC062
+REL0015,1,Подсвечник церковный,religious_items,B,safe_with_constraints,настольный/напольный,SRC017 | SRC018 | SRC019 | SRC020 | SRC062
+REL0018,1,Лампада подвесная,religious_items,B,safe_with_constraints,10–30 см,SRC017 | SRC018 | SRC019 | SRC020 | SRC062
+SHD0002,1,Умбон железный,shields,B,safe_with_constraints,"диаметр по находке, обычно несколько десятков сантиметров или меньше",SRC036 | SRC037 | SRC008
+STR0001,1,Великий мост XII–XIII века: деревянная мостовая трасса,streets_and_infrastructure,B,reference_required,"общая переправа через Волхов; опубликованная оценка пролётов не менее 17 м относится к мосту X века, а не к состоянию 1230 года",SRC013 | SRC031 | SRC003
+STR0002,1,Ряжевая опора Великого моста X века — сравнительный референс,streets_and_infrastructure,D,research_only,"исследованная ранняя опора: основная часть около 6,5 × 6,5 м и выступающий угол; не применять к 1230 без отдельного доказательства",SRC013
+STR0003,1,Грязевая канава у мостовой,streets_and_infrastructure,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+STR0004,1,Деревянный водоотвод/дренаж улицы,streets_and_infrastructure,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+STR0005,1,Узкий усадебный переулок/проход,streets_and_infrastructure,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+STR0006,1,Пространство Торга у Ярославова дворища,streets_and_infrastructure,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC090 | SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+STR0007,1,Деревянная уличная мостовая,streets_and_infrastructure,A,safe_with_record_specific_reference,"ширина зависит от улицы; ранние грунтовые дороги около 5–6 м, деревянные настилы по конкретным раскопам",SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+STR0008,1,Поперечная плаха мостовой,streets_and_infrastructure,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+STR0009,1,Продольная лага уличной мостовой,streets_and_infrastructure,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+STR0010,1,Деревянный сход к Волхову,streets_and_infrastructure,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089 | SRC011
+STR0011,1,Небольшие деревянные мостки/причал,streets_and_infrastructure,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089 | SRC011
+STR0012,1,Сходня между берегом и судном,streets_and_infrastructure,B,safe_with_constraints,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+STR0013,1,Дворовый деревянный настил,streets_and_infrastructure,A,safe_with_record_specific_reference,по конкретной находке/плану; универсальный размер не задаётся,SRC001 | SRC003 | SRC013 | SRC083 | SRC089
+TRD0001,1,Купеческая печать-матрица — редкая,trade,C,reference_required,несколько сантиметров,SRC053 | SRC087 | SRC009 | SRC027 | SRC028 | SRC049
+TRD0003,1,Восковый круг/слиток,trade,A,safe_with_record_specific_reference,от небольшого куска до тяжёлой партии,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0004,1,Мешок соли,trade,B,safe_with_constraints,по грузу,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0005,1,Солёная рыба в бочке,trade,A,safe_with_record_specific_reference,бочка десятки–сотни литров,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0006,1,Бобровые шкуры торговой партии,trade,A,safe_with_record_specific_reference,по животному,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0007,1,Куний мех/шкурка куницы,trade,A,safe_with_record_specific_reference,по животному,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0008,1,Связка беличьих шкурок,trade,A,safe_with_record_specific_reference,переносимая связка,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0009,1,Мешок ржи,trade,A,safe_with_record_specific_reference,подъёмный мешок,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0010,1,Кипа выделанной кожи,trade,A,safe_with_record_specific_reference,тяжёлая переносимая кипа,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0011,1,Железная крица/полуфабрикат,trade,B,safe_with_constraints,от нескольких сотен граммов до килограммов,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0012,1,Свинец в слитках/листах,trade,A,safe_with_record_specific_reference,по партии,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0014,1,Олово в слитках/кусках,trade,A,safe_with_record_specific_reference,по партии,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0015,1,Тюк шерстяной ткани западного происхождения,trade,B,safe_with_constraints,тяжёлый тюк,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0016,1,Рубленое серебро,trade,B,safe_with_constraints,малые фрагменты,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0017,1,Деревянный прилавок на козлах,trade,B,safe_with_constraints,примерно 1–2.5 м длиной,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0019,1,Деревянная мера объёма,trade,B,safe_with_constraints,от нескольких до десятков литров,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0022,1,Берестяной туес с товаром,trade,A,safe_with_record_specific_reference,несколько литров,SRC026 | SRC027 | SRC009 | SRC028 | SRC049 | SRC053
+TRD0023,1,Бочка торговая,trade,A,safe_with_record_specific_reference,от малого бочонка до тяжёлой грузовой бочки,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0024,1,Кадка с крышкой и гнётом,trade,A,safe_with_record_specific_reference,десятки–сотни литров,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0025,1,Мешок зерна или муки,trade,A,safe_with_record_specific_reference,обычно подъёмный одним человеком или больше,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0026,1,Плетёная грузовая корзина,trade,A,safe_with_record_specific_reference,переносимый размер,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0027,1,Товарный тюк ткани,trade,B,safe_with_constraints,переносится одним/двумя людьми,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0028,1,Свинцовая товарная пломба,trade,A,safe_with_record_specific_reference,часто около 7–15 мм для малых пломб,SRC053 | SRC087 | SRC009 | SRC027 | SRC028 | SRC049
+TRD0030,1,Купеческий сундук,trade,A,safe_with_record_specific_reference,переносимый двумя людьми или малый личный,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0031,1,Товарный ларь,trade,B,safe_with_constraints,десятки–сотни литров,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0032,1,Берестяная товарная записка/бирка,trade,A,safe_with_record_specific_reference,обычно ладонный формат,SRC026 | SRC027 | SRC009 | SRC028 | SRC049 | SRC053
+TRD0036,1,Складская полка для тары,trade,B,safe_with_constraints,по стене склада,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0037,1,Малые равноплечие весы купца,trade,A,safe_with_record_specific_reference,корманные или настольные; коромысло обычно десятки сантиметров,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0040,1,Бронзовая гиря кубооктаэдрической формы,trade,A,safe_with_record_specific_reference,несколько сантиметров,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0041,1,Набор вложенных/разномассовых гирь,trade,B,safe_with_constraints,карманный набор,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0042,1,Дощатый ящик,trade,B,safe_with_constraints,ручной/двухчеловечный груз,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0043,1,Иностранная серебряная монета XIII века,trade,B,safe_with_constraints,по монете,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0044,1,Кадка с открытым верхом,trade,A,safe_with_record_specific_reference,от бытовой до крупной,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0045,1,Клёпочная грузовая бочка,trade,A,safe_with_record_specific_reference,от малой до крупной грузовой,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0046,1,Серебряная гривна как слиток,trade,A,safe_with_record_specific_reference,по типу; масса является частью стандарта и требует источника,SRC053 | SRC054 | SRC009 | SRC027 | SRC028 | SRC049
+TRD0047,1,Бочка мёда,trade,A,safe_with_record_specific_reference,по бочке,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0048,1,Бочка соли,trade,B,safe_with_constraints,по партии,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0049,1,Железные полосы и прутки,trade,A,safe_with_record_specific_reference,разные длины и сечения,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0050,1,Редкая импортная поливная чаша,trade,B,safe_with_constraints,по чаше,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0051,1,Связка меховых шкурок,trade,A,safe_with_record_specific_reference,по виду и партии,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0052,1,Тюк кожи,trade,A,safe_with_record_specific_reference,переносимый тюк,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0053,1,Тюк шерстяной ткани,trade,B,safe_with_constraints,переносимый тюк,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0054,1,Вислая свинцовая печать,trade,A,safe_with_record_specific_reference,обычно несколько сантиметров,SRC053 | SRC087 | SRC009 | SRC027 | SRC028 | SRC049
+TRD0055,1,Гиря бочонковидная/многогранная,trade,A,safe_with_record_specific_reference,от малого до ладонного,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+TRD0057,1,Железный замок торгового сундука,trade,A,safe_with_record_specific_reference,ладонный или крупнее,SRC009 | SRC027 | SRC028 | SRC049 | SRC053 | SRC089
+WPN0006,1,Топор боевой бородовидный,weapons,A,safe_with_record_specific_reference,головка обычно компактная; рукоять примерно 50–80 см,SRC034 | SRC035 | SRC037 | SRC032
+WPN0015,1,Ножны кожаные для ножа,weapons,A,safe_with_record_specific_reference,"по длине клинка, плотно прилегают",SRC061 | SRC084 | SRC034 | SRC035 | SRC037 | SRC032
+WPN0029,1,Прямая мечовая крестовина,weapons,A,safe_with_record_specific_reference,обычно около 16–25 см,SRC034 | SRC035 | SRC037 | SRC032
+WPN0049,1,Копьё с ромбическим пером,weapons,B,safe_with_constraints,по конкретному типу,SRC034 | SRC035 | SRC037 | SRC032 | SRC036
+WPN0055,1,"Ножны меча деревянные, обтянутые кожей",weapons,B,safe_with_constraints,чуть длиннее и шире соответствующего клинка,SRC034 | SRC035 | SRC037 | SRC032 | SRC061 | SRC008
+WPN0069,1,Боевой нож в кожаных ножнах,weapons,A,safe_with_record_specific_reference,клинок примерно 12–25 см по типу,SRC061 | SRC084 | SRC034 | SRC035 | SRC037 | SRC032
+WRT0001,1,Пакет/связка документов в сундуке,writing,C,reference_required,малый архивный комплект,SRC026 | SRC027 | SRC068 | SRC073 | SRC009
+WRT0014,1,Свинцовая вислая печать,writing,A,safe_with_record_specific_reference,обычно несколько сантиметров,SRC053 | SRC087 | SRC026 | SRC027 | SRC068 | SRC073
+WRT0022,1,Книжная застёжка,writing,B,safe_with_constraints,несколько сантиметров,SRC026 | SRC027 | SRC068 | SRC073
+WRT0028,1,Костяное писало,writing,A,safe_with_record_specific_reference,8–20 см,SRC026 | SRC027 | SRC068 | SRC073
+WTR0001,1,Каменный якорь/груз с отверстием,water_transport,B,safe_with_constraints,подъёмный экипажем размер,SRC039 | SRC005 | SRC013 | SRC029 | SRC025
+WTR0011,1,Весло лодочное,water_transport,A,safe_with_record_specific_reference,от нескольких метров на крупном судне до короткого лодочного,SRC039 | SRC005 | SRC013 | SRC029
+WTR0012,1,Деревянная мачта,water_transport,B,safe_with_constraints,зависит от судна; много метров,SRC039 | SRC005 | SRC013 | SRC029
+WTR0017,1,Боковое рулевое весло,water_transport,B,safe_with_constraints,длиннее обычного весла,SRC039 | SRC005 | SRC013 | SRC029
+WTR0018,1,Военная ладья без специализированного «боевого» корпуса,water_transport,B,safe_with_constraints,по числу людей и маршруту,SRC039 | SRC005 | SRC013 | SRC029
+WTR0019,1,Горшок со смолой/дёгтем для ремонта лодки,water_transport,A,safe_with_record_specific_reference,малый/средний,SRC024 | SRC080 | SRC039 | SRC005 | SRC013 | SRC029
+WTR0027,1,Малая перевозочная лодка/паром,water_transport,C,reference_required,по нескольким пассажирам и грузу,SRC039 | SRC005 | SRC013 | SRC029
+WTR0031,1,Уключина или упор весла,water_transport,B,safe_with_constraints,малый бортовой узел,SRC039 | SRC005 | SRC013 | SRC029
+WTR0032,1,Швартовый канат,water_transport,A,safe_with_record_specific_reference,по судну,SRC039 | SRC005 | SRC013 | SRC029
+WTR0038,1,Рыбацкая лодка с парой вёсел,water_transport,A,safe_with_record_specific_reference,обычно 4–8 м,SRC039 | SRC005 | SRC013 | SRC029 | SRC025
+WTR0039,1,Балтийское клинкерное торговое судно,water_transport,B,safe_with_constraints,от среднего каботажного до крупного морского судна; по конкретной традиции,SRC039 | SRC005 | SRC013 | SRC029 | SRC048 | SRC050
+WTR0040,1,Ранний когг немецких купцов — внешний контекст,water_transport,C,reference_required,крупное морское судно,SRC049 | SRC039 | SRC005 | SRC013 | SRC029 | SRC050

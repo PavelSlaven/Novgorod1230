@@ -1,0 +1,88 @@
+{
+  "schema": "novgorod1230_material_culture_validation_v1",
+  "generated_at": "2026-08-29",
+  "result": "PASS",
+  "errors": [],
+  "warnings": [
+    "External museum/archaeological images are link-only unless a reusable direct file was unambiguously available; local PNGs are authorial schematics.",
+    "Source URLs were structurally validated, not exhaustively re-downloaded during packaging.",
+    "Exact roofs, upper storeys, windows, wooden church forms, complete vessels and soft-organic mechanisms remain among the most reconstruction-heavy areas.",
+    "The catalogue is a historical envelope and reference corpus, not an exhaustive whitelist of every ordinary object that can exist in the game world."
+  ],
+  "statistics": {
+    "sources": 90,
+    "catalog_items": 1137,
+    "catalog_items_by_category": {
+      "architecture": 31,
+      "fortifications": 16,
+      "streets_and_infrastructure": 13,
+      "interiors": 49,
+      "furniture": 26,
+      "household_items": 49,
+      "pottery_and_vessels": 32,
+      "weapons": 70,
+      "armor": 31,
+      "helmets": 19,
+      "shields": 13,
+      "military_equipment": 33,
+      "land_transport": 32,
+      "water_transport": 40,
+      "horse_equipment": 36,
+      "livestock": 30,
+      "agriculture": 44,
+      "fishing": 32,
+      "hunting": 28,
+      "crafts": 153,
+      "trade": 60,
+      "writing": 29,
+      "music_and_games": 37,
+      "religious_items": 18,
+      "food": 64,
+      "construction": 47,
+      "foreign_material_culture": 58,
+      "miscellaneous": 47
+    },
+    "catalog_items_by_confidence": {
+      "B": 423,
+      "A": 472,
+      "C": 199,
+      "D": 43
+    },
+    "scenes": 66,
+    "anti_patterns": 53,
+    "image_manifest_records": 234,
+    "local_images": 204,
+    "thematic_reference_sheets": 29,
+    "prompt_templates": 378
+  },
+  "audit_checks": {
+    "male_female_child_household_world": true,
+    "poor_middle_rich_homes": true,
+    "urban_and_rural": true,
+    "summer_and_winter": true,
+    "military_world": true,
+    "transport": true,
+    "boats": true,
+    "animals": true,
+    "crafts": true,
+    "trade": true,
+    "foreigners": true,
+    "dozens_of_small_props": true,
+    "historical_visual_links_by_major_category": true,
+    "direct_source_links": true,
+    "anachronisms_marked": true,
+    "imagen_ready_fields": true
+  },
+  "validation_notes": [
+    "All IDs are unique and cross-references resolve.",
+    "No D-confidence record is required by a scene.",
+    "JSON and CSV row counts match in-memory data.",
+    "Local PNG files were opened and verified with Pillow.",
+    "ZIP integrity is checked after packaging."
+  ],
+  "archive": {
+    "file": "Novgorod1230_material_culture_dataset_v1.zip",
+    "members": 632,
+    "testzip": "PASS"
+  }
+}

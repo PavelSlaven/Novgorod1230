@@ -1,0 +1,31 @@
+deny_id	name_ru	name_lat	pattern_ru	pattern_lat	reason_ru	deny_kind	refs
+dn_solanum_tuberosum	картофель	Solanum tuberosum	картоф|картош	Solanum tuberosum	Американское растение; в Европе с XVI в., в России — XVIII в.	anachronism	wiki
+dn_zea_mays	кукуруза (маис)	Zea mays	кукуруз|маис	Zea mays	Американское растение; в WK упоминается только как пример заморозков на всходах, к Новгороду не относится	anachronism	wiki wk:claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position
+dn_glycine_max	соя	Glycine max	(?<![\p{L}-])соя(?![\p{L}-])|(?<![\p{L}-])сои(?![\p{L}-])|соев	Glycine max	Восточноазиатская культура; в WK только как пример заморозков	anachronism	wiki wk:claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position
+dn_solanum_lycopersicum	томат (помидор)	Solanum lycopersicum	томат|помидор	Solanum lycopersicum	Американское растение	anachronism	wiki
+dn_helianthus_annuus	подсолнечник	Helianthus annuus	подсолнеч|подсолнух	Helianthus annuus	Американское растение; в России с XVIII в.	anachronism	wiki
+dn_helianthus_tuberosus	топинамбур	Helianthus tuberosus	топинамбур|земляная груша	Helianthus tuberosus	Американское растение	anachronism	wiki
+dn_nicotiana	табак	Nicotiana tabacum	табак|махорк	Nicotiana	Американское растение	anachronism	wiki
+dn_phaseolus	фасоль	Phaseolus vulgaris	фасол	Phaseolus	Американское растение; «бобы» 1230 г. — Vicia faba	anachronism	wiki
+dn_cucurbita	тыква, кабачок	Cucurbita pepo	тыкв|кабач|патиссон	Cucurbita	Американский род; старосветская «тыква»-горлянка (Lagenaria) в Новгороде не засвидетельствована	anachronism	wiki
+dn_capsicum	перец стручковый	Capsicum annuum	стручков\w* перец|перец чили|паприк	Capsicum	Американское растение; чёрный перец — привозная пряность, отдельный вопрос	anachronism	wiki
+dn_fagopyrum	гречиха (как местная культура)	Fagopyrum esculentum	гречих|гречк|гречнев	Fagopyrum	В домонгольских зерновых находках Новгорода нет (Кирьянова 1979, табл. 2), появляется позже (табл. 5)	not_attested_1230	src:KIRYANOVA1979
+dn_heracleum_sosnowskyi	борщевик Сосновского	Heracleum sosnowskyi	борщевик сосновск	Heracleum sosnowskyi	Кавказский вид, интродуцирован в СССР в XX в.	anachronism	wiki
+dn_solidago_canadensis	золотарник канадский	Solidago canadensis	золотарник канадск	Solidago canadensis	Североамериканский вид, поздний занос	anachronism	wiki
+dn_impatiens_glandulifera	недотрога железистая	Impatiens glandulifera	недотрога железист	Impatiens glandulifera	Гималайский вид, занос XIX–XX вв.	anachronism	wiki
+dn_impatiens_parviflora	недотрога мелкоцветковая	Impatiens parviflora	недотрога мелкоцветк	Impatiens parviflora	Среднеазиатский вид, занос XIX в.	anachronism	wiki
+dn_elodea_canadensis	элодея канадская	Elodea canadensis	элоде	Elodea canadensis	Североамериканский вид, в Европе с XIX в.	anachronism	wiki
+dn_matricaria_discoidea	ромашка пахучая (безъязычковая)	Matricaria discoidea	ромашка пахуч|ромашка безъязычк	Matricaria discoidea	Занос в Европу в XIX в.	anachronism	wiki
+dn_erigeron_canadensis	мелколепестник канадский	Erigeron canadensis	мелколепестник канадск	Erigeron canadensis	Североамериканский сорняк, в Европе с XVII в.	anachronism	wiki
+dn_amaranthus_retroflexus	щирица запрокинутая	Amaranthus retroflexus	щириц|амарант	Amaranthus retroflexus	Американский сорняк	anachronism	wiki
+dn_galinsoga_parviflora	галинсога мелкоцветковая	Galinsoga parviflora	галинсог	Galinsoga parviflora	Южноамериканский сорняк, занос XVIII–XIX вв.	anachronism	wiki
+dn_oenothera_biennis	энотера двулетняя	Oenothera biennis	энотер|ослинник	Oenothera biennis	Североамериканский вид	anachronism	wiki
+dn_lupinus_polyphyllus	люпин многолистный	Lupinus polyphyllus	люпин	Lupinus polyphyllus	Североамериканский вид, поздняя интродукция	anachronism	wiki
+dn_datura_stramonium	дурман	Datura stramonium	дурман	Datura stramonium	В Европе распространился после XVI в.	anachronism	wiki
+dn_acorus_calamus	аир (явр)	Acorus calamus	(?<![\p{L}-])аир(?![\p{L}-])|(?<![\p{L}-])аира(?![\p{L}-])	Acorus calamus	Распространение в Европе и на Руси связывают с поздним временем; для 1230 не засвидетельствован — не использовать без источника	not_attested_1230	wiki
+dn_beta_sugar	сахарная свёкла	Beta vulgaris subsp. vulgaris (sugar beet group)	сахарн\w* свёкл|сахарн\w* свекл	sugar beet	Выведена в XVIII в.	anachronism	wiki
+dn_carrot_orange	оранжевая морковь	Daucus carota (orange cultivars)	оранжев\w* морков	orange carrot	Оранжевые сорта — Нидерланды XVII в.; средневековая морковь белёсая/жёлтая/фиолетовая	anachronism	https://en.wikipedia.org/wiki/Carrot
+dn_tea	чай (Camellia sinensis)	Camellia sinensis	(?<![\p{L}-])чай(?![\p{L}-])|(?<![\p{L}-])чаю(?![\p{L}-])|(?<![\p{L}-])чая(?![\p{L}-])|чаепит	Camellia sinensis	Чай на Руси — с XVII в.; «копорский (иван-)чай» — практика XVIII в.	anachronism	wiki
+dn_coffee	кофе	Coffea arabica	кофе	Coffea	Анахронизм	anachronism	wiki
+dn_sugar	сахар-песок	Saccharum officinarum	сахар	Saccharum	Сахар как массовый продукт — анахронизм; подсластитель — мёд	anachronism	wiki
+dn_rice_local	рис как местная культура	Oryza sativa	(?<![\p{L}-])рис(?![\p{L}-])|(?<![\p{L}-])риса(?![\p{L}-])|рисов	Oryza sativa	Не выращивался; в Новгороде 1230 не засвидетельствован	not_attested_1230	wiki

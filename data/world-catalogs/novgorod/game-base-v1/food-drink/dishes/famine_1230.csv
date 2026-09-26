@@ -1,0 +1,24 @@
+fam_id,kind,name_ru,value,fd_id,game_use,materialization_policy,source_refs,confidence,status
+fam_frost_1230,event,Мороз на Воздвижение побил весь урожай по волости,14.09.1230 (юлианский),,Начало голодной фазы; урожай 1230 г. в полях погиб до уборки.,state_of_world,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:events:1230-09-14 ок.""]",A,candidate
+fam_price_bread,price,Хлеб,8 кун (единица товара в летописи неясна),,"Порядок роста цен, не прейскурант.",price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:хлеб""]",A,candidate
+fam_price_rye,price,Рожь,"20 гривен за кадь; «а въ дворех пол 30» (в дворах — 25, чтение обсуждается)",,,price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:рожь""]",A,candidate
+fam_price_wheat,price,Пшеница,40 гривен за кадь,,,price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:пшеница""]",A,candidate
+fam_price_millet,price,Пшено,50 гривен за кадь,,,price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:просо""]",A,candidate
+fam_price_oats,price,Овёс,13 гривен за кадь,,,price_band_input,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:famine_prices:овёс""]",A,candidate
+fam_sub_horse_meat,substitute_attested,Конина,fd:ING0110,fd_horsemeat_emergency,Допустима как пища в голод и в особом контексте.,famine_phase_only,"[""ext:npl1950_6738_6739"", ""wk:claim:environment-p1-horse-meat""]",A,candidate
+fam_sub_dog_cat,substitute_attested,Псина и кошки,,,"Только как слух, свидетельство или наблюдаемый след; не рецепт и не запас.",narration_by_evidence_only,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_sub_moss,substitute_attested,Мох,fd:ADD_moss,fd_moss_famine,,famine_phase_only,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_sub_pine,substitute_attested,Сосна,fd:ADD_pine_inner_bark,fd_pine_inner_bark_famine,,famine_phase_only,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_sub_linden_bark,substitute_attested,Кора липовая,fd:ADD_linden_bark,fd_linden_bark_famine,,famine_phase_only,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_sub_elm_leaves,substitute_attested,Лист ильма,fd:ADD_elm_leaves,fd_elm_leaves_famine,,famine_phase_only,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_sub_ush_unclear,substitute_attested,«ушь» — неясное слово в перечне,,,Не использовать до филологической проверки чтения.,not_materialized,"[""ext:npl1950_6738_6739""]",C,candidate
+fam_sub_carrion_human,substitute_attested,"Падаль, мертвечина, людоедство",,,"Засвидетельствовано летописью; в игре только слух, свидетельство, суд или след. Никогда не рецепт, запас или действие NPC по умолчанию.",narration_by_evidence_only,"[""ext:npl1950_6738_6739"", ""master-food:SRC101""]",A,candidate
+fam_sub_chaff,substitute_analogy,Мякина в хлеб,fd:ING0169,fd_chaff,Аналогия XVI в.,famine_phase_only,"[""ext:stepanova2014"", ""wk:claim:food-practices-threshing-chaff""]",C,candidate
+fam_sub_goosefoot,substitute_analogy,Лебеда,fd:ADD_goosefoot_seed,fd_goosefoot_seed_famine,Аналогия XVI в.,famine_phase_only,"[""ext:stepanova2014""]",C,candidate
+fam_sub_nettle,substitute_analogy,Крапива,fd:ING0054,fd_nettle_greens,"Весна–лето, аналогия XVI в.",famine_phase_only,"[""ext:stepanova2014""]",C,candidate
+fam_social_arson_for_rye,social_effect,"Поджоги и грабёж дворов, где слышали о ржи",,,Запас зерна — риск для двора; слух о зерне притягивает грабёж.,state_of_world,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_social_children_to_merchants,social_effect,Отцы и матери отдавали детей гостям в холопство за хлеб,,,,narration_by_evidence_only,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_social_exodus,social_effect,Разошёлся город и волость; чужие города полны беглецов,,,,state_of_world,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_social_skudelnitsa,social_effect,"Скудельница у св. Апостолов на Прусской улице, 3030 умерших",3030,,,state_of_world,"[""ext:npl1950_6738_6739"", ""sqlite:novgorod_1230:events:1230-осень/зима""]",A,candidate
+fam_relief_german_grain_1231,relief,Немцы из-за моря привезли жито и муку,1231,,"Импортное зерно и мука появляются в 1231 г., распределение неравное.",state_of_world,"[""ext:npl1950_6738_6739""]",A,candidate
+fam_modifier_portions,gameplay_modifier,Порции 0.25–0.7 обычной; доступность зерна 0.1–0.5,"portion [0.25,0.7]; grain [0.1,0.5]",,Множители master — игровая реконструкция. Temporal-v4 (approved) числа не задаёт: «numeric_magnitude: not authored». Перед использованием нужен отдельный утверждённый профиль.,needs_approved_profile,"[""game-base-v1/food-drink/scripts/source_snapshot/famine_1230_context.csv:famine_1230_context"", ""temporal-v4:record:historical_phase_local_effect_rules:novgorod_famine_1230_v2""]",C,candidate

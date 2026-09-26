@@ -1,0 +1,38 @@
+{
+  "rule_id": "presence_ppm_from_frequency_class",
+  "rule_version": 1,
+  "status": "candidate_owner_approval_required",
+  "classes": {
+    "ubiquitous": { "weight": 8, "probability_ppm": 1000000 },
+    "common": { "weight": 4, "probability_ppm": 500000 },
+    "contextual": { "weight": 2, "probability_ppm": 250000 },
+    "rare": { "weight": 1, "probability_ppm": 125000 }
+  },
+  "class_aliases": {
+    "dominant": "ubiquitous",
+    "occasional": "contextual",
+    "frequent": "common",
+    "uncommon": "contextual"
+  },
+  "formula": "probability_ppm = round(1000000 * weight / 8)",
+  "basis": [
+    "Weights 8/4/2/1: game-base-v1 catalog convention frequency_class (catalog.json conventions.frequency_class), reusing the same 4-step label set as pr98 m2c-natural nature-richness-candidate-v1 weight_policy dominant/common/occasional/rare. That source states explicitly its weights are 'relative game selection preference among eligible alternatives ... not archaeological frequency, biological abundance, encounter probability or yield'. This rule does NOT inherit that source as a basis for probability_ppm: nature-richness-candidate-v1 is cited only for the label vocabulary, not for the numeric ratio.",
+    "The 1000000/500000/250000/125000 ppm values and the 1:2:4:8 ratio are this collector's own editorial convention, confidence C, with no source that measures actual find frequency, archaeological density or encounter probability. They are a placeholder pending owner calibration, not a derived or sourced number. Format note only: contract world_base_materialization_table_requirements.md §8.1 + code_driven_world_materialization_architecture.md fix how mandatory presence is ENCODED (a rule with probability_ppm = 1 000 000, no separate mandatory-minimum field) — the norm does not say the top frequency_class must be mandatory, and this rule does not claim that it does. Whether 'ubiquitous' should in fact mean guaranteed presence, and what the four ppm values should be, are open owner decisions.",
+    "Proportionality (each lower class halves the presence chance) is this collector's own editorial choice to keep the ratio between classes readable, not a measured or sourced frequency relationship."
+  ],
+  "status_note": "probability_ppm values are unspecified/placeholder until the owner sets a calibration; do not treat them as sourced frequencies. See presence/README.md 'Известные пробелы'.",
+  "count_limit_rule": "count_limit comes from the pool row (column count_limit or max_count). Without it, count_limit = 1 and count_limit_basis = default_minimum_1. Never inferred from the class.",
+  "season_rule": {
+    "dictionary": ["winter", "spring", "summer", "autumn"],
+    "all_value": "all",
+    "dictionary_source": "pr98:data/world-catalogs/novgorod/temporal-v4/datasets/calendar_daylight_light_profiles.json season_rule (winter 12-2, spring 3-5, summer 6-8, autumn 9-11, Julian); runtime check packages/materialization/src/world-validation.js accepts 'all' or the season id.",
+    "aliases": { "spring_rasputitsa": "spring", "early_winter": "winter", "late_winter": "winter", "year_round": "all", "all_year": "all", "all_seasons": "all" },
+    "rejected": ["rasputitsa (occurs in spring and autumn; pool must name the season)"]
+  },
+  "refresh_rule": {
+    "values": ["none", "by_year_season"],
+    "default": "none",
+    "aliases": { "season": "by_year_season", "seasonal": "by_year_season", "by_season": "by_year_season" },
+    "basis": "world_base_materialization_table_requirements.md §8.1 refresh_class none|by_year_season; owner decision D6 (2026-09-26)."
+  }
+}

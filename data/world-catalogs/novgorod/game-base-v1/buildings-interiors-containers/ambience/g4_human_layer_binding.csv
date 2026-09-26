@@ -1,0 +1,8 @@
+g4_ref,source_place_type,pf_ids,basis_ref,confidence,status
+g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality,vikhtuy_locality,peasant_homestead|village_lane,"pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json (source_place_type, authoring_axes)",C,candidate
+g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge,forest_tract,forest_edge,"pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json (source_place_type, authoring_axes)",C,candidate
+g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach,landing_terrace,ferry_landing|riverbank,"pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json (source_place_type, authoring_axes)",C,candidate
+g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace,landing_terrace,ferry_landing|riverbank,"pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json (source_place_type, authoring_axes)",C,candidate
+g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center,archaeological_settlement,peasant_homestead|village_lane,"pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json (source_place_type, authoring_axes)",C,candidate
+g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing,local_landing,ferry_landing|riverbank|fishing_camp,"pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json (source_place_type, authoring_axes)",C,candidate
+g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area,burial_area,churchyard,"pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json (source_place_type, authoring_axes)",C,candidate

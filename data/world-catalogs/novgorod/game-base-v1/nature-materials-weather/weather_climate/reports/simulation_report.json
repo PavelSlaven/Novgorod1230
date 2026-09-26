@@ -1,0 +1,62 @@
+{
+ "seed": 1230,
+ "years": 4,
+ "per_season": {
+  "winter": {
+   "steps": 1444,
+   "snow": 263,
+   "sleet": 47,
+   "rain": 14,
+   "snow_in_mild_plus": 0,
+   "rain_in_cold_minus": 0,
+   "storm_suppressed": 0,
+   "min_t": -26,
+   "max_t": 5.2
+  },
+  "spring": {
+   "steps": 1472,
+   "snow": 91,
+   "sleet": 33,
+   "rain": 257,
+   "snow_in_mild_plus": 0,
+   "rain_in_cold_minus": 0,
+   "storm_suppressed": 4,
+   "min_t": -12.4,
+   "max_t": 23.9
+  },
+  "summer": {
+   "steps": 1472,
+   "snow": 0,
+   "sleet": 0,
+   "rain": 344,
+   "snow_in_mild_plus": 0,
+   "rain_in_cold_minus": 0,
+   "storm_suppressed": 1,
+   "min_t": 3.0999999999999996,
+   "max_t": 29.8
+  },
+  "autumn": {
+   "steps": 1456,
+   "snow": 88,
+   "sleet": 49,
+   "rain": 266,
+   "snow_in_mild_plus": 0,
+   "rain_in_cold_minus": 0,
+   "storm_suppressed": 20,
+   "min_t": -11.4,
+   "max_t": 18.4
+  }
+ },
+ "thaw_days_per_winter_month": {
+  "1": 8.8,
+  "2": 9.3,
+  "12": 10.5
+ },
+ "thaw_target": {
+  "1": 8,
+  "2": 6,
+  "12": 12
+ },
+ "mean_state_run_days": 1.45,
+ "runs": 1010
+}

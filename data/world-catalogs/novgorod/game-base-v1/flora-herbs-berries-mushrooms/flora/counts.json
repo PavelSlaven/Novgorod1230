@@ -1,0 +1,93 @@
+{
+ "herbs_mosses_aquatic": 184,
+ "herbs_by_group": {
+  "grass": 21,
+  "sedge_rush": 17,
+  "fern": 7,
+  "horsetail": 5,
+  "clubmoss": 3,
+  "moss": 14,
+  "lichen": 15,
+  "forb_wetland": 23,
+  "forb_meadow": 23,
+  "forb_ruderal": 18,
+  "forb_forest": 21,
+  "aquatic_floating": 7,
+  "aquatic_submerged": 2,
+  "aquatic_emergent": 8
+ },
+ "herbs_by_confidence": {
+  "C": 167,
+  "B": 17
+ },
+ "berries_mushrooms": 56,
+ "bf_by_kind": {
+  "berry": 13,
+  "fungus_bolete": 10,
+  "fungus_agaric": 17,
+  "fungus_milkcap": 5,
+  "fungus_russula": 2,
+  "fungus_ascomycete": 3,
+  "fungus_gasteroid": 2,
+  "fungus_bracket": 4
+ },
+ "bf_by_edibility": {
+  "edible_fresh": 30,
+  "not_food": 6,
+  "edible_after_processing": 7,
+  "poisonous": 13
+ },
+ "bf_by_confidence": {
+  "A": 5,
+  "B": 20,
+  "C": 31
+ },
+ "cultivated_plants": 42,
+ "cu_by_kind": {
+  "cereal_winter": 1,
+  "cereal_spring": 4,
+  "pulse": 3,
+  "fibre_oil": 2,
+  "cereal_pseudo": 1,
+  "vegetable_root": 4,
+  "vegetable_leaf": 1,
+  "vegetable_bulb": 2,
+  "vegetable_herb": 1,
+  "vegetable_fruit": 1,
+  "vine_crop": 1,
+  "orchard_fruit": 2,
+  "weed_arable": 19
+ },
+ "cu_by_allowed_1230": {
+  "yes": 29,
+  "no": 1,
+  "uncertain": 12
+ },
+ "cu_by_confidence": {
+  "A": 13,
+  "B": 15,
+  "C": 14
+ },
+ "flora_habitat_presence": 4353,
+ "presence_by_table": {
+  "herbs": 3447,
+  "berries_fungi": 586,
+  "cultivated": 320
+ },
+ "presence_by_season": {
+  "spring": 1134,
+  "summer": 1387,
+  "autumn": 1377,
+  "winter": 455
+ },
+ "presence_by_class": {
+  "common": 1684,
+  "contextual": 2012,
+  "ubiquitous": 367,
+  "rare": 290
+ },
+ "pf_covered": 32,
+ "field_state_calendar": 264,
+ "anachronism_denylist_flora": 30,
+ "sources": 13
+}

@@ -1,0 +1,181 @@
+source_item_id,name_ru,subcategory,disposition,target,reason
+GM001,Сорочица из льняного полотна,base_layer,garment,garments/garments.csv,
+GM002,Грубая сорочица из конопляного или смешанного полотна,base_layer,garment,garments/garments.csv,
+GM003,Шерстяная верхняя рубаха или туникообразная одежда,middle_layer,garment,garments/garments.csv,
+GM004,Порты из полотна,legwear,garment,garments/garments.csv,
+GM005,Шерстяные зимние порты,legwear_winter,garment,garments/garments.csv,
+GM006,Обмотки голени,leg_wraps,garment,garments/garments.csv,
+GM007,Свита,outerwear,garment,garments/garments.csv,
+GM008,Простой кожух,outerwear_winter,garment,garments/garments.csv,
+GM009,Покрытая тканью меховая шуба,outerwear_winter_status,garment,garments/garments.csv,
+GM010,Плащ-мятель,cloak,garment,garments/garments.csv,
+GM011,Буро-красный шерстяной плащ,cloak_documented_color,garment,garments/garments.csv,
+GM012,Плотная дорожная накидка из шерсти,travel_cloak,garment,garments/garments.csv,
+GM013,Капюшон или отдельный шерстяной куколь дорожного типа,hood,garment,garments/garments.csv,
+GM014,Тканевый рабочий передник,workwear,garment,garments/garments.csv,
+GM015,Кожаный ремесленный передник,workwear_protective,garment,garments/garments.csv,
+GM016,Тонкая шерстяная статусная верхняя одежда,status_garment,garment,garments/garments.csv,
+GM017,Шёлковая или золото-тканая отделка на мужской одежде,trim,component,garments/garment_components.csv,"деталь/отделка вещи, не слот экипировки"
+GM018,Дорожное покрывало/шерстяное одеяло как накидка,travel_bedding,garment,garments/garments.csv,
+GF001,Длинная женская сорочица из льна,base_layer,garment,garments/garments.csv,
+GF002,Грубая рабочая женская рубаха,base_layer_work,garment,garments/garments.csv,
+GF003,Длинная шерстяная верхняя одежда женщины,overdress,garment,garments/garments.csv,
+GF004,Рабочая шерстяная верхняя одежда женщины,overdress_work,garment,garments/garments.csv,
+GF005,Тонкая шерстяная одежда зажиточной женщины,status_overdress,garment,garments/garments.csv,
+GF006,Женский плащ или мантия,cloak,garment,garments/garments.csv,
+GF007,Женская меховая шуба,outerwear_winter,garment,garments/garments.csv,
+GF008,Овчинный женский кожух простого типа,outerwear_winter_common,garment,garments/garments.csv,
+GF009,Тканевый женский передник,workwear,garment,garments/garments.csv,
+GF010,Шёлковая кайма или нашивная отделка женской одежды,trim,component,garments/garment_components.csv,"деталь/отделка вещи, не слот экипировки"
+GF011,Красная женская ткань/одежда из приданого,documented_color,reject,colour_evidence_only,тип вещи в описи приданого не определён; используется только как свидетельство цвета (COL002/COL004)
+GF012,Белая женская ткань/одежда из приданого,documented_color,reject,colour_evidence_only,тип вещи в описи приданого не определён; используется только как свидетельство цвета (COL002/COL004)
+GF013,Поясная клетчатая/полосатая женская одежда типа понёвы — гипотеза,waist_garment_hypothesis,garment,garments/garments.csv,
+GF014,Дорожная женская накидка из плотной шерсти,travel_cloak,garment,garments/garments.csv,
+GC001,Детская длинная рубаха/сорочица,base_layer,garment,garments/garments.csv,
+GC002,Детская шерстяная верхняя одежда,middle_layer,garment,garments/garments.csv,
+GC003,Детские порты,legwear,garment,garments/garments.csv,
+GC004,Детский шерстяной плащ/накидка,cloak,garment,garments/garments.csv,
+GC005,Детский меховой зимний слой,winter_outerwear,garment,garments/garments.csv,
+GC006,Детский пояс,belt,garment,garments/garments.csv,
+GC007,Детские шерстяные рукавицы,handwear,garment,garments/garments.csv,
+HW001,Мягкая шерстяная мужская шапка,male_textile_cap,garment,garments/garments.csv,
+HW002,Простая войлочная шапка,male_felt_cap,garment,garments/garments.csv,
+HW003,Мужская меховая зимняя шапка,male_fur_cap,garment,garments/garments.csv,
+HW004,Статусная мужская шапка с меховой опушкой,male_status_cap,garment,garments/garments.csv,
+HW005,Льняная повязка или головной плат для работы,work_headcloth,garment,garments/garments.csv,
+HW006,Женский нижний головной чепец/повой,married_under_cap,garment,garments/garments.csv,
+HW007,Женское головное покрывало,married_veil,garment,garments/garments.csv,
+HW008,Женская налобная повязка/очелье,headband,garment,garments/garments.csv,
+HW009,Головной убор с лентами из женского приданого — тип неясен,documented_uncertain,reject,type_undetermined,"головной убор из описи приданого, тип не установлен (C); оставлен как пробел"
+HW010,Девичья лента или мягкое очелье,maiden_headband,garment,garments/garments.csv,
+HW011,Женская зимняя меховая шапка поверх нижнего убора,female_winter_cap,garment,garments/garments.csv,
+HW012,Мягкий тканевый чепец девушки/женщины,soft_cap,garment,garments/garments.csv,
+HW013,Монашеский капюшон/куколь общего типа,monastic_hood,garment,garments/garments.csv,
+HW014,Архиерейская митра раннего типа — литургическая,clerical_liturgical,garment,garments/garments.csv,
+HW015,Стёганый или войлочный подшлемник,under_helmet,reject,weapons_armor,"подшлемник — часть защитного снаряжения, не повседневная одежда"
+HW016,Детская мягкая тканевая шапочка,child_cap,garment,garments/garments.csv,
+HW017,Детская меховая зимняя шапка,child_winter_cap,garment,garments/garments.csv,
+FW001,Поршни простого типа,porshen,garment,garments/garments.csv,
+FW002,Мягкая низкая кожаная туфля,low_shoe,garment,garments/garments.csv,
+FW003,Низкая туфля с боковой застёжкой/ремешком,fastened_low_shoe,garment,garments/garments.csv,
+FW004,Полуботинок до щиколотки,ankle_shoe,garment,garments/garments.csv,
+FW005,Ажурно украшенная кожаная туфля,decorated_shoe,garment,garments/garments.csv,
+FW006,Разноцветно украшенная городская туфля,polychrome_shoe,garment,garments/garments.csv,
+FW007,Кожаный сапог до середины голени,boot,garment,garments/garments.csv,
+FW008,Высокий охотничий сапог,high_hunting_boot,garment,garments/garments.csv,
+FW009,Женский сапог из погребения Юрьева монастыря,female_burial_boot,garment,garments/garments.csv,
+FW010,Детская мягкая кожаная туфля,child_shoe,garment,garments/garments.csv,
+FW011,Детский кожаный сапог,child_boot,garment,garments/garments.csv,
+FW012,Специальная погребальная кожаная обувь,burial_shoe,garment,garments/garments.csv,
+FW013,Войлочная стелька,insole_felt,garment,garments/garments.csv,
+FW014,Игольновязаная шерстяная стелька,insole_naalbinding,garment,garments/garments.csv,
+FW015,Игольновязаный шерстяной носок,sock_naalbinding,garment,garments/garments.csv,
+FW016,Стопная онуча,foot_wrap,garment,garments/garments.csv,
+FW017,Защитные поршни поверх дорогой обуви,overshoe,garment,garments/garments.csv,
+FW018,Железный ледоходный шип,ice_cleat,garment,garments/garments.csv,
+FW019,"Костяной конёк, привязываемый к обуви",bone_skate,reject,personal_items,"костяной конёк — снаряжение для передвижения по льду, а не одежда"
+FW020,"Шпора, крепящаяся к обуви всадника",spur,garment,garments/garments.csv,
+FW021,Кожаные ремешки и завязки обуви,shoe_fastening,component,garments/garment_components.csv,"деталь/отделка вещи, не слот экипировки"
+FW022,Запасная подошва или ремонтная кожаная деталь,repair_component,reject,craft_materials,запасная подошва — сырьё/полуфабрикат ремесла
+AC001,Простой кожаный пояс,belt,garment,garments/garments.csv,
+AC002,Тканый пояс или тесьма,textile_belt,garment,garments/garments.csv,
+AC003,Железная поясная пряжка,buckle_iron,component,garments/garment_components.csv,"деталь/отделка вещи, не слот экипировки"
+AC004,Бронзовая поясная пряжка,buckle_bronze,component,garments/garment_components.csv,"деталь/отделка вещи, не слот экипировки"
+AC005,Поясной набор с накладками,belt_mounts,garment,garments/garments.csv,
+AC006,Западноевропейская/готландская пряжка или накладка,foreign_belt_fitting,component,garments/garment_components.csv,"деталь/отделка вещи, не слот экипировки"
+AC007,Поясные подвесные ремешки,suspension_straps,component,garments/garment_components.csv,"деталь/отделка вещи, не слот экипировки"
+AC008,Поясной хозяйственный нож,belt_knife,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC009,Кожаные ножны хозяйственного ножа,knife_sheath,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC010,Мечевой пояс и подвес ножен,sword_suspension,reject,weapons_armor,мечевой подвес — военное снаряжение
+AC011,Кожаный кошель,pouch,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC012,Тобол/дорожная сумка,bag,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC013,Кожаный чехол для инструмента,tool_case,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC014,Берестяной или деревянный коробок для мелочей,small_container,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC015,Фибула или штифтовая застёжка плаща,cloak_fastener,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC016,Кольцевидная/подковообразная застёжка приезжего западного или северного круга,foreign_brooch,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC017,Нательный крест,religious_pendant,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC018,Крест-энколпион,religious_reliquary,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC019,Лунничная подвеска,pendant_lunula,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC020,Ожерелье из бус,bead_necklace,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC021,Серьги или височные кольца,ear_temple_rings,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC022,Спиральные височные/волосяные украшения пограничных групп,spiral_hair_ornament,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC023,Браслет,bracelet,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC024,Перстень или кольцо,finger_ring,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC025,Колт — редкое элитное женское украшение,elite_temporal_pendant,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC026,Подвески рясен,elite_head_chains,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC027,Золотая эмалевая подвеска-квадрифолий,elite_pendant_unique,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC028,"Длинные булавки, соединённые цепочкой",foreign_chain_pins,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+AC029,Гребень,comb,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC030,Игольник и небольшой швейный набор,sewing_kit,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC031,Шило в кожаном чехле,worn_tool_awl,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC032,"Небольшой ремесленный молоток или клещи, переносимые к работе",worn_tool_metalwork,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC033,Рыбацкий нож и точильный камень,fisher_tools,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC034,Каменные/глиняные грузила сети на ремешках,fishing_gear,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC035,"Огниво, кремень и трут в кошеле",fire_kit,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC036,Шерстяные рукавицы,mittens_wool,garment,garments/garments.csv,
+AC037,Кожаные рабочие рукавицы,mittens_leather,garment,garments/garments.csv,
+AC038,Небольшая фляга или сосуд для воды в переносном чехле,travel_water_container,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC039,Ключ на поясном кольце/ремешке,key,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC040,Торговые гирьки и складные весы в сумке,merchant_tools,reject,personal_items,"переносимая личная вещь/инструмент, не одежда (домен personal_items / carried_inventories)"
+AC041,Небольшая амулетная подвеска,amulet,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+CL001,Длинная повседневная одежда священнослужителя,daily_clergy_robe,garment,garments/garments.csv,
+CL002,Монашеская длинная шерстяная одежда,monastic_tunic,garment,garments/garments.csv,
+CL003,Монашеская мантия/накидка,monastic_mantle,garment,garments/garments.csv,
+CL004,Стихарь,liturgical_sticharion,garment,garments/garments.csv,
+CL005,Епитрахиль,liturgical_epitrachelion,garment,garments/garments.csv,
+CL006,Фелонь,liturgical_phelonion,garment,garments/garments.csv,
+CL007,Поручи/нарукавники литургические,liturgical_cuffs,garment,garments/garments.csv,
+CL008,Орарь дьякона,liturgical_orarion,garment,garments/garments.csv,
+CL009,Омофор архиерея,liturgical_omophorion,garment,garments/garments.csv,
+FR001,Западноевропейская шерстяная туника до колен,western_male_garment,garment,garments/garments.csv,
+FR002,Западные раздельные чулки-шоссы,western_legwear,garment,garments/garments.csv,
+FR003,Западный капюшон с короткой пелериной,western_hood,garment,garments/garments.csv,
+FR004,Западный плащ на кольцевой застёжке,western_cloak,garment,garments/garments.csv,
+FR005,"Плечевая женская одежда, скреплённая парными булавками — пограничная реконструкция",baltic_finnic_dress_hypothesis,garment,garments/garments.csv,
+FR006,Балто-финская шейная гривна,neck_ring,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+FR007,Пластинчатый браслет балто-финского/балтийского круга,regional_bracelet,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+FR008,Скандинавская/готландская кольцевая брошь,scandinavian_brooch,adornment,adornment_appearance/adornment.csv,украшение/привеска/застёжка
+FR009,Тонкое западноевропейское сукно в одежде приезжего/купца,imported_wool_garment,garment,garments/garments.csv,
+FR010,Одежда приезжего из другого русского княжества,other_rus_variant,reject,profile_marker,"не тип вещи, а указание на региональное отличие приезжего; учтено в outfits (иноземные/иные русские профили)"
+FR011,Одежда латинского духовного лица/паломника,latin_clergy,garment,garments/garments.csv,
+FR012,Снаряжение иностранного наёмника/дружинника,foreign_retainer_kit,reject,weapons_armor,комплект снаряжения иноземного воина
+AR001,Льняная/шерстяная одежда под доспехом,under_armor_basic,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR002,Умеренно стёганая поддоспешная одежда — реконструкция,padded_under_armor,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR003,Кольчуга средней длины,mail_armor,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR004,Длинная кольчуга профессионального воина,long_mail_armor,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR005,Кольчужный капюшон/коиф,mail_coif,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR006,Кольчужная бармица,mail_aventail,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR007,Ламеллярный или пластинчатый корпусной доспех — редкий вариант,lamellar_armor,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR008,Конический железный шлем,helmet_conical,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR009,Сфероконический шлем,helmet_spheroconical,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR010,Шлем с наносником,helmet_nasal,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR011,Элитный шлем с полумаской типа IV,helmet_elite_mask,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR012,Внутренняя подкладка и ремень шлема,helmet_lining,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR013,Круглый щит,shield_round,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR014,Миндалевидный/каплевидный щит,shield_kite,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR015,Укороченный треугольный/скруглённо-треугольный щит — переходный вариант,shield_transitional,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR016,"Щитовое покрытие, окраска и ременная рукоять",shield_components,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR017,Копьё,spear,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR018,Конное копьё/ланцеобразное оружие,mounted_lance,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR019,Сулица/лёгкое метательное копьё,javelin,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR020,Меч,sword,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR021,Ножны меча,sword_scabbard,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR022,"Универсальный топор, пригодный в бою",axe_general,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR023,Боевой топор,war_axe,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR024,Булава,mace,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR025,Кистень,flail,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR026,Боевой/универсальный нож,combat_knife,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR027,Простой лук,bow,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR028,Стрелы с железными наконечниками,arrows,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR029,Колчан,quiver,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR030,Чехол для лука — осторожная реконструкция,bow_case,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR031,Праща — возможное простое метательное средство,sling,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR032,Деревянное седло с кожаным покрытием,horse_saddle,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR033,Уздечка и железные удила,horse_bridle,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR034,Железные стремена,stirrups,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR035,Конский потник/попона простого типа,horse_cloth,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR036,Воинский походный плащ,military_cloak,garment,garments/garments.csv,
+AR037,Зимний воинский комплект слоёв,winter_military_layers,reject,duplicate,общие зимние слои воина дублируют GM003/GM008/GM005
+AR038,Кожаные/шерстяные воинские рукавицы — без латных пластин,military_gloves,garment,garments/garments.csv,
+AR039,Набор для ухода за кольчугой и оружием,maintenance_kit,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"
+AR040,Сигнальный рог,signal_horn,reject,weapons_armor,"оружие, доспех или конское снаряжение — домен weapons_armor"

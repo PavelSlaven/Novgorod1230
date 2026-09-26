@@ -1,0 +1,136 @@
+{
+ "generated_by": "scripts/build.py",
+ "status": "candidate",
+ "counts": {
+  "fish.csv": 38,
+  "fishing_methods.csv": 13,
+  "water_body_pf_crosswalk.csv": 52,
+  "invertebrates_herps.csv": 45,
+  "fauna_presence.csv": 1779,
+  "livestock_species.csv": 11,
+  "livestock_types.csv": 28,
+  "livestock_care.csv": 29,
+  "livestock_ailments.csv": 14,
+  "livestock_products.csv": 26,
+  "livestock_identification_marks.csv": 9,
+  "herd_composition.csv": 78,
+  "household_type_crosswalk.csv": 58,
+  "place_type_livestock.csv": 113,
+  "anachronism_denylist_fauna.csv": 11,
+  "sources.csv": 68
+ },
+ "checks": {
+  "fish_resolve_water_body_template": true,
+  "fish_spawning_period_set": true,
+  "fish_species_per_river_lake_pf_ge_6": true,
+  "summer_wet_pf_have_bloodsucker": true,
+  "no_active_flying_insects_outdoors_in_winter": true,
+  "denylist_clean": true,
+  "herd_min_le_max": true,
+  "every_household_profile_has_herd_or_none": true,
+  "all_source_refs_resolve": true,
+  "no_empty_source_refs": true,
+  "pf_ids_valid": true,
+  "water_templates_valid_and_allowed": true,
+  "weights_match_class_rule": true,
+  "confidence_in_ABC": true,
+  "unique_ids": true,
+  "all_status_candidate": true
+ },
+ "fish_species_per_river_lake_pf": {
+  "river_channel": 28,
+  "riverbank": 33,
+  "lake_shore": 24,
+  "fishing_camp": 28,
+  "river_wharf": 25,
+  "ferry_landing": 28,
+  "bridge_crossing": 28,
+  "winter_ice_crossing": 24,
+  "marshy_stream": 26
+ },
+ "summer_wet_pf_bloodsuckers": {
+  "bog": [
+   "fa_ann_leeches",
+   "fa_ins_biting_midges",
+   "fa_ins_mosquitoes"
+  ],
+  "marshy_stream": [
+   "fa_ann_leeches",
+   "fa_ins_biting_midges",
+   "fa_ins_blackflies",
+   "fa_ins_mosquitoes"
+  ],
+  "riverbank": [
+   "fa_ann_leeches",
+   "fa_ins_blackflies",
+   "fa_ins_horseflies",
+   "fa_ins_mosquitoes"
+  ],
+  "lake_shore": [
+   "fa_ann_leeches",
+   "fa_ins_biting_midges",
+   "fa_ins_horseflies",
+   "fa_ins_mosquitoes"
+  ],
+  "floodplain_meadow": [
+   "fa_ann_leeches",
+   "fa_ins_horseflies",
+   "fa_ins_mosquitoes"
+  ],
+  "fishing_camp": [
+   "fa_ann_leeches",
+   "fa_ins_blackflies",
+   "fa_ins_body_louse",
+   "fa_ins_mosquitoes"
+  ],
+  "ferry_landing": [
+   "fa_ins_blackflies",
+   "fa_ins_mosquitoes"
+  ],
+  "river_wharf": [
+   "fa_ins_mosquitoes"
+  ],
+  "river_channel": [
+   "fa_ins_blackflies",
+   "fa_ins_mosquitoes"
+  ]
+ },
+ "presence_rows_by_table": {
+  "invertebrates_herps": 570,
+  "fish": 1209
+ },
+ "confidence_counts": {
+  "fish": {
+   "A": 11,
+   "B": 13,
+   "C": 14
+  },
+  "invertebrates_herps": {
+   "B": 12,
+   "C": 32,
+   "A": 1
+  },
+  "livestock_types": {
+   "A": 8,
+   "B": 19,
+   "C": 1
+  },
+  "fauna_presence": {
+   "B": 700,
+   "C": 676,
+   "A": 403
+  },
+  "livestock_care": {
+   "B": 10,
+   "C": 19
+  },
+  "herd_composition": {
+   "C": 78
+  }
+ },
+ "informational": {
+  "v6_household_tokens": 58,
+  "v6_tokens_unmapped": 0
+ },
+ "problems": {}
+}

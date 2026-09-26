@@ -1,0 +1,12 @@
+fa_id,name_ru,name_lat,name_en,category_ref,taxon_scope,region_id,source_refs,confidence,status
+fa_dom_cattle,Крупный рогатый скот,Bos taurus,Cattle,cat:fauna.domestic.cattle,universal,,wk:biology_physiology:fauna-domestic-cattle;claim:environment-p1-cattle;src:sablin-2007-rurikovo,A,candidate
+fa_dom_horse,Лошадь,Equus caballus,Horse,cat:fauna.domestic.horse,universal,,wk:biology_physiology:fauna-domestic-horse;claim:environment-p1-horse-transport;src:sablin-2007-rurikovo,A,candidate
+fa_dom_pig,Свинья,Sus scrofa domesticus,Pig,cat:fauna.domestic.pig,universal,,wk:biology_physiology:fauna-domestic-pig;claim:environment-p1-pig;src:sablin-2007-rurikovo,A,candidate
+fa_dom_sheep,Овца,Ovis aries,Sheep,cat:fauna.domestic.sheep,universal,,wk:biology_physiology:fauna-domestic-sheep;claim:environment-p1-sheep-goat,A,candidate
+fa_dom_goat,Коза,Capra hircus,Goat,cat:fauna.domestic.goat,universal,,wk:biology_physiology:fauna-domestic-goat;claim:environment-p1-sheep-goat;src:sablin-2007-rurikovo,A,candidate
+fa_dom_chicken,Курица домашняя,Gallus gallus domesticus,Chicken,cat:fauna.domestic.chicken,universal,,wk:biology_physiology:domestic-chicken-behavior;claim:environment-p1-bird-taxa,A,candidate
+fa_dom_goose,Гусь домашний,Anser anser domesticus,Domestic goose,cat:fauna.domestic.goose,universal,,claim:place-domestic-geese-can-move-as-a-flock-when-herded;master:n1230:material_item:liv0012,B,candidate
+fa_dom_duck,Утка домашняя,Anas platyrhynchos domesticus,Domestic duck,cat:fauna.domestic.duck,universal,,claim:environment-p1-bird-taxa;master:n1230:material_item:liv0009,B,candidate
+fa_dom_dog,Собака,Canis familiaris,Dog,cat:fauna.domestic.dog,universal,,wk:biology_physiology:fauna-domestic-dog;src:sablin-2007-rurikovo,A,candidate
+fa_dom_cat,Кошка,Felis catus,Cat,cat:fauna.domestic.cat,universal,,wk:biology_physiology:cat-hiding-places;src:sablin-2007-rurikovo;src:cats-novgorod-tver,A,candidate
+fa_dom_pigeon,Голубь сизый (полудомашний),Columba livia,Rock pigeon,cat:fauna.domestic.pigeon,universal,,wk:biology_physiology:rock-pigeon-built-sites-and-food;master:n1230:material_item:liv0017,C,candidate

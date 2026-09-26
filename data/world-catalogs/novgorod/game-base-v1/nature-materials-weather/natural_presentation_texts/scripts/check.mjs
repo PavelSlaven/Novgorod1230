@@ -24,7 +24,7 @@ const dict = Object.entries(ALL).flatMap(([ref, m]) => m.taxon_words.map((w) => 
 const allowBy = {}; for (const a of allow) (allowBy[a.g4_ref] ||= new Set()).add(a.member_ref);
 const SEASON_DENY = { summer: denyRegex(['снег', 'снеж', 'лёд', 'льд', 'лед', 'метел', 'иней', 'шуг', 'мороз', 'сугроб']), winter: denyRegex(['зелен', 'зелён', 'ливен', 'гроз', 'жар', 'комар', 'цвет', 'листв!']) };
 
-const snowWordRe = /сне[гж]|сугроб/i;
+const snowWordRe = /снег|снеж|сугроб|занес[её]н/i;
 const ids = new Set();
 for (const r of rows) {
   if (ids.has(r.npt_id)) E.push('duplicate ' + r.npt_id); ids.add(r.npt_id);
@@ -36,13 +36,15 @@ for (const r of rows) {
   const sd = SEASON_DENY[r.season_period]; if (sd) { const h = text.match(sd); if (h) E.push(`season contradiction "${h[0]}" in ${r.npt_id}`); }
   if (r.channel === 'acoustic' && !['1', '2', '3'].includes(r.loudness)) E.push(`acoustic without loudness ${r.npt_id}`);
   if (r.channel === 'visual' && r.loudness) E.push(`visual with loudness ${r.npt_id}`);
-  if (snowWordRe.test(text) && !r.requires) E.push(`snow word with empty requires: ${r.npt_id}`);
+  const snowText = text.replace(/бесснеж\p{L}*/giu, '');
+  if (snowWordRe.test(snowText) && (!r.requires || r.requires.includes('ground_state!=snow') || !/ground_state=snow|weather_state=|water_condition=/.test(r.requires))) E.push(`snow word without snow condition: ${r.npt_id}`);
 }
 let cells = 0;
 for (const g of g4index.g4) for (const s of SEASONS) for (const layer of LAYERS) {
   if (g.applicability[layer] !== 'present') continue;
   cells++;
   if (!rows.some((r) => r.g4_ref === g.g4_id && r.season_period === s && r.layer === layer && r.clear_text && r.partial_text)) E.push(`missing ${g.g4_short}/${s}/${layer}`);
+  if (s === 'winter' && layer === 'tree_layer' && !rows.some((r) => r.g4_ref === g.g4_id && r.season_period === s && r.layer === layer && ['default', 'no_snow'].includes(r.condition))) E.push(`missing no-snow trees ${g.g4_short}`);
 }
 const used = new Set(allow.map((a) => a.member_ref));
 for (const g of g4index.g4) for (const m of g.members) used.add(m.ref);

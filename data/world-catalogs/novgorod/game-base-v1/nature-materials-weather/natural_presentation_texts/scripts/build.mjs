@@ -81,7 +81,12 @@ for (const g of g4index.g4) {
         clear = t[s][0].replace('{taxa_winter}', joinRu(names)).replace('{taxa}', s === 'winter' ? '' : `среди них ${joinRu(names)}`);
       } else clear = t.generic[0];
       const taxaSrc = [...new Set(tx.flatMap((k) => expandSrc(ALL_MEMBERS[k]?.src || [])))];
-      add(g, 'tree_layer', s, s === 'winter' ? 'snow' : 'default', 'visual', clear, t[s][1], { cls: g.tree, src: taxaSrc });
+      if (s === 'winter' && /снег|сугроб/i.test(clear)) {
+        add(g, 'tree_layer', s, 'snow', 'visual', clear, t[s][1], { cls: g.tree, src: taxaSrc });
+        const bareNames = tx.map((k) => L.TREE_NAMES[k].winter_no_snow || L.TREE_NAMES[k].winter);
+        const bare = t[s][0].replace('{taxa_winter}', joinRu(bareNames));
+        add(g, 'tree_layer', s, 'no_snow', 'visual', bare, t[s][1], { cls: g.tree, src: taxaSrc });
+      } else add(g, 'tree_layer', s, 'default', 'visual', clear, t[s][1], { cls: g.tree, src: taxaSrc });
     }
     if (app.shrub_layer === 'present' && g.shrub) {
       const sh = L.SHRUB[g.shrub];
@@ -108,7 +113,8 @@ for (const g of g4index.g4) {
       if (frags.length) {
         if (s === 'winter') {
           add(g, 'natural_materials', s, 'snow', 'visual', L.MATERIALS_FRAME.winter[0].replace('{list}', joinRu(frags)), L.MATERIALS_FRAME.winter[1], { cls: g.ambient_materials.join('+'), requires: REQ.snow });
-          add(g, 'natural_materials', s, 'no_snow', 'visual', L.MATERIALS_FRAME.winter_no_snow[0].replace('{list}', joinRu(frags)), L.MATERIALS_FRAME.winter_no_snow[1], { cls: g.ambient_materials.join('+'), requires: REQ.no_snow });
+          const bareFrags = g.ambient_materials.map((m) => L.MATERIALS[m]?.winter_no_snow || L.MATERIALS[m]?.winter).filter(Boolean);
+          add(g, 'natural_materials', s, 'no_snow', 'visual', L.MATERIALS_FRAME.winter_no_snow[0].replace('{list}', joinRu(bareFrags)), L.MATERIALS_FRAME.winter_no_snow[1], { cls: g.ambient_materials.join('+'), requires: REQ.no_snow });
         } else { const f = L.MATERIALS_FRAME[s]; add(g, 'natural_materials', s, 'default', 'visual', f[0].replace('{list}', joinRu(frags)), f[1], { cls: g.ambient_materials.join('+') }); }
       }
     }

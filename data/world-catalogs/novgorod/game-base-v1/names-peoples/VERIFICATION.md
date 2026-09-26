@@ -214,3 +214,8 @@ No row in the group is fabricated. The problems are overstated confidence, misla
 3. разнести содержимое по полям для chud_est, yem_sum и izhora;
 4. дописать ¶388 и ¶471;
 5. синхронизировать README.
+
+## Правки rework (C001)
+
+- Было: `pp_novgorod_rus` имел B при единственном `medieval_general`-источнике; смоляне отсутствовали, поля трёх народов смешивали язык, археологию и историю, ссылки ¶388/¶471 отсутствовали. Сделано: новгородцы C с гипотезой Янина как атрибуцией; смоляне добавлены по локальным книжным ¶884/¶912 с оговоркой о спорной датировке; поля и ссылки исправлены. Итого 24 строки, 8 `people`.
+- Проверки: `node scripts/build-peoples-origins.mjs` — 24 строки; сборщик сверил четыре добавленных абзаца с локальными evidence CSV; `pp_novgorod_rus=C`, `pp_smolyane=B` проверены readback; локальный `git diff --check` — OK. Статус candidate; новый verdict не утверждается.

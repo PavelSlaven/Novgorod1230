@@ -73,6 +73,19 @@ for (const r of rows) {
   if (r.kind === "denylist" && (!r.match_pattern || !r.match_pattern.trim())) {
     errors.push(`${r.an_id}: kind=denylist row has no match_pattern (needed for the brief's cross-domain scan)`);
   }
+  if (r.kind === "denylist" && r.match_pattern) {
+    try {
+      const pattern = new RegExp(r.match_pattern, "iu");
+      if (!pattern.test(r.term_ru)) errors.push(`${r.an_id}: pattern misses its own term_ru`);
+      const negatives = {
+        an_gunpowder_firearm: ["опушка", "опушкой"],
+        an_tomato: ["автоматически", "стоматологи"],
+        an_sugar_granulated: ["засахарившийся мёд"],
+        an_tea: ["иван-чай"],
+      };
+      for (const word of negatives[r.an_id] || []) if (pattern.test(word)) errors.push(`${r.an_id}: false match ${word}`);
+    } catch (error) { errors.push(`${r.an_id}: invalid JavaScript Unicode regex: ${error.message}`); }
+  }
 }
 
 for (const term of CATALOG_ANACHRONISM_TERMS) {

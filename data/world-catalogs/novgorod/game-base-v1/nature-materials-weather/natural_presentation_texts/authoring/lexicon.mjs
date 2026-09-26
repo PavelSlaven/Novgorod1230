@@ -127,7 +127,7 @@ export const TREES = {
 // Russian names for tree taxa in phrases (genus level) + phenology type (WK residual-tree-properties-v1).
 export const TREE_NAMES = {
   'Pinus (pine)': { ru: 'сосна', plural: 'сосны', evergreen: true, winter: 'сосны темнеют хвоей' },
-  'Picea (spruce)': { ru: 'ель', plural: 'ели', evergreen: true, winter: 'ели держат снег на лапах' },
+  'Picea (spruce)': { ru: 'ель', plural: 'ели', evergreen: true, winter: 'ели держат снег на лапах', winter_no_snow: 'ели темнеют хвоей' },
   'Betula (birch)': { ru: 'берёза', plural: 'берёзы', evergreen: false, winter: 'берёзы белеют голыми стволами' },
   'Alnus (alder)': { ru: 'ольха', plural: 'ольха', evergreen: false, winter: 'ольха стоит без листа, с тёмными шишечками на ветках' },
   'Salix (willow)': { ru: 'ива', plural: 'ивы', evergreen: false, winter: 'ивы стоят без листа' },
@@ -176,11 +176,11 @@ export const MATERIALS = {
   grass_shrub_litter: { winter: 'сухие стебли', summer: 'сухая трава с сучками', spring: 'прошлогодняя трава', autumn: 'бурая трава' },
   sedge_reed_litter: { winter: 'сухие стебли тростника', summer: 'гниющие стебли у воды', spring: 'полёгшие прошлогодние стебли', autumn: 'бурые стебли' },
   wetland_herb_litter: { winter: 'сухие болотные травы', summer: 'гниющие болотные травы', spring: 'прошлогодние болотные травы', autumn: 'полёгшие болотные травы' },
-  small_woody_debris: { winter: 'занесённые сучья', summer: 'сучья с мелкими ветками', spring: 'принесённые водой ветки', autumn: 'мокрые сучья' },
-  shrub_woody_debris: { winter: 'занесённые прутья', summer: 'сухие прутья', spring: 'нанесённые водой прутья', autumn: 'мокрые ветки' },
+  small_woody_debris: { winter: 'занесённые сучья', winter_no_snow: 'сухие сучья', summer: 'сучья с мелкими ветками', spring: 'принесённые водой ветки', autumn: 'мокрые сучья' },
+  shrub_woody_debris: { winter: 'занесённые прутья', winter_no_snow: 'сухие прутья', summer: 'сухие прутья', spring: 'нанесённые водой прутья', autumn: 'мокрые ветки' },
   woody_debris: { winter: 'палые ветки', summer: 'палые сучья', spring: 'обломанные ветки', autumn: 'мокрые палые ветки' },
   driftwood: { winter: 'вмёрзшие в лёд коряги', summer: 'серебристые от воды стволы плавника', spring: 'свежий плавник, выброшенный водой', autumn: 'намокший плавник' },
-  needle_litter: { winter: 'хвоя на снегу', summer: 'хвоя с шишками', spring: 'хвоя с шишками', autumn: 'намокшая хвоя' },
+  needle_litter: { winter: 'хвоя на снегу', winter_no_snow: 'смёрзшаяся хвоя', summer: 'хвоя с шишками', spring: 'хвоя с шишками', autumn: 'намокшая хвоя' },
   leaf_litter: { winter: 'смёрзшаяся листва', summer: 'прелая листва', spring: 'прошлогодняя листва', autumn: 'свежий опад' },
   water_sorted_sediment: { winter: 'смёрзшийся песок', summer: 'промытый водой песок с мелкой галькой', spring: 'свежий песчаный нанос', autumn: 'мокрый песок' },
 };
@@ -245,7 +245,7 @@ export const AUDIBLE = {
   },
   wind_and_ground_cover: {
     winter: { snow: ['Тихо; снег глушит звуки, только ветер шумит в вершинах.', 'Почти тихо.', 1], no_snow: ['Ветер шуршит мёрзлой подстилкой.', 'Доносится шорох.', 1] },
-    spring: { thawed: ['Капает с веток, шуршит талая вода под снегом.', 'Доносится капель.', 1] },
+    spring: { thawed: ['Капает с веток, шуршит талая вода под деревьями.', 'Доносится капель.', 1] },
     summer: { default: ['Ветер шумит в кронах, поскрипывают стволы.', 'Доносится шум.', 1] },
     autumn: { default: ['Шуршит под ветром подстилка, с веток падают капли.', 'Доносится шорох.', 1] },
   },

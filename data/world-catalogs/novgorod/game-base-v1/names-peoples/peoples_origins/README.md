@@ -15,9 +15,9 @@ Status: candidate.
   (`ssh servak … data/books/evidence/names-peoples.csv`, domain
   `peoples_origins`), hardcoded in the script as `BOOK_ATTESTED_PEOPLES`
   with a `book:<book_id> §<section_path> ¶<para_no>` citation per fact —
-  7 distinct `people` rows this pass added. `entity_kind = people`.
+  8 distinct `people` rows. `entity_kind = people`.
 
-Writes `peoples_origins.csv` (23 rows).
+Writes `peoples_origins.csv` (24 rows).
 
 ### `entity_kind` (added this pass)
 
@@ -29,13 +29,13 @@ row is.
 
 ## Counts (from script output)
 
-- 23 rows: 10 foreigner/guest groups (FG001–FG010, `guest_itinerant`) + 6
+- 24 rows: 10 foreigner/guest groups (FG001–FG010, `guest_itinerant`) + 6
   neighbor lands (Pskov, Ladoga-Izhoria, Karelia, Zavolochye, Belozero,
-  Vladimir-Suzdal, `neighbor_land`) + 7 book-attested peoples added this
+  Vladimir-Suzdal, `neighbor_land`) + 8 book-attested peoples in this
   pass (`people`): новгородцы (`pp_novgorod_rus`), водь (`pp_vod`), ижора
   (`pp_izhora`), корела (`pp_korela`), весь (`pp_ves`), чудь/эсты
   (`pp_chud_est`, bundles эстонскую чудь и чудь заволочскую — one brief
-  people, not two), емь/сумь (`pp_yem_sum`).
+  people, not two), емь/сумь (`pp_yem_sum`), смоляне (`pp_smolyane`).
 - `pp_novgorod_rus` is keyed to `novgorod_rus` on purpose, so that
   `personal_names.csv`'s `people_ref = novgorod_rus` now resolves to a
   real row.
@@ -60,19 +60,18 @@ The brief names: новгородцы, псковичи, суздальцы/вл
 | емь/сумь | `pp_yem_sum` | added this pass, book evidence |
 | псковичи | `pp_pskov_land` | `neighbor_land`, not a commoner-people row |
 | суздальцы/владимирцы | `pp_vladimir_suzdal_land` | `neighbor_land`, not a commoner-people row |
-| **смоляне** | **none** | **still a real gap** — no row in the read-only book evidence or other sources checked this pass; not invented |
+| смоляне | `pp_smolyane` | book evidence: смоленские гости в Новгороде; датировка Всеволодовой грамоты спорна |
 
 `pp_karelian_land` and `pp_ladoga_izhoria_land` remain `neighbor_land`
 rows (route/trade-basis for that direction of travel), separate from the
 `people` rows `pp_korela` and `pp_izhora` above — a land and the people
 who live there are not the same row.
 
-**Смоляне is the one brief people this pass could not source** — closing
-it needs new sourced research (real gap, not invented).
+Смоляне добавлены по локальному `books-evidence-v1/economy-trade-measures.csv` (¶884, ¶912); спорная датировка Всеволодовой грамоты сохранена в `presence_note`.
 
 Every `guest_itinerant`/`neighbor_land` row still has `clothing_profile_ref`
 and `name_pool_ref` either pointing at the source-profile id or
-`unassigned` (per the acceptance rule's gap flag); the 7 new `people` rows
+`unassigned` (per the acceptance rule's gap flag); the 8 `people` rows
 are `unassigned` on all three of `clothing_profile_ref` /
 `name_pool_ref` / `legal_status_ref` too — filling those needs a
 clothing/name-pool pass this collector did not run. `presence_note` /

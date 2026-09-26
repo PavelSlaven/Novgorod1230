@@ -169,3 +169,8 @@ Fix scope: correct the status and confidence of the ANTI rows; decide on the own
 |---|---|
 | hazards_dangers/hazards.csv | approve_with_limits |
 | anachronism_denylist_lexicon/denylist.csv | rework (match_pattern, узкий) |
+
+## Правки rework (C001)
+
+- Было: пять паттернов не находили собственный кириллический термин, а `пушк`, `томат`, `сахар`, `чай` давали ложные совпадения. Сделано: JavaScript `RegExp` с `iu`, `\p{L}` и левые границы; `check.mjs` проверяет каждый термин и отрицательные примеры. README фиксирует диалект и соседние списки без решения об их владельце.
+- Проверки: `node anachronism_denylist_lexicon/scripts/build.mjs` — 20 строк; `node anachronism_denylist_lexicon/scripts/check.mjs` — OK; локальный `git diff --check` — OK. Статус candidate; новый verdict не утверждается.

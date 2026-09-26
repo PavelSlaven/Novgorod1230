@@ -480,8 +480,8 @@
       "document_id": "world-knowledge-platform-implementation-contract",
       "canonical_path": "corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md",
       "file_name": "world_knowledge_platform_implementation_contract.md",
-      "sha256": "c10913f4d2840b9a05bf12167bce73e47409114056aa2a54290d156682b71df0",
-      "bytes": 159740,
+      "sha256": "0262d3d2aa809444c61cf72c9e1d4a00af7392c76664ff15cbba9fc5be13184e",
+      "bytes": 159904,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

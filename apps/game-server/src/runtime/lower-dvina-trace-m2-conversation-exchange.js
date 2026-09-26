@@ -141,6 +141,12 @@ function npcAtPlayerPosition(npc, position) {
       || (typeof npc.anchor_id === 'string'
         && npc.anchor_id === position?.g5_anchor_id));
 }
+/** Player conversation model with committed-state WK ports (A1). */
+export function m2PlayerConversationModel(context) {
+  return withPlayerWorldKnowledgeAuthoritative(
+    context.playerConversationModel, () => context.state);
+}
+
 export async function executeM2ConversationExchange(context, {
   initialNpcDecision = null
 } = {}) {
@@ -156,8 +162,7 @@ export async function executeM2ConversationExchange(context, {
   const exchange = await runConversationExchange(exchangeInput, {
     conversationModel: context.playerPlan ? async () =>
       structuredClone(context.playerPlan)
-      : withPlayerWorldKnowledgeAuthoritative(
-        context.playerConversationModel, () => context.state),
+      : m2PlayerConversationModel(context),
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     applyPlayerContribution: ({ working_state: working, plan }) =>
       applyPlayerPlan(workingConversationContext(context, working), working, plan),
@@ -302,8 +307,7 @@ export async function executeM2ConversationExchange(context, {
 export async function prepareM2PlayerConversationPlan(context) {
   const decision = await requestPlayerConversationContribution({
     request: buildPlayerRequest(context),
-    conversationModel: withPlayerWorldKnowledgeAuthoritative(
-      context.playerConversationModel, () => context.state),
+    conversationModel: m2PlayerConversationModel(context),
     revalidateStateVersion: context.revalidateStateVersion
   });
   return decision.plan;

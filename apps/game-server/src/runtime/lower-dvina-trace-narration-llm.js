@@ -84,11 +84,12 @@ const INSPECTION_REPAIR_RULE = 'For an inspection or perception current beat wit
 const narrationWkStore = new AsyncLocalStorage();
 
 export function createLowerDvinaTraceNarrationService({ roleRunner,
-  worldKnowledgeGrounder = null } = {}) {
+  worldKnowledgeGrounder = null, telemetry = null } = {}) {
   if (typeof roleRunner?.run !== 'function') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING', 'Configured LLM role runner is required.', { status: 503 });
   const runRole = (roleId, instruction) => async (request) =>
-    runNarrationRole(roleRunner, roleId, instruction, request, worldKnowledgeGrounder);
+    runNarrationRole(roleRunner, roleId, instruction, request,
+      worldKnowledgeGrounder, telemetry);
   const ports = {
     writer: { generate: runRole('gameplay_narrator',
       `${WRITER_SHAPE} ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`) },
@@ -159,10 +160,10 @@ function stripNarrationServiceFields(value) {
 }
 
 async function runNarrationRole(roleRunner, roleId, instruction, request,
-  worldKnowledgeGrounder = null) {
+  worldKnowledgeGrounder = null, telemetry = null) {
   const store = narrationWkStore.getStore();
   const grounded = await resolveNarrationGrounded(roleId, request, store,
-    worldKnowledgeGrounder);
+    worldKnowledgeGrounder, telemetry);
   const systemInstruction = roleId === 'gameplay_narrator_auditor'
     ? [narrationAuditInstruction(request),
       ...worldKnowledgeFactualClosure(grounded)].join(' ')
@@ -179,7 +180,8 @@ async function runNarrationRole(roleRunner, roleId, instruction, request,
   return assembleNarrationRoleOutput(roleId, response.output, request);
 }
 
-async function resolveNarrationGrounded(roleId, request, store, worldKnowledgeGrounder) {
+async function resolveNarrationGrounded(roleId, request, store,
+  worldKnowledgeGrounder, telemetry = null) {
   // F1: ground once on writer narration_request; reuse pack; never re-ground repair/auditor.
   if (roleId === 'gameplay_narrator' && worldKnowledgeGrounder != null) {
     try {
@@ -193,18 +195,28 @@ async function resolveNarrationGrounded(roleId, request, store, worldKnowledgeGr
       if (store) store.pack = grounded?.world_knowledge ?? null;
       return grounded;
     } catch (error) {
-      // §73/N3: degrade only on WK/turn-WK errors; leave trace; rethrow program bugs.
+      // §73/N3: degrade only on WK/turn-WK errors; emit observable trace; rethrow bugs.
       const code = typeof error?.code === 'string' ? error.code : '';
       if (code.startsWith('WORLD_KNOWLEDGE_')
           || code.startsWith('TURN_WORLD_KNOWLEDGE_')) {
+        const requestId = request?.request_id ?? request?.request?.request_id
+          ?? null;
+        const degradation = Object.freeze({
+          code, purpose: 'narration', request_id: requestId
+        });
         if (store) {
           store.pack = null;
-          store.degradation = Object.freeze({
-            code,
-            purpose: 'narration',
-            request_id: request?.request_id ?? request?.request?.request_id ?? null
-          });
+          store.degradation = degradation;
         }
+        // A4: ALS store dies after run(); telemetry keeps the §73 trace.
+        telemetry?.onGameplayTrace?.({
+          event: 'world_knowledge_narration_degraded',
+          ...degradation
+        });
+        telemetry?.onDetail?.({
+          event: 'world_knowledge_narration_degraded',
+          ...degradation
+        });
         return request;
       }
       throw error;

@@ -3,6 +3,24 @@ import { createLowerDvinaTraceNpcAutonomousModel, createLowerDvinaTraceNpcCombat
   createLowerDvinaTraceNpcSemanticModel, createLowerDvinaTracePlayerConversationModel } from '../lower-dvina-trace-phase-2-llm.js';
 import { serverError } from '../../errors.js';
 
+/** Production v17 NPC/player semantic ports (A2). Exported for direct wire tests. */
+export function createSpatialV3ProductionV17NpcRuntimePorts({
+  roleRunner, worldKnowledgeGrounder
+} = {}) {
+  return {
+    playerConversationModel: createLowerDvinaTracePlayerConversationModel({
+      roleRunner, worldKnowledgeGrounder
+    }),
+    npcSemanticModel: createLowerDvinaTraceNpcSemanticModel({
+      roleRunner, worldKnowledgeGrounder
+    }),
+    npcAutonomousModel: createLowerDvinaTraceNpcAutonomousModel({
+      roleRunner, worldKnowledgeGrounder
+    }),
+    npcCombatModel: createLowerDvinaTraceNpcCombatModel({ roleRunner })
+  };
+}
+
 export function createSpatialV3RuntimeBindings(context = {}) {
   const { release, targetStartRuntime: runtime, targetRuntimeProfiles: profiles, worldKnowledge } = context;
   if (release?.release_id !== 'spatial-v3-production-v17'
@@ -28,14 +46,7 @@ export function createSpatialV3RuntimeBindings(context = {}) {
   return createSpatialV3ProductionBindings(context, {
     technicalCommandBoundary: 'production-v17',
     publicationLoader: async () => { throw serverError('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'An approved authored target publication is required.'); },
-    createNpcRuntimePorts: ({ roleRunner, worldKnowledgeGrounder }) => ({
-      playerConversationModel: createLowerDvinaTracePlayerConversationModel({
-        roleRunner, worldKnowledgeGrounder
-      }),
-      npcSemanticModel: createLowerDvinaTraceNpcSemanticModel({ roleRunner, worldKnowledgeGrounder }),
-      npcAutonomousModel: createLowerDvinaTraceNpcAutonomousModel({ roleRunner, worldKnowledgeGrounder }),
-      npcCombatModel: createLowerDvinaTraceNpcCombatModel({ roleRunner })
-    })
+    createNpcRuntimePorts: createSpatialV3ProductionV17NpcRuntimePorts
   });
 }
 

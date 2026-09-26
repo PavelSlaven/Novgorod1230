@@ -1019,10 +1019,12 @@ social_behavior
 support и source-grounded QA. Они не подменяют исторически контекстный
 `social_law_economy` и не устанавливают состояние, мотив, знание, согласие,
 отношение, репутацию или обязанность конкретного actor. Claims этого слоя
-остаются `domain_internal_only`; решения NPC и exact mechanics сохраняют
-прежних владельцев. Общие геологические, гидрологические и атмосферные
-premises используют отдельный universal profile существующего `environment`,
-не расширяя историческую применимость его contextual claims.
+помечены `domain_internal_only`: actor-facing `conversation`/`narration` их
+не показывают, а `npc_decision` видит их как устройство мира (D15 / §14 / §67).
+Решения NPC и exact mechanics сохраняют прежних владельцев. Общие геологические,
+гидрологические и атмосферные premises используют отдельный universal profile
+существующего `environment`, не расширяя историческую применимость его
+contextual claims.
 
 ---
 

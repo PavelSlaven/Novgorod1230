@@ -109,7 +109,7 @@ export function createTraceTurnRuntime({
         year: 1230, placeRefs: ['region_novgorod_land']
       });
   const narrationService = createNarrationService({
-    roleRunner, worldKnowledgeGrounder
+    roleRunner, worldKnowledgeGrounder, telemetry: llmDiagnostics.telemetry
   });
   const authoredOpeningNarration = createAuthoredOpeningNarrationService({
     roleRunner, llmDiagnostics

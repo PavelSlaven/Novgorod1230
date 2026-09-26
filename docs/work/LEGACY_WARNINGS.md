@@ -48,6 +48,8 @@
 | 041 | `first-playable-party-migration.test.js` | тест ожидает 35 миграций при 36 | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 | 042 | `code_driven_world_materialization_architecture.md`, `items_and_property.txt`, `turn_step_llm_contract.md` (+ гайд `npc_generation_profiles.txt`) | ACTIVE-нормы main против PC §9.1 до #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 | 043 | `scripts/m2c-capacity-successor.mjs`, `spatial_architecture_standard_g0_g6.md` | pin sha spatial_architecture после шага 3 #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 044 | `temporal_world…`, CONTRACT_INDEX v17 note | погода D7: next-state в turn + inertia profile | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 045 | `turn_step`/`items`/`npc` D9/D14 | опознавательный текст и узнавание владельцем — долг кода v17 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 
 ## Записи
 
@@ -207,4 +209,14 @@
 ### LW-043 — pin `spatial_architecture_standard` в `m2c-capacity-successor.mjs`
 - **Что.** `scripts/m2c-capacity-successor.mjs:14` закрепляет sha256 `data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md`. После шага 3 #146 («целевой»→«действующий» в §0.1) pin расходится; проверка не gate. Перепинивать в docs-задаче нельзя (повторное утверждение данных).
 - **Как жить.** Не чинить в #146; обновить pin в CR данных/реализации M2c вместе с утверждением по WR §21.1.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+### LW-044 — погода D7: выбор следующего состояния и инерция профиля
+- **Что.** Норма D7 ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)): следующее состояние погоды выбирает `@rus/turn` детерминированным RandomSource (seed партии, G0-зона, 6-часовой интервал) из утверждённого профиля v2 с инерцией; `@rus/environment-state` применяет. Код v17 ещё не делает выбор следующего состояния и инерцию.
+- **Как жить.** Не имитировать живую смену погоды в тестах/доках как текущее поведение; реализация — CR M2c.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+### LW-045 — D9/D14: опознавательный текст и узнавание владельцем (долг кода v17)
+- **Что.** Нормы D9/D14 ACTIVE в корпусе (#146 шаг 2–3), но код v17 ещё расходится: `plan-schema.js` требует `mass_grams`; `action-produced-output-semantics.js` принимает любой `inscription_text`; узнавания владельцем при восприятии нет.
+- **Как жить.** В нормах помечать «действующая норма; код v17 — долг CR реализации M2c (LW-045)»; не ослаблять норму под текущий код.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)

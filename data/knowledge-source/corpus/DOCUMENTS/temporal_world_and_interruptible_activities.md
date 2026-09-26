@@ -189,7 +189,7 @@ Narration:
 | Perception, knowledge, memory, player-safe package | `@rus/visibility-knowledge-memory` |
 | NPC schedule/runtime/reaction semantics | один явно назначенный NPC runtime owner; выбор package фиксируется ADR после inventory |
 | Place/access dynamic state and transition semantics | один явно назначенный spatial/place runtime owner, зафиксированный ADR после inventory; `@rus/turn` не владеет portal/access state |
-| Weather state transitions | следующее состояние выбирает `@rus/turn` детерминированным RandomSource по (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D7); `@rus/environment-state` проверяет и применяет погоду и свет и считает моменты смены; начальное состояние выбирает `@rus/materialization`; `@rus/contracts/weather-state` — только contract layer. Выбор следующего состояния в turn и инерция профиля — долг CR реализации M2c (код v17 ещё не делает) |
+| Weather state transitions | следующее состояние выбирает `@rus/turn` детерминированным RandomSource по (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D7); `@rus/environment-state` проверяет и применяет погоду и свет и считает моменты смены; начальное состояние выбирает `@rus/materialization`; `@rus/contracts/weather-state` — только contract layer. Выбор следующего состояния в turn и инерция профиля — долг CR реализации M2c (LW-044; код v17 ещё не делает) |
 | Propagation lifecycle и remote aggregate catch-up | один явно назначенный world-process runtime owner; semantic effects остаются у соответствующих domains |
 | Historical phase activation | historical/time contract owner применяет только source-backed records; содержательные effects принадлежат соответствующим domains |
 | Orchestration, decision boundary, proposal merge, combined plan | `@rus/turn` |
@@ -768,7 +768,7 @@ validate request, pins, clock and execution
 → commit atomically
 ```
 
-`@rus/turn` не вычисляет body, traversal или NPC formulas и не вычисляет weather formulas. Следующее состояние погоды выбирает `@rus/turn` детерминированным RandomSource (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов; `@rus/environment-state` проверяет и применяет погоду и свет. Snapshots остальных owners передаются им, proposals объединяет `@rus/turn`. Выбор следующего состояния погоды в turn — долг CR реализации M2c (код v17 ещё не делает).
+`@rus/turn` не вычисляет body, traversal или NPC formulas и не вычисляет weather formulas. Следующее состояние погоды выбирает `@rus/turn` детерминированным RandomSource (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов; `@rus/environment-state` проверяет и применяет погоду и свет. Snapshots остальных owners передаются им, proposals объединяет `@rus/turn`. Выбор следующего состояния погоды в turn — долг CR реализации M2c (LW-044; код v17 ещё не делает).
 
 ### 11.3. Результат
 
@@ -907,7 +907,7 @@ Weather может влиять на:
 
 Отсутствующий required weather catalog — readiness blocker.
 
-Действующая норма; выбор следующего состояния в turn и инерция профиля — долг CR реализации M2c (код v17 ещё не делает; LW-028/LW-029).
+Действующая норма; выбор следующего состояния в turn и инерция профиля — долг CR реализации M2c (LW-044; код v17 ещё не делает).
 
 ### 14.3. Исторические фазы
 

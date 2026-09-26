@@ -71,7 +71,7 @@ category → template → profile → rule → instance
 
 `world_base.graph_nodes` и `world_base.graph_edges` хранят канонические G0–G4. Конкретный G5 создаётся для стартового G4, при первом фактическом входе в другой G4 либо при явной repair/migration-процедуре.
 
-### D-005. Базовые NPC создаются кодом
+### D-005. Базовые NPC создаются кодом (цели и страхи обычного NPC задаёт код)
 
 Ключевые и значимые NPC создаются только по authority. Обычного NPC создаёт **код** ([#133 D1, D8](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154); PC §9.1; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029).
 

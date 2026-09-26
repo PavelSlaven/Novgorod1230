@@ -32,7 +32,7 @@
 
 ## 2. Статусы
 
-Метки ниже — ровно те, что стоят в таблицах этого индекса и есть в `INDEX_LABEL_MAP` (`tools/docs-tools/src/contract-index-corpus-status.js`). Новых меток не вводить; код карты не менять.
+Метки статуса — из `INDEX_LABEL_MAP` (`tools/docs-tools/src/contract-index-corpus-status.js`); в таблицах этого индекса сейчас используются: `GOVERNING`, `ACTIVE`, `ACTIVE SPECIALIZATION`, `ACTIVE DOMAIN NORM`, `PROPOSED UMBRELLA TARGET`, `UNDECLARED / DOMAIN GUIDE`, `REFERENCE`, `REFERENCE / DOMAIN GUIDE`, `REFERENCE / KNOWLEDGE GUIDE`, `REFERENCE / TEMPLATE`, `REFERENCE / LEGACY`, `SUPERSEDED / REDIRECT`, `REDIRECT`, `MIGRATION / ROLLBACK`. Метка `ACTIVE / navigation index` — у самого индекса; `PROPOSED` и `REFERENCE FOR PROPOSED POLICY` остаются в карте меток, даже если в текущих таблицах строк с ними нет. Новых меток не вводить; код карты не менять. Источник формулировки: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.14 (REVIEW-028 F6).
 
 | Статус | Значение |
 |---|---|
@@ -67,7 +67,7 @@ Governing-корпус `AGENTS.md` (§1.3) также включает:
 - [`docs/governance/README.md`](../../../../docs/governance/README.md) — преамбула, §1.2, карта старых разделов;
 - [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30;
 - [`docs/governance/ARCHITECTURE_INVARIANTS.md`](../../../../docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28;
-- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §21.1, §24, §24.1, §24.2, §29;
+- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §21.1, §24, §24.1, §24.2, §29; Источник явного перечисления §21.1/§24.1/§24.2: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.14.
 - [`docs/governance/AUDIT_RULES.md`](../../../../docs/governance/AUDIT_RULES.md) — §25, §25.1;
 - [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.
 
@@ -105,7 +105,7 @@ Contract Auditor не копирует весь generated module index сюда 
 
 Active status applies only to the scope stated by each header and active profile. Exact schema/operation names must be verified against current code and tests.
 
-**Применимость к v17.** ACTIVE-контракты этого раздела применяются к production runtime v17 (пара `novgorod_world_v17` / `novgorod_party_v17`) в заявленном scope; где код v17 ещё расходится с нормой (ordinary presence, погода D7, D9/D14 и др.), это долг CR реализации M2c (LW-028/LW-029), а не основание читать норму как proposed. Umbrella [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) остаётся `PROPOSED UMBRELLA TARGET`; его разделы O2a/O2b/F1/S1/N1 — входные материалы для шагов 1–2 #146, не active сами по себе.
+**Применимость к v17.** ACTIVE-контракты этого раздела применяются к production runtime v17 (пара `novgorod_world_v17` / `novgorod_party_v17`) в заявленном scope; где код v17 ещё расходится с нормой, это долг CR реализации M2c, а не основание читать норму как proposed: ordinary presence — LW-028/LW-029; погода D7 — LW-044; D9/D14 — LW-045. Упоминание v16 в строке WK выше — историческое (sole production owner на момент PR92); текущая применимость — v17. Umbrella [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) остаётся `PROPOSED UMBRELLA TARGET`; его разделы O2a/O2b/F1/S1/N1 — входные материалы для шагов 1–2 #146, не active сами по себе. Источник заметки: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.14.
 
 ## 5. Explicit non-production, migration and supporting contracts
 

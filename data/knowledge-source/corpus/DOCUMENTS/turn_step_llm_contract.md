@@ -1,7 +1,7 @@
 # Контракт свободной заявки игрока и пошагового LLM-арбитра
 
 **Статус:** `active`, production player-turn contract\
-**Целевой владелец:** `@rus/turn`\
+**Владелец:** `@rus/turn`\
 **Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`\
 **Дата активации:** 2026-08-03\
 **Production basis:** Lower Dvina Trace scenario revision 13, `turn_step_plan_v1`\
@@ -1485,7 +1485,8 @@ NPC runtime roles, inputs и session contracts этим изменением н�
 
 Документ фиксирует:
 
-- ссылку на владельца текста промпта semantic step planner (§20) и схему `turn_step_plan_v1`;
+- шаблон роли `turn_step_planner` — справка; текст промпта принадлежит коду (§20);
+- схему `turn_step_plan_v1`;
 - новый главный turn pipeline;
 - distinction direct / generic_check / domain_request;
 - правило reality adaptation;
@@ -1580,7 +1581,7 @@ Module doc публикует contract и владельца:
 9. Горсть песка создаётся с отдельным exact mechanics snapshot.
 10. Вторая горсть получает независимую оценку массы.
 11. Обычный камень может быть ambient ordinary result.
-12. Монета, письмо, оружие или улика не создаются LLM как ambient ordinary result.
+12. Рукотворная вещь (в т.ч. монета, письмо, оружие) не создаётся LLM как ambient: она существует только через presence ([`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) §3A) или A1; улика — только по authority-записи.
 13. Container contents не попадает в LLM до code-owned access.
 14. Step cap останавливает цикл без повторного применения уже выполненных действий.
 15. Невалидный LLM output не создаёт частичного состояния.
@@ -1592,9 +1593,11 @@ Module doc публикует contract и владельца:
 
 ## 20. Схема ответа модели и владелец текста промпта
 
-Текст system prompt semantic step planner принадлежит коду и в этом контракте не дублируется как «канонический промпт».
+Текст system prompt semantic step planner принадлежит коду и в этом контракте не дублируется как «канонический промпт». Источник требований к полномочиям LLM: [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D9/D10; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.9.
 
-**Владелец текста промпта:** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-planner-instructions.js` (`TURN_STEP_PLANNER_INSTRUCTIONS`); вызов — `apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js` (role `intent_router` / turn-step planner).
+**Роли:** планировщик хода — `turn_step_planner` (repair — `turn_step_planner_repair`); `intent_router` — semantic resolver, не планировщик.
+
+**Владелец текста промпта:** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-planner-instructions.js` (`TURN_STEP_PLANNER_INSTRUCTIONS`); system prompt собирается в `apps/game-server/src/runtime/lower-dvina-trace-phase-2-llm.js` из `TURN_STEP_PLANNER_INSTRUCTIONS` и `apps/game-server/src/runtime/lower-dvina-trace-phase-2-turn-step-prompts.js`.
 
 ### Схема ответа
 
@@ -1603,13 +1606,15 @@ Module doc публикует contract и владельца:
 ### Инварианты
 
 1. Заявка адаптируется к реальности мира; результата `blocked` нет.
-2. LLM не объявляет факт успеха, скрытые сведения, contents закрытого контейнера, решение NPC, combat result, exact time или numeric domain effects.
-3. Обычные физические результаты и ограниченные классы вещей — по [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) §3A и путям O1/O2a/O2b/A1 (presence / A1), без классового запрета «оружие/деньги/документы» в тексте промпта.
-4. Инвариант D9 (имена, даты, эмитент, текст грамоты, клеймо) задан в схемах §11.1 и §12.4; модель их не пишет.
-5. Domain-owned действие делегируется одной `domain_request` профильному владельцу.
-6. Невалидный output не создаёт частичного состояния; repair исправляет только формат.
+2. Мир обычный, немагический, если переданное состояние прямо не говорит иное; персонаж — обычный человек, если сохранённое состояние не содержит необычной способности или действующего эффекта.
+3. Общие знания допустимы для оценки возможности, сложности и длительности, но не создают конкретных значимых фактов партии; переданное состояние всегда главнее.
+4. LLM не объявляет факт успеха, скрытые сведения, contents закрытого контейнера, решение NPC, combat result, exact time или numeric domain effects.
+5. Обычные физические результаты и ограниченные классы вещей — по [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) §3A и путям O1/O2a/O2b/A1 (presence / A1), без классового запрета «оружие/деньги/документы» в тексте промпта.
+6. Инвариант D9 (имена, даты, эмитент, текст грамоты, клеймо) задан в схемах §11.1 и §12.4; модель их не пишет.
+7. Domain-owned действие делегируется одной `domain_request` профильному владельцу.
+8. Невалидный output не создаёт частичного состояния; repair исправляет только формат.
 
-Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029), где runtime prompt ещё может расходиться с этим разделом до cutover.
+Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029; D9/D14 — LW-045), где runtime prompt ещё может расходиться с этим разделом до cutover.
 
 ## 21. Критерии готовности cutover
 

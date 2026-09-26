@@ -1695,11 +1695,9 @@ LLM возвращает реальную попытку без невозмож
 
 ## 25. Схема ответа модели и владелец текста промпта NPC
 
-Текст system prompt автономного решения NPC принадлежит коду и в этом контракте не дублируется как «канонический промпт».
+Текст system prompt автономного решения NPC принадлежит коду и в этом контракте не дублируется как «канонический промпт». Источник: [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D9/D10; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.9.
 
 **Владелец текста промпта:** `apps/game-server/src/runtime/lower-dvina-trace-autonomous-llm.js` (`createLowerDvinaTraceNpcAutonomousModel`, role `npc_autonomous_decider`).
-
-Фраза «current actor-step cutover» в шапке статуса этого документа сохраняется.
 
 ### Схема ответа
 
@@ -1708,51 +1706,31 @@ LLM возвращает реальную попытку без невозмож
 ### Инварианты
 
 1. Одно самостоятельное действие от лица конкретного NPC по субъективному context.
-2. LLM не объявляет скрытые факты, contents закрытого контейнера, решение другого NPC, combat/conversation result, exact time или numeric domain effects.
-3. Обычные физические результаты и ограниченные классы — по [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) §3A (presence / A1), без классового запрета в тексте промпта.
-4. Инвариант D9 — как в `turn_step_llm_contract.md` §11.1 и в §18.1 этого документа: name — качественная метка; имена, даты, эмитент, текст грамоты и клеймо — только из пула кода или существующей сущности.
-5. `mechanics_proposal` необязателен; финальные числа пишет код (§18.4).
-6. Repair исправляет только формат и refs, не смысл решения.
+2. Не выбирать действие ради пользы или наказания игрока, удобства сюжета или драматичности; ни одна отдельная черта не абсолютная команда. Общие знания и приоритет переданного состояния — §14.2.
+3. LLM не объявляет скрытые факты, contents закрытого контейнера, решение другого NPC, combat/conversation result, exact time или numeric domain effects.
+4. Обычные физические результаты и ограниченные классы — по [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) §3A (presence / A1), без классового запрета в тексте промпта.
+5. Инвариант D9 — как в `turn_step_llm_contract.md` §11.1 и в §18.1 этого документа: name — качественная метка; имена, даты, эмитент, текст грамоты и клеймо — только из пула кода или существующей сущности.
+6. `mechanics_proposal` необязателен; финальные числа пишет код (§18.4).
+7. Repair исправляет только формат и refs, не смысл решения.
 
-Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029).
+Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029; D9/D14 — LW-045).
 
-## 26. Repair prompt
+## 26. Схема format repair и владелец текста
 
-Repair prompt используется только после невалидного JSON или нарушения machine schema.
+Format repair используется только после невалидного JSON или нарушения machine schema. Текст repair prompt принадлежит коду; в контракте не дублируется. Источник: [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D9/D10; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.9 (расширение REVIEW-028 F3).
 
-Он получает:
+**Владелец:** `apps/game-server/src/runtime/lower-dvina-trace-autonomous-llm.js` (role `npc_autonomous_decider_format_repair` при `repair`).
 
-- исходный `NPC_ACTION_DECISION_REQUEST`;
-- невалидный ответ;
-- список формальных schema errors.
+### Схема
 
-Он не получает новых фактов и не должен менять принятое смысловое решение без необходимости исправить нарушение контракта.
+Repair получает исходный `NPC_ACTION_DECISION_REQUEST`, невалидный ответ и список формальных schema errors; возвращает один JSON `npc_step_plan_v1` (семантический выбор; identity собирает код).
 
----
+### Инварианты
 
-Твой предыдущий ответ не соответствует JSON-контракту `npc_step_plan_v1`.
-
-Исправь только перечисленные структурные нарушения.
-
-Не добавляй новые факты.
-
-Не меняй `request_id`, `root_turn_id`, `boundary_id`, `committed_state_version`, `working_revision`, `decision_index` или `npc_ref`.
-
-Не возвращай Markdown, пояснения или текст вне JSON.
-
-SCHEMA_ERRORS:
-
-{{SCHEMA_ERRORS_JSON}}
-
-INVALID_RESPONSE:
-
-{{INVALID_RESPONSE_JSON}}
-
-NPC_ACTION_DECISION_REQUEST:
-
-{{NPC_ACTION_DECISION_REQUEST_JSON}}
-
----
+1. Исправляются только структурные нарушения schema/refs/enum.
+2. Новые факты не добавляются.
+3. Identity-поля (`request_id`, `root_turn_id`, `boundary_id`, `committed_state_version`, `working_revision`, `decision_index`, `npc_ref`) не меняются.
+4. Смысловое решение сохраняется, если иное не требуется указанной ошибкой контракта.
 
 ## 27. Порядок внедрения
 

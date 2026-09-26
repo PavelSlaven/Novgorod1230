@@ -1969,7 +1969,7 @@ Semantic compatibility statement с intent обеспечивает модель
 
 ## 32. Схема ответа модели и владелец текста промпта NPC combat
 
-Текст system prompt боевого решения NPC принадлежит коду и в этом контракте не дублируется как «канонический промпт».
+Текст system prompt боевого решения NPC принадлежит коду и в этом контракте не дублируется как «канонический промпт». Источник: [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D9/D10; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.9.
 
 **Владелец текста промпта:** `apps/game-server/src/runtime/lower-dvina-trace-combat-llm.js` (`createLowerDvinaTraceNpcCombatModel`, role `npc_combat_decider`).
 
@@ -1980,41 +1980,30 @@ Semantic compatibility statement с intent обеспечивает модель
 ### Инварианты
 
 1. Одно устойчивое боевое намерение (`intent_kind` из `operation_contract`); не отдельные удары и не весь будущий бой.
-2. LLM не выполняет бросок, не объявляет попадание, вред, смерть, маршрут, factual write или решение другого участника.
-3. Допустим один короткий `combat_statement`, совместимый с intent; полноценный разговор запрещён.
-4. Используются только refs и значения, разрешённые `operation_contract` и subjective combat state.
-5. Repair исправляет только структуру; смысл намерения сохраняется.
+2. Не превращать неопытного в профессионального бойца; не создавать отсутствующее оружие или сверхъестественную способность; не выбирать действие ради пользы игроку или заранее желаемого сюжета.
+3. LLM не выполняет бросок, не объявляет попадание, вред, смерть, маршрут, factual write или решение другого участника.
+4. Допустим один короткий `combat_statement`, совместимый с intent; полноценный разговор запрещён.
+5. Используются только refs и значения, разрешённые `operation_contract` и subjective combat state.
+6. Repair исправляет только структуру; смысл намерения сохраняется.
 
 Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029).
 
-## 33. Format repair prompt
+## 33. Схема format repair и владелец текста
 
-Допускается одна repair попытка только для исправления формального ответа.
+Допускается одна repair-попытка только для исправления формального ответа. Текст repair prompt принадлежит коду; в контракте не дублируется. Источник: [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D9/D10; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.9 (расширение REVIEW-028 F3).
 
-```md
-Исправь предыдущий ответ так, чтобы он строго соответствовал `npc_combat_intent_plan_v1`.
+**Владелец:** `apps/game-server/src/runtime/lower-dvina-trace-combat-llm.js` (role `npc_combat_decider_format_repair` при `repair`).
 
-Не меняй принятое боевое намерение, если это не требуется указанной ошибкой допустимости.
+### Схема
 
-Используй только значения и refs из исходного `operation_contract`.
+Repair возвращает один JSON `npc_combat_intent_plan_v1`; identity и envelope собирает код.
 
-Не добавляй новые факты, участников, предметы, результаты бросков или последствия.
+### Инварианты
 
-Верни только корректный JSON без Markdown и комментариев.
-
-VALIDATION_ERRORS:
-{{VALIDATION_ERRORS_JSON}}
-
-ORIGINAL_REQUEST:
-{{NPC_COMBAT_DECISION_REQUEST_JSON}}
-
-ORIGINAL_RESPONSE:
-{{ORIGINAL_RESPONSE_JSON}}
-```
-
-После второй структурной ошибки factual state не меняется и возвращается typed LLM contract error.
-
----
+1. Исправляется только структура/допустимость относительно `operation_contract`.
+2. Принятое боевое намерение не меняется, если иное не требуется указанной ошибкой.
+3. Новые факты, участники, предметы, результаты бросков или последствия не добавляются.
+4. После второй структурной ошибки factual state не меняется; возвращается typed LLM contract error.
 
 ## 34. Validation ответа LLM
 

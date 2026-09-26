@@ -406,6 +406,99 @@
       ]
     }
   },
+  "regional_context_profiles": [
+    {
+      "id": "m2c_npc_regional_novgorod_land_v1",
+      "allowed_role_refs": [
+        "nov_role_apprentice",
+        "nov_role_boatman",
+        "nov_role_craftsman_master",
+        "nov_role_fisher",
+        "nov_role_forest_promyslovik",
+        "nov_role_guide",
+        "nov_role_hired_worker",
+        "nov_role_household_mistress",
+        "nov_role_hunter",
+        "nov_role_journeyman",
+        "nov_role_kholop",
+        "nov_role_merchant_guest",
+        "nov_role_monastery_worker",
+        "nov_role_servant",
+        "nov_role_trader"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_boatman",
+        "nov_occ_fisher",
+        "nov_occ_forest_worker",
+        "nov_occ_household_servant",
+        "nov_occ_hunter_trapper",
+        "nov_occ_local_trader",
+        "nov_occ_long_distance_merchant",
+        "nov_occ_route_guide",
+        "occ_arrowsmith",
+        "occ_bone_carver",
+        "occ_bowyer",
+        "occ_brewer_meadmaker",
+        "occ_butcher",
+        "occ_dyer",
+        "occ_fish_trader",
+        "occ_furrier",
+        "occ_icon_painter",
+        "occ_jeweler_caster",
+        "occ_limeburner",
+        "occ_locksmith",
+        "occ_market_baker",
+        "occ_mason",
+        "occ_netmaker",
+        "occ_ropemaker_netmaker",
+        "occ_shield_maker",
+        "occ_wetnurse",
+        "occ_wood_turner"
+      ],
+      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_novgorod_land_v1",
+      "additional_source_ref": "occupations/occupations_additions.csv"
+    },
+    {
+      "id": "m2c_npc_regional_gotland_guest_v1",
+      "allowed_role_refs": [
+        "nov_role_foreign_guest"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_long_distance_merchant"
+      ],
+      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_gotland_guest_v1"
+    },
+    {
+      "id": "m2c_npc_regional_german_baltic_guest_v1",
+      "allowed_role_refs": [
+        "nov_role_foreign_guest"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_long_distance_merchant"
+      ],
+      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_german_baltic_guest_v1"
+    },
+    {
+      "id": "m2c_npc_regional_karelian_traveler_v1",
+      "allowed_role_refs": [
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_route_guide"
+      ],
+      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_karelian_traveler_v1"
+    },
+    {
+      "id": "m2c_npc_regional_ingrian_traveler_v1",
+      "allowed_role_refs": [
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_route_guide"
+      ],
+      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_ingrian_traveler_v1"
+    }
+  ],
   "appearance_policy_source": {
     "required_facets": [
       "sex_category",
@@ -11185,6 +11278,17 @@
         "nov_role_hired_worker",
         "nov_role_kholop"
       ],
+      "actor_applicability": {
+        "sex_category": [
+          "nov_1200_1250_sex_category_female"
+        ],
+        "age_category": [
+          "nov_1200_1250_age_category_young_adult",
+          "nov_1200_1250_age_category_adult",
+          "nov_1200_1250_age_category_middle_aged"
+        ],
+        "rule": "select an eligible actor before choosing appearance, clothing, or equipment"
+      },
       "regional_option_sets": [
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",

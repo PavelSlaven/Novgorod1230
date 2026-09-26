@@ -59,6 +59,8 @@ def main():
     assert any(r["next_ac_id"] for r in activities)
     assert npc["status"] == skill["status"] == "candidate"
     profiles = npc["profiles"]
+    contexts = {r["id"]: r for r in npc["regional_context_profiles"]}
+    assert len(contexts) == len(npc["regional_context_profiles"])
     assert len({p["profile_id"] for p in profiles}) == len(profiles) == 28
     assert occ_ids <= {p["occupation_ref"] for p in profiles}
     assert all(not p["executable"] and p["appearance"] and p["clothing"] and p["equipment"] for p in profiles)
@@ -78,6 +80,9 @@ def main():
         for regional in profile["regional_option_sets"]:
             assert regional["status"] == "candidate"
             assert regional["role_ref"] in profile["allowed_role_refs"] and regional["occupation_ref"] == profile["occupation_ref"]
+            context = contexts[regional["region_ref"]]
+            assert regional["role_ref"] in context["allowed_role_refs"], (profile["profile_id"], regional["region_ref"], regional["role_ref"])
+            assert regional["occupation_ref"] in context["allowed_occupation_refs"], (profile["profile_id"], regional["region_ref"], regional["occupation_ref"])
             appearance_options = npc["appearance_option_sets"][regional["appearance_option_set_ref"]]
             assert set(appearance_options) == set(profile["required_facets"])
             for options in [*appearance_options.values(), regional["clothing_options"], regional["equipment_options"]]:
@@ -88,6 +93,15 @@ def main():
             assert all(o["value"] is None or o["value"] in outfit_ids for o in regional["clothing_options"])
             assert all(o["value"] is None or o["value"] in equipment_ids or o["source_ref"].startswith(("occupations/", "pr98:"))
                        for o in regional["equipment_options"])
+    wet_nurse = next(p for p in profiles if p["occupation_ref"] == "occ_wetnurse")
+    eligibility = wet_nurse["actor_applicability"]
+    assert eligibility["sex_category"] == ["nov_1200_1250_sex_category_female"]
+    assert set(eligibility["age_category"]) == {
+        "nov_1200_1250_age_category_young_adult", "nov_1200_1250_age_category_adult",
+        "nov_1200_1250_age_category_middle_aged"}
+    for facet in ("sex_category", "age_category"):
+        options = npc["appearance_option_sets"]["novgorod_shared_facets_v1"][facet]
+        assert set(eligibility[facet]) <= {option["value"] for option in options}
     seed_skills = {r["id"] for r in csv_rows(ROOT_DATA / "world-base-seeds/skill_catalog_v1.csv")}
     defaults = {r["occupation_archetype_id"]: r for r in csv_rows(ROOT_DATA / "world-base-seeds/occupation_skill_defaults_v1.csv")}
     assert {s["id"] for s in skill["parent_skills"]} == seed_skills

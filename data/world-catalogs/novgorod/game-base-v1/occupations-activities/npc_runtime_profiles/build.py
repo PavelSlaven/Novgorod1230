@@ -78,11 +78,22 @@ def regional_options(profile, role, regions, outfits, clothing_by_role, equipmen
 def main():
     baseline = json.loads(BASE.read_text(encoding="utf-8"))
     bindings = json.loads(BINDINGS.read_text(encoding="utf-8"))
-    region_ids = {r["id"] for r in baseline["regional_context_profiles"]}
+    regional_contexts = [{"id": r["id"],
+                          "allowed_role_refs": r["allowed_role_refs"].copy(),
+                          "allowed_occupation_refs": r["allowed_occupation_refs"].copy(),
+                          "source_ref": BASE_REF + "#regional_context_profiles." + r["id"]}
+                         for r in baseline["regional_context_profiles"]]
+    region_ids = {r["id"] for r in regional_contexts}
     occupations = rows(OCC)
     outfit_rows = rows(CLOTHING)
     role_clothing = {row["role_ref"]: row["clothing_profile_id"] for row in rows(ROLE_CLOTHING)}
     equipment = json.loads(EQUIPMENT.read_text(encoding="utf-8"))["profiles"]
+    local_context = next(r for r in regional_contexts if r["id"] == "m2c_npc_regional_novgorod_land_v1")
+    local_context["allowed_role_refs"] = sorted(set(local_context["allowed_role_refs"]) |
+                                                {role.strip() for row in occupations for role in row["allowed_social_role_ids"].split(";")})
+    local_context["allowed_occupation_refs"] = sorted(set(local_context["allowed_occupation_refs"]) |
+                                                      {row["occupation_id"] for row in occupations})
+    local_context["additional_source_ref"] = "occupations/occupations_additions.csv"
     appearance = [(DEMOGRAPHIC_REF, json.loads(DEMOGRAPHIC.read_text(encoding="utf-8"))),
                   (APPEARANCE_REF, json.loads(APPEARANCE.read_text(encoding="utf-8")))]
     appearance_sets = {facet: [option(row["option_id"], row["weight"],
@@ -146,6 +157,13 @@ def main():
         })
         profiles[-1]["required_facets"] = baseline["appearance_policy"]["required_facets"]
         profiles[-1]["allowed_role_refs"] = [role.strip() for role in occupation["allowed_social_role_ids"].split(";")]
+        if oid == "occ_wetnurse":
+            profiles[-1]["actor_applicability"] = {
+                "sex_category": ["nov_1200_1250_sex_category_female"],
+                "age_category": ["nov_1200_1250_age_category_young_adult",
+                                 "nov_1200_1250_age_category_adult",
+                                 "nov_1200_1250_age_category_middle_aged"],
+                "rule": "select an eligible actor before choosing appearance, clothing, or equipment"}
         profiles[-1]["regional_option_sets"] = [regional for role in profiles[-1]["allowed_role_refs"]
             for regional in regional_options(profiles[-1], role, ["m2c_npc_regional_novgorod_land_v1"],
                                             outfit_rows, role_clothing, equipment)]
@@ -154,6 +172,7 @@ def main():
         "approved": False, "activation_authorized": False,
         "policy": "Code selects facts and checks actor/role/season/property; LLM describes selected facts only.",
         "appearance_option_sets": {"novgorod_shared_facets_v1": appearance_sets},
+        "regional_context_profiles": regional_contexts,
         "appearance_policy_source": baseline["appearance_policy"],
         "g4_composition_source": {"path": BASE_REF, "count": len(baseline["g4_compositions"]),
                                   "rule": "source candidate only; no new presence bindings"},
@@ -162,6 +181,10 @@ def main():
     assert len({p["profile_id"] for p in profiles}) == len(profiles)
     assert all(p["appearance"] and p["clothing"] and p["equipment"] for p in profiles)
     assert all(s["region_ref"] in region_ids for p in profiles for s in p["regional_option_sets"])
+    context_by_id = {r["id"]: r for r in regional_contexts}
+    assert all(s["role_ref"] in context_by_id[s["region_ref"]]["allowed_role_refs"] and
+               s["occupation_ref"] in context_by_id[s["region_ref"]]["allowed_occupation_refs"]
+               for p in profiles for s in p["regional_option_sets"])
     with OUT.open("w", encoding="utf-8", newline="\n") as f:
         f.write(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(f"wrote {len(profiles)} candidate profiles")

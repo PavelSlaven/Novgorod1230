@@ -132,24 +132,31 @@ function spatialSemanticText(request) {
 
 function npcOrdinaryText(request) {
   const context = request.observable_context ?? {};
-  const parts = [context.display_label];
+  const parts = [];
+  if (typeof context.display_label === 'string' && context.display_label.trim()) {
+    parts.push(context.display_label.trim());
+  }
   if (Array.isArray(context.scene_details)) {
-    for (const entry of context.scene_details) {
-      if (typeof entry === 'string' && entry.trim()) parts.push(entry.trim());
-    }
+    collectTextLeaves(context.scene_details, parts);
   }
-  const cues = context.observable_cues;
-  if (cues && typeof cues === 'object' && !Array.isArray(cues)) {
-    for (const value of Object.values(cues)) {
-      if (typeof value === 'string' && value.trim()) parts.push(value.trim());
-      else if (Array.isArray(value)) {
-        for (const entry of value) {
-          if (typeof entry === 'string' && entry.trim()) parts.push(entry.trim());
-        }
-      }
-    }
+  // Production cues nest identity/appearance/equipment objects; take text leaves.
+  collectTextLeaves(context.observable_cues, parts);
+  return parts.join(' ').trim();
+}
+
+function collectTextLeaves(value, out) {
+  if (typeof value === 'string') {
+    const text = value.trim();
+    if (text) out.push(text);
+    return;
   }
-  return parts.filter(Boolean).join(' ').trim();
+  if (Array.isArray(value)) {
+    for (const entry of value) collectTextLeaves(entry, out);
+    return;
+  }
+  if (value && typeof value === 'object') {
+    for (const entry of Object.values(value)) collectTextLeaves(entry, out);
+  }
 }
 
 function npcSituationText(request) {

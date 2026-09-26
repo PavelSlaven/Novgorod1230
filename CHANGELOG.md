@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix(wk): #152 REVIEW-034 — N1 nested production cues; planner_plan vs effective_plan+default_query; real-Core vector-only PARTIAL (#152, PR #98)
+
 - fix(wk): #152 REVIEW-033 — S1/N1/O1 semantic_input text; default-query capped at PARTIAL; disputes count; shared context_text strip; fail-closed encoder; F5 diagnostic/query; contract/LW-047 (#152, PR #98) LW-047 added
 
 - fix(wk): #152 empty semantic_resolution plan -> default Core query; NPC semantic_input text; sufficiency beside verdict; strip duplicate context_text; cache_hit/miss telemetry; contract §50/§51/§60/§61/§63/§85 (#152, PR #98) LW-046 added

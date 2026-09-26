@@ -359,9 +359,18 @@ test('NO_KNOWLEDGE after default query keeps domains coverage and query in diagn
   assert.ok(diagnostics[0].domains.length > 0);
   assert.ok(diagnostics[0].coverage.length > 0);
   assert.notEqual(diagnostics[0].retrieval_observability, null);
+  assert.equal(diagnostics[0].default_query, true);
+  assert.deepEqual(diagnostics[0].planner_plan.domains, []);
+  assert.deepEqual(diagnostics[0].planner_plan.search_hints, []);
+  assert.ok(diagnostics[0].effective_plan.domains.length > 0);
+  assert.deepEqual(diagnostics[0].effective_plan.search_hints, ['Пустой поиск.']);
   assert.notEqual(traces[0].query, null);
   assert.ok(traces[0].query.domains.length > 0);
   assert.deepEqual(traces[0].query.search_hints, ['Пустой поиск.']);
+  assert.equal(traces[0].default_query, true);
+  assert.deepEqual(traces[0].planner_plan.domains, []);
+  assert.deepEqual(traces[0].planner_plan.search_hints, []);
+  assert.deepEqual(traces[0].effective_plan.search_hints, ['Пустой поиск.']);
   assert.notEqual(traces[0].retrieval_observability, null);
 });
 
@@ -437,6 +446,35 @@ test('unseen-equivalent plan yields PARTIAL when hints miss and vectors admit', 
   }, 'semantic_resolution');
   assert.equal(grounded.world_knowledge.sufficiency, 'PARTIAL_KNOWLEDGE');
   assert.equal(grounded.world_knowledge.facts.length, 1);
+});
+
+test('real Core: vector-only admit keeps search_hint_hits false → PARTIAL', async () => {
+  const { createWorldKnowledgeCore } = await import('@rus/world-knowledge');
+  const { groundingSufficiencyOf } = await import(
+    '../src/runtime/world-knowledge-sufficiency.js');
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  const core = createWorldKnowledgeCore(loaded.bundle);
+  const slice = core.resolveWorldKnowledge({
+    schema: 'world_knowledge_query_v1',
+    pack_ref: loaded.bundle.manifest.pack_ref,
+    pack_revision: loaded.bundle.manifest.revision_id,
+    purpose: 'semantic_resolution',
+    query_locale: 'ru',
+    domains: ['environment'],
+    focus_refs: [],
+    requested_predicates: [],
+    search_hints: ['zzzz-lexically-absent-probe-token'],
+    context: { time: { year: 1230 },
+      place_refs: ['region_novgorod_land'], actor_facets: {} },
+    budget: { max_facts: 4, max_candidates: 4, max_context_chars: 2000 }
+  }, { vectorScores: new Map([['claim:regional-fish-exploitation', 0.95]]) });
+  assert.ok(slice.facts.some(({ claim_ref }) =>
+    claim_ref === 'claim:regional-fish-exploitation'));
+  assert.ok(slice.coverage.every((entry) => entry.status === 'covered'));
+  assert.deepEqual(slice.search_hint_hits, [false]);
+  assert.equal(groundingSufficiencyOf(slice), 'PARTIAL_KNOWLEDGE');
 });
 
 function assertRetrievalObservability(observability, grounded) {

@@ -14,7 +14,7 @@ export function modelSlice(slice, { fromDefaultQuery = false } = {}) {
 // request. The latter can still carry private state unrelated to retrieval.
 export function worldKnowledgeTrace({ request, purpose, semanticInput,
   plannerRequest, plannerPlan, plannerCalls, questionClasses, query, slice,
-  retrievalObservability }) {
+  retrievalObservability, defaultQuery = false, effectivePlan = null }) {
   const worldKnowledge = traceWorldKnowledgeSlice(slice);
   return Object.freeze({ schema: 'world_knowledge_boundary_trace_v1',
     event: 'world_knowledge_resolved', purpose,
@@ -30,11 +30,12 @@ export function worldKnowledgeTrace({ request, purpose, semanticInput,
       allowed_domains: [...plannerRequest.allowed_domains],
       available_knowledge_refs: [...plannerRequest.available_knowledge_refs],
       planner_limits: { ...plannerRequest.planner_limits } }),
-    planner_plan: Object.freeze({ schema: plannerPlan.schema,
-      query_locale: plannerPlan.query_locale, domains: [...plannerPlan.domains],
-      focus_refs: [...plannerPlan.focus_refs],
-      requested_predicates: [...plannerPlan.requested_predicates],
-      search_hints: [...plannerPlan.search_hints] }),
+    // planner_plan = raw planner answer; effective_plan only when default_query.
+    planner_plan: freezePlan(plannerPlan),
+    ...(defaultQuery ? {
+      default_query: true,
+      effective_plan: freezePlan(effectivePlan ?? plannerPlan)
+    } : {}),
     query: Object.freeze({ schema: query.schema, pack_ref: query.pack_ref,
       pack_revision: query.pack_revision, purpose: query.purpose,
       query_locale: query.query_locale, domains: [...query.domains],
@@ -49,7 +50,8 @@ export function worldKnowledgeTrace({ request, purpose, semanticInput,
 }
 export function worldKnowledgeNoNeedTrace({ request, purpose, semanticInput,
   plannerRequest, plannerPlan, plannerCalls, questionClasses, worldKnowledge,
-  query = null, retrievalObservability = null }) {
+  query = null, retrievalObservability = null, defaultQuery = false,
+  effectivePlan = null }) {
   const safe = safeNeed(request, semanticInput);
   return Object.freeze({ schema: 'world_knowledge_boundary_trace_v1',
     event: 'world_knowledge_not_required', purpose,
@@ -64,12 +66,11 @@ export function worldKnowledgeNoNeedTrace({ request, purpose, semanticInput,
       allowed_domains: [...plannerRequest.allowed_domains],
       available_knowledge_refs: [...plannerRequest.available_knowledge_refs],
       planner_limits: { ...plannerRequest.planner_limits } }),
-    planner_plan: Object.freeze({ schema: plannerPlan.schema,
-      query_locale: plannerPlan.query_locale,
-      domains: [...(plannerPlan.domains ?? [])],
-      focus_refs: [...(plannerPlan.focus_refs ?? [])],
-      requested_predicates: [...(plannerPlan.requested_predicates ?? [])],
-      search_hints: [...(plannerPlan.search_hints ?? [])] }),
+    planner_plan: freezePlan(plannerPlan),
+    ...(defaultQuery ? {
+      default_query: true,
+      effective_plan: freezePlan(effectivePlan ?? plannerPlan)
+    } : {}),
     query: query == null ? null : Object.freeze({
       schema: query.schema, pack_ref: query.pack_ref,
       pack_revision: query.pack_revision, purpose: query.purpose,
@@ -85,6 +86,14 @@ export function worldKnowledgeNoNeedTrace({ request, purpose, semanticInput,
       request_identity: text(request.request_id), safe_need: safe,
       world_knowledge: worldKnowledge }) }),
     retrieval_observability: retrievalObservability });
+}
+function freezePlan(plan) {
+  return Object.freeze({ schema: plan.schema,
+    query_locale: plan.query_locale,
+    domains: [...(plan.domains ?? [])],
+    focus_refs: [...(plan.focus_refs ?? [])],
+    requested_predicates: [...(plan.requested_predicates ?? [])],
+    search_hints: [...(plan.search_hints ?? [])] });
 }
 export function noKnowledgeRequirement(bundle, purpose) {
   return Object.freeze({ schema: 'world_knowledge_requirement_v1',

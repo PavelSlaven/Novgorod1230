@@ -167,12 +167,14 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
           totalRetrievalMs: Math.max(0, performance.now() - retrievalStarted),
           cacheOutcome: 'miss' });
         telemetry?.onGameplayTrace?.(worldKnowledgeNoNeedTrace({ request,
-          purpose, semanticInput, plannerRequest, plannerPlan: effectivePlan,
+          purpose, semanticInput, plannerRequest, plannerPlan: planned.plan,
+          defaultQuery: true, effectivePlan: effectivePlan,
           plannerCalls, questionClasses, worldKnowledge: worldKnowledgeSlice,
           query, retrievalObservability }));
         emitDiagnostic({ telemetry, purpose, request, planned: {
-          plan: effectivePlan, repaired: planned.repaired
-        }, plannerMs, plannerCalls, started,
+          plan: planned.plan, repaired: planned.repaired
+        }, effectivePlan, defaultQuery: true,
+          plannerMs, plannerCalls, started,
           packRevision: bundle.manifest.revision_id,
           domains: [...effectivePlan.domains],
           focusRefs: [...effectivePlan.focus_refs],
@@ -193,12 +195,15 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         world_knowledge: modelSlice(slice, { fromDefaultQuery: usedDefaultQuery }) });
       cacheGrounded(cache, request, cacheKey, grounded);
       telemetry?.onGameplayTrace?.(worldKnowledgeTrace({ request, purpose,
-        semanticInput, plannerRequest, plannerPlan: usedDefaultQuery
-          ? effectivePlan : planned.plan, query, slice,
-        plannerCalls, questionClasses, retrievalObservability }));
+        semanticInput, plannerRequest, plannerPlan: planned.plan,
+        defaultQuery: usedDefaultQuery,
+        effectivePlan: usedDefaultQuery ? effectivePlan : null,
+        query, slice, plannerCalls, questionClasses, retrievalObservability }));
       emitDiagnostic({ telemetry, purpose, request, planned: {
-        plan: effectivePlan, repaired: planned.repaired
-      }, plannerMs, plannerCalls, started, packRevision: slice.pack_revision,
+        plan: planned.plan, repaired: planned.repaired
+      }, effectivePlan: usedDefaultQuery ? effectivePlan : null,
+        defaultQuery: usedDefaultQuery,
+        plannerMs, plannerCalls, started, packRevision: slice.pack_revision,
         domains: [...effectivePlan.domains],
         focusRefs: [...effectivePlan.focus_refs],
         predicates: [...query.requested_predicates],
@@ -244,7 +249,8 @@ function questionClassesOf(bundle, purpose, domains) {
 function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
   plannerCalls, started, packRevision, domains, focusRefs, predicates,
   coverage, claimRefs, sliceChars, vectorStatus, embeddingMs, vectorMs,
-  retrievalMs, retrievalObservability, cacheHit }) {
+  retrievalMs, retrievalObservability, cacheHit, defaultQuery = false,
+  effectivePlan = null }) {
   telemetry?.onDetail?.(Object.freeze({
     schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
     request_identity: request.request_id ?? null,
@@ -256,7 +262,7 @@ function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
     }))),
     pack_revision: packRevision
       ?? retrievalObservability?.pack_revision ?? null,
-    query_locale: planned.plan.query_locale,
+    query_locale: (effectivePlan ?? planned.plan).query_locale,
     domains: Object.freeze([...domains]),
     focus_refs: Object.freeze([...focusRefs]),
     predicates: Object.freeze([...predicates]),
@@ -267,6 +273,28 @@ function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
     query_embedding_ms: embeddingMs, vector_scan_ms: vectorMs,
     retrieval_ms: retrievalMs,
     retrieval_observability: retrievalObservability,
+    // Raw planner answer stays in planner_plan; default path adds effective_plan.
+    planner_plan: Object.freeze({
+      schema: planned.plan.schema,
+      query_locale: planned.plan.query_locale,
+      domains: Object.freeze([...(planned.plan.domains ?? [])]),
+      focus_refs: Object.freeze([...(planned.plan.focus_refs ?? [])]),
+      requested_predicates: Object.freeze(
+        [...(planned.plan.requested_predicates ?? [])]),
+      search_hints: Object.freeze([...(planned.plan.search_hints ?? [])])
+    }),
+    ...(defaultQuery ? {
+      default_query: true,
+      effective_plan: Object.freeze({
+        schema: effectivePlan.schema,
+        query_locale: effectivePlan.query_locale,
+        domains: Object.freeze([...(effectivePlan.domains ?? [])]),
+        focus_refs: Object.freeze([...(effectivePlan.focus_refs ?? [])]),
+        requested_predicates: Object.freeze(
+          [...(effectivePlan.requested_predicates ?? [])]),
+        search_hints: Object.freeze([...(effectivePlan.search_hints ?? [])])
+      })
+    } : {}),
     cache_hit: cacheHit === true, cache_miss: cacheHit !== true,
     total_grounding_ms: Math.max(0, performance.now() - started)
   }));

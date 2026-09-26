@@ -78,19 +78,36 @@ test('S1 semantic_input uses semantic_context and approved_envelope', () => {
   assert.doesNotMatch(text, /[{}]/);
 });
 
-test('N1 semantic_input uses observable_context fields', () => {
+test('N1 semantic_input uses production observable_cues nested leaves', () => {
   const text = semanticInputOf({
     schema: 'npc_ordinary_semantic_remainder_request_v1',
     observable_context: {
-      display_label: 'рыбак',
+      display_label: 'стоящий мужчина',
       scene_details: ['У воды сохнут сети.'],
-      observable_cues: { posture: 'стоит у лодки', gear: ['сеть'] }
+      observable_cues: {
+        identity: {
+          display_name: 'Онисим',
+          sex_category: 'male',
+          age_category: 'adult',
+          appearance: { build: 'stocky', hair: 'тёмные волосы' }
+        },
+        equipment: [
+          { display_label: 'сеть', visual_profile_snapshot: { color: 'серый' } }
+        ],
+        outward_presentation: { posture: 'стоит у лодки' },
+        ordinary_remainder: { ordinary_descriptor: 'рыбак у берега' }
+      }
     }
   });
-  assert.match(text, /рыбак/);
+  assert.match(text, /стоящий мужчина/);
   assert.match(text, /сохнут сети/);
-  assert.match(text, /стоит у лодки/);
+  assert.match(text, /Онисим/);
+  assert.match(text, /male/);
+  assert.match(text, /stocky/);
+  assert.match(text, /тёмные волосы/);
   assert.match(text, /сеть/);
+  assert.match(text, /стоит у лодки/);
+  assert.match(text, /рыбак у берега/);
   assert.doesNotMatch(text, /[{}]/);
 });
 

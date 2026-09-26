@@ -2246,7 +2246,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3323,7 +3323,10 @@
       "purposes": [
         "semantic_resolution",
         "materialization_support",
-        "source_grounded_qa"
+        "source_grounded_qa",
+        "npc_decision",
+        "conversation",
+        "narration"
       ],
       "question_classes": [
         "attention_and_perception",
@@ -3347,7 +3350,10 @@
       "purposes": [
         "semantic_resolution",
         "materialization_support",
-        "source_grounded_qa"
+        "source_grounded_qa",
+        "npc_decision",
+        "conversation",
+        "narration"
       ],
       "question_classes": [
         "group_influence",
@@ -3371,7 +3377,9 @@
       "purposes": [
         "semantic_resolution",
         "materialization_support",
-        "source_grounded_qa"
+        "source_grounded_qa",
+        "conversation",
+        "narration"
       ],
       "question_classes": [
         "soil_and_rock_processes",
@@ -3402,6 +3410,7 @@
         "semantic_resolution",
         "materialization_support",
         "npc_decision",
+        "conversation",
         "narration"
       ],
       "question_classes": [
@@ -3426,6 +3435,7 @@
         "materialization_support",
         "source_grounded_qa",
         "npc_decision",
+        "conversation",
         "narration"
       ],
       "question_classes": [
@@ -3452,7 +3462,9 @@
         "semantic_resolution",
         "materialization_support",
         "source_grounded_qa",
-        "npc_decision"
+        "npc_decision",
+        "conversation",
+        "narration"
       ],
       "question_classes": [
         "physics_chemistry_general",
@@ -3483,7 +3495,9 @@
       "purposes": [
         "semantic_resolution",
         "materialization_support",
-        "npc_decision"
+        "npc_decision",
+        "conversation",
+        "narration"
       ],
       "question_classes": [
         "material_interaction",
@@ -3514,6 +3528,7 @@
         "semantic_resolution",
         "materialization_support",
         "npc_decision",
+        "conversation",
         "narration"
       ],
       "question_classes": [
@@ -3602,7 +3617,10 @@
       "purposes": [
         "semantic_resolution",
         "materialization_support",
-        "source_grounded_qa"
+        "source_grounded_qa",
+        "npc_decision",
+        "conversation",
+        "narration"
       ],
       "question_classes": [
         "physics_chemistry_general",

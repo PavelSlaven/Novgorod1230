@@ -399,8 +399,17 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_apprentice",
+            "nov_role_craftsman_master",
+            "nov_role_journeyman"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -439,8 +448,16 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_apprentice",
+            "nov_role_youth_helper"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -479,8 +496,17 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_apprentice",
+            "nov_role_craftsman_master",
+            "nov_role_youth_helper"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -519,8 +545,17 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_apprentice",
+            "nov_role_craftsman_master",
+            "nov_role_journeyman"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -559,7 +594,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -599,8 +634,17 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_apprentice",
+            "nov_role_craftsman_master",
+            "nov_role_journeyman"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -639,7 +683,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -679,7 +723,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -719,7 +763,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -759,7 +803,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -799,7 +843,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -839,7 +883,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -879,7 +923,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -919,7 +963,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -959,7 +1003,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -999,7 +1043,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1039,7 +1083,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1079,7 +1123,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1119,7 +1163,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1159,7 +1203,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1199,7 +1243,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1239,7 +1283,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1279,7 +1323,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "general_physical",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1319,7 +1363,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1359,7 +1403,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1399,7 +1443,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1439,7 +1483,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1479,7 +1523,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1519,7 +1563,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1559,7 +1603,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,

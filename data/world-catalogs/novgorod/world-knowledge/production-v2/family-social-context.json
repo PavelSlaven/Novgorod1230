@@ -295,8 +295,19 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_city_elder",
+            "nov_role_posadnik",
+            "nov_role_princely_man",
+            "nov_role_sotsky",
+            "nov_role_widow_householder"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -336,8 +347,18 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_city_elder",
+            "nov_role_posadnik",
+            "nov_role_princely_man",
+            "nov_role_sotsky"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -377,8 +398,19 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_city_elder",
+            "nov_role_householder",
+            "nov_role_posadnik",
+            "nov_role_sotsky",
+            "nov_role_widow_householder"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [

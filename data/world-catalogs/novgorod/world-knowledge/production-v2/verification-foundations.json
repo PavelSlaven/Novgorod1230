@@ -500,66 +500,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-01-wood-knot-strength-bonding",
-      "claim_ref": "claim:foundations-mat-01-wood-knot-strength-bonding",
-      "claim_digest": "74c12ff8d31cf623d56020406531cc481ab7e8908245d769d61d52f11111fd1b",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-01-wood-knot-strength-bonding",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-01; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-02-wood-drying-crack-strength",
-      "claim_ref": "claim:foundations-mat-02-wood-drying-crack-strength",
-      "claim_digest": "39cc6bf2e44f3b20f293d32a9d7a9135eb7a67325fe6fa722c5c9c2816d33acb",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-02-wood-drying-crack-strength",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-02; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-04-wood-transverse-tension-weakness",
-      "claim_ref": "claim:foundations-mat-04-wood-transverse-tension-weakness",
-      "claim_digest": "ab275177188a281cd5d30e7636e420d20f53170675f8a921ea2ac42eb59ac92c",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-04-wood-transverse-tension-weakness",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-04; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-05-wood-grain-shear-vs-cut",
-      "claim_ref": "claim:foundations-mat-05-wood-grain-shear-vs-cut",
-      "claim_digest": "6ab1efa132792fb5677d33cbb0d1558f4a0e1aaa76923230291bfe6d014f53e9",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-05-wood-grain-shear-vs-cut",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-05; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-foundations-mat-06-wood-drying-property-change",
       "claim_ref": "claim:foundations-mat-06-wood-drying-property-change",
       "claim_digest": "abad48f718bfe6592799370ca1dd88642aaec124eb176ca2a66a489b9a4ff031",
@@ -572,81 +512,6 @@
       "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
       "verdict": "APPROVE",
       "limits": "candidate MAT-LIB-06; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-07-wood-storage-biological-damage",
-      "claim_ref": "claim:foundations-mat-07-wood-storage-biological-damage",
-      "claim_digest": "72d13e4a72a0ef190ef229e2a608190567da8394e91fd866baa5a645fa18c389",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-07-wood-storage-biological-damage",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-07; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-08-abrasive-hardness-material-removal",
-      "claim_ref": "claim:foundations-mat-08-abrasive-hardness-material-removal",
-      "claim_digest": "592a0fa99c87638064d3b06c8ae59065b746ebdbaa3e6cf3fbb91fc7ab56e5c5",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-08-abrasive-hardness-material-removal",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-08; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-09-glass-brittle-thermal-stress",
-      "claim_ref": "claim:foundations-mat-09-glass-brittle-thermal-stress",
-      "claim_digest": "b3bbe551b666e9ffa2b56f92604ee65ac12ecd91c0cddbc8c2cb568747aae29f",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-09-glass-brittle-thermal-stress",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-09; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-11-stone-density-compressive-response",
-      "claim_ref": "claim:foundations-mat-11-stone-density-compressive-response",
-      "claim_digest": "eb35126294c3d95c03376eb8be44cab44df9a6432723586ae5c676e8fab23c52",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-11-stone-density-compressive-response",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-11; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-mat-12-material-thermal-insulation-porosity",
-      "claim_ref": "claim:foundations-mat-12-material-thermal-insulation-porosity",
-      "claim_digest": "cc31bb83e4dfb86458757fdc3a2403d5e02ba13ae223ba6b5e9fefde4525bbf4",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-mat-12-material-thermal-insulation-porosity",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-s1"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#per-id-verdicts",
-      "verdict": "APPROVE",
-      "limits": "candidate MAT-LIB-12; source source:foundations-physical-alekseev#Lectures 2, 4, 10, 13–15 and 18; exact reviewed paragraphs are recorded per ID in verification-foundations-physical-library.md.; report conditions retained; no scene/actor/outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -995,21 +860,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-physical-b2-bnh-02-porous-bone-fragility",
-      "claim_ref": "claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
-      "claim_digest": "3c175167ee1a98c1884f43ce9810fd300590d43356a591ce0ff661322a575f75",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-b2-bnh-02"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#appendix-b--independent-second-pass-verification",
-      "verdict": "APPROVE",
-      "limits": "candidate B2-BNH-02; source source:foundations-physical-cci-bone-horn#S10, “Care / Handling”.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
       "claim_ref": "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
       "claim_digest": "e7c01540432844136edc4102066df03666523f24775fdb86d476414ee2fedfaa",
@@ -1022,21 +872,6 @@
       "review_ref": "verification/verification-foundations-physical-library.md#appendix-b--independent-second-pass-verification",
       "verdict": "APPROVE",
       "limits": "candidate B2-BNH-03; source source:foundations-physical-cci-bone-horn#S10, “Identification / Horn”.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-physical-b2-bnh-04-thin-horn-water-softening",
-      "claim_ref": "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
-      "claim_digest": "caef9dd401577d7429db6db24f75229e00f5d98b2750f5765d89e290c97f2741",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-physical.json#claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-physical-b2-bnh-04"
-      ],
-      "review_ref": "verification/verification-foundations-physical-library.md#appendix-b--independent-second-pass-verification",
-      "verdict": "APPROVE",
-      "limits": "candidate B2-BNH-04; source source:foundations-physical-cci-bone-horn#S10, “Care / Cleaning”.; report conditions retained; no scene/actor/outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -1760,36 +1595,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-haz-04-slope-force-strength",
-      "claim_ref": "claim:foundations-haz-04-slope-force-strength",
-      "claim_digest": "a0160f74dd936b32bd2225c3a19f242fd627613eafe708956f592d6a9a480bf6",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-haz-04-slope-force-strength",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-haz-04"
-      ],
-      "review_ref": "verification/verification-foundations-hazards-modern.md#foundations-hazards--independent-sourcedomain-verification",
-      "verdict": "APPROVE",
-      "limits": "candidate HAZ04; source source:foundations-hazards-usgs-landslide#What is a landslide and what causes one?; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-haz-05-slope-water-triggers",
-      "claim_ref": "claim:foundations-haz-05-slope-water-triggers",
-      "claim_digest": "115a87a418d56a835fc60cbb1dd42766dadc7f8fe95cb3ddc51de27fbdeb5896",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-haz-05-slope-water-triggers",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-haz-05"
-      ],
-      "review_ref": "verification/verification-foundations-hazards-modern.md#foundations-hazards--independent-sourcedomain-verification",
-      "verdict": "APPROVE",
-      "limits": "candidate HAZ05; source source:foundations-hazards-usgs-landslide#What is a landslide and what causes one?; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-foundations-earth-01-ecological-tolerance",
       "claim_ref": "claim:foundations-earth-01-ecological-tolerance",
       "claim_digest": "86ef64b6c8ad84aa5e2ee3916b56c14c7fe8d9b2aa74dd0c6e23b726e4d6e797",
@@ -2135,66 +1940,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth-24-water-cycle-fluxes",
-      "claim_ref": "claim:foundations-earth-24-water-cycle-fluxes",
-      "claim_digest": "998a420fd08038b0b608f30ff588b473b505f3ef44a041f589cda526a79e5022",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth-24-water-cycle-fluxes",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth-24"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#per-id-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH24; source source:usgs-water-cycle#Water cycle — Fluxes move water between pools; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth-25-snowmelt-runoff",
-      "claim_ref": "claim:foundations-earth-25-snowmelt-runoff",
-      "claim_digest": "8ed696f8930eba44545695897d58981bc2af2dd9d1a06e2919aeb10536087993",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth-25-snowmelt-runoff",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth-25"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#per-id-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH25; source source:usgs-water-cycle#Water cycle — Fluxes move water between pools; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth-26-runoff-contaminant-transport",
-      "claim_ref": "claim:foundations-earth-26-runoff-contaminant-transport",
-      "claim_digest": "961a53c104dd44225b267799f1dc1d5e144563ab3841634ff6563daaf90fb279",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth-26-runoff-contaminant-transport",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth-26"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#per-id-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH26; source source:usgs-water-cycle#Water cycle — Humans alter the water cycle; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth-27-fog-visibility",
-      "claim_ref": "claim:foundations-earth-27-fog-visibility",
-      "claim_digest": "4756fbaa85d18a20475ac057210721e7903638fe4d1c15ff3b32109599f65673",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth-27-fog-visibility",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth-27"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#per-id-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH27; source source:met-office-fog#What causes fog?; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-foundations-earth-28-radiation-fog",
       "claim_ref": "claim:foundations-earth-28-radiation-fog",
       "claim_digest": "0492a51e98a433ce7e74eefa5daec843a5f59fe4ce41dd1da1bba5266200c793",
@@ -2255,21 +2000,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth2-06-precipitation-infiltration-runoff-limit",
-      "claim_ref": "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
-      "claim_digest": "a6ad8b25347985d29511e66e30f136a699bcd3c7c31e328ffaa33a2d5fcc5048",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth2-06"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#appendix-b--earth2-independent-review",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH2-06; source source:noaa-gml-hydrologic-cycle#The Hydrologic Cycle — runoff passage; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-foundations-earth2-01-rock-weathering-physical-chemical",
       "claim_ref": "claim:foundations-earth2-01-rock-weathering-physical-chemical",
       "claim_digest": "76fb1a265bb906fccaa61b05f0557bdf17983d557d5a7af4aa85b4bcd2686a46",
@@ -2297,51 +2027,6 @@
       "review_ref": "verification/verification-foundations-earth-library.md#appendix-b--earth2-independent-review",
       "verdict": "APPROVE",
       "limits": "candidate EARTH2-02; source source:usgs-joshua-tree-geology#Chemical weathering; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth2-03-freeze-thaw-rock-fracture",
-      "claim_ref": "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
-      "claim_digest": "b84db1628c1a594e30925cc83fe3eacb9057262461ea5ddae3bf9da368df0fe3",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth2-03-freeze-thaw-rock-fracture",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth2-03"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#appendix-b--earth2-independent-review",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH2-03; source source:usgs-joshua-tree-geology#Physical weathering; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth2-04-mineral-hardness-not-brittleness",
-      "claim_ref": "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
-      "claim_digest": "1811afd5a9810d1b5da7e9365656a5a91c4890c0f0679f35cfe139d63a84bb6b",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth2-04-mineral-hardness-not-brittleness",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth2-04"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#appendix-b--earth2-independent-review",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH2-04; source source:foundations-earth-fersman#Твёрдый и мягкий камень, paragraphs 612–614; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth2-05-mineral-hardness-scratch-comparison",
-      "claim_ref": "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
-      "claim_digest": "329a312b7a3f742f4d2555e1479eb6f21c4d78becb7c6254641ccd44d2f63785",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth2-05"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#appendix-b--earth2-independent-review",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH2-05; source source:foundations-earth-fersman#В лаборатории минералога, paragraph 995; Твёрдый и мягкий камень, paragraph 619; report conditions retained; no scene/actor/outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2402,21 +2087,6 @@
       "review_ref": "verification/verification-foundations-earth-library.md#appendix-b--earth2-independent-review",
       "verdict": "APPROVE",
       "limits": "candidate EARTH2-10; source source:noaa-gfdl-clouds-convection#Clouds and Convection — main explanatory text; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-earth2-11-river-ice-jam-flow-obstruction",
-      "claim_ref": "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
-      "claim_digest": "969a2bf13baa40d607fc1dabd9a6b658ab47f34517c41f3d47a216ccfb0f1161",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-earth.json#claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-earth2-11"
-      ],
-      "review_ref": "verification/verification-foundations-earth-library.md#appendix-b--earth2-independent-review",
-      "verdict": "APPROVE",
-      "limits": "candidate EARTH2-11; source source:noaa-river-ice-flooding#River Ice & Flooding Initiative — When frozen rivers thaw…; report conditions retained; no scene/actor/outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2675,36 +2345,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-17-individual-variation",
-      "claim_ref": "claim:foundations-ms-17-individual-variation",
-      "claim_digest": "fd0bf4fef964cb3d021a796862d59d5ff96549fe0316f9a3a44cd4b3e8f26e4e",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-17-individual-variation",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-17-individual-variation"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS17; source source:foundations-gippenreiter#lecture 15, Характер.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-18-social-experience",
-      "claim_ref": "claim:foundations-ms-18-social-experience",
-      "claim_digest": "22ca7e7d054cd35dc3508c74ff1892ea61a8749df7f7286d36a8c19e55cda4a4",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-18-social-experience",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-18-social-experience"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS18; source source:foundations-gippenreiter#lectures 14 and 16.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-foundations-ms-19-attribution-explanation",
       "claim_ref": "claim:foundations-ms-19-attribution-explanation",
       "claim_digest": "ed75614868382e20e4f070aa1e7a0c90b3b423056c0f450adb8f75a576ebb410",
@@ -2750,171 +2390,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-23-group-pressure",
-      "claim_ref": "claim:foundations-ms-23-group-pressure",
-      "claim_digest": "2d61d24e9fe3392c5f9ab01686b156b6c27ac226bd4683af692fe2c81f9d8583",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-23-group-pressure",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-23-group-pressure"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS23; source source:foundations-myers#ch. 6, Конформизм.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-25-persuasion-context",
-      "claim_ref": "claim:foundations-ms-25-persuasion-context",
-      "claim_digest": "c977812981472436d988629c02c8eb640863cc10db0a1971a7bfecbbd1432177",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-25-persuasion-context",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-25-persuasion-context"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS25; source source:foundations-myers#ch. 7, Убеждение.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-26-group-context",
-      "claim_ref": "claim:foundations-ms-26-group-context",
-      "claim_digest": "e41b0a5698f2c5f3c1d6e43973f840c289fc68f2171cc5059d2a83da31187a46",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-26-group-context",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-26-group-context"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS26; source source:foundations-myers#ch. 8, Влияние группы.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-27-belonging-relations",
-      "claim_ref": "claim:foundations-ms-27-belonging-relations",
-      "claim_digest": "647a14aea71017b7ef991a7fd7bce18bf3cb6e39d34d54f1227d9b9b34624822",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-27-belonging-relations",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-27-belonging-relations"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS27; source source:foundations-myers#ch. 11, Влечение и близость.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-28-ostracism-conditional",
-      "claim_ref": "claim:foundations-ms-28-ostracism-conditional",
-      "claim_digest": "983828854684cf9fe8d00698b07a8a1c2299efa6d1f775c19321df559274c6c4",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-28-ostracism-conditional",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-28-ostracism-conditional"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS28; source source:foundations-myers#Глава 11 → Влечение и близость → остракизм; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-29-helping-no-reward",
-      "claim_ref": "claim:foundations-ms-29-helping-no-reward",
-      "claim_digest": "b9e5aa90572df67a27601b1ae3fe8db01e79e172d35272b13dd9b3dc5cf7383b",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-29-helping-no-reward",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-29-helping-no-reward"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS29; source source:foundations-myers#ch. 12, Альтруизм.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-30-conflict-incompatibility",
-      "claim_ref": "claim:foundations-ms-30-conflict-incompatibility",
-      "claim_digest": "5f23eb1bb5ebbd84cbcbfee9f839edda926b4ae501cbc3e080b3a885c02f4b20",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-30-conflict-incompatibility",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-30-conflict-incompatibility"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS30; source source:foundations-myers#ch. 13, Конфликт и примирение.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-31-conflict-misperception",
-      "claim_ref": "claim:foundations-ms-31-conflict-misperception",
-      "claim_digest": "4073f49addc4f9d9aa4e3f4aef829d563cfc1b0a8bfeb8452fe835001516ef0b",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-31-conflict-misperception",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-31-conflict-misperception"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS31; source source:foundations-myers#Глава 13 → Конфликт и примирение → зеркальное восприятие и несовместимость целей; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-32-social-role",
-      "claim_ref": "claim:foundations-ms-32-social-role",
-      "claim_digest": "baeaca010987ab7d02edee15d87ff1e558fdad9f5ce21f4f0ebcaa8373510e29",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-32-social-role",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-32-social-role"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS32; source source:foundations-kravchenko-anurin#ch. 3 §2, Социальная роль как динамический аспект статуса.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-33-role-predictability",
-      "claim_ref": "claim:foundations-ms-33-role-predictability",
-      "claim_digest": "7aa6c285ebf6a16375c3d3a43bbeb453f65f128e58acc9ee204af56de6b8fdb1",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-33-role-predictability",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-33-role-predictability"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS33; source source:foundations-kravchenko-anurin#Глава 3 §2 → Социальная роль как динамический аспект статуса; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-34-role-adjustment",
-      "claim_ref": "claim:foundations-ms-34-role-adjustment",
-      "claim_digest": "1f5835ac6e3ff1fbbabdbde88c599a4b2715187fda25cdc267b39038ef47d926",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-34-role-adjustment",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-34-role-adjustment"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS34; source source:foundations-kravchenko-anurin#Глава 3 §2 → Социальная роль как динамический аспект статуса; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-foundations-ms-36-socialization",
       "claim_ref": "claim:foundations-ms-36-socialization",
       "claim_digest": "c49b049dddfa12d710e221d2e10ed518608e06fe8320707afd458c51acc078a9",
@@ -2942,36 +2417,6 @@
       "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
       "verdict": "APPROVE",
       "limits": "candidate MS38; source source:foundations-kravchenko-anurin#Глава 7 §4 → Малые группы → референтная группа; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-39-social-norm",
-      "claim_ref": "claim:foundations-ms-39-social-norm",
-      "claim_digest": "fab1ec7c89cb132ac88a6bceb5685832ad633cbacfd250164eb6b4cbec60eacb",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-39-social-norm",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-39-social-norm"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS39; source source:foundations-kravchenko-anurin#ch. 9 §1, Функции и содержание социального контроля.; report conditions retained; no scene/actor/outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-foundations-ms-40-social-prescription",
-      "claim_ref": "claim:foundations-ms-40-social-prescription",
-      "claim_digest": "077551dfa0da40209d35a098638f07459cbfb402471df02af6517134fd55112b",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/foundations-mind-society.json#claim:foundations-ms-40-social-prescription",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled compiled RU/EN, applicability, qualifiers, anchor with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:foundations-ms-40-social-prescription"
-      ],
-      "review_ref": "verification/verification-foundations-mind-society-library.md#per-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate MS40; source source:foundations-kravchenko-anurin#Глава 9 §1 → Функции и содержание социального контроля; report conditions retained; no scene/actor/outcome."
     },
     {
       "schema": "world_knowledge_verification_v1",

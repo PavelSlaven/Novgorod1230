@@ -33,21 +33,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:static-exposure-mechanisms-v1-cold-water-muscle-control",
-      "claim_ref": "claim:research-cold-water-immersion-can-impair-muscle-control",
-      "claim_digest": "4902eb9d1d0b8531f452bba050164243e32c6819fcdd79740f230b0953056bef",
-      "candidate_ref": "git:65d49f0805c93a57b93c32df68a77ba6d7718562:data/world-catalogs/novgorod/world-knowledge/production-v1/static-exposure-mechanisms-v1.json#claim:research-cold-water-immersion-can-impair-muscle-control",
-      "auditor_ref": "/root/food_source_verifier",
-      "independence_basis": "Independent direct source review; auditor did not author this candidate.",
-      "evidence_checked": [
-        "evidence:research-exposure-cold-water-can-impair-muscle-control"
-      ],
-      "review_ref": "verification/static-exposure-mechanisms-v1.md#claimresearch-cold-water-immersion-can-impair-muscle-control",
-      "verdict": "APPROVE",
-      "limits": "Supports possible cold-water immersion impairment of muscle control only; no water temperature, duration, clothing, person, degree of impairment, diagnosis, injury, survival, treatment, or scene outcome follows."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:static-exposure-mechanisms-v1-fire-plume-upper-layer-transport",
       "claim_ref": "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
       "claim_digest": "f2d63822d5249bf1d3ab51cce463a16e1c86fd7f963dafad57b4b07a1475ea12",

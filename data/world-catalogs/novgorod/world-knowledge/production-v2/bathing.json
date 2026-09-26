@@ -120,7 +120,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -161,7 +161,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -201,7 +201,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,

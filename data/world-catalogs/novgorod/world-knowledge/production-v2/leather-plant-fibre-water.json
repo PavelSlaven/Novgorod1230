@@ -235,7 +235,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -265,8 +265,13 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_craftsman_master"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -295,8 +300,13 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_craftsman_master"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -355,7 +365,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "general_physical",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -415,8 +425,13 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_craftsman_master"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -445,8 +460,13 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_craftsman_master"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -505,7 +525,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "general_physical",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -535,7 +555,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "general_physical",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -565,7 +585,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "general_physical",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -655,7 +675,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -685,8 +705,13 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_craftsman_master"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [

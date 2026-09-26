@@ -123,21 +123,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-fever-definition",
-      "claim_ref": "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
-      "claim_digest": "636bf4fca93861475392410ed707ebaf3f2454a62656c00f1718dee5ae5ec51a",
-      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
-      "auditor_ref": "/root/blindspot_v5_verifier",
-      "independence_basis": "Independent direct review of NLM MedlinePlus Fever; auditor did not author candidate.",
-      "evidence_checked": [
-        "evidence:candidate-v5-medlineplus-fever-definition"
-      ],
-      "review_ref": "verification/macro-human-world-blindspots-v5.md#fever",
-      "verdict": "APPROVE",
-      "limits": "Universal definition only; no actor temperature, illness, cause, severity, diagnosis, or treatment."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:macro-human-world-blindspots-v5-fever-sign",
       "claim_ref": "claim:candidate-v5-fever-is-not-itself-a-disease",
       "claim_digest": "cc14a07451cb835cfdbda415e2c8ac7f60dec7f4d8d16546d4a33718c53f4886",
@@ -165,36 +150,6 @@
       "review_ref": "verification/macro-human-world-blindspots-v5.md#fever",
       "verdict": "APPROVE",
       "limits": "Universal frequency statement only; no infection, organism, exposure, transmission, or outcome in a scene."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-sleep-need",
-      "claim_ref": "claim:candidate-v5-sleep-is-basic-human-need",
-      "claim_digest": "ac223416045d53403454d47f89aaf66c9f2c94c128ac1a1e5fa82f5449e03e65",
-      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-sleep-is-basic-human-need",
-      "auditor_ref": "/root/blindspot_v5_verifier",
-      "independence_basis": "Independent direct review of NIH/NHLBI Sleep Deprivation and Deficiency; auditor did not author candidate.",
-      "evidence_checked": [
-        "evidence:candidate-v5-nhlbi-sleep-basic-need"
-      ],
-      "review_ref": "verification/macro-human-world-blindspots-v5.md#sleep",
-      "verdict": "APPROVE",
-      "limits": "Universal physiology only; not a historical Novgorod lodging, hospitality, travel, or rest custom."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-sleep-focus-reaction",
-      "claim_ref": "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
-      "claim_digest": "c2d435b709d8808720a5ab3a702709c94dba744d0d3ba4844347378ff48f827f",
-      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
-      "auditor_ref": "/root/blindspot_v5_verifier",
-      "independence_basis": "Independent direct review of NIH/NHLBI Sleep Deprivation and Deficiency; auditor did not author candidate.",
-      "evidence_checked": [
-        "evidence:candidate-v5-nhlbi-sleep-focus-reaction"
-      ],
-      "review_ref": "verification/macro-human-world-blindspots-v5.md#sleep",
-      "verdict": "APPROVE",
-      "limits": "Universal effect only; no actor sleep history, travel fitness, exact mechanic, or outcome; not a historical hospitality norm."
     },
     {
       "schema": "world_knowledge_verification_v1",

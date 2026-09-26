@@ -305,21 +305,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-domestic-animal-context",
-      "claim_ref": "claim:domestic-animal-context",
-      "claim_digest": "cd987bc0113dad4d51a2b0d6a9b33ed4622566aa221da46ed2f0a931dccb9fd2",
-      "candidate_ref": "git:71c7ff3a3fb81f95ce7ad42232dc00d6a3bc1e60:data/world-catalogs/novgorod/world-knowledge/production-v1/foundation.json#claim:domestic-animal-context",
-      "auditor_ref": "/root/ci_repair",
-      "independence_basis": "Actual RU/EN claim and evidence reconciled with independent FAU-01 verdict.",
-      "evidence_checked": [
-        "evidence:animals"
-      ],
-      "review_ref": "verification/verification-environment-npc-social-chemistry.md#environment--agriculture--fauna",
-      "verdict": "APPROVE",
-      "limits": "candidate FAU-01; managed context only, not a live animal, owner, herd, breed, or use."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-wild-food-and-fur-evidence",
       "claim_ref": "claim:wild-food-and-fur-evidence",
       "claim_digest": "d39d2153ce443647563c22e0e13cf6bcc79cd22b7e6e37172005fa218231d88f",
@@ -1221,21 +1206,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-shoe-input",
-      "claim_ref": "claim:population-shoe-input",
-      "claim_digest": "f1365210bec8bb0a400ab5ca831808131ae37ca4d80d0272a339540ce8ac1069",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-shoe-input",
-      "auditor_ref": "/root/ci_repair",
-      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-15.",
-      "evidence_checked": [
-        "evidence:population-museum-footwear"
-      ],
-      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
-      "verdict": "APPROVE",
-      "limits": "candidate PHC-15; tanned hide only, not raw hide."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-population-shoe-form",
       "claim_ref": "claim:population-shoe-form",
       "claim_digest": "565ebf3055f8379eed57a52279f8ddd43c2821d03175064a18720a5a56733bef",
@@ -1248,21 +1218,6 @@
       "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
       "verdict": "APPROVE",
       "limits": "candidate PHC-15; no universal last/workshop requirement."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-shoe-output",
-      "claim_ref": "claim:population-shoe-output",
-      "claim_digest": "f6335dad989cbda7c21ba17dd7c4a9393060d5eecab3ab64753b1793b00b168f",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-shoe-output",
-      "auditor_ref": "/root/ci_repair",
-      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-15.",
-      "evidence_checked": [
-        "evidence:population-things-leather"
-      ],
-      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
-      "verdict": "APPROVE",
-      "limits": "candidate PHC-15; attested craft traces only."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -1353,21 +1308,6 @@
       "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
       "verdict": "APPROVE",
       "limits": "candidate PHC-23; craft category, not individual competence/schedule."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-woodwork-material",
-      "claim_ref": "claim:population-woodwork-material",
-      "claim_digest": "93ca948b8c1d0e18c34404d3d7692f7d51c7a60752612f3316364a6a8081bd6e",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/historical-population.json#claim:population-woodwork-material",
-      "auditor_ref": "/root/ci_repair",
-      "independence_basis": "Actual RU/EN/evidence reconciled with PHC-23.",
-      "evidence_checked": [
-        "evidence:population-things-overview"
-      ],
-      "review_ref": "research/verification-population-historical-context.md#independent-verification--historical-population",
-      "verdict": "APPROVE",
-      "limits": "candidate PHC-23; craft category, not material presence."
     },
     {
       "schema": "world_knowledge_verification_v1",

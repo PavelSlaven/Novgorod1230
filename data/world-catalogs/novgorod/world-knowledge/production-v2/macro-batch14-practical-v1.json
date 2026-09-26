@@ -224,8 +224,17 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_dependent_peasant",
+            "nov_role_pastoral_worker",
+            "nov_role_smerd_householder"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -264,8 +273,13 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_fisher"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -294,7 +308,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -324,7 +338,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -364,8 +378,13 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_craftsman_master"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -404,8 +423,13 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_craftsman_master"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -444,8 +468,13 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_craftsman_master"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -474,8 +503,17 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_dependent_peasant",
+            "nov_role_ploughman",
+            "nov_role_smerd_householder"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -504,8 +542,17 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_dependent_peasant",
+            "nov_role_ploughman",
+            "nov_role_smerd_householder"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -544,7 +591,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -584,8 +631,16 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_boatman",
+            "nov_role_fisher"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -624,7 +679,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -664,8 +719,13 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": "nov_role_cart_driver"
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -694,8 +754,17 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
-        "required_facets": []
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_boatman",
+            "nov_role_ferryman",
+            "nov_role_helmsman"
+          ]
+        }
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -734,7 +803,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -774,7 +843,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "domain_internal_only",
+        "class": "common_cultural",
         "required_facets": []
       },
       "hard_exclusion": null,

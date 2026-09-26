@@ -3,36 +3,6 @@
   "verifications": [
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:postpartum-01",
-      "claim_ref": "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
-      "claim_digest": "e287a0e698e4a84fb5cc045316579bcd04abc58744967baaac9715cd943312d3",
-      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
-      "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-postpartum-who-postbirth-bleeding-infection"
-      ],
-      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
-      "verdict": "APPROVE",
-      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:postpartum-02",
-      "claim_ref": "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
-      "claim_digest": "528ee77a1d4159974cefe4e11c3b602fd8e767ae7128ab7452c6398195adf831",
-      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
-      "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-postpartum-who-maternal-newborn-link"
-      ],
-      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
-      "verdict": "APPROVE",
-      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:postpartum-03",
       "claim_ref": "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
       "claim_digest": "7b1db612ae3f91e228afd2b6ca2e3a20daeffb32a1277ac00a35c9892729105b",
@@ -101,21 +71,6 @@
       "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
       "evidence_checked": [
         "evidence:residual-postpartum-ncbi-breastmilk-immune-factors"
-      ],
-      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
-      "verdict": "APPROVE",
-      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:postpartum-08",
-      "claim_ref": "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
-      "claim_digest": "7874464725a4abe674b070342c61f289d11ea193bbf3b6ddaae2593cf0a27e3e",
-      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
-      "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-postpartum-who-first-week"
       ],
       "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
       "verdict": "APPROVE",

@@ -168,21 +168,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:gameplay-physiology-v3-drowning-respiratory-impairment",
-      "claim_ref": "claim:candidate-physiology-v3-drowning-respiratory-impairment",
-      "claim_digest": "26996d140293c1983ec4b773775bcb643ec9257c98296d65dec5277ed631d0db",
-      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-drowning-respiratory-impairment",
-      "auditor_ref": "verification-auditor:independent-physiology-v3",
-      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
-      "evidence_checked": [
-        "evidence:candidate-physiology-v3-drowning-respiratory-impairment"
-      ],
-      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
-      "verdict": "APPROVE",
-      "limits": "No concrete drowning event or outcome follows from immersion alone."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:gameplay-physiology-v3-low-brain-perfusion-awareness",
       "claim_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
       "claim_digest": "872c124e01cc74c501d35abd8926459df36dfef3a40db94cd6d6a0d1a972d4d4",

@@ -65,45 +65,6 @@
       "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-foodborne-symptoms-vary-by-germ",
       "verdict": "APPROVE",
       "limits": "Food-poisoning symptom variation only; no food, germ, exposure, illness, diagnosis, severity, treatment, or scene outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-universal-life-environment-v2-slip-hazard",
-      "claim_ref": "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-      "claim_digest": "7f7bc124c570fac9db0b32e533ee26c7698f0f15ba539f7dada5d2cbff3007ee",
-      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-      "auditor_ref": "/root/universal_v2_verifier",
-      "independence_basis": "Independent direct CDC source review; auditor did not author the candidate.",
-      "evidence_checked": ["evidence:candidate-v2-slip-hazard"],
-      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-ice-or-snow-can-be-a-slip-hazard",
-      "verdict": "APPROVE",
-      "limits": "Possible walking-surface hazard only; no local ice or snow, traction value, fall, injury, weather state, or scene outcome."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-universal-life-environment-v2-ice-strength-factors",
-      "claim_ref": "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
-      "claim_digest": "1c372dde4808d004fe93d89ea75c26a0b2475b87fbd93267883b143aa1a38ce0",
-      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-ice-strength-depends-on-physical-conditions",
-      "auditor_ref": "/root/universal_v2_verifier",
-      "independence_basis": "Independent direct Environment and Climate Change Canada source review; auditor did not author the candidate.",
-      "evidence_checked": ["evidence:candidate-v2-ice-strength-factors"],
-      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-ice-strength-depends-on-physical-conditions",
-      "verdict": "APPROVE",
-      "limits": "Qualitative relation only; no ice presence, ice type, thickness, temperature, salt content, safe threshold, load, route, or site state."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:macro-universal-life-environment-v2-near-melting-ice",
-      "claim_ref": "claim:candidate-v2-near-melting-ice-has-less-strength",
-      "claim_digest": "562e66113d4642a7a4788634e28b5561ce4b563e1dd9e8410de5b5faf46b592a",
-      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-near-melting-ice-has-less-strength",
-      "auditor_ref": "/root/universal_v2_verifier",
-      "independence_basis": "Independent direct Environment and Climate Change Canada source review; auditor did not author the candidate.",
-      "evidence_checked": ["evidence:candidate-v2-ice-near-melting"],
-      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-near-melting-ice-has-less-strength",
-      "verdict": "APPROVE",
-      "limits": "Qualitative same-thickness comparison only; no local ice, temperature, thickness, safe threshold, load, route, or site state."
     }
   ]
 }

@@ -441,8 +441,7 @@ decision_policy
 ### 8.1. Фасеты предмета
 
 ```text
-object_type
-object_function
+object_type          # hierarchical presence-фасет (§0); данные stage-3b1 / item-container
 material
 manufacturing_technique
 component_type
@@ -455,6 +454,8 @@ use_context
 legal_status
 social_status_signal
 ```
+
+Функция предмета (бытовой/боевой/ритуальный смысл) выражается через `object_type` и связанные категории/отношения, а не отдельным presence-фасетом `object_function`.
 
 ### 8.2. Материалы
 
@@ -491,7 +492,7 @@ functional_state
 Контейнер классифицируется отдельно от предмета по:
 
 ```text
-container_type
+container_form       # hierarchical presence-фасет (§0); данные stage-3b1 / item-container
 capacity_model
 closure_type
 portability
@@ -1044,8 +1045,9 @@ data gap
 - назначать характер по внешности, профессии или классу;
 - назначать историческому животному современную породу без источника;
 - создавать предмет, NPC, животное или строение только по заявке игрока;
-- создавать смысловой default при отсутствии данных;
-- повышать proposed-документ в active без синхронизации DDL, контрактов, importer/readiness checks и аудита.
+- создавать смысловой default при отсутствии данных.
+
+Повышение статуса документа в CONTRACT_INDEX — процесс WR и CONTRACT_INDEX §10, не локальный запрет этого документа.
 
 ## 20. Предлагаемые изменения структуры данных
 
@@ -1117,14 +1119,14 @@ review_status
 
 ## 21. Итоговый план внедрения
 
-### Этап 1. Утверждение норматива
+### Этап 1. Утверждение норматива — выполнен (#146 / §23)
 
 1. Провести профильный аудит документа.
 2. Устранить конфликты с active-нормативами.
 3. Добавить документ в canonical corpus и навигацию.
-4. Оставить статус `proposed` до технической реализации.
+4. ~~Оставить статус `proposed` до технической реализации.~~ Документ повышен в `ACTIVE` решением владельца в [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146); см. §23.
 
-**Критерий готовности:** документ принят как целевая архитектура без утверждения несуществующей реализации.
+**Критерий готовности (исторический):** документ принят как целевая архитектура. Статус `ACTIVE` и оставшиеся пробелы данных/реализации — §23.
 
 ### Этап 2. Базовый классификационный слой
 
@@ -1197,7 +1199,7 @@ review_status
 
 **Критерий готовности:** игра получает правдоподобных животных без глубокой зоологической подсистемы.
 
-### Этап 9. Импорт, миграция и activation gate
+### Этап 9. Импорт, активация и activation gate — исторический план (#146 / §23)
 
 1. Подготовить versioned datasets и manifest.
 2. Выполнить dry-run.
@@ -1207,7 +1209,7 @@ review_status
 6. Выполнить PostgreSQL integration.
 7. Выполнить full test suite.
 8. Провести обязательный аудит агента-критика.
-9. Повысить документ и revision в `active` только после `PASS` или допустимого `PASS WITH NOTES`.
+9. ~~Повысить документ и revision в `active` только после `PASS` или допустимого `PASS WITH NOTES`.~~ Статус `ACTIVE` принят в [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146); пункт 9 больше не gate. Незакрытые пункты 4–8 и данные presence — пробелы M2c (§23), не условие статуса политики.
 
 ## 22. Минимальный первый релиз
 
@@ -1227,19 +1229,22 @@ simplified animals
 
 ## 23. Повышение в `active` и оставшиеся пробелы M2c
 
-Документ повышен в `ACTIVE` решением владельца в [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) (PC §9.1; #133 D1–D13). Прежний чеклист §23 больше не является gate статуса этого документа.
+Документ повышен в `ACTIVE` решением владельца в [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) (PC §9.1; #133 D1–D13). Прежний чеклист повышения больше не является gate статуса этого документа.
 
-Оставшиеся невыполненные пункты прежнего чеклиста — пробелы данных и реализации M2c (не статус политики):
+Статус пунктов старого чеклиста:
 
-```text
-иерархия parent_category_id внутри presence-фасетов;
-заполнение незаполненных доменов категорий и condition-фасета;
-утверждённые presence-правила и seasonal dictionaries;
-DDL/importer/validators под таблицу presence-правил;
-materializer/O1 path на v17 использует нормализованные IDs этих правил;
-negative fixtures и PostgreSQL integration для presence;
-Contract Auditor / PASS на CR реализации.
-```
+| Пункт | Итог |
+|---|---|
+| профильный аудит / корпус / навигация (Этап 1) | выполнен (#146) |
+| повышение в `ACTIVE` | выполнено (#146); не ждёт полного suite |
+| региональные привязки / `region_category_options` | выполнено для существующих доменов в v17; незаполненные домены — пробел данных M2c |
+| пустые required candidate sets → hard block | норма сохранена; покрытие presence-доменов — пробел данных M2c |
+| `SCHEMA_REFERENCE.md` под presence-таблицу | пробел M2c (DDL CR реализации) |
+| полный suite / PostgreSQL integration / negative fixtures presence | пробел M2c (CR реализации) |
+| иерархия `parent_category_id` внутри presence-фасетов | пробел данных M2c |
+| утверждённые presence-правила и seasonal dictionaries | пробел данных M2c |
+| DDL/importer/validators presence; materializer/O1 на v17 | пробел реализации M2c |
+| Contract Auditor / PASS на CR реализации | после шагов реализации, не gate статуса политики |
 
 ## 24. Короткая формула
 

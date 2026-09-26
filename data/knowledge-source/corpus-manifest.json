@@ -54,8 +54,8 @@
       "document_id": "code-driven-world-materialization-architecture",
       "canonical_path": "corpus/DOCUMENTS/code_driven_world_materialization_architecture.md",
       "file_name": "code_driven_world_materialization_architecture.md",
-      "sha256": "740476af037c04818509dd3396ebcf180e2587a739a50db8a93e8cc4512efaee",
-      "bytes": 53990,
+      "sha256": "ee5d3698f4342035b4f478190d18ec3a12b78c6a8f2940e7f501962c36413c13",
+      "bytes": 54350,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -426,8 +426,8 @@
       "document_id": "universal-category-classification-policy",
       "canonical_path": "corpus/DOCUMENTS/universal_category_classification_policy.md",
       "file_name": "universal_category_classification_policy.md",
-      "sha256": "f2a2560d4829cb5643ab70ecda2927743dff2878dd452e181ef2a3d528f0d1a6",
-      "bytes": 45986,
+      "sha256": "82e6e1a0c80fd806633a41b2a698a70396f8ba0d552f8e54613b2edf92df08ed",
+      "bytes": 47694,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -457,8 +457,8 @@
       "document_id": "world-base-materialization-table-requirements",
       "canonical_path": "corpus/DOCUMENTS/world_base_materialization_table_requirements.md",
       "file_name": "world_base_materialization_table_requirements.md",
-      "sha256": "537567e6b30f567d93cc4e5b2c481c1ca02b022a6fc790cbb491a519b6535381",
-      "bytes": 28023,
+      "sha256": "2a303c51d8fe0dd7bc2edccf018c3d6f41eea9342be5d4b62764a7310fe886ab",
+      "bytes": 28465,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

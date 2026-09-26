@@ -199,10 +199,13 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 
 ### 8.1. Таблица правил наличия (M2c authoring)
 
+§8.1 — действующее требование M2c к authoring `world_base` (C-006 / ACTIVE specialization Spatial v3 table-purpose). Таблица ещё не в DDL: входит через CR реализации M2c; отсутствие строк DDL не отменяет норму.
+
 Требуется тонкая authoring-таблица у materialization owner (имя — DDL CR реализации) со столбцами:
 
 | Поле | Смысл |
 |---|---|
+| `rule_id` | стабильный id правила; в исходе броска хранится как `rule_id@rule_version` (§3A.1) |
 | `world_revision_id` | ревизия authoring |
 | `scope_kind` | `landscape_template` / `place_template` / `scene_template` / `container_template` |
 | `scope_ref` | id шаблона scope |

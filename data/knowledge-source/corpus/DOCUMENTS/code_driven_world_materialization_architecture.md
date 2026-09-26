@@ -209,13 +209,15 @@ Repair/migration обязана указать причину, прежний и
 
 Рукотворная категория может выпасть по правилу на `landscape_template`. Причинное основание — сохранённые правило и исход броска. Проза описывает только сохранённое (вещь, место, состояние); кто потерял вещь, LLM не выдумывает. Состояние задаёт код через фасет `condition`.
 
+Канонический пример (PC §9.1; поправка [#133 п.8](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5843988793)): меч в глухом лесу — малый, но не нулевой шанс; найти можно; причина — сохранённое правило наличия и бросок при первом прибытии, а не запрет класса «оружие».
+
 ### 3A.7. Глоссарий (D10)
 
 - **Ordinary** — обычная вещь/человек/ресурс из категорий кода и presence/лимитов, без authority-записи uniqueness.
 - **Authored** — заранее заданный авторским источником экземпляр или слот.
-- **Significant** — не синоним «ценный/редкий/оружие/деньги/документ»; ценность, редкость и класс сами по себе не делают вещь significant.
+- **Significant** — назначено authority-записью. Ценность, редкость и класс вещи никогда не делают её significant и не служат причиной запрета.
 - **Hidden** — уже существует после броска, но не в воспринимаемом слое до навыка/условия.
-- **`authority_required` / typed gap для вещей** — только вещи, назначенные authority-записью: уникальные, квестовые, размещённые или спрятанные авторским источником. Typed gap игроку не показывается как «невозможно».
+- **`authority_required` / typed gap для вещей** — только вещи, назначенные authority-записью: уникальные, квестовые, размещённые или спрятанные авторским источником. Technical/typed gap не выдаётся игроку как физическая невозможность, отсутствие вещи в мире или отказ персонажа (AI §10.1; O2a: `authority_required` не доказывает физическое отсутствие).
 
 
 ## 4. Граница ответственности
@@ -448,22 +450,9 @@ Stage 24 не подставляет run/seed/profile/quantity/condition/legal s
 
 Production-роли `G5SceneMaterializer`, `InitialNpcPlacer`, `InitialItemPlacer` и LLM write-plan builder запрещены.
 
-## 13. Проверки и условие повышения
+## 13. Проверки
 
-Обязательны unit/property/integration tests детерминизма, filters, graph connectivity, capacity, ownership, repeat-entry, no-rematerialization, decision tokens, invalid LLM responses, autonomous updates, rollback, full new-game и first-entry turn.
-
-Документ может стать `active` только когда:
-
-```text
-все противоречащие active-нормативы исправлены;
-DDL, contracts и JSON Schema обновлены;
-production Stage 13–16, 19 и 24 переведены на код;
-party write path сохраняет trace и version pins;
-legacy party v1 не попадает в runtime v2;
-generated artifacts актуальны;
-полный test suite и PostgreSQL integration проходят;
-отдельный агент-критик вернул PASS.
-```
+Обязательны unit/property/integration tests детерминизма, filters, graph connectivity, capacity, ownership, repeat-entry, no-rematerialization, decision tokens, invalid LLM responses, autonomous updates, rollback, full new-game и first-entry turn. Документ уже `ACTIVE`; критерий «повышения в active» удалён (как в `world_base_materialization_table_requirements.md` §15). Новые нормы presence (§3A) и сопутствующий DDL входят через CR реализации M2c и Contract Auditor.
 
 ## 14. Domain-scoped runtime catalog activation
 

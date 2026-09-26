@@ -157,18 +157,48 @@
     },
     {
       "domain": "presence_rules",
-      "name": "c002_crosswalks_cover_16_bound_pf",
+      "name": "c002_crosswalks_account_for_16_bound_pf",
       "pass": true,
       "failures": 0,
       "sample": [],
       "external": false,
       "place_families": 16,
       "rows": {
-        "livestock": 144,
-        "buildings": 89,
-        "food": 52,
-        "tools": 174,
-        "weapons": 628
+        "livestock": {
+          "rows": 144,
+          "linked_rows": 130,
+          "no_source_rows": 14,
+          "linked_place_families": 30,
+          "no_source_place_families": 14
+        },
+        "buildings": {
+          "rows": 89,
+          "linked_rows": 73,
+          "no_source_rows": 16,
+          "linked_place_families": 28,
+          "no_source_place_families": 16
+        },
+        "food": {
+          "rows": 52,
+          "linked_rows": 12,
+          "no_source_rows": 40,
+          "linked_place_families": 5,
+          "no_source_place_families": 39
+        },
+        "tools": {
+          "rows": 174,
+          "linked_rows": 152,
+          "no_source_rows": 22,
+          "linked_place_families": 25,
+          "no_source_place_families": 19
+        },
+        "weapons": {
+          "rows": 628,
+          "linked_rows": 507,
+          "no_source_rows": 121,
+          "linked_place_families": 19,
+          "no_source_place_families": 25
+        }
       }
     },
     {

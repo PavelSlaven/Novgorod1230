@@ -235,6 +235,6 @@
 
 - `presence/people_presence_authoring.csv`: 19 candidate-привязок к 16 PF; 4 сезона и `morning|day|evening|night` разворачиваются в 69 правил. Subjects резолвятся в действительных региональных словарях social roles и occupations. Норматив §8.1 взят read-only из `Novgorod-runtime`.
 - `scripts/build-presence-rules.mjs`: прежние 10 555 category rules сохранены без изменения прежних колонок и ID (сравнение CSV с `git show HEAD`). Итог — 10 624 правил. Вероятность 250 000 ppm и лимит 1 у людей — явные редакционные candidate-правила без числового исторического источника; `guards` ещё не runtime expressions.
-- `scripts/validate.mjs`: уникальность включает subject, сезон и время суток; словари subject/season/time, 16 PF и охват базового binding 32 G4/195 G5 проверяются.
+- `scripts/validate.mjs`: уникальность включает subject, сезон и время суток; словари subject/season/time, 16 PF и охват базового binding 32 G4/195 G5 проверяются. Те же 16 PF обязаны присутствовать во всех пяти crosswalk C002; их ключи, статусы и PF-ID также проверяются.
 - Запуски: генератор дважды, SHA-256 CSV и report совпали; `node scripts/validate.mjs` — 17 own PASS, 3 external INFO; оба `node --check` и `git diff --check` — PASS. Внешние INFO: 16 620 строк пулов без категории, 118 проблем внешнего реестра и 788 ссылок пулов без категории.
 - Ограничение: `place_family`, время суток и строковые guards не входят в текущий DDL §8.1; все строки остаются `candidate`, не approved/active.

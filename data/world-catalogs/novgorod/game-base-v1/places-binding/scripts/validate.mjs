@@ -128,6 +128,27 @@ const ex = readJson(P('inputs/pr98-extract.json'));
     ...(nb.filter((r) => r.node_level === 'G4').length === 32 && nb.filter((r) => r.node_level === 'G5').length === 195 ? [] : ['expected 32 G4 / 195 G5']),
     ...(pr.length - people.length === 10555 ? [] : [`category rules ${pr.length - people.length} != 10555`]),
   ], { people_rules: people.length, place_families: expectedPf.size, g4: nb.filter((r) => r.node_level === 'G4').length, g5: nb.filter((r) => r.node_level === 'G5').length });
+  const crosswalks = [
+    ['livestock', '../fauna-fish-invertebrates-livestock/fauna/rpgr_pf_crosswalk.csv', ['rule_ref', 'pf_id']],
+    ['buildings', '../buildings-interiors-containers/buildings/sf_pf_crosswalk.csv', ['sf_id', 'pf_id']],
+    ['food', '../food-drink/food/household_type_pf_crosswalk.csv', ['household_type', 'pf_id']],
+    ['tools', '../crafts-tools-processes/craft_tools_gear/occupation_pf_crosswalk.csv', ['occupation_id', 'pf_id']],
+    ['weapons', '../items-weapons-armour/items/role_tier_pf_crosswalk.csv', ['role_id', 'tier', 'pf_id']],
+  ];
+  const crosswalkFailures = [];
+  const crosswalkCounts = {};
+  for (const [name, file, keys] of crosswalks) {
+    const rows = readCsv(P(file));
+    const rowPf = new Set(rows.map((r) => r.pf_id).filter(Boolean));
+    const rowKeys = rows.map((r) => keys.map((key) => r[key]).join('|'));
+    crosswalkCounts[name] = rows.length;
+    for (const id of expectedPf) if (!rowPf.has(id)) crosswalkFailures.push(`${name}: missing ${id}`);
+    for (const id of rowPf) if (!pfSet.has(id)) crosswalkFailures.push(`${name}: unknown ${id}`);
+    if (new Set(rowKeys).size !== rowKeys.length) crosswalkFailures.push(`${name}: duplicate key`);
+    if (rows.some((r) => r.status !== 'candidate')) crosswalkFailures.push(`${name}: non-candidate status`);
+  }
+  check('presence_rules', 'c002_crosswalks_cover_16_bound_pf', crosswalkFailures,
+    { place_families: expectedPf.size, rows: crosswalkCounts });
   const rr = readJson(P('reports/presence-rules-report.json'));
   check('presence_rules', 'input_pool_rows_rejected (external)', Array(rr.rejected_rows).fill('x'), { reasons: rr.reject_reasons, by_file: rr.rejected_by_file }, true);
 }

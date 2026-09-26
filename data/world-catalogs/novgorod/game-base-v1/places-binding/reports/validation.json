@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 17,
-  "own_checks_total": 17,
+  "own_checks_passed": 18,
+  "own_checks_total": 18,
   "checks": [
     {
       "domain": "place_families",
@@ -145,6 +145,22 @@
       "place_families": 16,
       "g4": 32,
       "g5": 195
+    },
+    {
+      "domain": "presence_rules",
+      "name": "c002_crosswalks_cover_16_bound_pf",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "place_families": 16,
+      "rows": {
+        "livestock": 144,
+        "buildings": 89,
+        "food": 52,
+        "tools": 238,
+        "weapons": 628
+      }
     },
     {
       "domain": "presence_rules",

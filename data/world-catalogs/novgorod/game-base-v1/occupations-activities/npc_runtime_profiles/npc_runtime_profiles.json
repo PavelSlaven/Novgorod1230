@@ -440,6 +440,7 @@
       "occupation_ref": "nov_occ_boatman",
       "role_ref": "nov_role_boatman",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -452,6 +453,7 @@
       },
       "equipment": {
         "authoring_source_ref": "novgorod_transport_guiding_equipment_v1",
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -666,6 +668,7 @@
       "occupation_ref": "nov_occ_fisher",
       "role_ref": "nov_role_fisher",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -678,6 +681,7 @@
       },
       "equipment": {
         "authoring_source_ref": "novgorod_fishing_water_equipment_v1",
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -892,6 +896,7 @@
       "occupation_ref": "nov_occ_route_guide",
       "role_ref": "nov_role_guide",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -904,6 +909,7 @@
       },
       "equipment": {
         "authoring_source_ref": null,
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -1436,6 +1442,7 @@
       "occupation_ref": "nov_occ_hunter_trapper",
       "role_ref": "nov_role_hunter",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -1448,6 +1455,7 @@
       },
       "equipment": {
         "authoring_source_ref": null,
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -1664,6 +1672,7 @@
       "occupation_ref": "nov_occ_forest_worker",
       "role_ref": "nov_role_forest_promyslovik",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -1676,6 +1685,7 @@
       },
       "equipment": {
         "authoring_source_ref": null,
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -1890,6 +1900,7 @@
       "occupation_ref": "nov_occ_local_trader",
       "role_ref": "nov_role_trader",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -1902,6 +1913,7 @@
       },
       "equipment": {
         "authoring_source_ref": null,
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -2116,6 +2128,7 @@
       "occupation_ref": "nov_occ_long_distance_merchant",
       "role_ref": "nov_role_merchant_guest",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -2128,6 +2141,7 @@
       },
       "equipment": {
         "authoring_source_ref": null,
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -2344,6 +2358,7 @@
       "occupation_ref": "nov_occ_long_distance_merchant",
       "role_ref": "nov_role_foreign_guest",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -2356,6 +2371,7 @@
       },
       "equipment": {
         "authoring_source_ref": null,
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -2597,6 +2613,7 @@
       "occupation_ref": "nov_occ_household_servant",
       "role_ref": "nov_role_servant",
       "status": "candidate",
+      "source_status": "candidate_approval_pending",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
         "binding": null,
@@ -2609,6 +2626,7 @@
       },
       "equipment": {
         "authoring_source_ref": null,
+        "scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
         "binding": {
           "controller_ref": "generated_actor_ref",
           "status": "authoring_candidate",
@@ -2822,6 +2840,7 @@
       "profile_id": "profile_occ_jeweler_caster",
       "occupation_ref": "occ_jeweler_caster",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -3356,6 +3375,7 @@
       "profile_id": "profile_occ_bone_carver",
       "occupation_ref": "occ_bone_carver",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -3890,6 +3910,7 @@
       "profile_id": "profile_occ_wood_turner",
       "occupation_ref": "occ_wood_turner",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -3903,11 +3924,11 @@
       },
       "equipment": {
         "occupation_source_field": "typical_tools",
-        "value": "лучковый токарный станок, резцы, скобель",
+        "value": "токарный станок с лучковым приводом от ножной педали, резцы, скобель",
         "no_source": "individual_owned_item_binding"
       },
       "routine": {
-        "winter": "точит на ручном (лучковом) станке чаши, веретёна, ручки инструмента из заготовленной осенью древесины",
+        "winter": "точит на станке с лучковым приводом от ножной педали чаши, веретёна, ручки инструмента из заготовленной осенью древесины",
         "spring": "работа со двора не выходя; доводка запасов",
         "summer": "заготовка свежей древесины (берёза, липа), сбыт токарных изделий на торгу",
         "autumn": "основной сезон заготовки заготовок под зимнюю точку"
@@ -4089,7 +4110,7 @@
           ],
           "equipment_options": [
             {
-              "value": "лучковый токарный станок, резцы, скобель",
+              "value": "токарный станок с лучковым приводом от ножной педали, резцы, скобель",
               "weight": 1,
               "source_ref": "occupations/occupations_additions.csv#occ_wood_turner:typical_tools",
               "rule": "work-context tools only; resolve item and ownership before actor binding",
@@ -4248,7 +4269,7 @@
           ],
           "equipment_options": [
             {
-              "value": "лучковый токарный станок, резцы, скобель",
+              "value": "токарный станок с лучковым приводом от ножной педали, резцы, скобель",
               "weight": 1,
               "source_ref": "occupations/occupations_additions.csv#occ_wood_turner:typical_tools",
               "rule": "work-context tools only; resolve item and ownership before actor binding",
@@ -4407,7 +4428,7 @@
           ],
           "equipment_options": [
             {
-              "value": "лучковый токарный станок, резцы, скобель",
+              "value": "токарный станок с лучковым приводом от ножной педали, резцы, скобель",
               "weight": 1,
               "source_ref": "occupations/occupations_additions.csv#occ_wood_turner:typical_tools",
               "rule": "work-context tools only; resolve item and ownership before actor binding",
@@ -4424,6 +4445,7 @@
       "profile_id": "profile_occ_furrier",
       "occupation_ref": "occ_furrier",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -4958,6 +4980,7 @@
       "profile_id": "profile_occ_dyer",
       "occupation_ref": "occ_dyer",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -5492,6 +5515,7 @@
       "profile_id": "profile_occ_ropemaker_netmaker",
       "occupation_ref": "occ_ropemaker_netmaker",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -6026,6 +6050,7 @@
       "profile_id": "profile_occ_netmaker",
       "occupation_ref": "occ_netmaker",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -6560,6 +6585,7 @@
       "profile_id": "profile_occ_locksmith",
       "occupation_ref": "occ_locksmith",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -7094,6 +7120,7 @@
       "profile_id": "profile_occ_bowyer",
       "occupation_ref": "occ_bowyer",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -7628,6 +7655,7 @@
       "profile_id": "profile_occ_arrowsmith",
       "occupation_ref": "occ_arrowsmith",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -8162,6 +8190,7 @@
       "profile_id": "profile_occ_mason",
       "occupation_ref": "occ_mason",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -8695,7 +8724,8 @@
     {
       "profile_id": "profile_occ_limeburner",
       "occupation_ref": "occ_limeburner",
-      "role_ref": "nov_role_forest_promyslovik",
+      "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -8742,23 +8772,23 @@
         "eye_color"
       ],
       "allowed_role_refs": [
-        "nov_role_forest_promyslovik",
+        "nov_role_craftsman_master",
         "nov_role_hired_worker"
       ],
       "regional_option_sets": [
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_forest_promyslovik",
+          "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_limeburner",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_forest_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_forest_promyslovik",
+          "clothing_profile_ref": "nov_clothing_urban_middle_v1",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
             {
-              "value": "of_forest_male_warm_any",
+              "value": "of_urban_middle_male_warm_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_forest_male_warm_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_warm_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -8778,9 +8808,9 @@
               }
             },
             {
-              "value": "of_forest_male_cool_any",
+              "value": "of_urban_middle_male_cool_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_forest_male_cool_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cool_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -8802,9 +8832,9 @@
               }
             },
             {
-              "value": "of_forest_male_cold_any",
+              "value": "of_urban_middle_male_cold_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_forest_male_cold_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cold_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -8824,9 +8854,9 @@
               }
             },
             {
-              "value": "of_forest_female_warm_married",
+              "value": "of_urban_middle_female_warm_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_forest_female_warm_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_female_warm_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -8846,9 +8876,9 @@
               }
             },
             {
-              "value": "of_forest_female_cool_married",
+              "value": "of_urban_middle_female_cool_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_forest_female_cool_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_female_cool_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -8870,9 +8900,9 @@
               }
             },
             {
-              "value": "of_forest_female_cold_married",
+              "value": "of_urban_middle_female_cold_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_forest_female_cold_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_female_cold_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9069,7 +9099,8 @@
     {
       "profile_id": "profile_occ_icon_painter",
       "occupation_ref": "occ_icon_painter",
-      "role_ref": "nov_role_church_scribe",
+      "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -9116,24 +9147,23 @@
         "eye_color"
       ],
       "allowed_role_refs": [
-        "nov_role_church_scribe",
-        "nov_role_bishop_man",
-        "nov_role_merchant_clerk"
+        "nov_role_craftsman_master",
+        "nov_role_monastery_worker"
       ],
       "regional_option_sets": [
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_church_scribe",
+          "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_icon_painter",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_priest_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_church_scribe",
+          "clothing_profile_ref": "nov_clothing_urban_middle_v1",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
             {
-              "value": "of_priest_male_warm_any",
+              "value": "of_urban_middle_male_warm_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_priest_male_warm_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_warm_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9153,9 +9183,9 @@
               }
             },
             {
-              "value": "of_priest_male_cool_any",
+              "value": "of_urban_middle_male_cool_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_priest_male_cool_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cool_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9177,100 +9207,9 @@
               }
             },
             {
-              "value": "of_priest_male_cold_any",
+              "value": "of_urban_middle_male_cold_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_priest_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            }
-          ],
-          "equipment_options": [
-            {
-              "value": "кисти, доски-основы, левкас (грунт), яичная темпера, растёртые пигменты, олифа",
-              "weight": 1,
-              "source_ref": "occupations/occupations_additions.csv#occ_icon_painter:typical_tools",
-              "rule": "work-context tools only; resolve item and ownership before actor binding",
-              "no_source": "exact_item_and_property_binding",
-              "applicability": {}
-            }
-          ],
-          "selection_rule": "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only",
-          "no_source": "regional_frequency_weights_not_authored"
-        },
-        {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_bishop_man",
-          "occupation_ref": "occ_icon_painter",
-          "status": "candidate",
-          "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_wealthy_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_bishop_man",
-          "clothing_options": [
-            {
-              "value": "of_wealthy_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_wealthy_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_wealthy_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_wealthy_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_wealthy_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_wealthy_male_cold_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cold_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9290,9 +9229,9 @@
               }
             },
             {
-              "value": "of_wealthy_female_warm_married",
+              "value": "of_urban_middle_female_warm_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_wealthy_female_warm_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_female_warm_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9312,9 +9251,9 @@
               }
             },
             {
-              "value": "of_wealthy_female_cool_married",
+              "value": "of_urban_middle_female_cool_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_wealthy_female_cool_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_female_cool_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9336,9 +9275,9 @@
               }
             },
             {
-              "value": "of_wealthy_female_cold_married",
+              "value": "of_urban_middle_female_cold_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_wealthy_female_cold_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_female_cold_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9373,17 +9312,17 @@
         },
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_merchant_clerk",
+          "role_ref": "nov_role_monastery_worker",
           "occupation_ref": "occ_icon_painter",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_merchant_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_merchant_clerk",
+          "clothing_profile_ref": "nov_clothing_rural_v1",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_monastery_worker",
           "clothing_options": [
             {
-              "value": "of_merchant_male_warm_any",
+              "value": "of_rural_male_warm_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_merchant_male_warm_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_warm_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9403,9 +9342,9 @@
               }
             },
             {
-              "value": "of_merchant_male_cool_any",
+              "value": "of_rural_male_cool_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_merchant_male_cool_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cool_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9427,9 +9366,9 @@
               }
             },
             {
-              "value": "of_merchant_male_cold_any",
+              "value": "of_rural_male_cold_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_merchant_male_cold_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cold_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9449,9 +9388,9 @@
               }
             },
             {
-              "value": "of_merchant_female_warm_married",
+              "value": "of_rural_female_warm_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_merchant_female_warm_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_warm_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9471,9 +9410,9 @@
               }
             },
             {
-              "value": "of_merchant_female_cool_married",
+              "value": "of_rural_female_cool_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_merchant_female_cool_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cool_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9495,9 +9434,9 @@
               }
             },
             {
-              "value": "of_merchant_female_cold_married",
+              "value": "of_rural_female_cold_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_merchant_female_cold_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cold_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9535,7 +9474,8 @@
     {
       "profile_id": "profile_occ_brewer_meadmaker",
       "occupation_ref": "occ_brewer_meadmaker",
-      "role_ref": "nov_role_servant",
+      "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -9582,178 +9522,18 @@
         "eye_color"
       ],
       "allowed_role_refs": [
-        "nov_role_servant",
-        "nov_role_household_mistress",
-        "nov_role_monastery_worker"
+        "nov_role_craftsman_master",
+        "nov_role_hired_worker"
       ],
       "regional_option_sets": [
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_servant",
-          "occupation_ref": "occ_brewer_meadmaker",
-          "status": "candidate",
-          "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_poor_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_servant",
-          "clothing_options": [
-            {
-              "value": "of_poor_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_female_warm_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_warm_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_poor_female_cool_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cool_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_poor_female_cold_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cold_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "married"
-              }
-            }
-          ],
-          "equipment_options": [
-            {
-              "value": "котёл, чаны для сусла и брожения, солодовня (проращивание зерна)",
-              "weight": 1,
-              "source_ref": "occupations/occupations_additions.csv#occ_brewer_meadmaker:typical_tools",
-              "rule": "work-context tools only; resolve item and ownership before actor binding",
-              "no_source": "exact_item_and_property_binding",
-              "applicability": {}
-            }
-          ],
-          "selection_rule": "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only",
-          "no_source": "regional_frequency_weights_not_authored"
-        },
-        {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_household_mistress",
+          "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_brewer_meadmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
             {
               "value": "of_urban_middle_male_warm_any",
@@ -9907,17 +9687,17 @@
         },
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_monastery_worker",
+          "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_brewer_meadmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_rural_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_monastery_worker",
+          "clothing_profile_ref": "nov_clothing_poor_v1",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
             {
-              "value": "of_rural_male_warm_any",
+              "value": "of_poor_male_warm_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_warm_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_warm_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9937,9 +9717,9 @@
               }
             },
             {
-              "value": "of_rural_male_cool_any",
+              "value": "of_poor_male_cool_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cool_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cool_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9961,9 +9741,9 @@
               }
             },
             {
-              "value": "of_rural_male_cold_any",
+              "value": "of_poor_male_cold_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cold_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cold_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -9983,9 +9763,9 @@
               }
             },
             {
-              "value": "of_rural_female_warm_married",
+              "value": "of_poor_female_warm_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_warm_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_warm_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10005,9 +9785,9 @@
               }
             },
             {
-              "value": "of_rural_female_cool_married",
+              "value": "of_poor_female_cool_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cool_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cool_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10029,9 +9809,9 @@
               }
             },
             {
-              "value": "of_rural_female_cold_married",
+              "value": "of_poor_female_cold_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cold_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cold_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10069,7 +9849,8 @@
     {
       "profile_id": "profile_occ_butcher",
       "occupation_ref": "occ_butcher",
-      "role_ref": "nov_role_servant",
+      "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -10116,178 +9897,18 @@
         "eye_color"
       ],
       "allowed_role_refs": [
-        "nov_role_servant",
-        "nov_role_household_mistress",
-        "nov_role_monastery_worker"
+        "nov_role_craftsman_master",
+        "nov_role_hired_worker"
       ],
       "regional_option_sets": [
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_servant",
-          "occupation_ref": "occ_butcher",
-          "status": "candidate",
-          "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_poor_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_servant",
-          "clothing_options": [
-            {
-              "value": "of_poor_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_female_warm_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_warm_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_poor_female_cool_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cool_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_poor_female_cold_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cold_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "married"
-              }
-            }
-          ],
-          "equipment_options": [
-            {
-              "value": "ножи для забоя и разруба, топор, чаны для засолки",
-              "weight": 1,
-              "source_ref": "occupations/occupations_additions.csv#occ_butcher:typical_tools",
-              "rule": "work-context tools only; resolve item and ownership before actor binding",
-              "no_source": "exact_item_and_property_binding",
-              "applicability": {}
-            }
-          ],
-          "selection_rule": "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only",
-          "no_source": "regional_frequency_weights_not_authored"
-        },
-        {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_household_mistress",
+          "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_butcher",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
             {
               "value": "of_urban_middle_male_warm_any",
@@ -10441,17 +10062,17 @@
         },
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_monastery_worker",
+          "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_butcher",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_rural_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_monastery_worker",
+          "clothing_profile_ref": "nov_clothing_poor_v1",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
             {
-              "value": "of_rural_male_warm_any",
+              "value": "of_poor_male_warm_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_warm_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_warm_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10471,9 +10092,9 @@
               }
             },
             {
-              "value": "of_rural_male_cool_any",
+              "value": "of_poor_male_cool_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cool_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cool_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10495,9 +10116,9 @@
               }
             },
             {
-              "value": "of_rural_male_cold_any",
+              "value": "of_poor_male_cold_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cold_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cold_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10517,9 +10138,9 @@
               }
             },
             {
-              "value": "of_rural_female_warm_married",
+              "value": "of_poor_female_warm_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_warm_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_warm_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10539,9 +10160,9 @@
               }
             },
             {
-              "value": "of_rural_female_cool_married",
+              "value": "of_poor_female_cool_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cool_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cool_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10563,9 +10184,9 @@
               }
             },
             {
-              "value": "of_rural_female_cold_married",
+              "value": "of_poor_female_cold_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cold_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cold_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -10603,7 +10224,8 @@
     {
       "profile_id": "profile_occ_market_baker",
       "occupation_ref": "occ_market_baker",
-      "role_ref": "nov_role_servant",
+      "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -10650,178 +10272,18 @@
         "eye_color"
       ],
       "allowed_role_refs": [
-        "nov_role_servant",
-        "nov_role_household_mistress",
-        "nov_role_monastery_worker"
+        "nov_role_craftsman_master",
+        "nov_role_hired_worker"
       ],
       "regional_option_sets": [
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_servant",
-          "occupation_ref": "occ_market_baker",
-          "status": "candidate",
-          "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_poor_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_servant",
-          "clothing_options": [
-            {
-              "value": "of_poor_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_female_warm_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_warm_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_poor_female_cool_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cool_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_poor_female_cold_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cold_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "married"
-              }
-            }
-          ],
-          "equipment_options": [
-            {
-              "value": "печь, квашня, деревянные лопаты для хлеба",
-              "weight": 1,
-              "source_ref": "occupations/occupations_additions.csv#occ_market_baker:typical_tools",
-              "rule": "work-context tools only; resolve item and ownership before actor binding",
-              "no_source": "exact_item_and_property_binding",
-              "applicability": {}
-            }
-          ],
-          "selection_rule": "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only",
-          "no_source": "regional_frequency_weights_not_authored"
-        },
-        {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_household_mistress",
+          "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_market_baker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
             {
               "value": "of_urban_middle_male_warm_any",
@@ -10975,17 +10437,17 @@
         },
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_monastery_worker",
+          "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_market_baker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_rural_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_monastery_worker",
+          "clothing_profile_ref": "nov_clothing_poor_v1",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
             {
-              "value": "of_rural_male_warm_any",
+              "value": "of_poor_male_warm_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_warm_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_warm_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -11005,9 +10467,9 @@
               }
             },
             {
-              "value": "of_rural_male_cool_any",
+              "value": "of_poor_male_cool_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cool_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cool_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -11029,9 +10491,9 @@
               }
             },
             {
-              "value": "of_rural_male_cold_any",
+              "value": "of_poor_male_cold_any",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cold_any",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cold_any",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -11051,9 +10513,9 @@
               }
             },
             {
-              "value": "of_rural_female_warm_married",
+              "value": "of_poor_female_warm_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_warm_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_warm_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -11073,9 +10535,9 @@
               }
             },
             {
-              "value": "of_rural_female_cool_married",
+              "value": "of_poor_female_cool_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cool_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cool_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -11097,9 +10559,9 @@
               }
             },
             {
-              "value": "of_rural_female_cold_married",
+              "value": "of_poor_female_cold_married",
               "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cold_married",
+              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_female_cold_married",
               "rule": "equal gameplay weight; filter by sex, age, season and marital status",
               "no_source": null,
               "applicability": {
@@ -11138,6 +10600,7 @@
       "profile_id": "profile_occ_fish_trader",
       "occupation_ref": "occ_fish_trader",
       "role_ref": "nov_role_trader",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -11671,7 +11134,8 @@
     {
       "profile_id": "profile_occ_wetnurse",
       "occupation_ref": "occ_wetnurse",
-      "role_ref": "nov_role_servant",
+      "role_ref": "nov_role_hired_worker",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",
@@ -11680,7 +11144,7 @@
       },
       "clothing": {
         "occupation_source_field": "typical_clothing",
-        "value": "скромная женская одежда, обычно вдовы или бедной родственницы",
+        "value": "женская одежда по статусу конкретной свободной женщины или холопки; вдовство не выводится",
         "no_source": "individual_clothing_items_and_variant"
       },
       "equipment": {
@@ -11689,7 +11153,7 @@
         "no_source": "individual_owned_item_binding"
       },
       "routine": {
-        "winter": "живёт в доме нанимателя, вскармливает и нянчит младенца, ведёт малый домашний труд по силам",
+        "winter": "живёт в доме, где вскармливает и нянчит младенца; иной домашний труд зависит от положения в этом дворе",
         "spring": "то же, без выхода со двора",
         "summer": "то же, иногда сопровождает семью на летние работы/выезды",
         "autumn": "то же"
@@ -11718,19 +11182,18 @@
         "eye_color"
       ],
       "allowed_role_refs": [
-        "nov_role_servant",
-        "nov_role_kholop",
-        "nov_role_youth_helper"
+        "nov_role_hired_worker",
+        "nov_role_kholop"
       ],
       "regional_option_sets": [
         {
           "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_servant",
+          "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_wetnurse",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
           "clothing_profile_ref": "nov_clothing_poor_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_servant",
+          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
             {
               "value": "of_poor_male_warm_any",
@@ -12040,165 +11503,6 @@
           ],
           "selection_rule": "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only",
           "no_source": "regional_frequency_weights_not_authored"
-        },
-        {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
-          "role_ref": "nov_role_youth_helper",
-          "occupation_ref": "occ_wetnurse",
-          "status": "candidate",
-          "appearance_option_set_ref": "novgorod_shared_facets_v1",
-          "clothing_profile_ref": "nov_clothing_rural_v1",
-          "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_youth_helper",
-          "clothing_options": [
-            {
-              "value": "of_rural_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_rural_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_rural_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_rural_female_warm_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_warm_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_rural_female_cool_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cool_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "married"
-              }
-            },
-            {
-              "value": "of_rural_female_cold_married",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_rural_female_cold_married",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "female"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "married"
-              }
-            }
-          ],
-          "equipment_options": [
-            {
-              "value": "пелёнки, колыбель, детская посуда",
-              "weight": 1,
-              "source_ref": "occupations/occupations_additions.csv#occ_wetnurse:typical_tools",
-              "rule": "work-context tools only; resolve item and ownership before actor binding",
-              "no_source": "exact_item_and_property_binding",
-              "applicability": {}
-            }
-          ],
-          "selection_rule": "code filters applicability and selects by positive gameplay weights; LLM describes committed facts only",
-          "no_source": "regional_frequency_weights_not_authored"
         }
       ]
     },
@@ -12206,6 +11510,7 @@
       "profile_id": "profile_occ_shield_maker",
       "occupation_ref": "occ_shield_maker",
       "role_ref": "nov_role_craftsman_master",
+      "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
       "status": "candidate",
       "appearance": {
         "profile_ref": "novgorod_1200_1250_appearance_profile_v1",

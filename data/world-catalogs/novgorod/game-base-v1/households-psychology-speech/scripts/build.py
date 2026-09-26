@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Deterministic builder for group households-psychology-speech (candidate data).
-Reads TSV/WK sources only; writes CSV outputs per domain. No invented numbers:
-weights/frequencies are derived by a stated rule from stated TSV fields.
+Reads TSV/WK and local book evidence references; writes candidate CSV outputs.
+No individual temperament weights or mood are inferred from group labels.
 
 Run: python build.py
 Outputs under ../<domain>/*.csv and prints row counts (also to build_report.json).
@@ -81,10 +81,9 @@ def write_csv(path, rows, fieldnames):
 # Fixed 2026-09-26 (rework). wealth_band is now a single closed vocabulary
 # (not a mix of two source scales); a member-count range is given only for
 # the documented boyar case.
-# Basis (book:622242, "Новгород и Новгородская земля", §519 — archaeological
-# household-plot survey): "средняя семья 6 человек" / an ordinary Novgorod
-# household plot (400-600 kв.м) housed on average one family of ~6 people;
-# a boyar household plot was 2.5-4x larger and populated proportionally.
+# Kuza, "Древняя Русь. Город, замок, село", paragraph 519: ~6 is a
+# medieval_general demographic average, not a Novgorod measurement. The
+# Novgorod plot held one family; the boyar plot was 2.5-4x larger.
 WEALTH_BAND_MAP_OCC = {
     "middle-high": "high", "low-middle": "middle", "middle": "middle",
     "low": "low", "low-dependent": "dependent", "outcast-low": "outcast",
@@ -94,16 +93,15 @@ WEALTH_BAND_MAP_ROLE = {
     "elite": "elite", "high": "high", "middle": "middle", "low": "low",
     "dependent": "dependent", "outcast": "outcast", "variable": "variable",
 }
-BOYAR_MEMBERS = (15, 24, "boyar plot 2.5-4x ordinary plot; ~6 people per ordinary plot (book:622242 §519), conditional estimate for boyar household only")
-MEMBERS_SOURCE_REF = ("book:622242 §519 (Новгород и Новгородская земля; "
-                       "археологическое обследование дворов; средняя семья "
-                       "~6 чел., боярская усадьба в 2,5-4 раза больше)")
+BOYAR_MEMBERS = (15, 24, "conditional C estimate: medieval_general ~6 people x Novgorod boyar/ordinary plot area ratio 2.5-4; proportional population is the collector's inference, not the quoted source")
+MEMBERS_SOURCE_REF = ("book:622242 §Глава третья Древнерусские поселения > Древнерусские города А.В. Куза ¶519 "
+                       "(Древняя Русь. Город, замок, село; Куза: ~6 is medieval_general; one family per Novgorod plot and 2.5-4x boyar plot size are plot facts)")
 
 
 def household_members(ref):
     if ref == "nov_role_boyar":
         return BOYAR_MEMBERS
-    return "unspecified", "unspecified", "occupation or status alone does not establish an independent family size; ~6 is only an average (book:622242 §519)"
+    return "unspecified", "unspecified", "occupation or status alone does not establish an independent family size; ~6 is a medieval_general average, not a Novgorod per-role limit"
 
 
 def build_households_kinship(occs, roles):
@@ -137,12 +135,12 @@ def build_households_kinship(occs, roles):
             "members_estimate_min": mmin,
             "members_estimate_max": mmax,
             "members_estimate_basis": basis,
-            "servants_dependants_ref": "unspecified (no source for a numeric count; see typical_obligations/typical_debts, occupations TSV, same row, for qualitative dependents)",
+            "servants_dependants_ref": "unspecified (typical_obligations/typical_debts are identical TSV template text; no per-occupation signal or numeric count)",
             "kinship_terms_ref": "households_kinship/kinship_terms.csv (closed vocabulary, not linked per-row)",
             "customs_refs": "social_norms_honour_hospitality/norms.csv (sn_* rows whose applies_to_roles matches this occupation, not linked per-row)",
             "source_refs": f"novgorod_occupations_v1_enriched.tsv#{o['occupation_id']} (status={o.get('status','')}, confidence={o.get('confidence','')}); {MEMBERS_SOURCE_REF}",
             "confidence": norm_conf(o.get("confidence")),
-            "note": "household_pattern_ru is template text, identical across almost all rows of this TSV (distinct=1) — informational only, not a differentiation signal; members_* columns are the sourced composition estimate.",
+            "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit.",
         })
     for r in roles:
         fam = (r.get("family_pattern") or "").strip()
@@ -167,7 +165,7 @@ def build_households_kinship(occs, roles):
             "customs_refs": "social_norms_honour_hospitality/norms.csv (sn_* rows whose applies_to_roles matches this role, not linked per-row)",
             "source_refs": f"novgorod_social_roles_v1_enriched.tsv#{r['role_id']} (status={r.get('status','')}, confidence={r.get('confidence','')}); {MEMBERS_SOURCE_REF}",
             "confidence": norm_conf(r.get("confidence")),
-            "note": "household_pattern_ru is template text, identical across almost all rows of this TSV (distinct=1) — informational only, not a differentiation signal; members_* columns are the sourced composition estimate.",
+            "note": "family/household patterns are TSV templates, not composition signals; members_* is unspecified except the conditional C boyar estimate; this row is not a biography limit.",
         })
     n_comp = write_csv(
         os.path.join(out_dir, "household_composition_profiles.csv"), comp_rows,
@@ -297,90 +295,32 @@ def build_households_kinship(occs, roles):
 CLOSED_TEMPERAMENT = ["calm", "wary", "hot_tempered", "timid", "assertive", "sociable", "withdrawn"]
 CLOSED_VALUES = ["honour", "piety", "kin_loyalty", "profit", "safety", "custom", "hospitality"]
 
-# Fixed 2026-09-26 (rework). The previous rule counted keyword hits in
-# text fields that are template boilerplate, identical across almost every
-# row (attitude_to_*, typical_fears, languages_or_speech_notes for roles;
-# social_risk_if_insulted, theft_risk, witness_likelihood, common_conflicts,
-# common_fears, common_goals for occupations — all distinct=1 by row count),
-# so the keyword count was effectively constant and the result did not
-# differentiate roles/occupations at all (verifier's "корневая проблема").
-#
-# New rule uses only the fields that are genuinely categorical and DO vary
-# per row: role_group/occupation_group, social_rank/typical_status_range,
-# freedom_status, combat_likelihood, violence_risk. Weights are a small
-# fixed table (documented below), not a frequency invented from templated
-# text. motives/fears are left empty with an explicit note rather than
-# populated from the templated common_goals/common_fears/typical_fears
-# fields (that would just repeat the same list on every row).
-GROUP_TEMPERAMENT = {
-    # role_group (roles) / occupation_group (occupations) -> (temperament, weight)
-    "власть": ("assertive", 1), "военное": (None, 0),
-    "церковь": ("calm", 1), "город": ("sociable", 1), "торговля": ("sociable", 1),
-    "зависимые": ("timid", 1), "дорога": ("withdrawn", 1), "промысел": ("withdrawn", 1),
-    "низкий_статус": ("timid", 1), "село": ("calm", 1), "ремесло": ("calm", 1),
+# Book evidence describes possible concerns and norms, not individual traits
+# or their frequencies. Keep weights empty until a seed scale is authorized.
+PSYCHOLOGY_EVIDENCE = {
+    "general": {
+        "motives": [("стремление сохранить достаток (книжный афоризм)", "book:641351 ¶1539", "c1230; literary norm")],
+        "fears": [("страх нищеты (книжный афоризм)", "book:641351 ¶1526", "c1230; literary norm")],
+    },
+    "торговля": {
+        "fears": [("опасение дурной славы в торговом деле", "book:641351 ¶2947", "c1230; birchbark letter, group analogy")],
+    },
+    "зависимые": {
+        "fears": [("страх перед тиуном", "book:641351 ¶1623", "c1230; literary norm, conditional on tiun authority")],
+    },
+    "власть": {
+        "motives": [("почитание старших и гостя", "book:641342 ¶1786", "c1230; princely-boyar literary norm")],
+    },
 }
-GROUP_VALUE = {
-    "власть": ("honour", 1), "военное": ("honour", 1), "церковь": ("piety", 2),
-    "город": ("custom", 1), "торговля": ("profit", 1), "зависимые": ("safety", 1),
-    "дорога": ("safety", 1), "промысел": ("custom", 1), "низкий_статус": ("safety", 1),
-    "село": ("kin_loyalty", 1), "ремесло": ("custom", 1),
-}
-RANK_TEMPERAMENT = {
-    # social_rank (roles) / typical_status_range mapped band (occupations, via
-    # WEALTH_BAND_MAP_OCC below) -> (temperament, weight)
-    "elite": ("assertive", 1), "high": ("assertive", 1), "middle": (None, 0),
-    "low": ("wary", 1), "dependent": ("timid", 1), "outcast": ("timid", 2),
-    "variable": ("wary", 1),
-}
-FREEDOM_TEMPERAMENT = {
-    "slave": ("timid", 2), "dependent": ("wary", 1), "unclear": ("wary", 1),
-    "variable": ("wary", 1), "free": (None, 0),
-}
+PSYCHOLOGY_WK_REF = "wk:foundations-mind-society.json#claim:foundations-ms4-03-uncertainty-cognitive-control"
 
 
-def _bump(w, label, n):
-    if label:
-        w[label] = w.get(label, 0) + n
-
-
-def rule_temperament_values_from_occ(o):
-    """Categorical rule over occupation_group (11 distinct values),
-    typical_status_range (7 distinct, mapped to the same wealth-band scale
-    as household_composition_profiles.csv), combat_likelihood (4 distinct)
-    and violence_risk (5 distinct) — all genuinely differentiating fields.
-    calm=1 is the closed-vocabulary baseline weight for every row."""
-    w = {"calm": 1}
-    v = {}
-    grp = (o.get("occupation_group") or "").strip()
-    _bump(w, *GROUP_TEMPERAMENT.get(grp, (None, 0)))
-    _bump(v, *GROUP_VALUE.get(grp, (None, 0)))
-    band = WEALTH_BAND_MAP_OCC.get((o.get("typical_status_range") or "").strip())
-    _bump(w, *RANK_TEMPERAMENT.get(band, (None, 0)))
-    # Combat likelihood and exposure to violence describe circumstances,
-    # not an individual's temperament. No temper is inferred from them.
-    if not v:
-        v["custom"] = 1
-    return ({k: n for k, n in w.items() if n > 0}, v)
-
-
-def rule_temperament_values_from_role(r):
-    """Categorical rule over role_group (10 distinct), social_rank (7
-    distinct) and freedom_status (5 distinct) — all genuinely
-    differentiating fields (unlike attitude_to_*/typical_fears, which are
-    identical boilerplate on every row and are no longer used here).
-    calm=1 is the closed-vocabulary baseline weight for every row."""
-    w = {"calm": 1}
-    v = {}
-    grp = (r.get("role_group") or "").strip()
-    _bump(w, *GROUP_TEMPERAMENT.get(grp, (None, 0)))
-    _bump(v, *GROUP_VALUE.get(grp, (None, 0)))
-    rank = (r.get("social_rank") or "").strip()
-    _bump(w, *RANK_TEMPERAMENT.get(rank, (None, 0)))
-    freedom = (r.get("freedom_status") or "").strip()
-    _bump(w, *FREEDOM_TEMPERAMENT.get(freedom, (None, 0)))
-    if not v:
-        v["custom"] = 1
-    return ({k: n for k, n in w.items() if n > 0}, v)
+def psychology_context(group):
+    motives = PSYCHOLOGY_EVIDENCE["general"]["motives"] + PSYCHOLOGY_EVIDENCE.get(group, {}).get("motives", [])
+    fears = PSYCHOLOGY_EVIDENCE["general"]["fears"] + PSYCHOLOGY_EVIDENCE.get(group, {}).get("fears", [])
+    refs = sorted({ref for _, ref, _ in motives + fears})
+    return ([{"text": text, "source_ref": ref, "period_cap": cap, "usage": "context_only_not_individual_seed"} for text, ref, cap in motives],
+            [{"text": text, "source_ref": ref, "period_cap": cap, "usage": "context_only_not_individual_seed"} for text, ref, cap in fears], refs)
 
 
 def rule_risk_traits_occ(o):
@@ -402,37 +342,37 @@ def build_npc_psychology(occs, roles):
     out_dir = os.path.join(ROOT, "npc_psychology")
     rows = []
     for o in occs:
-        temp, vw = rule_temperament_values_from_occ(o)
+        motives, fears, evidence_refs = psychology_context((o.get("occupation_group") or "").strip())
         rows.append({
             "ps_id": f"ps_occ_{o['occupation_id']}",
             "role_or_occupation_ref": o["occupation_id"],
             "ref_kind": "occupation",
-            "temperament_weights": temp,
-            "values_weights": vw,
-            "motives": [],
-            "fears": [],
+            "temperament_weights": {},
+            "values_weights": {},
+            "motives": motives,
+            "fears": fears,
             "risk_traits": rule_risk_traits_occ(o),
-            "fears_motives_note": "common_goals/common_fears (occupations TSV) are identical template text across all rows (distinct=1) — not used; no per-occupation motive/fear source available (gap).",
-            "initial_mood_rules": "baseline=calm=1; see derivation_rule for the categorical weight table (no invented per-row numbers)",
-            "derivation_rule": "candidate categorical table over occupation_group and typical_status_range; weights are not historical frequencies or approved seed probabilities; violence_risk is exposure, not temperament",
-            "source_refs": f"novgorod_occupations_v1_enriched.tsv#{o['occupation_id']}",
+            "fears_motives_note": "Sourced general/group concerns are context only, not individual traits; TSV common_goals/common_fears are templates (distinct=1).",
+            "initial_mood_rules": "no_source:individual_initial_mood; do not seed",
+            "derivation_rule": "no_source:temperament_and_values_weights; not approved for NPC seeding; WK uncertainty claim is general psychology, not a historical role weight; violence_risk is exposure, not temperament",
+            "source_refs": f"novgorod_occupations_v1_enriched.tsv#{o['occupation_id']};" + ";".join(evidence_refs + [PSYCHOLOGY_WK_REF]),
             "confidence": "C",
         })
     for r in roles:
-        temp, vw = rule_temperament_values_from_role(r)
+        motives, fears, evidence_refs = psychology_context((r.get("role_group") or "").strip())
         rows.append({
             "ps_id": f"ps_role_{r['role_id']}",
             "role_or_occupation_ref": r["role_id"],
             "ref_kind": "role",
-            "temperament_weights": temp,
-            "values_weights": vw,
-            "motives": [],
-            "fears": [],
+            "temperament_weights": {},
+            "values_weights": {},
+            "motives": motives,
+            "fears": fears,
             "risk_traits": {"theft": "unspecified", "violence": "unspecified", "witness": "unspecified"},
-            "fears_motives_note": "typical_fears/attitude_to_* (roles TSV) are identical template text across all 71 rows (distinct=1) — not used; risk_traits fields have no source column at all for roles (gap).",
-            "initial_mood_rules": "baseline=calm=1; see derivation_rule for the categorical weight table (no invented per-row numbers)",
-            "derivation_rule": "categorical table over role_group, social_rank, freedom_status; see build.py:rule_temperament_values_from_role",
-            "source_refs": f"novgorod_social_roles_v1_enriched.tsv#{r['role_id']}",
+            "fears_motives_note": "Sourced general/group concerns are context only, not individual traits; typical_fears/attitude_to_* are TSV templates (distinct=1).",
+            "initial_mood_rules": "no_source:individual_initial_mood; do not seed",
+            "derivation_rule": "no_source:temperament_and_values_weights; not approved for NPC seeding; WK uncertainty claim is general psychology, not a historical role weight",
+            "source_refs": f"novgorod_social_roles_v1_enriched.tsv#{r['role_id']};" + ";".join(evidence_refs + [PSYCHOLOGY_WK_REF]),
             "confidence": "C",
         })
     n = write_csv(

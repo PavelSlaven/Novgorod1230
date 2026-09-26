@@ -15,11 +15,11 @@ FIELDS = [
 # Place families are candidate scene contexts, not presence/population bindings.
 PF = {
     "occ_jeweler_caster": "pf_ordinary_workshop", "occ_bone_carver": "pf_ordinary_workshop",
-    "occ_wood_turner": "pf_ordinary_workshop", "occ_furrier": "pf_ordinary_workshop",
-    "occ_dyer": "pf_ordinary_workshop", "occ_ropemaker_netmaker": "pf_town_courtyard",
+    "occ_wood_turner": "pf_ordinary_workshop", "occ_furrier": "pf_town_courtyard",
+    "occ_dyer": "pf_town_courtyard", "occ_ropemaker_netmaker": "pf_town_courtyard",
     "occ_netmaker": "pf_town_courtyard", "occ_locksmith": "pf_smithy",
     "occ_bowyer": "pf_ordinary_workshop", "occ_arrowsmith": "pf_smithy",
-    "occ_mason": "pf_churchyard", "occ_limeburner": "pf_outbuildings",
+    "occ_mason": "pf_churchyard", "occ_limeburner": "pf_town_wall_edge",
     "occ_icon_painter": "pf_monastery_yard", "occ_brewer_meadmaker": "pf_town_courtyard",
     "occ_butcher": "pf_market_square", "occ_market_baker": "pf_market_square",
     "occ_fish_trader": "pf_market_square", "occ_wetnurse": "pf_dwelling_interior",
@@ -37,18 +37,30 @@ def main():
     rows = []
     for occ in occupations:
         oid = occ["occupation_id"]
-        seasons = "spring,summer,autumn" if oid == "occ_mason" else "winter,spring,summer,autumn"
+        seasons = ("spring,summer,autumn" if oid == "occ_mason" else
+                   "summer,autumn" if oid == "occ_limeburner" else
+                   "winter,spring,summer,autumn")
+        visible = occ["how_to_materialize_as_background_npc"].split(";", 1)[0]
+        if oid == "occ_wood_turner":
+            visible = "Ритмичный скрип станка с лучковым приводом от ножной педали в мастерской."
+        elif oid == "occ_ropemaker_netmaker":
+            visible = "Верёвочный станок и свитые бухты верёвок во дворе."
+        elif oid == "occ_butcher":
+            visible = "Разруб и продажа мяса на торговом ряду."
+        elif oid == "occ_limeburner":
+            visible = "За городским краем поднимаются дым и жар известеобжигательной ямы."
         rows.append({
             "ac_id": "ac_" + oid,
             "occupation_ref": oid,
             "pf_id": PF[oid],
             "name_ru": occ["occupation_title_ru"] + ": видимая работа",
             "season_scope": seasons,
-            "observable_text_ru": occ["how_to_materialize_as_background_npc"],
+            "observable_text_ru": visible,
             "inputs": ITEM_FLOW.get(oid, ("", ""))[0],
             "outputs": ITEM_FLOW.get(oid, ("", ""))[1],
             "previous_ac_id": "", "next_ac_id": "",
             "source_refs": occ["source_refs"] + ";rule:occupation_property_to_pf#" + PF[oid]
+                           + (";no_source:exact_lime_kiln_place_family" if oid == "occ_limeburner" else "")
                            + (";materials_registry/materials.csv#" + ITEM_FLOW[oid][0]
                               + ";items-household-personal/items/"
                               + ("personal.csv#" if ITEM_FLOW[oid][1].startswith("it_ps_") else "household.csv#")

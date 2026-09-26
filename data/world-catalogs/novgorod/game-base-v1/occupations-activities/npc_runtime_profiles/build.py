@@ -100,11 +100,13 @@ def main():
         profiles.append({
             "profile_id": pid, "occupation_ref": profile["occupation_ref"],
             "role_ref": profile["role_ref"], "status": "candidate",
+            "source_status": profile["status"],
             "appearance": {"profile_ref": profile["appearance_profile_source_ref"],
                            "binding": profile["appearance_target_binding"],
                            "selection_rule": "select facets for concrete actor in code"},
             "clothing": binding.get("clothing_binding") or {"no_source": "individual_clothing_binding"},
             "equipment": {"authoring_source_ref": profile["equipment_authoring_source_ref"],
+                          "scope": profile.get("equipment_scope"),
                           "binding": binding.get("property_binding") or {"no_source": "individual_equipment_binding"}},
             "routine": binding.get("routine_binding") or {"no_source": "individual_routine_binding"},
             "source_refs": [BASE_REF + "#profiles." + pid,
@@ -121,6 +123,7 @@ def main():
         profiles.append({
             "profile_id": "profile_" + oid, "occupation_ref": oid,
             "role_ref": occupation["allowed_social_role_ids"].split(";")[0].strip(),
+            "role_selection_rule": "first explicitly listed candidate role is the profile default; concrete NPC role must be selected from allowed_role_refs with scene/status evidence",
             "status": "candidate",
             "appearance": {"profile_ref": baseline["appearance_policy"]["source_appearance_profile_ref"],
                            "binding": None, "selection_rule": "select demographic and appearance facets for concrete actor in code; no origin inference"},

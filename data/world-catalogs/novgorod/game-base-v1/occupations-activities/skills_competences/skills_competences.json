@@ -465,11 +465,10 @@
       "occupation_ref": "occ_icon_painter",
       "name_ru": "иконописец: практика занятия",
       "parent_skill_ids": [
-        "custom_law_literacy"
+        "craft"
       ],
       "secondary_skill_ids": [
-        "healing",
-        "communication_trade"
+        "observation"
       ],
       "gate_skill_ids": [],
       "forbidden_skill_ids": [],
@@ -488,7 +487,7 @@
       ],
       "source_refs": [
         "world-base-seeds/skill_catalog_v1.csv",
-        "world-base-seeds/occupation_skill_defaults_v1.csv#religious_literate",
+        "world-base-seeds/occupation_skill_defaults_v1.csv#craft_production",
         "data/world-catalogs/novgorod/world-knowledge/production-v1/category-cartography.json#reconstructed-learning-and-apprenticeship",
         "occupations/occupations_additions.csv#occ_icon_painter"
       ],

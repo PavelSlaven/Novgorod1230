@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 16,
-  "own_checks_total": 16,
+  "own_checks_passed": 17,
+  "own_checks_total": 17,
   "checks": [
     {
       "domain": "place_families",
@@ -132,7 +132,19 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 10555
+      "rows": 10624
+    },
+    {
+      "domain": "presence_rules",
+      "name": "people_cover_16_bound_pf_and_preserve_categories",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "people_rules": 69,
+      "place_families": 16,
+      "g4": 32,
+      "g5": 195
     },
     {
       "domain": "presence_rules",

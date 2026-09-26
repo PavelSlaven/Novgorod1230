@@ -10,7 +10,7 @@
 //   optional: region_id, count_limit|max_count, allowed_seasons|season_period|seasons|season, refresh_class, source_refs, confidence
 import fs from 'node:fs';
 import path from 'node:path';
-import { GROUP, GAME_BASE, readJson, readCsv, writeCsv, writeJson, rel, split } from './lib.mjs';
+import { REPO, GROUP, GAME_BASE, readJson, readCsv, readTsv, writeCsv, writeJson, rel, split } from './lib.mjs';
 import { loadTemplateRegistry } from './build-place-families.mjs';
 
 const RULE = readJson(path.join(GROUP, 'presence/frequency_rule.json'));
@@ -145,13 +145,38 @@ export function build() {
     if (!prev.class_capped_from && p.class_capped_from) prev.class_capped_from = p.class_capped_from;
     prev.source_pool.push(p.source_pool); prev.source_row_id.push(p.source_row_id); prev.source_refs.push(p.source_refs);
   }
-  const rows = [...merged.values()].sort((a, b) => key(a).localeCompare(key(b))).map((p, i) => ({ pr_id: `pr_${String(i + 1).padStart(6, '0')}`, ...p, source_row_id: [...new Set(p.source_row_id)].join(';'), source_refs: [...new Set(p.source_refs)].join(' | '), status: 'candidate' }));
-  const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
+  const rows = [...merged.values()].sort((a, b) => key(a).localeCompare(key(b))).map((p, i) => ({ pr_id: `pr_${String(i + 1).padStart(6, '0')}`, ...p, subject_kind: 'category', subject_ref: p.category_ref, allowed_times: 'all', guards: '', source_row_id: [...new Set(p.source_row_id)].join(';'), source_refs: [...new Set(p.source_refs)].join(' | '), status: 'candidate' }));
+  const people = readCsv(path.join(GROUP, 'presence/people_presence_authoring.csv'));
+  const occupations = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_occupations_v1.tsv')).map((r) => r.occupation_id));
+  const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
+  const peopleKeys = new Set();
+  for (const [i, p] of people.entries()) {
+    const where = `presence/people_presence_authoring.csv#row${i + 2}`;
+    if (p.scope_kind !== 'place_family' || !families.has(p.scope_ref)) throw new Error(`${where}: unresolved place family ${p.scope_ref}`);
+    if (!({ occupation: occupations, social_role: roles })[p.subject_kind]?.has(p.subject_ref)) throw new Error(`${where}: unresolved subject ${p.subject_kind}:${p.subject_ref}`);
+    const fc = ppmFor(p.frequency_class);
+    if (!fc) throw new Error(`${where}: unknown frequency class ${p.frequency_class}`);
+    if (!Number.isInteger(+p.count_limit) || +p.count_limit < 1) throw new Error(`${where}: invalid count_limit`);
+    if (!RULE.refresh_rule.values.includes(p.refresh_class) || p.status !== 'candidate' || !p.source_refs || !p.guards || p.source_rule_ref !== 'frequency_rule.json#editorial_candidate' || p.confidence !== 'C') throw new Error(`${where}: invalid refresh, status, source, rule, guards, or confidence`);
+    const seasonList = split(p.allowed_seasons);
+    const times = split(p.allowed_times);
+    if (!seasonList.length || seasonList.some((s) => !RULE.season_rule.dictionary.includes(s)) || !times.length || times.some((t) => !['morning', 'day', 'evening', 'night'].includes(t))) throw new Error(`${where}: invalid season or time`);
+    for (const season of seasonList) for (const time of times) {
+      const k = [p.scope_kind, p.scope_ref, p.subject_kind, p.subject_ref, season, time].join('|');
+      if (peopleKeys.has(k)) throw new Error(`${where}: duplicate ${k}`);
+      peopleKeys.add(k);
+      rows.push({ pr_id: `pr_${String(rows.length + 1).padStart(6, '0')}`, scope_kind: p.scope_kind, scope_ref: p.scope_ref, region_id: 'region_novgorod_land', category_ref: '', subject_kind: p.subject_kind, subject_ref: p.subject_ref,
+        frequency_class: fc.cls, class_capped_from: '', probability_ppm: fc.ppm, probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: +p.count_limit, count_limit_basis: 'people_authoring',
+        allowed_seasons: season, allowed_times: time, guards: p.guards, refresh_class: p.refresh_class, contract_scope_kind: 'no_needs_cr', source_pool: where, source_row_id: `${i + 2}`, source_refs: p.source_refs,
+        confidence: p.confidence, pool_confidence: '', status: p.status });
+    }
+  }
+  const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
   const n = writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows);
   const cappedRows = rows.filter((r) => r.class_capped_from);
   const report = {
-    rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n,
-    seasonal_pool_rows: seasonalPools.length, duplicates_merged: seasonalPools.length - n, conflicting_duplicates: conflicts.length, conflicts: conflicts.slice(0, 50),
+    rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n, category_rules: n - peopleKeys.size, people_rules: peopleKeys.size,
+    seasonal_pool_rows: seasonalPools.length, duplicates_merged: seasonalPools.length - (n - peopleKeys.size), conflicting_duplicates: conflicts.length, conflicts: conflicts.slice(0, 50),
     rejected_rows: rejects.length, rejected_by_file: rejects.reduce((a, r) => { const f = r.where.split('#')[0]; a[f] = (a[f] ?? 0) + 1; return a; }, {}),
     reject_reasons: rejects.flatMap((r) => r.errors.map((e) => e.replace(/'[^']*'/g, "'…'"))).reduce((a, e) => ((a[e] = (a[e] ?? 0) + 1), a), {}),
     rejected_sample: rejects.slice(0, 50),

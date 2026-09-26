@@ -96,25 +96,38 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
   const nb = readCsv(P('places/node_binding.csv'));
   const nodes = new Set(nb.map((r) => r.node_ref.replace(/@\d+$/, '')));
+  const occupations = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_occupations_v1.tsv')).map((r) => r.occupation_id));
+  const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
   const f = [];
   const seen = new Set();
   for (const r of pr) {
     const c = rule.classes[r.frequency_class];
     if (!c) f.push(`${r.pr_id}: class ${r.frequency_class}`);
     else if (+r.probability_ppm !== Math.round((1000000 * c.weight) / 8) || +r.probability_ppm !== c.probability_ppm) f.push(`${r.pr_id}: ppm ${r.probability_ppm} != rule`);
-    if (!cats.has(r.category_ref)) f.push(`${r.pr_id}: category ${r.category_ref}`);
+    if (r.subject_kind === 'category') { if (!cats.has(r.category_ref) || r.subject_ref !== r.category_ref) f.push(`${r.pr_id}: category ${r.category_ref}`); }
+    else if (!({ occupation: occupations, social_role: roles })[r.subject_kind]?.has(r.subject_ref) || r.category_ref) f.push(`${r.pr_id}: subject ${r.subject_kind}:${r.subject_ref}`);
     const ok = { place_family: pfSet.has(r.scope_ref), g4: nodes.has(r.scope_ref), g5: nodes.has(r.scope_ref), region: r.scope_ref === ex.region_id,
       landscape_template: reg.get(r.scope_ref)?.kind === 'landscape', place_template: reg.get(r.scope_ref)?.kind === 'place', scene_template: ex.scene_templates.some((s) => s.id === r.scope_ref), container_template: /^container_tpl_/.test(r.scope_ref) }[r.scope_kind];
     if (!ok) f.push(`${r.pr_id}: scope ${r.scope_kind}:${r.scope_ref}`);
     if (!(Number.isInteger(+r.count_limit) && +r.count_limit >= 1)) f.push(`${r.pr_id}: count_limit`);
-    if (!['pool_row', 'pool_count_limit_rule', 'default_minimum_1'].includes(r.count_limit_basis)) f.push(`${r.pr_id}: count_limit_basis`);
+    if (!['pool_row', 'pool_count_limit_rule', 'default_minimum_1', 'people_authoring'].includes(r.count_limit_basis)) f.push(`${r.pr_id}: count_limit_basis`);
     const s = split(r.allowed_seasons);
     if (!s.length || s.some((x) => x !== 'all' && !SEASONS.includes(x))) f.push(`${r.pr_id}: seasons ${r.allowed_seasons}`);
+    if (!['all', 'morning', 'day', 'evening', 'night'].includes(r.allowed_times)) f.push(`${r.pr_id}: time ${r.allowed_times}`);
+    if (r.subject_kind !== 'category' && (!r.guards || r.status !== 'candidate' || !r.source_refs)) f.push(`${r.pr_id}: people provenance/guards/status`);
     if (!rule.refresh_rule.values.includes(r.refresh_class)) f.push(`${r.pr_id}: refresh ${r.refresh_class}`);
-    const k = [r.scope_kind, r.scope_ref, r.region_id, r.category_ref, r.allowed_seasons].join('|');
+    const k = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref, r.allowed_seasons, r.allowed_times].join('|');
     if (seen.has(k)) f.push(`${r.pr_id}: duplicate ${k}`); seen.add(k);
   }
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
+  const people = pr.filter((r) => r.subject_kind !== 'category');
+  const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));
+  check('presence_rules', 'people_cover_16_bound_pf_and_preserve_categories', [
+    ...[...expectedPf].filter((id) => !people.some((r) => r.scope_ref === id)).map((id) => `missing ${id}`),
+    ...(expectedPf.size === 16 ? [] : [`expected 16 PF, got ${expectedPf.size}`]),
+    ...(nb.filter((r) => r.node_level === 'G4').length === 32 && nb.filter((r) => r.node_level === 'G5').length === 195 ? [] : ['expected 32 G4 / 195 G5']),
+    ...(pr.length - people.length === 10555 ? [] : [`category rules ${pr.length - people.length} != 10555`]),
+  ], { people_rules: people.length, place_families: expectedPf.size, g4: nb.filter((r) => r.node_level === 'G4').length, g5: nb.filter((r) => r.node_level === 'G5').length });
   const rr = readJson(P('reports/presence-rules-report.json'));
   check('presence_rules', 'input_pool_rows_rejected (external)', Array(rr.rejected_rows).fill('x'), { reasons: rr.reject_reasons, by_file: rr.rejected_by_file }, true);
 }

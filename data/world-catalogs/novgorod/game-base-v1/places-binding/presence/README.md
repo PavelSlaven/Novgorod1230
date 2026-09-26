@@ -8,6 +8,7 @@
 |---|---|
 | `frequency_rule.json` | Единственное правило перевода класса частоты в вероятность, плюс правила для `count_limit`, сезонов и `refresh_class`. |
 | `presence_rules.csv` | Таблица правил наличия. Её собирает `scripts/build-presence-rules.mjs` из пулов других групп; вручную её не правят. |
+| `people_presence_authoring.csv` | Авторские candidate-привязки людей к 16 PF, сезону и времени суток. Тот же сборщик разворачивает их в `presence_rules.csv`. |
 
 Сколько строк на данный момент, показывает `reports/presence-rules-report.json`. После пересборки C001 — 10 555 правил из 6 038 принятых строк двух пулов (`items-household-personal` и `fauna-mammals-birds`). Сезонные строки развернуты в 11 459 сезонных кандидатов; 904 дубля слиты только внутри одного сезона. 16 620 строк items без категории отклонены. Классы: 2 001 common, 3 758 contextual, 635 ubiquitous, 4 161 rare.
 
@@ -62,6 +63,12 @@
 `scope_kind` может быть `place_family`, `g4`, `g5`, `region`, `landscape_template`, `place_template`, `scene_template`, `container_template`. В норме §8.1 есть только последние четыре. Для `place_family`, `g4`, `g5` и `region` колонка `contract_scope_kind=no_needs_cr`: нужна поправка нормы через CR.
 
 Колонки вывода, добавленные 2026-09-26: `class_capped_from` (исходный `frequency_class` до понижения MASTER-проверкой; пусто, если не понижался) и `pool_confidence` (исходный `confidence` строки пула, до того как `confidence` в этой таблице стал всегда `C` — см. «Правило перевода» выше).
+
+## Правки C002 — люди
+
+К 10 555 категориальным правилам добавлены candidate-правила для всех 16 PF, используемых 32 G4 и 195 G5 в `places/node_binding.csv`. `subject_kind=social_role|occupation`, `subject_ref` проверяется по `data/novgorod-region/novgorod_social_roles_v1.tsv` или `novgorod_occupations_v1.tsv`; `category_ref` у людей пуст. Ключ включает subject, сезон и время суток (`morning|day|evening|night`); прежние category ID сохранены. Для категорий `allowed_times=all`.
+
+Число `probability_ppm=250000` следует из существующего `frequency_rule.json` для `contextual`. Это редакционное candidate-правило без измеренного числового источника (`no_source` для вероятности), не историческая частота. `source_refs` указывает словарный профиль занятия/роли; он поддерживает тип человека, но не число. `count_limit=1` — редакционный candidate-лимит, не численность жителей. `guards` — условия применимости перед броском; их значения пока авторский текст, runtime evaluator здесь не заявлен. `refresh_class` задаётся явно. `place_family` и времена суток требуют отдельного согласования с DDL §8.1, где этих полей пока нет; все строки остаются `candidate`.
 
 ## Известные пробелы
 

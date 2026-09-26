@@ -82,7 +82,9 @@
     }
   ],
   "pool_rows_accepted": 6038,
-  "rules_written": 10555,
+  "rules_written": 10624,
+  "category_rules": 10555,
+  "people_rules": 69,
   "seasonal_pool_rows": 11459,
   "duplicates_merged": 904,
   "conflicting_duplicates": 120,
@@ -841,11 +843,11 @@
     }
   ],
   "by_scope_kind": {
-    "place_family": 10555
+    "place_family": 10624
   },
   "by_class": {
     "common": 2001,
-    "contextual": 3758,
+    "contextual": 3827,
     "ubiquitous": 635,
     "rare": 4161
   }

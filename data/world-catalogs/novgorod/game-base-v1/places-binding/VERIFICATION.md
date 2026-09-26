@@ -231,3 +231,10 @@
 - Сделано: MASTER читается из `novgorod/sources` с фатальной ошибкой при отсутствии файла; сезон входит в ключ, сезонные списки развёрнуты; `count_limit_rule` распознаётся или отклоняется; итоговые `source_row_id` сохраняют все слитые строки. README и валидатор приведены к этим правилам. Таблица пересобрана после items: 10 555 правил из 6 038 строк пулов, 16 620 master-строк без категории отклонены, 100 итоговых правил имеют `class_capped_from`.
 - Проверено: `node scripts/build-presence-rules.mjs` — сборка успешна; `node scripts/validate.mjs` — 16 PASS, 3 INFO, 0 FAIL. Бурый медведь в conifer_woodland: rare зимой, contextual весной/летом/осенью. `count_limit_basis=pool_count_limit_rule` у 6 324 итоговых строк.
 - Ограничение: проверка MASTER не связывает архетип цитируемой связи с pf; слияние максимумом внутри категории и сезона и ppm остаются редакционными кандидатами.
+## Правки C002 — people presence
+
+- `presence/people_presence_authoring.csv`: 19 candidate-привязок к 16 PF; 4 сезона и `morning|day|evening|night` разворачиваются в 69 правил. Subjects резолвятся в действительных региональных словарях social roles и occupations. Норматив §8.1 взят read-only из `Novgorod-runtime`.
+- `scripts/build-presence-rules.mjs`: прежние 10 555 category rules сохранены без изменения прежних колонок и ID (сравнение CSV с `git show HEAD`). Итог — 10 624 правил. Вероятность 250 000 ppm и лимит 1 у людей — явные редакционные candidate-правила без числового исторического источника; `guards` ещё не runtime expressions.
+- `scripts/validate.mjs`: уникальность включает subject, сезон и время суток; словари subject/season/time, 16 PF и охват базового binding 32 G4/195 G5 проверяются.
+- Запуски: генератор дважды, SHA-256 CSV и report совпали; `node scripts/validate.mjs` — 17 own PASS, 3 external INFO; оба `node --check` и `git diff --check` — PASS. Внешние INFO: 16 620 строк пулов без категории, 118 проблем внешнего реестра и 788 ссылок пулов без категории.
+- Ограничение: `place_family`, время суток и строковые guards не входят в текущий DDL §8.1; все строки остаются `candidate`, не approved/active.

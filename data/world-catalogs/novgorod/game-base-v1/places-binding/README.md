@@ -41,3 +41,6 @@
 - **Колонки лимитов.** Дворы и жители отсутствуют в `world_base.place_generation_limits`.
 
 Подробности, метод, источники и пробелы — в README каждой папки.
+## Правки C002 — people presence
+
+`presence/people_presence_authoring.csv` задаёт candidate-роли и занятия для 16 PF с сезонным и суточным измерением. Существующий `scripts/build-presence-rules.mjs` добавляет их к 10 555 категориальным правилам; проверка ссылок, ключей и сохранения категорий — в `scripts/validate.mjs`. Числа и guards — редакционные кандидаты, не approved historical frequency; подробности в `presence/README.md`.

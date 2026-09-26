@@ -344,7 +344,36 @@ test('F2 turn step and npc_decision open claim from committed events',
       './lower-dvina-trace-turn-step-llm-test-helpers.js');
     const { requestTurnStepPlanWithRepair } = await import(
       '../../../packages/turn/src/turn-step-plan-repair.js');
-    async function viaTurn(clock) {
+    const { fixture } = await import('./lower-dvina-trace-phase-2-fixture.js');
+    const { loadLowerDvinaTraceMaterializationBundle } = await import(
+      '../src/internal/lower-dvina-trace-phase-1a.js');
+    const { loadLowerDvinaTracePhase2Bundle } = await import(
+      '../src/internal/lower-dvina-trace-phase-2-bundle.js');
+    const { resolveTracePhase2Contracts } = await import(
+      '../src/runtime/lower-dvina-trace-phase-2-contracts.js');
+    const { buildLowerDvinaTracePhase2Services } = await import(
+      '../src/runtime/lower-dvina-trace-phase-2-services.js');
+    const { createSeededRandomSource } = await import('@rus/checks-rng');
+    // R5-1: production wrap via buildLowerDvinaTracePhase2Services, not a
+    // hand-copied 3rd-arg stub (auditor swap of services wrap must fail this).
+    async function viaTurn(clock, partyEvents) {
+      const scenarioBundle = await loadLowerDvinaTraceMaterializationBundle();
+      const f = fixture({
+        scenarioBundle, materializationBundle: scenarioBundle
+      });
+      f.state.historical_events = partyEvents;
+      f.state.clock = clock;
+      if (f.state.clock_weather_light?.clock) {
+        f.state.clock_weather_light = {
+          ...f.state.clock_weather_light, clock
+        };
+      }
+      const phase2Bundle = await loadLowerDvinaTracePhase2Bundle({
+        scenarioDefinitionRevision: scenarioBundle.definition_revision
+      });
+      const contracts = resolveTracePhase2Contracts({
+        state: f.state, bundle: scenarioBundle, phase2Bundle
+      });
       const log = { calls: [], traces: [] };
       const grounder = makeGrounder(loadMutableBundle(), log);
       let lastGrounded = null;
@@ -361,9 +390,23 @@ test('F2 turn step and npc_decision open claim from committed events',
           }
         }
       });
-      // N1/N3: services-style wrap — 3rd arg, not __partyHistoricalEvents.
-      const turnStepModel = (req, repair) => inner(req, repair, {
-        historical_events: events
+      const services = buildLowerDvinaTracePhase2Services({
+        partyId: f.partyId,
+        requestId: 'r5-1-turn',
+        idempotencyKey: 'r5-1-key',
+        inputDigest: 'r5-1-digest',
+        issuedAt: '2026-07-30T08:00:00.000Z',
+        state: f.state,
+        scenarioId: f.state.scenario_id,
+        contracts,
+        registry: {},
+        repository: f.repository,
+        semanticResolver: async () => ({}),
+        turnStepModel: inner,
+        randomSource: createSeededRandomSource(
+          'lower-dvina-trace-phase-2-acceptance'),
+        locationProfiles: {},
+        scenePresentation: {}
       });
       await requestTurnStepPlanWithRepair({
         request: turnRequest({
@@ -371,7 +414,7 @@ test('F2 turn step and npc_decision open claim from committed events',
           root_player_action: 'счётная величина долговая запись голод',
           player_safe_state: { clock, visible_entities: [] }
         }),
-        turnStepModel,
+        turnStepModel: services.turnStepModel,
         allowRepair: false
       }).catch(() => {});
       return {
@@ -425,12 +468,15 @@ test('F2 turn step and npc_decision open claim from committed events',
         claim: JSON.stringify(lastGrounded?.world_knowledge ?? {}).includes(CLAIM)
       };
     }
-    const turnBefore = await viaTurn(ts(0));
+    const turnBefore = await viaTurn(ts(0), events);
     assert.deepEqual(turnBefore.started, []);
     assert.equal(turnBefore.claim, false);
-    const turnAfter = await viaTurn(ts(FAMINE_AT + 10));
+    const turnAfter = await viaTurn(ts(FAMINE_AT + 10), events);
     assert.deepEqual(turnAfter.started, [EVENT]);
     assert.equal(turnAfter.claim, true);
+    const turnNoEvents = await viaTurn(ts(FAMINE_AT + 10), []);
+    assert.deepEqual(turnNoEvents.started, []);
+    assert.equal(turnNoEvents.claim, false);
     const npcBefore = await viaNpc(ts(0));
     assert.deepEqual(npcBefore.started, []);
     assert.equal(npcBefore.claim, false);

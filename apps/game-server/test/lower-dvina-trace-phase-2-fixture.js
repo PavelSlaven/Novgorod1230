@@ -530,10 +530,11 @@ function fixture({
     },
     ...(turnStepModel
       ? {
-          turnStepModel: async (input, repairContext) => {
+          // Forward 3rd arg (services historical_events wrap); do not swallow.
+          turnStepModel: async (input, repairContext, modelCallContext) => {
             turnStepCount += 1;
             turnStepInput = structuredClone(input);
-            return turnStepModel(input, repairContext);
+            return turnStepModel(input, repairContext, modelCallContext);
           },
         }
       : {}),

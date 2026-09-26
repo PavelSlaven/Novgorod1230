@@ -33,8 +33,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/formulas.md",
       "relative_path": "corpus/DOCUMENTS/formulas.md",
-      "bytes": 108044,
-      "sha256": "6a077a511b198351c8dd39eedb223cdeb4f69659b0457c3bda9d14677b6dcbaa",
+      "bytes": 4309,
+      "sha256": "285d590d20b2975894240bb509b37aa93fa90bcf5b004db953cd48ee177b14f9",
       "classification": "canonical_source"
     },
     {
@@ -54,8 +54,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/interface_ux.md",
       "relative_path": "corpus/DOCUMENTS/interface_ux.md",
-      "bytes": 64507,
-      "sha256": "5d1c25a77db458f83a1f678d80fd7c6ac4f48470910be12317a3b3ce4ded6728",
+      "bytes": 6268,
+      "sha256": "d1b289e90f3cef0565cc25023f6ad397154d0dd6f205c544aac2b6cb625ee77f",
       "classification": "canonical_source"
     },
     {
@@ -82,8 +82,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/movement_locations_regions.txt",
       "relative_path": "corpus/DOCUMENTS/movement_locations_regions.txt",
-      "bytes": 52411,
-      "sha256": "30f0cc88277c827d7480ebb2b9bd421db73d83254f5c10056d520b7e12fe789a",
+      "bytes": 7971,
+      "sha256": "a5aec3401d30358468324154ff27741ebe6e9b1c397b5f98948f11f15a16a855",
       "classification": "canonical_source"
     },
     {
@@ -117,8 +117,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/time_system.txt",
       "relative_path": "corpus/DOCUMENTS/time_system.txt",
-      "bytes": 16226,
-      "sha256": "cf94af950566ba0f79f6b90c3761a624ac14d5d3a339b631b5c30c4770b65323",
+      "bytes": 5722,
+      "sha256": "220c77e73b522e3d85107e8ae4c05ba8c086b062e4400bc68783abff32d42643",
       "classification": "canonical_source"
     },
     {
@@ -131,8 +131,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_generation_and_turns.txt",
       "relative_path": "corpus/DOCUMENTS/world_generation_and_turns.txt",
-      "bytes": 71231,
-      "sha256": "b1fbf6343d479a2f5c9296b7c5dc2f35f0b93e2eb15fab867d23b9201bd01b3e",
+      "bytes": 7849,
+      "sha256": "fd551ac679c398dc2bd71a7e30fe02cf87858e4ce14315424229a4f69d1a7764",
       "classification": "canonical_source"
     },
     {

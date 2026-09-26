@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "7fba70b476e28e8527f74c2810502fccd349c94db1e50a74194caa1f25b03864",
+  "corpus_hash": "95df82242b4cd2037dba4aaefd1d33d899e529a3727a155642a6c6bd1cf6050c",
   "chunk_count": 2852,
   "chunks": [
     {
@@ -1799,16 +1799,16 @@
       "file": "formulas.md",
       "section": "Статус",
       "line_start": 3,
-      "line_end": 15,
-      "text": "## formulas.md — Статус\n## Статус\n\nЭтот справочник описывает production v3 formulas. Принятое историческое P28\nevidence само не активировало runtime; последующий\n`versioned production activation cutover` завершён release\n`spatial-v3-production-v1`. Профильные документы владеют назначением формул;\nэтот файл — единственный источник их записи и owner mapping.\n\nДля Temporal World v4 профильным active target-нормативом является\n`temporal_world_and_interruptible_activities.md`. Формулы ниже используют\ndecimal-string rational DTO и exact `BigInt` core; ни один consumer не\nокругляет duration и не переносит domain effects в time owner.",
-      "char_count": 634
+      "line_end": 16,
+      "text": "## formulas.md — Статус\n## Статус\n\nЭтот справочник описывает production v3 formulas. Принятое историческое P28\nevidence само не активировало runtime; последующий\n`versioned production activation cutover` завершён release\n`spatial-v3-production-v1`. Архивный v2-источник не является production-правилом\nи не смешан с v3. Профильные документы владеют назначением формул;\nэтот файл — единственный источник их записи и owner mapping.\n\nДля Temporal World v4 профильным active target-нормативом является\n`temporal_world_and_interruptible_activities.md`. Формулы ниже используют\ndecimal-string rational DTO и exact `BigInt` core; ни один consumer не\nокругляет duration и не переносит domain effects в time owner.",
+      "char_count": 705
     },
     {
       "id": "formulas.md:1. Движение: positive rational factor model:0",
       "file": "formulas.md",
       "section": "1. Движение: positive rational factor model",
-      "line_start": 16,
-      "line_end": 32,
+      "line_start": 17,
+      "line_end": 33,
       "text": "## formulas.md — 1. Движение: positive rational factor model\n## 1. Движение: positive rational factor model\n\n```text\nexact_interval_duration = base_minutes\n                        × method_factor\n                        × environment_factor\n                        × load_factor\n                        × body_factor\n                        × pace_factor\n                        × interval_progress_fraction\n                        + explicit_additive_delays\n```\n\nВсе множители — положительные reduced rationals. `base_minutes` уже включает permanent geometry, normal surface, ordinary gradient и normal path quality одного baseline method; эти факты повторно не множатся. Иной method получает один approved rational factor или отдельный authored segment/route variant.\n\n`environment_factor` — ровно один approved composite/worst applicable factor для weather, light и transient terrain. Нельзя независимо стекать mud/snow/darkness без ADR. Fixed waiting, ferry queue и аналогичные fixed costs — `explicit_additive_delays`, не multiplier.",
       "char_count": 1038
     },
@@ -1816,8 +1816,8 @@
       "id": "formulas.md:2. Exact clock и slicing invariant:0",
       "file": "formulas.md",
       "section": "2. Exact clock и slicing invariant",
-      "line_start": 33,
-      "line_end": 41,
+      "line_start": 34,
+      "line_end": 42,
       "text": "## formulas.md — 2. Exact clock и slicing invariant\n## 2. Exact clock и slicing invariant\n\n```text\nworld_time_after = world_time_before + actual_exact_elapsed\ncrossed_whole_minute_boundaries = whole_minute_index(after) - whole_minute_index(before)\n```\n\n`actual_exact_elapsed` хранится reduced rational. Любое разбиение одной физической длительности на slices обязано сохранять final timestamp, cumulative elapsed и total crossed boundaries. Округление не является authoritative update.",
       "char_count": 485
     },
@@ -1825,8 +1825,8 @@
       "id": "formulas.md:3. Delay identity:0",
       "file": "formulas.md",
       "section": "3. Delay identity",
-      "line_start": 42,
-      "line_end": 49,
+      "line_start": 43,
+      "line_end": 50,
       "text": "## formulas.md — 3. Delay identity\n## 3. Delay identity\n\n```text\ndelay_application_identity = versioned_delay_ref + application_scope + occurrence_key\n```\n\nОдна identity применяется не более одного раза under idempotency. `segment_once`/`step_once` не повторяются между technical slices; `interval_once` создаётся interval recheck. Missing, duplicate или nonpositive factor/delay — typed rejection (`time_delay_occurrence_invalid`/`time_factor_invalid`).",
       "char_count": 454
     },
@@ -1834,8 +1834,8 @@
       "id": "formulas.md:4. Владельцы:0",
       "file": "formulas.md",
       "section": "4. Владельцы",
-      "line_start": 50,
-      "line_end": 69,
+      "line_start": 51,
+      "line_end": 70,
       "text": "## formulas.md — 4. Владельцы\n## 4. Владельцы\n\n| Formula / invariant | Единственный owner | Потребители |\n|---|---|---|\n| duration и factor/delay resolution | `@rus/movement-routes` | turn, time events |\n| exact timestamp и crossed-minute derivation | `@rus/time-events-history` | turn, persistence |\n| dynamic snapshot | `@rus/movement-routes` | traversal executor |\n| synchronized carrier-local slice | turn orchestrator | movement, time events |\n| body effects from elapsed time | `@rus/body-state` | turn boundary handler |\n| NPC schedule/perception effects | `@rus/npc-runtime` | turn boundary handler |\n| weather/light effects | `@rus/environment-state` | turn boundary handler |\n| historical phase local effects | профильный domain owner | turn boundary handler |\n| remote catch-up/propagation | `@rus/world-processes` | turn boundary handler |\n\nConsumers не копируют формулы и не пересчитывают duration. Target источник:\n`spatial_architecture_standard_g0_g6.md` §11.2–§11.10. До `versioned\nproduction activation cutover` это target, не active runtime formula.\n\n\n---",
       "char_count": 1073
     },

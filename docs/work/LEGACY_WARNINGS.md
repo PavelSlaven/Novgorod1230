@@ -133,14 +133,14 @@
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-028 — классовый блок оружия, денег и документов (ветка PR #98)
-- **Что.** Нормы корпуса (#146 шаг 2) сняли классовый запрет: находка через presence, изготовление через A1; `authority_required` — только вещи по authority-записи. Код ещё держит блок: `packages/turn/src/ordinary-materialization-presence.js` (RESTRICTED: `weapon_or_armament`, `currency_or_precious`, `document_like`, …) и `apps/game-server/src/runtime/context-bound-ordinary-policy.js`; eval-фикстуры Stage B закрепляют «меча нет».
-- **Как жить.** Блок новыми тестами не закреплять; снятие в коде — CR реализации M2c. При конфликте норма > код до cutover.
+- **Что.** Нормы корпуса (#146 шаги 1–4) закрыли классовый запрет: находка через presence, изготовление через A1; `authority_required` — только вещи по authority-записи. Код ещё держит блок: `packages/turn/src/ordinary-materialization-presence.js` (RESTRICTED: `weapon_or_armament`, `currency_or_precious`, `document_like`, …) и `apps/game-server/src/runtime/context-bound-ordinary-policy.js`; eval-фикстуры Stage B закрепляют «меча нет».
+- **Как жить.** Нормы на ветке закрыты. Блок новыми тестами не закреплять; снятие в коде — CR реализации M2c. При конфликте норма > код до cutover.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133), [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
 
 ### LW-029 — ordinary-профили v17 выключены (ветка PR #98)
-- **Что.** `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 загружены только профиль конечных природных источников при первом входе (`finite_first_entry`), A1 (`actionProductionProfile`) и N1 (`ordinary_profiles.n1`). `items_and_property.txt` и `code_driven_world_materialization_architecture.md` описывают эти профили как active: они действуют только на пути v16 / Lower Dvina Trace.
-- **Как жить.** Не «подключать существующий профиль» к v17 и не подгонять тесты под фикстуры v16. Обобщение профилей на все классы — M2c.
-- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
+- **Что.** Нормы (#146 шаги 1–4) описывают O1/O2b/S1/A1 как active. Код: `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 загружены только профиль конечных природных источников при первом входе (`finite_first_entry`), A1 (`actionProductionProfile`) и N1 (`ordinary_profiles.n1`); профили на пути v16 / Lower Dvina Trace.
+- **Как жить.** Нормы на ветке закрыты. Не «подключать существующий профиль» к v17 и не подгонять тесты под фикстуры v16. Обобщение профилей на все классы — CR реализации M2c.
+- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133), [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
 
 ### LW-030 — typed gap показывается как «ничего не нашли» (ветка PR #98)
 - **Что.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-current-scene.js` выводит `authority_required` и отсутствие профиля так же, как законный пустой поиск. AI §10.1 запрещает выдавать дефект реализации как отсутствие вещи в мире.
@@ -187,8 +187,8 @@
 - **Как жить.** Правка этого tool меняет new-game: кандидаты NPC и предметов, шаблоны G5, упаковку снаряжения. Гонять `test:domain` и профильные тесты стадий 7, 8, 13, 16.
 
 ### LW-039 — обрезанные документы корпуса
-- **Что.** В `universal_category_classification_policy.md` разделы 10–11.4 восстановлены (#146 шаг 1). Остаются маркеры «…tokens truncated…» в архивных приложениях v2 у `formulas.md`, `base_turn_orchestration.txt` и `movement_locations_regions.txt` (вынос — шаг 4 #146).
-- **Как жить.** Политику категорий читать из корпуса (ACTIVE). Обрезанные архивные приложения v2 не использовать как норму; восстановление/вынос — #146 шаг 4.
+- **Что.** В `universal_category_classification_policy.md` разделы 10–11.4 восстановлены (#146 шаг 1). Архивные приложения v2 с маркерами «…tokens truncated…» вынесены из корпуса (#146 шаг 4) у `formulas.md`, `base_turn_orchestration.txt`, `movement_locations_regions.txt`, `world_generation_and_turns.txt`, `interface_ux.md`, `time_system.txt`.
+- **Как жить.** Нормы: закрыто на ветке PR #98. Политику категорий читать из корпуса (ACTIVE). Не восстанавливать архивные приложения v2 в корпус.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
 
 ### LW-040 — README world_base пишет 201 таблиц (ветка PR #98)

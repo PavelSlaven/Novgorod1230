@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(corpus): #146 шаг 4 — вынос архивных приложений v2 из корпуса; MODULE_RULES §6→AI §10; KSP ordinary LLM/code; LW-039 norms closed (#146, PR #98) LW-028 LW-029 LW-039 updated
 - docs(corpus): #146 шаг 3 REVIEW-029 — N1–N4/F13 (немагический мир NPC; полные «не ради…»; combat §40.12; LW-045 уточнён; CR #146 п.11 у «действующий»; INDEX §3) (#146, PR #98) LW-045 updated
 - docs(corpus): #146 шаг 3 REVIEW-028 — восстановлены LLM-инварианты из промптов; conversation/repair→схема+владелец; spatial роли; погода LW-044; D9/D14 LW-045; CONTRACT_INDEX §2 метки; проза owner-acceptance (#146, PR #98) LW-044 LW-045 added
 - docs(corpus): #146 шаг 3 — промпты→схема+владелец кода; spatial specialization H1; «целевой»→«действующий»; погода D7; проза блокирует приёмку этапа; CONTRACT_INDEX §2/§3/§4 WK/§8.1; LW-042 norms closed on branch (#146, PR #98) LW-042 updated LW-043 added

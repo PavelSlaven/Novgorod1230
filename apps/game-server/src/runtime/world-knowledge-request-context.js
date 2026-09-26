@@ -41,8 +41,13 @@ export function semanticInputOf(request) {
     const text = ordinaryMaterializationText(request);
     if (text) return text;
   }
+  if (request.schema === 'narration_request') {
+    const text = narrationSemanticText(request);
+    if (text) return text;
+  }
   for (const value of [request.remaining_intent, request.root_player_action,
-    request.utterance_text, request.semantic_input, request.reason]) {
+    request.utterance_text, request.raw_text, request.semantic_input,
+    request.reason]) {
     if (typeof value === 'string' && value.trim()) return value.trim();
   }
   if (request.schema === 'rus.s1_spatial_semantic_model_request.v1') {
@@ -93,12 +98,32 @@ export function actorFacetsOf(request, authoritative) {
     return typeof roleRef === 'string' && roleRef
       ? { role_ref: roleRef } : {};
   }
-  const source = request.npc_safe_state ?? request.player_safe_state ?? {};
+  const source = request.npc_safe_state ?? request.player_safe_state
+    ?? request.player_safe_context ?? {};
   const result = {};
   for (const key of ['occupation_ref', 'role_ref', 'specialist_domain',
     'social_status', 'sex_category', 'age_category']) {
     const value = source[key] ?? source.identity?.[key];
     if (typeof value === 'string' && value) result[key] = value;
+  }
+  // D16/D20: dossier social_role_id is the runtime role_ref for actor-visible WK.
+  if (result.role_ref == null) {
+    const socialRoleId = source.social_role_id
+      ?? source.social_status?.social_role_id
+      ?? source.social_role?.social_role_id
+      ?? source.social_role?.role_ref
+      ?? source.identity?.social_role_id;
+    if (typeof socialRoleId === 'string' && socialRoleId) {
+      result.role_ref = socialRoleId;
+    }
+  }
+  if (result.occupation_ref == null) {
+    const occupationId = source.occupation_id
+      ?? source.social_status?.occupation_id
+      ?? source.identity?.occupation_id;
+    if (typeof occupationId === 'string' && occupationId) {
+      result.occupation_ref = occupationId;
+    }
   }
   for (const key of ['occupation_ref', 'role_ref', 'specialist_domain',
     'social_status', 'sex_category', 'age_category']) {
@@ -106,6 +131,46 @@ export function actorFacetsOf(request, authoritative) {
     if (typeof value === 'string' && value) result[key] = value;
   }
   return result;
+}
+
+/** Player dossier on committed party state → actor_facets for WK (D16/D20). */
+export function playerActorFacetsFromState(committedState) {
+  const dossier = committedState?.player_profile
+    ?? committedState?.player?.dossier ?? null;
+  return actorFacetsOf({
+    player_safe_state: {
+      social_role_id: dossier?.social_status?.social_role_id
+        ?? dossier?.selected_candidate_refs?.social_role_id ?? null,
+      occupation_id: dossier?.social_status?.occupation_id
+        ?? dossier?.selected_candidate_refs?.occupation_id ?? null
+    }
+  }, null);
+}
+
+/**
+ * Inject party events + player role facets into a model-call context (D16).
+ * stateOf: committed/working party state object or () => state.
+ */
+export function withPlayerWorldKnowledgeAuthoritative(model, stateOf) {
+  if (typeof model !== 'function') return model;
+  const wrapped = async (request, callContext = {}) => {
+    const state = typeof stateOf === 'function' ? stateOf() : stateOf;
+    const historicalEvents = Array.isArray(callContext?.historical_events)
+      ? callContext.historical_events
+      : partyHistoricalEventsOf(state);
+    const actorFacets = {
+      ...playerActorFacetsFromState(state),
+      ...(callContext?.actor_facets && typeof callContext.actor_facets === 'object'
+        ? callContext.actor_facets : {})
+    };
+    return model(request, {
+      ...callContext,
+      historical_events: historicalEvents,
+      actor_facets: actorFacets,
+      clock: callContext?.clock ?? state?.clock ?? null
+    });
+  };
+  return wrapped;
 }
 
 /**
@@ -162,6 +227,19 @@ export function authoritativeContextOf(request, authoritative, defaults) {
   return { time: { year }, place_refs: [...placeRefs].sort(),
     actor_facets: actorFacetsOf(request, merged),
     conditions };
+}
+
+function narrationSemanticText(request) {
+  const parts = [];
+  const changes = request.visible_context?.visible_changes;
+  if (Array.isArray(changes)) {
+    for (const entry of changes) {
+      if (typeof entry === 'string' && entry.trim()) parts.push(entry.trim());
+    }
+  }
+  const attempt = request.context?.attempt?.text;
+  if (typeof attempt === 'string' && attempt.trim()) parts.push(attempt.trim());
+  return parts.join(' ').trim();
 }
 
 function ordinaryMaterializationText(request) {

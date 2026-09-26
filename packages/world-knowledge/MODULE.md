@@ -33,8 +33,10 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
   applicable claims); orchestrator-facing only, not model wire;
 - actor-safe filtering только по уже переданным caller facets.
   `knowledge_access.required_values` опционально ограничивает значение
-  разрешённого facet только для actor-facing purposes; materialization и другие
-  не actor-facing запросы не получают из него availability restriction.
+  разрешённого facet только для actor-facing purposes (`conversation`,
+  `narration`); `npc_decision` — устройство мира и не фильтруется
+  `ACTOR_FACING_PURPOSES` (D15). materialization и другие не actor-facing
+  запросы не получают из `required_values` availability restriction.
 
 ## Не владеет
 

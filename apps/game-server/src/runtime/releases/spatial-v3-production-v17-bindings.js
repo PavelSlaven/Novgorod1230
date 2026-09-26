@@ -29,7 +29,9 @@ export function createSpatialV3RuntimeBindings(context = {}) {
     technicalCommandBoundary: 'production-v17',
     publicationLoader: async () => { throw serverError('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'An approved authored target publication is required.'); },
     createNpcRuntimePorts: ({ roleRunner, worldKnowledgeGrounder }) => ({
-      playerConversationModel: createLowerDvinaTracePlayerConversationModel({ roleRunner }),
+      playerConversationModel: createLowerDvinaTracePlayerConversationModel({
+        roleRunner, worldKnowledgeGrounder
+      }),
       npcSemanticModel: createLowerDvinaTraceNpcSemanticModel({ roleRunner, worldKnowledgeGrounder }),
       npcAutonomousModel: createLowerDvinaTraceNpcAutonomousModel({ roleRunner, worldKnowledgeGrounder }),
       npcCombatModel: createLowerDvinaTraceNpcCombatModel({ roleRunner })

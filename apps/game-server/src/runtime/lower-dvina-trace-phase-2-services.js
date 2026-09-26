@@ -13,7 +13,7 @@ import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { createLowerDvinaTracePhase2StateReader } from './lower-dvina-trace-phase-2-state-reader.js';
 import { actorMovementBlocked } from './lower-dvina-trace-phase-3-command-shared.js';
-import { partyHistoricalEventsOf } from './world-knowledge-request-context.js';
+import { partyHistoricalEventsOf, playerActorFacetsFromState } from './world-knowledge-request-context.js';
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt, scenarioId,
@@ -239,6 +239,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
         return runWithinTurnDeadline(turnBudget, () => narrator.run({
           ...request, party_id: partyId,
           delivery_turn_number: committedPublicResult?.turn_number,
+          // D16/D20: actor-visible WK slice uses player dossier role + party clock/events.
+          world_knowledge_authoritative: {
+            clock: state.clock ?? null,
+            historical_events: partyHistoricalEventsOf(state),
+            actor_facets: playerActorFacetsFromState(state)
+          },
           turnBudget
         }));
       }

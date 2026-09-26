@@ -15,10 +15,23 @@ import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
-export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}) {
+export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
+  worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
   return async function interpretPlayerConversation(request, context = {}) {
     const repair = context.repair ?? null;
+    // D16: interpreter uses semantic_resolution (same family as turn-step parsers).
+    const historicalEvents = Array.isArray(context.historical_events)
+      ? context.historical_events : [];
+    const grounded = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'semantic_resolution', {
+        clock: context.clock
+          ?? request.player_safe_context?.current_game_timestamp
+          ?? null,
+        historical_events: historicalEvents,
+        actor_facets: context.actor_facets ?? {}
+      });
+    const modelRequest = omitWorldKnowledgeContextText(grounded);
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -27,14 +40,15 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: playerConversationInstructions(repair, request)
+        content: [playerConversationInstructions(repair, grounded),
+          ...worldKnowledgeFactualClosure(grounded)].join(' ')
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
-          request,
+          request: modelRequest,
           original_output: repair.original_output,
           validation_errors: repair.validation_errors
-        } : request)
+        } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });

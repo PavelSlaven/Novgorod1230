@@ -48,10 +48,13 @@ test('scientific foundations compile with intact bilingual text and source-linke
       assert.ok(claim.localizations[locale].runtime_text.trim());
       assert.equal(slice.hard_constraints.length, 0);
     }
-    for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+    for (const purpose of ['conversation', 'narration']) {
       assert.ok(!query([claim.claim_ref], { purpose }).facts.some(value =>
         value.claim_ref === claim.claim_ref), `${purpose}: ${claim.claim_ref}`);
     }
+    // D15: npc_decision is world machinery — domain_internal_only still admissible.
+    assert.ok(query([claim.claim_ref], { purpose: 'npc_decision' }).facts.some(value =>
+      value.claim_ref === claim.claim_ref), `npc_decision: ${claim.claim_ref}`);
   }
 });
 

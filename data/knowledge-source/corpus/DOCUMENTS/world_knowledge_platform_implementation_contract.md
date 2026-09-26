@@ -924,8 +924,8 @@ knowledge_access
 (`occupation_bound` → `occupation_ref`, `role_bound` → `role_ref`,
 `specialist_bound` → `specialist_domain`); general/common/domain-internal
 classes facet values не задают. Runtime применяет value-match только к actor-facing
-`npc_decision`/`conversation`/`narration`; historical applicability и
-materialization-support от него не зависят.
+`conversation`/`narration`; `npc_decision` — устройство мира и не входит в actor-facing
+фильтр (D15). Historical applicability и materialization-support от value-match не зависят.
 
 Зарегистрированный condition facet для event semantics:
 
@@ -2698,9 +2698,11 @@ World Knowledge не становится вторым runtime catalog.
 
 # 67. NPC decisions
 
-World Knowledge используется как actor-safe general factual context, но не выбирает действие NPC.
+`npc_decision` получает World Knowledge всех доменов как устройство мира (не actor-facing
+фильтр доступа; покрытие по-прежнему задают `coverage_profiles`). World Knowledge не выбирает
+действие NPC.
 
-NPC-facing slice может включать:
+Actor-facing срез для `conversation`/`narration` может включать:
 
 ```text
 general physical knowledge
@@ -2711,7 +2713,9 @@ known technology
 legal/economic context
 ```
 
-Он не включает private knowledge другого NPC, hidden party truth или objective fact, который actor не имеет основания знать.
+Он не включает private knowledge другого NPC, hidden party truth или objective fact, который
+actor не имеет основания знать. Это ограничение относится к речи и рассказчику, не к
+`npc_decision`.
 
 После slice NPC принимает самостоятельное решение через existing semantic boundary и проходит обычные mechanics.
 

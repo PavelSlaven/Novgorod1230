@@ -108,7 +108,7 @@ test('gameplay gap premises compose without granting scene facts or actor expert
       const slice = query(domains, focus, { query_locale });
       for (const ref of refs) assert.ok(slice.facts.some(fact => fact.claim_ref === ref), ref);
       assert.equal(slice.hard_constraints.length, 0);
-      for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+      for (const purpose of ['conversation', 'narration']) {
         const subjective = query(domains, focus, { query_locale, purpose });
         for (const claim of claims.filter(item => item.knowledge_access.class === 'domain_internal_only')) {
           assert.ok(!subjective.facts.some(fact => fact.claim_ref === claim.claim_ref), claim.claim_ref);
@@ -153,7 +153,7 @@ test('wild-flora science composes with historical gathering without granting foo
     });
   assert.ok(!elsewhere.facts.some(fact => fact.claim_ref === historicalRef));
   for (const ref of modernRefs) assert.ok(elsewhere.facts.some(fact => fact.claim_ref === ref), ref);
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(['biology_physiology'], focus, { purpose }).facts.length, 0);
   }
 });
@@ -190,7 +190,7 @@ test('seasonal conveyance and probable communion function preserve source scope 
       }
       assert.equal(slice.hard_constraints.length, 0);
     }
-    for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+    for (const purpose of ['conversation', 'narration']) {
       assert.ok(query(['material_culture'], [focus], { purpose }).facts.every(fact => fact.claim_ref !== ref));
     }
     assert.ok(query(['material_culture'], [focus], {
@@ -213,7 +213,7 @@ test('historical hunting grounds compose with general mechanics without defining
   assert.match(historical.runtime_text, /Днепру и Десне, а не к Новгородской/u);
   assert.match(historical.runtime_text, /не описание механизма ловушки/u);
   assert.equal(slice.hard_constraints.length, 0);
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(['craft_technology'], historicalFocus, { purpose }).facts.length, 0);
   }
   const outside = query(['craft_technology', 'physics_material_science'],
@@ -244,7 +244,7 @@ test('officeholder episodes and burial containers retain dated individual eviden
         assert.match(slice.context_text, /1228/u);
       } else assert.match(slice.context_text, query_locale === 'ru' ? /предварительн/u : /preliminary|preliminarily/u);
     }
-    for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+    for (const purpose of ['conversation', 'narration']) {
       assert.equal(query([domain], focus, { purpose }).facts.length, 0);
     }
     for (const context of [
@@ -269,7 +269,7 @@ test('spinning capability and oil records preserve distinct applicability withou
     { context: outside }).facts.length, 1);
   assert.equal(query(['material_culture'], ['wk:material_culture:historically-recorded-maslo'],
     { context: outside }).facts.length, 0);
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(['physics_material_science'], ['wk:physics_material_science:fibre-twisting'],
       { purpose }).facts.length, 0);
     assert.equal(query(['material_culture'], ['wk:material_culture:historically-recorded-maslo'],
@@ -293,7 +293,7 @@ test('analysed textile colourants retain source dates, import uncertainty and no
     context: { time: { year: 1150 }, place_refs: ['region_novgorod_land'], actor_facets: {} }
   });
   assert.deepEqual(new Set(earlier.facts.map(fact => fact.claim_ref)), new Set(refs.slice(0, 2)));
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(['material_culture'], focus, { purpose }).facts.length, 0);
   }
   assert.equal(query(['material_culture'], focus, {
@@ -322,7 +322,7 @@ test('oil and fat treatments retain distinct material states without historical 
     context: { time: { year: 1800 }, place_refs: ['outside_novgorod'], actor_facets: {} }
   });
   for (const ref of refs) assert.ok(universal.facts.some(item => item.claim_ref === ref));
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.ok(query(domains, focus, { purpose }).facts.every(item => !refs.includes(item.claim_ref)));
   }
 });
@@ -339,7 +339,7 @@ test('household care rules remain conditional comparative texts rather than enac
       && fact.qualifiers.confidence === 'medium' && fact.qualifiers.typicality === 'unknown'));
     assert.equal(slice.hard_constraints.length, 0);
   }
-  for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(['social_law_economy'], focus, { purpose }).facts.length, 0);
   }
   for (const context of [
@@ -359,7 +359,7 @@ test('pitch observations remain bound to their coating system without general re
       query_locale === 'ru' ? /плетёной корзине/u : /woven-basket system/u);
     assert.equal(slice.hard_constraints.length, 0);
   }
-  for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(['physics_material_science'], focus, { purpose }).facts.length, 0);
   }
   assert.equal(query(['material_culture'], focus, { purpose: 'materialization_support' }).facts.length, 0);
@@ -379,7 +379,7 @@ test('basic care keeps conditional pressure and waterproof protection separate f
     assert.match(barrier.runtime_text, query_locale === 'ru' ? /загрязнённой водой/u : /contaminated-water exposure/u);
     assert.equal(slice.hard_constraints.length, 0);
   }
-  for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.ok(query(['biology_physiology'], focus, { purpose }).facts.every(fact => !refs.includes(fact.claim_ref)));
   }
 });
@@ -396,7 +396,7 @@ test('vegetable tanning retains prepared-hide prerequisites and chemistry withou
     assert.ok(slice.facts.every(fact => fact.qualifiers.directness === 'direct'));
     assert.equal(slice.hard_constraints.length, 0);
   }
-  for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(['chemistry_process'], focus, { purpose }).facts.length, 0);
   }
 });
@@ -416,7 +416,9 @@ test('pollen-based wetland context retains regional inference rather than a pres
     { time: { year: 1800 }, place_refs: ['region_novgorod_land'], actor_facets: {} },
     { time: { year: 1230 }, place_refs: ['outside_novgorod'], actor_facets: {} }
   ]) assert.equal(query(['environment'], focus, { context }).facts.length, 0);
-  assert.equal(query(['environment'], focus, { purpose: 'npc_decision' }).facts.length, 0);
+  assert.ok(query(['environment'], focus, { purpose: 'npc_decision' }).facts.length > 0);
+  assert.equal(query(['environment'], focus, { purpose: 'conversation' }).facts.length, 0);
+  assert.equal(query(['environment'], focus, { purpose: 'narration' }).facts.length, 0);
 });
 
 test('stone tool maintenance remains qualified historical use rather than any-rock or scene authority', () => {
@@ -434,7 +436,7 @@ test('stone tool maintenance remains qualified historical use rather than any-ro
     });
     assert.ok(elsewhere.facts.every(fact => !refs.includes(fact.claim_ref)));
   }
-  for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.ok(query(['material_culture'], ['wk:material_culture:stone'], { purpose })
       .facts.every(fact => !refs.includes(fact.claim_ref)));
   }
@@ -451,7 +453,7 @@ test('rewetting dried and ceramically transformed clay preserves the physical st
     for (const ref of refs) assert.ok(slice.facts.some(fact => fact.claim_ref === ref), ref);
     assert.equal(slice.hard_constraints.length, 0);
   }
-  for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     const slice = query(['physics_material_science'], ['wk:material_culture:clay'], { purpose });
     assert.ok(slice.facts.every(fact => !refs.includes(fact.claim_ref)));
   }
@@ -497,7 +499,7 @@ test('transport evidence supplies qualified vehicle and hired-worker context wit
     }
     assert.equal(slice.hard_constraints.length, 0);
   }
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.ok(query(domains, focus, { purpose }).facts.every(({ claim_ref }) =>
       !expected.includes(claim_ref)));
   }
@@ -565,7 +567,9 @@ test('hay feeding composes separate biology and history while river landings rem
     context: { time: { year: 1800 }, place_refs: ['outside_novgorod'], actor_facets: {} }
   });
   assert.deepEqual(elsewhere.facts.map(({ claim_ref }) => claim_ref), [universal]);
-  assert.equal(query(domains, focus, { purpose: 'npc_decision' }).facts.length, 0);
+  assert.ok(query(domains, focus, { purpose: 'npc_decision' }).facts.length > 0);
+  assert.equal(query(domains, focus, { purpose: 'conversation' }).facts.length, 0);
+  assert.equal(query(domains, focus, { purpose: 'narration' }).facts.length, 0);
 });
 
 test('livestock biology supplies distinct digestive premises without transferring history or actor knowledge', () => {
@@ -587,7 +591,7 @@ test('livestock biology supplies distinct digestive premises without transferrin
     assert.equal(outside.hard_constraints.length, 0);
     assert.ok(outside.facts.every(fact => fact.qualifiers.directness === 'direct'));
   }
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(domains, focus, { purpose }).facts.length, 0);
   }
   // Unseen-equivalent species query uses the class relation, not a species handler.
@@ -625,7 +629,7 @@ test('stone-working possibilities, early wheel technology and church statutes re
       assert.ok(outside.facts.every(fact => !historical.includes(fact.claim_ref)));
     }
   }
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.ok(query(domains, focus, { purpose }).facts.every(fact =>
       ![...scientific, ...historical].includes(fact.claim_ref)));
   }
@@ -653,7 +657,7 @@ test('actual fisher role receives craft facts; unrelated roles cannot borrow tha
     purpose, context: { time: { year: 1230 }, place_refs: ['region_novgorod_land'],
       actor_facets: { role_ref } }
   });
-  for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.ok(actorQuery('nov_role_fisher', purpose).facts.some((fact) =>
       fact.claim_ref === 'claim:population-bark-bast'));
     assert.ok(!actorQuery('nov_role_boatman', purpose).facts.some((fact) =>
@@ -912,7 +916,7 @@ test('water responses distinguish hide processing and natural fibres without gra
     });
     for (const ref of expected) assert.ok(slice.facts.some(({ claim_ref }) => claim_ref === ref), ref);
     assert.equal(slice.hard_constraints.length, 0);
-    for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+    for (const purpose of ['conversation', 'narration']) {
       assert.ok(query(domain, focus, { purpose }).facts.every(({ claim_ref }) =>
         !expected.includes(claim_ref)));
     }
@@ -958,7 +962,7 @@ test('earlier resin and glue evidence composes repair premises without a recipe 
     assert.match(fact.runtime_text, /XI века/u);
   }
   assert.equal(slice.hard_constraints.length, 0);
-  for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.ok(query(domains, focus, { purpose }).facts.every(({ claim_ref }) =>
       !expected.includes(claim_ref)));
   }
@@ -986,7 +990,7 @@ test('monumental construction separates observed work from inferred procurement 
   assert.equal(slice.hard_constraints.length, 0);
   assert.match(slice.context_text, /1207/u);
   assert.match(slice.context_text, /видимо/u);
-  for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+  for (const purpose of ['conversation', 'narration']) {
     assert.equal(query(domains, focus, { purpose }).facts.length, 0);
   }
   for (const context of [
@@ -1009,7 +1013,7 @@ test('plant processing and rural borts compose historical resources without crea
     const slice = query(domains, focus, { purpose: 'materialization_support' });
     for (const ref of refs) assert.ok(slice.facts.some(({ claim_ref }) => claim_ref === ref), ref);
     assert.equal(slice.hard_constraints.length, 0);
-    for (const purpose of ['conversation', 'npc_decision', 'narration']) {
+    for (const purpose of ['conversation', 'narration']) {
       assert.ok(query(domains, focus, { purpose }).facts.every(({ claim_ref }) => !refs.includes(claim_ref)));
     }
     assert.ok(query(domains, focus, {
@@ -1091,7 +1095,7 @@ test('harvest tools and cereal processing retain regional, inferential and actor
       }
       assert.equal(slice.hard_constraints.length, 0);
     }
-    for (const purpose of ['npc_decision', 'conversation', 'narration']) {
+    for (const purpose of ['conversation', 'narration']) {
       assert.ok(query([domain], focus, { purpose }).facts.every(fact => !refs.includes(fact.claim_ref)));
     }
     for (const context of [

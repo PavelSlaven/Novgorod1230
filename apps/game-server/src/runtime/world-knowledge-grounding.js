@@ -1,10 +1,11 @@
 import { performance } from 'node:perf_hooks';
 import { requestWorldKnowledgeQueryPlan } from '@rus/turn';
 import { localeOf, semanticInputOf, situationSummaryOf, actorFacetsOf,
-  authoritativeContextOf, focusInputOf } from './world-knowledge-request-context.js';
-import { WorldKnowledgeError } from '@rus/world-knowledge';
+  authoritativeContextOf, focusInputOf, partyWorldKnowledgeAuthoritative
+} from './world-knowledge-request-context.js';
+import { WorldKnowledgeError, candidateWorldKnowledgeFocusRefs,
+  isApplicable, canAccess } from '@rus/world-knowledge';
 import { retrievalObservabilityOf } from './world-knowledge-retrieval-observability.js';
-import { candidateWorldKnowledgeFocusRefs } from '@rus/world-knowledge';
 import { cacheGrounded, modelSlice, noKnowledgeRequirement,
   worldKnowledgeNoNeedTrace, worldKnowledgeTrace } from
   './world-knowledge-grounding-trace.js';
@@ -33,7 +34,10 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
           || typeof request !== 'object' || Array.isArray(request)) {
         throw new TypeError('World Knowledge grounding request is invalid');
       }
-      const cacheKey = `${purpose}:${JSON.stringify(authoritative)}`;
+      // Single factory: every purpose gets started_historical_events (A-02).
+      const mergedAuthoritative = partyWorldKnowledgeAuthoritative(
+        request, authoritative);
+      const cacheKey = `${purpose}:${JSON.stringify(mergedAuthoritative)}`;
       const prior = cache.get(request)?.get(cacheKey);
       if (prior) {
         telemetry?.onDetail?.(Object.freeze({
@@ -62,9 +66,9 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       if (domains.length === 0) return request;
       const queryLocale = localeOf(request, bundle);
       const semanticInput = semanticInputOf(request);
-      const situationSummary = situationSummaryOf(request, authoritative);
-      const actorFacets = actorFacetsOf(request, authoritative);
-      const context = authoritativeContextOf(request, authoritative, {
+      const situationSummary = situationSummaryOf(request, mergedAuthoritative);
+      const actorFacets = actorFacetsOf(request, mergedAuthoritative);
+      const context = authoritativeContextOf(request, mergedAuthoritative, {
         year, placeRefs, calendarProfile: worldKnowledge.calendar_profile
       });
       const plannerRequest = {
@@ -76,7 +80,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         situation_summary: situationSummary,
         allowed_domains: domains,
         available_knowledge_refs: candidateWorldKnowledgeFocusRefs(bundle,
-          `${focusInputOf(request, authoritative)} ${Object.values(actorFacets).join(' ')}`,
+          `${focusInputOf(request, mergedAuthoritative)} ${Object.values(actorFacets).join(' ')}`,
           queryLocale, domains, { limit: 96, purpose, context }),
         planner_limits: { max_domains: 3, max_search_hints: 8,
           max_focus_refs: 8 }
@@ -87,7 +91,8 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       const planned = await requestWorldKnowledgeQueryPlan({
         request: plannerRequest, bundle,
         plannerModel: async (input, repair) => {
-          const result = await runPlanner(roleRunner, input, repair, bundle);
+          const result = await runPlanner(roleRunner, input, repair, bundle,
+            { purpose, context });
           plannerCalls.push(result.provider_record ?? null);
           return result.output;
         } });
@@ -220,7 +225,11 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
 }
 export async function groundTurnRequest(grounder, request) {
   return grounder == null ? request
-    : grounder.ground(request, 'semantic_resolution');
+    : grounder.ground(request, 'semantic_resolution', {
+      clock: request?.player_safe_state?.clock
+        ?? request?.requested_at
+        ?? null
+    });
 }
 export function wkClosure(request) {
   if (request?.world_knowledge?.sufficiency === 'NO_KNOWLEDGE_REQUIRED') return [
@@ -299,19 +308,35 @@ function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
     total_grounding_ms: Math.max(0, performance.now() - started)
   }));
 }
-async function runPlanner(roleRunner, request, repair, bundle) {
-  const claimDomains = new Map(bundle.claims.map(claim => [claim.claim_ref, claim.domain]));
+async function runPlanner(roleRunner, request, repair, bundle,
+  { purpose = null, context = null } = {}) {
+  const claims = new Map(bundle.claims.map((claim) => [claim.claim_ref, claim]));
   const concepts = new Map(bundle.concepts.map(concept =>
     [concept.concept_ref, concept]));
   const focusMetadata = Object.fromEntries(request.available_knowledge_refs
     .map(ref => {
       const localization = concepts.get(ref)?.localizations?.[request.input_locale];
+      // A-11a: domains only from claims still allowed by date/access.
+      const domains = [...new Set(
+        (bundle.exact_indexes.concept_to_claim_refs[ref] ?? [])
+          .map((claimRef) => claims.get(claimRef))
+          .filter((claim) => {
+            if (claim == null
+                || !request.allowed_domains.includes(claim.domain)) return false;
+            if (context == null) return true;
+            if (claim.applicability == null
+                || !isApplicable(claim.applicability, context)) return false;
+            if (purpose != null) {
+              if (claim.knowledge_access == null) return false;
+              if (!canAccess(claim.knowledge_access,
+                context.actor_facets ?? {}, purpose)) return false;
+            }
+            return true;
+          })
+          .map((claim) => claim.domain)
+      )].sort();
       return [ref, {
-        domains: [...new Set(
-          (bundle.exact_indexes.concept_to_claim_refs[ref] ?? [])
-            .map(ref => claimDomains.get(ref))
-            .filter(domain => request.allowed_domains.includes(domain))
-        )].sort(),
+        domains,
         label: localization?.labels?.[0] ?? '',
         description: localization?.short_definition ?? ''
       }];

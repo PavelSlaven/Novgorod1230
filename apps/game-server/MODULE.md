@@ -916,3 +916,9 @@ gap. The historical initial read retains its existing projection path.
 verified target item/world tuple. Manifest digest связывает все policy pins;
 он не равен raw SHA initial-perception candidate. Loader не выдаёт operational
 approval, не меняет default release и сохраняет historical authored catalog.
+
+## World Knowledge grounding (D18 / #153 part A)
+
+- Party calendar clock wins over `request.historical_context.year`.
+- `partyWorldKnowledgeAuthoritative` always supplies `started_historical_events` (possibly empty) from committed `historical_events` + party clock via `@rus/time-events-history`.
+- Focus refs are filtered by claim `conditions` / access before the planner wire.

@@ -408,3 +408,26 @@ test('production hard exclusion rejects anachronistic legal backport', () => {
   assert.equal(slice.hard_constraints[0].claim_ref,
     'claim:later-novgorod-judicial-charter');
 });
+
+test('empty started_historical_events means nothing begun yet (A-01)', () => {
+  const ok = validateWorldKnowledgeQuery(query({
+    context: { time: { year: 1230 }, place_refs: [], actor_facets: {},
+      conditions: { started_historical_events: [] } }
+  }), baseBundle);
+  assert.equal(ok.ok, true, ok.errors);
+  const slice = createWorldKnowledgeCore(baseBundle).resolveWorldKnowledge(query({
+    context: { time: { year: 1230 }, place_refs: [], actor_facets: {},
+      conditions: { started_historical_events: [] } }
+  }));
+  assert.ok(Array.isArray(slice.facts));
+});
+
+test('started_historical_events claim condition requires includes + string (A-09)', () => {
+  const bundle = structuredClone(baseBundle);
+  const source = bundle.claims[0];
+  const bad = { ...structuredClone(source), claim_ref: 'claim:test:bad-event',
+    applicability: { conditions: [{ facet: 'started_historical_events',
+      operator: 'equals', value: ['event:x'] }] } };
+  bundle.claims.push(bad);
+  assert.throws(() => createWorldKnowledgeCore(bundle));
+});

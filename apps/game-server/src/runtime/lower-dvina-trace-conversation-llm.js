@@ -55,7 +55,11 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
         && candidate.supporting_operations.length === 0
     )) return semanticGroundingFallback(repair.original_output, request);
     const grounded = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'conversation');
+      : await worldKnowledgeGrounder.ground(request, 'conversation', {
+        clock: request.requested_at
+          ?? request.player_safe_state?.clock
+          ?? null
+      });
     const modelRequest = omitWorldKnowledgeContextText(grounded);
     const response = await roleRunner.run({
       scope: 'turn_runtime',

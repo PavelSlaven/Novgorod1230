@@ -887,7 +887,7 @@ conditions
 
 `conditions` — pack-specific facet map. Для event/state-change semantics (не путать с годовым периодом применимости нормы) используется facet `started_historical_events` со значением `event_id`: claim видим только если authoritative context несёт это событие среди уже начавшихся к дате партии. Годовой `applicability.time` остаётся периодом действия нормы; дата события/смены состояния не кодируется месяцем/днём в WK.
 
-Общие физические/химические факты могут иметь явно объявленный `context_scope: universal` либо другое строгое pack-defined значение. Пустая applicability не должна неявно означать «истинно везде». Условие `started_historical_events` проверяется и для `context_scope: universal`.
+Общие физические/химические факты могут иметь явно объявленный `context_scope: universal` либо другое строгое pack-defined значение. Пустая applicability не должна неявно означать «истинно везде». Событийный claim задаётся через `applicability.conditions` с facet `started_historical_events` (без `context_scope: universal` в том же объекте applicability: universal остаётся единственным ключом; смешение universal с time/places/actors/conditions невалидно). Условие `started_historical_events` при этом проверяется для любого claim, у которого оно объявлено в conditions.
 
 Для технического pack возможны:
 

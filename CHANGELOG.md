@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(wk): #153 REVIEW-035 A-01..A-12 — empty started_historical_events; party authoritative factory; O1 clock; facet registry; LF contract; LW-048/049 (#153, PR #98) LW-048 LW-049 added
 - feat(wk): #153 Part A D18 — party calendar year, focus date/access filter, started_historical_events, time-events API, contract §13/§14/§53/§54 (#153, PR #98)
 
 - fix(wk): #152 REVIEW-034 — N1 nested production cues; planner_plan vs effective_plan+default_query; real-Core vector-only PARTIAL (#152, PR #98)

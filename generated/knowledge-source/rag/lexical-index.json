@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "a5bdf057f471e99f4e56285fb4db1d10fe0f64e9aea09d59679a23dfe5aa0964",
+  "corpus_hash": "78cc0aa976d52bea11abb3c19fddfd3ff9f5e67d9c493e80630dc6c641fc6c6f",
   "chunk_count": 2859,
   "chunks": [
     {
@@ -24201,8 +24201,8 @@
       "section": "13. Applicability является pack-specific",
       "line_start": 871,
       "line_end": 907,
-      "text": "## world_knowledge_platform_implementation_contract.md — 13. Applicability является pack-specific\n# 13. Applicability является pack-specific\n\nKnowledge Core не hard-code-ит `year/place/actor` как универсальную модель мира.\n\nКаждый pack объявляет строгую applicability schema.\n\nДля historical/game pack возможны:\n\n```text\ntime\nplace\nactor/context facets\nsocial/professional context\nknowledge access\nconditions\n```\n\n`conditions` — pack-specific facet map. Для event/state-change semantics (не путать с годовым периодом применимости нормы) используется facet `started_historical_events` со значением `event_id`: claim видим только если authoritative context несёт это событие среди уже начавшихся к дате партии. Годовой `applicability.time` остаётся периодом действия нормы; дата события/смены состояния не кодируется месяцем/днём в WK.\n\nОбщие физические/химические факты могут иметь явно объявленный `context_scope: universal` либо другое строгое pack-defined значение. Пустая applicability не должна неявно означать «истинно везде». Условие `started_historical_events` проверяется и для `context_scope: universal`.\n\nДля технического pack возможны:\n\n```text\nproduct\nversion\ncomponent\nplatform\nenvironment\n```\n\nНельзя создавать unrestricted arbitrary EAV.",
-      "char_count": 1252
+      "text": "## world_knowledge_platform_implementation_contract.md — 13. Applicability является pack-specific\n# 13. Applicability является pack-specific\n\nKnowledge Core не hard-code-ит `year/place/actor` как универсальную модель мира.\n\nКаждый pack объявляет строгую applicability schema.\n\nДля historical/game pack возможны:\n\n```text\ntime\nplace\nactor/context facets\nsocial/professional context\nknowledge access\nconditions\n```\n\n`conditions` — pack-specific facet map. Для event/state-change semantics (не путать с годовым периодом применимости нормы) используется facet `started_historical_events` со значением `event_id`: claim видим только если authoritative context несёт это событие среди уже начавшихся к дате партии. Годовой `applicability.time` остаётся периодом действия нормы; дата события/смены состояния не кодируется месяцем/днём в WK.",
+      "char_count": 833
     },
     {
       "id": "world_knowledge_platform_implementation_contract.md:13. Applicability является pack-specific:1",
@@ -24210,8 +24210,8 @@
       "section": "13. Applicability является pack-specific",
       "line_start": 871,
       "line_end": 907,
-      "text": "## world_knowledge_platform_implementation_contract.md — 13. Applicability является pack-specific\nuniversal`.\n\nДля технического pack возможны:\n\n```text\nproduct\nversion\ncomponent\nplatform\nenvironment\n```\n\nНельзя создавать unrestricted arbitrary EAV.\n\nКаждая applicability dimension должна иметь deterministic semantics и реального consumer.\n\n---",
-      "char_count": 344
+      "text": "## world_knowledge_platform_implementation_contract.md — 13. Applicability является pack-specific\nначавшихся к дате партии. Годовой `applicability.time` остаётся периодом действия нормы; дата события/смены состояния не кодируется месяцем/днём в WK.\n\nОбщие физические/химические факты могут иметь явно объявленный `context_scope: universal` либо другое строгое pack-defined значение. Пустая applicability не должна неявно означать «истинно везде». Событийный claim задаётся через `applicability.conditions` с facet `started_historical_events` (без `context_scope: universal` в том же объекте applicability: universal остаётся единственным ключом; смешение universal с time/places/actors/conditions невалидно). Условие `started_historical_events` при этом проверяется для любого claim, у которого оно объявлено в conditions.\n\nДля технического pack возможны:\n\n```text\nproduct\nversion\ncomponent\nplatform\nenvironment\n```\n\nНельзя создавать unrestricted arbitrary EAV.\n\nКаждая applicability dimension должна иметь deterministic semantics и реального consumer.\n\n---",
+      "char_count": 1057
     },
     {
       "id": "world_knowledge_platform_implementation_contract.md:14. Historical applicability profile:0",

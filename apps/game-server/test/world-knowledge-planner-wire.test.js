@@ -34,8 +34,8 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
     assert.equal(calls.length, 2, 'existing single repair still runs');
     const canonical = traces[0].planner_request;
     assert.equal(validateWorldKnowledgeQueryPlannerRequest(canonical, bundle).ok, true);
-    assert.deepEqual(canonical.available_knowledge_refs, [refs[256], ...refs.slice(0, 95)]);
-    assert.equal(canonical.available_knowledge_refs.length, 96);
+  assert.deepEqual(canonical.available_knowledge_refs, [refs[256], ...refs.slice(1, 96)]);
+  assert.equal(canonical.available_knowledge_refs.length, 96);
     assert.equal(canonical.semantic_input, input.remaining_intent);
     assert.equal(canonical.purpose, 'semantic_resolution');
     assert.deepEqual(canonical.planner_limits, { max_domains: 3,
@@ -69,12 +69,16 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
 function fixture(prefix) {
   const refs = Array.from({ length: 257 }, (_, i) => `wk:${prefix}:${String(i).padStart(3, '0')}`);
   const claims = refs.map((_, i) => ({ claim_ref: `claim:${prefix}:${i}`,
-    domain: i === 0 ? 'excluded' : 'material' }));
-  const cross = { claim_ref: `claim:${prefix}:cross`, domain: 'environment' };
+    domain: i === 0 ? 'excluded' : 'material',
+    applicability: { context_scope: 'universal' },
+    knowledge_access: { class: 'general_physical', required_facets: [] } }));
+  const cross = { claim_ref: `claim:${prefix}:cross`, domain: 'environment',
+    applicability: { context_scope: 'universal' },
+    knowledge_access: { class: 'general_physical', required_facets: [] } };
   const mappings = Object.fromEntries(refs.map((ref, i) => [ref, [claims[i].claim_ref,
     ...(i === 1 ? [cross.claim_ref, cross.claim_ref] : [])]]));
-  return { refs, expectedDomains: ref => ref === refs[0] ? []
-    : ref === refs[1] ? ['environment', 'material'] : ['material'], bundle: {
+  return { refs, expectedDomains: ref => ref === refs[1] ? ['environment', 'material']
+    : ['material'], bundle: {
     manifest: { status: 'production', pack_ref: 'pack:test', revision_id: 'revision:test',
       supported_locales: ['en'], default_locale: 'en', domains: ['material', 'environment', 'excluded'] },
     coverage_profiles: ['material', 'environment'].map(domain => ({ domain,

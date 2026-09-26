@@ -21,11 +21,14 @@ export function candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains,
     const eligibleRefs = context == null ? refs : refs.filter((ref) => {
       const claim = claims.get(ref);
       if (claim == null || !domainSet.has(claim.domain)) return false;
-      if (!isApplicable(claim.applicability ?? { context_scope: 'universal' },
-        context)) return false;
-      if (purpose != null && !canAccess(claim.knowledge_access
-        ?? { class: 'general', required_facets: [] },
-        context.actor_facets ?? {}, purpose)) return false;
+      // §13: missing applicability / knowledge_access is not fail-open (A-11b).
+      if (claim.applicability == null
+          || !isApplicable(claim.applicability, context)) return false;
+      if (purpose != null) {
+        if (claim.knowledge_access == null) return false;
+        if (!canAccess(claim.knowledge_access, context.actor_facets ?? {},
+          purpose)) return false;
+      }
       return true;
     });
     if (eligibleRefs.length === 0) return [];

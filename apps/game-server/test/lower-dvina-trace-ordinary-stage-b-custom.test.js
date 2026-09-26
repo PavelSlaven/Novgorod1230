@@ -72,9 +72,12 @@ test('O1 wire omits duplicate WK prose only when the full structured slice is pr
   const { context_text, ...structured } = knowledge;
   assert.deepEqual(wire.world_knowledge, structured);
   assert.deepEqual(request, before);
+  // #152 F8: shared strip always removes context_text for model consumers,
+  // including incomplete slices that still carry structured WK fields.
   const incomplete = { ...knowledge }; delete incomplete.gaps;
+  const { context_text: _drop, ...incompleteStructured } = incomplete;
   assert.deepEqual(JSON.parse(buildOrdinaryMaterializationMessages({ ...request,
-    world_knowledge: incomplete })[1].content).world_knowledge, incomplete);
+    world_knowledge: incomplete })[1].content).world_knowledge, incompleteStructured);
 });
 
 async function evalContract() {

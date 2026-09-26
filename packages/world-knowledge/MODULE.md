@@ -42,6 +42,7 @@ LLM calls, filesystem/network/DB, party state, presence/materialization, actor d
 
 ## API
 
+- `CONDITION_FACETS` — single owner registry (incl. `started_historical_events`); pack compiler imports it. Empty `context.conditions.started_historical_events` means nothing has begun yet. Claim conditions for that facet allow only `includes` + string `event_id`. Focus filter skips claims missing `applicability` / `knowledge_access` (§13, no fail-open).
 - `candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit|options)`;
   optional `options.{limit,purpose,context}` applies the same `isApplicable` /
   `canAccess` date/access gate as Core before offering concepts to the planner;

@@ -42,8 +42,17 @@ export function createOrdinaryMaterializationModel({ roleRunner,
     const expectedIdentity = approvedIdentity({ roleRunner, defaultApprovedIdentity,
       qualifiedO1Identity });
     const modelRequest = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'materialization_support',
-          { semantic_context: semanticContext });
+      : await worldKnowledgeGrounder.ground(request, 'materialization_support', {
+          semantic_context: semanticContext,
+          // Party clock for every purpose (A-03); factory fills started_events.
+          clock: context.clock
+            ?? request?.player_safe_state?.clock
+            ?? request?.occurred_at
+            ?? request?.requested_at
+            ?? null,
+          ...(Array.isArray(context.historical_events)
+            ? { historical_events: context.historical_events } : {})
+        });
     const response = await runRole({ roleRunner, request: modelRequest, repair,
       mechanicsPolicy, semanticContext, requiredQuantity });
     const output = ordinaryMaterializationResponseOf(response);

@@ -412,10 +412,196 @@ test('A4 WK degradation emits telemetry trace with code/purpose/request_id', asy
   assert.equal(result.status, 'approved');
   assert.equal(traces.length, 1);
   assert.equal(traces[0].event, 'world_knowledge_narration_degraded');
+  assert.equal(traces[0].schema, 'world_knowledge_narration_degradation_v1');
   assert.equal(traces[0].code, 'WORLD_KNOWLEDGE_UNAVAILABLE');
   assert.equal(traces[0].purpose, 'narration');
   assert.equal(traces[0].request_id, 'n-degrade');
+  assert.equal(traces[0].request_identity, 'n-degrade');
   assert.equal(details[0].code, 'WORLD_KNOWLEDGE_UNAVAILABLE');
+  assert.equal(details[0].schema, 'world_knowledge_narration_degradation_v1');
+});
+
+test('B2 llm_provider_failure degrades; budget and TypeError rethrow', async () => {
+  const traces = [];
+  const visible = {
+    version: 1, schema: 'visible_context_package',
+    visible_scene: 'Река.', visible_changes: ['Ты стоишь у воды.'],
+    uncertainties: [], do_not_imply: [], allowed_tensions: [],
+    sensory_details: [], visible_objects: [], known_context: []
+  };
+  const approvedRunner = {
+    async run(call) {
+      if (call.role_id === 'gameplay_narrator') {
+        return { output: { prose: 'Ты стоишь у воды.' } };
+      }
+      if (call.role_id === 'gameplay_narrator_auditor') {
+        const body = JSON.parse(call.messages[1].content);
+        return {
+          output: {
+            reviewed_segments: body.segments.map((s) => s.segment_id),
+            source_reviews: [...body.required_current_beat.changes,
+              ...body.required_current_beat.uncertainties]
+              .map(({ ref }) => ({
+                ref, segment_choices: [body.segments[0].segment_id]
+              })),
+            unsupported: [], literary_failures: [], evidence: ['ok']
+          }
+        };
+      }
+      return { output: {} };
+    }
+  };
+  const providerService = createLowerDvinaTraceNarrationService({
+    roleRunner: approvedRunner,
+    worldKnowledgeGrounder: {
+      async ground() {
+        throw Object.assign(new Error('planner provider down'), {
+          code: 'LLM_ROLE_FAILED', llm_provider_failure: true
+        });
+      }
+    },
+    telemetry: { onGameplayTrace: (e) => traces.push(e), onDetail: () => {} }
+  });
+  const degraded = await providerService.run({
+    version: 1, schema: 'narration_request', request_id: 'n-provider',
+    surface: 'turn', visible_context: visible
+  });
+  assert.equal(degraded.status, 'approved');
+  assert.equal(traces[0]?.code, 'LLM_ROLE_FAILED');
+  assert.equal(traces[0]?.schema, 'world_knowledge_narration_degradation_v1');
+
+  const budgetService = createLowerDvinaTraceNarrationService({
+    roleRunner: approvedRunner,
+    worldKnowledgeGrounder: {
+      async ground() {
+        throw Object.assign(new Error('budget'), {
+          code: 'LLM_TURN_BUDGET_EXHAUSTED', llm_provider_failure: true
+        });
+      }
+    }
+  });
+  await assert.rejects(() => budgetService.run({
+    version: 1, schema: 'narration_request', request_id: 'n-budget',
+    surface: 'turn', visible_context: visible
+  }), (err) => err?.code === 'LLM_TURN_BUDGET_EXHAUSTED');
+});
+
+test('B5 createLlmDiagnostics surfaces narration degradation', async () => {
+  const { createLlmDiagnostics } = await import(
+    '../src/runtime/llm-diagnostics.js');
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const visible = {
+    version: 1, schema: 'visible_context_package',
+    visible_scene: 'Река.', visible_changes: ['Ты стоишь у воды.'],
+    uncertainties: [], do_not_imply: [], allowed_tensions: [],
+    sensory_details: [], visible_objects: [], known_context: []
+  };
+  await diagnostics.runTurn({ party_id: 'party-b5', request_id: 'n-b5' },
+    async () => {
+      const service = createLowerDvinaTraceNarrationService({
+        roleRunner: {
+          async run(call) {
+            if (call.role_id === 'gameplay_narrator') {
+              return { output: { prose: 'Ты стоишь у воды.' } };
+            }
+            if (call.role_id === 'gameplay_narrator_auditor') {
+              const body = JSON.parse(call.messages[1].content);
+              return {
+                output: {
+                  reviewed_segments: body.segments.map((s) => s.segment_id),
+                  source_reviews: [...body.required_current_beat.changes,
+                    ...body.required_current_beat.uncertainties]
+                    .map(({ ref }) => ({
+                      ref, segment_choices: [body.segments[0].segment_id]
+                    })),
+                  unsupported: [], literary_failures: [], evidence: ['ok']
+                }
+              };
+            }
+            return { output: {} };
+          }
+        },
+        worldKnowledgeGrounder: {
+          async ground() {
+            throw Object.assign(new Error('vector down'), {
+              code: 'WORLD_KNOWLEDGE_UNAVAILABLE'
+            });
+          }
+        },
+        telemetry: diagnostics.telemetry
+      });
+      return service.run({
+        version: 1, schema: 'narration_request', request_id: 'n-b5',
+        surface: 'turn', visible_context: visible
+      });
+    });
+  const report = diagnostics.takeLogReport({ party_id: 'party-b5' });
+  const traces = report?.gameplay_traces ?? [];
+  assert.ok(traces.some((t) => t.event === 'world_knowledge_narration_degraded'
+    && t.schema === 'world_knowledge_narration_degradation_v1'
+    && t.request_identity === 'n-b5'));
+  assert.ok((report?.calls ?? []).some((d) =>
+    d?.schema === 'world_knowledge_narration_degradation_v1'));
+});
+
+test('B6 request.world_knowledge_authoritative is ignored (options only)', async () => {
+  const grounds = [];
+  const service = createLowerDvinaTraceNarrationService({
+    roleRunner: {
+      async run(call) {
+        if (call.role_id === 'gameplay_narrator') {
+          return { output: { prose: 'Ты поднял сеть.' } };
+        }
+        if (call.role_id === 'gameplay_narrator_auditor') {
+          const body = JSON.parse(call.messages[1].content);
+          return {
+            output: {
+              reviewed_segments: body.segments.map((s) => s.segment_id),
+              source_reviews: [...body.required_current_beat.changes,
+                ...body.required_current_beat.uncertainties]
+                .map(({ ref }) => ({
+                  ref, segment_choices: [body.segments[0].segment_id]
+                })),
+              unsupported: [], literary_failures: [], evidence: ['ok']
+            }
+          };
+        }
+        return { output: {} };
+      }
+    },
+    worldKnowledgeGrounder: {
+      async ground(_request, purpose, authoritative) {
+        grounds.push({ purpose, role: authoritative?.actor_facets?.role_ref ?? null });
+        return {
+          ..._request,
+          world_knowledge: {
+            schema: 'world_knowledge_slice_v1', pack_ref: 'p', pack_revision: 'r',
+            coverage: [], hard_constraints: [], facts: [], disputes: [], gaps: []
+          }
+        };
+      }
+    }
+  });
+  await service.run({
+    version: 1, schema: 'narration_request', request_id: 'n-m16',
+    surface: 'turn',
+    world_knowledge_authoritative: {
+      actor_facets: { role_ref: 'nov_role_from_request' },
+      historical_events: [], clock: null
+    },
+    visible_context: {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Река.', visible_changes: ['Ты поднял сеть.'],
+      uncertainties: [], do_not_imply: [], allowed_tensions: [],
+      sensory_details: [], visible_objects: [], known_context: []
+    }
+  }, {
+    worldKnowledgeAuthoritative: {
+      actor_facets: { role_ref: 'nov_role_from_options' },
+      historical_events: [], clock: null
+    }
+  });
+  assert.equal(grounds[0]?.role, 'nov_role_from_options');
 });
 
 test('A4 TypeError from grounder is rethrown (no catch-all)', async () => {

@@ -35,8 +35,11 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
   `knowledge_access.required_values` опционально ограничивает значение
   разрешённого facet только для actor-facing purposes (`conversation`,
   `narration`); `npc_decision` — устройство мира и не фильтруется
-  `ACTOR_FACING_PURPOSES` (D15). materialization и другие не actor-facing
-  запросы не получают из `required_values` availability restriction.
+  `ACTOR_FACING_PURPOSES` (D15). Actor-facing purposes также исключают
+  `domain_internal_only` claims; достижимость таких доменов по purpose
+  задают pack `coverage_profiles` (§15). materialization и другие не
+  actor-facing запросы не получают из `required_values` availability
+  restriction.
 
 ## Не владеет
 

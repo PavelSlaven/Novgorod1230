@@ -195,28 +195,27 @@ async function resolveNarrationGrounded(roleId, request, store,
       if (store) store.pack = grounded?.world_knowledge ?? null;
       return grounded;
     } catch (error) {
-      // §73/N3: degrade only on WK/turn-WK errors; emit observable trace; rethrow bugs.
+      // §73/B2: degrade on WK/turn-WK codes or provider failure; never on turn budget.
       const code = typeof error?.code === 'string' ? error.code : '';
-      if (code.startsWith('WORLD_KNOWLEDGE_')
-          || code.startsWith('TURN_WORLD_KNOWLEDGE_')) {
+      const budgetExhausted = code === 'LLM_TURN_BUDGET_EXHAUSTED';
+      const wkFailure = code.startsWith('WORLD_KNOWLEDGE_')
+        || code.startsWith('TURN_WORLD_KNOWLEDGE_');
+      const providerFailure = error?.llm_provider_failure === true;
+      if (!budgetExhausted && (wkFailure || providerFailure)) {
         const requestId = request?.request_id ?? request?.request?.request_id
           ?? null;
         const degradation = Object.freeze({
-          code, purpose: 'narration', request_id: requestId
-        });
-        if (store) {
-          store.pack = null;
-          store.degradation = degradation;
-        }
-        // A4: ALS store dies after run(); telemetry keeps the §73 trace.
-        telemetry?.onGameplayTrace?.({
+          schema: 'world_knowledge_narration_degradation_v1',
           event: 'world_knowledge_narration_degraded',
-          ...degradation
+          code: code || 'LLM_ROLE_FAILED',
+          purpose: 'narration',
+          request_identity: requestId,
+          request_id: requestId
         });
-        telemetry?.onDetail?.({
-          event: 'world_knowledge_narration_degraded',
-          ...degradation
-        });
+        if (store) store.pack = null;
+        // A4/B5: ALS store dies after run(); telemetry keeps the §73 trace.
+        telemetry?.onGameplayTrace?.(degradation);
+        telemetry?.onDetail?.(degradation);
         return request;
       }
       throw error;

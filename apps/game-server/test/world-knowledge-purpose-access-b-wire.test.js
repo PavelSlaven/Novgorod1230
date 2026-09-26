@@ -1,16 +1,25 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { createLowerDvinaTracePlayerConversationModel } from
   '../src/runtime/lower-dvina-trace-conversation-llm.js';
+import { createLowerDvinaTraceNarrationService } from
+  '../src/runtime/lower-dvina-trace-narration-llm.js';
+import { createTraceTurnRuntime } from
+  '../src/runtime/releases/spatial-v3-production-trace-runtime.js';
 import { createSpatialV3ProductionV17NpcRuntimePorts } from
   '../src/runtime/releases/spatial-v3-production-v17-bindings.js';
 import {
   createM2ConversationContext,
+  executeM2ConversationExchange,
   m2PlayerConversationModel,
   prepareM2PlayerConversationPlan
 } from '../src/runtime/lower-dvina-trace-m2-conversation-exchange.js';
 import { playerPlan } from './lower-dvina-trace-m2-conversation-fixture.js';
 
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..');
 const ts = (m) => ({
   whole_minutes: String(m), subminute_numerator: '0', subminute_denominator: '1'
 });
@@ -126,11 +135,29 @@ test('F4 services narrator wrap uses post-commit state facets/events', async () 
     state: f.state, bundle: scenarioBundle, phase2Bundle
   });
   const seen = [];
+  const postCommit = {
+    ...f.state,
+    historical_events: [{ event_id: 'event:post', phases: [] }],
+    player_profile: {
+      ...f.state.player_profile,
+      social_status: {
+        ...f.state.player_profile.social_status,
+        social_role_id: 'nov_role_merchant_clerk'
+      }
+    },
+    clock: ts(12)
+  };
   const services = buildLowerDvinaTracePhase2Services({
     partyId: f.state.party_id, requestId: 'req:svc',
     idempotencyKey: 'idem:svc', inputDigest: 'd'.repeat(64),
     issuedAt: '2026-07-30T08:00:00.000Z', scenarioId: f.state.scenario_id,
-    state: f.state, contracts, registry: {}, repository: {},
+    state: f.state, contracts, registry: {},
+    repository: {
+      async commitPhase2Turn() {
+        return { ok: true, committed_public_result: { turn_number: 2 } };
+      },
+      async loadPhase2State() { return postCommit; }
+    },
     semanticResolver: async () => ({}), turnStepModel: null,
     locationProfiles: scenarioBundle.location_topology_set.location_profiles,
     scenePresentation: scenarioBundle.scene_presentation ?? null,
@@ -145,7 +172,7 @@ test('F4 services narrator wrap uses post-commit state facets/events', async () 
     decisionSecret: 's'
   });
   await services.narrator.run({
-    version: 1, schema: 'narration_request', request_id: 'n-svc',
+    version: 1, schema: 'narration_request', request_id: 'n-pre',
     surface: 'turn',
     visible_context: {
       version: 1, schema: 'visible_context_package',
@@ -157,6 +184,20 @@ test('F4 services narrator wrap uses post-commit state facets/events', async () 
   assert.equal(seen[0]?.actor_facets?.role_ref, 'nov_role_fisher');
   assert.equal(seen[0]?.historical_events?.[0]?.event_id, 'event:pre');
   assert.equal(seen[0]?.clock?.whole_minutes, '9');
+  await services.partyStore.commit({ write_plan: {} });
+  await services.narrator.run({
+    version: 1, schema: 'narration_request', request_id: 'n-post',
+    surface: 'turn',
+    visible_context: {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Река.', visible_changes: ['Ты поднял сеть.'],
+      uncertainties: [], do_not_imply: [], allowed_tensions: [],
+      sensory_details: [], visible_objects: [], known_context: []
+    }
+  });
+  assert.equal(seen[1]?.actor_facets?.role_ref, 'nov_role_merchant_clerk');
+  assert.equal(seen[1]?.historical_events?.[0]?.event_id, 'event:post');
+  assert.equal(seen[1]?.clock?.whole_minutes, '12');
 });
 
 test('F4 replay narrator receives authoritative options', async () => {
@@ -487,4 +528,294 @@ test('F4 F5 guard is invoked from player conversation model', async () => {
     },
     operation_contract: {}
   }), /PLAYER_CONVERSATION_WK_UTTERANCE_LEAK|utterance must not copy/u);
+});
+
+test('B1 createTraceTurnRuntime wires grounder+telemetry into narration', async () => {
+  const grounds = [];
+  let narrationService = null;
+  let narrationPorts = null;
+  createTraceTurnRuntime({
+    partyPool: { query() {}, connect() {} },
+    committer: { commit() {} },
+    env: {},
+    config: {
+      traceTurnDecisionSecret: 'test-secret',
+      llmTurnBudget: {},
+      llmDiagnostics: { telemetry: { onGameplayTrace() {}, onDetail() {} },
+        turnBudget: {} }
+    },
+    ordinaryMaterializationProfile: null,
+    ordinaryContainerContentsProfile: null,
+    ordinaryStageBApproval: {
+      model_identity: {
+        provider: 'test', model: 'test', scope: 'turn_runtime',
+        role_id: 'ordinary_materialization', config_hash: 'test'
+      }
+    },
+    actionProductionProfile: null, localFireProfile: null,
+    spatialSemanticProfile: null,
+    createNpcRuntimePorts: () => ({}),
+    createPhase2RuntimeFactory: () => ({}),
+    createNarrationService: (ports) => {
+      narrationPorts = ports;
+      assert.ok(Object.hasOwn(ports, 'worldKnowledgeGrounder'));
+      assert.ok(Object.hasOwn(ports, 'telemetry'));
+      narrationService = createLowerDvinaTraceNarrationService({
+        roleRunner: {
+          async run(call) {
+            if (call.role_id === 'gameplay_narrator') {
+              return { output: { prose: 'Ты поднял сеть.' } };
+            }
+            if (call.role_id === 'gameplay_narrator_auditor') {
+              const body = JSON.parse(call.messages[1].content);
+              return {
+                output: {
+                  reviewed_segments: body.segments.map((s) => s.segment_id),
+                  source_reviews: [...body.required_current_beat.changes,
+                    ...body.required_current_beat.uncertainties]
+                    .map(({ ref }) => ({
+                      ref, segment_choices: [body.segments[0].segment_id]
+                    })),
+                  unsupported: [], literary_failures: [], evidence: ['ok']
+                }
+              };
+            }
+            return { output: {} };
+          }
+        },
+        worldKnowledgeGrounder: {
+          async ground(request, purpose, authoritative) {
+            grounds.push({
+              purpose,
+              role: authoritative?.actor_facets?.role_ref ?? null
+            });
+            return {
+              ...request,
+              world_knowledge: {
+                schema: 'world_knowledge_slice_v1', pack_ref: 'p',
+                pack_revision: 'r', coverage: [], hard_constraints: [],
+                facts: [], disputes: [], gaps: []
+              }
+            };
+          }
+        },
+        telemetry: ports.telemetry
+      });
+      return narrationService;
+    }
+  });
+  assert.ok(narrationPorts);
+  assert.ok(Object.hasOwn(narrationPorts, 'worldKnowledgeGrounder'));
+  assert.ok(Object.hasOwn(narrationPorts, 'telemetry'));
+  const result = await narrationService.run({
+    version: 1, schema: 'narration_request', request_id: 'n-b1',
+    surface: 'turn',
+    visible_context: {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Река.', visible_changes: ['Ты поднял сеть.'],
+      uncertainties: [], do_not_imply: [], allowed_tensions: [],
+      sensory_details: [], visible_objects: [], known_context: []
+    }
+  }, {
+    worldKnowledgeAuthoritative: {
+      actor_facets: { role_ref: 'nov_role_fisher' },
+      historical_events: [], clock: null
+    }
+  });
+  assert.equal(result.status, 'approved');
+  assert.equal(grounds.length, 1);
+  assert.equal(grounds[0].purpose, 'narration');
+  assert.equal(grounds[0].role, 'nov_role_fisher');
+});
+
+test('B5 createTraceTurnRuntime passes grounder into v17 npc ports', async () => {
+  const grounds = [];
+  const spyGrounder = {
+    async ground(request, purpose, authoritative) {
+      grounds.push({
+        purpose, role: authoritative?.actor_facets?.role_ref ?? null
+      });
+      return {
+        ...request,
+        world_knowledge: { facts: [], hard_constraints: [] }
+      };
+    }
+  };
+  let captured = null;
+  let portsArgs = null;
+  createTraceTurnRuntime({
+    partyPool: { query() {}, connect() {} },
+    committer: { commit() {} },
+    env: {},
+    config: {
+      traceTurnDecisionSecret: 'test-secret',
+      llmTurnBudget: {},
+      llmDiagnostics: { telemetry: null, turnBudget: {} }
+    },
+    ordinaryMaterializationProfile: null,
+    ordinaryContainerContentsProfile: null,
+    ordinaryStageBApproval: {
+      model_identity: {
+        provider: 'test', model: 'test', scope: 'turn_runtime',
+        role_id: 'ordinary_materialization', config_hash: 'test'
+      }
+    },
+    actionProductionProfile: null, localFireProfile: null,
+    spatialSemanticProfile: null,
+    createNpcRuntimePorts: (args) => {
+      portsArgs = args;
+      assert.ok(Object.hasOwn(args, 'worldKnowledgeGrounder'));
+      assert.ok(Object.hasOwn(args, 'roleRunner'));
+      return createSpatialV3ProductionV17NpcRuntimePorts({
+        roleRunner: {
+          async run(call) {
+            if (call.role_id === 'player_conversation_interpreter'
+                || call.role_id === 'player_conversation_interpreter_format_repair') {
+              return {
+                output: {
+                  input_mode: 'intent_paraphrase',
+                  contribution_kind: 'speech',
+                  primary_addressee_ref: { entity_kind: 'npc', entity_id: 'npc:1' },
+                  intended_addressee_refs: [{ entity_kind: 'npc', entity_id: 'npc:1' }],
+                  affected_actor_refs: [],
+                  speech: {
+                    utterance_text: 'Где сети?',
+                    dominant_act: 'question',
+                    interaction_tags: [], topic_refs: [], claims: [],
+                    response_expectation: { kind: 'none', target_refs: [] }
+                  },
+                  interpretation: {
+                    intent: 'спросить', grounded_contribution: 'спросить',
+                    adaptation: 'literal'
+                  },
+                  resolution: 'automatic',
+                  activity: { duration_class: 'moment', effort: 'none' },
+                  supporting_operations: [], check: null, handoff: null
+                }
+              };
+            }
+            return { output: {} };
+          }
+        },
+        worldKnowledgeGrounder: spyGrounder
+      });
+    },
+    createPhase2RuntimeFactory: (input) => {
+      captured = input;
+      return {};
+    }
+  });
+  assert.ok(Object.hasOwn(portsArgs, 'worldKnowledgeGrounder'));
+  assert.equal(typeof captured.playerConversationModel, 'function');
+  await captured.playerConversationModel({
+    schema: 'player_conversation_input_v1',
+    request_id: 'p-b5',
+    conversation_id: 'c1',
+    state_version: 1,
+    speaker_ref: { entity_kind: 'player_character', entity_id: 'player' },
+    raw_text: 'Где сети?',
+    received_at: 't1',
+    player_safe_context: {
+      allowed_duration_classes: ['moment'],
+      allowed_references: {
+        actor_refs: [{ entity_kind: 'npc', entity_id: 'npc:1' }],
+        entity_refs: [], knowledge_refs: [], combat_target_refs: []
+      },
+      current_game_timestamp: ts(0)
+    },
+    operation_contract: {}
+  }, { actor_facets: { role_ref: 'nov_role_fisher' }, historical_events: [] });
+  assert.ok(grounds.some((g) => g.purpose === 'semantic_resolution'
+    && g.role === 'nov_role_fisher'));
+  const bindingsSrc = readFileSync(join(ROOT,
+    'apps/game-server/src/runtime/releases/spatial-v3-production-v17-bindings.js'),
+  'utf8');
+  assert.match(bindingsSrc,
+    /createNpcRuntimePorts:\s*createSpatialV3ProductionV17NpcRuntimePorts\b/u);
+});
+
+test('B6 executeM2ConversationExchange injects facets/events/clock', async () => {
+  const seen = [];
+  const npc = {
+    instance_id: 'npc_fisher_neighbor',
+    location_profile_ref: 'loc_river'
+  };
+  const state = {
+    actor_id: 'player_1',
+    party_id: 'party_b6',
+    party_state: { state_version: 1, turn_number: 1 },
+    clock: ts(5),
+    position: { location_ref: 'loc_river' },
+    historical_events: [{ event_id: 'event_m2_ex', phases: [] }],
+    player_profile: { social_status: { social_role_id: 'nov_role_fisher' } },
+    npcs: [npc],
+    knowledge: []
+  };
+  const base = createM2ConversationContext({
+    state,
+    targetActor: npc,
+    actualNpcActors: [npc],
+    playerInput: { raw_text: 'Где сети?' },
+    inputDigest: 'b'.repeat(64),
+    phase: 'phase_3',
+    checkResult: null,
+    availableEvidence: null,
+    contracts: {
+      check: null,
+      talk: { duration_minutes: 8 },
+      conversationBindings: {
+        max_contributions_per_exchange: 8,
+        fallback_policy: 'forbidden',
+        legacy_bounded_production_path: false,
+        contribution_minutes: 1
+      }
+    },
+    playerOperationContract: {},
+    playerConversationModel: async (request, ctx) => {
+      seen.push(ctx);
+      return playerPlan(request);
+    },
+    revalidateStateVersion: async () => 1,
+    npcSemanticModel: async () => {
+      throw Object.assign(new Error('stop-after-player'), { code: 'STOP' });
+    },
+    temporalAdvanceOwner: {
+      advance(working) {
+        return {
+          working_state: working,
+          elapsed_minutes: 0,
+          temporal_boundary_refs: [],
+          temporal_advance_results: []
+        };
+      }
+    }
+  });
+  // Duration + contribution-slots read playerPlan during setup; the
+  // conversationModel ternary must still take m2PlayerConversationModel.
+  let playerPlanReads = 0;
+  const setupPlan = {
+    activity: { duration_class: 'domain_owned' },
+    intended_addressee_refs: [{
+      entity_kind: 'npc', entity_id: 'npc_fisher_neighbor'
+    }]
+  };
+  const context = new Proxy(base, {
+    get(target, prop, receiver) {
+      if (prop === 'playerPlan') {
+        playerPlanReads += 1;
+        return playerPlanReads <= 2 ? setupPlan : undefined;
+      }
+      return Reflect.get(target, prop, receiver);
+    }
+  });
+  assert.equal(typeof m2PlayerConversationModel, 'function');
+  try {
+    await executeM2ConversationExchange(context);
+  } catch {
+    // Exchange may stop after player model; facets must already be captured.
+  }
+  assert.equal(seen.length >= 1, true);
+  assert.equal(seen[0].actor_facets.role_ref, 'nov_role_fisher');
+  assert.equal(seen[0].historical_events[0].event_id, 'event_m2_ex');
+  assert.equal(seen[0].clock.whole_minutes, '5');
 });

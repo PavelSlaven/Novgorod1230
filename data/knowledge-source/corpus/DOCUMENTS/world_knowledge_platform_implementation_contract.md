@@ -1020,7 +1020,10 @@ support и source-grounded QA. Они не подменяют историчес
 `social_law_economy` и не устанавливают состояние, мотив, знание, согласие,
 отношение, репутацию или обязанность конкретного actor. Claims этого слоя
 помечены `domain_internal_only`: actor-facing `conversation`/`narration` их
-не показывают, а `npc_decision` видит их как устройство мира (D15 / §14 / §67).
+не показывают; для `npc_decision` класс доступа не фильтрует (D15 / §14 / §67),
+а достижимость по purpose задают `coverage_profiles` (в production-v1 профили
+`psychology_behavior` / `social_behavior` не включают `npc_decision`, в
+production-v2 (#154) включают).
 Решения NPC и exact mechanics сохраняют прежних владельцев. Общие геологические,
 гидрологические и атмосферные premises используют отдельный universal profile
 существующего `environment`, не расширяя историческую применимость его

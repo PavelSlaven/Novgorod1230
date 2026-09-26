@@ -33,8 +33,14 @@ const byOcc = new Map(); occTools.forEach(r => { if (!byOcc.has(r.occupation_id)
 const unresolvedOccTools = occTools.filter(r => !tl.has(r.tl_id)).map(r => `${r.occupation_id}:${r.tl_id}`);
 add('occupation_tools_resolve', !unresolvedOccTools.length, unresolvedOccTools.join(',') || `${occTools.length} links resolve`);
 const rank = { A: 3, B: 2, C: 1, D: 0 };
-const overconfidentTools = tools.filter(t => t.source_refs === 'src:matcult-catalog-v1' && t.confidence !== 'C').map(t => t.tl_id);
-add('sole_matcult_tool_confidence', !overconfidentTools.length, overconfidentTools.join(',') || 'sole matcult source capped at C');
+const sourceConfidence = new Map(readCsv(P('sources/sources.csv')).map(s => [s.src_id, s.base_confidence]));
+const claims = JSON.parse(fs.readFileSync(path.join(L.NOVGOROD, 'world-knowledge', 'production-v1', 'runtime-bundle.json'), 'utf8')).claims;
+const claimConfidence = new Map(claims.map(c => [c.claim_ref, c.qualifiers.directness === 'direct' ? 'A' : c.qualifiers.directness === 'inferred' ? 'B' : 'C']));
+const overconfidentTools = tools.filter(t => {
+  const best = Math.max(...split(t.source_refs).map(r => rank[sourceConfidence.get(r) || claimConfidence.get(r)] ?? -1));
+  return (rank[t.confidence] ?? 99) > best;
+}).map(t => t.tl_id);
+add('tool_source_confidence', !overconfidentTools.length, overconfidentTools.join(',') || 'tools do not exceed their best source');
 const overconfidentLinks = occTools.filter(r => tl.has(r.tl_id) && (rank[r.confidence] ?? 99) > (rank[tl.get(r.tl_id).confidence] ?? -1)).map(r => `${r.occupation_id}:${r.tl_id}`);
 add('occupation_link_confidence', !overconfidentLinks.length, overconfidentLinks.join(',') || 'links do not exceed tool confidence');
 const approved = occRows.filter(o => /approved/i.test(o.status));

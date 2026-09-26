@@ -119,7 +119,13 @@ const minConf = (a, b) => {
   if (!a) return b; if (!b) return a;
   return (CONF_RANK[a] ?? 0) <= (CONF_RANK[b] ?? 0) ? a : b;
 };
-const toolConfidence = t => t[12] === 'src:matcult-catalog-v1' ? minConf(t[13], 'C') : t[13];
+const sourceConfidence = new Map(SOURCES.map(s => [s[0], s[4]]));
+const claimConfidence = new Map(JSON.parse(L.fs.readFileSync(path.join(L.NOVGOROD, 'world-knowledge', 'production-v1', 'runtime-bundle.json'), 'utf8')).claims.map(c =>
+  [c.claim_ref, c.qualifiers.directness === 'direct' ? 'A' : c.qualifiers.directness === 'inferred' ? 'B' : 'C']));
+const toolConfidence = t => {
+  const best = split(t[12]).map(r => sourceConfidence.get(r) || claimConfidence.get(r) || 'C').reduce((a, b) => CONF_RANK[a] >= CONF_RANK[b] ? a : b, 'D');
+  return minConf(t[13], best);
+};
 const toolMetaById = new Map(TOOLS.map(t => [t[0], { conf: toolConfidence(t), srcs: t[12] }]));
 const occToolRows = []; const toolOcc = new Map();
 for (const [occ, carried, wp, loc, conf, note] of OCC) {

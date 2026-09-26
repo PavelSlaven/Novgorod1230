@@ -59,9 +59,9 @@
       "detail": "356 links resolve"
     },
     {
-      "id": "sole_matcult_tool_confidence",
+      "id": "tool_source_confidence",
       "result": "PASS",
-      "detail": "sole matcult source capped at C"
+      "detail": "tools do not exceed their best source"
     },
     {
       "id": "occupation_link_confidence",

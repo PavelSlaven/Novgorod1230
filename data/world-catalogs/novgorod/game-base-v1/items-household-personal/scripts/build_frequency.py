@@ -123,7 +123,7 @@ def main():
             for lg in legacy:
                 if me.get(lg, {}).get("quantity_mode") in residue_units:
                     continue
-                wu = str(master[lg]["rec"].get("where_used") or "")
+                wu = re.sub(r"береговая рабочая зона", "", str(master[lg]["rec"].get("where_used") or ""), flags=re.I)
                 for rx, pfl, exrx in WHERE_KW:
                     if re.search(rx, wu, re.I) and not (exrx and re.search(exrx, wu, re.I)):
                         for pf in pfl:

@@ -37,7 +37,7 @@ export function createWorldKnowledgeCore(inputBundle) {
   const concepts = new Set(Object.keys(bundle.exact_indexes.concept_by_ref));
   const profiles = bundle.coverage_profiles;
   return Object.freeze({
-    resolveWorldKnowledge(query, { vectorScores = null } = {}) {
+    resolveWorldKnowledge(query, { vectorScores = null, rerankScores = null } = {}) {
       const validation = validateWorldKnowledgeQuery(query, bundle);
       if (!validation.ok) throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID', validation.errors.join('; '), { errors: validation.errors });
       if (vectorScores != null && (!(vectorScores instanceof Map)
@@ -48,10 +48,19 @@ export function createWorldKnowledgeCore(inputBundle) {
         throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID',
           'vector scores are invalid for this bundle');
       }
+      if (rerankScores != null && (!(rerankScores instanceof Map)
+          || [...rerankScores].some(([ref, score]) =>
+            (!claims.has(ref) && !concepts.has(ref))
+            || !Number.isFinite(score)))) {
+        throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID',
+          'rerank scores are invalid for this bundle');
+      }
       const normalized = structuredClone(query);
       normalized.context.conditions ??= {};
       return resolve(bundle, claims, profiles, normalized,
-        claimVectorScores(bundle, claims, vectorScores ?? new Map()));
+        claimVectorScores(bundle, claims, vectorScores ?? new Map()),
+        claimVectorScores(bundle, claims, rerankScores ?? new Map()),
+        rerankScores != null);
     }
   });
 }
@@ -88,7 +97,8 @@ export function validateWorldKnowledgeQuery(value, bundle) {
   return frozenValidation(errors);
 }
 
-function resolve(bundle, claimMap, profiles, query, vectorScores) {
+function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
+  useRerank) {
   const exactRefs = new Set();
   for (const ref of query.focus_refs) {
     if (claimMap.has(ref)) exactRefs.add(ref);
@@ -97,6 +107,8 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
   const lexicalScores = lexicalCandidates(bundle, query);
   const normalizedLexicalScores = normalizeScores(lexicalScores);
   const normalizedVectorScores = normalizeScores(vectorScores);
+  // Rerank scores reorder admitted candidates only; they do not expand recall.
+  const normalizedRerankScores = useRerank ? normalizeScores(rerankScores) : null;
   const candidateRefs = new Set([...exactRefs, ...lexicalScores.keys(),
     ...vectorScores.keys()]);
   if (query.requested_predicates.length) {
@@ -145,7 +157,7 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
   const admitted = allApplicable.filter((claim) => relevantRefs.has(claim.claim_ref)
     || relevantGroups.has(claim.conflict_group_ref))
     .sort((a, b) => compareClaims(a, b, query, exactRefs,
-      normalizedLexicalScores, normalizedVectorScores));
+      normalizedLexicalScores, normalizedVectorScores, normalizedRerankScores));
   const { selected: applicable, omittedConflictGroups } = packCandidates(admitted, query.budget.max_candidates);
 
   const coverage = query.domains.map((domain) => ({ domain, status: coverageStatus(domain, profiles, query) }));
@@ -168,6 +180,15 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
   const contextText = packContext({ coverage, hardConstraints: selectedHard, facts: selectedFacts, disputes, gaps }, query.budget.max_context_chars);
   // Orchestrator maps these hits into §63 sufficiency; not a model-facing field.
   const search_hint_hits = Object.freeze(hintScores.map(({ strongest }) => strongest > 0));
+  // Best topical score per hint among lexically matching applicable claims
+  // (rerank when gated on; else raw vector cosine). Used by §63 calibration.
+  const relevanceSource = useRerank ? rerankScores : vectorScores;
+  const search_hint_relevance = Object.freeze(hintScores.map(({ scores, strongest }) => {
+    if (strongest <= 0) return 0;
+    return Math.max(0, ...allApplicable.map((claim) =>
+      (scores.get(claim.claim_ref) ?? 0) > 0
+        ? (relevanceSource.get(claim.claim_ref) ?? 0) : 0));
+  }));
   return deepFreeze({
     schema: SLICE_SCHEMA,
     pack_ref: bundle.manifest.pack_ref,
@@ -184,6 +205,7 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
     evidence_fragments: [],
     context_text: contextText,
     search_hint_hits,
+    search_hint_relevance,
   });
 }
 

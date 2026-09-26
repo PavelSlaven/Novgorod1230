@@ -36,6 +36,12 @@
   сохраняет structured backlog из реальных traces и независимого premise audit;
   невалидный audit даёт blocked report и ненулевой exit code. Это development
   authoring, без runtime auditor, research, fact approval или corpus mutation.
+- internal deterministic WK audit **plan-mode** harness
+  (`src/wk-audit-plan-harness.js` + fixtures under `test/fixtures/wk-audit-plan`):
+  применяет fixture plans через Core без LLM/encoder; проверяет applicability /
+  knowledge_access. Live judge metrics — у владельца (CR #153 шаг 8).
+  Optional `src/bge-reranker.py` зарезервирован под D17; production enablement
+  за гейтом D21 (LW-053).
 
 ## Публичные интерфейсы
 

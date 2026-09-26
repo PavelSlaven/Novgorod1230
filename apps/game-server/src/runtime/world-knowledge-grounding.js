@@ -9,6 +9,7 @@ import { retrievalObservabilityOf } from './world-knowledge-retrieval-observabil
 import { cacheGrounded, modelSlice, noKnowledgeRequirement,
   worldKnowledgeNoNeedTrace, worldKnowledgeTrace } from
   './world-knowledge-grounding-trace.js';
+import { collectRerankScores } from './world-knowledge-reranker.js';
 const PURPOSES = new Set(['semantic_resolution', 'materialization_support',
   'npc_decision', 'conversation', 'narration']);
 export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
@@ -154,9 +155,27 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
               ?? 'VECTOR_RETRIEVAL_UNAVAILABLE')
           });
       }
+      const embeddingInput = effectivePlan.search_hints.length > 0
+        ? effectivePlan.search_hints.join('\n') : plannerRequest.semantic_input;
+      const candidates = [...vectorScores.keys()].map((ref) => {
+        const claim = bundle.claims.find((entry) => entry.claim_ref === ref);
+        const locale = effectivePlan.query_locale;
+        const text = claim?.localizations?.[locale]?.runtime_text
+          ?? claim?.localizations?.ru?.runtime_text
+          ?? claim?.localizations?.en?.runtime_text
+          ?? ref;
+        return { claim_ref: ref, text };
+      });
+      const rerankScores = await collectRerankScores({
+        profile: worldKnowledge.reranker_profile ?? null,
+        queryText: embeddingInput,
+        candidates,
+        scorePairs: worldKnowledge.reranker?.scorePairs ?? null,
+        telemetry
+      });
       const coreStarted = performance.now();
       const slice = worldKnowledge.core.resolveWorldKnowledge(query,
-        { vectorScores });
+        { vectorScores, ...(rerankScores ? { rerankScores } : {}) });
       const coreResolutionMs = Math.max(0, performance.now() - coreStarted);
       if (usedDefaultQuery
           && slice.facts.length === 0

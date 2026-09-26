@@ -23,6 +23,14 @@ export const MANAGED_RUNTIME_PINS = Object.freeze({
       Object.freeze({ file: 'tokenizer.json', size: 10_728_166,
         sha256: '0870f9c0f06a677f7e939e7765ae3a5d9582f2a6d7e7258176ecd1a3eab96cef' })
     ])
+  }),
+  // D21: pin present for optional provision; production_enabled stays false
+  // until owner-server p95 ≤ 150 ms and audit miss/noise improve (LW-053).
+  reranker: Object.freeze({
+    model: 'BAAI/bge-reranker-v2-m3',
+    revision: 'refs/pr/5',
+    profile_rel:
+      'data/world-catalogs/novgorod/world-knowledge/embedding-profiles/bge-reranker-v2-m3-v1.json'
   })
 });
 
@@ -32,6 +40,66 @@ export async function provisionManagedRuntime({ repositoryRoot = process.cwd(),
   const giga = await provisionGiga({ repositoryRoot, dataRoot, fetchImpl,
     command, log });
   return Object.freeze({ giga, async close() {} });
+}
+
+/** Optional: download reranker weights. Not called by default local-play
+ *  (D21 gate closed). Callers pass explicit provisionReranker when measuring. */
+export async function provisionReranker({ repositoryRoot = process.cwd(),
+  dataRoot = localDataRoot(), fetchImpl = fetch, command = spawnSync,
+  log = console.log } = {}) {
+  const { uv, python, reranker } = MANAGED_RUNTIME_PINS;
+  const downloads = join(dataRoot, 'cache', 'downloads');
+  const uvArchive = join(downloads, uv.file);
+  const uvDir = join(dataRoot, 'runtime', 'uv', uv.version);
+  const uvPath = join(uvDir, 'uv.exe');
+  if (!existsSync(uvPath)) {
+    await ensureArtifact({
+      url: `https://releases.astral.sh/github/uv/releases/download/${uv.version}/${uv.file}`,
+      path: uvArchive, sha256: uv.sha256, fetchImpl, log
+    });
+    await mkdir(uvDir, { recursive: true });
+    requireCommand(command('tar', ['-xf', uvArchive, '-C', uvDir],
+      { encoding: 'utf8', windowsHide: true, timeout: 60_000 }),
+    'LOCAL_RERANKER_UV_EXTRACT_FAILED', 'Не удалось распаковать managed uv.');
+  }
+  const pythonDir = join(dataRoot, 'runtime', 'python');
+  const managedPython = join(pythonDir,
+    `cpython-${python}-windows-x86_64-none`, 'python.exe');
+  const venvDir = join(dataRoot, 'runtime', 'reranker-python');
+  const pythonPath = join(venvDir, 'Scripts', 'python.exe');
+  const hfHome = join(dataRoot, 'cache', 'huggingface');
+  const managedEnv = { ...process.env, UV_PYTHON_INSTALL_DIR: pythonDir,
+    UV_CACHE_DIR: join(dataRoot, 'cache', 'uv'), HF_HOME: hfHome,
+    HF_HUB_DISABLE_SYMLINKS_WARNING: '1', PYTHONUTF8: '1' };
+  if (!existsSync(managedPython)) runChecked(command, uvPath,
+    ['python', 'install', python], managedEnv,
+    'LOCAL_RERANKER_PYTHON_INSTALL_FAILED');
+  if (!existsSync(pythonPath)) runChecked(command, uvPath,
+    ['venv', '--python', python, '--seed', venvDir], managedEnv,
+    'LOCAL_RERANKER_VENV_FAILED');
+  const requirements = resolve(repositoryRoot,
+    'tools/world-catalog-workflow/requirements-embeddings.txt');
+  const markerPath = join(venvDir, '.novgorod-requirements');
+  const marker = `${uv.version}\n${python}\n${await readFile(requirements, 'utf8')}`;
+  const currentMarker = await readFile(markerPath, 'utf8').catch(() => '');
+  if (currentMarker !== marker) {
+    runChecked(command, uvPath, ['pip', 'install', '--python', pythonPath,
+      '-r', requirements], managedEnv, 'LOCAL_RERANKER_DEPENDENCIES_FAILED',
+    30 * 60_000);
+    await writeFile(markerPath, marker, 'utf8');
+  }
+  const snapshot = join(dataRoot, 'models', 'reranker',
+    encodeURIComponent(reranker.revision));
+  if (!existsSync(join(snapshot, 'config.json'))) {
+    const hf = join(venvDir, 'Scripts', 'hf.exe');
+    runChecked(command, hf, ['download', reranker.model, '--revision',
+      reranker.revision, '--local-dir', snapshot], managedEnv,
+    'LOCAL_RERANKER_MODEL_DOWNLOAD_FAILED',
+    30 * 60_000);
+  }
+  return Object.freeze({ python: pythonPath, hfHome, modelPath: snapshot,
+    identity: Object.freeze({ model: reranker.model,
+      revision: reranker.revision, python, uv: uv.version }) });
 }
 
 export async function provisionGiga({ repositoryRoot = process.cwd(),

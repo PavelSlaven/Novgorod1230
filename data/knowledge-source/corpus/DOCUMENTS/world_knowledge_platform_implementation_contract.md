@@ -2134,10 +2134,20 @@ ANN/HNSW/vector DB добавляются только после measured laten
 7. full deterministic applicability
 8. conflict grouping
 9. deterministic ranking
+9b. optional external rerankScores (D17/D21) — only when production gate passes
 10. bounded packing
 ```
 
 Exact refs выше fuzzy retrieval.
+
+Переранжировщик не собирает кандидатов и не стоит между vector search и Core:
+game-server вызывает воркер и передаёт оценки в
+`resolveWorldKnowledge(query, { vectorScores, rerankScores })`. Core принимает
+`rerankScores` так же, как `vectorScores`, но они только переупорядочивают уже
+допущенных кандидатов (шаг между 9 и 10), не расширяют recall. Production-путь
+подключает реранк только после гейта D21 (уменьшение retrieval_miss и шума на
+наборе аудита **и** p95 ≤ 150 мс на сервере владельца); иначе путь остаётся
+гибридным Giga cosine (см. LW-053).
 
 ---
 
@@ -2532,14 +2542,17 @@ KNOWLEDGE_UNAVAILABLE
 verdict. Правила (CR #152 / REVIEW-033):
 
 - `SUFFICIENT_KNOWLEDGE` — все явные search hints нашли допущенный claim
-  (`search_hint_hits` / `strongest > 0`) и все запрошенные домены `covered`;
-  срез, полученный **default-запросом** §50 (планировщик вернул пустой план),
-  никогда не получает `SUFFICIENT_KNOWLEDGE` — максимум `PARTIAL_KNOWLEDGE`
-  (лексическое попадание ≠ относимость; калибровка порога — #153 шаг 8,
-  LW-047);
+  (`search_hint_hits` / `strongest > 0`), все запрошенные домены `covered`, и
+  для каждого hit topical relevance ≥ порога профиля
+  (`search_hint_relevance`: rerank score если гейт D21 пройден, иначе
+  Giga-cosine лучшего лексически совпавшего claim; профиль
+  `wk-sufficiency:giga-cosine:v1`, порог `min_hint_relevance`); срез из
+  **default-запроса** §50 никогда не получает `SUFFICIENT_KNOWLEDGE` —
+  максимум `PARTIAL_KNOWLEDGE` (LW-047 / LW-054);
 - `PARTIAL_KNOWLEDGE` — есть факты, hard constraints или disputes, но хотя бы
-  один hint не нашёл допущенный claim (`strongest === 0`), coverage хотя бы
-  одного домена `partial` / не `covered`, либо срез пришёл из default-запроса;
+  один hint не нашёл допущенный claim (`strongest === 0`), relevance ниже
+  порога, coverage хотя бы одного домена `partial` / не `covered`, либо срез
+  пришёл из default-запроса;
 - `UNRESOLVED_KNOWLEDGE` / `OUT_OF_SCOPE` — нет допущенного содержимого
   (facts/hard_constraints/disputes пусты); choice по coverage (`out_of_scope`
   vs иное);
@@ -2902,6 +2915,12 @@ Lexical retrieval после такой ошибки не вызывается. 
 публикует обычный безопасный HTTP error envelope; повтор turn после
 восстановления encoder проходит обычный idempotent flow. Отказ WK не создаёт
 state, idempotency, narration или отдельный failure ledger.
+
+Опциональный переранжировщик (D17) после прохождения гейта D21: недоступность
+процесса-реранкера или ошибка scoring — операционный откат к до-реранковому
+гибридному пулу (`vectorScores` без `rerankScores`) со счётчиком telemetry
+`world_knowledge_reranker_degradation_v1`. Это не factual unresolved и не
+`WORLD_KNOWLEDGE_UNAVAILABLE`.
 
 Repeated unresolved в declared production question class является authoring coverage defect и должен быть видим telemetry/eval.
 

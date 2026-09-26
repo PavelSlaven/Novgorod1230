@@ -571,7 +571,8 @@ test('B6 request.world_knowledge_authoritative is ignored (options only)', async
     },
     worldKnowledgeGrounder: {
       async ground(_request, purpose, authoritative) {
-        grounds.push({ purpose, role: authoritative?.actor_facets?.role_ref ?? null });
+        grounds.push({ purpose, role: authoritative?.actor_facets?.role_ref ?? null,
+          events: authoritative?.historical_events ?? null });
         return {
           ..._request,
           world_knowledge: {
@@ -602,6 +603,70 @@ test('B6 request.world_knowledge_authoritative is ignored (options only)', async
     }
   });
   assert.equal(grounds[0]?.role, 'nov_role_from_options');
+});
+
+test('M16 body-only world_knowledge_authoritative yields empty facets/events', async () => {
+  const grounds = [];
+  const service = createLowerDvinaTraceNarrationService({
+    roleRunner: {
+      async run(call) {
+        if (call.role_id === 'gameplay_narrator') {
+          return { output: { prose: 'Ты поднял сеть.' } };
+        }
+        if (call.role_id === 'gameplay_narrator_auditor') {
+          const body = JSON.parse(call.messages[1].content);
+          return {
+            output: {
+              reviewed_segments: body.segments.map((s) => s.segment_id),
+              source_reviews: [...body.required_current_beat.changes,
+                ...body.required_current_beat.uncertainties]
+                .map(({ ref }) => ({
+                  ref, segment_choices: [body.segments[0].segment_id]
+                })),
+              unsupported: [], literary_failures: [], evidence: ['ok']
+            }
+          };
+        }
+        return { output: {} };
+      }
+    },
+    worldKnowledgeGrounder: {
+      async ground(_request, purpose, authoritative) {
+        grounds.push({
+          purpose,
+          role: authoritative?.actor_facets?.role_ref ?? null,
+          events: authoritative?.historical_events ?? null,
+          facets: authoritative?.actor_facets ?? null
+        });
+        return {
+          ..._request,
+          world_knowledge: {
+            schema: 'world_knowledge_slice_v1', pack_ref: 'p', pack_revision: 'r',
+            coverage: [], hard_constraints: [], facts: [], disputes: [], gaps: []
+          }
+        };
+      }
+    }
+  });
+  // No options.worldKnowledgeAuthoritative — body channel must not feed grounder.
+  await service.run({
+    version: 1, schema: 'narration_request', request_id: 'n-m16-body',
+    surface: 'turn',
+    world_knowledge_authoritative: {
+      actor_facets: { role_ref: 'nov_role_from_request' },
+      historical_events: [{ event_id: 'evt_from_body' }], clock: null
+    },
+    visible_context: {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'Река.', visible_changes: ['Ты поднял сеть.'],
+      uncertainties: [], do_not_imply: [], allowed_tensions: [],
+      sensory_details: [], visible_objects: [], known_context: []
+    }
+  });
+  assert.equal(grounds.length, 1);
+  assert.equal(grounds[0].role, null);
+  assert.deepEqual(grounds[0].facets, {});
+  assert.deepEqual(grounds[0].events, []);
 });
 
 test('A4 TypeError from grounder is rethrown (no catch-all)', async () => {

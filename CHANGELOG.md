@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- feat(wk): #153 Part C D17/D21 — Core `rerankScores`, gated-off bge pin+provision, SUFFICIENT relevance floor, plan-mode harness in world-catalog-workflow, M16 body-only auth; §49/§63/§74; LW-053/054 (#153, PR #98)
 - fix(wk): #153 REVIEW-044 — createTraceTurnRuntime grounder+telemetry wire (B1/B5); provider-failure degrade §73 (B2); F4 post-commit reload (B3); §15 coverage_profiles text; M2b exchange facets; degradation schema (#153, PR #98)
 - fix(wk): #153 REVIEW-043 — m2 player WK factory+prepare test (A1); export v17 ports factory (A2); production grounder approved slice (A3); degradation telemetry+TypeError rethrow (A4); split purpose-access-b; §15 D15 align (#153, PR #98)
 - fix(wk): #153 REVIEW-042 — durable narrator options (N1); behavioral F4 wire tests; WK catch+trace (N3); F5 punct/ё; frozen collect-all + 3 fixtures; CONTRACT_INDEX §14/67/73/102; LW-049/052 (#153, PR #98) LW-049 updated LW-052 updated

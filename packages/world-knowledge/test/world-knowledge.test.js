@@ -231,6 +231,29 @@ test('vector recall does not tighten lexical admission when candidate budget has
   assert.equal(core.resolveWorldKnowledge(input, { vectorScores }).facts.length, 2);
 });
 
+test('optional rerankScores reorder admitted claims without expanding recall', () => {
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const source = bundle.claims[0];
+  const [alpha, beta] = ['claim:test:rerank-a', 'claim:test:rerank-b'];
+  bundle.claims.push(...[alpha, beta].map((claim_ref) => ({
+    ...structuredClone(source), claim_ref, applicability: { context_scope: 'universal' }
+  })));
+  bundle.lexical_indexes.en.alpha = [alpha];
+  bundle.lexical_indexes.en.beta = [beta];
+  const input = query({ domains: [source.domain], query_locale: 'en',
+    search_hints: ['alpha beta'],
+    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 7000 } });
+  const core = createWorldKnowledgeCore(bundle);
+  const vectorScores = new Map([[alpha, 0.9], [beta, 0.1]]);
+  const without = core.resolveWorldKnowledge(input, { vectorScores });
+  assert.equal(without.facts[0].claim_ref, alpha);
+  const rerankScores = new Map([[alpha, 0.1], [beta, 0.9]]);
+  const withRerank = core.resolveWorldKnowledge(input, { vectorScores, rerankScores });
+  assert.equal(withRerank.facts[0].claim_ref, beta);
+  assert.equal(withRerank.search_hint_relevance.length, 1);
+});
+
 test('coverage, operational availability and actor knowledge are distinct', () => {
   assert.throws(() => createWorldKnowledgeCore(null), (error) => error instanceof WorldKnowledgeError && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE');
   const invalidBundle = structuredClone(baseBundle);

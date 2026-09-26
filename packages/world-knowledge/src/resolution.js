@@ -172,9 +172,16 @@ function scopeMatches(scope, context) {
 }
 
 export function compareClaims(a, b, query, exactRefs, lexicalScores,
-  vectorScores = new Map()) {
-  const relevance = (claim) => (lexicalScores.get(claim.claim_ref) ?? 0)
-    + (vectorScores.get(claim.claim_ref) ?? 0);
+  vectorScores = new Map(), rerankScores = null) {
+  // Optional §49 step between ranking and packing: when rerankScores are
+  // present for a claim they replace lexical+vector for that claim only.
+  const relevance = (claim) => {
+    if (rerankScores != null && rerankScores.has(claim.claim_ref)) {
+      return rerankScores.get(claim.claim_ref) ?? 0;
+    }
+    return (lexicalScores.get(claim.claim_ref) ?? 0)
+      + (vectorScores.get(claim.claim_ref) ?? 0);
+  };
   return Number(Boolean(b.hard_exclusion?.eligible)) - Number(Boolean(a.hard_exclusion?.eligible))
     || Number(exactRefs.has(b.claim_ref)) - Number(exactRefs.has(a.claim_ref))
     || Number(query.requested_predicates.includes(b.predicate)) - Number(query.requested_predicates.includes(a.predicate))

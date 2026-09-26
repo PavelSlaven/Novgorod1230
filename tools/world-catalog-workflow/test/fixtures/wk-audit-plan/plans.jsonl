@@ -1,0 +1,3 @@
+{"id":"plan-access-dio","query_locale":"ru","domains":["craft_technology"],"focus_refs":["claim:ordinary-life-smith-anvil-hammer-tongs"],"search_hints":["наковальня"]}
+{"id":"plan-access-role","query_locale":"ru","domains":["material_culture"],"focus_refs":["claim:population-bark-bast"],"search_hints":["лыко"]}
+{"id":"plan-semantic-ok","query_locale":"ru","domains":["craft_technology"],"focus_refs":["claim:ordinary-life-smith-anvil-hammer-tongs"],"search_hints":["наковальня","кузнец"]}

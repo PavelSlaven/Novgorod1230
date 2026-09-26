@@ -10,6 +10,8 @@ import { ensureArtifact, MANAGED_RUNTIME_PINS } from
 
 test('managed runtime owns Giga only and has no gameplay-model artifacts', () => {
   assert.equal('giga' in MANAGED_RUNTIME_PINS, true);
+  assert.equal('reranker' in MANAGED_RUNTIME_PINS, true);
+  assert.equal(MANAGED_RUNTIME_PINS.reranker.model, 'BAAI/bge-reranker-v2-m3');
   assert.equal('gemma' in MANAGED_RUNTIME_PINS, false);
   assert.equal('llama' in MANAGED_RUNTIME_PINS, false);
 });

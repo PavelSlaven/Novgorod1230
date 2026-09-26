@@ -10,7 +10,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 454
+        "line_end": 519
       }
     },
     {
@@ -182,6 +182,18 @@
       }
     },
     {
+      "id": "canonical-document:universal-category-classification-policy",
+      "type": "canonical_document",
+      "label": "universal_category_classification_policy.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/universal_category_classification_policy.md",
+      "source_location": {
+        "file": "universal_category_classification_policy.md",
+        "line_start": 1,
+        "line_end": 1269
+      }
+    },
+    {
       "id": "canonical-document:world-base-materialization-table-requirements",
       "type": "canonical_document",
       "label": "world_base_materialization_table_requirements.md",
@@ -190,7 +202,7 @@
       "source_location": {
         "file": "world_base_materialization_table_requirements.md",
         "line_start": 1,
-        "line_end": 378
+        "line_end": 401
       }
     },
     {

@@ -89,6 +89,7 @@ Contract Auditor не копирует весь generated module index сюда 
 | [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |
 | [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |
 | [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |
+| [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `ACTIVE` | универсальные категории и фасеты; presence-правила только на иерархический фасет домена (`object_type` / `container_form`); [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146), PC §9.1 |
 
 Active status applies only to the scope stated by each header and active profile. Exact schema/operation names must be verified against current code and tests.
 
@@ -98,8 +99,7 @@ Active status applies only to the scope stated by each header and active profile
 |---|---|---|
 | [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Default gameplay model — exact `qwen3.8-27b-uncensored-w4a16-tp2` через настроенный пользователем OpenAI-compatible vLLM endpoint; managed gameplay provider и fallback отсутствуют. Readiness, persistence и UI принадлежат game-server/game-web/local-play MODULE owners. Runtime wiring spatial-v3 production v16 активирован как sole production owner и определяется actual release/binding. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |
 | [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) | `PROPOSED UMBRELLA TARGET` | не active как единый контракт; активированные profile semantics берутся из их actual cutover/bindings/active contracts/code/tests, а не из старого umbrella snapshot |
-| [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `PROPOSED` | не доказывает наличие DDL, profiles, validators или runtime capability |
-| [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE FOR PROPOSED POLICY` | источники/обоснования proposed classification policy |
+| [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE` | источники/обоснования ACTIVE classification policy |
 | [`read_only_database_and_graph_architecture.md`](read_only_database_and_graph_architecture.md) | `MIGRATION / ROLLBACK` | materialization v2; active owner — Spatial v3 specialization |
 | [`map_g0_g4_workflow.txt`](map_g0_g4_workflow.txt) | `MIGRATION / ROLLBACK` | прежний G0–G4 workflow; active owner — Spatial v3 compatibility workflow |
 | [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | explicit exception to filename heuristics |
@@ -154,15 +154,15 @@ An undeclared guide may still be relevant, but it must not silently override an 
 |---|---|
 | Player semantic action / LLM | `turn_step_llm_contract.md`, relevant operation schemas, `@rus/turn` MODULE, affected domain contract |
 | Production LLM provider/configuration | `turn_step_llm_contract.md`, `@rus/llm-runtime` MODULE, game-server settings/transport owner, game-web and local-play MODULEs; selected provider must reach every registered gameplay role without fallback |
-| Authored materialization | `code_driven_world_materialization_architecture.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |
-| Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |
+| Authored materialization | `code_driven_world_materialization_architecture.md` (в т.ч. раздел о наличии), `universal_category_classification_policy.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |
+| Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, `code_driven_world_materialization_architecture.md` (наличие при первом прибытии/открытии), `universal_category_classification_policy.md`, `world_base_materialization_table_requirements.md` (presence-правила), active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |
 | Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |
 | NPC agency | `npc_autonomous_decision_contract.md`, `turn_step_llm_contract.md`, temporal/perception owners |
 | Conversation | NPC autonomous + `npc_conversation_mode_contract.md` + speech/perception/time contracts |
 | Combat | `npc_combat_and_trigger_contract.md`, `combat_system.md`, NPC autonomous, items/body/time owners |
 | Time/activities/processes | `temporal_world_and_interruptible_activities.md`, relevant time/world-process MODULEs, persistence contract/schema |
 | DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |
-| Historical/knowledge grounding | active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |
+| Historical/knowledge grounding | `universal_category_classification_policy.md`, active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |
 | World Knowledge | `world_knowledge_platform_implementation_contract.md`, active WK pack/profile/bindings, `@rus/world-knowledge` and affected consumer MODULEs |
 | Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |
 

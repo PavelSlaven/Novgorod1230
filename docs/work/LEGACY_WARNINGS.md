@@ -184,9 +184,9 @@
 - **Как жить.** Правка этого tool меняет new-game: кандидаты NPC и предметов, шаблоны G5, упаковку снаряжения. Гонять `test:domain` и профильные тесты стадий 7, 8, 13, 16.
 
 ### LW-039 — обрезанные документы корпуса
-- **Что.** 4 документа нормативного корпуса содержат буквальный маркер «…tokens truncated…»: в `universal_category_classification_policy.md` потеряны разделы 10–11.4 (ландшафт, вода, землепользование, животные); в `formulas.md`, `base_turn_orchestration.txt` и `movement_locations_regions.txt` повреждены архивные приложения v2. Целая копия политики — `data/knowledge-source/imports/universal-category-classification-2026-07-15/`.
-- **Как жить.** До восстановления разделы 10–11.4 политики читать из импорта только как справку: не как норму и не как вход materializer. Восстановление — CR норм M2c через CORPUS_EDIT.
-- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
+- **Что.** В `universal_category_classification_policy.md` разделы 10–11.4 восстановлены (#146 шаг 1). Остаются маркеры «…tokens truncated…» в архивных приложениях v2 у `formulas.md`, `base_turn_orchestration.txt` и `movement_locations_regions.txt` (вынос — шаг 4 #146).
+- **Как жить.** Политику категорий читать из корпуса (ACTIVE). Обрезанные архивные приложения v2 не использовать как норму; восстановление/вынос — #146 шаг 4.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
 
 ### LW-040 — README world_base пишет 201 таблиц (ветка PR #98)
 - **Что.** `infra/world-base/README.md` всё ещё говорит «201 таблиц»; фактические `EXPECTED_TABLE_COUNT`, CI `table_count` и `SCHEMA_REFERENCE` — **208** (`01.sql`–`26.sql`).

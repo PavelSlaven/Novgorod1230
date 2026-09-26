@@ -116,6 +116,8 @@ Generic registry для доменов, не имеющих собственно
 
 ## 5. Региональные NPC-профили
 
+Линия production NPC authoring для Spatial v3 — `spatial_v3_npc_*` (v3-спецификация). Таблицы `region_npc_*` ниже — legacy/migration слой и не отменяют v3-спецификацию.
+
 Сохраняются и постепенно нормализуются `region_social_roles`, `region_occupations`, `region_npc_generation_rules`, `region_npc_knowledge` и `region_material_culture`.
 
 Новые таблицы:
@@ -187,11 +189,32 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 
 ## 8. G4-specific materialization rules
 
+Разделы `g4_*_materialization_rules` ниже — v2 rollback-источник. Они не являются носителем presence/limit уровня типа места для M2c (ключ v2 — конкретный `graph_node_id`).
+
 - `g4_npc_materialization_rules` связывает G4/profile с допустимыми NPC profile sets, количеством, временем, причиной присутствия и ресурсом/маршрутом.
 - `g4_item_materialization_rules` связывает slots с item profile sets, количеством, economic basis, ownership и NPC dependency.
 - `g4_container_materialization_rules` связывает slots с container/content/property profiles и access/controller conditions.
 
 Любая ссылка на G4, profile, template или category нормализуется. Conditions могут быть JSONB только как versioned expression, не содержащий скрытых ID.
+
+### 8.1. Таблица правил наличия (M2c authoring)
+
+Требуется тонкая authoring-таблица у materialization owner (имя — DDL CR реализации) со столбцами:
+
+| Поле | Смысл |
+|---|---|
+| `world_revision_id` | ревизия authoring |
+| `scope_kind` | `landscape_template` / `place_template` / `scene_template` / `container_template` |
+| `scope_ref` | id шаблона scope |
+| `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |
+| `category_id` | категория hierarchical presence-фасета (`object_type` / `container_form` / …) |
+| `presence_probability_ppm` | целое 0…1_000_000 |
+| `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |
+| `allowed_seasons` | закрытый словарь сезонов календаря |
+| `refresh_class` | `none` (default) или `by_year_season` |
+| `rule_version` / `status` | версия и approval status правила |
+
+Семантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.
 
 ## 9. Bounded decision data
 
@@ -373,6 +396,6 @@ Runtime loader восстанавливает только membership данно
 все record/table/root digests и compatible world tuple. Live authoring rows и
 текущий active event не могут подменить historical catalog существующей партии.
 
-## 15. Критерий повышения в active
+## 15. Статус документа
 
-Технический норматив повышается вместе с основным архитектурным документом только после синхронизации DDL, generated schema reference, schemas/contracts, importer/readiness checks, party persistence и PASS отдельного критика.
+Этот документ уже `ACTIVE` (общий authoring/readiness слой; production table-purpose — Spatial v3 specialization, см. C-006). Устаревший «критерий повышения в active» удалён: повышение статуса не повторяется. Новые таблицы presence-правил входят через DDL/importer CR реализации M2c и Contract Auditor.

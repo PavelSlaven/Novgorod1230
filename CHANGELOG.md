@@ -4,6 +4,7 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(corpus): #146 шаг 1 — политика категорий ACTIVE (восстановлены §10–11.4), нормы наличия в `code_driven` §3A и world-base presence-таблица; CONTRACT_INDEX §4/§5/§8.1 (#146, PR #98) LW-039 updated
 - feat(knowledge-source): lexical-only normative RAG; status/priority_tier from CONTRACT_INDEX; `reference` + `reference_results`; independent norm/reference search; drop semantic CLI/readiness fields; CONTRACT_INDEX §5 label align to `ACTIVE SPECIALIZATION` (owner acceptance pending) (#144, PR #150) LW-008 updated
 - docs(governance): решения владельца 2026-09-26 — PC §9.1 (наличие решается при первом прибытии; typed gap только для вещей по authority-записи; опознавательный текст вещей не от LLM), WR §21.1 (утверждает старшая модель на высоком reasoning; путь и commit; правка снимает утверждение); HOW_WE_WORK и CURRENT_SPRINT по ним; LW-029 уточнён (#149) LW-042 added
 - fix(test): тестовый `docker run` несёт метку pid владельца (`testContainerLabel()`); контейнеры убитых прогонов удаляет следующий Docker-тест; страж #142 требует метку (#147, PR #148)

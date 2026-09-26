@@ -67,18 +67,31 @@ def main():
     # --- frequency
     pfs = load_place_families()
     ipf = read_csv(ITEMS / "item_place_frequency.csv")
-    residues = {r["item_id"] for r in read_csv(ME / "material_entities.csv") if r["quantity_mode"] == "portion_or_local_accumulation"}
+    residues = {r["item_id"] for r in read_csv(ME / "material_entities.csv")
+                if r["entity_kind"] in {"fragment", "residue", "deposit", "waste", "byproduct"}}
     residue_links = {r["link_id"] for r in read_csv(ME / "item_location_links.csv") if r["item_id"] in residues}
     residue_refs = {f"master_link:{x}" for x in residue_links} | {f"master_where_used:{x}" for x in residues}
     it_ids = {r["it_id"] for r in items}
     fail = []
     per_pf = defaultdict(set)
     per_pf_it = defaultdict(set)
+    seen_ipf = set()
+    seen_pairs = set()
+    catalog_pairs = {(r["item_or_category_ref"], r["pf_id"]) for r in ipf if r["ref_kind"] == "it"}
     for r in ipf:
+        pair = (r["item_or_category_ref"], r["pf_id"])
+        if r["ipf_id"] in seen_ipf or pair in seen_pairs:
+            fail.append(f"{r['ipf_id']}: duplicate item in place family")
+        seen_ipf.add(r["ipf_id"])
+        seen_pairs.add(pair)
+        if r["ref_kind"] == "master" and (r["superseded_by"], r["pf_id"]) in catalog_pairs:
+            fail.append(f"{r['ipf_id']}: same object duplicated by catalog item")
         if r["pf_id"] not in pfs:
             fail.append(f"{r['ipf_id']}: pf unresolved")
         if r["frequency_class"] not in R.FREQ_WEIGHT:
             fail.append(f"{r['ipf_id']}: class")
+        if r["status"] != "candidate":
+            fail.append(f"{r['ipf_id']}: status must remain candidate")
         if r["ref_kind"] == "it" and r["item_or_category_ref"] not in it_ids:
             fail.append(f"{r['ipf_id']}: item unresolved")
         if r["ref_kind"] == "master" and not r["item_or_category_ref"].startswith("n1230:material_item:"):
@@ -87,6 +100,12 @@ def main():
             fail.append(f"{r['ipf_id']}: composed place must stay rare/C")
         if r["ref_kind"] == "it" and residue_refs.intersection(split(r["source_refs"])):
             fail.append(f"{r['ipf_id']}: residue used as whole-item evidence")
+        if r["ref_kind"] == "master" and r["item_or_category_ref"].rsplit(":", 1)[-1].upper() in residues:
+            fail.append(f"{r['ipf_id']}: archaeological trace materialized as item")
+        if r["entry_visible_if"] != "placed_exposed" or r["search_only_if"] != "placed_concealed":
+            fail.append(f"{r['ipf_id']}: entry visibility and targeted search must be separate")
+        if r["wild_arrival_cause_required"] != ("prior_visitor_loss_or_discard" if r["pf_class"] == "wild" else ""):
+            fail.append(f"{r['ipf_id']}: wild arrival cause missing or misplaced")
         if r["item_or_category_ref"] == "it_hh_oven_peel" and r["pf_id"] in {"road", "bridge_crossing", "town_wall_edge"}:
             fail.append(f"{r['ipf_id']}: oven peel leaked from 'походный быт' into a public route")
         per_pf[r["pf_id"]].add(r["item_or_category_ref"])
@@ -178,6 +197,8 @@ def main():
         for f in v["failures"][:15]:
             print("   ", f)
     print(json.dumps(counts, ensure_ascii=False))
+    if any(not v["pass"] for v in res.values()):
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

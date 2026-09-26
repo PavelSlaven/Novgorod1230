@@ -25,6 +25,7 @@ WHERE_KW = [
 # R_LOSS_DOWNGRADE: a use-context frequency class (how often the item is in use/stored) does not
 # describe how often it turns up lost/dropped in a wild place; stated rule: drop two classes.
 LOSS_DOWN = {"ubiquitous": "contextual", "common": "rare", "contextual": "rare", "rare": "rare"}
+ARCHAEOLOGICAL_KINDS = {"fragment", "residue", "deposit", "waste", "byproduct"}
 # R_RESIDUAL_RARE_DATING: items whose own source basis dates them mostly before/declining by 1230
 # (see VERIFICATION.md items/personal.csv & household.csv notes) are capped at rare in frequency,
 # regardless of what master links/spawn profiles would otherwise imply for 1230.
@@ -89,6 +90,8 @@ def main():
         m = master.get(legacy)
         if not m:
             return "item not in master canonical material_items"
+        if m["rec"].get("entity_kind") in ARCHAEOLOGICAL_KINDS:
+            return f"archaeological trace, not a live-scene item ({m['rec']['entity_kind']})"
         if m["conf"] not in ("A", "B", "C"):
             return f"master historical_confidence {m['conf']} (D or missing)"
         pol = me.get(legacy, {}).get("generation_policy") or m["rec"].get("generation_policy", "")
@@ -121,7 +124,7 @@ def main():
                     a["fanout"] = a.get("fanout", False) or len(R.ARCH_PF[arch]) > 1
         if not acc:
             for lg in legacy:
-                if me.get(lg, {}).get("quantity_mode") in residue_units:
+                if excluded(lg) or me.get(lg, {}).get("quantity_mode") in residue_units:
                     continue
                 wu = re.sub(r"береговая рабочая зона", "", str(master[lg]["rec"].get("where_used") or ""), flags=re.I)
                 for rx, pfl, exrx in WHERE_KW:
@@ -160,6 +163,8 @@ def main():
                 "count_limit_rule": f"{it['quantity_unit']}:max 1 instance-group per first-arrival roll; place totals capped by place_generation_limits",
                 "allowed_seasons": "winter;spring;summer;autumn", "refresh_class": "none",
                 "find_context": ctx, "owner_rule_ref": ctx_owner, "derivation_rule": rule,
+                "entry_visible_if": "placed_exposed", "search_only_if": "placed_concealed",
+                "wild_arrival_cause_required": "prior_visitor_loss_or_discard" if cls_pf == "wild" else "",
                 "wk_check": f"pf in WK place-first-cartography; item WK refs: {len(split(it['wk_refs']))}",
                 "superseded_by": "", "source_refs": ";".join(basis[:20]) + (f";+{len(basis)-20} more" if len(basis) > 20 else ""),
                 "confidence": conf, "status": "candidate",
@@ -203,6 +208,8 @@ def main():
             "count_limit_rule": f"{me.get(lg, {}).get('quantity_mode') or 'single_object'}:max 1 instance-group per first-arrival roll; place totals capped by place_generation_limits",
             "allowed_seasons": "winter;spring;summer;autumn", "refresh_class": "none", "find_context": ctx,
             "owner_rule_ref": R.own_id(pf, ctx, "all" if ctx == "loose_dropped" else grp),
+            "entry_visible_if": "placed_exposed", "search_only_if": "placed_concealed",
+            "wild_arrival_cause_required": "prior_visitor_loss_or_discard" if cls_pf == "wild" else "",
             "derivation_rule": rule, "wk_check": "pf in WK place-first-cartography; item not WK-checked (master candidate)",
             "superseded_by": link_superseded.get(lg, ""), "source_refs": ";".join(f"master_link:{x}" for x in a["links"][:6]),
             "confidence": max(m["conf"], "C" if a["fanout"] else "B"), "status": "candidate",
@@ -225,6 +232,7 @@ def main():
         r.update({"ipf_id": f"{prefix}{ref_short}__{pf}", "pf_id": pf, "pf_class": cls_pf, "frequency_class": cls,
                   "weight": R.FREQ_WEIGHT[cls], "find_context": ctx,
                   "owner_rule_ref": R.own_id(pf, ctx, "all" if ctx == "loose_dropped" else src_row["item_group"]),
+                  "wild_arrival_cause_required": "prior_visitor_loss_or_discard" if cls_pf == "wild" else "",
                   "derivation_rule": rule, "source_refs": basis, "confidence": "C"})
         extra.append(r)
 
@@ -265,6 +273,8 @@ def main():
             if r["pf_id"] in srcs and r["ref_kind"] == "it":
                 add(r, pf, "rare", "R_WK_COMPOSES", f"wk_composes:{r['pf_id']}->{pf};transferred_or_lost")
     rows += extra
+    catalog_pairs = {(r["item_or_category_ref"], r["pf_id"]) for r in rows if r["ref_kind"] == "it"}
+    rows = [r for r in rows if r["ref_kind"] != "master" or (r["superseded_by"], r["pf_id"]) not in catalog_pairs]
     fields = list(rows[0])
     n = write_csv(ITEMS / "item_place_frequency.csv", rows, fields)
     write_csv(REPORTS / "frequency_dropped.csv", dropped, ["link_id", "item_id", "location_archetype", "spawn_frequency", "reason"])

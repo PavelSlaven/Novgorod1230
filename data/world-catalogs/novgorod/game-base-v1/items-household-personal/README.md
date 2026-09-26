@@ -12,14 +12,14 @@
 | `item_categories.csv` | → category_registry | 160 | Категории `cat_item_object_<code>_v1`: 39 уже есть в v5 (draft), 121 предложены новыми. Категории универсальные (`category_scope=universal`), регион даёт только разрешение (`region_permission=region_novgorod_land`) |
 | `mass_policy.csv` | общий | 6 | Полосы массы tiny…bulky с границами и значением по умолчанию |
 | `condition_vocab.csv` | общий | 11 | Состояния по семейству материала со ссылками на WK claims о поведении материала |
-| `item_place_frequency.csv` | item_place_frequency | 18 427 | 1 807 строк для вещей каталога (`ref_kind=it`) и 16 620 строк для всей базы master (`ref_kind=master`) |
+| `item_place_frequency.csv` | item_place_frequency | 12 527 | 1 709 строк для вещей каталога (`ref_kind=it`) и 10 818 строк для master (`ref_kind=master`) |
 | `archetype_pf_map.csv` | item_place_frequency | 32 | Как типы мест master переводятся в семейства мест WK: 28 переводятся, 4 отброшены с причиной |
 | `ownership_rules.csv` | item_ownership_rules | 1 614 | Правило владельца для пары place_family × контекст находки × группа вещей, плюс одно правило для носимого |
 | `recognizers.csv` | item_ownership_rules | 28 | Кто может узнать вещь: по виду владельца и по различимости примет |
 | `mark_pools.csv` | item_marks_text_pools | 86 | Приметы семи видов: owner_sign 5, maker_mark 6, ornament 17, repair 14, wear 17, damage 15, inscription 12 (пересчитано скриптом по `mark_pools.csv`) |
 | `identifying_text_pools.csv` | item_marks_text_pools | 18 | Пулы опознавательного текста: 17 candidate и 1 исключён как анахронизм |
 
-Отчёты (`reports/`): `validation.json` (приёмка всех доменов), `counts.json` (счёты), `frequency_dropped.csv` (1 371 отброшенная связь master с причиной), `build_*_errors.txt`.
+Отчёты (`reports/`): `validation.json` (приёмка всех доменов), `counts.json` (счёты), `frequency_dropped.csv` (4 828 отброшенных связей master с причиной), `build_*_errors.txt`.
 
 Все числа выше посчитаны скриптами (`reports/counts.json`).
 
@@ -48,6 +48,9 @@ python build_items.py && python build_marks.py && python build_ownership.py && p
 
   Скрипт проверяет, что номинал лежит внутри полосы. Собственных измерений нет.
 - **Частота.** Классы ubiquitous/common/contextual/rare переводятся в веса 8/4/2/1 по политике каталога. Правила вывода указаны в каждой строке (`derivation_rule`); когда строку правит больше одного правила, столбец несёт составное имя (`+R_...`), а не только имя правила, задавшего первую запись:
+  - `frequency_class` и `weight` описывают только возможное присутствие вещи. `entry_visible_if=placed_exposed` разрешает показать уже размещённую открытую вещь при первом входе; `search_only_if=placed_concealed` разрешает обнаружить уже размещённую скрытую вещь лишь целевым поиском/обыском. Эти условия выбираются по фактическому размещению экземпляра; строка частоты сама по себе не гарантирует видимость и не создаёт второй экземпляр для другого способа обнаружения.
+  - В `pf_class=wild` рукотворная вещь допустима лишь после установленной причины `wild_arrival_cause_required=prior_visitor_loss_or_discard`: прежний посетитель потерял или оставил вещь именно здесь. Само `R_LOSS_DOWNGRADE` уменьшает класс и не свидетельствует о таком событии. Без причины вещь не создаётся, несмотря на строку частоты.
+  - Археологические `fragment`, `residue`, `deposit`, `waste`, `byproduct` исключены из предметов живой сцены; их связи не доказывают наличие целой вещи. Если master-вещь уже представлена вещью каталога в том же pf, остаётся одна строка каталога.
   - `R_MASTER_LINK`: связь master `item_location_links`, класс master. Если связей несколько, берётся максимальный класс по паре (вещь, pf), и `derivation_rule` указывает именно то правило (`R_MASTER_LINK` или `R_SPAWN_PROFILE`), которое дало этот максимум.
   - `R_SPAWN_PROFILE`: вхождение в `spawn_profiles` master. canonical и common дают common, contextual даёт contextual.
   - `R_WHERE_USED_TEXT`: ключевые слова в `where_used` master, за вычетом заявленных исключений (например, «двор» не считается для «Немецкого/Готского двора» и «купеческого двора»; общая фраза «береговая рабочая зона» не доказывает рыбацкий лагерь или берег для вещи любой группы). Класс contextual, confidence C.
@@ -120,7 +123,7 @@ python build_items.py && python build_marks.py && python build_ownership.py && p
 3. **Стройплощадка и военный лагерь** не имеют семейства мест в WK: 829 связей отброшены. Это пробел для `place_families`. Лодка и повозка переданы доменам `containers_contents` и `transport_travel`.
 4. **Качество правил частоты.**
    - `R_WHERE_USED_TEXT` (436 строк для вещей каталога) и `R_WK_COMPOSES` (694 для вещей каталога, источники — реальный `composes_with` целевого pf в WK) — грубые правила с confidence C.
-   - `R_LOSS_DOWNGRADE`: класс master/каталога в диком месте описывает употребление, а не потерю; правило понижает класс на два шага для находки там (см. «Исправления 2026-09-26»).
+   - `R_LOSS_DOWNGRADE`: класс master/каталога в диком месте описывает употребление, а не потерю; правило понижает класс на два шага, но не служит причиной появления вещи.
    - Классы master (`item_location_links`) — кандидаты, которые владелец переоткрыл. Каждая связь с археологией не сверялась.
 5. **Масса.** Масса у 121 новой категории задана полосой, не измерением. Масса v5 — редакционная политика.
 6. **Проверка источников.**

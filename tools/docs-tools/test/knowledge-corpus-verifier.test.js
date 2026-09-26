@@ -9,9 +9,9 @@ import { repinCanonicalCorpus } from '../src/knowledge-corpus-repin.js';
 
 const repositoryRoot = join(import.meta.dirname, '../../..');
 const requiredNormatives = [
-  ['development-rules', 'development_rules.txt', 'active'],
+  ['development-rules', 'development_rules.txt', 'reference'],
   ['map-g0-g4-workflow', 'map_g0_g4_workflow.txt', 'deprecated'],
-  ['base-turn-orchestration', 'base_turn_orchestration.txt', 'active'],
+  ['base-turn-orchestration', 'base_turn_orchestration.txt', 'reference'],
   ['read-only-database-and-graph-architecture', 'read_only_database_and_graph_architecture.md', 'deprecated'],
   ['code-driven-world-materialization-architecture', 'code_driven_world_materialization_architecture.md', 'active'],
   ['contract-index', 'CONTRACT_INDEX.md', 'active'],
@@ -38,6 +38,7 @@ async function fixture({ corrupt = false } = {}) {
       sha256: corrupt && fileName === 'native.md' ? '0'.repeat(64) : createHash('sha256').update(bytes).digest('hex'),
       bytes: bytes.length,
       status: 'active',
+      priority_tier: 'technical_contract',
       ...(legacyPath ? { source_legacy_path: legacyPath } : {})
     });
   }
@@ -50,6 +51,24 @@ async function fixture({ corrupt = false } = {}) {
   await writeFile(join(source, 'source-aliases.json'), `${JSON.stringify({
     schema_version: 'rus.knowledge_source_aliases.v1',
     aliases: { 'legacy.txt': 'legacy', 'native.md': 'native' }
+  }, null, 2)}\n`);
+  const manifestBytes = await readFile(join(source, 'corpus-manifest.json'));
+  await writeFile(join(source, 'retrieval-policy.json'), `${JSON.stringify({
+    schema_version: 'rus.knowledge_retrieval_policy.v1',
+    policy_version: '1.0.0',
+    baseline_manifest_sha256: createHash('sha256').update(manifestBytes).digest('hex'),
+    default_statuses: ['active', 'reference'],
+    documents: documents.map((record) => ({
+      document_id: record.document_id,
+      document_type: 'technical_contract',
+      subsystems: ['test'],
+      related_document_ids: documents.filter((item) => item.document_id !== record.document_id).map((item) => item.document_id),
+      related_module_paths: [],
+      related_contracts: [],
+      search_terms: [record.document_id],
+      conflicts_with_document_ids: []
+    })),
+    control_queries: [{ query_id: 'q', query: 'native', expected_document_ids: ['native'], top_k: 3 }]
   }, null, 2)}\n`);
   return root;
 }
@@ -70,7 +89,11 @@ test('accepts canonical documents without legacy provenance', async () => {
 
 test('accepts proposed documents but reports them separately', async () => {
   const root = await fixture();
-  await mutateJson(root, 'corpus-manifest.json', (manifest) => { manifest.documents[1].status = 'proposed'; });
+  await mutateJson(root, 'corpus-manifest.json', (manifest) => { manifest.documents[1].status = 'proposed'; manifest.documents[1].priority_tier = 'proposed'; });
+  const manifestBytes = await readFile(join(root, 'data/knowledge-source/corpus-manifest.json'));
+  await mutateJson(root, 'retrieval-policy.json', (policy) => {
+    policy.baseline_manifest_sha256 = createHash('sha256').update(manifestBytes).digest('hex');
+  });
   const result = await verifyCanonicalCorpus({ root });
   assert.equal(result.ok, true, result.errors.join('\n'));
   assert.equal(result.active_document_count, 1);

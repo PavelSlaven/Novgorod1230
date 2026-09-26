@@ -1,333 +1,237 @@
 {
   "schema_version": "rus.knowledge_rag_manifest.v1",
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
-  "generation_mode": "approved_semantic_snapshot_plus_deterministic_lexical_coverage",
+  "generation_mode": "deterministic_lexical_coverage",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "6845f358d52768de240cb4971cb7f67f16f7a910f9052463c0cc4eb0d20d97b7",
-  "corpus_hash": "573a8568c1ad39c4411dd0dacb283b532c5a794efa3a77044bdda3269f501aa2",
-  "source_snapshot": "data/knowledge-source/imports/rag/index.json",
-  "source_snapshot_sha256": "b89d573dd6c3fec6c9e42eca8ba629475098a3ba96b147d9a205ae4e37bc383e",
-  "semantic_index": "generated/knowledge-source/rag/index.json",
-  "semantic_index_sha256": "90b5ced51daf4b5b3d2d1c502e8f23df62ef8fcb0213eeece5badaab2bfffcc0",
+  "corpus_manifest_sha256": "b861935ae8d7df61f5bb6a106dbcd6508e187a43462a3cdee82677c1792b2aaa",
+  "corpus_hash": "e90d7e23f8c9e6bc30cf898997965fada81e95d71e1377e3fcdbd418c5e8ea31",
   "lexical_index": "generated/knowledge-source/rag/lexical-index.json",
-  "lexical_index_sha256": "5434fa0c21ca61bb4f583ae418b95dcbff7917b1b2f1d781de3643e6858cb7fc",
+  "lexical_index_sha256": "a454ffc12d50b3d610325c3f80330dfb39eb380a484be7cd06d9b5094e90673f",
   "registered_document_count": 44,
   "source_document_count": 44,
-  "active_document_count": 39,
-  "semantic_document_count": 2,
-  "lexical_only_document_count": 42,
-  "semantic_chunk_count": 44,
-  "lexical_chunk_count": 2812,
-  "model": "jina-embeddings-v3",
-  "dimensions": 1024,
+  "active_document_count": 17,
+  "lexical_document_count": 44,
+  "lexical_chunk_count": 2856,
   "coverage": [
     {
       "document_id": "base-turn-orchestration",
       "file_name": "base_turn_orchestration.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "character-inventory-equipment",
       "file_name": "character_inventory_equipment.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "character-parameters",
       "file_name": "character_parameters.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "code-critic-invocation-rule",
       "file_name": "code_critic_invocation_rule.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "code-driven-world-materialization-architecture",
       "file_name": "code_driven_world_materialization_architecture.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "combat-system",
       "file_name": "combat_system.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "contract-index",
       "file_name": "CONTRACT_INDEX.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "development-rules",
       "file_name": "development_rules.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "documentation-corpus-readme",
       "file_name": "README.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "formulas",
       "file_name": "formulas.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "g1-g5-generation-rules",
       "file_name": "g1_g5_generation_rules.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "historical-events-and-figures",
       "file_name": "historical_events_and_figures.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "information-sources-llm-prompts",
       "file_name": "information_sources_llm_prompts.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "interface-ux",
       "file_name": "interface_ux.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "items-and-property",
       "file_name": "items_and_property.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "llm-agent-prompt-templates",
       "file_name": "llm_agent_prompt_templates.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "llm-documentation-navigation",
       "file_name": "llm_documentation_navigation.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "map-g0-g4-workflow",
       "file_name": "map_g0_g4_workflow.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "movement-locations-regions",
       "file_name": "movement_locations_regions.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "new-game-start-pipeline",
       "file_name": "new_game_start_pipeline.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "npc-autonomous-decision-contract",
       "file_name": "npc_autonomous_decision_contract.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "npc-combat-and-trigger-contract",
       "file_name": "npc_combat_and_trigger_contract.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "npc-conversation-mode-contract",
       "file_name": "npc_conversation_mode_contract.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "npc-generation-profiles",
       "file_name": "npc_generation_profiles.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "npc-inventory-item-marks",
       "file_name": "npc_inventory_item_marks.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "player-character-generation",
       "file_name": "player_character_generation.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "read-only-database-and-graph-architecture",
       "file_name": "read_only_database_and_graph_architecture.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "semantic-world-actions-materialization-and-processes-contract",
       "file_name": "semantic_world_actions_materialization_and_processes_contract.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "situational-prose-requirements",
       "file_name": "situational_prose_requirements.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "spatial-architecture-standard-g0-g6",
       "file_name": "spatial_architecture_standard_g0_g6.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",
       "file_name": "spatial_v3_target_code_driven_world_materialization_architecture.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "spatial-v3-target-map-g0-g4-workflow",
       "file_name": "spatial_v3_target_map_g0_g4_workflow.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "spatial-v3-target-read-only-database-and-graph-architecture",
       "file_name": "spatial_v3_target_read_only_database_and_graph_architecture.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "spatial-v3-target-world-base-materialization-table-requirements",
       "file_name": "spatial_v3_target_world_base_materialization_table_requirements.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "temporal-world-and-interruptible-activities",
       "file_name": "temporal_world_and_interruptible_activities.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "time-system",
       "file_name": "time_system.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "turn-step-llm-contract",
       "file_name": "turn_step_llm_contract.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "universal-category-classification-policy",
       "file_name": "universal_category_classification_policy.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "universal-category-classification-references",
       "file_name": "universal_category_classification_references.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "weapons-and-armor",
       "file_name": "weapons_and_armor.txt",
-      "lexical_indexed": false,
-      "semantic_indexed": true,
-      "semantic_reason": "approved_embedding_snapshot"
+      "lexical_indexed": true
     },
     {
       "document_id": "world-base-materialization-table-requirements",
       "file_name": "world_base_materialization_table_requirements.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "world-generation-and-turns",
       "file_name": "world_generation_and_turns.txt",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "world-knowledge-platform-implementation-contract",
       "file_name": "world_knowledge_platform_implementation_contract.md",
-      "lexical_indexed": true,
-      "semantic_indexed": false,
-      "semantic_reason": "approved_embedding_absent"
+      "lexical_indexed": true
     },
     {
       "document_id": "world-regions",
       "file_name": "world_regions.txt",
-      "lexical_indexed": false,
-      "semantic_indexed": true,
-      "semantic_reason": "approved_embedding_snapshot"
+      "lexical_indexed": true
     }
   ]
 }

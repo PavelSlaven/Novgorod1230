@@ -4,7 +4,16 @@ const PRIORITY_WEIGHT = Object.freeze({
   development_process_normative: 45,
   technical_contract: 40,
   navigation: 25,
+  proposed: 20,
   reference: 15
+});
+
+// Status rank: proposed below active; reference/deprecated stay out of mixed norm ranking (#144 REVIEW-014).
+const STATUS_RANK = Object.freeze({
+  active: 40,
+  proposed: 30,
+  reference: 20,
+  deprecated: 10
 });
 
 const STOP_WORDS = new Set([
@@ -25,25 +34,28 @@ export function rankKnowledgeChunks({ query, chunks, documentsByFile, metadataBy
     if (!document) continue;
     const metadata = metadataById.get(document.document_id);
     if (!metadata) continue;
-    const score = scoreChunk({ chunk, metadata, queryTokens, normalizedQuery });
+    const score = scoreChunk({ chunk, document, metadata, queryTokens, normalizedQuery });
     if (score <= 0) continue;
     scored.push({ chunk, document, metadata, score });
   }
   scored.sort((left, right) =>
+    statusRank(right.document.status) - statusRank(left.document.status) ||
     right.score - left.score ||
-    priorityWeight(right.metadata.priority_tier) - priorityWeight(left.metadata.priority_tier) ||
+    priorityWeight(right.document.priority_tier) - priorityWeight(left.document.priority_tier) ||
     String(left.document.document_id).localeCompare(String(right.document.document_id)) ||
     String(left.chunk.id).localeCompare(String(right.chunk.id))
   );
+  // limit null/Infinity = full ranked list (reference_results dedupe-before-slice; REVIEW-016).
+  if (limit == null || limit === Infinity) return scored;
   return scored.slice(0, normalizeLimit(limit));
 }
 
-function scoreChunk({ chunk, metadata, queryTokens, normalizedQuery }) {
+function scoreChunk({ chunk, document, metadata, queryTokens, normalizedQuery }) {
   const text = normalize(chunk.text);
   const section = normalize(chunk.section);
   const terms = normalize((metadata.search_terms ?? []).join(' '));
   const subsystem = normalize((metadata.subsystems ?? []).join(' '));
-  let score = priorityWeight(metadata.priority_tier);
+  let score = priorityWeight(document.priority_tier);
   if (text.includes(normalizedQuery)) score += 240;
   if (section.includes(normalizedQuery)) score += 280;
   if (terms.includes(normalizedQuery)) score += 220;
@@ -80,6 +92,10 @@ function countOccurrences(text, token) {
 
 function priorityWeight(value) {
   return PRIORITY_WEIGHT[value] ?? 0;
+}
+
+function statusRank(value) {
+  return STATUS_RANK[value] ?? 0;
 }
 
 function normalizeLimit(value) {

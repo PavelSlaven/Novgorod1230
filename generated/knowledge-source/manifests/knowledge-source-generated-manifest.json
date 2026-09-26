@@ -5,23 +5,23 @@
   "files": [
     {
       "path": "generated/knowledge-source/graph/GRAPH_REPORT.md",
-      "sha256": "ad72baa1da5941601af87fac4bb889c83fa948230022e779b6173799c58e9dcd",
-      "bytes": 489
+      "sha256": "db77121f7229ab94ab2bc35f594d834cfdf5a3c075ec06e03e717ba83c28fb2a",
+      "bytes": 367
     },
     {
       "path": "generated/knowledge-source/graph/graph.html",
-      "sha256": "67d25d52f6bed450c29d6b9ec57a867297a4ab7b2f35b3cc614f611269af21a8",
-      "bytes": 233
+      "sha256": "5854339c16ad758444b5afc3b6debd574d93dcaca39e840eeaaaa9234a9653d2",
+      "bytes": 219
     },
     {
       "path": "generated/knowledge-source/graph/graph.json",
-      "sha256": "f248c41df1f277847b7fbbf8a6fefe79c7ceaca0378ca495700e7e3955e8645c",
-      "bytes": 957762
+      "sha256": "3901eea0916491f6d46cb06a25681d7a6d93541426a6d28bfed6c8ec63b29129",
+      "bytes": 7421
     },
     {
       "path": "generated/knowledge-source/graph/manifest.json",
-      "sha256": "c23deaf97372f70dccd9ae5813b08bd056b01bb37d401041101486a3266f1d29",
-      "bytes": 820
+      "sha256": "27172e61c8aa0b4380b285b74add02fd964c1904a80245e5a5c05654f8a5eadb",
+      "bytes": 591
     },
     {
       "path": "generated/knowledge-source/manifests/inventory.json",
@@ -29,19 +29,14 @@
       "bytes": 9212
     },
     {
-      "path": "generated/knowledge-source/rag/index.json",
-      "sha256": "90b5ced51daf4b5b3d2d1c502e8f23df62ef8fcb0213eeece5badaab2bfffcc0",
-      "bytes": 1002175
-    },
-    {
       "path": "generated/knowledge-source/rag/lexical-index.json",
-      "sha256": "5434fa0c21ca61bb4f583ae418b95dcbff7917b1b2f1d781de3643e6858cb7fc",
-      "bytes": 3312998
+      "sha256": "a454ffc12d50b3d610325c3f80330dfb39eb380a484be7cd06d9b5094e90673f",
+      "bytes": 3394351
     },
     {
       "path": "generated/knowledge-source/rag/manifest.json",
-      "sha256": "0740446aa75bf87ee8cb215bdaf00f15f4367163bebac75f1d01eb45f4c94212",
-      "bytes": 11854
+      "sha256": "1b3c563c4a8d8f853dfaa9adffae5d393cfc243a2d512aaf34751472a718b28e",
+      "bytes": 7543
     }
   ]
 }

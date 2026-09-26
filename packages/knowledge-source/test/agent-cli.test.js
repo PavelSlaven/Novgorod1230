@@ -1,17 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '../../..');
 const cli = resolve(root, 'packages/knowledge-source/src/cli.js');
-const retrievalPolicy = JSON.parse(readFileSync(resolve(root, 'data/knowledge-source/retrieval-policy.json'), 'utf8'));
-const corpusManifest = JSON.parse(readFileSync(resolve(root, 'data/knowledge-source/corpus-manifest.json'), 'utf8'));
-const activeDocumentIds = new Set(corpusManifest.documents.filter((document) => document.status === 'active').map((document) => document.document_id));
-const baselineGapCount = retrievalPolicy.documents
-  .filter((document) => activeDocumentIds.has(document.document_id) && document.semantic_coverage_disposition === 'baseline_gap')
-  .length;
 
 function runCli(args) {
   return spawnSync(process.execPath, [cli, ...args], {
@@ -28,8 +21,8 @@ function parseJson(result) {
 test('status returns machine-readable RAG readiness', () => {
   const result = parseJson(runCli(['status', '--root', root]));
   assert.equal(result.schema_version, 'rus.knowledge_rag_readiness.v1');
-  assert.equal(result.status, 'degraded');
-  assert.equal(result.semantic_coverage_gap_document_ids.length, baselineGapCount);
+  assert.equal(result.status, 'ready');
+  assert.equal(Object.hasOwn(result, 'semantic_coverage_gap_document_ids'), false);
 });
 
 test('query returns ranked chunks with provenance', () => {
@@ -62,10 +55,11 @@ test('read accepts query line ranges and sections, rejecting unknown sections', 
     '--section', '1. Обязательный порядок чтения']));
   assert.match(section.text, /## 1\. Обязательный порядок чтения/u);
   const headinglessQuery = parseJson(runCli(['query', '--root', root, '--query', 'генерация',
-    '--document-ids', 'g1-g5-generation-rules', '--limit', '1']));
-  const headinglessHit = headinglessQuery.results[0];
+    '--statuses', 'reference', '--document-ids', 'g1-g5-generation-rules', '--limit', '1']));
+  const headinglessHit = headinglessQuery.reference_results[0] ?? headinglessQuery.results[0];
+  assert.ok(headinglessHit, 'reference query must return a hit');
   const headinglessSection = parseJson(runCli(['read', '--root', root, '--document-id', headinglessHit.document_id,
-    '--section', headinglessHit.section]));
+    '--statuses', 'reference', '--section', headinglessHit.section]));
   assert.equal(headinglessSection.source_sha256, headinglessHit.source_sha256);
   const unknown = runCli(['read', '--root', root, '--document-id', 'contract-index', '--section', 'нет такого раздела']);
   assert.equal(unknown.status, 1);
@@ -84,7 +78,7 @@ test('active-only query excludes proposed classification policy while explicit s
   const activeOnly = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'active']));
   assert.ok(activeOnly.results.every((item) => item.document_id !== 'universal-category-classification-policy'));
 
-  const explicit = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'active,proposed']));
+  const explicit = parseJson(runCli(['query', '--root', root, '--query', query, '--statuses', 'proposed', '--limit', '5']));
   assert.ok(explicit.results.some((item) => item.document_id === 'universal-category-classification-policy'));
   assert.equal(
     explicit.results.find((item) => item.document_id === 'universal-category-classification-policy').status,

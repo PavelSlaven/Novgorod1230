@@ -135,10 +135,10 @@ Release: `0.23.0-migration.24`
 
 | Path | Type | Bytes | SHA-256 |
 |---|---:|---:|---|
-| `schemas/knowledge-source/corpus-manifest.schema.json` | json | 1487 | `1584e4b2fd950d30c5a5f37691fa70dfeaf1c661dbcf73aae45cedb0fea1dd1e` |
-| `schemas/knowledge-source/graph-manifest.schema.json` | json | 1076 | `b1a7a96fffec9843630415c5e6b456f58f50ab5be97be1c1bd86232874fda4ca` |
+| `schemas/knowledge-source/corpus-manifest.schema.json` | json | 2428 | `69bf9a69cc9050cb2af1a42ebd036f0746ef60efc14bad5139d5627f87eddc7b` |
+| `schemas/knowledge-source/graph-manifest.schema.json` | json | 1339 | `21338115b735b891b91c469c2c9d2aca8853bf885848d79ac9b5fb2935c29025` |
 | `schemas/knowledge-source/import-history.schema.json` | json | 1047 | `b608e70c982acee2df00aac19c9a72ed557966e8e9ba83756c6d202053aeaef7` |
-| `schemas/knowledge-source/rag-manifest.schema.json` | json | 1154 | `a02253c557403a0b9e021611692fda448c74011f8e2a255341ebdefa27fb190d` |
+| `schemas/knowledge-source/rag-manifest.schema.json` | json | 1525 | `b59135e6022063c7d40dfe46cc5c3990bdd89887936232cccf926abe694d7c3b` |
 | `schemas/knowledge-source/source-aliases.schema.json` | json | 413 | `ae253bb3e5a0030d67835dc8b965dc2450b3486abaecb87921e7186ff09ad90f` |
 | `schemas/materialization/approved-g5-template-bundle-v2.schema.json` | json | 4898 | `00e44ab46395bdb8923ffa717c208c7fa301171342515febd9256b97c9b4866f` |
 | `schemas/materialization/bounded-decision-request-v2.schema.json` | json | 1960 | `440a5b0d3b48859f53a35b652ff3d33f75c7512332a0ece2c04ef01b213f2568` |

@@ -1,7 +1,16 @@
 import { knowledgeSourceError } from '../errors.js';
 
 const SCHEMA = 'rus.knowledge_corpus_manifest.v2';
-const DOCUMENT_STATUSES = new Set(['proposed', 'active', 'deprecated']);
+const DOCUMENT_STATUSES = new Set(['proposed', 'active', 'reference', 'deprecated']);
+const PRIORITY_TIERS = new Set([
+  'highest_materialization_normative',
+  'profile_normative',
+  'development_process_normative',
+  'technical_contract',
+  'navigation',
+  'proposed',
+  'reference'
+]);
 
 export function validateCorpusManifest(value) {
   if (!value || typeof value !== 'object' || value.schema_version !== SCHEMA || !Array.isArray(value.documents)) {
@@ -37,6 +46,10 @@ function normalizeDocument(item, index, ids, paths) {
   if (!DOCUMENT_STATUSES.has(status)) {
     throw knowledgeSourceError('MANIFEST_INVALID', `Invalid status for ${documentId}: ${status}.`);
   }
+  const priorityTier = requiredText(item.priority_tier, `documents[${index}].priority_tier`);
+  if (!PRIORITY_TIERS.has(priorityTier)) {
+    throw knowledgeSourceError('MANIFEST_INVALID', `Invalid priority_tier for ${documentId}: ${priorityTier}.`);
+  }
   const sourceLegacyPath = optionalText(item.source_legacy_path);
   const provenanceMode = optionalText(item.provenance_mode) || (sourceLegacyPath ? 'legacy_mirror' : 'native');
   if (!['native', 'legacy_mirror', 'canonicalized_from_legacy'].includes(provenanceMode)) {
@@ -59,6 +72,7 @@ function normalizeDocument(item, index, ids, paths) {
     sha256: digest,
     bytes,
     status,
+    priority_tier: priorityTier,
     provenance_mode: provenanceMode,
     source_legacy_path: sourceLegacyPath,
     source_legacy_sha256: sourceLegacySha256,

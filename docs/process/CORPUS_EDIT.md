@@ -31,16 +31,22 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
 
 1. **Правка** документа. Перед ней — `rg` по имени файла в [LEGACY_WARNINGS](../work/LEGACY_WARNINGS.md) и в
    списке закреплённых фраз ниже.
-2. **`npm run knowledge:repin`.** Для `native` пересчитывает `sha256`/`bytes` в
-   [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json), закрепляет SHA-256 новых байтов
-   manifest в [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json) и вызывает
-   `docs:generate`. Изменённый документ с legacy provenance требует отдельной процедуры выше; команда
-   останавливается без переписывания его записи. Generated вручную не править (KSP «Изменение корпуса»).
-3. **Проверки:** `knowledge:check-corpus`, `knowledge:check`, `knowledge:controls`, `knowledge:status`,
+2. **CONTRACT_INDEX** — обновить в том же PR, если документ создан, повышен, переименован, перемещён, заменён или
+   существенно изменён (CONTRACT_INDEX §10). Сам индекс — `native`-документ: его правка идёт по этим же шагам.
+   Строка в CONTRACT_INDEX должна существовать **до** `knowledge:repin`: иначе repin остановится с понятной ошибкой CLI.
+3. **`npm run knowledge:repin`.** Для `native` пересчитывает `sha256`/`bytes` в
+   [corpus-manifest.json](../../data/knowledge-source/corpus-manifest.json), выводит `status` и
+   `priority_tier` из [CONTRACT_INDEX](../../data/knowledge-source/corpus/DOCUMENTS/CONTRACT_INDEX.md)
+   (`active` / `proposed` / `reference` / `deprecated`; см. KSP и LW-008),
+   пишет канонический `default_statuses` = `["active","reference"]` в
+   [retrieval-policy.json](../../data/knowledge-source/retrieval-policy.json) (без `priority_tier` в policy),
+   закрепляет SHA-256 manifest в policy baseline и вызывает `docs:generate`. Изменённый документ с legacy
+   provenance требует отдельной процедуры выше; команда останавливается без переписывания его записи.
+   Generated вручную не править (KSP «Изменение корпуса»). Ручная правка `status`/`priority_tier` в manifest
+   или `default_statuses`/`priority_tier` в policy запрещена: `knowledge:check` падает.
+4. **Проверки:** `knowledge:check-corpus`, `knowledge:check`, `knowledge:controls`, `knowledge:status`,
    `temporal-v4:check-docs` (baseline на 21bd0938 — `conflict_count: 0`), `docs:check`, `test:knowledge-source`, `test:tools`, `git diff --check`.
    Полный `npm test` — в CI (AGENTS §24).
-4. **CONTRACT_INDEX** — обновить в том же PR, если документ создан, повышен, переименован, перемещён, заменён или
-   существенно изменён (CONTRACT_INDEX §10). Сам индекс — `native`-документ: его правка идёт по этим же шагам.
 5. **Коммит generated** вместе с правкой: CI делает `git diff --exit-code -- generated/ …` после `docs:generate`
    ([test.yml](../../.github/workflows/test.yml)).
 
@@ -48,10 +54,9 @@ node -e "const m=require('./data/knowledge-source/corpus-manifest.json');for(con
 
 - **L29** требует при изменении документа «полного regression и аудита критика». Практически это: полный
   `npm test` как merge gate в CI (AGENTS §24) + Contract Auditor по AGENTS §25.1.
-- **L39** (решение владельца 2026-09-23, #115): изменённый существующий active-документ без обновлённого
-  semantic snapshot сохраняет `semantic_coverage_disposition: baseline_gap`; новый active-документ без
-  утверждённого embedding получает `required_before_merge`, если snapshot не обновляется в том же PR.
-  `required_before_merge` блокирует RAG readiness (`packages/knowledge-source/src/services/rag-reader.js`).
+- RAG корпуса — лексический: после `knowledge:repin` / `knowledge:generate` новый или изменённый
+  active-документ получает lexical chunks и не блокирует `knowledge:status` отсутствием embedding
+  (`docs/architecture/KNOWLEDGE_SOURCE_POLICY.md`, «RAG-готовность»).
 
 ## Закреплённые фразы и байты
 

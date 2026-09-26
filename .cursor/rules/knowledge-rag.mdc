@@ -16,4 +16,4 @@ npm run knowledge:read -- --document-id <document_id>
 
 Use the result to locate the relevant source document, then verify the requirement in the relevant sections of that document; read it whole only when you edit it or it is the contract of a high-risk change. Do not query or read the whole normative corpus for small local, documentation-only, formatting, or mechanical tasks.
 
-Default retrieval is `active` only. Access `proposed` or `deprecated` documents only when the task explicitly requires them.
+Default retrieval is `active` and `reference`. Norms land in `results`; guides land in `reference_results` (up to 3). Access `proposed` or `deprecated` documents only when the task explicitly requires them.

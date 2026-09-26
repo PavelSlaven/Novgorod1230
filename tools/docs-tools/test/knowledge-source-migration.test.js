@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { basename, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import {
   importKnowledgeSourceFromLegacy,
   readKnowledgeSourceInventory,
@@ -16,11 +16,6 @@ const root = resolve(import.meta.dirname, '../../..');
 
 async function readCorpusManifest() {
   return JSON.parse(await readFile(resolve(root, 'data/knowledge-source/corpus-manifest.json'), 'utf8'));
-}
-
-async function readSemanticGraphFiles() {
-  const graph = JSON.parse(await readFile(resolve(root, 'data/knowledge-source/imports/graph/graph.json'), 'utf8'));
-  return new Set((graph.nodes ?? []).map((node) => basename(String(node?.source_location?.file ?? node?.sourceLocation?.file ?? node?.source_file ?? ''))).filter(Boolean));
 }
 
 test('stored legacy DOCUMENTS inventory exactly covers manifest legacy records', async () => {
@@ -53,34 +48,29 @@ test('migrated corpus and generated provenance verify without requiring legacy',
   assert.equal(result.rag.current, true);
 });
 
-test('graph and RAG materializers are deterministic and preserve approved semantic coverage', async () => {
+test('graph and RAG materializers are deterministic and lexical-only', async () => {
   const manifest = await readCorpusManifest();
   const activeDocuments = manifest.documents.filter((record) => record.status === 'active');
   const ragA = await buildRagIndexFromSnapshot({ root });
-  const expectedStructuralOnlyCount = activeDocuments.length - ragA.manifest.semantic_document_count;
   const graphA = await buildKnowledgeGraphFromSnapshot({ root });
   const graphB = await buildKnowledgeGraphFromSnapshot({ root });
   assert.equal(JSON.stringify(graphA), JSON.stringify(graphB));
   assert.equal(graphA.manifest.registered_document_count, manifest.documents.length);
   assert.equal(graphA.manifest.source_document_count, activeDocuments.length);
-  assert.equal(graphA.manifest.structural_only_document_count, expectedStructuralOnlyCount);
+  assert.equal(graphA.manifest.structural_only_document_count, activeDocuments.length);
+  assert.equal(graphA.graph.nodes.filter((node) => node.structural_only === true).length, activeDocuments.length);
+  assert.equal(graphA.graph.links.length, 0);
 
   const ragB = await buildRagIndexFromSnapshot({ root });
   assert.equal(JSON.stringify(ragA), JSON.stringify(ragB));
   assert.equal(ragA.manifest.registered_document_count, manifest.documents.length);
   assert.equal(ragA.manifest.source_document_count, manifest.documents.length);
   assert.equal(ragA.manifest.active_document_count, activeDocuments.length);
-  assert.ok(ragA.manifest.semantic_document_count > 0);
-  assert.ok(ragA.manifest.semantic_document_count < 19);
-  assert.equal(ragA.manifest.lexical_only_document_count, manifest.documents.length - ragA.manifest.semantic_document_count);
+  assert.equal(ragA.manifest.lexical_document_count, manifest.documents.length);
   assert.equal(ragA.manifest.coverage.length, manifest.documents.length);
-  assert.equal(ragA.index.chunk_count, ragA.index.chunks.length);
   assert.ok(ragA.lexical_index.chunk_count > 0);
   assert.equal(ragA.lexical_index.chunks.some((chunk) => Object.hasOwn(chunk, 'embedding')), false);
-
-  const legacyManifest = JSON.parse(await readFile(resolve(root, 'legacy/DOCUMENTS/documents-kg/rag-index/manifest.json'), 'utf8'));
-  assert.notEqual(ragA.manifest.corpus_root, legacyManifest.corpus_dir);
-  assert.equal(ragA.manifest.corpus_root, 'data/knowledge-source/corpus/DOCUMENTS');
+  assert.equal(Object.hasOwn(ragA, 'index'), false);
 });
 
 test('public knowledge writer uses the v2 structural and lexical materializer', { concurrency: false }, async () => {
@@ -98,7 +88,6 @@ test('public knowledge writer uses the v2 structural and lexical materializer', 
     'generated/knowledge-source/graph/manifest.json',
     'generated/knowledge-source/manifests/inventory.json',
     'generated/knowledge-source/manifests/knowledge-source-generated-manifest.json',
-    'generated/knowledge-source/rag/index.json',
     'generated/knowledge-source/rag/lexical-index.json',
     'generated/knowledge-source/rag/manifest.json'
   ]);
@@ -106,14 +95,11 @@ test('public knowledge writer uses the v2 structural and lexical materializer', 
   const graph = JSON.parse(await readFile(resolve(fixtureRoot, 'generated/knowledge-source/graph/graph.json'), 'utf8'));
   const ragManifest = JSON.parse(await readFile(resolve(fixtureRoot, 'generated/knowledge-source/rag/manifest.json'), 'utf8'));
   const lexicalIndex = JSON.parse(await readFile(resolve(fixtureRoot, 'generated/knowledge-source/rag/lexical-index.json'), 'utf8'));
-  const expectedLexicalOnlyCount = manifest.documents.length - ragManifest.semantic_document_count;
-  const expectedStructuralOnlyCount = activeDocuments.length - ragManifest.semantic_document_count;
-  assert.equal(graph.nodes.filter((node) => node.structural_only === true).length, expectedStructuralOnlyCount);
-  assert.ok(ragManifest.semantic_document_count > 0);
-  assert.ok(ragManifest.semantic_document_count < 19);
+  assert.equal(graph.nodes.filter((node) => node.structural_only === true).length, activeDocuments.length);
+  assert.equal(ragManifest.lexical_document_count, manifest.documents.length);
   assert.equal(ragManifest.source_document_count, manifest.documents.length);
   assert.equal(ragManifest.active_document_count, activeDocuments.length);
-  assert.equal(ragManifest.lexical_only_document_count, expectedLexicalOnlyCount);
+  assert.equal(Object.hasOwn(ragManifest, 'semantic_document_count'), false);
   assert.equal(lexicalIndex.chunk_count, lexicalIndex.chunks.length);
   assert.ok(lexicalIndex.chunk_count > 0);
   assert.equal(lexicalIndex.chunks.some((chunk) => Object.hasOwn(chunk, 'embedding')), false);

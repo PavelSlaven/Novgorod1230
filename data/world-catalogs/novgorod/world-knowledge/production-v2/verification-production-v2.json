@@ -6778,6 +6778,37 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-v2-famine-frost-vozdvizhenie-damaged-grain",
+      "claim_ref": "claim:v2-famine-frost-vozdvizhenie-damaged-grain",
+      "claim_digest": "6a30aa80382115d70fec153615cb098b93ca361b4017a21c1b123c3c77fed37a",
+      "candidate_ref": "git:b0c32185ad1b8d6e5b0be8a21a2e7425bc3a370d:data/world-catalogs/novgorod/world-knowledge/production-v2/v2-famine-1230.json#claim:v2-famine-frost-vozdvizhenie-damaged-grain",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F-famine",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:v2-famine-ekzemplyarsky-frost-quote",
+        "evidence:v2-famine-pogodin-frost-price-quote"
+      ],
+      "review_ref": "verification/verification-production-v2-F-famine.md#F-famine",
+      "verdict": "APPROVE",
+      "limits": "Открывается только после начала события novgorod_famine_1230 (14.09.1230); говорит лишь о морозе на Воздвиженье, побитой ози и росте цен — не о размере цен, море, голодной еде или исходе."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-v2-famine-great-distress-after-frost",
+      "claim_ref": "claim:v2-famine-great-distress-after-frost",
+      "claim_digest": "95e90f255912193dd43c41b688413803eedbd11cd7f571716211687f6dd7b87e",
+      "candidate_ref": "git:b0c32185ad1b8d6e5b0be8a21a2e7425bc3a370d:data/world-catalogs/novgorod/world-knowledge/production-v2/v2-famine-1230.json#claim:v2-famine-great-distress-after-frost",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F-famine",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:v2-famine-karpov-opening-prices-quote"
+      ],
+      "review_ref": "verification/verification-production-v2-F-famine.md#F-famine",
+      "verdict": "APPROVE",
+      "limits": "Открывается только после начала события novgorod_famine_1230; только горе и страх голодной зимы — без смертей, разбегания людей и цен."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-v2-g1-annual-interest-cap-ten-kun-per-grivna",
       "claim_ref": "claim:v2-g1-annual-interest-cap-ten-kun-per-grivna",
       "claim_digest": "9f34b4a90b8ba4183fc571a0fb9d82d6f6874afa80533d029f003201f7944986",

@@ -210,3 +210,18 @@ build.py детерминирован для всех файлов, кроме `
 
 - Добавлен `buildings/sf_pf_crosswalk.csv`: 73 авторские связи `sf_*` → PF и 16 явных `no_source`; все строки `candidate`.
 - `python -B scripts/build.py` и `python -B scripts/validate.py`: PASS, 0 ошибок, 41 прежнее предупреждение о названиях landmarks. Валидатор проверяет все 44 полных `pf_*`, ID, уникальность пар, источники и соответствие `settlement_form.pf_ids`. Точные 16 PF из bridge input покрыты: 17 исходных связей и 9 строк `no_source`.
+
+## Независимая проверка C001b/C002 (Claude Opus 5.5, коммит fe11f19b)
+
+Второй проход, отдельный от автора правок. `rework` — возвращено исполнителю; `approve_with_limits` — годно для M2c с перечисленными ограничениями; статус данных `candidate` до утверждения набора.
+
+### buildings/sf_pf_crosswalk.csv — approve_with_limits
+
+Проверено: Claude Opus 5.5 (независимая проверка C001b/C002, коммит fe11f19b).
+
+- **Что проверено.** Своим скриптом (только чтение) развёрнуты `settlement_form.pf_ids` для 22 форм. Получилось 73 пары, ровно тот же набор, что в таблице. Все `pf_*` есть в реестре (44 PF, ни одного неизвестного). Дублей пар 0. У каждой строки со связью `source_refs` побайтно совпадает с `source_refs` формы. 16 строк `no_source` закрывают остаток реестра. Все 89 строк `candidate`.
+- **Выборка.** Просмотрены все 22 формы и их PF против `name_ru`, `place_template_ids` и источников: `sf_landing_pristan → river_wharf/ferry_landing/riverbank` (STR0011, SCN025/026), `sf_hunting_stan → hunting_ground/forest_edge/mixed_woodland` (SCN036, SPN027), `sf_yard_peasant → peasant_homestead/…/orchard_garden` (SCN008) и другие. Связей вне `pf_ids` нет, выдумки нет.
+- **16 стартовых PF.** Счёт автора подтверждён: 17 связей и 9 `no_source`.
+- **Прежние замечания.** Не было: артефакт новый. Ограничения `settlement_form.csv` (approve_with_limits C001) переходят сюда.
+- **Замечания (minor).** (1) `pf_rural_yard` помечен `no_source`, хотя его `place_template_refs` совпадают с `place_template_ids` у `sf_yard_peasant`, `sf_village_selo`, `sf_village_derevnya` и `sf_single_homestead`. Основание по общему шаблону есть, но SF-PF-1 смотрит только на `pf_ids`, и стартовый сельский двор остаётся без построек. (2) Уверенность формы (у 9 из 22 форм C) в crosswalk не переносится.
+- **Ограничения.** Таблица наследует спорные `pf_ids` формы (например, `sf_single_homestead → pf_village_lane`). Для природных стартовых PF построек нет, и это корректно.

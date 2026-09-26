@@ -338,7 +338,7 @@ def main():
     names_v6 = {r["name"] for r in read_csv(os.path.join(V6_TSV, "novgorod_g2_g4_70_cells_v6_naming_register.tsv"), "\t")}
     def v6match(n):
         hits = [x for x in names_v6 if n.lower() in x.lower() or x.lower() in n.lower()]
-        return hits[0] if hits else ""
+        return min(hits, key=lambda x: (x.casefold() != n.casefold(), len(x), x)) if hits else ""
     catmap = {"храм": "church", "укрепление/центр": "fortification", "резиденция/хозяйственный комплекс": "court", "мост/рынок/судебная сцена": "bridge",
               "политико-торговый комплекс": "court", "храм/торговый суд": "church", "рынок": "market", "иностранный двор": "foreign_court", "резиденция": "court",
               "храм/кладбище": "church", "укрепление": "fortification", "инфраструктура": "infrastructure", "жильё": "building_type_ref", "жильё/власть": "building_type_ref",

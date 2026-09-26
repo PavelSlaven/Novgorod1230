@@ -448,7 +448,7 @@ def mk_dish(rid, slug, name_ru, rtype, subcat, desc, req, opt, social, season_sc
     recipe_conf = 'C' if evtype in RECON else attest
     lx = sensory(subcat) or {}
     cats = {r['food_category'] for r in req_f}
-    sp = uniq(s for c in cats for s in spoil_states(c))
+    sp = uniq(s for c in sorted(cats) for s in spoil_states(c))
     pm = PRESERV_MAP.get(subcat, [])
     grain_only = all(r['food_category'] in ('grain', 'groats_flour', 'water', 'legume', 'vegetable', 'wild_greens', 'seasoning', 'fish', 'fish_product', 'bread_baked') for r in req_f) and req_f
     famine_role = 'thin_version_ok' if (grain_only and dish_cat in ('porridge', 'pottage', 'bread', 'flatbread')) else ''

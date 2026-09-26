@@ -299,7 +299,7 @@ CLOSED_VALUES = ["honour", "piety", "kin_loyalty", "profit", "safety", "custom",
 # or their frequencies. Keep weights empty until a seed scale is authorized.
 PSYCHOLOGY_EVIDENCE = {
     "general": {
-        "motives": [("стремление сохранить достаток (книжный афоризм)", "book:641351 ¶1539", "c1230; literary norm")],
+        "motives": [],
         "fears": [("страх нищеты (книжный афоризм)", "book:641351 ¶1526", "c1230; literary norm")],
     },
     "торговля": {

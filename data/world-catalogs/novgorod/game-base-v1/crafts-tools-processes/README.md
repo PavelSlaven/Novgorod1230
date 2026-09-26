@@ -64,6 +64,6 @@ node scripts/validate.cjs   # проверки приёмки; validation-report
 
 ## Правки C002
 
-`craft_tools_gear/occupation_pf_crosswalk.csv` выводит пары `occupation_id` → `pf_id` из существующих `occupation_tools.tl_id` и `tools_gear.workplace_pf_id`, а также из `workshops.occupations` и `workshops.pf_id`. `tool_ids` и `workshop_ids` показывают основание каждой связи. `source` означает рабочий контекст занятия, а не постоянное присутствие работника. Для мест и занятий без такой связи записан `no_source`; все строки `candidate`.
+`craft_tools_gear/occupation_pf_crosswalk.csv` выводит пары `occupation_id` → `pf_id` из мастерских, названных мест в TSV занятий и закреплённых приспособлений, используемых одним занятием (`carry_kind=workplace`, `size_class=fixture`). Носимые и общие инструменты не задают место работы. `source` означает прямую связь с мастерской или TSV; `rule` — вывод по закреплённому приспособлению. `source_refs`, `tool_ids` и `workshop_ids` показывают основания; `confidence` — нижняя оценка оснований. Строки `no_source` учитываются отдельно от действительных связей; все строки `candidate`.
 
 Сборка: `python -B scripts/pf_crosswalk.py`; проверка разрешения ID, полноты 44 PF и 16 видов, уникальности и побайтной воспроизводимости: `python -B scripts/pf_crosswalk.py --check`.

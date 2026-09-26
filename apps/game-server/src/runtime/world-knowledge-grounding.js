@@ -35,7 +35,25 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       }
       const cacheKey = `${purpose}:${JSON.stringify(authoritative)}`;
       const prior = cache.get(request)?.get(cacheKey);
-      if (prior) return prior;
+      if (prior) {
+        telemetry?.onDetail?.(Object.freeze({
+          schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
+          request_identity: request.request_id ?? null,
+          planner_called: false, planner_repaired: false,
+          planner_ms: 0, planner_calls: Object.freeze([]),
+          pack_revision: prior.world_knowledge?.pack_revision
+            ?? bundle.manifest.revision_id,
+          query_locale: null, domains: Object.freeze([]),
+          focus_refs: Object.freeze([]), predicates: Object.freeze([]),
+          coverage: Object.freeze([]), claim_refs: Object.freeze([]),
+          slice_chars: 0, vector_status: 'cache_hit', vector_error_code: null,
+          query_embedding_ms: 0, vector_scan_ms: 0, retrieval_ms: 0,
+          retrieval_observability: null,
+          cache_hit: true, cache_miss: false,
+          total_grounding_ms: 0
+        }));
+        return prior;
+      }
       const domains = [...new Set(bundle.coverage_profiles
         .filter((profile) => profile.status === 'production'
           && profile.runtime_requirement !== 'not_active'
@@ -71,34 +89,37 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
           return result.output;
         } });
       const plannerMs = Math.max(0, performance.now() - plannerStarted);
+      let effectivePlan = planned.plan;
+      let usedDefaultQuery = false;
       if (planned.plan.domains.length === 0) {
-        const questionClasses = questionClassesOf(bundle, purpose, []);
-        const worldKnowledge = noKnowledgeRequirement(bundle, purpose);
-        const grounded = Object.freeze({ ...request, world_knowledge: worldKnowledge });
-        cacheGrounded(cache, request, cacheKey, grounded);
-        telemetry?.onGameplayTrace?.(worldKnowledgeNoNeedTrace({ request,
-          purpose, semanticInput, plannerRequest, plannerPlan: planned.plan,
-          plannerCalls, questionClasses, worldKnowledge }));
-        telemetry?.onDetail?.(Object.freeze({
-          schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
-          request_identity: request.request_id ?? null,
-          planner_called: true, planner_repaired: planned.repaired,
-          planner_ms: plannerMs,
-          planner_calls: Object.freeze(plannerCalls.map((call) => Object.freeze({
-            duration_ms: call?.duration_ms ?? null,
-            usage: call?.usage ?? null
-          }))),
-          pack_revision: bundle.manifest.revision_id,
-          query_locale: planned.plan.query_locale,
-          domains: Object.freeze([]), focus_refs: Object.freeze([]),
-          predicates: Object.freeze([]), coverage: Object.freeze([]),
-          claim_refs: Object.freeze([]), slice_chars: 0,
-          vector_status: 'not_required', vector_error_code: null,
-          query_embedding_ms: 0, vector_scan_ms: 0, retrieval_ms: 0,
-          retrieval_observability: null,
-          total_grounding_ms: Math.max(0, performance.now() - started)
-        }));
-        return grounded;
+        if (purpose !== 'semantic_resolution') {
+          const questionClasses = questionClassesOf(bundle, purpose, []);
+          const worldKnowledge = noKnowledgeRequirement(bundle, purpose);
+          const grounded = Object.freeze({ ...request, world_knowledge: worldKnowledge });
+          cacheGrounded(cache, request, cacheKey, grounded);
+          telemetry?.onGameplayTrace?.(worldKnowledgeNoNeedTrace({ request,
+            purpose, semanticInput, plannerRequest, plannerPlan: planned.plan,
+            plannerCalls, questionClasses, worldKnowledge }));
+          emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
+            plannerCalls, started, packRevision: bundle.manifest.revision_id,
+            domains: [], focusRefs: [], predicates: [],
+            coverage: [], claimRefs: [], sliceChars: 0,
+            vectorStatus: 'not_required', embeddingMs: 0, vectorMs: 0,
+            retrievalMs: 0, retrievalObservability: null, cacheHit: false });
+          return grounded;
+        }
+        // Empty planner plan for semantic_resolution → deterministic default
+        // query over every purpose-allowed domain; NO_KNOWLEDGE_REQUIRED only
+        // after Core admits neither facts nor hard constraints.
+        effectivePlan = {
+          schema: 'world_knowledge_query_plan_v1',
+          query_locale: planned.plan.query_locale || queryLocale,
+          domains: [...domains],
+          focus_refs: [],
+          requested_predicates: [],
+          search_hints: [semanticInput]
+        };
+        usedDefaultQuery = true;
       }
       const context = authoritativeContextOf(request, authoritative, {
         year, placeRefs, calendarProfile: worldKnowledge.calendar_profile
@@ -108,32 +129,32 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         pack_ref: bundle.manifest.pack_ref,
         pack_revision: bundle.manifest.revision_id,
         purpose,
-        query_locale: planned.plan.query_locale,
-        domains: planned.plan.domains,
-        focus_refs: planned.plan.focus_refs,
+        query_locale: effectivePlan.query_locale,
+        domains: effectivePlan.domains,
+        focus_refs: effectivePlan.focus_refs,
         // Semantic plans lack the per-concept predicate map. Mixed typed and
         // generic facts must survive recall; exact code queries can still filter.
         requested_predicates: [],
-        search_hints: planned.plan.search_hints,
+        search_hints: effectivePlan.search_hints,
         context,
         budget: { max_facts: 12, max_candidates: 12,
           max_context_chars: 5000 }
       };
       const questionClasses = questionClassesOf(bundle, purpose,
-        planned.plan.domains);
+        effectivePlan.domains);
       const retrievalStarted = performance.now();
       let embeddingMs = 0;
       let vectorMs = 0;
       const vectorScores = new Map();
       try {
-        const embeddingInput = planned.plan.search_hints.length > 0
-          ? planned.plan.search_hints.join('\n') : plannerRequest.semantic_input;
+        const embeddingInput = effectivePlan.search_hints.length > 0
+          ? effectivePlan.search_hints.join('\n') : plannerRequest.semantic_input;
         const embeddingStarted = performance.now();
         const vector = await worldKnowledge.encoder.encode(embeddingInput);
         embeddingMs += Math.max(0, performance.now() - embeddingStarted);
         const vectorStarted = performance.now();
         const scores = worldKnowledge.vector_index.search(vector, {
-          locale: planned.plan.query_locale, domains: planned.plan.domains,
+          locale: effectivePlan.query_locale, domains: effectivePlan.domains,
           limit: query.budget.max_candidates
         });
         vectorMs += Math.max(0, performance.now() - vectorStarted);
@@ -149,41 +170,50 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       const slice = worldKnowledge.core.resolveWorldKnowledge(query,
         { vectorScores });
       const coreResolutionMs = Math.max(0, performance.now() - coreStarted);
+      if (usedDefaultQuery
+          && slice.facts.length === 0
+          && slice.hard_constraints.length === 0) {
+        const worldKnowledgeSlice = noKnowledgeRequirement(bundle, purpose);
+        const grounded = Object.freeze({ ...request,
+          world_knowledge: worldKnowledgeSlice });
+        cacheGrounded(cache, request, cacheKey, grounded);
+        telemetry?.onGameplayTrace?.(worldKnowledgeNoNeedTrace({ request,
+          purpose, semanticInput, plannerRequest, plannerPlan: planned.plan,
+          plannerCalls, questionClasses, worldKnowledge: worldKnowledgeSlice }));
+        emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
+          plannerCalls, started, packRevision: bundle.manifest.revision_id,
+          domains: [], focusRefs: [], predicates: [],
+          coverage: [], claimRefs: [], sliceChars: 0,
+          vectorStatus: 'ok', embeddingMs, vectorMs,
+          retrievalMs: coreResolutionMs, retrievalObservability: null,
+          cacheHit: false });
+        return grounded;
+      }
       const retrievalObservability = retrievalObservabilityOf({ bundle,
         embeddingProfile: worldKnowledge.embedding_profile,
         vectorScores, slice, embeddingMs, vectorMs, coreResolutionMs,
-        totalRetrievalMs: Math.max(0, performance.now() - retrievalStarted) });
+        totalRetrievalMs: Math.max(0, performance.now() - retrievalStarted),
+        cacheOutcome: 'miss' });
       const grounded = Object.freeze({ ...request,
         world_knowledge: modelSlice(slice) });
       cacheGrounded(cache, request, cacheKey, grounded);
       telemetry?.onGameplayTrace?.(worldKnowledgeTrace({ request, purpose,
-        semanticInput, plannerRequest, plannerPlan: planned.plan, query, slice,
+        semanticInput, plannerRequest, plannerPlan: usedDefaultQuery
+          ? effectivePlan : planned.plan, query, slice,
         plannerCalls, questionClasses, retrievalObservability }));
-      telemetry?.onDetail?.(Object.freeze({
-        schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
-        request_identity: request.request_id ?? null,
-        planner_called: true, planner_repaired: planned.repaired,
-        planner_ms: plannerMs,
-        planner_calls: Object.freeze(plannerCalls.map((call) => Object.freeze({
-          duration_ms: call?.duration_ms ?? null,
-          usage: call?.usage ?? null
-        }))),
-        pack_revision: slice.pack_revision,
-        query_locale: planned.plan.query_locale,
-        domains: Object.freeze([...planned.plan.domains]),
-        focus_refs: Object.freeze([...planned.plan.focus_refs]),
-        predicates: Object.freeze([...query.requested_predicates]),
-        coverage: Object.freeze(slice.coverage.map((entry) =>
-          Object.freeze({ ...entry }))),
-        claim_refs: Object.freeze([...slice.hard_constraints, ...slice.facts]
-          .map(({ claim_ref }) => claim_ref)),
-        slice_chars: slice.context_text.length,
-        vector_status: 'ok', vector_error_code: null,
-        query_embedding_ms: embeddingMs, vector_scan_ms: vectorMs,
-        retrieval_ms: coreResolutionMs,
-        retrieval_observability: retrievalObservability,
-        total_grounding_ms: Math.max(0, performance.now() - started)
-      }));
+      emitDiagnostic({ telemetry, purpose, request, planned: {
+        plan: effectivePlan, repaired: planned.repaired
+      }, plannerMs, plannerCalls, started, packRevision: slice.pack_revision,
+        domains: [...effectivePlan.domains],
+        focusRefs: [...effectivePlan.focus_refs],
+        predicates: [...query.requested_predicates],
+        coverage: slice.coverage.map((entry) => ({ ...entry })),
+        claimRefs: [...slice.hard_constraints, ...slice.facts]
+          .map(({ claim_ref }) => claim_ref),
+        sliceChars: slice.context_text.length,
+        vectorStatus: 'ok', embeddingMs, vectorMs,
+        retrievalMs: coreResolutionMs, retrievalObservability,
+        cacheHit: false });
       return grounded;
     }
   });
@@ -215,6 +245,36 @@ function questionClassesOf(bundle, purpose, domains) {
     .filter((profile) => selected.has(profile.domain)
       && profile.purposes.includes(purpose))
     .flatMap((profile) => profile.question_classes))].sort());
+}
+function emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
+  plannerCalls, started, packRevision, domains, focusRefs, predicates,
+  coverage, claimRefs, sliceChars, vectorStatus, embeddingMs, vectorMs,
+  retrievalMs, retrievalObservability, cacheHit }) {
+  telemetry?.onDetail?.(Object.freeze({
+    schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
+    request_identity: request.request_id ?? null,
+    planner_called: true, planner_repaired: planned.repaired,
+    planner_ms: plannerMs,
+    planner_calls: Object.freeze(plannerCalls.map((call) => Object.freeze({
+      duration_ms: call?.duration_ms ?? null,
+      usage: call?.usage ?? null
+    }))),
+    pack_revision: packRevision
+      ?? retrievalObservability?.pack_revision ?? null,
+    query_locale: planned.plan.query_locale,
+    domains: Object.freeze([...domains]),
+    focus_refs: Object.freeze([...focusRefs]),
+    predicates: Object.freeze([...predicates]),
+    coverage: Object.freeze(coverage.map((entry) => Object.freeze({ ...entry }))),
+    claim_refs: Object.freeze([...claimRefs]),
+    slice_chars: sliceChars,
+    vector_status: vectorStatus, vector_error_code: null,
+    query_embedding_ms: embeddingMs, vector_scan_ms: vectorMs,
+    retrieval_ms: retrievalMs,
+    retrieval_observability: retrievalObservability,
+    cache_hit: cacheHit === true, cache_miss: cacheHit !== true,
+    total_grounding_ms: Math.max(0, performance.now() - started)
+  }));
 }
 async function runPlanner(roleRunner, request, repair, bundle) {
   const claimDomains = new Map(bundle.claims.map(claim => [claim.claim_ref, claim.domain]));

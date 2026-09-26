@@ -1,7 +1,10 @@
+import { groundingSufficiencyOf } from './world-knowledge-sufficiency.js';
+
 export function modelSlice(slice) {
   return Object.freeze({ schema: slice.schema, pack_ref: slice.pack_ref,
     pack_revision: slice.pack_revision, purpose: slice.purpose,
     coverage: slice.coverage, verdict: slice.verdict,
+    sufficiency: groundingSufficiencyOf(slice),
     hard_constraints: slice.hard_constraints, facts: slice.facts,
     disputes: slice.disputes, gaps: slice.gaps,
     context_text: slice.context_text });

@@ -36,25 +36,49 @@ export async function resolveTurnStepWorldKnowledge({ mode, core, bundle, exactQ
     throw turnFailure('TURN_WORLD_KNOWLEDGE_CONTEXT_INVALID', 'Authoritative World Knowledge context is invalid.');
   }
   const planned = await requestWorldKnowledgeQueryPlan({ request: plannerRequest, bundle, plannerModel });
-  if (planned.plan.domains.length === 0) return deepFreeze({
-    slice: null, planner_called: true, repaired: planned.repaired,
-    sufficiency: 'NO_KNOWLEDGE_REQUIRED'
-  });
+  let plan = planned.plan;
+  let usedDefaultQuery = false;
+  if (plan.domains.length === 0) {
+    if (plannerRequest.purpose !== 'semantic_resolution') {
+      return deepFreeze({
+        slice: null, planner_called: true, repaired: planned.repaired,
+        sufficiency: 'NO_KNOWLEDGE_REQUIRED'
+      });
+    }
+    plan = {
+      schema: 'world_knowledge_query_plan_v1',
+      query_locale: plan.query_locale || plannerRequest.input_locale,
+      domains: [...plannerRequest.allowed_domains],
+      focus_refs: [],
+      requested_predicates: [],
+      search_hints: [plannerRequest.semantic_input]
+    };
+    usedDefaultQuery = true;
+  }
   const query = {
     schema: 'world_knowledge_query_v1',
     pack_ref: plannerRequest.pack_ref,
     pack_revision: authoritative.pack_revision,
     purpose: plannerRequest.purpose,
-    query_locale: planned.plan.query_locale,
-    domains: planned.plan.domains,
-    focus_refs: planned.plan.focus_refs,
-    requested_predicates: planned.plan.requested_predicates,
-    search_hints: planned.plan.search_hints,
+    query_locale: plan.query_locale,
+    domains: plan.domains,
+    focus_refs: plan.focus_refs,
+    requested_predicates: plan.requested_predicates,
+    search_hints: plan.search_hints,
     context: structuredClone(authoritative.context),
     budget: structuredClone(authoritative.budget)
   };
+  const slice = await core.resolveWorldKnowledge(query);
+  if (usedDefaultQuery
+      && (slice?.facts?.length ?? 0) === 0
+      && (slice?.hard_constraints?.length ?? 0) === 0) {
+    return deepFreeze({
+      slice: null, planner_called: true, repaired: planned.repaired,
+      sufficiency: 'NO_KNOWLEDGE_REQUIRED'
+    });
+  }
   return deepFreeze({
-    slice: await core.resolveWorldKnowledge(query),
+    slice,
     planner_called: true,
     repaired: planned.repaired
   });

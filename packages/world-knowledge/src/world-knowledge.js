@@ -165,6 +165,8 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
   for (const conflict_group_ref of omittedConflictGroups) gaps.push({ domain: query.domains.join(','), status: 'conflict_group_exceeds_candidate_budget', conflict_group_ref });
   if (verdict === 'unresolved' && gaps.length === 0) gaps.push({ domain: query.domains.join(','), status: 'unresolved' });
   const contextText = packContext({ coverage, hardConstraints: selectedHard, facts: selectedFacts, disputes, gaps }, query.budget.max_context_chars);
+  // Orchestrator maps these hits into §63 sufficiency; not a model-facing field.
+  const search_hint_hits = Object.freeze(hintScores.map(({ strongest }) => strongest > 0));
   return deepFreeze({
     schema: SLICE_SCHEMA,
     pack_ref: bundle.manifest.pack_ref,
@@ -180,6 +182,7 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
     gaps,
     evidence_fragments: [],
     context_text: contextText,
+    search_hint_hits,
   });
 }
 

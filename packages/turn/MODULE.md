@@ -55,7 +55,7 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   code-owned `check_outcome` band; следующий semantic step видит степень уже
   выполненного исхода без roll/DC/audit. Narrator получает safe band/margin и
   action binding, но не RNG internals; механику он не пересчитывает.
-- `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; canonical empty plan self-terminates `RETRIEVE` как `NO_KNOWLEDGE_REQUIRED` без Core. `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner.
+- `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; для `semantic_resolution` пустой план запускает deterministic default-запрос Core, а `NO_KNOWLEDGE_REQUIRED` пишется только если Core не допустил facts/hard constraints. `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner.
 - Internal ordinary hook применяет уже вычисленный pure aggregate result к общей working projection без собственного schema/type; raw ordinary transition остаётся ответственностью `@rus/materialization` reducer. Hook не экспортируется как второй projection owner и не активирует O1.
 - Общий ordinary discovery owner передаёт одну player-safe scene projection
   в seed и presence, включая structural repair; candidate query имеет нулевой

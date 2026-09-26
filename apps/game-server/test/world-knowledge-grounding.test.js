@@ -163,7 +163,7 @@ test('production grounding plans once and injects only an applicable bounded sli
   t.diagnostic(`Production WK wire reduction: ${JSON.stringify(first).length - JSON.stringify(consumerWire).length} chars.`);
 });
 
-test('an explicit empty plan records NO_KNOWLEDGE_REQUIRED without retrieval', async () => {
+test('an empty semantic_resolution plan runs a default query before NO_KNOWLEDGE_REQUIRED', async () => {
   const loaded = await loadProductionWorldKnowledge({
     rootDir: fileURLToPath(new URL('../../..', import.meta.url))
   });
@@ -174,7 +174,22 @@ test('an explicit empty plan records NO_KNOWLEDGE_REQUIRED without retrieval', a
   const traces = [];
   const grounder = createProductionWorldKnowledgeGrounder({
     worldKnowledge: { ...loaded,
-      core: { resolveWorldKnowledge() { coreCalls += 1; } },
+      core: { resolveWorldKnowledge(query) {
+        coreCalls += 1;
+        assert.deepEqual(query.search_hints, ['Громко зову Онисима.']);
+        assert.ok(query.domains.length > 0);
+        assert.deepEqual(query.focus_refs, []);
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: query.domains.map((domain) => ({ domain, status: 'covered' })),
+          verdict: 'unresolved',
+          hard_constraints: [], facts: [], disputes: [], gaps: [],
+          context_text: '', search_hint_hits: [false]
+        };
+      } },
       encoder: { async encode() { encoderCalls += 1; return new Float32Array(1024); } },
       vector_index: { search() { vectorCalls += 1; return new Map(); } } },
     telemetry: { onDetail: entry => diagnostics.push(entry),
@@ -191,27 +206,55 @@ test('an explicit empty plan records NO_KNOWLEDGE_REQUIRED without retrieval', a
   const request = { request_id: 'turn:no-wk', remaining_intent: 'Громко зову Онисима.',
     player_safe_state: {} };
   const grounded = await grounder.ground(request, 'semantic_resolution');
-  assert.equal(coreCalls, 0);
-  assert.equal(encoderCalls, 0);
-  assert.equal(vectorCalls, 0);
+  assert.equal(coreCalls, 1);
+  assert.equal(encoderCalls, 1);
+  assert.equal(vectorCalls, 1);
   assert.equal(grounded.world_knowledge.sufficiency,
     'NO_KNOWLEDGE_REQUIRED');
   assert.deepEqual(grounded.world_knowledge.facts, []);
   assert.match(wkClosure(grounded).join(' '),
     /Do not add a historical, scientific, social, craft/u);
   assert.equal(diagnostics[0].planner_called, true);
-  assert.equal(diagnostics[0].vector_status, 'not_required');
-  assert.equal(diagnostics[0].retrieval_observability, null);
-  assert.deepEqual(diagnostics[0].domains, []);
+  assert.equal(diagnostics[0].cache_miss, true);
+  assert.equal(diagnostics[0].cache_hit, false);
   assert.equal(traces[0].event, 'world_knowledge_not_required');
-  assert.deepEqual(traces[0].question_classes, []);
-  assert.deepEqual(traces[0].planner_identity, { scope: 'turn_runtime',
-    role_id: 'world_knowledge_query_planner', provider: 'test-provider',
-    model: 'test-model' });
-  assert.equal(traces[0].query, null);
-  assert.equal(traces[0].core_result, null);
-  assert.deepEqual(traces[0].consumer.input.world_knowledge,
-    grounded.world_knowledge);
+});
+
+test('empty plan that admits facts keeps a grounded slice with sufficiency', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge() {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'materials_substances', status: 'covered' }],
+          verdict: 'supported',
+          hard_constraints: [],
+          facts: [{ claim_ref: 'claim:test', runtime_text: 'Лён крутят.' }],
+          disputes: [], gaps: [], context_text: 'FACT claim:test: Лён крутят.',
+          search_hint_hits: [true]
+        };
+      } },
+      encoder: { async encode() { return new Float32Array(1024); } },
+      vector_index: { search() { return new Map(); } } },
+    roleRunner: { async run() {
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: [], focus_refs: [],
+        requested_predicates: [], search_hints: [] } };
+    } }
+  });
+  const grounded = await grounder.ground({
+    request_id: 'turn:default-hit',
+    remaining_intent: 'Прядёшь ли лён?'
+  }, 'semantic_resolution');
+  assert.equal(grounded.world_knowledge.schema, 'world_knowledge_slice_v1');
+  assert.equal(grounded.world_knowledge.sufficiency, 'SUFFICIENT_KNOWLEDGE');
+  assert.equal(grounded.world_knowledge.facts.length, 1);
 });
 
 function assertRetrievalObservability(observability, grounded) {
@@ -234,6 +277,7 @@ function assertRetrievalObservability(observability, grounded) {
   assert.equal(observability.hard_constraint_count,
     grounded.world_knowledge.hard_constraints.length);
   assert.deepEqual(observability.gaps, grounded.world_knowledge.gaps);
+  assert.equal(grounded.world_knowledge.sufficiency != null, true);
   for (const field of ['query_embedding_ms', 'vector_scan_ms',
     'core_resolution_ms', 'total_retrieval_ms']) {
     assert.equal(Number.isFinite(observability[field]), true, field);

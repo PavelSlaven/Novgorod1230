@@ -1,4 +1,5 @@
 import { projectCalendar } from '@rus/time-events-history/calendar';
+import { WorldKnowledgeError } from '@rus/world-knowledge';
 
 export function localeOf(request, bundle) {
   const candidate = request.locale ?? request.input_locale
@@ -27,7 +28,15 @@ export function semanticInputOf(request) {
     request.utterance_text, request.semantic_input, request.reason]) {
     if (typeof value === 'string' && value.trim()) return value.trim();
   }
-  return JSON.stringify(request).slice(0, 8000) || 'factual context';
+  if (request.schema === 'npc_action_decision_request_v1'
+      || request.schema === 'npc_conversation_response_request_v1') {
+    const text = npcSituationText(request);
+    if (text) return text;
+  }
+  throw new WorldKnowledgeError('WORLD_KNOWLEDGE_SEMANTIC_INPUT_UNAVAILABLE',
+    'World Knowledge semantic_input cannot be derived from request fields.', {
+      schema: request?.schema ?? null
+    });
 }
 export function focusInputOf(request, authoritative) {
   if (request.schema !== 'ordinary_materialization_request_v1') {
@@ -94,6 +103,40 @@ export function authoritativeContextOf(request, authoritative, defaults) {
   ]) if (typeof ref === 'string' && ref) placeRefs.add(ref);
   return { time: { year }, place_refs: [...placeRefs].sort(),
     actor_facets: actorFacetsOf(request, authoritative) };
+}
+
+function npcSituationText(request) {
+  const parts = [];
+  const changes = request.decision_reasons?.perceived_changes;
+  if (Array.isArray(changes)) {
+    for (const entry of changes) {
+      if (typeof entry === 'string' && entry.trim()) parts.push(entry.trim());
+    }
+  }
+  const perception = request.perception;
+  if (perception && typeof perception === 'object') {
+    for (const key of ['visible_scene', 'perceived_changes', 'heard', 'felt']) {
+      const values = perception[key];
+      if (!Array.isArray(values)) continue;
+      for (const entry of values) {
+        const text = typeof entry === 'string' ? entry
+          : entry?.summary ?? entry?.text ?? entry?.runtime_text;
+        if (typeof text === 'string' && text.trim()) parts.push(text.trim());
+      }
+    }
+  }
+  if (request.schema === 'npc_conversation_response_request_v1') {
+    const history = request.public_conversation_history;
+    if (Array.isArray(history)) {
+      for (const entry of history) {
+        const text = entry?.utterance_text
+          ?? entry?.speech?.utterance_text
+          ?? entry?.content;
+        if (typeof text === 'string' && text.trim()) parts.push(text.trim());
+      }
+    }
+  }
+  return parts.join(' ').trim();
 }
 
 function positionRefs(position) {

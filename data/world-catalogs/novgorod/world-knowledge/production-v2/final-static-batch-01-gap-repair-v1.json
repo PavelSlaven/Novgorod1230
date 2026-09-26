@@ -478,7 +478,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -802,14 +802,14 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-textile-wet-limit",
       "locale": "ru",
-      "runtime_text": "Шёлк может слабеть мокрым, а шерсть сваливаться; это не доказывает состав, происхождение, цену или статус ткани.",
+      "runtime_text": "INFERENCE: Шёлк может слабеть мокрым, а шерсть сваливаться; это не доказывает состав, происхождение, цену или статус ткани.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-textile-wet-limit",
       "locale": "en",
-      "runtime_text": "Silk can weaken when wet and wool can felt; such material tendencies do not prove fibre identity, origin, price or status of an observed cloth.",
+      "runtime_text": "INFERENCE: Silk can weaken when wet and wool can felt; such material tendencies do not prove fibre identity, origin, price or status of an observed cloth.",
       "search_aliases": []
     },
     {

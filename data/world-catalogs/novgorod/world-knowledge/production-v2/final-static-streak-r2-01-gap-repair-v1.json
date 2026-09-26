@@ -391,7 +391,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -421,7 +421,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -451,7 +451,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -553,13 +553,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_household_mistress"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -588,13 +583,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_household_mistress"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -623,7 +613,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -726,7 +716,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -919,42 +909,42 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-roots-2",
       "locale": "ru",
-      "runtime_text": "Наблюдаемые признаки порчи не устанавливают причину, безопасность соседнего запаса или восстановление повреждённой пищи.",
+      "runtime_text": "INFERENCE: Наблюдаемые признаки порчи не устанавливают причину, безопасность соседнего запаса или восстановление повреждённой пищи.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-roots-2",
       "locale": "en",
-      "runtime_text": "Freezing injury and decay observations are distinct; sorting limits exposure but cannot restore damaged stock or prove neighbouring food sound.",
+      "runtime_text": "INFERENCE: Freezing injury and decay observations are distinct; sorting limits exposure but cannot restore damaged stock or prove neighbouring food sound.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-leaves-1",
       "locale": "ru",
-      "runtime_text": "Белый или серый порошистый налёт на листе допускает полевое подозрение и осторожный осмотр, но не доказывает мучнистую росу.",
+      "runtime_text": "INFERENCE: Белый или серый порошистый налёт на листе допускает полевое подозрение и осторожный осмотр, но не доказывает мучнистую росу.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-leaves-1",
       "locale": "en",
-      "runtime_text": "A white or gray powdery leaf coating supports field suspicion and careful inspection, not proof of mildew, species, spread or remedy.",
+      "runtime_text": "INFERENCE: A white or gray powdery leaf coating supports field suspicion and careful inspection, not proof of mildew, species, spread or remedy.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-leaves-2",
       "locale": "ru",
-      "runtime_text": "Удаление рыхлого поверхностного налёта меняет видимое, но не доказывает отсутствие скрытого поражения.",
+      "runtime_text": "INFERENCE: Удаление рыхлого поверхностного налёта меняет видимое, но не доказывает отсутствие скрытого поражения.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-leaves-2",
       "locale": "en",
-      "runtime_text": "Loose surface material can change what is visible without proving whether an underlying infection exists.",
+      "runtime_text": "INFERENCE: Loose surface material can change what is visible without proving whether an underlying infection exists.",
       "search_aliases": []
     },
     {
@@ -989,42 +979,42 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-lye-1",
       "locale": "ru",
-      "runtime_text": "Щелочной раствор неизвестной крепости, брызги, горячая жидкость и туман условно опасны для кожи и глаз; это не рецепт.",
+      "runtime_text": "INFERENCE: Щелочной раствор неизвестной крепости, брызги, горячая жидкость и туман условно опасны для кожи и глаз; это не рецепт.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-lye-1",
       "locale": "en",
-      "runtime_text": "Unknown-strength alkaline liquor, splashes, hot liquid and mist are conditional skin and eye hazards; this does not assign a reagent strength or recipe.",
+      "runtime_text": "INFERENCE: Unknown-strength alkaline liquor, splashes, hot liquid and mist are conditional skin and eye hazards; this does not assign a reagent strength or recipe.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-lye-2",
       "locale": "ru",
-      "runtime_text": "Щелочно-жировая попытка может расслоиться, остаться масляной или иначе не удасться; годное мыло не следует автоматически.",
+      "runtime_text": "INFERENCE: Щелочно-жировая попытка может расслоиться, остаться масляной или иначе не удасться; годное мыло не следует автоматически.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-lye-2",
       "locale": "en",
-      "runtime_text": "An alkaline-fat attempt can separate, remain oily or otherwise fail; no usable soap or safe recovery follows.",
+      "runtime_text": "INFERENCE: An alkaline-fat attempt can separate, remain oily or otherwise fail; no usable soap or safe recovery follows.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-compost-1",
       "locale": "ru",
-      "runtime_text": "Компост или навозная куча может самонагреваться; тёплая куча не обязательно горит, а дым — опасное состояние.",
+      "runtime_text": "INFERENCE: Компост или навозная куча может самонагреваться; тёплая куча не обязательно горит, а дым — опасное состояние.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-compost-1",
       "locale": "en",
-      "runtime_text": "Compost or manure piles can self-heat; a warm pile is not automatically aflame, while smoke is a dangerous fire state.",
+      "runtime_text": "INFERENCE: Compost or manure piles can self-heat; a warm pile is not automatically aflame, while smoke is a dangerous fire state.",
       "search_aliases": []
     },
     {
@@ -1059,14 +1049,14 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-porridge-2",
       "locale": "ru",
-      "runtime_text": "Уменьшение огня и перемешивание могут ограничить местное пригорание, но не исправляют уже сгоревшую часть.",
+      "runtime_text": "INFERENCE: Уменьшение огня и перемешивание могут ограничить местное пригорание, но не исправляют уже сгоревшую часть.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-porridge-2",
       "locale": "en",
-      "runtime_text": "Lower heat and stirring or scraping can mitigate local scorching but cannot unburn a portion or guarantee uniform cooking.",
+      "runtime_text": "INFERENCE: Lower heat and stirring or scraping can mitigate local scorching but cannot unburn a portion or guarantee uniform cooking.",
       "search_aliases": []
     },
     {

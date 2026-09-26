@@ -535,7 +535,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -739,7 +739,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -769,7 +769,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1243,10 +1243,7 @@
       "locale": "ru",
       "runtime_text": "Уже сушёные травы можно хранить в сухом защищённом месте. Вид травы и её качество не заданы.",
       "search_aliases": [
-        "хранить сушёные травы",
-        "сырой трут не загорится",
-        "хранить трут сухим",
-        "трут в коробочке"
+        "хранить сушёные травы"
       ]
     },
     {

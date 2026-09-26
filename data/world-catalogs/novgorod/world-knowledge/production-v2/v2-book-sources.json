@@ -3,54 +3,6 @@
   "sources": [
     {
       "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-122328",
-      "title": "Язычество Древней Руси",
-      "authors": [
-        "Рыбаков Борис Александрович"
-      ],
-      "publication": "Язычество Древней Руси, 1987",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 122328, 1987; ссылка на строку: book:122328 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-167434",
-      "title": "Русь между Югом, Востоком и Западом",
-      "authors": [
-        "Голубев Сергей Александрович; Миронов Владимир Борисович"
-      ],
-      "publication": "Русь между Югом, Востоком и Западом, 2009",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 167434, 2009; ссылка на строку: book:167434 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-168527",
-      "title": "Церковно-народный месяцеслов на Руси",
-      "authors": [
-        "Калинский Иван Плакидыч"
-      ],
-      "publication": "Церковно-народный месяцеслов на Руси, 2008",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 168527, 2008; ссылка на строку: book:168527 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
       "source_ref": "source:book-177850",
       "title": "Денежно-весовые системы домонгольской Руси и очерки истории денежной системы средневекового Новгорода",
       "authors": [
@@ -59,70 +11,6 @@
       "publication": "Денежно-весовые системы домонгольской Руси и очерки истории денежной системы средневекового Новгорода, 2009",
       "source_kind": "scholarship",
       "citation": "fb2-библиотека владельца, book 177850, 2009; ссылка на строку: book:177850 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-220832",
-      "title": "Новгородская феодальная вотчина",
-      "authors": [
-        "Янин Валентин Лаврентьевич"
-      ],
-      "publication": "Новгородская феодальная вотчина",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 220832; ссылка на строку: book:220832 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-220871",
-      "title": "Очерки истории средневекового Новгорода",
-      "authors": [
-        "Янин Валентин Лаврентьевич"
-      ],
-      "publication": "Очерки истории средневекового Новгорода, 2008",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 220871, 2008; ссылка на строку: book:220871 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-230944",
-      "title": "Повседневная жизнь России под звон колоколов",
-      "authors": [
-        "Горохов Владислав Андреевич"
-      ],
-      "publication": "Повседневная жизнь России под звон колоколов, 2007",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 230944, 2007; ссылка на строку: book:230944 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-301539",
-      "title": "Древняя русская история до монгольского ига. Том 2",
-      "authors": [
-        "Погодин Михаил Петрович"
-      ],
-      "publication": "Древняя русская история до монгольского ига. Том 2, 1999",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 301539, 1999; ссылка на строку: book:301539 §<раздел> ¶<абзац>",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_single_sentence_quotes"
@@ -179,54 +67,6 @@
     },
     {
       "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-375645",
-      "title": "Повседневная жизнь средневековой Москвы",
-      "authors": [
-        "Шокарев Сергей Юрьевич"
-      ],
-      "publication": "Повседневная жизнь средневековой Москвы, 2012",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 375645, 2012; ссылка на строку: book:375645 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-376895",
-      "title": "Грибы. Определитель грибов русских лесов и полей",
-      "authors": [
-        "Вишневский Михаил Владимирович"
-      ],
-      "publication": "Грибы. Определитель грибов русских лесов и полей, 2014",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 376895, 2014; ссылка на строку: book:376895 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-380825",
-      "title": "Потаенная жизнь Древней Руси. Быт, нравы, любовь",
-      "authors": [
-        "Долгов Вадим Викторович"
-      ],
-      "publication": "Потаенная жизнь Древней Руси. Быт, нравы, любовь, 2009",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 380825, 2009; ссылка на строку: book:380825 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
       "source_ref": "source:book-392896",
       "title": "Новгород и Ганза",
       "authors": [
@@ -275,22 +115,6 @@
     },
     {
       "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-473497",
-      "title": "Древняя и средневековая Русь, IX–XVII вв.",
-      "authors": [
-        "Спицын Евгений Юрьевич"
-      ],
-      "publication": "Древняя и средневековая Русь, IX–XVII вв., 2015",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 473497, 2015; ссылка на строку: book:473497 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
       "source_ref": "source:book-474912",
       "title": "Домострой",
       "authors": [
@@ -299,102 +123,6 @@
       "publication": "Домострой",
       "source_kind": "primary_text",
       "citation": "fb2-библиотека владельца, book 474912; ссылка на строку: book:474912 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-479350",
-      "title": "У истоков Руси",
-      "authors": [
-        "Беляев Иван Дмитриевич"
-      ],
-      "publication": "У истоков Руси, 2016",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 479350, 2016; ссылка на строку: book:479350 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-499410",
-      "title": "Древняя Русь: наследие в слове. Мир человека",
-      "authors": [
-        "Колесов Владимир Викторович"
-      ],
-      "publication": "Древняя Русь: наследие в слове. Мир человека, 2000",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 499410, 2000; ссылка на строку: book:499410 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-512565",
-      "title": "Люди и нравы Древней Руси",
-      "authors": [
-        "Романов Борис Александрович"
-      ],
-      "publication": "Люди и нравы Древней Руси, 2013",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 512565, 2013; ссылка на строку: book:512565 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-564470",
-      "title": "Новгородская земля. Природа. Люди. История. Хозяйство",
-      "authors": [
-        "Глушкова Вера Георгиевна"
-      ],
-      "publication": "Новгородская земля. Природа. Люди. История. Хозяйство, 2015",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 564470, 2015; ссылка на строку: book:564470 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-566840",
-      "title": "Северные крестоносцы. Русь в борьбе за сферы влияния в Восточной Прибалтике XII–XIII вв. Том 2",
-      "authors": [
-        "Хрусталёв Денис Григорьевич"
-      ],
-      "publication": "Северные крестоносцы. Русь в борьбе за сферы влияния в Восточной Прибалтике XII–XIII вв. Том 2, 2009",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 566840, 2009; ссылка на строку: book:566840 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-577538",
-      "title": "Ганзейский союз. Торговая империя Средневековья от Лондона и Брюгге до Пскова и Новгорода",
-      "authors": [
-        "Доллингер Филипп"
-      ],
-      "publication": "Ганзейский союз. Торговая империя Средневековья от Лондона и Брюгге до Пскова и Новгорода, 2020",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 577538, 2020; ссылка на строку: book:577538 §<раздел> ¶<абзац>",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_single_sentence_quotes"
@@ -579,54 +307,6 @@
     },
     {
       "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-73687",
-      "title": "Киевская Русь",
-      "authors": [
-        "Вернадский Георгий Владимирович; Карпович Михаил Михайлович"
-      ],
-      "publication": "Киевская Русь, 1948",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 73687, 1948; ссылка на строку: book:73687 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-751267",
-      "title": "Древнерусские княжества X–XIII вв.",
-      "authors": [
-        "Плетнёва Светлана Александровна; Седов Валентин Васильевич; Алексеев Леонид Васильевич; Толочко Пётр Петрович; Куза Андрей Васильевич; Зайцев Алексей Константинович; Кучера Михаил Петрович"
-      ],
-      "publication": "Древнерусские княжества X–XIII вв., 1975",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 751267, 1975; ссылка на строку: book:751267 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-755331",
-      "title": "Ремесло древней Руси",
-      "authors": [
-        "Рыбаков Борис Александрович"
-      ],
-      "publication": "Ремесло древней Руси, 1948",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 755331, 1948; ссылка на строку: book:755331 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
       "source_ref": "source:book-756195",
       "title": "Птицы России. Наглядный карманный определитель",
       "authors": [
@@ -667,70 +347,6 @@
       "publication": "Культура Древней и Средневековой Руси, 2024",
       "source_kind": "scholarship",
       "citation": "fb2-библиотека владельца, book 814112, 2024; ссылка на строку: book:814112 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-823030",
-      "title": "Ядовитые растения леса",
-      "authors": [
-        "Зориков Петр Семенович"
-      ],
-      "publication": "Ядовитые растения леса",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 823030; ссылка на строку: book:823030 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-855852",
-      "title": "История Ганзы",
-      "authors": [
-        "Линднер Теодор"
-      ],
-      "publication": "История Ганзы, 2020",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 855852, 2020; ссылка на строку: book:855852 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-877660",
-      "title": "Звенья русской культуры. Древняя Русь (до половины XV века)",
-      "authors": [
-        "Вернадский Георгий Владимирович"
-      ],
-      "publication": "Звенья русской культуры. Древняя Русь (до половины XV века), 2016",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 877660, 2016; ссылка на строку: book:877660 §<раздел> ¶<абзац>",
-      "rights": {
-        "status": "approved",
-        "redistribution": "metadata_and_single_sentence_quotes"
-      },
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_source_v1",
-      "source_ref": "source:book-877664",
-      "title": "Русь за трапезой",
-      "authors": [
-        "Занков Дмитрий Сергеевич"
-      ],
-      "publication": "Русь за трапезой, 2016",
-      "source_kind": "scholarship",
-      "citation": "fb2-библиотека владельца, book 877664, 2016; ссылка на строку: book:877664 §<раздел> ¶<абзац>",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_single_sentence_quotes"

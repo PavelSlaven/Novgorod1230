@@ -210,7 +210,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -250,7 +250,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -290,7 +290,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -410,13 +410,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -495,13 +490,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -827,7 +817,7 @@
       "claim_ref": "claim:civic-public-market",
       "locale": "ru",
       "runtime_text": "В средневековом описании Торговой стороны Торг входит в общественное городское пространство.",
-      "search_aliases": ["Ярославово дворище","Торг у дворища","вечевая площадь Торговой стороны"]
+      "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

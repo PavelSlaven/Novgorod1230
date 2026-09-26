@@ -988,8 +988,8 @@
     }
   ],
   "claims": [
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-haz-04-slope-force-strength","domain":"environment","subject_ref":"wk:environment:slope-force-strength","predicate":"supported_fact","object":{"kind":"literal","value":"slope_force_strength"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"general_physical","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-haz-04"],"review_status":"approved","conflict_group_ref":null},
-    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-haz-05-slope-water-triggers","domain":"environment","subject_ref":"wk:environment:slope-water-triggers","predicate":"supported_fact","object":{"kind":"literal","value":"slope_water_triggers"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"general_physical","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-haz-05"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-haz-04-slope-force-strength","domain":"environment","subject_ref":"wk:environment:slope-force-strength","predicate":"supported_fact","object":{"kind":"literal","value":"slope_force_strength"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-haz-04"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-haz-05-slope-water-triggers","domain":"environment","subject_ref":"wk:environment:slope-water-triggers","predicate":"supported_fact","object":{"kind":"literal","value":"slope_water_triggers"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-haz-05"],"review_status":"approved","conflict_group_ref":null},
     {
       "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:foundations-earth-01-ecological-tolerance",
@@ -1700,7 +1700,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1790,7 +1790,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2030,7 +2030,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2060,13 +2060,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -2095,13 +2090,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -2250,7 +2240,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,

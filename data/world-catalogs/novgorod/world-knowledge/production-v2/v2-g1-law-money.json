@@ -3,15 +3,6 @@
   "concepts": [
     {
       "schema": "world_knowledge_concept_v1",
-      "concept_ref": "wk:social_law_economy:v2-runaway-kholop-harboring",
-      "domain": "social_law_economy",
-      "broader_refs": [],
-      "related_refs": [],
-      "external_mappings": [],
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:social_law_economy:v2-currency-counting",
       "domain": "social_law_economy",
       "broader_refs": [],
@@ -31,15 +22,6 @@
     {
       "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:social_law_economy:v2-grivna-serebra",
-      "domain": "social_law_economy",
-      "broader_refs": [],
-      "related_refs": [],
-      "external_mappings": [],
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_concept_v1",
-      "concept_ref": "wk:social_law_economy:v2-hunting-grounds-ownership",
       "domain": "social_law_economy",
       "broader_refs": [],
       "related_refs": [],
@@ -117,46 +99,9 @@
       "related_refs": [],
       "external_mappings": [],
       "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_concept_v1",
-      "concept_ref": "wk:social_law_economy:v2-monastery-landholding",
-      "domain": "social_law_economy",
-      "broader_refs": [],
-      "related_refs": [],
-      "external_mappings": [],
-      "review_status": "approved"
     }
   ],
   "concept_localizations": [
-    {
-      "schema": "world_knowledge_concept_localization_v1",
-      "concept_ref": "wk:social_law_economy:v2-runaway-kholop-harboring",
-      "locale": "ru",
-      "labels": [
-        "укрывательство беглого холопа"
-      ],
-      "short_definition": "Ответственность того, кто помог беглому холопу или робе хлебом, кровом или указанием пути.",
-      "search_aliases": [
-        "беглый холоп",
-        "укрыть холопа",
-        "плата за беглого"
-      ]
-    },
-    {
-      "schema": "world_knowledge_concept_localization_v1",
-      "concept_ref": "wk:social_law_economy:v2-runaway-kholop-harboring",
-      "locale": "en",
-      "labels": [
-        "harboring a runaway kholop"
-      ],
-      "short_definition": "Liability of a person who helped a runaway kholop or female servant with bread, shelter or directions.",
-      "search_aliases": [
-        "runaway kholop",
-        "harbor a servant",
-        "payment for a runaway"
-      ]
-    },
     {
       "schema": "world_knowledge_concept_localization_v1",
       "concept_ref": "wk:social_law_economy:v2-currency-counting",
@@ -239,34 +184,6 @@
         "silver grivna",
         "silver to kuna",
         "large sum of money"
-      ]
-    },
-    {
-      "schema": "world_knowledge_concept_localization_v1",
-      "concept_ref": "wk:social_law_economy:v2-hunting-grounds-ownership",
-      "locale": "ru",
-      "labels": [
-        "принадлежность звериных и птичьих угодий"
-      ],
-      "short_definition": "Ловища, перевесища и иные промысловые угодья принадлежат селу, двору или хозяину, а не всем подряд.",
-      "search_aliases": [
-        "чьи угодья",
-        "охота в чужом лесу",
-        "ловища и перевесища"
-      ]
-    },
-    {
-      "schema": "world_knowledge_concept_localization_v1",
-      "concept_ref": "wk:social_law_economy:v2-hunting-grounds-ownership",
-      "locale": "en",
-      "labels": [
-        "ownership of hunting and trapping grounds"
-      ],
-      "short_definition": "Hunting and trapping grounds belong to a village, household or owner rather than being open to everyone.",
-      "search_aliases": [
-        "whose hunting grounds",
-        "hunting on another's land",
-        "trapping grounds ownership"
       ]
     },
     {
@@ -492,77 +409,9 @@
         "loan interest rule",
         "interest on a debt"
       ]
-    },
-    {
-      "schema": "world_knowledge_concept_localization_v1",
-      "concept_ref": "wk:social_law_economy:v2-monastery-landholding",
-      "locale": "ru",
-      "labels": [
-        "монастырское село"
-      ],
-      "short_definition": "Село, дарованное монастырю князем, с зависимыми людьми, работающими на монастырь.",
-      "search_aliases": [
-        "монастырское село",
-        "село дано монастырю",
-        "зависимые люди на монастырь"
-      ]
-    },
-    {
-      "schema": "world_knowledge_concept_localization_v1",
-      "concept_ref": "wk:social_law_economy:v2-monastery-landholding",
-      "locale": "en",
-      "labels": [
-        "monastery-owned village"
-      ],
-      "short_definition": "A village granted to a monastery by a prince, with dependent people working it for the monastery.",
-      "search_aliases": [
-        "monastery village",
-        "village granted to monastery",
-        "monastery dependents"
-      ]
     }
   ],
   "claims": [
-    {
-      "schema": "world_knowledge_claim_v1",
-      "claim_ref": "claim:v2-g1-runaway-kholop-harborer-pays-owner",
-      "domain": "social_law_economy",
-      "subject_ref": "wk:social_law_economy:v2-runaway-kholop-harboring",
-      "predicate": "supported_fact",
-      "object": {
-        "kind": "literal",
-        "value": "harborer_of_runaway_kholop_pays_owner_five_or_six_grivny"
-      },
-      "polarity": "support",
-      "applicability": {
-        "time": {
-          "from": 1200,
-          "to": 1300,
-          "precision": "range"
-        },
-        "places": [
-          {
-            "place_ref": "region_novgorod_land",
-            "relation": "used_in"
-          }
-        ]
-      },
-      "qualifiers": {
-        "typicality": "attested",
-        "confidence": "high",
-        "directness": "direct"
-      },
-      "knowledge_access": {
-        "class": "common_cultural",
-        "required_facets": []
-      },
-      "hard_exclusion": null,
-      "evidence_refs": [
-        "evidence:v2-g1-runaway-kholop-harborer"
-      ],
-      "review_status": "approved",
-      "conflict_group_ref": null
-    },
     {
       "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:v2-g1-grivna-equals-twenty-nogata",
@@ -599,46 +448,6 @@
       "hard_exclusion": null,
       "evidence_refs": [
         "evidence:v2-g1-grivna-twenty-nogata"
-      ],
-      "review_status": "approved",
-      "conflict_group_ref": null
-    },
-    {
-      "schema": "world_knowledge_claim_v1",
-      "claim_ref": "claim:v2-g1-kuna-now-same-as-rezana",
-      "domain": "social_law_economy",
-      "subject_ref": "wk:social_law_economy:v2-currency-counting",
-      "predicate": "supported_fact",
-      "object": {
-        "kind": "literal",
-        "value": "kuna_has_replaced_rezana_in_current_count"
-      },
-      "polarity": "support",
-      "applicability": {
-        "time": {
-          "from": 1200,
-          "to": 1300,
-          "precision": "range"
-        },
-        "places": [
-          {
-            "place_ref": "region_novgorod_land",
-            "relation": "used_in"
-          }
-        ]
-      },
-      "qualifiers": {
-        "typicality": "attested",
-        "confidence": "medium",
-        "directness": "direct"
-      },
-      "knowledge_access": {
-        "class": "common_cultural",
-        "required_facets": []
-      },
-      "hard_exclusion": null,
-      "evidence_refs": [
-        "evidence:v2-g1-kuna-replaces-rezana"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -760,46 +569,6 @@
       "evidence_refs": [
         "evidence:v2-g1-grivna-serebra-smolensk-1229",
         "evidence:v2-g1-grivna-serebra-ratio-yanin"
-      ],
-      "review_status": "approved",
-      "conflict_group_ref": null
-    },
-    {
-      "schema": "world_knowledge_claim_v1",
-      "claim_ref": "claim:v2-g1-hunting-grounds-belong-to-an-owner",
-      "domain": "social_law_economy",
-      "subject_ref": "wk:social_law_economy:v2-hunting-grounds-ownership",
-      "predicate": "supported_fact",
-      "object": {
-        "kind": "literal",
-        "value": "hunting_and_trapping_grounds_belong_to_an_owner_trespass_is_a_wrong"
-      },
-      "polarity": "support",
-      "applicability": {
-        "time": {
-          "from": 1200,
-          "to": 1300,
-          "precision": "range"
-        },
-        "places": [
-          {
-            "place_ref": "region_novgorod_land",
-            "relation": "used_in"
-          }
-        ]
-      },
-      "qualifiers": {
-        "typicality": "common",
-        "confidence": "medium",
-        "directness": "analogical"
-      },
-      "knowledge_access": {
-        "class": "common_cultural",
-        "required_facets": []
-      },
-      "hard_exclusion": null,
-      "evidence_refs": [
-        "evidence:v2-g1-hunting-grounds-belong-to-village"
       ],
       "review_status": "approved",
       "conflict_group_ref": null
@@ -1048,46 +817,6 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
-      "claim_ref": "claim:v2-g1-berkovets-reckoned-as-ten-poods",
-      "domain": "social_law_economy",
-      "subject_ref": "wk:social_law_economy:v2-berkovets-weight-unit",
-      "predicate": "supported_fact",
-      "object": {
-        "kind": "literal",
-        "value": "berkovets_reckoned_as_roughly_ten_poods"
-      },
-      "polarity": "support",
-      "applicability": {
-        "time": {
-          "from": 1200,
-          "to": 1300,
-          "precision": "range"
-        },
-        "places": [
-          {
-            "place_ref": "region_novgorod_land",
-            "relation": "used_in"
-          }
-        ]
-      },
-      "qualifiers": {
-        "typicality": "common",
-        "confidence": "medium",
-        "directness": "inferred"
-      },
-      "knowledge_access": {
-        "class": "common_cultural",
-        "required_facets": []
-      },
-      "hard_exclusion": null,
-      "evidence_refs": [
-        "evidence:v2-g1-berkovets-ten-poods"
-      ],
-      "review_status": "approved",
-      "conflict_group_ref": null
-    },
-    {
-      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:v2-g1-goods-measured-in-cubits",
       "domain": "social_law_economy",
       "subject_ref": "wk:social_law_economy:v2-cloth-and-goods-measures",
@@ -1286,114 +1015,9 @@
       ],
       "review_status": "approved",
       "conflict_group_ref": null
-    },
-    {
-      "schema": "world_knowledge_claim_v1",
-      "claim_ref": "claim:v2-g1-lender-loses-principal-after-three-times-interest",
-      "domain": "social_law_economy",
-      "subject_ref": "wk:social_law_economy:v2-ustav-o-rezakh-interest-limits",
-      "predicate": "supported_fact",
-      "object": {
-        "kind": "literal",
-        "value": "lender_who_collects_interest_three_times_may_not_also_take_the_principal"
-      },
-      "polarity": "support",
-      "applicability": {
-        "time": {
-          "from": 1200,
-          "to": 1300,
-          "precision": "range"
-        },
-        "places": [
-          {
-            "place_ref": "region_novgorod_land",
-            "relation": "used_in"
-          }
-        ]
-      },
-      "qualifiers": {
-        "typicality": "attested",
-        "confidence": "high",
-        "directness": "direct"
-      },
-      "knowledge_access": {
-        "class": "common_cultural",
-        "required_facets": []
-      },
-      "hard_exclusion": null,
-      "evidence_refs": [
-        "evidence:v2-g1-lose-principal-after-three-times"
-      ],
-      "review_status": "approved",
-      "conflict_group_ref": null
-    },
-    {
-      "schema": "world_knowledge_claim_v1",
-      "claim_ref": "claim:v2-g1-monastery-owns-village-with-dependents",
-      "domain": "social_law_economy",
-      "subject_ref": "wk:social_law_economy:v2-monastery-landholding",
-      "predicate": "supported_fact",
-      "object": {
-        "kind": "literal",
-        "value": "monastery_can_own_a_whole_village_with_dependent_people_working_it"
-      },
-      "polarity": "support",
-      "applicability": {
-        "time": {
-          "from": 1200,
-          "to": 1300,
-          "precision": "range"
-        },
-        "places": [
-          {
-            "place_ref": "region_novgorod_land",
-            "relation": "used_in"
-          }
-        ]
-      },
-      "qualifiers": {
-        "typicality": "attested",
-        "confidence": "medium",
-        "directness": "direct"
-      },
-      "knowledge_access": {
-        "class": "common_cultural",
-        "required_facets": []
-      },
-      "hard_exclusion": null,
-      "evidence_refs": [
-        "evidence:v2-g1-monastery-granted-village-immunity",
-        "evidence:v2-g1-monastery-village-granted-by-princes"
-      ],
-      "review_status": "approved",
-      "conflict_group_ref": null
     }
   ],
   "claim_localizations": [
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-runaway-kholop-harborer-pays-owner",
-      "locale": "ru",
-      "runtime_text": "Кто чужого беглого холопа укроет, накормит хлебом или укажет ему путь, тот платит за него хозяину пять гривен, а если это была роба — шесть гривен.",
-      "search_aliases": [
-        "беглый холоп",
-        "укрыть беглого холопа",
-        "накормить беглого",
-        "плата за беглого холопа"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-runaway-kholop-harborer-pays-owner",
-      "locale": "en",
-      "runtime_text": "Whoever shelters, feeds bread to, or shows the way to another man's runaway kholop must pay the owner five grivny for him, or six grivny if it was a female servant.",
-      "search_aliases": [
-        "runaway kholop",
-        "harbor a runaway servant",
-        "payment for hiding a servant",
-        "shelter a fugitive"
-      ]
-    },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:v2-g1-grivna-equals-twenty-nogata",
@@ -1416,30 +1040,6 @@
         "how many nogata in a grivna",
         "old money count",
         "kuna and nogata"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-kuna-now-same-as-rezana",
-      "locale": "ru",
-      "runtime_text": "Резаны теперь в счёте не осталось — где прежде считали резаной, там нынче считают куной.",
-      "search_aliases": [
-        "резана и куна",
-        "чем теперь считают вместо резаны",
-        "нынешний счёт денег",
-        "куны вместо резан"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-kuna-now-same-as-rezana",
-      "locale": "en",
-      "runtime_text": "The rezana is no longer used in reckoning — wherever one used to count in rezana, one now counts in kuna.",
-      "search_aliases": [
-        "rezana and kuna",
-        "what replaced the rezana",
-        "current money count",
-        "kuna instead of rezana"
       ]
     },
     {
@@ -1512,30 +1112,6 @@
         "exchange silver for kuna",
         "value of silver grivna",
         "silver grivna price"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-hunting-grounds-belong-to-an-owner",
-      "locale": "ru",
-      "runtime_text": "Ловища, перевесища, бобровые гоны и прочие угодья для звериной и птичьей ловли тянутся к какому-нибудь селу или двору — они не вольные, а чьи-то; ловить в чужом угодье без спроса — обида хозяину.",
-      "search_aliases": [
-        "чьи ловища",
-        "охота в чужом угодье",
-        "звериные ловы",
-        "перевесище бобровый гон"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-hunting-grounds-belong-to-an-owner",
-      "locale": "en",
-      "runtime_text": "Hunting grounds, snaring places, beaver runs and other such grounds belong to some village or household — they are not free for anyone; hunting in another's grounds without leave wrongs the owner.",
-      "search_aliases": [
-        "whose hunting grounds",
-        "hunting on another's land",
-        "trapping grounds owner",
-        "beaver run ownership"
       ]
     },
     {
@@ -1684,30 +1260,6 @@
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-berkovets-reckoned-as-ten-poods",
-      "locale": "ru",
-      "runtime_text": "Берковец считают в десять пудов.",
-      "search_aliases": [
-        "берковец пуды",
-        "сколько пудов в берковце",
-        "мера веса берковец",
-        "берковец это сколько"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-berkovets-reckoned-as-ten-poods",
-      "locale": "en",
-      "runtime_text": "A berkovets is reckoned as ten poods.",
-      "search_aliases": [
-        "berkovets in poods",
-        "how many poods in a berkovets",
-        "berkovets weight",
-        "how much is a berkovets"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:v2-g1-goods-measured-in-cubits",
       "locale": "ru",
       "runtime_text": "Длину меряют локтями и саженями; в сажени — четыре локтя, а в локте — две пяди.",
@@ -1825,68 +1377,9 @@
         "lawful interest rate",
         "allowed loan interest"
       ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-lender-loses-principal-after-three-times-interest",
-      "locale": "ru",
-      "runtime_text": "А кто взял проценты уже три раза, тому и самого долга больше не брать.",
-      "search_aliases": [
-        "взял проценты трижды",
-        "долг после процентов",
-        "теряет ли заимодавец долг",
-        "устав о резах"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-lender-loses-principal-after-three-times-interest",
-      "locale": "en",
-      "runtime_text": "But whoever has already taken interest three times may no longer take the principal itself.",
-      "search_aliases": [
-        "took interest three times",
-        "debt after interest paid",
-        "lender loses the debt",
-        "statute on interest"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-monastery-owns-village-with-dependents",
-      "locale": "ru",
-      "runtime_text": "Монастырю может принадлежать целое село с данью, вирой и пошлинами с него — такое село дал ему князь, и на монастырь в нём трудятся зависимые люди.",
-      "search_aliases": [
-        "монастырское село",
-        "село дано монастырю",
-        "зависимые люди монастыря",
-        "вотчина монастыря"
-      ]
-    },
-    {
-      "schema": "world_knowledge_claim_localization_v1",
-      "claim_ref": "claim:v2-g1-monastery-owns-village-with-dependents",
-      "locale": "en",
-      "runtime_text": "A monastery may own a whole village along with its tribute, vira and dues — such a village was granted to it by a prince, and dependent people of the monastery work it.",
-      "search_aliases": [
-        "monastery-owned village",
-        "village granted to a monastery",
-        "monastery dependents",
-        "monastery estate"
-      ]
     }
   ],
   "evidence": [
-    {
-      "schema": "world_knowledge_evidence_v1",
-      "evidence_ref": "evidence:v2-g1-runaway-kholop-harborer",
-      "source_ref": "source:book-641351",
-      "anchor": {
-        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2866",
-        "record_id": "book:641351"
-      },
-      "note": "«Если холоп бежит, а господин объявит об этом, если кто, услышав об этом или зная о том, что он холоп, даст ему хлеба или укажет ему путь, то платить ему за холопа 5 гривен, а за робу 6 гривен» — прямо задаёт плату укрывателя беглого холопа хозяину.",
-      "review_status": "approved"
-    },
     {
       "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:v2-g1-grivna-twenty-nogata",
@@ -1896,17 +1389,6 @@
         "record_id": "book:177850"
       },
       "note": "«гривна = 20 ногатам = 25 кунам = 50 резанам» — задаёт счёт Краткой Правды XI в.; для XIII в. взято как аналогия, отмеченная в note самой строки.",
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_evidence_v1",
-      "evidence_ref": "evidence:v2-g1-kuna-replaces-rezana",
-      "source_ref": "source:book-177850",
-      "anchor": {
-        "section": "Денежно-весовые системы домонгольской Руси > Глава II Денежная терминология и денежный счет домонгольской Руси ¶126",
-        "record_id": "book:177850"
-      },
-      "note": "«в нем полностью отсутствует резана, место которой везде занимает куна» — прямо подтверждает, что в счёте Пространной Правды (действующей ~1230) куна заменила резану.",
       "review_status": "approved"
     },
     {
@@ -1951,17 +1433,6 @@
         "record_id": "book:177850"
       },
       "note": "«Гривна кун = гривне серебра: 4» — подтверждает то же соотношение отдельным подсчётом исследователя.",
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_evidence_v1",
-      "evidence_ref": "evidence:v2-g1-hunting-grounds-belong-to-village",
-      "source_ref": "source:book-751267",
-      "anchor": {
-        "section": "Образование единого Русского государства > Общественно-экономический и политический строй Северо-Восточной Руси в период феодальной раздробленности > А.В. Куза. Новгородская земля ¶2636",
-        "record_id": "book:751267"
-      },
-      "note": "«К селу «тянули» различные угодья... ловища, «бортные ухожаи», бобровые гоны, «тетеревники», «гоголиные ловы», «перевесища»...» — подтверждает, что промысловые угодья принадлежат конкретному селу/двору, а не являются вольными; для Новгородской земли ~1230 применено как аналогия (источник о Северо-Восточной Руси).",
       "review_status": "approved"
     },
     {
@@ -2043,17 +1514,6 @@
     },
     {
       "schema": "world_knowledge_evidence_v1",
-      "evidence_ref": "evidence:v2-g1-berkovets-ten-poods",
-      "source_ref": "source:book-356156",
-      "anchor": {
-        "section": "Глава 5. Метрология > Метрология древнерусского государства (X — начало XII в.) ¶1118",
-        "record_id": "book:356156"
-      },
-      "note": "«В Уставной грамоте князя Всеволода в берковцах исчисляется вес воска... позднее берковец = 10 пудам» — задаёт соотношение берковца и пуда; note самой строки указывает, что точное соотношение для XIII в. не установлено, отсюда сниженная directness.",
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:v2-g1-sazhen-four-cubits",
       "source_ref": "source:book-356156",
       "anchor": {
@@ -2116,39 +1576,6 @@
         "record_id": "book:641351"
       },
       "note": "«Если кто взимает по 10 кун на гривну за год, то этого не запрещать» — прямо задаёт дозволенную ставку годового роста.",
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_evidence_v1",
-      "evidence_ref": "evidence:v2-g1-lose-principal-after-three-times",
-      "source_ref": "source:book-641351",
-      "anchor": {
-        "section": "РУССКАЯ ПРАВДА (ПРОСТРАННАЯ РЕДАКЦИЯ) > ПЕРЕВОД ¶2805",
-        "record_id": "book:641351"
-      },
-      "note": "«если он возьмет проценты трижды, то <самого> долга ему не брать» — прямо задаёт потерю права на долг после троекратного взимания резов.",
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_evidence_v1",
-      "evidence_ref": "evidence:v2-g1-monastery-granted-village-immunity",
-      "source_ref": "source:book-73687",
-      "anchor": {
-        "section": "Глава VII. Правительство и управление > 8. Поместье ¶828",
-        "record_id": "book:73687"
-      },
-      "note": "«Собственность была дарована «с данью, вирой и штрафами»» — про дарение Юрьеву монастырю волости Буйцы князем Мстиславом; подтверждает монастырское землевладение с судебным иммунитетом.",
-      "review_status": "approved"
-    },
-    {
-      "schema": "world_knowledge_evidence_v1",
-      "evidence_ref": "evidence:v2-g1-monastery-village-granted-by-princes",
-      "source_ref": "source:book-220832",
-      "anchor": {
-        "section": "Новгородская феодальная вотчина ¶2001",
-        "record_id": "book:220832"
-      },
-      "note": "«эта волость была дана князьями Мстиславом Владимировичем» — подтверждает княжеский дар волости Юрьеву монастырю независимым исследованием (Янин).",
       "review_status": "approved"
     }
   ]

@@ -224,17 +224,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": [
-            "nov_role_dependent_peasant",
-            "nov_role_pastoral_worker",
-            "nov_role_smerd_householder"
-          ]
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -308,7 +299,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -754,17 +745,8 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": [
-            "nov_role_boatman",
-            "nov_role_ferryman",
-            "nov_role_helmsman"
-          ]
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -843,7 +825,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -992,9 +974,7 @@
         "овца",
         "ягнёнок",
         "окот",
-        "уход",
-        "ягнёнок в избе",
-        "новорождённый ягнёнок зимой"
+        "уход"
       ]
     },
     {
@@ -1304,10 +1284,7 @@
         "лодка",
         "ветер",
         "течение",
-        "пристань",
-        "плыть против течения Волхова",
-        "догнать лодку вплавь",
-        "сильное течение реки"
+        "пристань"
       ]
     },
     {

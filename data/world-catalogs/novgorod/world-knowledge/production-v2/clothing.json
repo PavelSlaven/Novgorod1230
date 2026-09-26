@@ -433,7 +433,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -513,7 +513,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -633,7 +633,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -827,7 +827,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -867,7 +867,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -907,7 +907,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -987,7 +987,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1067,7 +1067,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1107,7 +1107,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1147,7 +1147,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1772,7 +1772,7 @@
       "claim_ref": "claim:clothing-onuchi-wrap",
       "locale": "ru",
       "runtime_text": "Онучи могли быть полосами ткани, обматываемыми вокруг стопы и голени. Это не создаёт обувь или дорожную сцену.",
-      "search_aliases": ["онучи","обмотки на ногу","зимняя обувь дружинника"]
+      "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
@@ -1926,7 +1926,7 @@
       "claim_ref": "claim:clothing-sheepskin-kozhukh",
       "locale": "ru",
       "runtime_text": "Овчинный кожух описан как зимняя одежда мехом внутрь. Это историческая форма, не гарантированная защита от любого холода.",
-      "search_aliases": ["кожух шуба зимой","меховая шапка рукавицы","ночлег в погосте"]
+      "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

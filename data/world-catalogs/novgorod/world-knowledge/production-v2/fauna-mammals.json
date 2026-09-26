@@ -965,7 +965,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1055,7 +1055,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1085,7 +1085,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1115,7 +1115,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1145,7 +1145,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1175,7 +1175,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1235,7 +1235,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1265,7 +1265,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1295,7 +1295,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1325,7 +1325,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1355,7 +1355,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1415,7 +1415,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1445,7 +1445,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1475,7 +1475,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1505,7 +1505,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1535,7 +1535,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1595,16 +1595,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": [
-            "nov_role_forest_promyslovik",
-            "nov_role_hunter"
-          ]
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -1693,7 +1685,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1723,7 +1715,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1753,7 +1745,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1783,7 +1775,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1813,7 +1805,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1903,7 +1895,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2001,7 +1993,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2031,7 +2023,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2061,7 +2053,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2121,7 +2113,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2151,7 +2143,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2331,7 +2323,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2391,7 +2383,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2421,7 +2413,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2481,7 +2473,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2511,7 +2503,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2541,7 +2533,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2571,7 +2563,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2601,7 +2593,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2631,7 +2623,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2661,7 +2653,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3096,7 +3088,7 @@
       "claim_ref": "claim:fauna-mammals-wolf-pack-sociality",
       "locale": "ru",
       "runtime_text": "Волки → могут жить и охотиться → семейными стаями.",
-      "search_aliases": ["волки зимой в пути","стая волков","опасность волков на дороге"]
+      "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",

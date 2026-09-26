@@ -448,16 +448,8 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": [
-            "nov_role_apprentice",
-            "nov_role_youth_helper"
-          ]
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -545,17 +537,8 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": [
-            "nov_role_apprentice",
-            "nov_role_craftsman_master",
-            "nov_role_journeyman"
-          ]
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -803,7 +786,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -923,7 +906,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -963,7 +946,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1003,7 +986,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1043,7 +1026,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1083,7 +1066,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1123,7 +1106,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1203,7 +1186,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1523,7 +1506,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1563,7 +1546,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1738,11 +1721,7 @@
       "search_aliases": [
         "песня",
         "рассказ",
-        "игра",
-        "посиделки",
-        "вечерние посиделки",
-        "прядут и поют",
-        "сказки вечером"
+        "игра"
       ]
     },
     {

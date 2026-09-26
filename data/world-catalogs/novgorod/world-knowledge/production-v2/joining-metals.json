@@ -486,13 +486,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -906,11 +901,7 @@
       "locale": "ru",
       "runtime_text": "Подходящая закалка стали повышает твёрдость, но может повысить хрупкость.",
       "search_aliases": [
-        "Подходящая закалка стали повышает твёрдость, но может повысить хрупкость.",
-        "закалка железа",
-        "мягкое кричное железо",
-        "лезвие без стали гнётся",
-        "железо без стали не закаляется"
+        "Подходящая закалка стали повышает твёрдость, но может повысить хрупкость."
       ]
     },
     {

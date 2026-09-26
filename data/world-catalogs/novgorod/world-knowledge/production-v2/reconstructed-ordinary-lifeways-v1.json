@@ -261,7 +261,7 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -476,13 +476,8 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -611,13 +606,8 @@
         "directness": "editorial"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -1202,9 +1192,7 @@
       "locale": "ru",
       "runtime_text": "Кожаный или грубый тканевый передник защищает одежду при грязной работе; кожа особенно уместна возле кузни.",
       "search_aliases": [
-        "Кожаный или грубый тканевый передник защищает одежду при грязной работе; кожа особенно уместна возле кузни.",
-        "кожевенный двор",
-        "передник кожевника"
+        "Кожаный или грубый тканевый передник защищает одежду при грязной работе; кожа особенно уместна возле кузни."
       ]
     },
     {
@@ -1294,9 +1282,7 @@
       "locale": "ru",
       "runtime_text": "Кузнечная работа может оставлять окалину, золу, остатки угля и обрезки железа.",
       "search_aliases": [
-        "Кузнечная работа может оставлять окалину, золу, остатки угля и обрезки железа.",
-        "искры от металла в кузнице",
-        "окалина летит при сварке"
+        "Кузнечная работа может оставлять окалину, золу, остатки угля и обрезки железа."
       ]
     },
     {

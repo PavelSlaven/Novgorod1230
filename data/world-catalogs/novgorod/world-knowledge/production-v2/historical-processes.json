@@ -557,13 +557,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -592,13 +587,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -837,13 +827,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -882,13 +867,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -927,7 +907,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -1660,10 +1640,7 @@
       "search_aliases": [
         "зимние сани",
         "Твердислав",
-        "1220",
-        "ездить на санях по льду",
-        "ночевать в избе в дороге",
-        "ночлег у костра в поле"
+        "1220"
       ]
     },
     {
@@ -1909,10 +1886,7 @@
       "runtime_text": "Пушнина поступала в Новгород из северных округов уже в XI веке; это контекст обмена, не мех конкретного NPC.",
       "search_aliases": [
         "Пушнина",
-        "Новгородский обмен",
-        "вывоз мехов",
-        "торговля с немцами",
-        "за море"
+        "Новгородский обмен"
       ]
     },
     {
@@ -1952,9 +1926,7 @@
       "runtime_text": "Упряжные сани исторически совместимы с сухопутной перевозкой груза вне зимы: для Новгорода это косвенный вывод исследования средневековых находок. Он не устанавливает пригодность любых саней в любой сезон, состояние грунта, тягу, грузоподъёмность, маршрут или наличие саней.",
       "search_aliases": [
         "сани летом",
-        "перевозка груза вне зимы",
-        "хоронят на санях летом",
-        "похоронные сани"
+        "перевозка груза вне зимы"
       ]
     },
     {

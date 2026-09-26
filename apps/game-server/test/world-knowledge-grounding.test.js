@@ -217,7 +217,12 @@ test('an empty semantic_resolution plan runs a default query before NO_KNOWLEDGE
   assert.equal(diagnostics[0].planner_called, true);
   assert.equal(diagnostics[0].cache_miss, true);
   assert.equal(diagnostics[0].cache_hit, false);
+  assert.ok(diagnostics[0].domains.length > 0);
+  assert.ok(diagnostics[0].coverage.length > 0);
+  assert.notEqual(diagnostics[0].retrieval_observability, null);
   assert.equal(traces[0].event, 'world_knowledge_not_required');
+  assert.notEqual(traces[0].query, null);
+  assert.deepEqual(traces[0].query.search_hints, ['Громко зову Онисима.']);
 });
 
 test('empty plan that admits facts keeps a grounded slice with sufficiency', async () => {
@@ -253,7 +258,184 @@ test('empty plan that admits facts keeps a grounded slice with sufficiency', asy
     remaining_intent: 'Прядёшь ли лён?'
   }, 'semantic_resolution');
   assert.equal(grounded.world_knowledge.schema, 'world_knowledge_slice_v1');
-  assert.equal(grounded.world_knowledge.sufficiency, 'SUFFICIENT_KNOWLEDGE');
+  assert.equal(grounded.world_knowledge.sufficiency, 'PARTIAL_KNOWLEDGE');
+  assert.equal(grounded.world_knowledge.facts.length, 1);
+});
+
+test('default-query encoder failure is fail-closed WORLD_KNOWLEDGE_UNAVAILABLE', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      encoder: { async encode() {
+        throw new Error('giga down');
+      } },
+      vector_index: { search() { return new Map(); } } },
+    roleRunner: { async run() {
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: [], focus_refs: [],
+        requested_predicates: [], search_hints: [] } };
+    } }
+  });
+  await assert.rejects(
+    () => grounder.ground({ request_id: 'turn:encoder-fail',
+      remaining_intent: 'Что с цикутой?' }, 'semantic_resolution'),
+    (error) => error instanceof WorldKnowledgeError
+      && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE');
+});
+
+test('repeated ground of the same request reports cache_hit', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  const diagnostics = [];
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge() {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'environment', status: 'covered' }],
+          verdict: 'supported',
+          hard_constraints: [],
+          facts: [{ claim_ref: 'claim:cache', runtime_text: 'Кеш.' }],
+          disputes: [], gaps: [], context_text: 'FACT claim:cache: Кеш.',
+          search_hint_hits: [true]
+        };
+      } },
+      encoder: { async encode() { return new Float32Array(1024); } },
+      vector_index: { search() { return new Map(); } } },
+    telemetry: { onDetail: (entry) => diagnostics.push(entry) },
+    roleRunner: { async run() {
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: ['environment'], focus_refs: [],
+        requested_predicates: [], search_hints: ['кеш'] } };
+    } }
+  });
+  const request = { request_id: 'turn:cache', remaining_intent: 'кеш' };
+  await grounder.ground(request, 'semantic_resolution');
+  await grounder.ground(request, 'semantic_resolution');
+  assert.equal(diagnostics[0].cache_hit, false);
+  assert.equal(diagnostics[0].cache_miss, true);
+  assert.equal(diagnostics[1].cache_hit, true);
+  assert.equal(diagnostics[1].cache_miss, false);
+});
+
+test('NO_KNOWLEDGE after default query keeps domains coverage and query in diagnostic/trace', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  const diagnostics = [];
+  const traces = [];
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge(query) {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: query.domains.map((domain) => ({ domain, status: 'covered' })),
+          verdict: 'unresolved',
+          hard_constraints: [], facts: [], disputes: [], gaps: [],
+          context_text: '', search_hint_hits: [false]
+        };
+      } },
+      encoder: { async encode() { return new Float32Array(1024); } },
+      vector_index: { search() { return new Map(); } } },
+    telemetry: { onDetail: (entry) => diagnostics.push(entry),
+      onGameplayTrace: (entry) => traces.push(entry) },
+    roleRunner: { async run() {
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: [], focus_refs: [],
+        requested_predicates: [], search_hints: [] } };
+    } }
+  });
+  await grounder.ground({ request_id: 'turn:diag',
+    remaining_intent: 'Пустой поиск.' }, 'semantic_resolution');
+  assert.ok(diagnostics[0].domains.length > 0);
+  assert.ok(diagnostics[0].coverage.length > 0);
+  assert.notEqual(diagnostics[0].retrieval_observability, null);
+  assert.notEqual(traces[0].query, null);
+  assert.ok(traces[0].query.domains.length > 0);
+  assert.deepEqual(traces[0].query.search_hints, ['Пустой поиск.']);
+  assert.notEqual(traces[0].retrieval_observability, null);
+});
+
+test('default query with only disputes stays PARTIAL not NO_KNOWLEDGE', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge() {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'materials_substances', status: 'covered' }],
+          verdict: 'disputed',
+          hard_constraints: [], facts: [],
+          disputes: [{ conflict_group_ref: 'g1',
+            claims: [{ claim_ref: 'c1', runtime_text: 'спор' }] }],
+          gaps: [], context_text: 'DISPUTE g1', search_hint_hits: [true]
+        };
+      } },
+      encoder: { async encode() { return new Float32Array(1024); } },
+      vector_index: { search() { return new Map(); } } },
+    roleRunner: { async run() {
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: [], focus_refs: [],
+        requested_predicates: [], search_hints: [] } };
+    } }
+  });
+  const grounded = await grounder.ground({
+    request_id: 'turn:dispute', remaining_intent: 'Спорный факт.'
+  }, 'semantic_resolution');
+  assert.equal(grounded.world_knowledge.sufficiency, 'PARTIAL_KNOWLEDGE');
+  assert.equal(grounded.world_knowledge.disputes.length, 1);
+});
+
+test('unseen-equivalent plan yields PARTIAL when hints miss and vectors admit', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge() {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'environment', status: 'covered' }],
+          verdict: 'supported',
+          hard_constraints: [],
+          facts: [{ claim_ref: 'claim:vector-only', runtime_text: 'Вектор.' }],
+          disputes: [], gaps: [],
+          context_text: 'FACT claim:vector-only: Вектор.',
+          search_hint_hits: [false, false]
+        };
+      } },
+      encoder: { async encode() { return new Float32Array(1024); } },
+      vector_index: { search() {
+        return new Map([['claim:vector-only', 0.9]]);
+      } } },
+    roleRunner: { async run() {
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: ['environment'],
+        focus_refs: [], requested_predicates: [],
+        search_hints: ['несуществующий термин а', 'несуществующий термин б'] } };
+    } }
+  });
+  const grounded = await grounder.ground({
+    request_id: 'turn:unseen', remaining_intent: 'несуществующий термин'
+  }, 'semantic_resolution');
+  assert.equal(grounded.world_knowledge.sufficiency, 'PARTIAL_KNOWLEDGE');
   assert.equal(grounded.world_knowledge.facts.length, 1);
 });
 

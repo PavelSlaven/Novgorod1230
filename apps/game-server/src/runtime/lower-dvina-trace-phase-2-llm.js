@@ -18,6 +18,7 @@ import { activeConversationChoiceExample, preparedFollowupPrompt,
   semanticTurnStepExample, visibleConversationChoiceExamples } from
   './lower-dvina-trace-turn-step-planner-prompt.js';
 import { groundTurnRequest, wkClosure } from './world-knowledge-grounding.js';
+import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { correctOrdinaryDiscoveryScope, correctSupportedAssessment,
   correctTemporalQualifierContinuation,
   correctVisibleNpcStatusObservation } from
@@ -196,14 +197,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
 }
 
 function plannerRequestWire(input) {
-  const knowledge = input.world_knowledge;
-  if (knowledge?.schema !== 'world_knowledge_slice_v1'
-      || !['coverage', 'hard_constraints', 'facts', 'disputes', 'gaps']
-        .every((field) => Array.isArray(knowledge[field]))) return input;
-  // The WK owner renders context_text from these same structured fields.
-  // Keep the grounded slice and its telemetry intact; omit only its wire duplicate.
-  const { context_text, ...structured } = knowledge;
-  return { ...input, world_knowledge: structured };
+  return omitWorldKnowledgeContextText(input);
 }
 
 function preserveUnrelatedOperationSelection(original, repaired, errors,

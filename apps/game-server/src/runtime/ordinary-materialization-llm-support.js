@@ -1,4 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
+import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { serverError } from '../errors.js';
 import {
   snapshotLowerDvinaTraceOrdinaryStageBJson
@@ -104,12 +105,7 @@ function ordinaryKnowledgeClosure(request) {
 }
 
 function ordinaryRequestWire(request) {
-  const knowledge = request.world_knowledge;
-  if (knowledge?.schema !== 'world_knowledge_slice_v1'
-      || !['coverage', 'hard_constraints', 'facts', 'disputes', 'gaps']
-        .every((field) => Array.isArray(knowledge[field]))) return request;
-  const { context_text, ...structured } = knowledge;
-  return { ...request, world_knowledge: structured };
+  return omitWorldKnowledgeContextText(request);
 }
 
 function ordinarySemanticShape(request) {

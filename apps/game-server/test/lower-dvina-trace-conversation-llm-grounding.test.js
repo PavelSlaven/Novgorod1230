@@ -317,8 +317,11 @@ test('conversation production model receives planner-selected role, material, an
     worldKnowledgeGrounder: grounder })(input);
   assert.deepEqual(query.context.actor_facets, { role_ref: 'nov_role_fisher' });
   assert.equal(query.context.time.year, 1231);
-  const modelPrompt = calls.find((call) =>
-    call.role_id === 'npc_conversation_responder').messages[1].content;
+  const modelCall = calls.find((call) =>
+    call.role_id === 'npc_conversation_responder');
+  const modelPrompt = modelCall.messages[1].content;
+  assert.equal(Object.hasOwn(JSON.parse(modelPrompt).world_knowledge,
+    'context_text'), false);
   assert.match(modelPrompt, /Рыбацкая работа связана с сетями/u);
   assert.match(modelPrompt, /Рабочая одежда защищает при хозяйственной работе/u);
   assert.match(modelPrompt, /Рыбацкая стоянка — рабочее место/u);

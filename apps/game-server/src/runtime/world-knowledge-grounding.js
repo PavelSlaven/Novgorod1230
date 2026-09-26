@@ -92,25 +92,8 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       let effectivePlan = planned.plan;
       let usedDefaultQuery = false;
       if (planned.plan.domains.length === 0) {
-        if (purpose !== 'semantic_resolution') {
-          const questionClasses = questionClassesOf(bundle, purpose, []);
-          const worldKnowledge = noKnowledgeRequirement(bundle, purpose);
-          const grounded = Object.freeze({ ...request, world_knowledge: worldKnowledge });
-          cacheGrounded(cache, request, cacheKey, grounded);
-          telemetry?.onGameplayTrace?.(worldKnowledgeNoNeedTrace({ request,
-            purpose, semanticInput, plannerRequest, plannerPlan: planned.plan,
-            plannerCalls, questionClasses, worldKnowledge }));
-          emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
-            plannerCalls, started, packRevision: bundle.manifest.revision_id,
-            domains: [], focusRefs: [], predicates: [],
-            coverage: [], claimRefs: [], sliceChars: 0,
-            vectorStatus: 'not_required', embeddingMs: 0, vectorMs: 0,
-            retrievalMs: 0, retrievalObservability: null, cacheHit: false });
-          return grounded;
-        }
-        // Empty planner plan for semantic_resolution → deterministic default
-        // query over every purpose-allowed domain; NO_KNOWLEDGE_REQUIRED only
-        // after Core admits neither facts nor hard constraints.
+        // Empty plan allowed only for semantic_resolution (§51); validation
+        // rejects it for other purposes. Default query is the sole owner path.
         effectivePlan = {
           schema: 'world_knowledge_query_plan_v1',
           query_locale: planned.plan.query_locale || queryLocale,
@@ -172,20 +155,32 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       const coreResolutionMs = Math.max(0, performance.now() - coreStarted);
       if (usedDefaultQuery
           && slice.facts.length === 0
-          && slice.hard_constraints.length === 0) {
+          && slice.hard_constraints.length === 0
+          && (slice.disputes?.length ?? 0) === 0) {
         const worldKnowledgeSlice = noKnowledgeRequirement(bundle, purpose);
         const grounded = Object.freeze({ ...request,
           world_knowledge: worldKnowledgeSlice });
         cacheGrounded(cache, request, cacheKey, grounded);
+        const retrievalObservability = retrievalObservabilityOf({ bundle,
+          embeddingProfile: worldKnowledge.embedding_profile,
+          vectorScores, slice, embeddingMs, vectorMs, coreResolutionMs,
+          totalRetrievalMs: Math.max(0, performance.now() - retrievalStarted),
+          cacheOutcome: 'miss' });
         telemetry?.onGameplayTrace?.(worldKnowledgeNoNeedTrace({ request,
-          purpose, semanticInput, plannerRequest, plannerPlan: planned.plan,
-          plannerCalls, questionClasses, worldKnowledge: worldKnowledgeSlice }));
-        emitDiagnostic({ telemetry, purpose, request, planned, plannerMs,
-          plannerCalls, started, packRevision: bundle.manifest.revision_id,
-          domains: [], focusRefs: [], predicates: [],
-          coverage: [], claimRefs: [], sliceChars: 0,
+          purpose, semanticInput, plannerRequest, plannerPlan: effectivePlan,
+          plannerCalls, questionClasses, worldKnowledge: worldKnowledgeSlice,
+          query, retrievalObservability }));
+        emitDiagnostic({ telemetry, purpose, request, planned: {
+          plan: effectivePlan, repaired: planned.repaired
+        }, plannerMs, plannerCalls, started,
+          packRevision: bundle.manifest.revision_id,
+          domains: [...effectivePlan.domains],
+          focusRefs: [...effectivePlan.focus_refs],
+          predicates: [...query.requested_predicates],
+          coverage: (slice.coverage ?? []).map((entry) => ({ ...entry })),
+          claimRefs: [], sliceChars: 0,
           vectorStatus: 'ok', embeddingMs, vectorMs,
-          retrievalMs: coreResolutionMs, retrievalObservability: null,
+          retrievalMs: coreResolutionMs, retrievalObservability,
           cacheHit: false });
         return grounded;
       }
@@ -195,7 +190,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         totalRetrievalMs: Math.max(0, performance.now() - retrievalStarted),
         cacheOutcome: 'miss' });
       const grounded = Object.freeze({ ...request,
-        world_knowledge: modelSlice(slice) });
+        world_knowledge: modelSlice(slice, { fromDefaultQuery: usedDefaultQuery }) });
       cacheGrounded(cache, request, cacheKey, grounded);
       telemetry?.onGameplayTrace?.(worldKnowledgeTrace({ request, purpose,
         semanticInput, plannerRequest, plannerPlan: usedDefaultQuery

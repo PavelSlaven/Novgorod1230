@@ -227,3 +227,8 @@
 - **Что.** §85 требует lexical latency в telemetry. Сейчас lexical scoring идёт внутри `packages/world-knowledge` `resolveWorldKnowledge` без отдельного return-канала; public signature `(query, { vectorScores })` не отдаёт `lexical_ms`. Diagnostic ставит `lexical_ms: null`, `lexical_status: included_in_core_resolution`.
 - **Как жить.** Не менять публичную сигнатуру Core в #152; добавить отдельный timing channel в CR Core/telemetry, затем убрать LW.
 - **Issue.** [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152)
+
+### LW-047 — SUFFICIENT = лексическое попадание, не относимость; калибровка в #153
+- **Что.** `search_hint_hits` / `strongest > 0` проверяет лексическое совпадение hint с допущенным claim, а не topical relevance. Default-запрос §50 поэтому никогда не получает `SUFFICIENT_KNOWLEDGE` (максимум `PARTIAL`). `resolveTurnStepWorldKnowledge` в `@rus/turn` не дублирует default-query (owner — game-server grounder); у helper нет production-вызова — кандидат на удаление при чистке #127.
+- **Как жить.** Не поднимать default-query slice до SUFFICIENT; калибровку порога относимости на наборе аудита — #153 шаг 8.
+- **Issue.** [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152) → [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)

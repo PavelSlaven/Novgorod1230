@@ -101,9 +101,10 @@ and adds no second transaction owner.
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.
   Stable system rules предшествуют request-specific choices/mappings и audit
   shape/segment choices. Audit evidence краток, но сохраняет все разные findings.
-  Planner private wire опускает дублирующий WK context_text только при наличии
-  полного structured slice; facts/qualifiers/constraints/coverage/gaps/disputes,
-  canonical grounding и telemetry сохраняются.
+  Planner private wire опускает `context_text` через общий helper
+  `@rus/turn` `omitWorldKnowledgeContextText` / `worldKnowledgePromptData`;
+  facts/qualifiers/constraints/coverage/gaps/disputes, canonical grounding и
+  telemetry сохраняются.
   Narration prompts проверяют также temporal/aspectual связи и конкретный
   pending choice; whole-prose repair повторно применяет все grounding rules.
 
@@ -111,11 +112,14 @@ and adds no second transaction owner.
   когда raw semantic step не требует factual premise. Для `semantic_resolution`
   grounder всё равно строит deterministic default-запрос (все purpose-allowed
   domains, `search_hints` = `semantic_input`) и вызывает embedding/vector/Core;
-  `NO_KNOWLEDGE_REQUIRED` пишется только если Core не допустил facts/hard
-  constraints. Непустая factual need сохраняет прежний validated retrieval path.
+  `NO_KNOWLEDGE_REQUIRED` пишется только если Core не допустил facts, hard
+  constraints и disputes. Default-query slice никогда не получает
+  `SUFFICIENT_KNOWLEDGE` (макс. `PARTIAL`; LW-047). Encoder/vector отказ —
+  fail-closed `WORLD_KNOWLEDGE_UNAVAILABLE` без lexical fallback.
+  Непустая factual need сохраняет прежний validated retrieval path.
   Slice несёт `sufficiency` рядом с `verdict`; diagnostic — `cache_hit`/`cache_miss`.
-  NPC private wire (autonomous/conversation) опускает дублирующий `context_text`
-  при непустых structured facts, как turn step/O1/S1/N1.
+  Все шесть consumers (turn step/O1/S1/N1/autonomous/conversation) используют
+  один strip `context_text`.
 
 - Narration adapter даёт auditor request-local sources
   visible_change_N/uncertainty_N. Private wire разделяет required_current_beat

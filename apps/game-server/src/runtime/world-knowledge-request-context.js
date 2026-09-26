@@ -9,24 +9,20 @@ export function localeOf(request, bundle) {
 }
 export function semanticInputOf(request) {
   if (request.schema === 'ordinary_materialization_request_v1') {
-    const candidate = request.authority_envelope?.candidate;
-    return JSON.stringify({ mode: request.mode,
-      candidate_hint: request.candidate_query?.candidate_hint ?? null,
-      evidence_weight: request.candidate_query?.evidence_weight ?? null,
-      candidate: candidate == null ? null : {
-        semantic_type: candidate.semantic_type,
-        functional_bucket: candidate.functional_bucket,
-        admission_class: candidate.admission_class,
-        availability_class: candidate.availability_class,
-        coverage_kind: candidate.coverage_kind },
-      allowed_admission_classes: request.policy_refs?.allowed_admission_classes,
-      density_band: request.ordinary_state?.density_band,
-      remaining_identity_budget: request.ordinary_state?.remaining_identity_budget,
-      max_new_entities: request.technical_limits?.max_new_entities });
+    const text = ordinaryMaterializationText(request);
+    if (text) return text;
   }
   for (const value of [request.remaining_intent, request.root_player_action,
     request.utterance_text, request.semantic_input, request.reason]) {
     if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  if (request.schema === 'rus.s1_spatial_semantic_model_request.v1') {
+    const text = spatialSemanticText(request);
+    if (text) return text;
+  }
+  if (request.schema === 'npc_ordinary_semantic_remainder_request_v1') {
+    const text = npcOrdinaryText(request);
+    if (text) return text;
   }
   if (request.schema === 'npc_action_decision_request_v1'
       || request.schema === 'npc_conversation_response_request_v1') {
@@ -103,6 +99,57 @@ export function authoritativeContextOf(request, authoritative, defaults) {
   ]) if (typeof ref === 'string' && ref) placeRefs.add(ref);
   return { time: { year }, place_refs: [...placeRefs].sort(),
     actor_facets: actorFacetsOf(request, authoritative) };
+}
+
+function ordinaryMaterializationText(request) {
+  const candidate = request.authority_envelope?.candidate;
+  const parts = [
+    request.mode,
+    request.candidate_query?.candidate_hint,
+    candidate?.semantic_type,
+    candidate?.functional_bucket,
+    candidate?.admission_class,
+    candidate?.availability_class,
+    candidate?.coverage_kind,
+    ...(request.policy_refs?.allowed_admission_classes ?? []),
+    request.ordinary_state?.density_band
+  ];
+  return parts.filter((value) => typeof value === 'string' && value.trim())
+    .map((value) => value.trim()).join(' ').trim();
+}
+
+function spatialSemanticText(request) {
+  const context = request.semantic_context ?? {};
+  const envelope = request.approved_envelope ?? {};
+  const parts = [
+    context.allowed_kind, context.period, context.region, context.place_type,
+    context.environment, context.material_culture, context.ordinary_boundary,
+    envelope.kind, envelope.structural_variant
+  ];
+  return parts.filter((value) => typeof value === 'string' && value.trim())
+    .map((value) => value.trim()).join(' ').trim();
+}
+
+function npcOrdinaryText(request) {
+  const context = request.observable_context ?? {};
+  const parts = [context.display_label];
+  if (Array.isArray(context.scene_details)) {
+    for (const entry of context.scene_details) {
+      if (typeof entry === 'string' && entry.trim()) parts.push(entry.trim());
+    }
+  }
+  const cues = context.observable_cues;
+  if (cues && typeof cues === 'object' && !Array.isArray(cues)) {
+    for (const value of Object.values(cues)) {
+      if (typeof value === 'string' && value.trim()) parts.push(value.trim());
+      else if (Array.isArray(value)) {
+        for (const entry of value) {
+          if (typeof entry === 'string' && entry.trim()) parts.push(entry.trim());
+        }
+      }
+    }
+  }
+  return parts.filter(Boolean).join(' ').trim();
 }
 
 function npcSituationText(request) {

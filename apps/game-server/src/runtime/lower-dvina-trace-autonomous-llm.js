@@ -1,6 +1,6 @@
 import { serverError } from '../errors.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
-import { omitWorldKnowledgeContextText } from './world-knowledge-prompt-wire.js';
+import { omitWorldKnowledgeContextText } from '@rus/turn';
 
 const GENERIC_CHECK_OUTCOMES = Object.fromEntries([
   'clean_success', 'success', 'success_with_cost',

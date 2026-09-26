@@ -178,12 +178,31 @@ test('independent search hints retain their matches when another hint is rarer',
   const input = query({ domains: [support.domain], query_locale: 'en',
     search_hints: ['coppersmith', 'grain storage'],
     budget: { max_facts: 30, max_candidates: 30, max_context_chars: 10000 } });
-  const refs = core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref);
+  const slice = core.resolveWorldKnowledge(input);
+  const refs = slice.facts.map(({ claim_ref }) => claim_ref);
   assert.ok(refs.includes(rareRef));
   assert.ok(commonRefs.every((ref) => refs.includes(ref)));
+  assert.deepEqual(slice.search_hint_hits, [true, true]);
   // Incidental words within one phrase still face the relative admission gate.
   input.search_hints = ['grain storage coppersmith'];
   assert.deepEqual(core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref), [rareRef]);
+});
+
+test('search_hint_hits is one bool per hint for orchestrator sufficiency', () => {
+  const bundle = structuredClone(baseBundle);
+  const support = bundle.claims[0];
+  const hitRef = 'claim:test:hint-hit';
+  bundle.claims.push({
+    ...structuredClone(support), claim_ref: hitRef,
+    applicability: { context_scope: 'universal' }
+  });
+  bundle.lexical_indexes.en.coppersmith = [hitRef];
+  const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
+    domains: [support.domain], query_locale: 'en',
+    search_hints: ['coppersmith', 'zzzz-nonexistent-token']
+  }));
+  assert.deepEqual(slice.search_hint_hits, [true, false]);
+  assert.ok(slice.facts.some((fact) => fact.claim_ref === hitRef));
 });
 
 test('vector recall does not tighten lexical admission when candidate budget has room', () => {

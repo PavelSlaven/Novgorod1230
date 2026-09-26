@@ -2147,14 +2147,19 @@ RETRIEVE
 до понимания текста, уже существующий query planner может завершить собственную
 работу каноническим пустым six-field plan. Для purpose `semantic_resolution`
 пустой план **не** завершает grounding сразу как `NO_KNOWLEDGE_REQUIRED`:
-orchestrator строит детерминированный default-запрос
-(`domains` = все purpose-allowed из coverage profiles, `focus_refs: []`,
-`requested_predicates: []`, `search_hints` = `semantic_input` целиком) и
-вызывает Core. `NO_KNOWLEDGE_REQUIRED` пишется только если этот запрос не
-допустил ни одного факта и ни одного hard constraint
-(`facts.length === 0 && hard_constraints.length === 0`). Пустой план по-прежнему
-означает «планировщик не увидел factual need», а не отсутствие coverage; второй
-classifier или planner не создаётся. (CR #152)
+orchestrator (production grounder в game-server) строит детерминированный
+default-запрос (`domains` = все purpose-allowed из coverage profiles,
+`focus_refs: []`, `requested_predicates: []`, `search_hints` = `semantic_input`
+целиком) и вызывает Core. `NO_KNOWLEDGE_REQUIRED` пишется только если этот
+запрос не допустил ни одного факта, hard constraint и dispute
+(`facts.length === 0 && hard_constraints.length === 0 && disputes.length === 0`).
+Пустой план по-прежнему означает «планировщик не увидел factual need», а не
+отсутствие coverage; второй classifier или planner не создаётся. (CR #152)
+
+Отказ Giga/encoder или vector scan на любом WK-запросе, включая default-
+запрос §50, — fail-closed `WORLD_KNOWLEDGE_UNAVAILABLE`. Лексического runtime
+fallback нет: контракт запрещает lexical-only запасной путь при недоступности
+required Giga semantic retrieval. (REVIEW-033 / CR #152)
 
 ---
 
@@ -2184,9 +2189,12 @@ refs, predicates либо hints при пустом `domains` invalid. Друг�
 сохраняют непустой domain и собственный grounding contract.
 
 `semantic_input` для каждой схемы, которая вызывает grounding, — текст,
-собранный из полей этой схемы. Сырой `JSON.stringify(request)` как fallback
-запрещён: отсутствие текстового входа — typed error
-`WORLD_KNOWLEDGE_SEMANTIC_INPUT_UNAVAILABLE`. (CR #152)
+собранный из полей этой схемы (turn step / O1 / S1 / N1 / NPC autonomous /
+conversation). Для S1 — `semantic_context` и `approved_envelope.kind`/
+`structural_variant`; для N1 — `observable_context.display_label`,
+`scene_details` и `observable_cues`. Сырой `JSON.stringify(request)` как
+fallback запрещён: отсутствие текстового входа — typed error
+`WORLD_KNOWLEDGE_SEMANTIC_INPUT_UNAVAILABLE`. (CR #152 / REVIEW-033)
 
 Planner не может:
 
@@ -2425,6 +2433,11 @@ Applicability и actor access остаются обязательными фил
 
 `context_text` — deterministic compact projection returned records, не LLM summary.
 
+`search_hint_hits` — не model-facing поле среза: массив bool длиной
+`search_hints`, `true` если hint нашёл допущенный claim (`strongest > 0` по
+применимым claims). Orchestrator читает его для §63; private model wire его
+не передаёт. (CR #152 / REVIEW-033)
+
 ---
 
 # 60. Context packing
@@ -2447,9 +2460,10 @@ hard constraints
 Slice не растёт пропорционально corpus.
 
 `context_text` — deterministic compact projection тех же structured records.
-Если consumer уже передаёт в тот же model call structured
-`hard_constraints`/`facts`, дублирующий `context_text` на private wire
-опускается (S1, N1, turn step, O1, NPC autonomous, conversation). (CR #152)
+Один helper `@rus/turn` `worldKnowledgePromptData` /
+`omitWorldKnowledgeContextText` всегда опускает `context_text` на private wire
+всех шести потребителей (turn step, O1, S1, N1, NPC autonomous, conversation);
+structured-поля несут то же содержание. (CR #152 / REVIEW-033)
 
 ---
 
@@ -2497,25 +2511,31 @@ KNOWLEDGE_UNAVAILABLE
 ```
 
 Найденный slice несёт `sufficiency` рядом с `verdict`; sufficiency не заменяет
-verdict. Правила (CR #152):
+verdict. Правила (CR #152 / REVIEW-033):
 
-- `SUFFICIENT_KNOWLEDGE` — все явные search hints (или default-запрос) нашли
-  допущенный claim (`search_hint_hits` / `strongest > 0`) и все запрошенные
-  домены `covered`;
-- `PARTIAL_KNOWLEDGE` — есть факты или hard constraints, но хотя бы один hint
-  не нашёл допущенный claim (`strongest === 0`) или coverage хотя бы одного
-  домена `partial` / не `covered`;
-- `UNRESOLVED_KNOWLEDGE` / `OUT_OF_SCOPE` — нет допущенного содержимого; choice
-  по coverage (`out_of_scope` vs иное);
+- `SUFFICIENT_KNOWLEDGE` — все явные search hints нашли допущенный claim
+  (`search_hint_hits` / `strongest > 0`) и все запрошенные домены `covered`;
+  срез, полученный **default-запросом** §50 (планировщик вернул пустой план),
+  никогда не получает `SUFFICIENT_KNOWLEDGE` — максимум `PARTIAL_KNOWLEDGE`
+  (лексическое попадание ≠ относимость; калибровка порога — #153 шаг 8,
+  LW-047);
+- `PARTIAL_KNOWLEDGE` — есть факты, hard constraints или disputes, но хотя бы
+  один hint не нашёл допущенный claim (`strongest === 0`), coverage хотя бы
+  одного домена `partial` / не `covered`, либо срез пришёл из default-запроса;
+- `UNRESOLVED_KNOWLEDGE` / `OUT_OF_SCOPE` — нет допущенного содержимого
+  (facts/hard_constraints/disputes пусты); choice по coverage (`out_of_scope`
+  vs иное);
 - `NO_KNOWLEDGE_REQUIRED` — после пустого planner-плана `semantic_resolution` и
-  пустого результата default-запроса Core, либо для purposes, где пустой план
-  допустим иным contract path.
+  пустого результата default-запроса Core (нет facts, hard constraints и
+  disputes).
 
 Для `PARTIAL/UNRESOLVED/OUT_OF_SCOPE/UNAVAILABLE` model не получает право «дополнить факт по памяти».
 
 Для финального `NO_KNOWLEDGE_REQUIRED` consumer получает явный sufficiency
 marker и не добавляет factual premises из model memory. Default-запрос §50
-может вызвать retrieval/Core до этой записи.
+может вызвать retrieval/Core до этой записи; diagnostic/trace сохраняют
+domains/coverage/retrieval_observability и сам default query, чтобы пустой
+план без поиска отличался от пустого результата поиска.
 
 Она может:
 

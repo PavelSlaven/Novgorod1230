@@ -85,15 +85,12 @@ test('RETRIEVE merges only authoritative context after planning', async () => {
   assert.equal(result.slice.verdict, 'supported');
 });
 
-test('an empty semantic_resolution plan runs Core default query before NO_KNOWLEDGE_REQUIRED', async () => {
+test('an empty semantic_resolution plan self-terminates as NO_KNOWLEDGE_REQUIRED', async () => {
   let coreCalls = 0;
   const result = await resolveTurnStepWorldKnowledge({
-    mode: 'RETRIEVE', core: { resolveWorldKnowledge(query) {
+    mode: 'RETRIEVE', core: { resolveWorldKnowledge() {
       coreCalls += 1;
-      assert.deepEqual(query.domains, ['economy_trade']);
-      assert.deepEqual(query.search_hints, ['Требую долг.']);
-      return { facts: [], hard_constraints: [], coverage: [],
-        verdict: 'unresolved', search_hint_hits: [false] };
+      return { facts: [], hard_constraints: [] };
     } },
     bundle, plannerRequest, authoritative,
     plannerModel: async () => ({ schema: 'world_knowledge_query_plan_v1',
@@ -102,7 +99,7 @@ test('an empty semantic_resolution plan runs Core default query before NO_KNOWLE
   });
   assert.deepEqual(result, { slice: null, planner_called: true,
     repaired: false, sufficiency: 'NO_KNOWLEDGE_REQUIRED' });
-  assert.equal(coreCalls, 1);
+  assert.equal(coreCalls, 0);
 });
 
 test('RETRIEVE rejects missing authoritative context before planning', async () => {

@@ -11,7 +11,7 @@ import {
 import { auditFreshNpcSpeech } from
   './lower-dvina-trace-npc-speech-grounding-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
-import { omitWorldKnowledgeContextText } from './world-knowledge-prompt-wire.js';
+import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
 

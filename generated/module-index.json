@@ -550,6 +550,7 @@
         "pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing",
         "lexicographic ranking: hard constraints, exact focus, requested predicates,",
         "relative lexical admission per independent search hint; aggregate lexical",
+        "`search_hint_hits` on the Core slice: one bool per hint (`strongest > 0` on",
         "actor-safe filtering только по уже переданным caller facets"
       ],
       "path": "packages/world-knowledge",

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix(wk): #152 REVIEW-033 — S1/N1/O1 semantic_input text; default-query capped at PARTIAL; disputes count; shared context_text strip; fail-closed encoder; F5 diagnostic/query; contract/LW-047 (#152, PR #98) LW-047 added
+
 - fix(wk): #152 empty semantic_resolution plan -> default Core query; NPC semantic_input text; sufficiency beside verdict; strip duplicate context_text; cache_hit/miss telemetry; contract §50/§51/§60/§61/§63/§85 (#152, PR #98) LW-046 added
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 

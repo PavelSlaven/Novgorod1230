@@ -29,6 +29,8 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
   query relevance, context specificity, qualifiers, stable claim reference;
 - relative lexical admission per independent search hint; aggregate lexical
   relevance ranks the admitted candidates without suppressing common topics;
+- `search_hint_hits` on the Core slice: one bool per hint (`strongest > 0` on
+  applicable claims); orchestrator-facing only, not model wire;
 - actor-safe filtering только по уже переданным caller facets.
   `knowledge_access.required_values` опционально ограничивает значение
   разрешённого facet только для actor-facing purposes; materialization и другие

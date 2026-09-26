@@ -7,34 +7,17 @@ import { EFFORTS } from './turn-step-contracts/constants.js';
 export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   semanticPlanValidator = null,
   preparedChainContext = null,
-  allowRepair = true,
-  partyHistoricalEvents = undefined
+  allowRepair = true
 }) {
   let originalOutput = null;
   // Repair reuses this immutable snapshot and its existing grounding identity.
   let modelRequest = null;
-  // F2: pass party events without widening turnStepModel arity (stubs like
-  // discoveryPlan(request, query, kind) break on a 3rd positional arg).
-  const modelPort = partyHistoricalEvents === undefined
-    ? turnStepModel
-    : async (safeRequest, repairContext) => {
-      const prev = turnStepModel.__partyHistoricalEvents;
-      turnStepModel.__partyHistoricalEvents = partyHistoricalEvents;
-      try {
-        return repairContext === undefined
-          ? await turnStepModel(safeRequest)
-          : await turnStepModel(safeRequest, repairContext);
-      } finally {
-        if (prev === undefined) delete turnStepModel.__partyHistoricalEvents;
-        else turnStepModel.__partyHistoricalEvents = prev;
-      }
-    };
   try {
     return {
       plan: await requestAndValidateTurnStepPlan({ request,
         turnStepModel: async (safeRequest) => {
           modelRequest = safeRequest;
-          const output = await modelPort(safeRequest);
+          const output = await turnStepModel(safeRequest);
           originalOutput = structuredClone(output);
           return output;
         }, semanticPlanValidator, preparedChainContext, attempt: 1 }),
@@ -100,7 +83,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         plan: await requestAndValidateTurnStepPlan({
           request,
           turnStepModel: async (safeRequest) => {
-            const output = await modelPort(modelRequest ?? safeRequest, repairContext);
+            const output = await turnStepModel(modelRequest ?? safeRequest,
+              repairContext);
             repairedOutput = structuredClone(output);
             return output;
           },

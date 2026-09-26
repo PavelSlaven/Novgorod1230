@@ -295,9 +295,6 @@ export async function resolveBoundTurnStepCommand({
     maxInternalSteps: 8
   }, {
     turnStepModel: services.turnStepModel,
-    // Explicit WK port for semantic_resolution (F2); model reads 3rd arg.
-    partyHistoricalEvents: Array.isArray(committedState?.historical_events)
-      ? committedState.historical_events : [],
     blockPlan: services.turnStepBlockPlan,
     executionRegistry,
     preparedEffectContext: services.turnStepPreparedEffectContext,

@@ -340,29 +340,40 @@ test('F2 turn step and npc_decision open claim from committed events',
     const FAMINE_AT = 40 * 1440;
     const events = [{ id: EVENT,
       phases: [{ id: 'start', start_at_minutes: FAMINE_AT }] }];
+    const { request: turnRequest, output: turnOutput } = await import(
+      './lower-dvina-trace-turn-step-llm-test-helpers.js');
+    const { requestTurnStepPlanWithRepair } = await import(
+      '../../../packages/turn/src/turn-step-plan-repair.js');
     async function viaTurn(clock) {
       const log = { calls: [], traces: [] };
       const grounder = makeGrounder(loadMutableBundle(), log);
       let lastGrounded = null;
-      const model = createLowerDvinaTraceTurnStepModel({
+      const inner = createLowerDvinaTraceTurnStepModel({
         worldKnowledgeGrounder: {
           async ground(request, purpose, authoritative) {
             lastGrounded = await grounder.ground(request, purpose, authoritative);
             return lastGrounded;
           }
         },
-        roleRunner: { async run() { return { output: {} }; } }
+        roleRunner: {
+          async run() {
+            return { output: turnOutput() };
+          }
+        }
       });
-      model.__partyHistoricalEvents = events;
-      try {
-        await model({
-          schema: 'turn_step_request_v1',
-          request_id: 'req-f2-turn',
-          input_locale: 'ru',
+      // N1/N3: services-style wrap — 3rd arg, not __partyHistoricalEvents.
+      const turnStepModel = (req, repair) => inner(req, repair, {
+        historical_events: events
+      });
+      await requestTurnStepPlanWithRepair({
+        request: turnRequest({
           remaining_intent: 'счётная величина долговая запись голод',
-          player_safe_state: { clock }
-        });
-      } catch { /* stub plan */ }
+          root_player_action: 'счётная величина долговая запись голод',
+          player_safe_state: { clock, visible_entities: [] }
+        }),
+        turnStepModel,
+        allowRepair: false
+      }).catch(() => {});
       return {
         started: log.traces.at(-1)?.query?.context?.conditions
           ?.started_historical_events ?? null,
@@ -370,36 +381,44 @@ test('F2 turn step and npc_decision open claim from committed events',
       };
     }
     async function viaNpc(clock) {
+      const { phase7Command, phase7CommittedState, phase7PlayerInput } =
+        await import('./lower-dvina-trace-phase-7-runtime-fixture.js');
+      const { approvedPhase7Contracts, phase7AutonomousPlan } = await import(
+        './lower-dvina-trace-phase-7-contract-fixture.js');
       const log = { calls: [], traces: [] };
       const grounder = makeGrounder(loadMutableBundle(), log);
       let lastGrounded = null;
-      const model = withPartyHistoricalEvents(
-        createLowerDvinaTraceNpcAutonomousModel({
-          worldKnowledgeGrounder: {
-            async ground(request, purpose, authoritative) {
-              assert.equal(purpose, 'npc_decision');
-              lastGrounded = await grounder.ground(request, purpose, authoritative);
-              return lastGrounded;
-            }
-          },
-          roleRunner: { async run() { return { output: {} }; } }
-        }),
-        () => ({ historical_events: events })
-      );
-      try {
-        await model({
-          schema: 'npc_action_decision_request_v1',
-          request_id: 'req-f2-npc',
-          input_locale: 'ru',
-          occurred_at: clock,
-          decision_reasons: {
-            perceived_changes: ['счётная величина долговая запись голод']
-          },
-          perception: {
-            visible_scene: ['счётная величина долговая запись голод']
+      const state = phase7CommittedState();
+      state.historical_events = events;
+      state.clock = clock;
+      if (state.clock_weather_light?.clock) {
+        state.clock_weather_light = {
+          ...state.clock_weather_light, clock
+        };
+      }
+      const contracts = approvedPhase7Contracts(state);
+      const model = createLowerDvinaTraceNpcAutonomousModel({
+        worldKnowledgeGrounder: {
+          async ground(request, purpose, authoritative) {
+            assert.equal(purpose, 'npc_decision');
+            lastGrounded = await grounder.ground(request, purpose, authoritative);
+            return lastGrounded;
           }
-        }, { repair: null });
-      } catch { /* stub plan */ }
+        },
+        roleRunner: {
+          async run(call) {
+            const payload = JSON.parse(call.messages[1].content);
+            const req = payload.request ?? payload;
+            return { output: phase7AutonomousPlan(req, 'wait') };
+          }
+        }
+      });
+      try {
+        await phase7Command({ state, contracts, model }).consequence({
+          retrievedState: state,
+          playerInput: phase7PlayerInput(state, 'wait')
+        });
+      } catch { /* fixture may stop after decision */ }
       return {
         started: log.traces.at(-1)?.query?.context?.conditions
           ?.started_historical_events ?? null,
@@ -514,6 +533,18 @@ test('F6 exactModelContext rejects bad clock; seed passes clock+events',
       '../src/runtime/ordinary-materialization-llm-support.js');
     assert.throws(() => exactModelContext({ repair: null, clock: 'bad' }),
       (err) => err?.code === 'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+    // N5: soft forms rejected by owner normalizeGameTimestamp / int clock.
+    assert.throws(() => exactModelContext({ repair: null, clock: -5 }),
+      (err) => err?.code === 'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+    assert.throws(() => exactModelContext({ repair: null, clock: 1.5 }),
+      (err) => err?.code === 'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+    assert.throws(() => exactModelContext({
+      repair: null,
+      clock: {
+        whole_minutes: '10', subminute_numerator: '0',
+        subminute_denominator: '1', day: 1
+      }
+    }), (err) => err?.code === 'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
     const FAMINE_AT = 40 * 1440;
     const yearClock = {
       whole_minutes: String(FAMINE_AT + 10),
@@ -576,3 +607,68 @@ test('F6 exactModelContext rejects bad clock; seed passes clock+events',
         [EVENT]);
     }
   });
+
+test('N4 seed scope forwards committed clock+events to O1 model', async () => {
+  const { resolveOrdinaryMaterializationSeedScope } = await import('@rus/turn');
+  const { createOrdinaryAggregate } = await import('@rus/materialization');
+  const FAMINE_AT = 40 * 1440;
+  const yearClock = ts(FAMINE_AT + 10);
+  const events = [{ id: EVENT,
+    phases: [{ id: 'start', start_at_minutes: FAMINE_AT }] }];
+  let seenContext = null;
+  const seedRequest = Object.freeze({
+    schema: 'ordinary_materialization_request_v1', request_id: 'seed-n4',
+    mode: 'seed_scope', scope_ref: { entity_kind: 'g6', entity_id: 'scope-a' },
+    context_refs: {
+      period_ref: 'period', region_ref: 'region', function_refs: ['household'],
+      environment_refs: ['environment'], occupation_household_refs: ['household'],
+      economic_context_ref: 'economy', occupancy_state_ref: 'occupied',
+      material_culture_refs: ['culture'], property_context_ref: 'property'
+    },
+    policy_refs: {
+      authority_policy_ref: 'authority', density_policy_ref: 'density',
+      ordinary_presence_policy_ref: 'presence',
+      runtime_item_mechanics_policy_ref: 'mechanics',
+      allowed_admission_classes: ['common_mundane'],
+      context_bound_permission_refs: [],
+      allowed_supporting_bases: [{ basis_ref: 'basis-a', basis_state: 'committed' }]
+    },
+    ordinary_state: { seeded: false, density_band: null,
+      remaining_identity_budget: 0, background_groups: [],
+      presence_resolutions: [], closed_observation_scopes: [] },
+    candidate_query: null,
+    technical_limits: { max_new_entities: 2, max_new_background_groups: 2,
+      max_resolution_records: 4 }
+  });
+  await resolveOrdinaryMaterializationSeedScope({
+    request: seedRequest,
+    partyClock: yearClock,
+    historicalEvents: events,
+    ordinaryMaterializationModel: async (_req, context) => {
+      seenContext = context;
+      return {
+        schema: 'ordinary_materialization_plan_v1',
+        request_id: seedRequest.request_id,
+        resolution: 'no_change', density_band_proposal: null,
+        background_groups: [], entities: [], presence_resolutions: [],
+        reason_code: 'no_change'
+      };
+    },
+    workingProjection: {
+      ordinary_materialization_aggregate: createOrdinaryAggregate({
+        scope_ref: seedRequest.scope_ref, resolution_record_cap: 4
+      })
+    },
+    basisCatalog: [{ basis_ref: 'basis-a', state: 'committed', policy: {
+      functional_buckets: ['household'],
+      allowed_admission_classes: ['common_mundane'], permission_refs: []
+    } }],
+    allowedDisclosurePolicyRefs: ['disclosure-a'],
+    resolveIdentityBudget: async (value) => ({
+      policy_version: 'density', density_band: value.density_band,
+      identity_budget: 2, source: 'policy'
+    })
+  }).catch(() => {});
+  assert.deepEqual(seenContext?.clock, yearClock);
+  assert.deepEqual(seenContext?.historical_events, events);
+});

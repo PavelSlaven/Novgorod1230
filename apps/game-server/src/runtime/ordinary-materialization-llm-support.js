@@ -1,5 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import { omitWorldKnowledgeContextText } from '@rus/turn';
+import { normalizeGameTimestamp } from '@rus/time-events-history';
 import { serverError } from '../errors.js';
 import {
   snapshotLowerDvinaTraceOrdinaryStageBJson
@@ -189,19 +190,25 @@ function exactModelContext(context) {
     clock, historicalEvents };
 }
 
-/** Party clock for O1 model context: GameTimestamp or finite minute number (F6). */
+/** Party clock: owner GameTimestamp / legacy total_minutes / non-neg int (N5). */
 function isPartyClock(value) {
-  if (typeof value === 'number' && Number.isFinite(value)) return true;
+  if (typeof value === 'number') {
+    return Number.isInteger(value) && value >= 0;
+  }
   if (value == null || typeof value !== 'object' || Array.isArray(value)) {
     return false;
   }
-  if (Number.isFinite(value.total_minutes)) return true;
-  return typeof value.whole_minutes === 'string'
-    && /^\d+$/u.test(value.whole_minutes)
-    && typeof value.subminute_numerator === 'string'
-    && /^\d+$/u.test(value.subminute_numerator)
-    && typeof value.subminute_denominator === 'string'
-    && /^[1-9]\d*$/u.test(value.subminute_denominator);
+  if (Object.hasOwn(value, 'total_minutes')) {
+    return Object.keys(value).length === 1
+      && Number.isInteger(value.total_minutes)
+      && value.total_minutes >= 0;
+  }
+  try {
+    normalizeGameTimestamp(value);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function requiredQuantityOf(value) {

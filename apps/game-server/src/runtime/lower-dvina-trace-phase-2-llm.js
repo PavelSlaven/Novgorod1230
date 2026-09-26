@@ -56,23 +56,16 @@ export function createLowerDvinaTraceSemanticResolver({ roleRunner } = {}) {
 export function createLowerDvinaTraceTurnStepModel({ roleRunner,
   worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
-  const model = async function planTurnStep(request, repairContext = null) {
-    // Explicit party events from turn admission via model function property (F2).
-    const historicalEvents = Array.isArray(model.__partyHistoricalEvents)
-      ? model.__partyHistoricalEvents
-      : Array.isArray(planTurnStep.__partyHistoricalEvents)
-        ? planTurnStep.__partyHistoricalEvents
-        : Array.isArray(repairContext?.historical_events)
-          ? repairContext.historical_events
-          : [];
+  const model = async function planTurnStep(request, repairContext = null,
+    modelCallContext = null) {
+    // Explicit party events from services wrapper 3rd arg (N1); no function props.
+    const historicalEvents = Array.isArray(modelCallContext?.historical_events)
+      ? modelCallContext.historical_events : [];
     const input = await groundTurnRequest(worldKnowledgeGrounder, request, {
       historical_events: historicalEvents
     });
     const wireInput = plannerRequestWire(input);
-    const repairing = repairContext != null
-      && (Object.hasOwn(repairContext, 'original_output')
-        || Object.hasOwn(repairContext, 'structural_errors')
-        || Object.hasOwn(repairContext, 'validation_errors'));
+    const repairing = repairContext != null;
     const payload = repairing
       ? {
           request: wireInput,

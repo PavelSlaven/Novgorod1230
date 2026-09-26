@@ -38,10 +38,14 @@
   authoring, без runtime auditor, research, fact approval или corpus mutation.
 - internal deterministic WK audit **plan-mode** harness
   (`src/wk-audit-plan-harness.js` + fixtures under `test/fixtures/wk-audit-plan`):
-  применяет fixture plans через Core без LLM/encoder; проверяет applicability /
-  knowledge_access. Live judge metrics — у владельца (CR #153 шаг 8).
-  Optional `src/bge-reranker.py` зарезервирован под D17; production enablement
-  за гейтом D21 (LW-053).
+  applies fixture plans through Core without LLM/encoder; acceptance is
+  `expect_absent_claim_refs` / `expect_present_claim_refs` on the packed slice
+  (facts/hard/disputes), including access, applicability-date and
+  `domain_internal_only` vs `npc_decision`. Planner `focus_refs` may name cut
+  claims; Core must still exclude them. Live judge metrics — owner
+  (CR #153 шаг 8). Optional `src/bge-reranker.py` loads a **local** D17
+  snapshot only (`--model-path`, no hub / no `trust_remote_code`); production
+  enablement stays behind D21 (LW-053).
 
 ## Публичные интерфейсы
 

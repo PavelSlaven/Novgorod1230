@@ -2544,11 +2544,15 @@ verdict. Правила (CR #152 / REVIEW-033):
 - `SUFFICIENT_KNOWLEDGE` — все явные search hints нашли допущенный claim
   (`search_hint_hits` / `strongest > 0`), все запрошенные домены `covered`, и
   для каждого hit topical relevance ≥ порога профиля
-  (`search_hint_relevance`: rerank score если гейт D21 пройден, иначе
-  Giga-cosine лучшего лексически совпавшего claim; профиль
-  `wk-sufficiency:giga-cosine:v1`, порог `min_hint_relevance`); срез из
-  **default-запроса** §50 никогда не получает `SUFFICIENT_KNOWLEDGE` —
-  максимум `PARTIAL_KNOWLEDGE` (LW-047 / LW-054);
+  (`search_hint_relevance`: cosine claim ко **всему** search-query (hints
+  joined), не к одному hint; claims вне векторного top-k дают 0; если гейт
+  D21 открыт и rerank all-or-nothing применён — min-max bge по admitted,
+  иначе Giga-cosine; порог `min_hint_relevance` из профиля
+  `wk-sufficiency:giga-cosine:v1` сравнивают только с cosine
+  (`relevance_source: giga_cosine`) — logits bge с cosine-порогом не
+  смешивают; статус профиля provisional до судейской калибровки LW-054);
+  срез из **default-запроса** §50 никогда не получает
+  `SUFFICIENT_KNOWLEDGE` — максимум `PARTIAL_KNOWLEDGE` (LW-047 / LW-054);
 - `PARTIAL_KNOWLEDGE` — есть факты, hard constraints или disputes, но хотя бы
   один hint не нашёл допущенный claim (`strongest === 0`), relevance ниже
   порога, coverage хотя бы одного домена `partial` / не `covered`, либо срез
@@ -2918,8 +2922,9 @@ state, idempotency, narration или отдельный failure ledger.
 
 Опциональный переранжировщик (D17) после прохождения гейта D21: недоступность
 процесса-реранкера или ошибка scoring — операционный откат к до-реранковому
-гибридному пулу (`vectorScores` без `rerankScores`) со счётчиком telemetry
-`world_knowledge_reranker_degradation_v1`. Это не factual unresolved и не
+гибридному пулу (`vectorScores` без `rerankScores`). Orchestrator публикует
+telemetry-событие `world_knowledge_reranker_degradation_v1` на каждый такой
+откат (не отдельный агрегирующий счётчик). Это не factual unresolved и не
 `WORLD_KNOWLEDGE_UNAVAILABLE`.
 
 Repeated unresolved в declared production question class является authoring coverage defect и должен быть видим telemetry/eval.

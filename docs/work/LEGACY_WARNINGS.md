@@ -267,11 +267,11 @@
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-053 — D17 reranker за гейтом D21 (production OFF)
-- **Что.** Core принимает `rerankScores`, pin `wk-reranker:bge-v2-m3:v1` и `provisionReranker` есть, но `production_enabled=false`. Бенчмарк 2026-09-17 (REPORT.md T1): B1 Giga cosine recall@10 0.9825 / MRR 0.9579 не хуже bge (0.9795 / 0.9512); bge CPU p95 ≈ 6523 мс ≫ 150 мс; GPU p95 71.6 мс на бенчмарк-машине, owner-server budget не измерен; noise@10 не улучшен vs B0.
-- **Как жить.** Не включать rerank в production path без нового замера на сервере владельца, который проходит D21 (меньше retrieval_miss и шума на audit set **и** p95 ≤ 150 мс). Деградация к гибриду со счётчиком уже в коде на случай будущего enable.
+- **Что.** Core принимает `rerankScores` (all-or-nothing + min-max), pin `wk-reranker:bge-v2-m3:v1` (revision sha + file digests), `provisionReranker` и production loader читают профиль, но `production_enabled=false`. Бенчмарк 2026-09-17 (REPORT.md T1): B1 Giga cosine recall@10 0.9825 / MRR 0.9579 не хуже bge (0.9795 / 0.9512); bge CPU p95 ≈ 6523 мс ≫ 150 мс; GPU p95 71.6 мс на бенчмарк-машине; owner-server p95 и 120-situation audit с rerank ON/OFF ещё не пересданы (REVIEW-046 R5).
+- **Как жить.** Не включать rerank в production path без нового замера на сервере владельца, который проходит D21 (меньше retrieval_miss **и** шума на audit set **и** p95 ≤ 150 мс). При будущем enable — только локальный snapshot (`HF_HUB_OFFLINE`), деградация к гибриду с telemetry-событием на каждый отказ.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-054 — SUFFICIENT relevance threshold provisional
-- **Что.** Профиль `wk-sufficiency:giga-cosine:v1` ставит `min_hint_relevance=0.28` (Giga cosine лучшего лексически совпавшего claim; rerank — только после D21). Порог подобран по smoke vector scores, не по независимому судейскому проходу на 120 ситуациях (цель CR: ≤10% SUFFICIENT без must-need).
-- **Как жить.** Владелец пересчитывает live-метрики независимыми судьями и при необходимости двигает порог в профиле + §63. До того не объявлять калибровку закрытой.
+- **Что.** Профиль `wk-sufficiency:giga-cosine:v1` (`status: provisional`) ставит `min_hint_relevance=0.28`; production loader передаёт порог в `groundingSufficiencyOf`. Источник — Giga cosine claim ко всему search-query; rerank logits сравнивать с этим порогом нельзя. Порог подобран по smoke vector scores, не по независимому судейскому проходу на 120 ситуациях (цель CR: ≤10% SUFFICIENT без must-need).
+- **Как жить.** Владелец пересчитывает live-метрики независимыми судьями (JSONL handoff `Novgorod-wk-audit/run-partc/`) и при необходимости двигает порог в профиле + §63. До того не объявлять калибровку закрытой.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)

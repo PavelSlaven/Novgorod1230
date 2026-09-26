@@ -1,8 +1,7 @@
 /** Map Core slice + per-hint lexical hits to §63 sufficiency markers. */
 
-/** Default min Giga-cosine (or rerank) per lexical hint hit. Calibrated
- * provisionally from audit smoke vector scores (~0.28–0.40 for on-topic);
- * independent judge pass may retune (LW-054). */
+/** Fallback only when sufficiency profile is absent. Production loader reads
+ * `wk-sufficiency:giga-cosine:v1` and passes `min_hint_relevance` (LW-054). */
 export const DEFAULT_MIN_HINT_RELEVANCE = 0.28;
 
 export function groundingSufficiencyOf(slice, {

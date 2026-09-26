@@ -12,6 +12,10 @@ test('managed runtime owns Giga only and has no gameplay-model artifacts', () =>
   assert.equal('giga' in MANAGED_RUNTIME_PINS, true);
   assert.equal('reranker' in MANAGED_RUNTIME_PINS, true);
   assert.equal(MANAGED_RUNTIME_PINS.reranker.model, 'BAAI/bge-reranker-v2-m3');
+  assert.equal(MANAGED_RUNTIME_PINS.reranker.revision,
+    '953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e');
+  assert.equal(MANAGED_RUNTIME_PINS.reranker.revision.startsWith('refs/'), false);
+  assert.ok(MANAGED_RUNTIME_PINS.reranker.files.length >= 3);
   assert.equal('gemma' in MANAGED_RUNTIME_PINS, false);
   assert.equal('llama' in MANAGED_RUNTIME_PINS, false);
 });

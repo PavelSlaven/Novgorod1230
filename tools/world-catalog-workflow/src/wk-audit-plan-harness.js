@@ -73,20 +73,37 @@ export function runPlanModeCase({ core, bundle, situation, plan }) {
   }
   const forbidden = Array.isArray(situation.expect_absent_claim_refs)
     ? situation.expect_absent_claim_refs : [];
-  const present = new Set(admitted.map((claim) => claim.claim_ref));
+  const present = new Set([
+    ...slice.facts.map((entry) => entry.claim_ref),
+    ...slice.hard_constraints.map((entry) => entry.claim_ref),
+    ...(slice.disputes ?? []).flatMap((group) =>
+      (group.claims ?? []).map((claim) => claim.claim_ref))
+  ]);
   for (const ref of forbidden) {
     if (present.has(ref)) {
       throw new Error(`plan harness expected absent claim ${ref}`);
     }
   }
+  const required = Array.isArray(situation.expect_present_claim_refs)
+    ? situation.expect_present_claim_refs : [];
+  for (const ref of required) {
+    if (!present.has(ref)) {
+      throw new Error(`plan harness expected present claim ${ref}`);
+    }
+  }
+  // Planner may propose cut refs in focus_refs; Core must still exclude them.
+  // Independence: expect_absent/present are the acceptance checks (not only
+  // re-running isApplicable/canAccess on the admitted set).
   return Object.freeze({
     id: situation.id,
     purpose: situation.purpose,
     verdict: slice.verdict,
     claim_refs: Object.freeze([...present]),
+    focus_refs: Object.freeze([...(plan.focus_refs ?? [])]),
     search_hint_hits: slice.search_hint_hits,
     search_hint_relevance: slice.search_hint_relevance,
-    coverage: slice.coverage
+    coverage: slice.coverage,
+    disputes: slice.disputes
   });
 }
 

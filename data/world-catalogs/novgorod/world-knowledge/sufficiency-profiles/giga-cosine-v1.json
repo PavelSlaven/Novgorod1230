@@ -6,5 +6,5 @@
   "reranker_gate_passed": false,
   "calibrated_at": "2026-09-27",
   "calibration_basis": "Provisional floor from smoke/plan vector scores on production-v1; independent judge recalibration on the 120-situation audit set is still required (LW-054 / #153 step 8.3).",
-  "status": "production"
+  "status": "provisional"
 }

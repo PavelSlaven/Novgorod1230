@@ -4,9 +4,13 @@
 Not wired into production until D21 gate passes (see embedding-profiles/
 bge-reranker-v2-m3-v1.json). Game-server only invokes this when
 production_enabled is true; otherwise Core keeps hybrid vectorScores.
+
+Loads weights from a local snapshot (--model-path). Never downloads from the
+hub (HF_HUB_OFFLINE). XLM-R does not need trust_remote_code.
 """
 import argparse
 import json
+import os
 import time
 from pathlib import Path
 
@@ -17,6 +21,8 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--profile", required=True)
+    parser.add_argument("--model-path", required=True,
+                        help="Local snapshot directory (no hub download)")
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--metrics-out", required=True)
@@ -26,18 +32,22 @@ def main():
         raise ValueError("unsupported reranker profile")
     if profile.get("model_id") != "BAAI/bge-reranker-v2-m3":
         raise ValueError("unsupported reranker model")
+    model_path = Path(args.model_path)
+    if not model_path.is_dir() or not (model_path / "config.json").is_file():
+        raise FileNotFoundError(f"local reranker snapshot missing: {model_path}")
+    os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
     payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
     query = payload["query"]
     candidates = payload["candidates"]
     pairs = [[query, entry["text"]] for entry in candidates]
     started = time.perf_counter()
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    tokenizer = AutoTokenizer.from_pretrained(
-        profile["model_id"], revision=profile.get("model_revision"),
-        trust_remote_code=True)
+    # Local snapshot only; XLM-R base needs no trust_remote_code.
+    tokenizer = AutoTokenizer.from_pretrained(str(model_path),
+                                              local_files_only=True)
     model = AutoModelForSequenceClassification.from_pretrained(
-        profile["model_id"], revision=profile.get("model_revision"),
-        trust_remote_code=True).to(device).eval()
+        str(model_path), local_files_only=True).to(device).eval()
     loaded = time.perf_counter()
     scores = []
     with torch.inference_mode():

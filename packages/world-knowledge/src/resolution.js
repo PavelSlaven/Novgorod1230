@@ -173,10 +173,10 @@ function scopeMatches(scope, context) {
 
 export function compareClaims(a, b, query, exactRefs, lexicalScores,
   vectorScores = new Map(), rerankScores = null) {
-  // Optional §49 step between ranking and packing: when rerankScores are
-  // present for a claim they replace lexical+vector for that claim only.
+  // All-or-nothing: when rerankScores is non-null, every admitted claim was
+  // scored; relevance is rerank-only (no hybrid mix of scales).
   const relevance = (claim) => {
-    if (rerankScores != null && rerankScores.has(claim.claim_ref)) {
+    if (rerankScores != null) {
       return rerankScores.get(claim.claim_ref) ?? 0;
     }
     return (lexicalScores.get(claim.claim_ref) ?? 0)
@@ -191,11 +191,18 @@ export function compareClaims(a, b, query, exactRefs, lexicalScores,
     || a.claim_ref.localeCompare(b.claim_ref);
 }
 
+/** Min-max over finite scores. Preserves negative logits (bge); all-zero → empty. */
 export function normalizeScores(scores) {
-  const maximum = Math.max(0, ...scores.values());
-  if (maximum === 0) return new Map();
-  return new Map([...scores].map(([ref, score]) => [ref,
-    Math.max(0, score) / maximum]));
+  const entries = [...scores].filter(([, score]) => Number.isFinite(score));
+  if (entries.length === 0) return new Map();
+  const values = entries.map(([, score]) => score);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  if (max === min) {
+    if (max === 0) return new Map();
+    return new Map(entries.map(([ref]) => [ref, 1]));
+  }
+  return new Map(entries.map(([ref, score]) => [ref, (score - min) / (max - min)]));
 }
 
 function specificity(value) { return value.context_scope === 'universal' ? 0 : ['time', 'places', 'actors', 'conditions'].filter((key) => value[key] != null).length; }

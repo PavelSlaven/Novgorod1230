@@ -252,6 +252,45 @@ test('optional rerankScores reorder admitted claims without expanding recall', (
   const withRerank = core.resolveWorldKnowledge(input, { vectorScores, rerankScores });
   assert.equal(withRerank.facts[0].claim_ref, beta);
   assert.equal(withRerank.search_hint_relevance.length, 1);
+  // Extra rerank keys must not expand recall beyond lexical/vector candidates.
+  const outsider = 'claim:test:rerank-outsider';
+  bundle.claims.push({
+    ...structuredClone(source), claim_ref: outsider,
+    applicability: { context_scope: 'universal' }
+  });
+  const expandedCore = createWorldKnowledgeCore(bundle);
+  const withOutsider = expandedCore.resolveWorldKnowledge(input, {
+    vectorScores,
+    rerankScores: new Map([[alpha, 0.1], [beta, 0.2], [outsider, 99]])
+  });
+  assert.equal(withOutsider.facts.some((fact) => fact.claim_ref === outsider), false);
+});
+
+test('rerank all-or-nothing: partial map keeps hybrid order; negative logits min-max', () => {
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const source = bundle.claims[0];
+  const [alpha, beta] = ['claim:test:rerank-partial-a', 'claim:test:rerank-partial-b'];
+  bundle.claims.push(...[alpha, beta].map((claim_ref) => ({
+    ...structuredClone(source), claim_ref, applicability: { context_scope: 'universal' }
+  })));
+  bundle.lexical_indexes.en.alpha = [alpha];
+  bundle.lexical_indexes.en.beta = [beta];
+  const input = query({ domains: [source.domain], query_locale: 'en',
+    search_hints: ['alpha beta'],
+    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 7000 } });
+  const core = createWorldKnowledgeCore(bundle);
+  const vectorScores = new Map([[alpha, 0.9], [beta, 0.1]]);
+  // Partial coverage → hybrid (alpha stays first via vector).
+  const partial = core.resolveWorldKnowledge(input, {
+    vectorScores, rerankScores: new Map([[beta, 10]])
+  });
+  assert.equal(partial.facts[0].claim_ref, alpha);
+  // Complete negative logits → min-max, not clamp-to-empty.
+  const negatives = core.resolveWorldKnowledge(input, {
+    vectorScores, rerankScores: new Map([[alpha, -2], [beta, -0.5]])
+  });
+  assert.equal(negatives.facts[0].claim_ref, beta);
 });
 
 test('coverage, operational availability and actor knowledge are distinct', () => {

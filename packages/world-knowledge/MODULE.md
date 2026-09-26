@@ -33,7 +33,12 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 - relative lexical admission per independent search hint; aggregate lexical
   relevance ranks the admitted candidates without suppressing common topics;
 - `search_hint_hits` / `search_hint_relevance` on the Core slice: one bool and
-  one topical score per hint (orchestrator §63 sufficiency; not model wire);
+  one topical score per hint (orchestrator §63 sufficiency; not model wire).
+  Relevance is cosine of the claim against the **joined** search query (not a
+  single hint); claims outside the vector top-k score 0. When D21 rerank
+  applies all-or-nothing, scores are min-max bge over admitted and must not be
+  compared to the provisional Giga-cosine floor (`wk-sufficiency:giga-cosine:v1`,
+  LW-054).
 - actor-safe filtering только по уже переданным caller facets.
   `knowledge_access.required_values` опционально ограничивает значение
   разрешённого facet только для actor-facing purposes (`conversation`,

@@ -107,8 +107,7 @@ function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
   const lexicalScores = lexicalCandidates(bundle, query);
   const normalizedLexicalScores = normalizeScores(lexicalScores);
   const normalizedVectorScores = normalizeScores(vectorScores);
-  // Rerank scores reorder admitted candidates only; they do not expand recall.
-  const normalizedRerankScores = useRerank ? normalizeScores(rerankScores) : null;
+  // Rerank never expands recall: candidates come from exact/lexical/vector only.
   const candidateRefs = new Set([...exactRefs, ...lexicalScores.keys(),
     ...vectorScores.keys()]);
   if (query.requested_predicates.length) {
@@ -154,10 +153,19 @@ function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
   const relevantRefs = new Set(relevant.map(({ claim_ref }) => claim_ref));
   const relevantGroups = new Set(relevant.map(({ conflict_group_ref }) =>
     conflict_group_ref).filter(Boolean));
-  const admitted = allApplicable.filter((claim) => relevantRefs.has(claim.claim_ref)
-    || relevantGroups.has(claim.conflict_group_ref))
+  const admittedUnsorted = allApplicable.filter((claim) => relevantRefs.has(claim.claim_ref)
+    || relevantGroups.has(claim.conflict_group_ref));
+  // All-or-nothing: rerank applies only when every admitted claim has a score.
+  // Partial maps fall back to hybrid order (no silent mixed-scale ranking).
+  let appliedRerank = null;
+  if (useRerank && admittedUnsorted.length > 0
+      && admittedUnsorted.every((claim) => rerankScores.has(claim.claim_ref))) {
+    appliedRerank = normalizeScores(new Map(admittedUnsorted.map((claim) =>
+      [claim.claim_ref, rerankScores.get(claim.claim_ref)])));
+  }
+  const admitted = admittedUnsorted
     .sort((a, b) => compareClaims(a, b, query, exactRefs,
-      normalizedLexicalScores, normalizedVectorScores, normalizedRerankScores));
+      normalizedLexicalScores, normalizedVectorScores, appliedRerank));
   const { selected: applicable, omittedConflictGroups } = packCandidates(admitted, query.budget.max_candidates);
 
   const coverage = query.domains.map((domain) => ({ domain, status: coverageStatus(domain, profiles, query) }));
@@ -180,9 +188,10 @@ function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
   const contextText = packContext({ coverage, hardConstraints: selectedHard, facts: selectedFacts, disputes, gaps }, query.budget.max_context_chars);
   // Orchestrator maps these hits into §63 sufficiency; not a model-facing field.
   const search_hint_hits = Object.freeze(hintScores.map(({ strongest }) => strongest > 0));
-  // Best topical score per hint among lexically matching applicable claims
-  // (rerank when gated on; else raw vector cosine). Used by §63 calibration.
-  const relevanceSource = useRerank ? rerankScores : vectorScores;
+  // Topical score per hint: when rerank applied — min-max bge over admitted;
+  // else Giga cosine of the joined search query (claims outside vector top-k → 0).
+  // Do not compare raw bge logits to the cosine sufficiency floor (R8 / LW-054).
+  const relevanceSource = appliedRerank ?? vectorScores;
   const search_hint_relevance = Object.freeze(hintScores.map(({ scores, strongest }) => {
     if (strongest <= 0) return 0;
     return Math.max(0, ...allApplicable.map((claim) =>

@@ -1,6 +1,6 @@
 {
   "schema": "wk_v2_acceptance_summary_v1",
-  "generated_at": "2026-09-26T20:56:49.475Z",
+  "generated_at": "2026-09-26T21:53:01.719Z",
   "inputs": {
     "v1_plan_records": 120,
     "v2_plan_records": 120,
@@ -15,32 +15,32 @@
   },
   "by_cause": {
     "missing_from_pack": {
-      "closed_in_v2": 27,
-      "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 64,
+      "closed_in_v2": 29,
+      "was_in_v1_not_in_v2_slice": 1,
+      "not_closed": 61,
       "no_target_identified": 33,
       "total": 124
     },
     "retrieval_miss": {
-      "closed_in_v2": 3,
+      "closed_in_v2": 6,
       "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 66,
+      "not_closed": 63,
       "no_target_identified": 22,
       "total": 91
     },
     "access_filtered": {
-      "closed_in_v2": 0,
+      "closed_in_v2": 8,
       "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 11,
+      "not_closed": 3,
       "no_target_identified": 0,
       "total": 11
     }
   },
   "by_cause_and_criticality": {
     "missing_from_pack|must": {
-      "closed_in_v2": 23,
-      "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 39,
+      "closed_in_v2": 24,
+      "was_in_v1_not_in_v2_slice": 1,
+      "not_closed": 37,
       "no_target_identified": 18,
       "total": 80
     },
@@ -52,54 +52,54 @@
       "total": 33
     },
     "access_filtered|must": {
-      "closed_in_v2": 0,
+      "closed_in_v2": 7,
       "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 9,
+      "not_closed": 2,
       "no_target_identified": 0,
       "total": 9
     },
     "access_filtered|nice": {
-      "closed_in_v2": 0,
+      "closed_in_v2": 1,
       "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 2,
+      "not_closed": 1,
       "no_target_identified": 0,
       "total": 2
     },
     "missing_from_pack|nice": {
-      "closed_in_v2": 4,
+      "closed_in_v2": 5,
       "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 25,
+      "not_closed": 24,
       "no_target_identified": 15,
       "total": 44
     },
     "retrieval_miss|must": {
-      "closed_in_v2": 3,
+      "closed_in_v2": 6,
       "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 44,
+      "not_closed": 41,
       "no_target_identified": 11,
       "total": 58
     }
   },
   "by_criticality": {
     "must": {
-      "closed_in_v2": 26,
-      "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 92,
+      "closed_in_v2": 37,
+      "was_in_v1_not_in_v2_slice": 1,
+      "not_closed": 80,
       "no_target_identified": 29,
       "total": 147
     },
     "nice": {
-      "closed_in_v2": 4,
+      "closed_in_v2": 6,
       "was_in_v1_not_in_v2_slice": 0,
-      "not_closed": 49,
+      "not_closed": 47,
       "no_target_identified": 26,
       "total": 79
     }
   },
   "overall": {
-    "closed_in_v2": 30,
-    "was_in_v1_not_in_v2_slice": 0,
-    "not_closed": 141,
+    "closed_in_v2": 43,
+    "was_in_v1_not_in_v2_slice": 1,
+    "not_closed": 127,
     "no_target_identified": 55,
     "total": 226
   },
@@ -107,15 +107,16 @@
     "note": "#153 part B (npc_decision -> world-machinery access, all domains via coverage) is not merged into wk-v2; this code still treats npc_decision as actor-facing (ACTOR_FACING_PURPOSES includes npc_decision in packages/world-knowledge/src/resolution.js). access_filtered/closed results for npc_decision needs below reflect that actor-facing gate, not the D15 target behavior.",
     "npc_decision_needs_in_scope": 35,
     "npc_decision_by_status": {
-      "not_closed": 29,
+      "closed_in_v2": 15,
+      "not_closed": 15,
       "no_target_identified": 4,
-      "closed_in_v2": 2
+      "was_in_v1_not_in_v2_slice": 1
     }
   },
   "new_claims_in_v2_slices": {
-    "unique_new_claim_refs_surfaced": 36,
-    "total_new_claim_appearances": 212,
-    "situations_with_new_claims": 82,
+    "unique_new_claim_refs_surfaced": 35,
+    "total_new_claim_appearances": 181,
+    "situations_with_new_claims": 78,
     "refs": [
       "claim:v2-famine-frost-vozdvizhenie-damaged-grain",
       "claim:v2-famine-great-distress-after-frost",
@@ -136,7 +137,6 @@
       "claim:v2-g1-woman-judged-same-as-man-unless-at-fault",
       "claim:v2-g2-birch-letters-written-across-strata-incl-women",
       "claim:v2-g2-funeral-body-carried-through-broken-roof-on-sled",
-      "claim:v2-g2-funeral-followed-by-memorial-feast",
       "claim:v2-g2-literacy-present-but-not-universal",
       "claim:v2-g3-banya-stone-stove",
       "claim:v2-g3-berries-natural-preservation",

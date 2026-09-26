@@ -474,7 +474,7 @@
       "name": "@rus/time-events-history",
       "owns": [
         "Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, двусторонней календарной проекцией `projectCalendar` / `resolveGameTimestampFromCalendarDate`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade)",
-        "Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`). Фазы: v3 `start_at` (GameTimestamp через `compareGameTimestamp`) или legacy `start_at_minutes` (только finite number). Невалидные часы — `StartedHistoricalError`, не TypeError"
+        "Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`). Принимаемая форма события: `{ id|event_id, phases[] }` (F7). Плоские v3-записи с одним `event_ref`/`start_at` без `phases[]` молча дают пустой результат. Фазы: v3 `start_at` (GameTimestamp через `compareGameTimestamp`) или legacy `start_at_minutes` (только finite number). Невалидные часы — `StartedHistoricalError`, не TypeError"
       ],
       "path": "packages/time-events-history",
       "public_entry": "./src/index.js",

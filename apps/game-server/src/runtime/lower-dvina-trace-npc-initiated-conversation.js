@@ -20,10 +20,6 @@ import { classifyOrdinaryConversationPlan } from
   './lower-dvina-trace-m2-conversation-plans.js';
 import { PHASE7_REST_PROGRESS_EFFECT_REF } from
   './lower-dvina-trace-phase-7-temporal-effect-owner.js';
-import {
-  bindPartyHistoricalEvents,
-  partyHistoricalEventsOf
-} from './world-knowledge-request-context.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 
@@ -169,8 +165,7 @@ function initialDecision({ context, npc, operation, actorStepRequest }) {
       allowed_skill_refs: [], allowed_check_profile_refs: [],
       allowed_duration_classes: ['domain_owned'], operation_contract: {} }
   });
-  bindPartyHistoricalEvents(request,
-    partyHistoricalEventsOf(context.state));
+  // historical_events: exchange wraps npcSemanticModel with party state (F1).
   const persisted_trace = (context.state.npc_semantic_decision_traces ?? []).find(
     ({ boundary_id }) => boundary_id === boundary.boundary_id) ?? null;
   return { boundary, request, persisted_trace, signal_record: {

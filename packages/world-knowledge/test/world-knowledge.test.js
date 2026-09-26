@@ -441,3 +441,18 @@ test('isValidCondition rejects padded started_historical_events value (N-3)', ()
     facet: 'started_historical_events', operator: 'includes', value: ' event:x '
   }), false);
 });
+
+test('started_historical_events forbids present operator (F4)', () => {
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'present', value: null
+  }), false);
+  const bundle = structuredClone(baseBundle);
+  const source = bundle.claims[0];
+  bundle.claims.push({
+    ...structuredClone(source),
+    claim_ref: 'claim:test:present-event',
+    applicability: { conditions: [{ facet: 'started_historical_events',
+      operator: 'present', value: null }] }
+  });
+  assert.throws(() => createWorldKnowledgeCore(bundle));
+});

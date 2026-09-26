@@ -3,10 +3,6 @@ import {
   evaluateNpcDecisionSignals
 } from '@rus/npc-runtime';
 import {
-  bindPartyHistoricalEvents,
-  partyHistoricalEventsOf
-} from './world-knowledge-request-context.js';
-import {
   allowedNpcContributionReferences,
   currentSceneObservationProjection,
   ownKnowledgeProjection,
@@ -168,8 +164,7 @@ export function buildNpcDecision(context, working, boundary, latestContribution 
           requiredSupportingOperation) })
     }
   });
-  bindPartyHistoricalEvents(request,
-    partyHistoricalEventsOf(context.state));
+  // historical_events: exchange wraps npcSemanticModel with party state (F1).
   const persistedTrace = (context.state.npc_semantic_decision_traces ?? [])
     .find(({ boundary_id: boundaryId }) =>
       boundaryId === boundary.boundary_id) ?? null;

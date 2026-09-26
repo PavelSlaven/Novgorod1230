@@ -125,7 +125,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       ? await requestTurnStepPlanWithRepair({ request,
           turnStepModel: ports.turnStepModel,
           semanticPlanValidator: ports.semanticPlanValidator,
-          preparedChainContext
+          preparedChainContext,
+          partyHistoricalEvents: ports.partyHistoricalEvents
         })
       : { plan: preparedPlan, repaired: false });
     if (preparedPlan == null) {

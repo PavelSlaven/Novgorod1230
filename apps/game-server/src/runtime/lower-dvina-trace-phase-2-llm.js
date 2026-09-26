@@ -57,9 +57,22 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
   worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
   const model = async function planTurnStep(request, repairContext = null) {
-    const input = await groundTurnRequest(worldKnowledgeGrounder, request);
+    // Explicit party events from turn admission via model function property (F2).
+    const historicalEvents = Array.isArray(model.__partyHistoricalEvents)
+      ? model.__partyHistoricalEvents
+      : Array.isArray(planTurnStep.__partyHistoricalEvents)
+        ? planTurnStep.__partyHistoricalEvents
+        : Array.isArray(repairContext?.historical_events)
+          ? repairContext.historical_events
+          : [];
+    const input = await groundTurnRequest(worldKnowledgeGrounder, request, {
+      historical_events: historicalEvents
+    });
     const wireInput = plannerRequestWire(input);
-    const repairing = repairContext != null;
+    const repairing = repairContext != null
+      && (Object.hasOwn(repairContext, 'original_output')
+        || Object.hasOwn(repairContext, 'structural_errors')
+        || Object.hasOwn(repairContext, 'validation_errors'));
     const payload = repairing
       ? {
           request: wireInput,
@@ -68,7 +81,8 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             structuredClone(repairContext.structural_errors ?? [])
         }
       : wireInput;
-    const operationChoices = turnStepOperationChoices(request, repairContext);
+    const operationChoices = turnStepOperationChoices(request,
+      repairing ? repairContext : null);
     const activeConversationExample = activeConversationChoiceExample(
       request, operationChoices);
     const visibleConversationExamples = visibleConversationChoiceExamples(

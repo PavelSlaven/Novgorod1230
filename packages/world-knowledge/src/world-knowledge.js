@@ -308,13 +308,14 @@ function validFacetMap(value) {
 function validCondition(value) {
   if (!plainObject(value) || !onlyKeys(value, ['facet', 'operator', 'value']) || !CONDITION_FACETS.has(value.facet)
     || !['equals', 'includes', 'present'].includes(value.operator)) return false;
-  if (value.operator === 'present') return value.value == null;
-  // Event gate: one event_id per condition; "all of" = several conditions (A-09).
+  // Event gate before present early-return: present+started_historical_events
+  // would always match an array factory value (F4 / contract: event_id required).
   if (value.facet === 'started_historical_events') {
     return value.operator === 'includes'
       && typeof value.value === 'string' && value.value.trim() === value.value
       && value.value.length > 0;
   }
+  if (value.operator === 'present') return value.value == null;
   return typeof value.value === 'boolean' || Number.isFinite(value.value) || (typeof value.value === 'string' && value.value.trim())
     || (Array.isArray(value.value) && value.value.length > 0 && value.value.every((item) => typeof item === 'string' && item.trim()));
 }

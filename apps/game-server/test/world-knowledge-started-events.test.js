@@ -11,7 +11,11 @@ import { createLowerDvinaTraceNpcSemanticModel } from
 import { createOrdinaryMaterializationModel } from
   '../src/runtime/ordinary-materialization-llm.js';
 import { projectCalendar } from '@rus/time-events-history/calendar';
-import { bindPartyHistoricalEvents } from
+import { createLowerDvinaTraceNpcAutonomousModel } from
+  '../src/runtime/lower-dvina-trace-autonomous-llm.js';
+import { createLowerDvinaTraceTurnStepModel } from
+  '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { withPartyHistoricalEvents } from
   '../src/runtime/world-knowledge-request-context.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -243,7 +247,7 @@ test('A-03b ordinary materialization_support authoritative includes party clock'
       log.traces[0].query.context.conditions.started_historical_events));
   });
 
-test('A-02 conversation adapter opens claim from bound committed events',
+test('A-02 conversation adapter opens claim from explicit model-context events',
   async () => {
     const FAMINE_AT = 40 * 1440;
     const events = [{ id: EVENT,
@@ -254,17 +258,20 @@ test('A-02 conversation adapter opens claim from bound committed events',
       const grounder = makeGrounder(bundle, log);
       let lastGrounded = null;
       let seenAuth = null;
-      const model = createLowerDvinaTraceNpcSemanticModel({
-        worldKnowledgeGrounder: {
-          async ground(request, purpose, authoritative) {
-            assert.equal(purpose, 'conversation');
-            seenAuth = authoritative;
-            lastGrounded = await grounder.ground(request, purpose, authoritative);
-            return lastGrounded;
-          }
-        },
-        roleRunner: { async run() { return { output: {} }; } }
-      });
+      const model = withPartyHistoricalEvents(
+        createLowerDvinaTraceNpcSemanticModel({
+          worldKnowledgeGrounder: {
+            async ground(request, purpose, authoritative) {
+              assert.equal(purpose, 'conversation');
+              seenAuth = authoritative;
+              lastGrounded = await grounder.ground(request, purpose, authoritative);
+              return lastGrounded;
+            }
+          },
+          roleRunner: { async run() { return { output: {} }; } }
+        }),
+        () => ({ historical_events: events })
+      );
       const request = {
         schema: 'npc_conversation_response_request_v1',
         request_id: 'req-a02',
@@ -278,14 +285,12 @@ test('A-02 conversation adapter opens claim from bound committed events',
         },
         public_conversation_history: []
       };
-      // Same port production decision builders use: bind committed events.
-      bindPartyHistoricalEvents(request, events);
       try {
         await model(request, { repair: null });
       } catch {
         // Assembly may fail on stub output; grounding already ran.
       }
-      assert.equal(seenAuth?.historical_events, undefined);
+      assert.deepEqual(seenAuth?.historical_events, events);
       assert.ok(lastGrounded, 'conversation adapter must call grounder');
       return {
         started: log.traces.at(-1)?.query?.context?.conditions
@@ -299,6 +304,120 @@ test('A-02 conversation adapter opens claim from bound committed events',
     const after = await viaConversation(ts(FAMINE_AT + 10));
     assert.deepEqual(after.started, [EVENT]);
     assert.equal(after.claim, true);
+  });
+
+test('F1 request-body historical_events do not open claims', async () => {
+  const FAMINE_AT = 40 * 1440;
+  const events = [{ id: EVENT,
+    phases: [{ id: 'start', start_at_minutes: FAMINE_AT }] }];
+  const log = { calls: [], traces: [] };
+  const grounder = makeGrounder(loadMutableBundle(), log);
+  const request = {
+    schema: 'npc_conversation_response_request_v1',
+    request_id: 'req-f1-inj',
+    input_locale: 'ru',
+    requested_at: ts(FAMINE_AT + 10),
+    historical_events: events,
+    decision_reasons: {
+      perceived_changes: ['счётная величина долговая запись голод']
+    },
+    perception: {
+      visible_scene: ['счётная величина долговая запись голод']
+    },
+    public_conversation_history: []
+  };
+  const grounded = await grounder.ground(request, 'conversation', {
+    clock: request.requested_at
+  });
+  assert.deepEqual(
+    log.traces.at(-1)?.query?.context?.conditions?.started_historical_events,
+    []);
+  assert.equal(JSON.stringify(grounded.world_knowledge).includes(CLAIM), false);
+});
+
+test('F2 turn step and npc_decision open claim from committed events',
+  async () => {
+    const FAMINE_AT = 40 * 1440;
+    const events = [{ id: EVENT,
+      phases: [{ id: 'start', start_at_minutes: FAMINE_AT }] }];
+    async function viaTurn(clock) {
+      const log = { calls: [], traces: [] };
+      const grounder = makeGrounder(loadMutableBundle(), log);
+      let lastGrounded = null;
+      const model = createLowerDvinaTraceTurnStepModel({
+        worldKnowledgeGrounder: {
+          async ground(request, purpose, authoritative) {
+            lastGrounded = await grounder.ground(request, purpose, authoritative);
+            return lastGrounded;
+          }
+        },
+        roleRunner: { async run() { return { output: {} }; } }
+      });
+      model.__partyHistoricalEvents = events;
+      try {
+        await model({
+          schema: 'turn_step_request_v1',
+          request_id: 'req-f2-turn',
+          input_locale: 'ru',
+          remaining_intent: 'счётная величина долговая запись голод',
+          player_safe_state: { clock }
+        });
+      } catch { /* stub plan */ }
+      return {
+        started: log.traces.at(-1)?.query?.context?.conditions
+          ?.started_historical_events ?? null,
+        claim: JSON.stringify(lastGrounded?.world_knowledge ?? {}).includes(CLAIM)
+      };
+    }
+    async function viaNpc(clock) {
+      const log = { calls: [], traces: [] };
+      const grounder = makeGrounder(loadMutableBundle(), log);
+      let lastGrounded = null;
+      const model = withPartyHistoricalEvents(
+        createLowerDvinaTraceNpcAutonomousModel({
+          worldKnowledgeGrounder: {
+            async ground(request, purpose, authoritative) {
+              assert.equal(purpose, 'npc_decision');
+              lastGrounded = await grounder.ground(request, purpose, authoritative);
+              return lastGrounded;
+            }
+          },
+          roleRunner: { async run() { return { output: {} }; } }
+        }),
+        () => ({ historical_events: events })
+      );
+      try {
+        await model({
+          schema: 'npc_action_decision_request_v1',
+          request_id: 'req-f2-npc',
+          input_locale: 'ru',
+          occurred_at: clock,
+          decision_reasons: {
+            perceived_changes: ['счётная величина долговая запись голод']
+          },
+          perception: {
+            visible_scene: ['счётная величина долговая запись голод']
+          }
+        }, { repair: null });
+      } catch { /* stub plan */ }
+      return {
+        started: log.traces.at(-1)?.query?.context?.conditions
+          ?.started_historical_events ?? null,
+        claim: JSON.stringify(lastGrounded?.world_knowledge ?? {}).includes(CLAIM)
+      };
+    }
+    const turnBefore = await viaTurn(ts(0));
+    assert.deepEqual(turnBefore.started, []);
+    assert.equal(turnBefore.claim, false);
+    const turnAfter = await viaTurn(ts(FAMINE_AT + 10));
+    assert.deepEqual(turnAfter.started, [EVENT]);
+    assert.equal(turnAfter.claim, true);
+    const npcBefore = await viaNpc(ts(0));
+    assert.deepEqual(npcBefore.started, []);
+    assert.equal(npcBefore.claim, false);
+    const npcAfter = await viaNpc(ts(FAMINE_AT + 10));
+    assert.deepEqual(npcAfter.started, [EVENT]);
+    assert.equal(npcAfter.claim, true);
   });
 
 test('A-03 createOrdinaryMaterializationModel passes party clock year',
@@ -387,4 +506,73 @@ test('A-03 createOrdinaryMaterializationModel passes party clock year',
     }
     assert.deepEqual(seenClock, yearClock);
     assert.equal(log.traces.at(-1)?.query?.context?.time?.year, expectedYear);
+  });
+
+test('F6 exactModelContext rejects bad clock; seed passes clock+events',
+  async () => {
+    const { exactModelContext } = await import(
+      '../src/runtime/ordinary-materialization-llm-support.js');
+    assert.throws(() => exactModelContext({ repair: null, clock: 'bad' }),
+      (err) => err?.code === 'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+    const FAMINE_AT = 40 * 1440;
+    const yearClock = {
+      whole_minutes: String(FAMINE_AT + 10),
+      subminute_numerator: '0', subminute_denominator: '1'
+    };
+    const events = [{ id: EVENT,
+      phases: [{ id: 'start', start_at_minutes: FAMINE_AT }] }];
+    const log = { calls: [], traces: [] };
+    const grounder = makeGrounder(loadMutableBundle(), log);
+    let seenAuth = null;
+    const { loadLowerDvinaTraceOrdinaryStageBApproval } = await import(
+      '../src/internal/lower-dvina-trace-ordinary-stage-b-approval.js');
+    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+    const modelIdentity = approval.model_identity;
+    const model = createOrdinaryMaterializationModel({
+      stageBApprovalReceipt: approval,
+      worldKnowledgeGrounder: {
+        async ground(request, purpose, authoritative) {
+          seenAuth = authoritative;
+          return grounder.ground(request, purpose, authoritative);
+        }
+      },
+      roleRunner: {
+        async run() {
+          return {
+            provider_record: { ...modelIdentity },
+            output: { resolution: 'no_change', entities: [],
+              background_groups: [], presence_resolutions: [],
+              density_band_proposal: null, reason_code: 'no_change',
+              semantic_materialization_kind: null,
+              semantic_admission_class: null }
+          };
+        }
+      }
+    });
+    try {
+      await model({
+        schema: 'ordinary_materialization_request_v1',
+        request_id: 'o1-f6',
+        input_locale: 'ru',
+        mode: 'resolve_presence',
+        candidate_query: { candidate_hint: 'счётная величина долговая запись голод' },
+        authority_envelope: {
+          candidate: {
+            semantic_type: 'wood', functional_bucket: 'household',
+            admission_class: 'common_mundane', availability_class: 'common',
+            coverage_kind: 'open'
+          }
+        },
+        policy_refs: { allowed_admission_classes: ['common_mundane'] }
+      }, { repair: null, clock: yearClock, historical_events: events });
+    } catch { /* plan bind may fail */ }
+    assert.deepEqual(seenAuth?.clock, yearClock);
+    assert.deepEqual(seenAuth?.historical_events, events);
+    // Grounding may no-op when materialization coverage lacks social domains;
+    // the O1 port contract is the authoritative handoff above (F6).
+    if (log.traces.length > 0) {
+      assert.deepEqual(
+        log.traces.at(-1)?.query?.context?.conditions?.started_historical_events,
+        [EVENT]);
+    }
   });

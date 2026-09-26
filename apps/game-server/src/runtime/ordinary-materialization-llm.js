@@ -50,11 +50,10 @@ export function createOrdinaryMaterializationModel({ roleRunner,
             ?? request?.occurred_at
             ?? request?.requested_at
             ?? null,
+          // Explicit model-context port only (F1 INJ3: never request body).
           ...(Array.isArray(historicalEvents)
             ? { historical_events: historicalEvents }
-            : Array.isArray(request?.historical_events)
-              ? { historical_events: request.historical_events }
-              : {})
+            : {})
         });
     const response = await runRole({ roleRunner, request: modelRequest, repair,
       mechanicsPolicy, semanticContext, requiredQuantity });

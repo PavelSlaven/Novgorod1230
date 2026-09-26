@@ -223,13 +223,20 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
     }
   });
 }
-export async function groundTurnRequest(grounder, request) {
+export async function groundTurnRequest(grounder, request, authoritative = null) {
+  const base = authoritative != null && typeof authoritative === 'object'
+    && !Array.isArray(authoritative) ? { ...authoritative } : {};
+  delete base.started_historical_events;
   return grounder == null ? request
     : grounder.ground(request, 'semantic_resolution', {
-      clock: request?.player_safe_state?.clock
+      ...base,
+      clock: base.clock
+        ?? request?.player_safe_state?.clock
         ?? request?.requested_at
-        ?? null
-      // historical_events: factory reads request projection (A-02).
+        ?? null,
+      // Explicit adapter port only (F1/F2); never request-body injection.
+      historical_events: Array.isArray(base.historical_events)
+        ? base.historical_events : []
     });
 }
 export function wkClosure(request) {

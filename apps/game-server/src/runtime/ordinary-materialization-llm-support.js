@@ -165,6 +165,10 @@ function exactModelContext(context) {
   if (Object.hasOwn(snapshot, 'required_quantity') && requiredQuantity == null)
     throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
   const clock = Object.hasOwn(snapshot, 'clock') ? snapshot.clock : null;
+  if (Object.hasOwn(snapshot, 'clock') && clock != null
+      && !isPartyClock(clock)) {
+    throw cutoverError('TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID');
+  }
   const historicalEvents = Object.hasOwn(snapshot, 'historical_events')
     ? snapshot.historical_events : undefined;
   if (Object.hasOwn(snapshot, 'historical_events')
@@ -183,6 +187,21 @@ function exactModelContext(context) {
   }
   return { repair, mechanicsPolicy, semanticContext, requiredQuantity,
     clock, historicalEvents };
+}
+
+/** Party clock for O1 model context: GameTimestamp or finite minute number (F6). */
+function isPartyClock(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) return true;
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  if (Number.isFinite(value.total_minutes)) return true;
+  return typeof value.whole_minutes === 'string'
+    && /^\d+$/u.test(value.whole_minutes)
+    && typeof value.subminute_numerator === 'string'
+    && /^\d+$/u.test(value.subminute_numerator)
+    && typeof value.subminute_denominator === 'string'
+    && /^[1-9]\d*$/u.test(value.subminute_denominator);
 }
 
 function requiredQuantityOf(value) {

@@ -72,12 +72,17 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
         worldKnowledge: worldKnowledgeGrounder == null ? null
           : (await worldKnowledgeGrounder.ground(modelRequest,
               'materialization_support', {
-                clock: safeState.clock,
+                clock: safeState.clock
+                  ?? value.committed_state?.clock
+                  ?? null,
                 place_refs: [locationRef],
                 actor_facets: {
                   role_ref: roleRef,
                   occupation_ref: occupationRef
-                }
+                },
+                historical_events: Array.isArray(
+                  value.committed_state?.historical_events)
+                  ? value.committed_state.historical_events : []
               })).world_knowledge
       });
       const remainder = buildNpcOrdinarySemanticRemainder({

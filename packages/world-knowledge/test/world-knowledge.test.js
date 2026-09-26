@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery,
   isValidCondition } from '../src/index.js';
+import { normalizeScores, normalizeRerankScores } from '../src/resolution.js';
 
 const bundlePath = new URL('../../../data/world-catalogs/novgorod/world-knowledge/pilot-v1/runtime-bundle.json', import.meta.url);
 const baseBundle = JSON.parse(await readFile(bundlePath, 'utf8'));
@@ -252,18 +253,59 @@ test('optional rerankScores reorder admitted claims without expanding recall', (
   const withRerank = core.resolveWorldKnowledge(input, { vectorScores, rerankScores });
   assert.equal(withRerank.facts[0].claim_ref, beta);
   assert.equal(withRerank.search_hint_relevance.length, 1);
-  // Extra rerank keys must not expand recall beyond lexical/vector candidates.
-  const outsider = 'claim:test:rerank-outsider';
-  bundle.claims.push({
-    ...structuredClone(source), claim_ref: outsider,
-    applicability: { context_scope: 'universal' }
-  });
-  const expandedCore = createWorldKnowledgeCore(bundle);
-  const withOutsider = expandedCore.resolveWorldKnowledge(input, {
+  // search_hint_relevance uses applied rerank (min-max), not raw vectors / constant 1.
+  assert.equal(without.search_hint_relevance[0], 0.9);
+  assert.equal(withRerank.search_hint_relevance[0], 1);
+});
+
+test('rerank map keys outside candidates do not expand recall', () => {
+  // Empty search_hints: any claim that sneaks into candidates is relevant.
+  // Outsider only in rerankScores must stay out of facts (Q3 / REVIEW-047).
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const source = bundle.claims[0];
+  const [alpha, outsider] = ['claim:test:rerank-cand', 'claim:test:rerank-outsider'];
+  for (const claim_ref of [alpha, outsider]) {
+    bundle.claims.push({
+      ...structuredClone(source), claim_ref,
+      applicability: { context_scope: 'universal' }
+    });
+  }
+  const input = query({ domains: [source.domain], query_locale: 'en',
+    focus_refs: [alpha], search_hints: [],
+    budget: { max_facts: 4, max_candidates: 4, max_context_chars: 7000 } });
+  const core = createWorldKnowledgeCore(bundle);
+  const vectorScores = new Map([[alpha, 0.9]]);
+  const slice = core.resolveWorldKnowledge(input, {
     vectorScores,
-    rerankScores: new Map([[alpha, 0.1], [beta, 0.2], [outsider, 99]])
+    rerankScores: new Map([[alpha, 0.1], [outsider, 99]])
   });
-  assert.equal(withOutsider.facts.some((fact) => fact.claim_ref === outsider), false);
+  assert.equal(slice.facts.some((fact) => fact.claim_ref === outsider), false);
+  assert.ok(slice.facts.some((fact) => fact.claim_ref === alpha));
+});
+
+test('hybrid normalizeScores is max-divide, not min-max (lex/vector weight)', () => {
+  // Fixture where max-divide and min-max yield different ranked order (Q1).
+  const lexical = new Map([['a', 3], ['b', 4], ['c', 10]]);
+  const vector = new Map([['a', 10], ['b', 9], ['c', 1]]);
+  const maxDivLex = normalizeScores(lexical);
+  const maxDivVec = normalizeScores(vector);
+  const hybridMax = new Map(['a', 'b', 'c'].map((ref) => [
+    ref, (maxDivLex.get(ref) ?? 0) + (maxDivVec.get(ref) ?? 0)
+  ]));
+  const mmLex = normalizeRerankScores(lexical);
+  const mmVec = normalizeRerankScores(vector);
+  const hybridMm = new Map(['a', 'b', 'c'].map((ref) => [
+    ref, (mmLex.get(ref) ?? 0) + (mmVec.get(ref) ?? 0)
+  ]));
+  const order = (scores) => [...scores.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .map(([ref]) => ref);
+  assert.deepEqual(order(hybridMax), ['a', 'b', 'c']);
+  assert.deepEqual(order(hybridMm), ['b', 'a', 'c']);
+  assert.notDeepEqual(order(hybridMax), order(hybridMm));
+  assert.equal(normalizeScores(new Map([['x', -2], ['y', 4]])).get('x'), 0);
+  assert.ok(normalizeRerankScores(new Map([['x', -2], ['y', -0.5]])).get('y') > 0);
 });
 
 test('rerank all-or-nothing: partial map keeps hybrid order; negative logits min-max', () => {
@@ -291,6 +333,22 @@ test('rerank all-or-nothing: partial map keeps hybrid order; negative logits min
     vectorScores, rerankScores: new Map([[alpha, -2], [beta, -0.5]])
   });
   assert.equal(negatives.facts[0].claim_ref, beta);
+});
+
+test('Core rejects non-finite rerankScores', () => {
+  const bundle = structuredClone(baseBundle);
+  bundle.manifest.embedding_profile_ref = productionBundle.manifest.embedding_profile_ref;
+  const core = createWorldKnowledgeCore(bundle);
+  const input = query({ domains: [bundle.claims[0].domain],
+    focus_refs: [bundle.claims[0].claim_ref] });
+  assert.throws(() => core.resolveWorldKnowledge(input, {
+    rerankScores: new Map([[bundle.claims[0].claim_ref, Number.NaN]])
+  }), (error) => error instanceof WorldKnowledgeError
+    && error.code === 'WORLD_KNOWLEDGE_QUERY_INVALID');
+  assert.throws(() => core.resolveWorldKnowledge(input, {
+    rerankScores: { not: 'a map' }
+  }), (error) => error instanceof WorldKnowledgeError
+    && error.code === 'WORLD_KNOWLEDGE_QUERY_INVALID');
 });
 
 test('coverage, operational availability and actor knowledge are distinct', () => {

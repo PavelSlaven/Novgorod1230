@@ -1,6 +1,7 @@
 import {
   canAccess, coverageStatus, isApplicable, lexicalCandidates, normalizeScores,
-  packCandidates, packContext, projectClaim, compareClaims, structuredPrefilter
+  normalizeRerankScores, packCandidates, packContext, projectClaim, compareClaims,
+  structuredPrefilter
 } from './resolution.js';
 
 const BUNDLE_SCHEMA = 'world_knowledge_runtime_bundle_v1';
@@ -160,7 +161,7 @@ function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
   let appliedRerank = null;
   if (useRerank && admittedUnsorted.length > 0
       && admittedUnsorted.every((claim) => rerankScores.has(claim.claim_ref))) {
-    appliedRerank = normalizeScores(new Map(admittedUnsorted.map((claim) =>
+    appliedRerank = normalizeRerankScores(new Map(admittedUnsorted.map((claim) =>
       [claim.claim_ref, rerankScores.get(claim.claim_ref)])));
   }
   const admitted = admittedUnsorted

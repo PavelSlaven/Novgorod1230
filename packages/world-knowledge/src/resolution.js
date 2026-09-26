@@ -191,8 +191,17 @@ export function compareClaims(a, b, query, exactRefs, lexicalScores,
     || a.claim_ref.localeCompare(b.claim_ref);
 }
 
-/** Min-max over finite scores. Preserves negative logits (bge); all-zero → empty. */
+/** Hybrid lexical/vector norm: divide by max, clamp negatives. Do not min-max —
+ * that changes lex↔vector weight (REVIEW-047 Q1). */
 export function normalizeScores(scores) {
+  const maximum = Math.max(0, ...scores.values());
+  if (maximum === 0) return new Map();
+  return new Map([...scores].map(([ref, score]) => [ref,
+    Math.max(0, score) / maximum]));
+}
+
+/** Rerank-only min-max over admitted scores. Preserves negative bge logits. */
+export function normalizeRerankScores(scores) {
   const entries = [...scores].filter(([, score]) => Number.isFinite(score));
   if (entries.length === 0) return new Map();
   const values = entries.map(([, score]) => score);

@@ -79,3 +79,50 @@ test('focus candidates require an applicable claim under party date and access',
   assert.ok(withEvent.includes('concept:a'), withEvent);
   assert.equal(withEvent.includes('concept:b'), false);
 });
+
+test('N-5a focus domains skip claims missing applicability', () => {
+  const source = bundle();
+  source.lexical_indexes.ru.обычный = ['claim:one', 'claim:two'];
+  source.claims = [
+    { claim_ref: 'claim:one', domain: 'material',
+      knowledge_access: { class: 'general', required_facets: [] } },
+    { claim_ref: 'claim:two', domain: 'material',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'general', required_facets: [] } },
+    { claim_ref: 'claim:three', domain: 'material',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'general', required_facets: [] } },
+    { claim_ref: 'claim:four', domain: 'other',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'general', required_facets: [] } }
+  ];
+  const context = { time: { year: 1230 }, place_refs: [], actor_facets: {},
+    conditions: { started_historical_events: [] } };
+  // claim:one dropped → concept:e out; concept:a/d survive via claim:two.
+  assert.deepEqual(candidateWorldKnowledgeFocusRefs(source, 'обычный', 'ru',
+    ['material'], { limit: 8, purpose: 'conversation', context }),
+    ['concept:a', 'concept:d']);
+});
+
+test('N-5b focus skips claims missing knowledge_access for purpose', () => {
+  const source = bundle();
+  source.lexical_indexes.ru.обычный = ['claim:one', 'claim:two'];
+  source.claims = [
+    { claim_ref: 'claim:one', domain: 'material',
+      applicability: { context_scope: 'universal' } },
+    { claim_ref: 'claim:two', domain: 'material',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'general', required_facets: [] } },
+    { claim_ref: 'claim:three', domain: 'material',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'general', required_facets: [] } },
+    { claim_ref: 'claim:four', domain: 'other',
+      applicability: { context_scope: 'universal' },
+      knowledge_access: { class: 'general', required_facets: [] } }
+  ];
+  const context = { time: { year: 1230 }, place_refs: [], actor_facets: {},
+    conditions: { started_historical_events: [] } };
+  assert.deepEqual(candidateWorldKnowledgeFocusRefs(source, 'обычный', 'ru',
+    ['material'], { limit: 8, purpose: 'conversation', context }),
+    ['concept:a', 'concept:d']);
+});

@@ -319,6 +319,11 @@ function validCondition(value) {
     || (Array.isArray(value.value) && value.value.length > 0 && value.value.every((item) => typeof item === 'string' && item.trim()));
 }
 
+/** Shared condition validator for Core load and pack compiler (N-3). */
+export function isValidCondition(value) {
+  return validCondition(value);
+}
+
 function onlyKeys(value, allowed) { const keys = new Set(allowed); return Object.keys(value).every((key) => keys.has(key)); }
 
 function validIndex(value, refs) {

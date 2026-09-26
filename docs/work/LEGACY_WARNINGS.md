@@ -53,7 +53,9 @@
 | 046 | `packages/world-knowledge` Core resolve | `lexical_ms` внутри Core без return-канала | [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152) |
 | 047 | default-query / `resolveTurnStepWorldKnowledge` | SUFFICIENT = лексика, не относимость; калибровка #153 | [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152) → [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 048 | `npc-safe-request-projector` / `state.historical_context` | norms/customs пусты в v17 — отсутствие данных | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
-| 049 | `frozen-role-requests` / `turn-step-generic-owners` tests | падают с до-#152 tip; вне WK diff | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 049 | `frozen-role-requests` / `turn-step-generic-owners` / `temporal-world-v1` | pre-#152 app/domain fails вне WK diff | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 050 | NPC `knowledge_snapshot` / memory/rumors | actor-visible knowledge — `@rus/visibility-knowledge-memory` / npc-runtime, не #154 WK | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 051 | `authored-opening-narration` | opening narration без WK date-gate — owner рассказчика | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 
 ## Записи
 
@@ -241,7 +243,17 @@
 - **Как жить.** Сейчас закрыто отсутствием данных (не механизмом фильтра). Пересмотреть при CR данных/реализации M2c или #154, когда контекст начнёт нести нормы; до того не трактовать пустоту как «норм нет в мире».
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
-### LW-049 — pre-#152 app-test failures: frozen-role-requests + turn-step-generic-owners
-- **Где.** `apps/game-server/test/frozen-role-requests.test.js`, `apps/game-server/test/lower-dvina-trace-turn-step-generic-owners.test.js`.
-- **Как жить.** Падают уже на `73a69dda` (до #152) и на `c40c18b3`; diff части A (#153) их не трогает. Не чинить попутно в WK-задачах; owner — turn/NPC routine / frozen role fixtures (отдельный CR).
-- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) (зафиксировано при A-04)
+### LW-049 — pre-#152 app/domain test failures: frozen-role, generic-owners, temporal-world
+- **Где.** `apps/game-server/test/frozen-role-requests.test.js`, `apps/game-server/test/lower-dvina-trace-turn-step-generic-owners.test.js`, `packages/contracts/test/temporal-world-v1.test.js` (`Factual visible envelope:` / line ~94).
+- **Как жить.** Падают уже на `73a69dda` (до #152) и на `c40c18b3`; diff части A (#153) их не трогает. `test:apps` baseline 2 fail; `test:domain` baseline 1 fail. Не чинить попутно в WK-задачах; owner — turn/NPC routine / frozen role / temporal contracts (отдельный CR).
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) (зафиксировано при A-04 / N-6)
+
+### LW-050 — NPC knowledge_snapshot / memory/rumors вне WK date-gate #153
+- **Где.** NPC `knowledge_snapshot` (known_facts/beliefs/hypotheses), memory/rumors; owners — `@rus/visibility-knowledge-memory` / npc-runtime. #154 прямо исключает социальные группы и слухи из текущего этапа.
+- **Как жить.** Не маршрутизировать в #154 WK actor-visible filter. Пересмотреть, когда visibility/npc-runtime CR явно подключит date-gated historical events к actor knowledge.
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
+
+### LW-051 — opening narration без WK date-gate
+- **Где.** `authored-opening-narration.js` / narration owner.
+- **Как жить.** Не закрывать «narration owner» без issue; отдельный CR владельца рассказчика, если opening должен учитывать started historical events.
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)

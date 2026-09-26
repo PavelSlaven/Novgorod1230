@@ -920,5 +920,5 @@ approval, не меняет default release и сохраняет historical aut
 ## World Knowledge grounding (D18 / #153 part A)
 
 - Party calendar clock wins over `request.historical_context.year`.
-- `partyWorldKnowledgeAuthoritative` always supplies `started_historical_events` (possibly empty) from committed `historical_events` + party clock via `@rus/time-events-history`.
+- `partyHistoricalEventsOf(committedState)` + `bindPartyHistoricalEvents(request, events)` — server port: reads committed `state.historical_events` and binds them by `request_id` (exact LLM request contract stays closed; survives turn `immutable`/structuredClone). `partyWorldKnowledgeAuthoritative` always rebuilds `started_historical_events` from those events + party clock via `@rus/time-events-history` (never accepts a ready id list).
 - Focus refs are filtered by claim `conditions` / access before the planner wire.

@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery } from '../src/index.js';
+import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery,
+  isValidCondition } from '../src/index.js';
 
 const bundlePath = new URL('../../../data/world-catalogs/novgorod/world-knowledge/pilot-v1/runtime-bundle.json', import.meta.url);
 const baseBundle = JSON.parse(await readFile(bundlePath, 'utf8'));
@@ -430,4 +431,13 @@ test('started_historical_events claim condition requires includes + string (A-09
       operator: 'equals', value: ['event:x'] }] } };
   bundle.claims.push(bad);
   assert.throws(() => createWorldKnowledgeCore(bundle));
+});
+
+test('isValidCondition rejects padded started_historical_events value (N-3)', () => {
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'includes', value: 'event:x'
+  }), true);
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'includes', value: ' event:x '
+  }), false);
 });

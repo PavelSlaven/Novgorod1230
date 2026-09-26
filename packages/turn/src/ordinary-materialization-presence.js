@@ -9,7 +9,7 @@ import { applyOrdinaryAggregateToTurnWorkingProjection, assertAndNormalizeTurnOr
 const RESTRICTED = new Set(['specialized_or_valuable','weapon_or_armament',
   'currency_or_precious','document_like','other_restricted']);
 
-export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true, codeOwnedResolution = null, mechanicsPolicy = null, semanticContext = null, requiredQuantity = null } = {}) {
+export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true, codeOwnedResolution = null, mechanicsPolicy = null, semanticContext = null, requiredQuantity = null, partyClock = null, historicalEvents = undefined } = {}) {
   const input = envelopeOf(envelope), projection = projectionOf(input.request, workingProjection);
   const codeResolution = codeOwnedResolution ?? forbiddenAdmission(input);
   const early = preflight(input, projection, basisCatalog, codeResolution); if (early) return early;
@@ -36,7 +36,10 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
     ...(semanticContext == null ? {} : { semantic_context: semanticContext }),
     ...(requiredQuantity == null ? {} : {
       required_quantity: freeze(requiredQuantity)
-    }) };
+    }),
+    ...(partyClock == null ? {} : { clock: freeze(partyClock) }),
+    ...(Array.isArray(historicalEvents)
+      ? { historical_events: freeze(historicalEvents) } : {}) };
   const request = freeze(input.request); let raw = await invoke(ordinaryMaterializationModel, request, { ...modelContext, repair: null }, false);
   let errors = planErrors(raw, request, mechanics, requiredQuantity), repaired = false;
   if (errors.length) { if (typeof repairAvailable !== 'function' || !repairAvailable()) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response is invalid and no structural repair budget remains.', { repair_attempted: false, validation_errors: errors }); raw = await invoke(ordinaryMaterializationModel, request, { ...modelContext, repair: { schema: 'ordinary_materialization_repair_context_v1', original_output: null, validation_errors: errors } }, true); errors = planErrors(raw, request, mechanics, requiredQuantity); repaired = true; if (errors.length) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response and its repair are invalid.', { validation_errors: errors }); }

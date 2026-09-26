@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(wk): #153 REVIEW-036 — party historical_events port; O1 clock through exactModelContext; N-1..N-6 started-historical/v3/facet validator; LW-049..051 (#153, PR #98) LW-049 updated LW-050 LW-051 added
 - fix(wk): #153 REVIEW-035 A-01..A-12 — empty started_historical_events; party authoritative factory; O1 clock; facet registry; LF contract; LW-048/049 (#153, PR #98) LW-048 LW-049 added
 - feat(wk): #153 Part A D18 — party calendar year, focus date/access filter, started_historical_events, time-events API, contract §13/§14/§53/§54 (#153, PR #98)
 

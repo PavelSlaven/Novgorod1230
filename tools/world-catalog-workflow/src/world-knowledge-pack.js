@@ -1,4 +1,4 @@
-import { CONDITION_FACETS } from '@rus/world-knowledge';
+import { isValidCondition } from '@rus/world-knowledge';
 import { digestValue, stableStringify } from './digest.js';
 
 const AUTHORING_SCHEMA = 'world_knowledge_authoring_pack_v1';
@@ -565,19 +565,8 @@ function validateConditions(value, label, errors) {
     const itemLabel = `${label}[${index}]`;
     if (!isObject(condition)) { errors.push(`${itemLabel} must be an object`); continue; }
     exactKeys(condition, ['facet', 'operator', 'value'], itemLabel, errors);
-    if (!CONDITION_FACETS.has(condition.facet) || !['equals', 'includes', 'present'].includes(condition.operator)) errors.push(`${itemLabel} is invalid`);
-    if (condition.facet === 'started_historical_events') {
-      if (condition.operator !== 'includes' || !requiredText(condition.value)) {
-        errors.push(`${itemLabel} is invalid`);
-      }
-      continue;
-    }
-    if (condition.operator === 'present' && condition.value != null) errors.push(`${itemLabel}.present forbids value`);
-    if (condition.operator !== 'present') {
-      const validValue = requiredText(condition.value) || typeof condition.value === 'boolean' || Number.isFinite(condition.value)
-        || (Array.isArray(condition.value) && condition.value.length > 0 && condition.value.every(requiredText));
-      if (!validValue) errors.push(`${itemLabel}.value is invalid`);
-    }
+    // Single owner validator from @rus/world-knowledge (N-3).
+    if (!isValidCondition(condition)) errors.push(`${itemLabel} is invalid`);
   }
 }
 

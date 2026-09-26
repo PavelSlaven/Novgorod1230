@@ -54,6 +54,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     }
     const objective = { ...enabled.objective_context,
       request_id: `${rootId}:ordinary:seed` };
+    const partyClock = request.committed_state?.clock ?? null;
+    const historicalEvents = Array.isArray(request.committed_state?.historical_events)
+      ? request.committed_state.historical_events : [];
     let projection = Object.freeze({ ordinary_materialization_aggregate:
       structuredClone(enabled.ordinary_aggregate) });
     const transitions = [];
@@ -65,6 +68,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
             objective: enabled.objective_context,
             scopeRef: enabled.ordinary_aggregate.scope_ref }) }),
         semanticContext: enabled.semantic_context ?? null,
+        partyClock,
+        historicalEvents,
         ordinaryMaterializationModel: modelBudget.invoke,
         repairAvailable: modelBudget.hasRemaining,
         workingProjection: projection,
@@ -136,6 +141,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       semanticContext: enabled.semantic_context ?? null,
       requiredQuantity: request.operation.quantity ?? null,
+      partyClock,
+      historicalEvents,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
       workingProjection: projection,

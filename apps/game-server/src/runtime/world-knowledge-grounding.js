@@ -229,6 +229,7 @@ export async function groundTurnRequest(grounder, request) {
       clock: request?.player_safe_state?.clock
         ?? request?.requested_at
         ?? null
+      // historical_events: factory reads request projection (A-02).
     });
 }
 export function wkClosure(request) {

@@ -54,6 +54,7 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       (candidate) => candidate.contribution_kind === 'speech'
         && candidate.supporting_operations.length === 0
     )) return semanticGroundingFallback(repair.original_output, request);
+    // Factory reads historical_events from request (committed projection) + clock.
     const grounded = worldKnowledgeGrounder == null ? request
       : await worldKnowledgeGrounder.ground(request, 'conversation', {
         clock: request.requested_at

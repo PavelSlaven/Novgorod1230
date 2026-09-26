@@ -474,7 +474,7 @@
       "name": "@rus/time-events-history",
       "owns": [
         "Владеет canonical temporal digest, нормализацией и сравнением exact time, crossing whole-minute boundaries, двусторонней календарной проекцией `projectCalendar` / `resolveGameTimestampFromCalendarDate`, историческими phase handlers и `temporal-resolution-v1` (`normalizeTemporalBoundaryCandidates`, earliest batch, same-time cascade)",
-        "Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`)"
+        "Владеет `startedHistoricalEventsAndPhases` / `startedHistoricalEventIds` — события и фазы, начавшиеся к дате партии (D18; основной API, не `./legacy`). Фазы: v3 `start_at` (GameTimestamp через `compareGameTimestamp`) или legacy `start_at_minutes` (только finite number). Невалидные часы — `StartedHistoricalError`, не TypeError"
       ],
       "path": "packages/time-events-history",
       "public_entry": "./src/index.js",
@@ -718,7 +718,8 @@
     },
     {
       "dependencies": [
-        "@rus/items-property"
+        "@rus/items-property",
+        "@rus/world-knowledge"
       ],
       "name": "@rus/world-catalog-workflow",
       "owns": [
@@ -730,7 +731,7 @@
         "`validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback",
         "Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation",
         "`buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set",
-        "internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay",
+        "internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay; condition facets валидирует через `@rus/world-knowledge` (`CONDITION_FACETS`, `isValidCondition`)",
         "production authoring approval: один независимый `APPROVE` на claim, exact",
         "`editorial_reconstruction` source для игровых реконструкций: существующие",
         "internal `build-world-knowledge-vectors` и",

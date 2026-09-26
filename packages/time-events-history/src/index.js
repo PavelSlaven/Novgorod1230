@@ -26,6 +26,7 @@ export {
 } from './historical-phases.js';
 
 export {
+  StartedHistoricalError,
   startedHistoricalEventIds,
   startedHistoricalEventsAndPhases
 } from './started-historical.js';

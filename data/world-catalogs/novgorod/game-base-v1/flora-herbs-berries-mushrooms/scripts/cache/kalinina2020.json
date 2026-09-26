@@ -1,0 +1,174 @@
+{
+ "source": "KALININA2020",
+ "url": "https://www.binran.ru/files/phd/Kalinina_Thesis.pdf",
+ "scope": "broadleaf forests of Leningrad, Novgorod, Pskov oblasts",
+ "entries": {
+  "Vaccinium myrtillus": null,
+  "Vaccinium vitis-idaea": null,
+  "Vaccinium oxycoccos": null,
+  "Rubus chamaemorus": null,
+  "Vaccinium uliginosum": null,
+  "Rubus idaeus": null,
+  "Fragaria vesca": null,
+  "Rubus saxatilis": null,
+  "Ribes nigrum": null,
+  "Ribes spicatum": null,
+  "Rubus caesius": null,
+  "Empetrum nigrum": null,
+  "Arctostaphylos uva-ursi": null,
+  "Boletus edulis": {
+   "trophic": "Mr",
+   "months": "VII – X",
+   "frequency": "Часто",
+   "novgorod_record": true
+  },
+  "Leccinum scabrum": {
+   "trophic": "Mr",
+   "months": "VI – IX",
+   "frequency": "Часто",
+   "novgorod_record": true
+  },
+  "Leccinum aurantiacum": {
+   "trophic": "Mr",
+   "months": "VII – IX",
+   "frequency": "Часто",
+   "novgorod_record": true
+  },
+  "Leccinum versipelle": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": false
+  },
+  "Imleria badia": {
+   "trophic": "Mr",
+   "months": "VII – IX",
+   "frequency": "Нередко",
+   "novgorod_record": true
+  },
+  "Xerocomus subtomentosus": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": true
+  },
+  "Suillus luteus": null,
+  "Suillus bovinus": null,
+  "Suillus variegatus": null,
+  "Tylopilus felleus": null,
+  "Cantharellus cibarius": null,
+  "Lactarius resimus": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Единственная находка",
+   "novgorod_record": true
+  },
+  "Lactarius necator": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": true
+  },
+  "Lactarius torminosus": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": true
+  },
+  "Lactarius deterrimus": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": false
+  },
+  "Lactarius rufus": null,
+  "Russula vesca": null,
+  "Russula emetica": null,
+  "Armillaria borealis": {
+   "trophic": "Le",
+   "months": "VIII – X",
+   "frequency": "Нередко",
+   "novgorod_record": true
+  },
+  "Kuehneromyces mutabilis": {
+   "trophic": "Le",
+   "months": "VI – VIII",
+   "frequency": "Часто",
+   "novgorod_record": true
+  },
+  "Flammulina velutipes": {
+   "trophic": "Le",
+   "months": "IX – XII",
+   "frequency": "Часто",
+   "novgorod_record": true
+  },
+  "Pleurotus ostreatus": {
+   "trophic": "Le",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": false
+  },
+  "Coprinus comatus": {
+   "trophic": "Hu",
+   "months": null,
+   "frequency": "Единственная находка",
+   "novgorod_record": true
+  },
+  "Gyromitra esculenta": null,
+  "Morchella esculenta": null,
+  "Lycoperdon perlatum": null,
+  "Scleroderma citrinum": null,
+  "Cortinarius caperatus": null,
+  "Paxillus involutus": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": true
+  },
+  "Amanita phalloides": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": false
+  },
+  "Amanita virosa": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Единственная находка",
+   "novgorod_record": false
+  },
+  "Amanita muscaria": {
+   "trophic": "Mr",
+   "months": "VIII – IX",
+   "frequency": "Часто",
+   "novgorod_record": true
+  },
+  "Amanita pantherina": null,
+  "Galerina marginata": {
+   "trophic": "Le",
+   "months": "VII – X",
+   "frequency": "Часто",
+   "novgorod_record": true
+  },
+  "Hypholoma fasciculare": {
+   "trophic": "Le",
+   "months": "VIII – IX",
+   "frequency": "Нередко",
+   "novgorod_record": false
+  },
+  "Cortinarius rubellus": null,
+  "Tricholoma equestre": null,
+  "Entoloma sinuatum": {
+   "trophic": "Mr",
+   "months": null,
+   "frequency": "Редко",
+   "novgorod_record": false,
+   "region_note": "Псковская обл. (Локнянский, Новосокольнический р-ны), не Новгородская; manually corrected 2026-09-26 per VERIFICATION.md finding 1 (parser bug in extract-sources.py absorbed 'НОВГОРОДСКАЯ' from the next entry, E. strigosissimum; the parser bug is fixed but the PDF has not been re-fetched in this environment, so this one field was corrected by hand from the verifier's independently re-read source text)"
+  },
+  "Fomes fomentarius": null,
+  "Fomitopsis betulina": null,
+  "Inonotus obliquus": null,
+  "Laetiporus sulphureus": null,
+  "Claviceps purpurea": null
+ }
+}

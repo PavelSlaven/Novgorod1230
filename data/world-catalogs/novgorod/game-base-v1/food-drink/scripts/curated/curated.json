@@ -1,0 +1,2005 @@
+{
+ "_about": "Hand-curated inputs for build.py (collector collect-food-drink, 2026-09-26). Status candidate; not approved. Every entry carries refs. Ref prefixes: master-food:<SRCID> = sources/master-archive-v1/data/normalized_source_tables/food_system/sources.csv row; wk:claim:<id> = WK production-v1 approved claim; ext:<id> = bibliography in new_sources below; sqlite:novgorod_1230:<table>:<key> = C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite (curated, owner Downloads); temporal-v4:<record_id> = data/world-catalogs/novgorod/temporal-v4 approved record.",
+ "new_sources": [
+  {
+   "id": "ext:kirjanova1979",
+   "title": "Кирьянова Н.А. О составе земледельческих культур Древней Руси X–XV вв. (по археологическим материалам) // Советская археология. 1979. № 4. С. 72–85",
+   "url": "http://annales.info/rus/small/zerno.htm",
+   "trust": "B (scholarly synthesis of archaeobotanical grain finds; A-grade underlying finds)",
+   "used_for": "cereal ranking (rye dominant; barley & wheat 2nd/3rd; oats present; millet declining), peas, field beans (small-seeded), small-seeded lentil, flax, hemp, buckwheat on 3 sites, X–first half XIII c."
+  },
+  {
+   "id": "ext:npl1950_6738_6739",
+   "title": "Новгородская первая летопись старшего и младшего изводов. М.–Л., 1950. С. 276–298 (годы 6738–6739 / 1230–1231)",
+   "url": "http://litopys.org.ua/novglet/novg24.htm",
+   "trust": "A (primary chronicle)",
+   "used_for": "frost on Exaltation of the Cross 1230, famine prices, substitute foods, skudelnitsa 3030, arson over rye, children given to merchants for bread, German grain & flour from overseas 1231"
+  },
+  {
+   "id": "ext:gramota943",
+   "title": "Берестяная грамота Новгород № 943 (1180–1200): покупка ржи, цена ячменя",
+   "url": "https://gramoty.ru/birchbark/document/show/novgorod/943/",
+   "trust": "A (primary)",
+   "used_for": "rye purchase, barley price"
+  },
+  {
+   "id": "ext:gramota706",
+   "title": "Берестяная грамота Новгород № 706 (1240–1260): «не продавай хмеля»",
+   "url": "https://gramoty.ru/birchbark/document/show/novgorod/706/",
+   "trust": "A (primary)",
+   "used_for": "hops as traded commodity"
+  },
+  {
+   "id": "ext:gramota709",
+   "title": "Берестяная грамота Новгород № 709 (1240–1260): хмель",
+   "url": "https://gramoty.ru/birchbark/document/show/novgorod/709/",
+   "trust": "A (primary)",
+   "used_for": "hops as traded commodity"
+  },
+  {
+   "id": "ext:gramota586",
+   "title": "Берестяная грамота Новгород № 586 (1100–1120): вишни, вино, «гароусъ», мука, сковорода",
+   "url": "https://gramoty.ru/birchbark/document/show/novgorod/586/",
+   "trust": "A (primary; early, analogy for 1230)",
+   "used_for": "cherries, wine, flour in a household list"
+  },
+  {
+   "id": "ext:gramota147",
+   "title": "Берестяная грамота Новгород № 147 (1220–1240): сигов ещё нет",
+   "url": "https://gramoty.ru/birchbark/document/show/novgorod/147/",
+   "trust": "A (primary)",
+   "used_for": "whitefish (сиги) as seasonal tribute/delivery"
+  },
+  {
+   "id": "ext:stepanova2014",
+   "title": "Степанова Л.Г. Традиционное питание русского крестьянина в XVI в. и резервные источники его пополнения // Политематический сетевой электронный научный журнал КубГАУ. 2014",
+   "url": "https://cyberleninka.ru/article/n/traditsionnoe-pitanie-russkogo-krestyanina-v-xvi-v-i-rezervnye-istochniki-ego-popolneniya",
+   "trust": "B for XVI c.; C as analogy for 1230",
+   "used_for": "famine/reserve substitutes by later analogy"
+  },
+  {
+   "id": "ext:monk_johnston2012",
+   "title": "Monk M., Johnston P. Perspectives on non-wood plants in the sampled assemblage from the Troitsky excavations of medieval Novgorod // The Archaeology of Medieval Novgorod in Context. Oxford: Oxbow, 2012. P. 283–320",
+   "url": "https://www.jstor.org/stable/j.ctvh1dqcg",
+   "trust": "A/B (archaeobotany); full text not read in this pass",
+   "used_for": "pointer only; WK troitsky-* claims already carry its content"
+  },
+  {
+   "id": "ext:tzvelev2000",
+   "title": "Цвелёв Н.Н. Определитель сосудистых растений Северо-Западной России (Ленинградская, Псковская и Новгородская области). СПб.: Изд-во СПХФА, 2000",
+   "url": "",
+   "trust": "B (regional flora; URL not verified in this pass)",
+   "used_for": "coarse fruiting/greens phenology windows used only by check.py"
+  }
+ ],
+ "taxa": {
+  "Secale cereale": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "рожь посевная",
+   "ids": [
+    "ING0005",
+    "ING0010",
+    "ING0015",
+    "ING0016",
+    "ING0022",
+    "ING0029",
+    "ING0154"
+   ],
+   "refs": [
+    "ext:kirjanova1979",
+    "wk:claim:food-practices-rye-flour-bread",
+    "ext:gramota943"
+   ]
+  },
+  "Triticum aestivum": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "пшеница мягкая",
+   "ids": [
+    "ING0006",
+    "ING0014",
+    "ING0017",
+    "ING0026",
+    "ING0156",
+    "ING0157"
+   ],
+   "refs": [
+    "ext:kirjanova1979"
+   ]
+  },
+  "Hordeum vulgare": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "ячмень",
+   "ids": [
+    "ING0007",
+    "ING0011",
+    "ING0018",
+    "ING0028",
+    "ING0160"
+   ],
+   "refs": [
+    "ext:kirjanova1979",
+    "wk:claim:household-barley-commodity"
+   ]
+  },
+  "Avena sativa": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "овёс посевной",
+   "ids": [
+    "ING0008",
+    "ING0012",
+    "ING0019",
+    "ING0158"
+   ],
+   "refs": [
+    "ext:kirjanova1979"
+   ]
+  },
+  "Panicum miliaceum": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "просо",
+   "ids": [
+    "ING0009",
+    "ING0013",
+    "ING0159"
+   ],
+   "refs": [
+    "ext:kirjanova1979",
+    "wk:claim:food-practices-millet-cleaning-waste"
+   ]
+  },
+  "Humulus lupulus": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "хмель",
+   "ids": [
+    "ING0038"
+   ],
+   "refs": [
+    "ext:gramota706",
+    "ext:gramota709",
+    "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
+   ]
+  },
+  "Brassica rapa subsp. rapa": {
+   "kind": "flora",
+   "rank": "subspecies",
+   "name_ru": "репа",
+   "ids": [
+    "ING0039",
+    "ING0052"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Brassica oleracea": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "капуста",
+   "ids": [
+    "ING0040",
+    "ING0051",
+    "ING0175",
+    "ING0176",
+    "ING0177"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Allium cepa": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "лук репчатый",
+   "ids": [
+    "ING0041",
+    "ING0043"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Allium sativum": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "чеснок",
+   "ids": [
+    "ING0042"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Apiaceae: Daucus carota | Pastinaca sativa (uncertain)": {
+   "kind": "flora",
+   "rank": "uncertain_group",
+   "name_ru": "морковь или пастернак (осторожно)",
+   "ids": [
+    "ING0044"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Cucumis sativus": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "огурец (осторожно)",
+   "ids": [
+    "ING0045"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Pisum sativum": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "горох",
+   "ids": [
+    "ING0046",
+    "ING0047",
+    "ING0048"
+   ],
+   "refs": [
+    "ext:kirjanova1979"
+   ]
+  },
+  "Fabaceae: Pisum | Vicia faba | Lens culinaris": {
+   "kind": "flora",
+   "rank": "group",
+   "name_ru": "зернобобовые смесь",
+   "ids": [
+    "ING0049",
+    "ING0050"
+   ],
+   "refs": [
+    "ext:kirjanova1979"
+   ]
+  },
+  "Vicia faba var. minor": {
+   "kind": "flora",
+   "rank": "variety",
+   "name_ru": "бобы кормовые мелкосемянные",
+   "ids": [
+    "ADD_faba_bean"
+   ],
+   "refs": [
+    "ext:kirjanova1979"
+   ]
+  },
+  "Lens culinaris": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "чечевица мелкосемянная",
+   "ids": [
+    "ADD_lentil"
+   ],
+   "refs": [
+    "ext:kirjanova1979"
+   ]
+  },
+  "Fagopyrum esculentum": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "гречиха",
+   "ids": [
+    "ADD_buckwheat_grain"
+   ],
+   "refs": [
+    "ext:kirjanova1979"
+   ]
+  },
+  "multiple wild greens (Urtica, Rumex, Aegopodium, Atriplex)": {
+   "kind": "flora",
+   "rank": "group",
+   "name_ru": "дикая зелень смесь",
+   "ids": [
+    "ING0053",
+    "ING0187",
+    "ING0188"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Urtica dioica": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "крапива двудомная",
+   "ids": [
+    "ING0054"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Rumex acetosa": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "щавель кислый",
+   "ids": [
+    "ING0055"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Aegopodium podagraria": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "сныть",
+   "ids": [
+    "ING0056"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Atriplex spp. / Chenopodium album": {
+   "kind": "flora",
+   "rank": "genus_group",
+   "name_ru": "лебеда",
+   "ids": [
+    "ING0057",
+    "ADD_goosefoot_seed"
+   ],
+   "refs": [
+    "master-food:SRC044",
+    "ext:stepanova2014"
+   ]
+  },
+  "Fungi: edible macrofungi (species unspecified)": {
+   "kind": "fungi",
+   "rank": "group",
+   "name_ru": "съедобные грибы",
+   "ids": [
+    "ING0058",
+    "ING0059"
+   ],
+   "refs": [
+    "master-food:SRC045",
+    "master-food:SRC046"
+   ]
+  },
+  "Rubus idaeus": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "малина",
+   "ids": [
+    "ING0060"
+   ],
+   "refs": [
+    "master-food:FSRC001",
+    "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
+   ]
+  },
+  "Vaccinium myrtillus": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "черника",
+   "ids": [
+    "ING0061"
+   ],
+   "refs": [
+    "master-food:FSRC001",
+    "wk:claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation"
+   ]
+  },
+  "Vaccinium vitis-idaea": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "брусника",
+   "ids": [
+    "ING0062"
+   ],
+   "refs": [
+    "master-food:FSRC001"
+   ]
+  },
+  "Vaccinium oxycoccos": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "клюква",
+   "ids": [
+    "ING0063"
+   ],
+   "refs": [
+    "master-food:FSRC001"
+   ]
+  },
+  "Ribes spp.": {
+   "kind": "flora",
+   "rank": "genus",
+   "name_ru": "смородина",
+   "ids": [
+    "ING0064"
+   ],
+   "refs": [
+    "master-food:FSRC001"
+   ]
+  },
+  "Fragaria vesca": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "земляника лесная",
+   "ids": [
+    "ING0065"
+   ],
+   "refs": [
+    "master-food:FSRC001",
+    "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
+   ]
+  },
+  "Rubus chamaemorus": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "морошка",
+   "ids": [
+    "ING0066"
+   ],
+   "refs": [
+    "master-food:FSRC001"
+   ]
+  },
+  "Sorbus aucuparia": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "рябина",
+   "ids": [
+    "ING0067"
+   ],
+   "refs": [
+    "master-food:FSRC001"
+   ]
+  },
+  "Prunus cerasus": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "вишня",
+   "ids": [
+    "ING0068"
+   ],
+   "refs": [
+    "master-food:FSRC001",
+    "ext:gramota586"
+   ]
+  },
+  "mixed forest berries (Rubus, Vaccinium, Fragaria, Ribes)": {
+   "kind": "flora",
+   "rank": "group",
+   "name_ru": "лесные ягоды смесь",
+   "ids": [
+    "ING0069",
+    "ING0070",
+    "ING0071"
+   ],
+   "refs": [
+    "master-food:FSRC001"
+   ]
+  },
+  "Malus spp.": {
+   "kind": "flora",
+   "rank": "genus",
+   "name_ru": "яблоня",
+   "ids": [
+    "ING0072",
+    "ING0073"
+   ],
+   "refs": [
+    "master-food:FSRC001",
+    "wk:claim:household-apple-orchard"
+   ]
+  },
+  "Corylus avellana": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "лещина",
+   "ids": [
+    "ING0074",
+    "ING0075",
+    "ING0076"
+   ],
+   "refs": [
+    "master-food:SRC044",
+    "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
+   ]
+  },
+  "Linum usitatissimum": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "лён",
+   "ids": [
+    "ING0077",
+    "ING0078"
+   ],
+   "refs": [
+    "ext:kirjanova1979",
+    "wk:claim:agriculture-fauna-flax-hemp-cultivation"
+   ]
+  },
+  "Cannabis sativa": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "конопля",
+   "ids": [
+    "ING0079"
+   ],
+   "refs": [
+    "ext:kirjanova1979",
+    "wk:claim:agriculture-fauna-flax-hemp-cultivation"
+   ]
+  },
+  "Linum usitatissimum | Cannabis sativa (oil)": {
+   "kind": "flora",
+   "rank": "group",
+   "name_ru": "масличные лён/конопля",
+   "ids": [
+    "ING0081"
+   ],
+   "refs": [
+    "ext:kirjanova1979"
+   ]
+  },
+  "Papaver somniferum": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "мак (осторожно)",
+   "ids": [
+    "ING0080"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Armoracia rusticana": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "хрен (осторожно)",
+   "ids": [
+    "ING0189"
+   ],
+   "refs": [
+    "master-food:SRC044"
+   ]
+  },
+  "Pinus sylvestris": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "сосна обыкновенная (заболонь/кора)",
+   "ids": [
+    "ADD_pine_inner_bark"
+   ],
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ]
+  },
+  "Tilia cordata": {
+   "kind": "flora",
+   "rank": "species",
+   "name_ru": "липа (кора)",
+   "ids": [
+    "ADD_linden_bark"
+   ],
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ]
+  },
+  "Ulmus spp. (U. glabra, U. laevis)": {
+   "kind": "flora",
+   "rank": "genus",
+   "name_ru": "ильм, вяз (лист)",
+   "ids": [
+    "ADD_elm_leaves"
+   ],
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ]
+  },
+  "Bryophyta (species unknown)": {
+   "kind": "flora",
+   "rank": "division",
+   "name_ru": "мох",
+   "ids": [
+    "ADD_moss"
+   ],
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ]
+  },
+  "Apis mellifera": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "пчела медоносная (продукт)",
+   "ids": [
+    "ING0085",
+    "ING0086",
+    "ING0087",
+    "ING0088",
+    "ING0037"
+   ],
+   "refs": [
+    "wk:claim:agriculture-fauna-borts-honey"
+   ]
+  },
+  "Bos taurus": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "корова, бык",
+   "ids": [
+    "ING0089",
+    "ING0092",
+    "ING0093",
+    "ING0094",
+    "ING0095",
+    "ING0096",
+    "ING0097",
+    "ING0098",
+    "ING0099",
+    "ING0100",
+    "ING0101",
+    "ING0102",
+    "ING0106",
+    "ING0107"
+   ],
+   "refs": [
+    "wk:claim:environment-p1-cattle",
+    "master-food:SRC040"
+   ]
+  },
+  "Capra hircus": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "коза",
+   "ids": [
+    "ING0090"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Ovis aries": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "овца",
+   "ids": [
+    "ING0091"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Ovis aries | Capra hircus": {
+   "kind": "fauna",
+   "rank": "group",
+   "name_ru": "мелкий рогатый скот",
+   "ids": [
+    "ING0109"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Sus scrofa f. domestica": {
+   "kind": "fauna",
+   "rank": "form",
+   "name_ru": "свинья",
+   "ids": [
+    "ING0084",
+    "ING0108"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Equus caballus": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "лошадь",
+   "ids": [
+    "ING0110"
+   ],
+   "refs": [
+    "wk:claim:environment-p1-horse-meat",
+    "ext:npl1950_6738_6739"
+   ]
+  },
+  "Gallus gallus f. domestica": {
+   "kind": "fauna",
+   "rank": "form",
+   "name_ru": "курица",
+   "ids": [
+    "ING0103",
+    "ING0111"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Anser anser f. domestica": {
+   "kind": "fauna",
+   "rank": "form",
+   "name_ru": "гусь домашний",
+   "ids": [
+    "ING0104",
+    "ING0112"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Anas platyrhynchos f. domestica": {
+   "kind": "fauna",
+   "rank": "form",
+   "name_ru": "утка домашняя",
+   "ids": [
+    "ING0105",
+    "ING0113"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Lepus timidus | Lepus europaeus": {
+   "kind": "fauna",
+   "rank": "genus",
+   "name_ru": "заяц",
+   "ids": [
+    "ING0114"
+   ],
+   "refs": [
+    "master-food:SRC041"
+   ]
+  },
+  "Alces alces": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "лось",
+   "ids": [
+    "ING0115"
+   ],
+   "refs": [
+    "master-food:SRC041"
+   ]
+  },
+  "Castor fiber": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "бобр речной",
+   "ids": [
+    "ING0116"
+   ],
+   "refs": [
+    "master-food:SRC042"
+   ]
+  },
+  "Sus scrofa": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "кабан",
+   "ids": [
+    "ING0117"
+   ],
+   "refs": [
+    "master-food:SRC041"
+   ]
+  },
+  "Tetrao urogallus": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "глухарь",
+   "ids": [
+    "ING0118"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Anatidae (wild)": {
+   "kind": "fauna",
+   "rank": "family",
+   "name_ru": "дикие утки и гуси",
+   "ids": [
+    "ING0119"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "domestic livestock (Bos | Sus | Ovis | Capra)": {
+   "kind": "fauna",
+   "rank": "group",
+   "name_ru": "домашний скот (мясо без вида)",
+   "ids": [
+    "ING0082",
+    "ING0083",
+    "ING0120",
+    "ING0121",
+    "ING0122",
+    "ING0123",
+    "ING0124",
+    "ING0125",
+    "ING0126",
+    "ING0127",
+    "ING0128",
+    "ING0129",
+    "ING0130",
+    "ING0178",
+    "ING0183",
+    "ING0184"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Actinopterygii: freshwater fish (unspecified)": {
+   "kind": "fauna",
+   "rank": "group",
+   "name_ru": "речная и озёрная рыба",
+   "ids": [
+    "ING0131",
+    "ING0144",
+    "ING0145",
+    "ING0146",
+    "ING0147",
+    "ING0148",
+    "ING0149",
+    "ING0150",
+    "ING0151",
+    "ING0152",
+    "ING0153",
+    "ING0179",
+    "ING0180",
+    "ING0181",
+    "ING0182",
+    "ING0185"
+   ],
+   "refs": [
+    "wk:claim:population-fish-food",
+    "master-food:SRC025"
+   ]
+  },
+  "Esox lucius": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "щука",
+   "ids": [
+    "ING0132"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Sander lucioperca": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "судак",
+   "ids": [
+    "ING0133"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Cyprinidae": {
+   "kind": "fauna",
+   "rank": "family",
+   "name_ru": "карповые",
+   "ids": [
+    "ING0134"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Abramis brama": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "лещ",
+   "ids": [
+    "ING0135"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Rutilus rutilus": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "плотва",
+   "ids": [
+    "ING0136"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Perca fluviatilis": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "окунь",
+   "ids": [
+    "ING0137"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Gymnocephalus cernua": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "ёрш",
+   "ids": [
+    "ING0138"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Silurus glanis": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "сом",
+   "ids": [
+    "ING0139"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Coregonus lavaretus s.l.": {
+   "kind": "fauna",
+   "rank": "species_complex",
+   "name_ru": "сиг",
+   "ids": [
+    "ING0140"
+   ],
+   "refs": [
+    "ext:gramota147",
+    "master-food:FSRC003"
+   ]
+  },
+  "Acipenseridae": {
+   "kind": "fauna",
+   "rank": "family",
+   "name_ru": "осетровые",
+   "ids": [
+    "ING0141"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Salmonidae": {
+   "kind": "fauna",
+   "rank": "family",
+   "name_ru": "лососевые",
+   "ids": [
+    "ING0142"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  },
+  "Osmerus eperlanus (incl. f. spirinchus)": {
+   "kind": "fauna",
+   "rank": "species",
+   "name_ru": "корюшка, снеток",
+   "ids": [
+    "ING0143"
+   ],
+   "refs": [
+    "master-food:SRC040"
+   ]
+  }
+ },
+ "overrides": {
+  "ING0003": {
+   "origin": "regional",
+   "origin_note": "Соль — промысел Старой Руссы (варка рассолов), товар",
+   "add_refs": [
+    "sqlite:novgorod_1230:economy:соль"
+   ]
+  },
+  "ING0191": {
+   "origin": "regional",
+   "add_refs": [
+    "sqlite:novgorod_1230:economy:соль"
+   ]
+  },
+  "ING0165": {
+   "origin": "import",
+   "origin_note": "Вино — импорт (Запад/юг), литургия и элитное потребление; в master ошибочно local",
+   "add_refs": [
+    "ext:gramota586",
+    "sqlite:novgorod_1230:economy:вино"
+   ]
+  },
+  "ING0004": {
+   "add_refs": [
+    "ext:gramota586"
+   ],
+   "note_add": "«гароусъ» в грамоте № 586 переводят как кислое вино/уксус — чтение не бесспорно"
+  },
+  "ING0006": {
+   "origin": "local+import",
+   "origin_note": "Местные посевы (Кирьянова 1979) и ввоз с южных и суздальских рынков",
+   "add_refs": [
+    "ext:kirjanova1979",
+    "sqlite:novgorod_1230:economy:пшеница"
+   ]
+  },
+  "ING0009": {
+   "origin": "local+import",
+   "origin_note": "Местные посевы (убывают к XIII в.) и ввоз из более тёплых зон",
+   "add_refs": [
+    "ext:kirjanova1979",
+    "sqlite:novgorod_1230:economy:просо"
+   ]
+  },
+  "ING0005": {
+   "origin": "local+import",
+   "origin_note": "Приильменье и Верхняя Волга; местный урожай и ввоз",
+   "add_refs": [
+    "ext:gramota943",
+    "wk:claim:household-rye-commodity",
+    "wk:claim:occupation-directed-grain-procurement",
+    "sqlite:novgorod_1230:economy:зерно: рожь"
+   ]
+  },
+  "ING0007": {
+   "add_refs": [
+    "ext:gramota943",
+    "wk:claim:household-barley-commodity",
+    "sqlite:novgorod_1230:economy:ячмень"
+   ]
+  },
+  "ING0008": {
+   "add_refs": [
+    "sqlite:novgorod_1230:economy:овёс"
+   ]
+  },
+  "ING0013": {
+   "add_refs": [
+    "wk:claim:food-practices-millet-cleaning-waste"
+   ]
+  },
+  "ING0038": {
+   "add_refs": [
+    "ext:gramota706",
+    "ext:gramota709"
+   ]
+  },
+  "ING0031": {
+   "add_refs": [
+    "wk:claim:population-processes-malt-context"
+   ]
+  },
+  "ING0068": {
+   "add_refs": [
+    "ext:gramota586"
+   ]
+  },
+  "ING0072": {
+   "add_refs": [
+    "wk:claim:household-apple-orchard"
+   ]
+  },
+  "ING0085": {
+   "add_refs": [
+    "wk:claim:agriculture-fauna-borts-honey",
+    "sqlite:novgorod_1230:economy:мёд"
+   ]
+  },
+  "ING0097": {
+   "add_refs": [
+    "wk:claim:maslo-birchbark-718-account"
+   ]
+  },
+  "ING0106": {
+   "add_refs": [
+    "wk:claim:environment-p1-cattle"
+   ]
+  },
+  "ING0110": {
+   "add_refs": [
+    "wk:claim:environment-p1-horse-meat",
+    "ext:npl1950_6738_6739"
+   ],
+   "note_add": "Конина в голод 1230–1231 прямо названа НПЛ"
+  },
+  "ING0131": {
+   "add_refs": [
+    "wk:claim:population-fish-food",
+    "wk:claim:regional-fish-exploitation",
+    "sqlite:novgorod_1230:economy:рыба"
+   ]
+  },
+  "ING0140": {
+   "add_refs": [
+    "ext:gramota147",
+    "wk:claim:social-podvoisky-letter-reports-pochestie-assurance"
+   ]
+  },
+  "ING0148": {
+   "add_refs": [
+    "wk:claim:population-fish-dried-form"
+   ]
+  },
+  "ING0154": {
+   "add_refs": [
+    "wk:claim:food-practices-rye-flour-bread",
+    "wk:claim:population-processes-oven-baking"
+   ]
+  },
+  "ING0160": {
+   "add_refs": [
+    "wk:claim:food-practices-barley-porridge-soup"
+   ]
+  },
+  "ING0169": {
+   "add_refs": [
+    "wk:claim:food-practices-threshing-chaff"
+   ]
+  },
+  "ING0060": {
+   "add_refs": [
+    "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
+   ]
+  },
+  "ING0061": {
+   "add_refs": [
+    "wk:claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation"
+   ]
+  },
+  "ING0065": {
+   "add_refs": [
+    "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
+   ]
+  },
+  "ING0074": {
+   "add_refs": [
+    "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
+   ]
+  },
+  "ING0014": {
+   "relative_cost": "medium",
+   "add_refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:economy:пшеница"
+   ],
+   "note_add": "relative_cost поднят до medium: пшеница дороже ржи (НПЛ 1230: 40 против 20 гривен за кадь; «дорогой хлеб»); в master low расходилось с зерном (medium)"
+  },
+  "ING0017": {
+   "relative_cost": "medium",
+   "add_refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:economy:пшеница"
+   ],
+   "note_add": "relative_cost поднят до medium: пшеница дороже ржи (НПЛ 1230: 40 против 20 гривен за кадь; «дорогой хлеб»); в master low расходилось с зерном (medium)"
+  },
+  "ING0026": {
+   "relative_cost": "medium",
+   "add_refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:economy:пшеница"
+   ],
+   "note_add": "relative_cost поднят до medium: пшеница дороже ржи (НПЛ 1230: 40 против 20 гривен за кадь; «дорогой хлеб»); в master low расходилось с зерном (medium)"
+  }
+ },
+ "excluded_master_ingredients": {
+  "ING0190": "Импортная пряность — confidence D в master; конкретная пряность для Новгорода 1230 не подтверждена. Вынесено в gaps."
+ },
+ "additions": [
+  {
+   "key": "ADD_buckwheat_grain",
+   "slug": "buckwheat_grain",
+   "name_ru": "Гречиха, зерно",
+   "name_en": "buckwheat grain",
+   "ingredient_type": "raw_product",
+   "food_category": "grain",
+   "fasting_class": "plant",
+   "origin": "local_uncertain",
+   "season_profile": "grain_year_round",
+   "rarity": "rare",
+   "relative_cost": "medium",
+   "confidence": "B",
+   "refs": [
+    "ext:kirjanova1979"
+   ],
+   "notes": "Зёрна гречихи на трёх памятниках X — первой половины XIII в. северо-запада; редкая культура, не основа рациона. Блюд с гречкой в master нет — только ингредиент."
+  },
+  {
+   "key": "ADD_faba_bean",
+   "slug": "faba_bean_small",
+   "name_ru": "Бобы кормовые мелкосемянные",
+   "name_en": "small-seeded field bean",
+   "ingredient_type": "raw_product",
+   "food_category": "legume",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "stored_year_round",
+   "rarity": "uncommon",
+   "relative_cost": "low",
+   "confidence": "B",
+   "refs": [
+    "ext:kirjanova1979"
+   ],
+   "notes": "Кирьянова: зернобобовые (горох, кормовые бобы, мелкосемянная чечевица) в заметной доле находок X — первой половины XIII в., особенно в западных памятниках."
+  },
+  {
+   "key": "ADD_lentil",
+   "slug": "lentil_small",
+   "name_ru": "Чечевица мелкосемянная",
+   "name_en": "small-seeded lentil",
+   "ingredient_type": "raw_product",
+   "food_category": "legume",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "stored_year_round",
+   "rarity": "rare",
+   "relative_cost": "low",
+   "confidence": "B",
+   "refs": [
+    "ext:kirjanova1979"
+   ],
+   "notes": "См. бобы; для самого Новгорода доля не установлена."
+  },
+  {
+   "key": "ADD_pine_inner_bark",
+   "slug": "pine_inner_bark_famine",
+   "name_ru": "Сосна (заболонь, кора) — голодная пища",
+   "name_en": "pine inner bark (famine food)",
+   "ingredient_type": "famine_substitute",
+   "food_category": "famine_substitute",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "famine_or_specific_context",
+   "rarity": "context_bound",
+   "relative_cost": "very_low",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "temporal-v4:record:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
+   ],
+   "notes": "НПЛ 6738: в голод ели «сосну». Только в фазе голода 1230–1231; способ приготовления источником не назван — рецепт не создаётся."
+  },
+  {
+   "key": "ADD_linden_bark",
+   "slug": "linden_bark_famine",
+   "name_ru": "Липовая кора — голодная пища",
+   "name_en": "linden bark (famine food)",
+   "ingredient_type": "famine_substitute",
+   "food_category": "famine_substitute",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "famine_or_specific_context",
+   "rarity": "context_bound",
+   "relative_cost": "very_low",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "temporal-v4:record:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
+   ],
+   "notes": "НПЛ 6738: «кору липову». Только голод; рецепт не создаётся."
+  },
+  {
+   "key": "ADD_elm_leaves",
+   "slug": "elm_leaves_famine",
+   "name_ru": "Лист ильма (вяза) — голодная пища",
+   "name_en": "elm leaves (famine food)",
+   "ingredient_type": "famine_substitute",
+   "food_category": "famine_substitute",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "famine_or_specific_context",
+   "rarity": "context_bound",
+   "relative_cost": "very_low",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "temporal-v4:record:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
+   ],
+   "notes": "НПЛ 6738: «листъ илемъ»; лист доступен только в вегетационный сезон. Только голод."
+  },
+  {
+   "key": "ADD_moss",
+   "slug": "moss_famine",
+   "name_ru": "Мох — голодная пища",
+   "name_en": "moss (famine food)",
+   "ingredient_type": "famine_substitute",
+   "food_category": "famine_substitute",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "famine_or_specific_context",
+   "rarity": "context_bound",
+   "relative_cost": "very_low",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "temporal-v4:record:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
+   ],
+   "notes": "НПЛ 6738: «мох ядяху». Вид мха не назван. Только голод."
+  },
+  {
+   "key": "ADD_goosefoot_seed",
+   "slug": "goosefoot_seed_famine",
+   "name_ru": "Семена лебеды — голодная примесь к хлебу (аналогия)",
+   "name_en": "goosefoot seed (famine admixture, analogy)",
+   "ingredient_type": "famine_substitute",
+   "food_category": "famine_substitute",
+   "fasting_class": "plant",
+   "origin": "local",
+   "season_profile": "famine_or_specific_context",
+   "rarity": "context_bound",
+   "relative_cost": "very_low",
+   "confidence": "C",
+   "refs": [
+    "ext:stepanova2014"
+   ],
+   "notes": "Лебеда как голодная примесь засвидетельствована для XVI в.; для 1230 г. — аналогия, НПЛ её не называет."
+  }
+ ],
+ "phenology_windows": {
+  "_about": "Coarse fresh-availability windows (month numbers) for check.py only; basis ext:tzvelev2000 + common regional phenology; confidence B; to be reconciled with flora_* domains.",
+  "ING0060": [
+   7,
+   8
+  ],
+  "ING0061": [
+   7,
+   8
+  ],
+  "ING0062": [
+   8,
+   9,
+   10
+  ],
+  "ING0063": [
+   9,
+   10,
+   11,
+   4,
+   5
+  ],
+  "ING0064": [
+   7,
+   8
+  ],
+  "ING0065": [
+   6,
+   7
+  ],
+  "ING0066": [
+   7,
+   8
+  ],
+  "ING0067": [
+   9,
+   10,
+   11
+  ],
+  "ING0068": [
+   7,
+   8
+  ],
+  "ING0072": [
+   8,
+   9,
+   10
+  ],
+  "ING0074": [
+   8,
+   9,
+   10
+  ],
+  "ING0058": [
+   7,
+   8,
+   9,
+   10
+  ],
+  "ING0043": [
+   5,
+   6,
+   7,
+   8
+  ],
+  "ING0053": [
+   5,
+   6,
+   7,
+   8
+  ],
+  "ING0054": [
+   4,
+   5,
+   6,
+   7
+  ],
+  "ING0055": [
+   5,
+   6,
+   7
+  ],
+  "ING0056": [
+   5,
+   6
+  ],
+  "ING0057": [
+   6,
+   7,
+   8
+  ],
+  "ING0045": [
+   7,
+   8,
+   9
+  ],
+  "ING0187": [
+   5,
+   6,
+   7,
+   8,
+   9
+  ]
+ },
+ "classes": [
+  "poor",
+  "common_urban",
+  "rural",
+  "fisher",
+  "merchant",
+  "boyar",
+  "clergy_monastery",
+  "military"
+ ],
+ "access_rule": {
+  "_about": "Stated rule (confidence C): access band per class from master relative_cost; then master social_scope that excludes 'common' lowers poor/common_urban/rural/fisher by one band; fish categories +1 band for fisher; game +1 for rural; famine substitutes: all classes 'famine_only'. Bands: ordinary > occasional > rare > none.",
+  "very_low": {
+   "poor": "ordinary",
+   "common_urban": "ordinary",
+   "rural": "ordinary",
+   "fisher": "ordinary",
+   "merchant": "ordinary",
+   "boyar": "ordinary",
+   "clergy_monastery": "ordinary",
+   "military": "ordinary"
+  },
+  "low": {
+   "poor": "ordinary",
+   "common_urban": "ordinary",
+   "rural": "ordinary",
+   "fisher": "ordinary",
+   "merchant": "ordinary",
+   "boyar": "ordinary",
+   "clergy_monastery": "ordinary",
+   "military": "ordinary"
+  },
+  "medium": {
+   "poor": "occasional",
+   "common_urban": "ordinary",
+   "rural": "ordinary",
+   "fisher": "ordinary",
+   "merchant": "ordinary",
+   "boyar": "ordinary",
+   "clergy_monastery": "ordinary",
+   "military": "ordinary"
+  },
+  "high": {
+   "poor": "rare",
+   "common_urban": "occasional",
+   "rural": "occasional",
+   "fisher": "occasional",
+   "merchant": "ordinary",
+   "boyar": "ordinary",
+   "clergy_monastery": "ordinary",
+   "military": "occasional"
+  },
+  "elite": {
+   "poor": "none",
+   "common_urban": "rare",
+   "rural": "rare",
+   "fisher": "rare",
+   "merchant": "occasional",
+   "boyar": "ordinary",
+   "clergy_monastery": "occasional",
+   "military": "rare"
+  }
+ },
+ "household_types": [
+  {
+   "id": "hh_poor_urban",
+   "name_ru": "Бедный городской двор (наймит, вдова, челядь без хозяина)",
+   "class": "poor",
+   "setting": "urban"
+  },
+  {
+   "id": "hh_artisan_urban",
+   "name_ru": "Двор городского ремесленника",
+   "class": "common_urban",
+   "setting": "urban"
+  },
+  {
+   "id": "hh_merchant_urban",
+   "name_ru": "Купеческий двор",
+   "class": "merchant",
+   "setting": "urban"
+  },
+  {
+   "id": "hh_boyar_urban",
+   "name_ru": "Боярская усадьба",
+   "class": "boyar",
+   "setting": "urban"
+  },
+  {
+   "id": "hh_rural_smerd",
+   "name_ru": "Сельский земледельческий двор (смерд)",
+   "class": "rural",
+   "setting": "rural"
+  },
+  {
+   "id": "hh_fisher",
+   "name_ru": "Рыбацкий двор у воды",
+   "class": "fisher",
+   "setting": "rural_shore"
+  },
+  {
+   "id": "hh_monastery",
+   "name_ru": "Монастырское хозяйство",
+   "class": "clergy_monastery",
+   "setting": "monastic"
+  }
+ ],
+ "seasons": {
+  "_about": "season_period keys follow catalog conventions (winter, spring_rasputitsa, summer, autumn); month split is a stated convention (C) pending calendar_feasts_fasts domain.",
+  "winter": [
+   12,
+   1,
+   2
+  ],
+  "spring_rasputitsa": [
+   3,
+   4,
+   5
+  ],
+  "summer": [
+   6,
+   7,
+   8
+  ],
+  "autumn": [
+   9,
+   10,
+   11
+  ]
+ },
+ "fasting_periods": [
+  {
+   "id": "fp_weekly_wed_fri",
+   "name_ru": "Среда и пятница",
+   "rule_ref": "RFR007",
+   "timing_rule": "каждая среда и пятница вне сплошных седмиц; исключения — календарь",
+   "forbidden_classes": [
+    "meat",
+    "animal_fat",
+    "dairy",
+    "eggs"
+   ],
+   "conditional_classes": [
+    "fish",
+    "alcohol"
+   ],
+   "confidence": "B",
+   "refs": [
+    "master-food:FSRC007",
+    "master-food:SRC027"
+   ],
+   "notes": "Точные исключения (сплошные седмицы) считает домен calendar_feasts_fasts."
+  },
+  {
+   "id": "fp_great_lent",
+   "name_ru": "Великий пост",
+   "rule_ref": "RFR008",
+   "timing_rule": "7 недель до Пасхи; подвижный (пасхалия)",
+   "forbidden_classes": [
+    "meat",
+    "animal_fat",
+    "dairy",
+    "eggs"
+   ],
+   "conditional_classes": [
+    "fish",
+    "plant_oil",
+    "alcohol"
+   ],
+   "confidence": "B",
+   "refs": [
+    "master-food:FSRC007"
+   ],
+   "notes": "Рыба лишь в отдельные дни (Благовещение, Вербное) — по календарю."
+  },
+  {
+   "id": "fp_apostles",
+   "name_ru": "Петров (Апостольский) пост",
+   "rule_ref": "RFR010",
+   "timing_rule": "от понедельника после Недели всех святых до 29 июня; длина зависит от Пасхи",
+   "forbidden_classes": [
+    "meat",
+    "animal_fat",
+    "dairy",
+    "eggs"
+   ],
+   "conditional_classes": [
+    "fish",
+    "plant_oil",
+    "alcohol"
+   ],
+   "confidence": "B",
+   "refs": [
+    "master-food:FSRC007"
+   ],
+   "notes": ""
+  },
+  {
+   "id": "fp_dormition",
+   "name_ru": "Успенский пост",
+   "rule_ref": "RFR011",
+   "timing_rule": "1–14 августа (юлианский)",
+   "forbidden_classes": [
+    "meat",
+    "animal_fat",
+    "dairy",
+    "eggs"
+   ],
+   "conditional_classes": [
+    "fish",
+    "plant_oil",
+    "alcohol"
+   ],
+   "confidence": "C",
+   "refs": [
+    "master-food:FSRC007"
+   ],
+   "notes": "Для XIII в. продолжительность и строгость Успенского поста в источниках неустойчивы; принять только как рамку."
+  },
+  {
+   "id": "fp_nativity",
+   "name_ru": "Рождественский (Филиппов) пост",
+   "rule_ref": "RFR009",
+   "timing_rule": "15 ноября – 24 декабря (юлианский)",
+   "forbidden_classes": [
+    "meat",
+    "animal_fat",
+    "dairy",
+    "eggs"
+   ],
+   "conditional_classes": [
+    "fish",
+    "plant_oil",
+    "alcohol"
+   ],
+   "confidence": "B",
+   "refs": [
+    "master-food:FSRC007"
+   ],
+   "notes": ""
+  },
+  {
+   "id": "fp_eves",
+   "name_ru": "Однодневные посты (Крещенский сочельник, Усекновение, Воздвижение)",
+   "rule_ref": "RFR002",
+   "timing_rule": "5 января, 29 августа, 14 сентября (юлианский)",
+   "forbidden_classes": [
+    "meat",
+    "animal_fat",
+    "dairy",
+    "eggs"
+   ],
+   "conditional_classes": [
+    "fish",
+    "plant_oil",
+    "alcohol"
+   ],
+   "confidence": "C",
+   "refs": [
+    "master-food:FSRC007"
+   ],
+   "notes": "Состав однодневных постов для Новгорода 1230 г. отдельно не проверен; 14 сентября 1230 — день мороза, погубившего урожай (НПЛ)."
+  }
+ ],
+ "famine_1230": [
+  {
+   "id": "fam_frost_1230",
+   "kind": "event",
+   "name_ru": "Мороз на Воздвижение побил весь урожай по волости",
+   "value": "14.09.1230 (юлианский)",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:events:1230-09-14 ок."
+   ],
+   "game_use": "Начало голодной фазы; урожай 1230 г. в полях погиб до уборки.",
+   "materialization_policy": "state_of_world"
+  },
+  {
+   "id": "fam_price_bread",
+   "kind": "price",
+   "name_ru": "Хлеб",
+   "value": "8 кун (единица товара в летописи неясна)",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:famine_prices:хлеб"
+   ],
+   "game_use": "Порядок роста цен, не прейскурант.",
+   "materialization_policy": "price_band_input"
+  },
+  {
+   "id": "fam_price_rye",
+   "kind": "price",
+   "name_ru": "Рожь",
+   "value": "20 гривен за кадь; «а въ дворех пол 30» (в дворах — 25, чтение обсуждается)",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:famine_prices:рожь"
+   ],
+   "game_use": "",
+   "materialization_policy": "price_band_input"
+  },
+  {
+   "id": "fam_price_wheat",
+   "kind": "price",
+   "name_ru": "Пшеница",
+   "value": "40 гривен за кадь",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:famine_prices:пшеница"
+   ],
+   "game_use": "",
+   "materialization_policy": "price_band_input"
+  },
+  {
+   "id": "fam_price_millet",
+   "kind": "price",
+   "name_ru": "Пшено",
+   "value": "50 гривен за кадь",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:famine_prices:просо"
+   ],
+   "game_use": "",
+   "materialization_policy": "price_band_input"
+  },
+  {
+   "id": "fam_price_oats",
+   "kind": "price",
+   "name_ru": "Овёс",
+   "value": "13 гривен за кадь",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:famine_prices:овёс"
+   ],
+   "game_use": "",
+   "materialization_policy": "price_band_input"
+  },
+  {
+   "id": "fam_sub_horse_meat",
+   "kind": "substitute_attested",
+   "name_ru": "Конина",
+   "value": "fd:ING0110",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "wk:claim:environment-p1-horse-meat"
+   ],
+   "game_use": "Допустима как пища в голод и в особом контексте.",
+   "materialization_policy": "famine_phase_only"
+  },
+  {
+   "id": "fam_sub_dog_cat",
+   "kind": "substitute_attested",
+   "name_ru": "Псина и кошки",
+   "value": "",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "Только как слух, свидетельство или наблюдаемый след; не рецепт и не запас.",
+   "materialization_policy": "narration_by_evidence_only"
+  },
+  {
+   "id": "fam_sub_moss",
+   "kind": "substitute_attested",
+   "name_ru": "Мох",
+   "value": "fd:ADD_moss",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "",
+   "materialization_policy": "famine_phase_only"
+  },
+  {
+   "id": "fam_sub_pine",
+   "kind": "substitute_attested",
+   "name_ru": "Сосна",
+   "value": "fd:ADD_pine_inner_bark",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "",
+   "materialization_policy": "famine_phase_only"
+  },
+  {
+   "id": "fam_sub_linden_bark",
+   "kind": "substitute_attested",
+   "name_ru": "Кора липовая",
+   "value": "fd:ADD_linden_bark",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "",
+   "materialization_policy": "famine_phase_only"
+  },
+  {
+   "id": "fam_sub_elm_leaves",
+   "kind": "substitute_attested",
+   "name_ru": "Лист ильма",
+   "value": "fd:ADD_elm_leaves",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "",
+   "materialization_policy": "famine_phase_only"
+  },
+  {
+   "id": "fam_sub_ush_unclear",
+   "kind": "substitute_attested",
+   "name_ru": "«ушь» — неясное слово в перечне",
+   "value": "",
+   "confidence": "C",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "Не использовать до филологической проверки чтения.",
+   "materialization_policy": "not_materialized"
+  },
+  {
+   "id": "fam_sub_carrion_human",
+   "kind": "substitute_attested",
+   "name_ru": "Падаль, мертвечина, людоедство",
+   "value": "",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "master-food:SRC101"
+   ],
+   "game_use": "Засвидетельствовано летописью; в игре только слух, свидетельство, суд или след. Никогда не рецепт, запас или действие NPC по умолчанию.",
+   "materialization_policy": "narration_by_evidence_only"
+  },
+  {
+   "id": "fam_sub_chaff",
+   "kind": "substitute_analogy",
+   "name_ru": "Мякина в хлеб",
+   "value": "fd:ING0169",
+   "confidence": "C",
+   "refs": [
+    "ext:stepanova2014",
+    "wk:claim:food-practices-threshing-chaff"
+   ],
+   "game_use": "Аналогия XVI в.",
+   "materialization_policy": "famine_phase_only"
+  },
+  {
+   "id": "fam_sub_goosefoot",
+   "kind": "substitute_analogy",
+   "name_ru": "Лебеда",
+   "value": "fd:ADD_goosefoot_seed",
+   "confidence": "C",
+   "refs": [
+    "ext:stepanova2014"
+   ],
+   "game_use": "Аналогия XVI в.",
+   "materialization_policy": "famine_phase_only"
+  },
+  {
+   "id": "fam_sub_nettle",
+   "kind": "substitute_analogy",
+   "name_ru": "Крапива",
+   "value": "fd:ING0054",
+   "confidence": "C",
+   "refs": [
+    "ext:stepanova2014"
+   ],
+   "game_use": "Весна–лето, аналогия XVI в.",
+   "materialization_policy": "famine_phase_only"
+  },
+  {
+   "id": "fam_social_arson_for_rye",
+   "kind": "social_effect",
+   "name_ru": "Поджоги и грабёж дворов, где слышали о ржи",
+   "value": "",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "Запас зерна — риск для двора; слух о зерне притягивает грабёж.",
+   "materialization_policy": "state_of_world"
+  },
+  {
+   "id": "fam_social_children_to_merchants",
+   "kind": "social_effect",
+   "name_ru": "Отцы и матери отдавали детей гостям в холопство за хлеб",
+   "value": "",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "",
+   "materialization_policy": "narration_by_evidence_only"
+  },
+  {
+   "id": "fam_social_exodus",
+   "kind": "social_effect",
+   "name_ru": "Разошёлся город и волость; чужие города полны беглецов",
+   "value": "",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "",
+   "materialization_policy": "state_of_world"
+  },
+  {
+   "id": "fam_social_skudelnitsa",
+   "kind": "social_effect",
+   "name_ru": "Скудельница у св. Апостолов на Прусской улице, 3030 умерших",
+   "value": "3030",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739",
+    "sqlite:novgorod_1230:events:1230-осень/зима"
+   ],
+   "game_use": "",
+   "materialization_policy": "state_of_world"
+  },
+  {
+   "id": "fam_relief_german_grain_1231",
+   "kind": "relief",
+   "name_ru": "Немцы из-за моря привезли жито и муку",
+   "value": "1231",
+   "confidence": "A",
+   "refs": [
+    "ext:npl1950_6738_6739"
+   ],
+   "game_use": "Импортное зерно и мука появляются в 1231 г., распределение неравное.",
+   "materialization_policy": "state_of_world"
+  },
+  {
+   "id": "fam_modifier_portions",
+   "kind": "gameplay_modifier",
+   "name_ru": "Порции 0.25–0.7 обычной; доступность зерна 0.1–0.5",
+   "value": "portion [0.25,0.7]; grain [0.1,0.5]",
+   "confidence": "C",
+   "refs": [
+    "game-base-v1/food-drink/scripts/source_snapshot/famine_1230_context.csv:famine_1230_context",
+    "temporal-v4:record:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
+   ],
+   "game_use": "Множители master — игровая реконструкция. Temporal-v4 (approved) числа не задаёт: «numeric_magnitude: not authored». Перед использованием нужен отдельный утверждённый профиль.",
+   "materialization_policy": "needs_approved_profile"
+  }
+ ]
+}

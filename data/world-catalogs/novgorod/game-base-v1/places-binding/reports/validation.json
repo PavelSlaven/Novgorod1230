@@ -1,0 +1,263 @@
+{
+  "generated_by": "scripts/validate.mjs",
+  "own_checks_passed": 16,
+  "own_checks_total": 16,
+  "checks": [
+    {
+      "domain": "place_families",
+      "name": "wk_44_families_exactly_once",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "wk_families": 44,
+      "rows": 44
+    },
+    {
+      "domain": "place_families",
+      "name": "landscape_or_place_ref_or_explicit_not_applicable",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
+    {
+      "domain": "place_families",
+      "name": "template_refs_resolve_in_seed_or_candidate",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
+    {
+      "domain": "place_families",
+      "name": "facet_slots_filled (info)",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "empty_slots": [
+        "pf_reality_first_practical_conditions.facet_senses_traces",
+        "pf_rural_yard.facet_ground",
+        "pf_rural_yard.facet_senses_traces",
+        "pf_rural_yard.facet_risks_upkeep"
+      ]
+    },
+    {
+      "domain": "place_families",
+      "name": "layers_in_m2c_vocabulary",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
+    {
+      "domain": "place_families",
+      "name": "v6_198_g4_location_types_covered",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "v6_types": 198,
+      "mapped": 197,
+      "not_applicable": 1
+    },
+    {
+      "domain": "place_families",
+      "name": "spatial_v3_17_scene_templates_covered",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "scene_templates": 17
+    },
+    {
+      "domain": "place_families",
+      "name": "master_location_archetypes_covered",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "archetypes": 32
+    },
+    {
+      "domain": "node_binding",
+      "name": "one_row_per_v17_g4_g5",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "g4": 32,
+      "g5": 195,
+      "rows": 227
+    },
+    {
+      "domain": "node_binding",
+      "name": "pf_exists_or_typed_gap",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "gaps": [
+        "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer@1"
+      ]
+    },
+    {
+      "domain": "node_binding",
+      "name": "template_refs_resolve",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
+    {
+      "domain": "node_binding",
+      "name": "binding_basis_files_and_ids_exist",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "pr98_worktree_checked": true
+    },
+    {
+      "domain": "presence_rules",
+      "name": "rows_resolve_and_follow_rule",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "rows": 2426
+    },
+    {
+      "domain": "presence_rules",
+      "name": "input_pool_rows_rejected (external)",
+      "pass": false,
+      "failures": 16657,
+      "sample": [
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x"
+      ],
+      "external": true,
+      "reasons": {
+        "category_ref empty": 16657
+      },
+      "by_file": {
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 16657
+      }
+    },
+    {
+      "domain": "category_registry",
+      "name": "own_place_family_categories_valid",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "rows": 61
+    },
+    {
+      "domain": "category_registry",
+      "name": "collected_registry_unique_parents_no_cycles (external)",
+      "pass": false,
+      "failures": 118,
+      "sample": [
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing",
+        "stable_code_missing"
+      ],
+      "external": true,
+      "problems_by_kind": {
+        "stable_code_missing": 59,
+        "parent_missing": 59
+      },
+      "registry_rows": 982
+    },
+    {
+      "domain": "category_registry",
+      "name": "pool_category_references_resolve (external)",
+      "pass": false,
+      "failures": 788,
+      "sample": [
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x",
+        "x"
+      ],
+      "external": true,
+      "unresolved_by_file": {
+        "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv": 32,
+        "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv": 74,
+        "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fish.csv": 38,
+        "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv": 45,
+        "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/livestock_species.csv": 11,
+        "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/livestock_types.csv": 28,
+        "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv": 56,
+        "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv": 42,
+        "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv": 184,
+        "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 198,
+        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 49,
+        "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31
+      }
+    },
+    {
+      "domain": "place_generation_limits",
+      "name": "min_le_max_scope_exists_rule_reproducible",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "rows": 105
+    },
+    {
+      "domain": "category_parameters",
+      "name": "leaf_required_params_rules_refs",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "rows": 3697,
+      "categories": 300
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+source_id,title,authors,year,url,trust_level
+SRC001,Новгородская археологическая экспедиция МГУ: общий обзор,"МГУ, Новгородская археологическая экспедиция",,https://archaeology.hist.msu.ru/expeditions/novgorod/,A / очень высокий
+SRC003,День археолога: исследования Великого Новгорода и Великого моста,Новгородский музей-заповедник,,https://novgorodmuseum.ru/o-muzee-zapovednike/novosti/den-arheologa-v-novgorodskom-muzee-zapovednike,A / высокий
+SRC004,Historic Monuments of Novgorod and Surroundings,UNESCO,1992–2026,https://whc.unesco.org/en/list/604/,A / высокий
+SRC005,Новгородские древности. Деревянные изделия,Б.А. Колчин,1968,https://archaeolog.ru/el-bib/el-cat/el-series/svod-arch/sai-e1-55_1968,A / очень высокий
+SRC008,Древняя Русь. Быт и культура,,,https://archaeolog.ru/el-bib/el-cat/el-series/arch-sssr/archaeologyussr_16,A–B / высокий
+SRC014,Очерки по истории русского военного зодчества X–XIII вв.,П.А. Раппопорт,1956,https://archaeolog.ru/el-bib/el-cat/el-books/el-books-1956/rappoport-1956,A–B / высокий
+SRC015,Метательная артиллерия и оборонительные сооружения Древней Руси,А.Н. Кирпичников и др.,1958,https://archaeolog.ru/el-bib/el-cat/el-series/mia/mia-77,A–B / высокий
+SRC016,Древнерусские городища X–XIII вв.,А.В. Куза,1996,https://archaeolog.ru/el-bib/el-cat/el-books/el-books-1996/kuza-1996,A–B / высокий
+SRC024,Керамика средневекового Новгорода: музейная выставка,,,https://novgorodmuseum.ru/visit/sobytiya/keramika-srednevekovogo-novgoroda,A / высокий
+SRC025,Рыболовный промысел в Новгородской земле,,,https://novgorodmuseum.ru/visit/sobytiya/rybolovnyj-promysel-v-novgorodskoj-zemle,A / очень высокий
+SRC031,Новгородская первая летопись старшего и младшего изводов,,издание 1950,https://imwerden.de/publ-4542.html,A / очень высокий
+SRC032,Железообрабатывающее ремесло Новгорода Великого,Б.А. Колчин,1953,https://archaeolog.ru/el-bib/el-cat/el-books/el-books-1953/kolchin-1953,A / очень высокий
+SRC034,Древнерусское оружие. Вып. I. Мечи и сабли. IX–XIII вв.,А.Н. Кирпичников,1966,https://archaeolog.ru/el-bib/el-cat/el-series/svod-arch?show=references,A–B / очень высокий
+SRC035,"Древнерусское оружие. Вып. II. Копья, сулицы, боевые топоры, булавы, кистени",А.Н. Кирпичников,1966,https://archaeolog.ru/el-bib/el-cat/el-series/svod-arch?show=references,A–B / очень высокий
+SRC036,"Древнерусское оружие. Вып. III. Доспех, комплекс боевых средств",А.Н. Кирпичников,1971,https://archaeolog.ru/el-bib/el-cat/el-series/svod-arch?show=references,A–B / очень высокий
+SRC037,"Ручное метательное оружие: лук, стрелы, самострел. VIII–XIV вв.",А.Ф. Медведев,1966,https://archaeolog.ru/el-bib/el-cat/el-series/svod-arch/sai-e1-36_1966,A–B / очень высокий
+SRC038,Снаряжение всадника и верхового коня на Руси IX–XIII вв.,А.Н. Кирпичников,1973,https://archaeolog.ru/el-bib/el-cat/el-books/el-books-1973,A–B / очень высокий
+SRC039,Водный и сухопутный транспорт средневекового Новгорода X–XV вв.,Г.Е. Дубровин,2000,https://archaeolog.ru/el-bib/el-cat/el-books/el-books-2000,A / очень высокий
+SRC040,Animals and Archaeology in Northern Medieval Russia,"M. Brisbane, M. Maltby et al.",2020,https://www.jstor.org/stable/j.ctv138wsxr,A / очень высокий
+SRC045,Археология севернорусской деревни X–XIII вв. Том II: материальная культура,,2008,https://archaeolog.ru/el-bib/el-cat/el-series/arch-northrus-village/arch-northrus-village-2,A–B / высокий
+SRC046,"Археология севернорусской деревни X–XIII вв. Том III: палеоэкология, общество, культура",,2009,https://archaeolog.ru/el-bib/el-cat/el-series/arch-northrus-village/arch-northrus-village-3,A–B / высокий
+SRC050,Договор Новгорода с Готским берегом и немецкими городами,,,https://hist.msu.ru/ER/Etext/RP/goth.htm,A / очень высокий
+SRC051,Произведения западного художественного ремесла в Восточной Европе X–XIV вв.,В.П. Даркевич,1966,https://archaeolog.ru/el-bib/el-cat/el-books/el-books-1966,A–B / высокий
+SRC061,Средневековые кожаные изделия из коллекции Новгородского музея,,,https://novgorodmuseum.ru/o-muzee-zapovednike/novosti/srednevekovye-kozhanye-izdeliya-iz-arheologicheskoj-kollekcii-novgorodskogo-muzeya-zapovednika-na-vystavke-v-tatarstane,A / высокий
+SRC071,Оборонительные сооружения Древнего Новгорода,,,https://novgorodmuseum.ru/visit/sobytiya/istoriya-novgorodskoj-kreposti-i-ee-garnizona.,A–B / высокий
+SRC072,Грамота №420: продажа бобровых шкур,,,https://gramoty.ru/birchbark/document/show/novgorod/420/,A / очень высокий
+SRC080,Поливная посуда: импорт и производство Древней Руси,Т.И. Макарова,1967,https://archaeolog.ru/el-bib/el-cat/el-series/svod-arch?show=references,A–B / высокий
+SRC084,Новгородская обувь и костяные коньки,,,https://novgorodmuseum.ru/visit/sobytiya/legkoj-postupyu-po-mostovoj.-obuv-drevnego-novgoroda-x-xv-vv.,A / высокий
+SRC088,Редкая полумаска боевого шлема из Новгорода,,2026,https://novgorodmuseum.ru/o-muzee-zapovednike/novosti/v-velikom-novgorode-obnaruzhili-redkuyu-detal-boevogo-shlema-voennoj-ehlity-xiii%E2%80%93xiv-vekov,"A / высокий для находки, C–D для 1230"
+SRC090,Шлем. Конец XII — начало XIII века. Инв. Ор-2,Музеи Московского Кремля,,https://collectiononline.kreml.ru/entity/OBJECT/32871,A / очень высокий для предмета; B как сравнительный новгородский референс

@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "generated_on": "2026-08-29",
+  "counts": {
+    "professions": 479,
+    "activities": 2442,
+    "economic_links": 1520,
+    "profession_item_links": 9679,
+    "activity_item_links": 32565,
+    "profession_location_links": 2138,
+    "material_index": 1137,
+    "scenes": 54,
+    "sources": 102,
+    "material_additions": 0
+  },
+  "checks": {
+    "unique_profession_ids": true,
+    "unique_activity_ids": true,
+    "all_item_refs_resolve": true,
+    "all_source_refs_resolve": true,
+    "no_D_required_or_held": true,
+    "all_activity_links_resolve": true,
+    "all_pose_hints_resolve": true,
+    "economic_material_edges_match": true,
+    "all_A_C_material_items_linked": true,
+    "all_scene_prompts_exist": true
+  },
+  "errors": [],
+  "warnings": []
+}

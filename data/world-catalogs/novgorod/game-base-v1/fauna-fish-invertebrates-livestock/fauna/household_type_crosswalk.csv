@@ -1,0 +1,59 @@
+xw_id,v6_household_mix_token,g3_rows,scale_classes,household_profile_ref,rule_ref,source_refs,confidence,status
+xw_001,обычных,342,large_village_or_selo;ordinary_village,wealth_ordinary_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_002,перевозчик/лодейщик,320,water_crossing_or_landing,wealth_boatman_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_003,сторож,320,water_crossing_or_landing,wealth_pogost_service_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_004,хозяйственных двора,320,water_crossing_or_landing,wealth_ordinary_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_005,приезжие не считаются дворами места,320,water_crossing_or_landing,not_a_household,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_006,зажиточных/старших,198,large_village_or_selo,wealth_well_off_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_007,бедных или крайних,198,large_village_or_selo,wealth_poor_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_008,церковный/причтовый двор при селе,198,large_village_or_selo,wealth_church_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_009,старший двор,144,ordinary_village,wealth_well_off_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_010,крайних/бедных,144,ordinary_village,wealth_poor_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_011,"промысловики, лесные работники, сторож или временная артель",92,resource_camp,wealth_hunter_promysel_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_012,торговые/гостевые,34,major_city;market_or_trade_node,wealth_guest_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_013,складские,33,market_or_trade_node,wealth_merchant_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_014,служебные,33,market_or_trade_node,wealth_pogost_service_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_015,жильё держателей,33,market_or_trade_node,wealth_merchant_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_016,церковный/причтовый,31,church_pogost_center,wealth_church_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_017,служебные/гостевые,31,church_pogost_center,wealth_guest_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_018,крестьянские,31,church_pogost_center,wealth_ordinary_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_019,торговосборные дворы по событию,31,church_pogost_center,wealth_merchant_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_020,ремесленные,21,major_city;town;urban_quarter_or_suburb,wealth_craft_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_021,рядовые посадские,21,major_city;town;urban_quarter_or_suburb,wealth_ordinary_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_022,постоянных дворов мало,21,road_crossroads,not_a_household,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_023,"основная плотность — путники, возы, проводники и сезонные стоянки",21,road_crossroads,not_a_household,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_024,торговые,20,town;urban_quarter_or_suburb,wealth_merchant_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_025,бедные/окраинные,19,major_city;urban_quarter_or_suburb,wealth_poor_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_026,один старший двор и  зависимых/родственных двора,18,isolated_farmstead,wealth_well_off_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_027,зажиточные,18,urban_quarter_or_suburb,wealth_well_off_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_028,церковные/служилые,18,urban_quarter_or_suburb,wealth_church_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_029,рыбаки,11,fishing_production_site,wealth_fisher_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_030,лодейщики,11,fishing_production_site,wealth_boatman_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_031,хранители сетей,11,fishing_production_site,wealth_fisher_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_032,временные работники,11,fishing_production_site,wealth_dependent_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_033,гости,11,administrative_or_authority_court;monastery_complex,not_a_household,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_034,старшие/служилые,6,administrative_or_authority_court,wealth_well_off_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_035,писцы/дворовые,6,administrative_or_authority_court,wealth_dependent_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_036,сторожа,6,administrative_or_authority_court,wealth_pogost_service_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_037,конюшня и кладовые,6,administrative_or_authority_court,not_a_household,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_038,сторожевые/служилые,5,fortified_hillfort_or_old_site,wealth_pogost_service_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_039,временные дворы,5,fortified_hillfort_or_old_site,wealth_temporary_road_camp,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_040,склад,5,fortified_hillfort_or_old_site,wealth_merchant_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_041,окрестные крестьяне приходят при угрозе,5,fortified_hillfort_or_old_site,not_a_household,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_042,монастырские кельи,5,monastery_complex,wealth_monastery_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_043,хозяйственные служители,5,monastery_complex,wealth_dependent_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_044,зависимые работники,5,monastery_complex,wealth_dependent_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_045,скотный и огородный двор,5,monastery_complex,wealth_monastery_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_046,церковные,3,major_city;town,wealth_church_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_047,"мастера, подручные, сторож, складские держатели, заказчики/купцы",3,boatyard_or_shipyard,wealth_craft_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_048,служилые/дворовые,2,town,wealth_dependent_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_049,окраинные и временные,2,town,wealth_poor_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_050,хозяин/держатель,2,estate_or_large_yard_center,wealth_boyar_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_051,работные люди,2,estate_or_large_yard_center,wealth_dependent_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_052,скотники,2,estate_or_large_yard_center,wealth_dependent_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_053,хранители,2,estate_or_large_yard_center,wealth_pogost_service_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_054,сезонные работники,2,estate_or_large_yard_center,wealth_dependent_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_055,"варники, возчики, хранители дров/соли, сторож, хозяин промысла",1,salt_production_site,wealth_pogost_service_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_056,богатые боярскокупеческие,1,major_city,wealth_boyar_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_057,служилые/административные,1,major_city,wealth_pogost_service_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate
+xw_058,пустующие/погорелые/перестраиваемые,1,major_city,wealth_burned_yard,HH-XW-1,src:v6-g3-household-mix;src:rus13tpl-household-wealth,C,candidate

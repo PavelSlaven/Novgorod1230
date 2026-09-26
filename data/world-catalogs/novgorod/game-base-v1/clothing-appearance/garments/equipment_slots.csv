@@ -1,0 +1,33 @@
+slot_key,name_ru,name_en,slot_kind,in_runtime_code,category_id,category_registered_v17,source_refs,status
+base_garment,нательная рубаха/сорочица,body base layer,wearable,true,garment.equipment_slot.base_garment,true,v17:m2c-npc/runtime-bindings.json|v17:actor-portrait-spec-v1.js,candidate
+lower_garment,порты/штаны,legwear,wearable,true,garment.equipment_slot.lower_garment,false,v17:m2c-npc/runtime-bindings.json|v17:actor-portrait-spec-v1.js,candidate
+outer_garment,"верхняя шерстяная одежда (свита, туника)",outer layer,wearable,true,garment.equipment_slot.outer_garment,true,v17:m2c-npc/runtime-bindings.json|v17:actor-portrait-spec-v1.js,candidate
+over_garment_winter,кожух/шуба поверх одежды,winter over-layer,wearable,false,garment.equipment_slot.over_garment_winter,false,rule:costume subcategory map (build.py SUB),candidate
+cloak,плащ/накидка,cloak,wearable,false,garment.equipment_slot.cloak,false,rule:costume subcategory map (build.py SUB),candidate
+waist,пояс,belt,wearable,false,garment.equipment_slot.waist,false,rule:costume subcategory map (build.py SUB),candidate
+waist_garment,"поясная женская одежда (понёва, гипотеза)",wrap skirt,wearable,false,garment.equipment_slot.waist_garment,false,rule:costume subcategory map (build.py SUB),candidate
+apron,передник,apron,wearable,false,garment.equipment_slot.apron,false,rule:costume subcategory map (build.py SUB),candidate
+headwear,головной убор (верхний),headwear,wearable,true,garment.equipment_slot.headwear,false,v17:m2c-npc/runtime-bindings.json|v17:actor-portrait-spec-v1.js,candidate
+head_under,нижний женский убор (повой/чепец),under-cap,wearable,false,garment.equipment_slot.head_under,false,rule:costume subcategory map (build.py SUB),candidate
+headband,налобная повязка/очелье,headband,wearable,false,garment.equipment_slot.headband,false,rule:costume subcategory map (build.py SUB),candidate
+handwear,рукавицы/перчатки,mittens/gloves,wearable,false,garment.equipment_slot.handwear,false,rule:costume subcategory map (build.py SUB),candidate
+leg_wrap,обмотки голени,shin wraps,wearable,false,garment.equipment_slot.leg_wrap,false,rule:costume subcategory map (build.py SUB),candidate
+foot_layer,онуча/носок,foot wrap/sock,wearable,false,garment.equipment_slot.foot_layer,false,rule:costume subcategory map (build.py SUB),candidate
+insole,стелька,insole,wearable,false,garment.equipment_slot.insole,false,rule:costume subcategory map (build.py SUB),candidate
+footwear,обувь,footwear,wearable,true,garment.equipment_slot.footwear,false,v17:m2c-npc/runtime-bindings.json|v17:actor-portrait-spec-v1.js,candidate
+over_footwear,поршни поверх обуви,overshoe,wearable,false,garment.equipment_slot.over_footwear,false,rule:costume subcategory map (build.py SUB),candidate
+footwear_attachment,ледоход/шпора на обуви,shoe attachment,situational,false,garment.equipment_slot.footwear_attachment,false,rule:costume subcategory map (build.py SUB),candidate
+vestment_base,стихарь,liturgical base vestment,liturgy_only,false,garment.equipment_slot.vestment_base,false,rule:costume subcategory map (build.py SUB),candidate
+vestment_stole,епитрахиль/орарь,liturgical stole,liturgy_only,false,garment.equipment_slot.vestment_stole,false,rule:costume subcategory map (build.py SUB),candidate
+vestment_outer,фелонь,liturgical outer vestment,liturgy_only,false,garment.equipment_slot.vestment_outer,false,rule:costume subcategory map (build.py SUB),candidate
+vestment_cuffs,поручи,liturgical cuffs,liturgy_only,false,garment.equipment_slot.vestment_cuffs,false,rule:costume subcategory map (build.py SUB),candidate
+vestment_omophorion,омофор,omophorion,liturgy_only,false,garment.equipment_slot.vestment_omophorion,false,rule:costume subcategory map (build.py SUB),candidate
+trim,"отделка (компонент, не слот экипировки)",trim component,component,false,garment.equipment_slot.trim,false,rule:costume subcategory map (build.py SUB),candidate
+component,"деталь вещи (пряжка, завязки)",item component,component,false,garment.equipment_slot.component,false,rule:costume subcategory map (build.py SUB),candidate
+neck,"шея (ожерелье, гривна)",neck,adornment,false,garment.equipment_slot.neck,false,rule:costume subcategory map (build.py SUB),candidate
+chest_pendant,нательный/нагрудный привес,pendant,adornment,false,garment.equipment_slot.chest_pendant,false,rule:costume subcategory map (build.py SUB),candidate
+ear_temple,височные украшения/серьги,temple/ear,adornment,false,garment.equipment_slot.ear_temple,false,rule:costume subcategory map (build.py SUB),candidate
+head_ornament,украшения головного убора,headdress ornament,adornment,false,garment.equipment_slot.head_ornament,false,rule:costume subcategory map (build.py SUB),candidate
+wrist,браслет,wrist,adornment,false,garment.equipment_slot.wrist,false,rule:costume subcategory map (build.py SUB),candidate
+finger,перстень/кольцо,finger,adornment,false,garment.equipment_slot.finger,false,rule:costume subcategory map (build.py SUB),candidate
+garment_fastener,фибула/застёжка/булавка/пуговица,fastener,adornment,false,garment.equipment_slot.garment_fastener,false,rule:costume subcategory map (build.py SUB),candidate

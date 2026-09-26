@@ -1,0 +1,93 @@
+{
+  "generated": "2026-09-26",
+  "files": {
+    "items/weapons_armour.csv": 71,
+    "items/weapon_status_access.csv": 213,
+    "items/weapon_equipment_profiles.csv": 111,
+    "items/weapon_source_crosswalk.csv": 252,
+    "items/weapon_denylist.csv": 27,
+    "military/security.csv": 34,
+    "military/military_events.csv": 21,
+    "military/combat_likelihood_by_role.csv": 71
+  },
+  "weapons_armour": {
+    "by_kind": {
+      "weapon": 18,
+      "component": 20,
+      "accessory": 9,
+      "ammunition": 3,
+      "protection": 21
+    },
+    "by_tier": {
+      "elite_war": 32,
+      "common_war": 28,
+      "tool_weapon": 11
+    },
+    "by_confidence": {
+      "A": 21,
+      "B": 30,
+      "C": 20
+    },
+    "by_priority": {
+      "M3": 52,
+      "M2c": 16,
+      "later": 3
+    },
+    "by_category_status": {
+      "existing_v5_candidate": 22,
+      "proposed": 49
+    }
+  },
+  "crosswalk": {
+    "military_security": 13,
+    "denylist": 19,
+    "wp": 179,
+    "out_of_scope": 41
+  },
+  "access_levels": {
+    "permitted": 65,
+    "expected": 7,
+    "permitted_with_reason": 9,
+    "requires_grounds": 29,
+    "suspicious_without_reason": 69,
+    "by_order_only": 9,
+    "raises_accusation_risk": 22,
+    "depends_on_guarantor": 3
+  },
+  "security": {
+    "by_kind": {
+      "unit": 9,
+      "post": 10,
+      "fortification": 8,
+      "consequence": 7
+    },
+    "by_confidence": {
+      "A": 7,
+      "B": 15,
+      "C": 12
+    }
+  },
+  "events": {
+    "by_kind": {
+      "civil_strife": 4,
+      "campaign": 8,
+      "external_conflict": 2,
+      "raid": 3,
+      "external_threat": 2,
+      "siege": 1,
+      "fortification": 1
+    },
+    "by_confidence": {
+      "A": 7,
+      "B": 13,
+      "C": 1
+    }
+  },
+  "combat_likelihood": {
+    "medium_high": 9,
+    "unknown": 6,
+    "low": 36,
+    "medium": 17,
+    "very_low": 3
+  }
+}

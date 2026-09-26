@@ -1,0 +1,19 @@
+{
+ "counts": {
+  "food/ingredients.csv": 198,
+  "food/ingredient_months.csv": 2280,
+  "food/taxon_refs.csv": 74,
+  "food/household_food_stock_profiles.csv": 6528,
+  "dishes/dishes_meals.csv": 270,
+  "dishes/recipe_steps.csv": 1164,
+  "dishes/meal_profiles.csv": 21,
+  "dishes/meal_slot_rules.csv": 10,
+  "dishes/fasting_rules.csv": 18,
+  "dishes/preservation_storage.csv": 9,
+  "dishes/spoilage_states.csv": 8,
+  "dishes/sensory_lexicon.csv": 23,
+  "dishes/famine_1230.csv": 23,
+  "sources.csv": 111
+ },
+ "unresolved_recipe_ingredients": []
+}

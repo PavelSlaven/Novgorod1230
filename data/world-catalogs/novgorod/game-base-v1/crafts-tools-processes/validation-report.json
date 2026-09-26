@@ -1,0 +1,239 @@
+{
+  "checked_by": "scripts/validate.cjs",
+  "pass": 25,
+  "fail": 0,
+  "results": [
+    {
+      "id": "unique_ids_tools",
+      "result": "PASS",
+      "detail": "157 unique"
+    },
+    {
+      "id": "unique_ids_processes",
+      "result": "PASS",
+      "detail": "48 unique"
+    },
+    {
+      "id": "unique_ids_steps",
+      "result": "PASS",
+      "detail": "166 unique"
+    },
+    {
+      "id": "unique_ids_workshops",
+      "result": "PASS",
+      "detail": "21 unique"
+    },
+    {
+      "id": "unique_ids_materials",
+      "result": "PASS",
+      "detail": "103 unique"
+    },
+    {
+      "id": "unique_ids_denylist",
+      "result": "PASS",
+      "detail": "27 unique"
+    },
+    {
+      "id": "source_confidence_status_tools",
+      "result": "PASS",
+      "detail": "all rows have source_refs, confidence, status=candidate"
+    },
+    {
+      "id": "source_confidence_status_processes",
+      "result": "PASS",
+      "detail": "all rows have source_refs, confidence, status=candidate"
+    },
+    {
+      "id": "source_confidence_status_workshops",
+      "result": "PASS",
+      "detail": "all rows have source_refs, confidence, status=candidate"
+    },
+    {
+      "id": "source_confidence_status_materials",
+      "result": "PASS",
+      "detail": "all rows have source_refs, confidence, status=candidate"
+    },
+    {
+      "id": "occupation_tools_resolve",
+      "result": "PASS",
+      "detail": "356 links resolve"
+    },
+    {
+      "id": "every_occupation_ge2_tools",
+      "result": "PASS",
+      "detail": "68/68 occupations (approved-status rows: 37) have >=2 tools in tools_gear"
+    },
+    {
+      "id": "info_occupations_ge2_tools_in_existing_v5_item_templates",
+      "result": "PASS",
+      "detail": "67/68 reach >=2 via existing v5 item_templates; the rest rely on proposed_new categories: nov_occ_beggar_alms"
+    },
+    {
+      "id": "every_tool_used_by_process_or_occupation",
+      "result": "PASS",
+      "detail": "157/157"
+    },
+    {
+      "id": "tool_materials_resolve",
+      "result": "PASS",
+      "detail": "all tool materials are mt_ ids"
+    },
+    {
+      "id": "steps_ordered_and_chained",
+      "result": "PASS",
+      "detail": "48 chains, 166 steps"
+    },
+    {
+      "id": "process_inputs_resolve_to_materials_or_items",
+      "result": "PASS",
+      "detail": "all inputs are mt_ ids or pr: products"
+    },
+    {
+      "id": "process_tools_resolve",
+      "result": "PASS",
+      "detail": "ok"
+    },
+    {
+      "id": "process_has_wk_claim",
+      "result": "PASS",
+      "detail": "48/48 have >=1 WK claim"
+    },
+    {
+      "id": "workshop_tools_stocks_processes_resolve",
+      "result": "PASS",
+      "detail": "21 workshops"
+    },
+    {
+      "id": "craft_occupations_have_workshop_or_location_note",
+      "result": "PASS",
+      "detail": "16 occupations of groups ремесло/промысел covered"
+    },
+    {
+      "id": "materials_have_origin_and_sources",
+      "result": "PASS",
+      "detail": "103"
+    },
+    {
+      "id": "own_domain_material_values_resolve",
+      "result": "PASS",
+      "detail": "{\"values\":157,\"fully_resolved\":157,\"with_unresolved_tokens\":0,\"out_of_scope_tokens\":0,\"deny_hits\":0}"
+    },
+    {
+      "id": "info_other_domains_material_resolution_snapshot",
+      "result": "PASS",
+      "detail": "14 files, 1231/1341 values fully resolved, 75 values with soil-class tokens (out of scope), 0 denylist hits; per-file in validation-report.json, rows in materials_registry/material_resolution.csv"
+    },
+    {
+      "id": "info_mass_band_vs_v5_policy",
+      "result": "PASS",
+      "detail": "76 tools have a v5 policy mass; 27 differ in band: tl_saw_bone(M1/M2),tl_wedge(M1/M2),tl_sledgehammer(M3/M2),tl_file(M1/M2),tl_ore_basket(M2/M3),tl_jeweler_hammer(M0/M2),tl_jeweler_scales(M1/M2),tl_fleshing_knife(M2/M1),tl_shoe_knife(M1/M2),tl_distaff(M3/M2),tl_shears(M1/M2),tl_firesteel(M0/M1),tl_flint_tinder(M0/M1),tl_stylus(M1/M0),tl_bullotirion(M2/M1),tl_rake(M3/M2),tl_net_seine(M3/M4),tl_net_set(M3/M4),tl_net_float(M0/M1),tl_net_sinker(M2/M1),tl_spoon_lure(M1/M0),tl_hunting_arrow(M0/M1),tl_tomar(M0/M1),tl_bird_net(M3/M4),tl_skinning_knife(M1/M2),tl_knife_utility(M1/M2),tl_keys(M0/M1)"
+    }
+  ],
+  "material_resolution_per_file": {
+    "buildings-interiors-containers/buildings/building_parts.csv": {
+      "values": 73,
+      "fully_resolved": 73,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "buildings-interiors-containers/buildings/building_types.csv": {
+      "values": 51,
+      "fully_resolved": 51,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "buildings-interiors-containers/buildings/building_type_parts.csv": {
+      "values": 288,
+      "fully_resolved": 288,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "buildings-interiors-containers/interiors/furniture_fixtures_light.csv": {
+      "values": 75,
+      "fully_resolved": 62,
+      "with_unresolved_tokens": 13,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "buildings-interiors-containers/landmarks/landmarks.csv": {
+      "values": 44,
+      "fully_resolved": 32,
+      "with_unresolved_tokens": 12,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "clothing-appearance/adornment_appearance/adornment.csv": {
+      "values": 46,
+      "fully_resolved": 41,
+      "with_unresolved_tokens": 5,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "clothing-appearance/garments/garments.csv": {
+      "values": 189,
+      "fully_resolved": 172,
+      "with_unresolved_tokens": 17,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "clothing-appearance/garments/garment_components.csv": {
+      "values": 14,
+      "fully_resolved": 14,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "crafts-tools-processes/craft_tools_gear/tools_gear.csv": {
+      "values": 157,
+      "fully_resolved": 157,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "items-household-personal/items/household.csv": {
+      "values": 111,
+      "fully_resolved": 111,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "items-household-personal/items/personal.csv": {
+      "values": 79,
+      "fully_resolved": 79,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "items-weapons-armour/authoring/master_military_snapshot.csv": {
+      "values": 210,
+      "fully_resolved": 163,
+      "with_unresolved_tokens": 47,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "items-weapons-armour/items/weapons_armour.csv": {
+      "values": 71,
+      "fully_resolved": 55,
+      "with_unresolved_tokens": 16,
+      "out_of_scope_tokens": 0,
+      "deny_hits": 0
+    },
+    "nature-materials-weather/natural_materials_soils/ground_types.csv": {
+      "values": 68,
+      "fully_resolved": 68,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 68,
+      "deny_hits": 0
+    },
+    "nature-materials-weather/natural_materials_soils/natural_materials.csv": {
+      "values": 22,
+      "fully_resolved": 22,
+      "with_unresolved_tokens": 0,
+      "out_of_scope_tokens": 7,
+      "deny_hits": 0
+    }
+  }
+}

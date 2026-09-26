@@ -1,0 +1,455 @@
+{
+ "schema": "gb_flora_trees_shrubs_sources_v1",
+ "status": "candidate",
+ "note": "Source register. Every src_* id used in taxa.json / habitat_roles.json / denylist.json must be listed here. wk: refs are resolved against main runtime-bundle.json; master: refs against the repo copy of MASTER tables; file: refs point to local files read by the collector.",
+ "sources": [
+  {
+   "src_id": "src_kolchin_1968",
+   "kind": "scholarly_monograph_archaeology",
+   "reliability": "A (wood identifications of excavated artefacts, analysis by V. E. Vikhrov, n=909) / B (forest composition statements)",
+   "title": "Колчин Б. А. Новгородские древности. Деревянные изделия. САИ Е1-55. М.: Наука, 1968. Гл. 1: Леса Новгородской земли; Породы древесины (с. 11-13, табл. I на с. 12); Берестяная и плетёная посуда (с. 49-50)",
+   "url": "file:C:/Users/Slaven/Downloads/Е1-55_Колчин_дерев_1968.pdf",
+   "locator_note": "PDF page index = printed page + 1 (p.11 -> idx 12, табл. I p.12 -> idx 13, p.13 -> idx 14, p.49 -> idx 50). Read visually by the collector 2026-09-26 (scan without text layer)."
+  },
+  {
+   "src_id": "src_brisbane_hather_2007",
+   "kind": "scholarly_monograph_archaeology",
+   "reliability": "B",
+   "title": "Brisbane M., Hather J. (eds.) Wood Use in Medieval Novgorod. Oxford: Oxbow, 2007 (search-snippet only: list of species growing in the Novgorod Lands incl. elm, oak, maple, birch, aspen, willow, alder, ash, lime, hazel, rowan, apple, pear, bird-cherry, spindletree, spruce, pine, juniper)",
+   "url": "https://www.academia.edu/5126789/M_Brisbane_and_J_Hather_eds_Wood_Use_in_Medieval_Novgorod",
+   "locator_note": "Full text not opened (HTTP 403); used only as corroboration of src_kolchin_1968 species list."
+  },
+  {
+   "src_id": "src_serezhnikova_2024",
+   "kind": "peer_reviewed_archaeobotany",
+   "reliability": "A",
+   "title": "Сережникова Д. С., Сергеев А. Ю., Олейников О. М., Половинчук В. Д. Ягодные и плодовые растения в питании новгородцев (раскопки на Борковской улице 2023 г.) // Российская археология. 2024. № 4 (mid-13th c. cesspit)",
+   "url": "https://doi.org/10.31857/S0869606324040101",
+   "locator_note": "Via MASTER food_system sources.csv FSRC001 and ingredients.csv ING0067 (rowan, A), ING0072 (small-fruited apples, B)."
+  },
+  {
+   "src_id": "src_nbcrs_novgorod_flora",
+   "kind": "regional_nature_overview",
+   "reliability": "C (popular regional overview, modern)",
+   "title": "Флора. Новгородская область — портал nbcrs.org: зона тайги и смешанных лесов; примесь дуба, липы, клёна, вяза, ясеня; «небольшие рощи из дуба и липы»; подлесок: крушина, жимолость, орешник, волчье лыко",
+   "url": "https://nbcrs.org/regions/novgorodskaya-oblast/flora",
+   "locator_note": "Opened 2026-09-26 via WebFetch."
+  },
+  {
+   "src_id": "src_valdaypark_flora",
+   "kind": "protected_area_official",
+   "reliability": "B (modern Valdai, Novgorod Oblast)",
+   "title": "ФГБУ Национальный парк «Валдайский». Растительный мир (ельники 34,9 %, сосняки 18,3 % лесов парка; заболоченные сосняки и березняки на сфагновых болотах; дубравы; осинники, сероольшаники)",
+   "url": "https://www.valdaypark.ru/flora",
+   "locator_note": "Also cited in main WK research population-wild-flora-modern.md S2."
+  },
+  {
+   "src_id": "src_valdaypark_nature",
+   "kind": "protected_area_official",
+   "reliability": "B (modern Valdai, Novgorod Oblast)",
+   "title": "ФГБУ Национальный парк «Валдайский». Природа: «еловые, сосновые и берёзовые леса, северные дубравы с лещиной»",
+   "url": "https://www.valdaypark.ru/nature",
+   "locator_note": "Distinct page from src_valdaypark_flora (/flora); cited in main WK research population-wild-flora-modern.md §19-23 for the hazel-oak-grove claim. Added 2026-09-26 per verifier note (VERIFICATION.md §sources.csv item 4): the /flora page does not mention hazel, only /nature does."
+  },
+  {
+   "src_id": "src_priroda_novgorod_climate",
+   "kind": "regional_climate_overview",
+   "reliability": "C",
+   "title": "Природа России: Новгородская область, климат («вегетация начинается обычно в начале мая»; вегетационный период 120-130 дней; январь -7 °C, июль 16 °C)",
+   "url": "https://www.priroda.ru/regions/climate/detail.php?SECTION_ID=&FO_ID=579&ID=7019",
+   "locator_note": "Modern climate; used only to place leaf-out in the spring season."
+  },
+  {
+   "src_id": "src_wiki_pinus_sylvestris",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Сосна обыкновенная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Сосна_обыкновенная"
+  },
+  {
+   "src_id": "src_wiki_picea_abies",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ель европейская — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ель_европейская"
+  },
+  {
+   "src_id": "src_wiki_betula_pendula",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Берёза повислая — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Берёза_повислая"
+  },
+  {
+   "src_id": "src_wiki_betula_pubescens",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Берёза пушистая — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Берёза_пушистая"
+  },
+  {
+   "src_id": "src_wiki_populus_tremula",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Осина — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Осина"
+  },
+  {
+   "src_id": "src_wiki_alnus_glutinosa",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ольха чёрная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ольха_чёрная"
+  },
+  {
+   "src_id": "src_wiki_alnus_incana",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ольха серая — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ольха_серая"
+  },
+  {
+   "src_id": "src_wiki_tilia_cordata",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Липа сердцевидная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Липа_сердцевидная"
+  },
+  {
+   "src_id": "src_wiki_quercus_robur",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Дуб черешчатый — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Дуб_черешчатый"
+  },
+  {
+   "src_id": "src_wiki_fraxinus_excelsior",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ясень обыкновенный — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ясень_обыкновенный"
+  },
+  {
+   "src_id": "src_wiki_ulmus_glabra",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Вяз шершавый — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Вяз_шершавый"
+  },
+  {
+   "src_id": "src_wiki_ulmus_laevis",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Вяз гладкий — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Вяз_гладкий"
+  },
+  {
+   "src_id": "src_wiki_acer_platanoides",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Клён остролистный — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Клён_остролистный"
+  },
+  {
+   "src_id": "src_wiki_sorbus_aucuparia",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Рябина обыкновенная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Рябина_обыкновенная"
+  },
+  {
+   "src_id": "src_wiki_prunus_padus",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Черёмуха обыкновенная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Черёмуха_обыкновенная"
+  },
+  {
+   "src_id": "src_wiki_malus_sylvestris",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Яблоня лесная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Яблоня_лесная"
+  },
+  {
+   "src_id": "src_wiki_salix_alba",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива белая — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_белая"
+  },
+  {
+   "src_id": "src_wiki_salix_caprea",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива козья — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_козья"
+  },
+  {
+   "src_id": "src_wiki_salix_pentandra",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива пятитычинковая — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_пятитычинковая"
+  },
+  {
+   "src_id": "src_wiki_salix_cinerea",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива пепельная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_пепельная"
+  },
+  {
+   "src_id": "src_wiki_salix_aurita",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива ушастая — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_ушастая"
+  },
+  {
+   "src_id": "src_wiki_salix_triandra",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива трёхтычинковая — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_трёхтычинковая"
+  },
+  {
+   "src_id": "src_wiki_salix_viminalis",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива прутовидная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_прутовидная"
+  },
+  {
+   "src_id": "src_wiki_salix_myrsinifolia",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива мирзинолистная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_мирзинолистная"
+  },
+  {
+   "src_id": "src_wiki_salix_rosmarinifolia",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ива розмаринолистная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Ива_розмаринолистная"
+  },
+  {
+   "src_id": "src_wiki_corylus_avellana",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Лещина обыкновенная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Лещина_обыкновенная"
+  },
+  {
+   "src_id": "src_wiki_juniperus_communis",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Можжевельник обыкновенный — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Можжевельник_обыкновенный"
+  },
+  {
+   "src_id": "src_wiki_frangula_alnus",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Крушина ломкая — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Крушина_ломкая"
+  },
+  {
+   "src_id": "src_plantarium_frangula_alnus",
+   "kind": "botanical_database",
+   "reliability": "B",
+   "title": "Плантариум: Frangula alnus (местообитания: берега, окраины низинных болот, пойменные кустарники, заболоченные и мелколиственные леса)",
+   "url": "http://www.plantarium.ru/page/view/item/16521.html"
+  },
+  {
+   "src_id": "src_wiki_viburnum_opulus",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Калина обыкновенная — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Калина_обыкновенная"
+  },
+  {
+   "src_id": "src_wiki_rosa_majalis",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Шиповник майский — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Шиповник_майский"
+  },
+  {
+   "src_id": "src_wiki_daphne_mezereum",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Волчеягодник обыкновенный — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Волчеягодник_обыкновенный"
+  },
+  {
+   "src_id": "src_wiki_lonicera_xylosteum",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Жимолость лесная (настоящая) — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Жимолость_лесная"
+  },
+  {
+   "src_id": "src_wiki_euonymus_verrucosus",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Бересклет бородавчатый — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Бересклет_бородавчатый"
+  },
+  {
+   "src_id": "src_wiki_calluna_vulgaris",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Вереск обыкновенный — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Вереск_обыкновенный"
+  },
+  {
+   "src_id": "src_wiki_rhododendron_tomentosum",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Багульник болотный — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Багульник_болотный"
+  },
+  {
+   "src_id": "src_wiki_chamaedaphne_calyculata",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Хамедафна — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Хамедафна"
+  },
+  {
+   "src_id": "src_wiki_andromeda_polifolia",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Подбел многолистный — Википедия",
+   "url": "https://ru.wikipedia.org/wiki/Подбел_многолистный"
+  },
+  {
+   "src_id": "src_plantarium_betula_nana",
+   "kind": "botanical_database",
+   "reliability": "B",
+   "title": "Плантариум: Betula nana (Красные книги: Тверская, Псковская, Ярославская обл. и др.; Новгородская обл. в списке нет)",
+   "url": "http://www.plantarium.ru/page/view/item/6568.html"
+  },
+  {
+   "src_id": "src_wiki_myrica_gale",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Восковница обыкновенная — Википедия (побережья морей и берега озёр; редкий вид Ленинградской обл. и Карелии)",
+   "url": "https://ru.wikipedia.org/wiki/Восковница_обыкновенная"
+  },
+  {
+   "src_id": "src_wiki_acer_negundo",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Клён ясенелистный — Википедия (родина — Северная Америка)",
+   "url": "https://ru.wikipedia.org/wiki/Клён_ясенелистный"
+  },
+  {
+   "src_id": "src_wiki_robinia_pseudoacacia",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Робиния ложноакациевая — Википедия (родина — Северная Америка)",
+   "url": "https://ru.wikipedia.org/wiki/Робиния_ложноакациевая"
+  },
+  {
+   "src_id": "src_wiki_aesculus_hippocastanum",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Конский каштан обыкновенный — Википедия (родина — Балканы)",
+   "url": "https://ru.wikipedia.org/wiki/Конский_каштан_обыкновенный"
+  },
+  {
+   "src_id": "src_wiki_syringa_vulgaris",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Сирень обыкновенная — Википедия (родина — Балканы)",
+   "url": "https://ru.wikipedia.org/wiki/Сирень_обыкновенная"
+  },
+  {
+   "src_id": "src_wiki_populus_balsamifera",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Тополь бальзамический — Википедия (родина — Северная Америка)",
+   "url": "https://ru.wikipedia.org/wiki/Тополь_бальзамический"
+  },
+  {
+   "src_id": "src_wiki_quercus_rubra",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Дуб красный — Википедия (родина — Северная Америка)",
+   "url": "https://ru.wikipedia.org/wiki/Дуб_красный"
+  },
+  {
+   "src_id": "src_wiki_picea_pungens",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ель колючая — Википедия (родина — Северная Америка)",
+   "url": "https://ru.wikipedia.org/wiki/Ель_колючая"
+  },
+  {
+   "src_id": "src_wiki_amelanchier_spicata",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Ирга колосистая — Википедия (родина — Северная Америка)",
+   "url": "https://ru.wikipedia.org/wiki/Ирга_колосистая"
+  },
+  {
+   "src_id": "src_wiki_sorbaria_sorbifolia",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Рябинник рябинолистный — Википедия (Сибирь, Дальний Восток, Восточная Азия)",
+   "url": "https://ru.wikipedia.org/wiki/Рябинник_рябинолистный"
+  },
+  {
+   "src_id": "src_wiki_caragana_arborescens",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Карагана древовидная — Википедия (Сибирь, Казахстан, Монголия)",
+   "url": "https://ru.wikipedia.org/wiki/Карагана_древовидная"
+  },
+  {
+   "src_id": "src_wiki_ulmus_pumila",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Вяз приземистый — Википедия (Восточная Азия)",
+   "url": "https://ru.wikipedia.org/wiki/Вяз_приземистый"
+  },
+  {
+   "src_id": "src_vinogradova_2010_black_book",
+   "kind": "scholarly_monograph",
+   "reliability": "B",
+   "title": "Виноградова Ю. К., Майоров С. Р., Хорун Л. В. Чёрная книга флоры Средней России. М.: ГЕОС, 2010 (52 наиболее вредоносных инвазионных вида)",
+   "url": "https://bigenc.ru/b/chiornaia-kniga-flory-srednei-4d62c8"
+  },
+  {
+   "src_id": "src_world_db_landscape_templates",
+   "kind": "project_draft_table",
+   "reliability": "C (draft)",
+   "title": "world_db.world_base.landscape_templates.dominant_vegetation for region_novgorod_land (snapshot 2026-09-26)",
+   "url": "file:scripts/src/world_db_landscape_templates_snapshot.tsv"
+  },
+  {
+   "src_id": "src_pr98_richness_v1",
+   "kind": "project_candidate",
+   "reliability": "C (candidate_approval_pending)",
+   "title": "pr98:data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json (Pinus, Picea, Betula, Salix, Alnus, Sphagnum, Phragmites; weights 8/4/2/1)",
+   "url": "file:C:/Users/Slaven/Documents/Novgorod-runtime/data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json"
+  },
+  {
+   "src_id": "src_wiki_sambucus_racemosa",
+   "kind": "encyclopedia",
+   "reliability": "B",
+   "title": "Бузина красная — Википедия («Для Европейской части России бузина красная является адвентивным растением»)",
+   "url": "https://ru.wikipedia.org/wiki/Бузина_красная"
+  },
+  {
+   "src_id": "src_rdeysky_letopis_2012",
+   "kind": "protected_area_official_report",
+   "reliability": "B (modern, Novgorod Oblast)",
+   "title": "Летопись природы ГПЗ «Рдейский» за 2012 год, т. 11: заброшенные поля и канавы зарастают древесно-кустарниковой растительностью из пород, предпочитаемых лосем — осины, ив, березы, реже рябины",
+   "url": "https://rdeysky.org/sites/default/files/Летопись-природы-ФГБУ-ГПЗ-Рдейский-2012.pdf"
+  }
+ ]
+}

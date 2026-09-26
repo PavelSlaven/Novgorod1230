@@ -1,0 +1,12 @@
+deny_id,patterns,scope,reason_ru,earliest_or_limit,source_refs,confidence,status
+deny_turkey,индейк | индюк | Meleagris,anachronism,"американская птица, в Европу после 1492 г.",после Колумбова обмена,master:n1230:material_item:liv0021;wp:Индейка,A,candidate
+deny_rabbit_livestock,кролик | Oryctolagus,anachronism_as_livestock,кролик как домашний скот не засвидетельствован для Руси XIII в.; дикий кролик — юго-запад Европы,—,master:n1230:material_item:liv0020;wp:Кролик,B,candidate
+deny_heavy_draft_horse,тяжеловоз | першерон | битюг | брабансон | шайр,anachronism,тяжелоупряжные породы — позднейшая селекция; кони Новгорода мелкие–среднерослые (Саблин 2007),Новое время,master:n1230:material_item:liv0027;src:sablin-2007-rurikovo,A,candidate
+deny_brown_rat,серая крыса | пасюк | Rattus norvegicus,anachronism,появилась в Поволжье в конце XVII — XVIII в. и вытеснила чёрную крысу,конец XVII–XVIII в.,src:askeyev-2021-black-rat;wp:Серая_крыса,B,candidate
+deny_german_cockroach,прусак | рыжий таракан | Blattella germanica,anachronism,завезён в Европу в XVIII в.,XVIII в.,wp:Рыжий_таракан,B,candidate
+deny_black_cockroach_unverified,чёрный таракан | черный таракан | Blatta orientalis,unverified,время появления на Руси не установлено — не генерировать до проверки,не установлено,wp:Чёрный_таракан,C,candidate
+deny_sterlet_native,стерлядь | Acipenser ruthenus,not_native,волжско-каспийский вид; в Волхово-Ильменском бассейне аборигенным не показан (нет в списках Тарасова и Кудерского); допускать только как привоз после проверки,—,src:kudersky-ladoga-ichthyofauna;src:tarasov-2009-ladoga-fishing,C,candidate
+deny_gibel_carp,серебряный карась | Carassius gibelio | Carassius auratus,not_native,"позднее расселение, не аборигенный вид региона (проверить)",Новое время,src:fishbase,C,candidate
+deny_carp_farm,\bсазан | \bкарп\b | Cyprinus carpio,anachronism,карп (прудовой) — поздняя интродукция в северо-западной Руси,не ранее XVI–XVII в. (проверить),src:fishbase,C,candidate
+deny_modern_breeds,голштин | симментал | меринос | ландрас | леггорн,anachronism,современные породы,XIX–XX в.,master:n1230:material_item:liv0024;master:n1230:material_item:liv0016,A,candidate
+deny_guinea_fowl_peacock,цесарк | павлин | Numida | Pavo,unverified,"экзотическая птица, в Новгороде 1230 г. как дворовая не засвидетельствована",—,wp:Цесарки,C,candidate

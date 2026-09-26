@@ -1,0 +1,265 @@
+fl_id,name_ru,month,month_roman,season,field_state,rule,confidence,status
+fl_cu_secale_cereale,рожь (озимая),1,I,winter,озимь под снегом,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),2,II,winter,озимь под снегом,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),3,III,winter,озимь под снегом,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),4,IV,spring,озимь отрастает,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),5,V,spring,озимь отрастает,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),6,VI,summer,цветение/колошение,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),7,VII,summer,"созревание, жатва/уборка",derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),8,VIII,summer,"созревание, жатва/уборка",derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),9,IX,autumn,"сев озимых, всходы",derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),10,X,autumn,всходы и рост,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),11,XI,autumn,всходы и рост,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_secale_cereale,рожь (озимая),12,XII,winter,озимь под снегом,derived: sow=VIII–IX flow=VI harvest=VII–VIII,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),4,IV,spring,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),5,V,spring,"сев, всходы",derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),6,VI,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),7,VII,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),8,VIII,summer,"созревание, жатва/уборка",derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),9,IX,autumn,"созревание, жатва/уборка",derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),10,X,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),11,XI,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_triticum_aestivum,пшеница (мягкая),12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_hordeum_vulgare,ячмень,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,4,IV,spring,жнивьё или пар,derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,5,V,spring,"сев, всходы",derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,6,VI,summer,"сев, всходы",derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,7,VII,summer,"созревание, жатва/уборка",derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,9,IX,autumn,жнивьё или пар,derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,10,X,autumn,жнивьё или пар,derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,11,XI,autumn,жнивьё или пар,derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_hordeum_vulgare,ячмень,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_avena_sativa,овёс,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,4,IV,spring,жнивьё или пар,derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,5,V,spring,"сев, всходы",derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,6,VI,summer,всходы и рост,derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,7,VII,summer,цветение/колошение,derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,9,IX,autumn,"созревание, жатва/уборка",derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,10,X,autumn,жнивьё или пар,derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,11,XI,autumn,жнивьё или пар,derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_avena_sativa,овёс,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,4,IV,spring,жнивьё или пар,derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,5,V,spring,"сев, всходы",derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,6,VI,summer,"сев, всходы",derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,7,VII,summer,цветение/колошение,derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,9,IX,autumn,"созревание, жатва/уборка",derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,10,X,autumn,жнивьё или пар,derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,11,XI,autumn,жнивьё или пар,derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_panicum_miliaceum,просо,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_pisum_sativum,горох,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,4,IV,spring,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,5,V,spring,"сев, всходы",derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,6,VI,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,7,VII,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,9,IX,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,10,X,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,11,XI,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_pisum_sativum,горох,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_vicia_faba,бобы (конские),1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),4,IV,spring,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),5,V,spring,"сев, всходы",derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),6,VI,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),7,VII,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),8,VIII,summer,"созревание, жатва/уборка",derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),9,IX,autumn,"созревание, жатва/уборка",derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),10,X,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),11,XI,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_vicia_faba,бобы (конские),12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII–IX,C,candidate
+fl_cu_lens_culinaris,чечевица,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,4,IV,spring,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,5,V,spring,"сев, всходы",derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,6,VI,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,7,VII,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,9,IX,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,10,X,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,11,XI,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_lens_culinaris,чечевица,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,4,IV,spring,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,5,V,spring,"сев, всходы",derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,6,VI,summer,цветение/колошение,derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,7,VII,summer,"созревание, жатва/уборка",derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,9,IX,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,10,X,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,11,XI,autumn,жнивьё или пар,derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_linum_usitatissimum,лён,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow=VI–VII harvest=VII–VIII,C,candidate
+fl_cu_cannabis_sativa,конопля,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,4,IV,spring,жнивьё или пар,derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,5,V,spring,"сев, всходы",derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,6,VI,summer,"сев, всходы",derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,7,VII,summer,цветение/колошение,derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,9,IX,autumn,"созревание, жатва/уборка",derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,10,X,autumn,жнивьё или пар,derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,11,XI,autumn,жнивьё или пар,derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_cannabis_sativa,конопля,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow=VII–VIII harvest=VIII–IX,C,candidate
+fl_cu_brassica_rapa,репа,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,4,IV,spring,жнивьё или пар,derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,5,V,spring,жнивьё или пар,derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,6,VI,summer,"сев, всходы",derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,7,VII,summer,"сев, всходы",derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,8,VIII,summer,всходы и рост,derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,9,IX,autumn,"созревание, жатва/уборка",derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,10,X,autumn,"созревание, жатва/уборка",derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,11,XI,autumn,жнивьё или пар,derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_rapa,репа,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=VI–VII flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,4,IV,spring,жнивьё или пар,derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,5,V,spring,"сев, всходы",derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,6,VI,summer,"сев, всходы",derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,7,VII,summer,всходы и рост,derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,8,VIII,summer,всходы и рост,derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,9,IX,autumn,"созревание, жатва/уборка",derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,10,X,autumn,"созревание, жатва/уборка",derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,11,XI,autumn,жнивьё или пар,derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_brassica_oleracea,капуста,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow= harvest=IX–X,C,candidate
+fl_cu_allium_cepa,лук репчатый,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,4,IV,spring,"сев, всходы",derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,5,V,spring,"сев, всходы",derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,6,VI,summer,всходы и рост,derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,7,VII,summer,"созревание, жатва/уборка",derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,8,VIII,summer,"созревание, жатва/уборка",derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,9,IX,autumn,жнивьё или пар,derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,10,X,autumn,жнивьё или пар,derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,11,XI,autumn,жнивьё или пар,derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_cepa,лук репчатый,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=IV–V flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,1,I,winter,всходы и рост,derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,2,II,winter,всходы и рост,derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,3,III,winter,всходы и рост,derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,4,IV,spring,всходы и рост,derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,5,V,spring,всходы и рост,derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,6,VI,summer,всходы и рост,derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,7,VII,summer,"созревание, жатва/уборка",derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,8,VIII,summer,"созревание, жатва/уборка",derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,9,IX,autumn,"сев, всходы",derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,10,X,autumn,"сев, всходы",derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,11,XI,autumn,всходы и рост,derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_allium_sativum,чеснок,12,XII,winter,всходы и рост,derived: sow=IX–X flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,4,IV,spring,жнивьё или пар,derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,5,V,spring,"сев, всходы",derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,6,VI,summer,всходы и рост,derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,7,VII,summer,"созревание, жатва/уборка",derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,9,IX,autumn,жнивьё или пар,derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,10,X,autumn,жнивьё или пар,derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,11,XI,autumn,жнивьё или пар,derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_anethum_graveolens,укроп,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=VII–VIII,C,candidate
+fl_cu_beta_vulgaris,свёкла,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,4,IV,spring,жнивьё или пар,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,5,V,spring,"сев, всходы",derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,6,VI,summer,всходы и рост,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,7,VII,summer,всходы и рост,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,8,VIII,summer,всходы и рост,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,9,IX,autumn,"созревание, жатва/уборка",derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,10,X,autumn,жнивьё или пар,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,11,XI,autumn,жнивьё или пар,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_beta_vulgaris,свёкла,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,4,IV,spring,жнивьё или пар,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,5,V,spring,"сев, всходы",derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,6,VI,summer,всходы и рост,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,7,VII,summer,всходы и рост,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,8,VIII,summer,всходы и рост,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,9,IX,autumn,"созревание, жатва/уборка",derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,10,X,autumn,жнивьё или пар,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,11,XI,autumn,жнивьё или пар,derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_daucus_carota,морковь,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V flow= harvest=IX,C,candidate
+fl_cu_cucumis_sativus,огурец,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,4,IV,spring,жнивьё или пар,derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,5,V,spring,"сев, всходы",derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,6,VI,summer,"сев, всходы",derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,7,VII,summer,"созревание, жатва/уборка",derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,8,VIII,summer,"созревание, жатва/уборка",derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,9,IX,autumn,жнивьё или пар,derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,10,X,autumn,жнивьё или пар,derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,11,XI,autumn,жнивьё или пар,derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_cucumis_sativus,огурец,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=V–VI flow= harvest=VII–VIII,C,candidate
+fl_cu_armoracia_rusticana,хрен,1,I,winter,поле под снегом (жнивьё или пар),derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,2,II,winter,поле под снегом (жнивьё или пар),derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,3,III,winter,поле под снегом (жнивьё или пар),derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,4,IV,spring,"сев, всходы",derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,5,V,spring,"сев, всходы",derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,6,VI,summer,всходы и рост,derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,7,VII,summer,всходы и рост,derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,8,VIII,summer,всходы и рост,derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,9,IX,autumn,"созревание, жатва/уборка",derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,10,X,autumn,"созревание, жатва/уборка",derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,11,XI,autumn,жнивьё или пар,derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_armoracia_rusticana,хрен,12,XII,winter,поле под снегом (жнивьё или пар),derived: sow=IV–V flow= harvest=IX–X,C,candidate
+fl_cu_humulus_lupulus,хмель,1,I,winter,"покой, голые растения",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,2,II,winter,"покой, голые растения",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,3,III,winter,"покой, голые растения",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,4,IV,spring,"распускание, бутоны",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,5,V,spring,"распускание, бутоны",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,6,VI,summer,"распускание, бутоны",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,7,VII,summer,"распускание, бутоны",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,8,VIII,summer,сбор урожая,derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,9,IX,autumn,сбор урожая,derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,10,X,autumn,"после сбора, листопад",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,11,XI,autumn,"после сбора, листопад",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_humulus_lupulus,хмель,12,XII,winter,"покой, голые растения",derived: sow=perennial flow=VIII harvest=VIII–IX,C,candidate
+fl_cu_prunus_cerasus,вишня,1,I,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,2,II,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,3,III,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,4,IV,spring,"распускание, бутоны",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,5,V,spring,цветение,derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,6,VI,summer,"рост, завязи",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,7,VII,summer,сбор урожая,derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,8,VIII,summer,сбор урожая,derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,9,IX,autumn,"после сбора, листопад",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,10,X,autumn,"после сбора, листопад",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,11,XI,autumn,"после сбора, листопад",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_prunus_cerasus,вишня,12,XII,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VII–VIII,C,candidate
+fl_cu_malus_domestica,яблоня садовая,1,I,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,2,II,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,3,III,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,4,IV,spring,"распускание, бутоны",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,5,V,spring,цветение,derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,6,VI,summer,"рост, завязи",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,7,VII,summer,"рост, завязи",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,8,VIII,summer,сбор урожая,derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,9,IX,autumn,сбор урожая,derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,10,X,autumn,сбор урожая,derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,11,XI,autumn,"после сбора, листопад",derived: sow=perennial flow=V harvest=VIII–X,C,candidate
+fl_cu_malus_domestica,яблоня садовая,12,XII,winter,"покой, голые растения",derived: sow=perennial flow=V harvest=VIII–X,C,candidate

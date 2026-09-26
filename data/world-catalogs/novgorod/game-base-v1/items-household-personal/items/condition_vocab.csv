@@ -1,0 +1,12 @@
+cond_id,material_family,states,source_refs,confidence
+cond_wood,wood,new;serviceable;worn;cracked;split;repaired;charred;damp_swollen;rotting;broken,wk:claim:population-material-wood-decay;wk:claim:population-material-wood-shrinkage;wk:claim:population-material-wood-combustion,B
+cond_bark,bark,new;serviceable;worn;cracked;torn;repaired;damp,wk:claim:household-bark-tues;wk:claim:population-material-wood-moisture,B
+cond_clay,clay,whole;chipped;cracked;repaired_laced;sooted;handle_broken;broken_to_sherds,wk:claim:population-ceramic-fracture;wk:claim:population-ceramic-joint;wk:claim:population-ceramic-water,B
+cond_iron,iron,serviceable;dull;rusted;bent;cracked;broken;repaired,wk:claim:population-material-iron-rust;wk:claim:population-joining-metal-fatigue,B
+cond_nonferrous,nonferrous,serviceable;tarnished;worn_smooth;bent;cracked;broken,wk:claim:population-joining-metal-cold-work;wk:claim:population-joining-metal-fatigue,B
+cond_stone,stone,whole;worn;chipped;cracked;broken,wk:claim:stone-whetstone-edge-maintenance,B
+cond_bone,bone,whole;worn_polished;cracked;teeth_broken;broken,wk:material_culture:novgorod-wood-bone-horn-classes,B
+cond_leather,leather,serviceable;worn;stiff_dry;mouldy;torn;patched;wet,wk:claim:population-material-leather-dry;wk:claim:population-material-leather-mould;wk:claim:material-water-leather-water-processing,B
+cond_textile,textile,clean;soiled;worn;torn;patched;damp;mouldy,wk:claim:population-material-wet-wool;wk:claim:material-water-new-linen-water,B
+cond_wax,wax,whole;partly_burnt;stub;softened;broken,wk:claim:population-joining-wax-soften,B
+cond_organic_soft,organic_soft,fresh;dry;damp;crumbling;spent,wk:claim:reality-batch-01-dried-herbs-need-dry-protected-storage,B

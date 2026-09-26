@@ -1,0 +1,289 @@
+bt_id,seq,bp_id,material,size_min,size_max,size_unit,count_rule,required,size_source,status
+bt_izba_heated_single,1,bp_wall_crowns,mat_log_crown,4,9,m_side,4 стены,1,ref:arhitekto_2russ27,candidate
+bt_izba_heated_single,2,bp_caulk_moss,mat_moss,,,,все пазы,1,,candidate
+bt_izba_heated_single,3,bp_sill,mat_sill_log,,,,по периметру,1,,candidate
+bt_izba_heated_single,4,bp_floor_plank,mat_plank_hewn,0.10,0.40,m_board_width,1 пол; альтернатива bp_floor_split,0,matcult:CON0035,candidate
+bt_izba_heated_single,5,bp_floor_split,mat_plank_split,,,,1 пол; альтернатива bp_floor_plank,0,,candidate
+bt_izba_heated_single,6,bp_ceiling_beam,mat_log_conifer,,,,1–2,1,,candidate
+bt_izba_heated_single,7,bp_roof_gable,mat_roof_tes,,,,1; покрытие тёс или дрань,1,,candidate
+bt_izba_heated_single,8,bp_roof_underlay_bark,mat_birch_bark,,,,по кровле,0,,candidate
+bt_izba_heated_single,9,bp_door_plank,mat_plank_hewn,,,,1–2,1,,candidate
+bt_izba_heated_single,10,bp_door_bar,mat_hardwood_bar,,,,1 на дверь,1,,candidate
+bt_izba_heated_single,11,bp_stove_clay,mat_clay,,,,1 печь: глинобитная или каменно-глиняная; ~95% печей в углу,1,ref:rsl_zasurcev_search,candidate
+bt_izba_heated_single,12,bp_stove_stone_clay,mat_hearth_stone,,,,альтернатива bp_stove_clay,0,,candidate
+bt_izba_heated_single,13,bp_stove_base,mat_clay,,,,1 под печью,1,,candidate
+bt_izba_heated_single,14,bp_smoke_path,mat_plank_hewn,,,,"1+ (волок, дверь, отверстие); трубы нет",1,,candidate
+bt_izba_heated_single,15,bp_window_volok,mat_plank_hewn,,,,1–3,1,,candidate
+bt_izba_heated_single,16,bp_window_shutter,mat_plank_hewn,,,,по числу окон,1,,candidate
+bt_izba_heated_single,17,bp_bench_builtin,mat_plank_hewn,0.30,0.60,m_width,1–4 вдоль стен,1,matcult:FUR0018,candidate
+bt_izba_heated_single,18,bp_shelf,mat_plank_hewn,0.5,2,m_length,1–3,0,matcult:INT0048,candidate
+bt_izba_heated_single,19,bp_peg,mat_wood_peg,,,,3–10,0,,candidate
+bt_izba_heated_single,20,bp_sleep_platform,mat_plank_hewn,,,,0–2,0,,candidate
+bt_izba_heated_single,21,bp_porch,mat_plank_split,,,,0–1,0,,candidate
+bt_klet_dwelling,1,bp_wall_crowns,mat_log_crown,4,6,m_side,4 стены,1,matcult:ARC0021,candidate
+bt_klet_dwelling,2,bp_caulk_moss,mat_moss,,,,все пазы,1,,candidate
+bt_klet_dwelling,3,bp_sill,mat_sill_log,,,,по периметру,1,,candidate
+bt_klet_dwelling,4,bp_floor_plank,mat_plank_hewn,0.10,0.40,m_board_width,1 пол; альтернатива bp_floor_split,0,matcult:CON0035,candidate
+bt_klet_dwelling,5,bp_floor_split,mat_plank_split,,,,1 пол; альтернатива bp_floor_plank,0,,candidate
+bt_klet_dwelling,6,bp_ceiling_beam,mat_log_conifer,,,,1–2,1,,candidate
+bt_klet_dwelling,7,bp_roof_gable,mat_roof_tes,,,,1; покрытие тёс или дрань,1,,candidate
+bt_klet_dwelling,8,bp_roof_underlay_bark,mat_birch_bark,,,,по кровле,0,,candidate
+bt_klet_dwelling,9,bp_door_plank,mat_plank_hewn,,,,1–2,1,,candidate
+bt_klet_dwelling,10,bp_door_bar,mat_hardwood_bar,,,,1 на дверь,1,,candidate
+bt_klet_dwelling,11,bp_stove_clay,mat_clay,,,,1 печь: глинобитная или каменно-глиняная; ~95% печей в углу,1,ref:rsl_zasurcev_search,candidate
+bt_klet_dwelling,12,bp_stove_stone_clay,mat_hearth_stone,,,,альтернатива bp_stove_clay,0,,candidate
+bt_klet_dwelling,13,bp_stove_base,mat_clay,,,,1 под печью,1,,candidate
+bt_klet_dwelling,14,bp_smoke_path,mat_plank_hewn,,,,"1+ (волок, дверь, отверстие); трубы нет",1,,candidate
+bt_klet_dwelling,15,bp_bench_builtin,mat_plank_hewn,0.30,0.60,m_width,1–2,1,matcult:FUR0018,candidate
+bt_pyatistenok,1,bp_wall_crowns,mat_log_crown,4,9,m_side,4 стены,1,ref:arhitekto_2russ27,candidate
+bt_pyatistenok,2,bp_caulk_moss,mat_moss,,,,все пазы,1,,candidate
+bt_pyatistenok,3,bp_sill,mat_sill_log,,,,по периметру,1,,candidate
+bt_pyatistenok,4,bp_floor_plank,mat_plank_hewn,0.10,0.40,m_board_width,1 пол; альтернатива bp_floor_split,0,matcult:CON0035,candidate
+bt_pyatistenok,5,bp_floor_split,mat_plank_split,,,,1 пол; альтернатива bp_floor_plank,0,,candidate
+bt_pyatistenok,6,bp_ceiling_beam,mat_log_conifer,,,,1–2,1,,candidate
+bt_pyatistenok,7,bp_roof_gable,mat_roof_tes,,,,1; покрытие тёс или дрань,1,,candidate
+bt_pyatistenok,8,bp_roof_underlay_bark,mat_birch_bark,,,,по кровле,0,,candidate
+bt_pyatistenok,9,bp_door_plank,mat_plank_hewn,,,,1–2,1,,candidate
+bt_pyatistenok,10,bp_door_bar,mat_hardwood_bar,,,,1 на дверь,1,,candidate
+bt_pyatistenok,11,bp_partition_log,mat_log_crown,,,,1,1,,candidate
+bt_pyatistenok,12,bp_stove_clay,mat_clay,,,,1 печь: глинобитная или каменно-глиняная; ~95% печей в углу,1,ref:rsl_zasurcev_search,candidate
+bt_pyatistenok,13,bp_stove_stone_clay,mat_hearth_stone,,,,альтернатива bp_stove_clay,0,,candidate
+bt_pyatistenok,14,bp_stove_base,mat_clay,,,,1 под печью,1,,candidate
+bt_pyatistenok,15,bp_smoke_path,mat_plank_hewn,,,,"1+ (волок, дверь, отверстие); трубы нет",1,,candidate
+bt_pyatistenok,16,bp_window_volok,mat_plank_hewn,,,,1–3,1,,candidate
+bt_pyatistenok,17,bp_window_shutter,mat_plank_hewn,,,,по числу окон,1,,candidate
+bt_pyatistenok,18,bp_bench_builtin,mat_plank_hewn,0.30,0.60,m_width,1–4 вдоль стен,1,matcult:FUR0018,candidate
+bt_pyatistenok,19,bp_shelf,mat_plank_hewn,0.5,2,m_length,1–3,0,matcult:INT0048,candidate
+bt_pyatistenok,20,bp_peg,mat_wood_peg,,,,3–10,0,,candidate
+bt_pyatistenok,21,bp_porch,mat_plank_split,,,,0–1,0,,candidate
+bt_three_part_house,1,bp_wall_crowns,mat_log_crown,4,9,m_side,4 стены,1,ref:arhitekto_2russ27,candidate
+bt_three_part_house,2,bp_caulk_moss,mat_moss,,,,все пазы,1,,candidate
+bt_three_part_house,3,bp_sill,mat_sill_log,,,,по периметру,1,,candidate
+bt_three_part_house,4,bp_floor_plank,mat_plank_hewn,0.10,0.40,m_board_width,1 пол; альтернатива bp_floor_split,0,matcult:CON0035,candidate
+bt_three_part_house,5,bp_floor_split,mat_plank_split,,,,1 пол; альтернатива bp_floor_plank,0,,candidate
+bt_three_part_house,6,bp_ceiling_beam,mat_log_conifer,,,,1–2,1,,candidate
+bt_three_part_house,7,bp_roof_gable,mat_roof_tes,,,,1; покрытие тёс или дрань,1,,candidate
+bt_three_part_house,8,bp_roof_underlay_bark,mat_birch_bark,,,,по кровле,0,,candidate
+bt_three_part_house,9,bp_door_plank,mat_plank_hewn,,,,1–2,1,,candidate
+bt_three_part_house,10,bp_door_bar,mat_hardwood_bar,,,,1 на дверь,1,,candidate
+bt_three_part_house,11,bp_stove_clay,mat_clay,,,,1 печь: глинобитная или каменно-глиняная; ~95% печей в углу,1,ref:rsl_zasurcev_search,candidate
+bt_three_part_house,12,bp_stove_stone_clay,mat_hearth_stone,,,,альтернатива bp_stove_clay,0,,candidate
+bt_three_part_house,13,bp_stove_base,mat_clay,,,,1 под печью,1,,candidate
+bt_three_part_house,14,bp_smoke_path,mat_plank_hewn,,,,"1+ (волок, дверь, отверстие); трубы нет",1,,candidate
+bt_three_part_house,15,bp_window_volok,mat_plank_hewn,,,,1–3,1,,candidate
+bt_three_part_house,16,bp_window_shutter,mat_plank_hewn,,,,по числу окон,1,,candidate
+bt_three_part_house,17,bp_bench_builtin,mat_plank_hewn,0.30,0.60,m_width,1–4 вдоль стен,1,matcult:FUR0018,candidate
+bt_three_part_house,18,bp_shelf,mat_plank_hewn,0.5,2,m_length,1–3,0,matcult:INT0048,candidate
+bt_three_part_house,19,bp_peg,mat_wood_peg,,,,3–10,0,,candidate
+bt_three_part_house,20,bp_porch,mat_plank_split,,,,0–1,0,,candidate
+bt_horomy,1,bp_wall_crowns,mat_log_crown,4,9,m_side,4 стены,1,ref:arhitekto_2russ27,candidate
+bt_horomy,2,bp_caulk_moss,mat_moss,,,,все пазы,1,,candidate
+bt_horomy,3,bp_sill,mat_sill_log,,,,по периметру,1,,candidate
+bt_horomy,4,bp_floor_plank,mat_plank_hewn,0.10,0.40,m_board_width,1 пол; альтернатива bp_floor_split,0,matcult:CON0035,candidate
+bt_horomy,5,bp_floor_split,mat_plank_split,,,,1 пол; альтернатива bp_floor_plank,0,,candidate
+bt_horomy,6,bp_ceiling_beam,mat_log_conifer,,,,1–2,1,,candidate
+bt_horomy,7,bp_roof_gable,mat_roof_tes,,,,1; покрытие тёс или дрань,1,,candidate
+bt_horomy,8,bp_roof_underlay_bark,mat_birch_bark,,,,по кровле,0,,candidate
+bt_horomy,9,bp_door_plank,mat_plank_hewn,,,,1–2,1,,candidate
+bt_horomy,10,bp_door_bar,mat_hardwood_bar,,,,1 на дверь,1,,candidate
+bt_horomy,11,bp_stove_clay,mat_clay,,,,1 печь: глинобитная или каменно-глиняная; ~95% печей в углу,1,ref:rsl_zasurcev_search,candidate
+bt_horomy,12,bp_stove_stone_clay,mat_hearth_stone,,,,альтернатива bp_stove_clay,0,,candidate
+bt_horomy,13,bp_stove_base,mat_clay,,,,1 под печью,1,,candidate
+bt_horomy,14,bp_smoke_path,mat_plank_hewn,,,,"1+ (волок, дверь, отверстие); трубы нет",1,,candidate
+bt_horomy,15,bp_window_volok,mat_plank_hewn,,,,1–3,1,,candidate
+bt_horomy,16,bp_window_shutter,mat_plank_hewn,,,,по числу окон,1,,candidate
+bt_horomy,17,bp_bench_builtin,mat_plank_hewn,0.30,0.60,m_width,1–4 вдоль стен,1,matcult:FUR0018,candidate
+bt_horomy,18,bp_shelf,mat_plank_hewn,0.5,2,m_length,1–3,0,matcult:INT0048,candidate
+bt_horomy,19,bp_peg,mat_wood_peg,,,,3–10,0,,candidate
+bt_horomy,20,bp_porch,mat_plank_split,,,,1–2,1,,candidate
+bt_horomy,21,bp_door_hinge_iron,mat_iron_hinge,,,,на главных дверях,0,,candidate
+bt_horomy,22,bp_window_glazed,mat_glass_fragment,,,,0–1 спорно,0,,candidate
+bt_horomy,23,bp_ladder_shegla,mat_log_conifer,2.7,2.7,m_length,0–2,0,matcult:ARC0012,candidate
+bt_monastery_cell,1,bp_wall_crowns,mat_log_crown,4,9,m_side,4 стены,1,ref:arhitekto_2russ27,candidate
+bt_monastery_cell,2,bp_caulk_moss,mat_moss,,,,все пазы,1,,candidate
+bt_monastery_cell,3,bp_sill,mat_sill_log,,,,по периметру,1,,candidate
+bt_monastery_cell,4,bp_floor_plank,mat_plank_hewn,0.10,0.40,m_board_width,1 пол; альтернатива bp_floor_split,0,matcult:CON0035,candidate
+bt_monastery_cell,5,bp_floor_split,mat_plank_split,,,,1 пол; альтернатива bp_floor_plank,0,,candidate
+bt_monastery_cell,6,bp_ceiling_beam,mat_log_conifer,,,,1–2,1,,candidate
+bt_monastery_cell,7,bp_roof_gable,mat_roof_tes,,,,1; покрытие тёс или дрань,1,,candidate
+bt_monastery_cell,8,bp_roof_underlay_bark,mat_birch_bark,,,,по кровле,0,,candidate
+bt_monastery_cell,9,bp_door_plank,mat_plank_hewn,,,,1–2,1,,candidate
+bt_monastery_cell,10,bp_door_bar,mat_hardwood_bar,,,,1 на дверь,1,,candidate
+bt_monastery_cell,11,bp_stove_clay,mat_clay,,,,1 печь: глинобитная или каменно-глиняная; ~95% печей в углу,1,ref:rsl_zasurcev_search,candidate
+bt_monastery_cell,12,bp_stove_stone_clay,mat_hearth_stone,,,,альтернатива bp_stove_clay,0,,candidate
+bt_monastery_cell,13,bp_stove_base,mat_clay,,,,1 под печью,1,,candidate
+bt_monastery_cell,14,bp_smoke_path,mat_plank_hewn,,,,"1+ (волок, дверь, отверстие); трубы нет",1,,candidate
+bt_monastery_cell,15,bp_bench_builtin,mat_plank_hewn,0.30,0.60,m_width,1,1,matcult:FUR0018,candidate
+bt_monastery_cell,16,bp_shelf,mat_plank_hewn,0.5,2,m_length,1,0,matcult:INT0048,candidate
+bt_stone_civil_building,1,bp_masonry_wall,mat_limestone,,,,4 стены,1,,candidate
+bt_stone_civil_building,2,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_stone_civil_building,3,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_stone_civil_building,4,bp_door_hinge_iron,mat_iron_hinge,,,,1,0,,candidate
+bt_seni,1,bp_wall_crowns,mat_log_crown,,,,2–3 стены между срубами,1,,candidate
+bt_seni,2,bp_floor_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_seni,3,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_seni,4,bp_door_plank,mat_plank_hewn,,,,2–3,1,,candidate
+bt_seni,5,bp_cellar_crib,mat_log_conifer,,,,0–1 погреб под полом,0,,candidate
+bt_seni,6,bp_shelf,mat_plank_hewn,0.5,2,m_length,0–3,0,matcult:INT0048,candidate
+bt_seni,7,bp_peg,mat_wood_peg,,,,0–6,0,,candidate
+bt_podklet,1,bp_wall_crowns,mat_log_crown,1.5,1.5,m_height,4 стены нижнего яруса,1,matcult:ARC0022,candidate
+bt_podklet,2,bp_floor_earth,mat_earth,,,,1,0,,candidate
+bt_podklet,3,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_podklet,4,bp_door_bar,mat_hardwood_bar,,,,1,1,,candidate
+bt_podklet,5,bp_shelf,mat_plank_hewn,0.5,2,m_length,0–3,0,matcult:INT0048,candidate
+bt_podklet,6,bp_peg,mat_wood_peg,,,,0–6,0,,candidate
+bt_klet_ambar,1,bp_wall_crowns,mat_log_crown,,,,4 стены,1,,candidate
+bt_klet_ambar,2,bp_caulk_moss,mat_moss,,,,1,1,,candidate
+bt_klet_ambar,3,bp_sill,mat_sill_log,,,,1,1,,candidate
+bt_klet_ambar,4,bp_floor_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_klet_ambar,5,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_klet_ambar,6,bp_door_plank,mat_plank_hewn,,,,1 крепкая дверь,1,,candidate
+bt_klet_ambar,7,bp_door_bar,mat_hardwood_bar,,,,1,1,,candidate
+bt_klet_ambar,8,bp_door_hinge_iron,mat_iron_hasp,,,,0–1 пробой под замок,0,,candidate
+bt_klet_ambar,9,bp_shelf,mat_plank_hewn,0.5,2,m_length,0–3,0,matcult:INT0048,candidate
+bt_klet_ambar,10,bp_peg,mat_wood_peg,,,,0–6,0,,candidate
+bt_riverside_warehouse,1,bp_wall_crowns,mat_log_crown,,,,4 стены,1,,candidate
+bt_riverside_warehouse,2,bp_sill,mat_sill_log,,,,1,1,,candidate
+bt_riverside_warehouse,3,bp_floor_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_riverside_warehouse,4,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_riverside_warehouse,5,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_riverside_warehouse,6,bp_door_bar,mat_hardwood_bar,,,,1,1,,candidate
+bt_riverside_warehouse,7,bp_door_hinge_iron,mat_iron_hasp,,,,1,0,,candidate
+bt_cellar_log,1,bp_cellar_crib,mat_log_conifer,,,,1 камера,1,,candidate
+bt_cellar_log,2,bp_ceiling_beam,mat_plank_hewn,,,,перекрытие,1,,candidate
+bt_cellar_log,3,bp_ladder,mat_pole,2,8,m_length,1,1,matcult:CON0044,candidate
+bt_light_shed,1,bp_post_frame,mat_pole,,,,4+ столба,1,,candidate
+bt_light_shed,2,bp_wattle_panel,mat_wattle,,,,0–3 стенки,0,,candidate
+bt_light_shed,3,bp_roof_gable,mat_shingle_conifer,,,,1,1,,candidate
+bt_khlev,1,bp_wall_crowns,mat_log_crown,,,,сруб или каркас,1,,candidate
+bt_khlev,2,bp_post_frame,mat_pole,,,,альтернатива срубу,0,,candidate
+bt_khlev,3,bp_stall_partition,mat_pole,,,,1–4,1,,candidate
+bt_khlev,4,bp_manger,mat_plank_hewn,,,,1–3,1,,candidate
+bt_khlev,5,bp_litter,mat_straw,,,,по полу,1,,candidate
+bt_khlev,6,bp_floor_plank,mat_plank_hewn,,,,0–1 на влажном грунте,0,,candidate
+bt_khlev,7,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_khlev,8,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_konyushnya,1,bp_wall_crowns,mat_log_crown,,,,4 стены,1,,candidate
+bt_konyushnya,2,bp_stall_partition,mat_pole,,,,по числу лошадей,1,,candidate
+bt_konyushnya,3,bp_manger,mat_plank_hewn,,,,1 на стойло,1,,candidate
+bt_konyushnya,4,bp_litter,mat_straw,,,,1,1,,candidate
+bt_konyushnya,5,bp_peg,mat_wood_peg,,,,крюки для упряжи,1,,candidate
+bt_konyushnya,6,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_konyushnya,7,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_gumno_tok,1,bp_threshing_floor,mat_earth,,,,1 площадка,1,,candidate
+bt_gumno_tok,2,bp_post_frame,mat_pole,,,,0–1 навес,0,,candidate
+bt_ovin,1,bp_kiln_pit,mat_clay,,,,1,1,,candidate
+bt_ovin,2,bp_drying_grates,mat_pole,,,,1 ярус,1,,candidate
+bt_ovin,3,bp_wall_crowns,mat_log_crown,,,,сруб садила,1,,candidate
+bt_ovin,4,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_malt_dryer,1,bp_wall_crowns,mat_log_crown,,,,1,1,,candidate
+bt_malt_dryer,2,bp_hearth_open,mat_hearth_stone,,,,1,1,,candidate
+bt_malt_dryer,3,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_malt_dryer,4,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_watermill,1,bp_wall_crowns,mat_log_crown,,,,1,1,,candidate
+bt_watermill,2,bp_piles,mat_pile,,,,опоры у воды,1,,candidate
+bt_watermill,3,bp_water_wheel,mat_plank_hewn,,,,1,1,,candidate
+bt_watermill,4,bp_millstones,mat_boulder,,,,1–2 комплекта,1,matcult_scene:SCN020,candidate
+bt_watermill,5,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_workshop_yard,1,bp_wall_crowns,mat_log_crown,,,,1,1,,candidate
+bt_workshop_yard,2,bp_floor_plank,mat_plank_hewn,,,,1,0,,candidate
+bt_workshop_yard,3,bp_floor_earth,mat_earth,,,,1,0,,candidate
+bt_workshop_yard,4,bp_hearth_open,mat_hearth_stone,,,,0–1 для огневых ремёсел,0,,candidate
+bt_workshop_yard,5,bp_bench_builtin,mat_plank_hewn,0.30,0.60,m_width,1–2 рабочие лавки,1,matcult:FUR0018,candidate
+bt_workshop_yard,6,bp_shelf,mat_plank_hewn,0.5,2,m_length,1–4,0,matcult:INT0048,candidate
+bt_workshop_yard,7,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_workshop_yard,8,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_smithy,1,bp_wall_crowns,mat_log_crown,,,,сруб или открытый навес,1,,candidate
+bt_smithy,2,bp_floor_earth,mat_earth,,,,1,1,,candidate
+bt_smithy,3,bp_forge_hearth,mat_clay,,,,1,1,,candidate
+bt_smithy,4,bp_bellows,mat_plank_hewn,,,,1,1,,candidate
+bt_smithy,5,bp_anvil_block,mat_iron_metal,,,,1–2,1,matcult_scene:SCN011,candidate
+bt_smithy,6,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_pottery_workshop,1,bp_wall_crowns,mat_log_crown,,,,1,1,,candidate
+bt_pottery_workshop,2,bp_floor_earth,mat_earth,,,,1,1,,candidate
+bt_pottery_workshop,3,bp_pottery_kiln,mat_clay,,,,1,1,,candidate
+bt_pottery_workshop,4,bp_shelf,mat_plank_hewn,0.5,2,m_length,1–4 для сушки,1,matcult:INT0048,candidate
+bt_pottery_workshop,5,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_tannery_edge,1,bp_tanning_vats,mat_plank_hewn,,,,1–4,1,matcult_scene:SCN016,candidate
+bt_tannery_edge,2,bp_post_frame,mat_pole,,,,навес,1,,candidate
+bt_tannery_edge,3,bp_drying_rack,mat_pole,,,,1–2 для шкур,0,,candidate
+bt_market_stall,1,bp_stall_counter,mat_plank_hewn,,,,1,1,,candidate
+bt_market_stall,2,bp_awning,mat_roof_tes,,,,0–1,0,,candidate
+bt_market_stall,3,bp_deck,mat_plank_split,,,,настил прохода,1,,candidate
+bt_bathhouse,1,bp_wall_crowns,mat_log_crown,,,,4 стены (5 у двухкамерной),1,,candidate
+bt_bathhouse,2,bp_caulk_moss,mat_moss,,,,1,1,,candidate
+bt_bathhouse,3,bp_floor_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_bathhouse,4,bp_kamenka,mat_hearth_stone,,,,1,1,,candidate
+bt_bathhouse,5,bp_bench_builtin,mat_plank_hewn,0.30,0.60,m_width,1–2 полок/лавки,1,matcult:FUR0018,candidate
+bt_bathhouse,6,bp_smoke_path,mat_plank_hewn,,,,волок/дверь,1,,candidate
+bt_bathhouse,7,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_bathhouse,8,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_privy,1,bp_privy_pit,mat_earth,,,,1,1,,candidate
+bt_privy,2,bp_post_frame,mat_pole,,,,лёгкая кабина/ограда,1,,candidate
+bt_well_log,1,bp_well_crib,mat_log_conifer,,,,шахта,1,,candidate
+bt_well_log,2,bp_well_bucket_rope,mat_rope,,,,1–2 ведра,1,matcult_scene:SCN063,candidate
+bt_charcoal_pit,1,bp_turf_seal,mat_turf,,,,1,1,,candidate
+bt_fishing_camp_shelter,1,bp_post_frame,mat_pole,,,,навес,1,,candidate
+bt_fishing_camp_shelter,2,bp_drying_rack,mat_pole,,,,1–3,1,,candidate
+bt_fishing_camp_shelter,3,bp_cutting_table,mat_plank_hewn,,,,0–1,0,,candidate
+bt_fishing_camp_shelter,4,bp_hearth_open,mat_hearth_stone,,,,0–1 костровище,0,,candidate
+bt_church_wooden,1,bp_wall_crowns,mat_log_crown,4,9,m_side,4 стены,1,ref:arhitekto_2russ27,candidate
+bt_church_wooden,2,bp_caulk_moss,mat_moss,,,,все пазы,1,,candidate
+bt_church_wooden,3,bp_sill,mat_sill_log,,,,по периметру,1,,candidate
+bt_church_wooden,4,bp_floor_plank,mat_plank_hewn,0.10,0.40,m_board_width,1 пол; альтернатива bp_floor_split,0,matcult:CON0035,candidate
+bt_church_wooden,5,bp_floor_split,mat_plank_split,,,,1 пол; альтернатива bp_floor_plank,0,,candidate
+bt_church_wooden,6,bp_ceiling_beam,mat_log_conifer,,,,1–2,1,,candidate
+bt_church_wooden,7,bp_roof_gable,mat_roof_tes,,,,1; покрытие тёс или дрань,1,,candidate
+bt_church_wooden,8,bp_door_plank,mat_plank_hewn,,,,1–2,1,,candidate
+bt_church_wooden,9,bp_door_hinge_iron,mat_iron_hinge,,,,1,0,,candidate
+bt_church_wooden,10,bp_dome_head,mat_roof_tes,,,,0–1 по сравнительной реконструкции,0,,candidate
+bt_church_stone,1,bp_masonry_wall,mat_plinfa,,,,стены и столпы,1,,candidate
+bt_church_stone,2,bp_fresco,mat_lime_plaster,,,,по памятнику,0,,candidate
+bt_church_stone,3,bp_dome_head,mat_roof_tes,,,,1–5 по памятнику,1,,candidate
+bt_church_stone,4,bp_window_glazed,mat_glass_fragment,,,,по памятнику,0,,candidate
+bt_church_stone,5,bp_door_plank,mat_plank_hewn,,,,1,1,,candidate
+bt_church_stone,6,bp_door_hinge_iron,mat_iron_hinge,,,,1,1,,candidate
+bt_wall_timber_earth,1,bp_wall_crib_fill,mat_log_oak,,,,цепь городен,1,,candidate
+bt_wall_timber_earth,2,bp_wall_walk,mat_plank_split,,,,1,0,,candidate
+bt_wall_timber_earth,3,bp_ladder_shegla,mat_log_conifer,,,,0–n,0,,candidate
+bt_rampart,1,bp_earth_bank,mat_earth,,,,1,1,,candidate
+bt_rampart,2,bp_palisade_posts,mat_log_conifer,,,,0–1 по гребню,0,,candidate
+bt_gate_passage,1,bp_wall_crowns,mat_log_crown,,,,срубной проезд,1,,candidate
+bt_gate_passage,2,bp_gate_leaf,mat_plank_split,,,,1–2 створки,1,matcult_scene:SCN043,candidate
+bt_gate_passage,3,bp_gate_post,mat_log_oak,,,,2,1,,candidate
+bt_gate_passage,4,bp_door_bar,mat_hardwood_bar,,,,1 засов,1,,candidate
+bt_guard_shelter,1,bp_post_frame,mat_pole,,,,1,1,,candidate
+bt_guard_shelter,2,bp_roof_gable,mat_roof_tes,,,,1,1,,candidate
+bt_moat_crossing,1,bp_earth_bank,mat_earth,,,,ров,1,,candidate
+bt_moat_crossing,2,bp_deck,mat_plank_split,,,,переход,1,,candidate
+bt_wharf_vymol,1,bp_piles,mat_pile,,,,ряды свай,1,,candidate
+bt_wharf_vymol,2,bp_deck,mat_plank_split,,,,1,1,,candidate
+bt_wharf_vymol,3,bp_gangplank,mat_plank_hewn,,,,0–n,0,,candidate
+bt_wharf_vymol,4,bp_peg,mat_wood_peg,,,,причальные колья,0,,candidate
+bt_river_steps,1,bp_deck,mat_plank_split,,,,ступени/плахи,1,,candidate
+bt_river_steps,2,bp_piles,mat_pile,,,,опоры,1,,candidate
+bt_bank_crib,1,bp_crib_pier,mat_log_conifer,,,,ряд срубов,1,,candidate
+bt_bank_crib,2,bp_earth_bank,mat_earth,,,,забутовка,1,,candidate
+bt_bridge_great,1,bp_crib_pier,mat_log_conifer,,,,многопролётные опоры,1,,candidate
+bt_bridge_great,2,bp_deck,mat_plank_split,17,,m_span_min_x_century,настил,1,matcult:STR0001,candidate
+bt_bridge_small,1,bp_piles,mat_pile,,,,2+ опоры,1,,candidate
+bt_bridge_small,2,bp_deck,mat_plank_split,,,,1,1,,candidate
+bt_street_pavement,1,bp_pavement_joist,mat_log_conifer,,,,2–3 ряда,1,,candidate
+bt_street_pavement,2,bp_pavement_plank,mat_plank_split,3.5,8,m_street_width,поперечный настил,1,ref:arhitekto_2russ27,candidate
+bt_street_drain,1,bp_drain_box,mat_plank_hewn,,,,1,1,,candidate
+bt_yard_deck,1,bp_deck,mat_plank_split,,,,1,1,,candidate
+bt_yard_deck,2,bp_sill,mat_sill_log,,,,подкладки,1,,candidate
+bt_lane,1,bp_deck,mat_plank_split,,,,узкий настил,0,,candidate
+bt_palisade_fence,1,bp_palisade_posts,mat_log_conifer,,,,по границе владения,1,,candidate
+bt_wattle_fence,1,bp_wattle_panel,mat_wattle,,,,звенья,1,,candidate
+bt_wattle_fence,2,bp_palisade_posts,mat_pole,,,,колья,1,,candidate
+bt_yard_gate,1,bp_gate_leaf,mat_plank_hewn,,,,1–2,1,,candidate
+bt_yard_gate,2,bp_gate_post,mat_log_conifer,,,,2,1,,candidate
+bt_yard_gate,3,bp_door_bar,mat_hardwood_bar,,,,1,1,,candidate
+bt_yard_gate,4,bp_door_hinge_iron,mat_iron_hinge,,,,1,0,,candidate
+bt_burial_ground_zhalnik,1,bp_grave_stone_setting,mat_boulder,,,,по числу могил,1,,candidate
+bt_building_site_timber,1,bp_scaffold,mat_pole,,,,1,0,,candidate
+bt_building_site_timber,2,bp_wall_crowns,mat_log_crown,,,,незавершённые венцы,1,,candidate
+bt_building_site_stone,1,bp_scaffold,mat_pole,,,,1,1,,candidate
+bt_building_site_stone,2,bp_hoist_block,mat_rope,,,,1–2,1,,candidate
+bt_building_site_stone,3,bp_masonry_wall,mat_plinfa,,,,незавершённая кладка,1,,candidate

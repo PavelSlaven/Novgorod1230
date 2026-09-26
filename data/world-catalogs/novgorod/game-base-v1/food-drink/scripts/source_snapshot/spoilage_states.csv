@@ -1,0 +1,10 @@
+﻿state_id,is_spoilage,name_ru
+fresh,False,свежий
+stale,True,черствый / залежалый
+dry,False,сухой
+fermented,False,контролируемо ферментированный
+soured,False,контролируемо скисший
+moldy,True,заплесневелый
+rotten,True,гнилой
+rancid,True,прогорклый
+spoiled,True,испорченный

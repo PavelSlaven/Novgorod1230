@@ -1,0 +1,6 @@
+rule_id,condition,effect,source_refs
+escalate_status_insult,"оскорблён старший, хозяин, страж, церковный человек или боярский слуга",социальный конфликт переходит к власти и свидетелям,src_rus13tpl_local_conflict_templates_v1
+escalate_property_touch,"игрок трогает чужую вещь, контейнер, лодку, скот или церковный предмет",растёт риск обвинения и физического удержания,src_rus13tpl_local_conflict_templates_v1
+escalate_weapon_drawn,оружие достали или угрожают им,конфликт становится боевым или вызывает стражу,src_rus13tpl_local_conflict_templates_v1
+escalate_crowd,много свидетелей на торге/переправе/церковном дворе,репутация и память распространяются быстрее,src_rus13tpl_local_conflict_templates_v1
+escalate_crisis,"голод, пожар, война, метель, закрытая дорога","люди меньше терпят спор, цены и страх выше",src_rus13tpl_local_conflict_templates_v1

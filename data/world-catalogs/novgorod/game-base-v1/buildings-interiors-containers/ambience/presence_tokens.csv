@@ -1,0 +1,10 @@
+token,meaning_ru,source_refs
+presence:people,в месте уже есть люди (NPC присутствует по распорядку),wk:claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes
+presence:livestock,на дворе уже есть скот (домен livestock_husbandry),wk:claim:practical-livestock-care
+presence:dog,при дворе уже есть собака,matcult:LIV0007
+presence:poultry,на дворе уже есть домашняя птица,matcult:LIV0005
+presence:boats,у берега уже есть лодки,matcult_scene:SCN025
+presence:fishing_activity,идёт рыбный промысел,wk:claim:population-net-work
+presence:woodcutting,идёт рубка/заготовка леса,master:spawn:SPN028
+presence:market_day,торг идёт (решает turn/время),nov1230db:B012
+presence:famine_1230,фаза голода 1230–1231 активна (утверждённое правило temporal-v4),nov1230db:S01

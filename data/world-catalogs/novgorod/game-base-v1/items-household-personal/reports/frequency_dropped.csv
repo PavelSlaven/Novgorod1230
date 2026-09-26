@@ -1,0 +1,1372 @@
+link_id,item_id,location_archetype,spawn_frequency,reason
+ILO000004,OMI00001,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000010,OMI00002,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000016,OMI00003,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000022,OMI00004,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000028,OMI00005,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000034,OMI00006,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000040,OMI00007,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000046,OMI00008,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000052,OMI00009,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000058,OMI00010,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000064,OMI00011,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000070,OMI00012,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000076,OMI00013,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000082,OMI00014,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000088,OMI00015,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000094,OMI00016,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000100,OMI00017,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000106,OMI00018,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000112,CON0035,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000118,OMI00020,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000124,OMI00021,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO000130,OMI00022,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000136,OMI00023,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000142,OMI00024,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000148,OMI00025,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO000154,OMI00026,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000160,OMI00027,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000166,OMI00028,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000172,OMI00029,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000178,OMI00030,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000184,OMI00031,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000190,OMI00032,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000196,OMI00033,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000202,OMI00034,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000208,OMI00035,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000214,OMI00036,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000220,OMI00037,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000226,OMI00038,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000232,OMI00039,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000238,OMI00040,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000244,OMI00041,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000250,OMI00042,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000256,CRF0087,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000262,OMI00044,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000268,OMI00045,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000274,OMI00046,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000280,OMI00047,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000286,OMI00048,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000292,OMI00049,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000298,OMI00050,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000304,OMI00051,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000310,OMI00052,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000315,OMI00053,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000320,OMI00054,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000325,OMI00055,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000330,OMI00056,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000335,OMI00057,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO000340,OMI00058,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000345,OMI00059,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000350,OMI00060,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000355,OMI00061,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000360,OMI00062,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000365,OMI00063,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000370,OMI00064,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000375,OMI00065,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000380,OMI00066,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000385,OMI00067,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000390,OMI00068,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000395,OMI00069,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000400,OMI00070,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000405,OMI00071,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000410,OMI00072,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000415,OMI00073,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000420,OMI00074,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000425,OMI00075,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000430,OMI00076,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000435,OMI00077,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000440,OMI00078,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000445,OMI00079,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000450,OMI00080,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000455,OMI00081,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000460,OMI01504,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000465,OMI00083,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000470,OMI00084,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000475,OMI00085,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000480,OMI00086,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000485,OMI00087,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000490,OMI00088,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000495,OMI00089,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000500,HOU0014,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000505,OMI00091,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000510,OMI00092,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000515,OMI00093,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000520,OMI00094,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000525,OMI00095,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000530,INT0023,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000535,OMI00097,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000540,OMI00098,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000545,OMI00099,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000550,OMI00100,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000555,OMI00101,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000560,OMI00102,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000565,OMI00103,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000570,OMI00104,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000575,OMI00105,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000580,OMI00106,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000585,OMI00107,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000590,OMI00108,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000595,OMI00109,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000812,OMI00145,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000813,OMI00145,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO000819,OMI00146,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000820,OMI00146,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000826,OMI00147,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000827,OMI00147,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000833,OMI00148,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000834,OMI00148,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000840,OMI00149,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000841,OMI00149,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO000847,OMI00150,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000848,OMI00150,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000854,OMI00151,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000855,OMI00151,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO000858,OMI00151,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO000864,OMI00152,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000865,OMI00152,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000871,OMI00153,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000872,OMI00153,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000878,OMI00154,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000879,OMI00154,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000885,OMI00155,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000886,OMI00155,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000892,OMI00156,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000893,OMI00156,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000899,OMI00157,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000900,OMI00157,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000906,OMI00158,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000907,OMI00158,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000913,OMI00159,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000914,OMI00159,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000920,OMI00160,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000921,OMI00160,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000927,OMI00161,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000928,OMI00161,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000934,OMI00162,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000935,OMI00162,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000941,OMI00163,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000942,OMI00163,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000948,OMI00164,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000949,OMI00164,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000955,OMI00165,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000956,OMI00165,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000962,OMI00166,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000963,OMI00166,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO000969,OMI00167,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000970,OMI00167,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO000976,OMI00168,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000977,OMI00168,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000983,OMI00169,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000984,OMI00169,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO000990,OMI00170,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000991,OMI00170,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO000997,OMI00171,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO000998,OMI00171,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001004,OMI00172,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001005,OMI00172,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001011,OMI00173,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001012,OMI00173,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001018,OMI00174,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001019,OMI00174,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001025,OMI00175,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001026,OMI00175,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001029,OMI00176,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001034,OMI00177,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001039,OMI00178,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001044,OMI00179,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001049,OMI00180,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001054,OMI00181,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001059,OMI00182,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001064,OMI00183,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001069,OMI00184,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001074,OMI00185,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001079,OMI00186,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001084,OMI00187,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001089,OMI00188,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001094,OMI00189,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001099,OMI00190,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001104,CON0009,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001114,OMI00193,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001119,OMI00194,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001124,OMI00195,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001129,POT0002,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001134,OMI00197,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001139,OMI00198,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001144,POT0001,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001149,OMI00200,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001154,OMI00201,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001159,OMI00202,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001164,OMI00203,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001169,OMI00204,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001174,OMI00205,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001179,OMI00206,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001184,OMI00207,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001189,OMI00208,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001194,OMI00209,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001199,OMI00210,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001204,OMI00211,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001209,OMI00212,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001214,OMI00213,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO001219,OMI00214,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO001224,OMI00215,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO001702,OMI00300,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001703,OMI00300,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001709,OMI00301,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001710,OMI00301,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001716,OMI00302,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001717,OMI00302,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001723,OMI00303,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001724,OMI00303,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001730,OMI00304,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001731,OMI00304,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001737,OMI00305,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001738,OMI00305,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001744,OMI00306,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001745,OMI00306,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001751,OMI00307,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001752,OMI00307,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001758,OMI00308,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001759,OMI00308,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001765,OMI00309,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001766,OMI00309,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001772,OMI00310,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001773,OMI00310,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001779,OMI00311,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001780,OMI00311,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001786,OMI00312,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001787,OMI00312,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO001793,OMI00313,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001794,OMI00313,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001800,OMI00314,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001801,OMI00314,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001807,OMI00315,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001808,OMI00315,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001814,OMI00316,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001815,OMI00316,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO001821,OMI00317,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001822,OMI00317,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001828,OMI00318,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001829,OMI00318,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001835,OMI00319,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001836,OMI00319,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001842,OMI00320,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001843,OMI00320,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001849,OMI00321,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001850,OMI00321,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001856,OMI00322,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001857,OMI00322,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001863,OMI00323,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001864,OMI00323,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001870,OMI00324,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001871,OMI00324,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001877,OMI00325,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001878,OMI00325,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001884,OMI00326,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001885,OMI00326,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001891,TRD0027,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001892,TRD0027,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001898,OMI00328,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001899,OMI00328,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001905,OMI00329,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001906,OMI00329,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001912,OMI00330,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001913,OMI00330,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001919,OMI00331,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001920,OMI00331,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001926,OMI00332,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001927,OMI00332,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001933,OMI00333,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001934,OMI00333,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001940,OMI00334,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001941,OMI00334,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001947,OMI00335,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001948,OMI00335,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001954,OMI00336,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001955,OMI00336,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001961,OMI00337,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001962,OMI00337,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001968,OMI00338,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001969,OMI00338,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO001975,OMI00339,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001976,OMI00339,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO001982,OMI00340,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001983,OMI00340,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001989,OMI00341,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001990,OMI00341,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO001996,OMI00342,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO001997,OMI00342,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002001,OMI00343,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002003,OMI00343,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO002005,OMI00343,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO002009,OMI00344,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002011,OMI00344,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO002013,OMI00344,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO002017,OMI00345,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002019,OMI00345,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002021,OMI00345,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002025,OMI00346,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002027,OMI00346,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002029,OMI00346,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002033,OMI00347,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002035,OMI00347,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002037,OMI00347,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002041,OMI00348,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002043,OMI00348,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002045,OMI00348,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002049,OMI00349,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002051,OMI00349,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002053,OMI00349,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002057,OMI00350,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002059,OMI00350,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO002061,OMI00350,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO002065,OMI00351,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002067,OMI00351,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002069,OMI00351,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002073,OMI00352,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002075,OMI00352,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002077,OMI00352,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002081,OMI00353,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002083,OMI00353,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002085,OMI00353,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002089,OMI00354,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002091,OMI00354,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002093,OMI00354,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002097,OMI00355,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002099,OMI00355,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002101,OMI00355,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002105,OMI00356,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002107,OMI00356,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002109,OMI00356,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002113,OMI00357,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002115,OMI00357,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002117,OMI00357,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002121,OMI00358,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002123,OMI00358,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002125,OMI00358,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002129,OMI00359,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002131,OMI00359,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002133,OMI00359,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002137,OMI00360,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002139,OMI00360,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002141,OMI00360,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002145,OMI00361,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002147,OMI00361,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002149,OMI00361,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002153,OMI00362,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002155,OMI00362,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002157,OMI00362,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002161,OMI00363,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002163,OMI00363,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002165,OMI00363,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002169,OMI00364,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002171,OMI00364,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002173,OMI00364,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002177,OMI00365,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002179,OMI00365,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002181,OMI00365,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002185,OMI00366,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002187,OMI00366,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002189,OMI00366,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002193,OMI00367,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002195,OMI00367,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002197,OMI00367,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002201,OMI00368,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002203,OMI00368,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002205,OMI00368,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002209,MSC0043,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002211,MSC0043,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002213,MSC0043,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002217,OMI00370,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002219,OMI00370,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002221,OMI00370,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002225,OMI00371,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002227,OMI00371,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002229,OMI00371,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002233,OMI00372,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002235,OMI00372,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002237,OMI00372,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002241,OMI00373,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002243,OMI00373,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002245,OMI00373,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002249,OMI00374,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002251,OMI00374,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002253,OMI00374,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002257,OMI00375,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002259,OMI00375,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002261,OMI00375,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002265,OMI00376,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002267,OMI00376,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO002269,OMI00376,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO002273,OMI00377,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002275,OMI00377,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002277,OMI00377,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002281,OMI00378,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002283,OMI00378,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO002285,OMI00378,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002289,OMI00379,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002291,OMI00379,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002293,OMI00379,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002297,OMI00380,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002299,OMI00380,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002301,OMI00380,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002305,OMI00381,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002307,OMI00381,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO002309,OMI00381,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002312,OMI00382,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002318,OMI00383,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002324,FSH0012,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002336,OMI00386,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002342,FSH0020,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002348,OMI00388,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002354,OMI00389,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002360,OMI00390,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002366,OMI00391,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002372,OMI00392,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002378,OMI00393,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002384,OMI00394,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002390,OMI00395,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002396,OMI00396,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002402,OMI00397,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002408,OMI00398,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002414,OMI00399,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002420,OMI00400,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002426,OMI00401,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002432,OMI00402,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002438,OMI00403,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002444,OMI00404,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002450,OMI00405,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002456,OMI00406,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002462,OMI00407,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002468,OMI00408,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002474,OMI00409,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002480,OMI00410,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002486,OMI00411,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002492,OMI00412,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO002840,OMI00475,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002846,OMI00476,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO002852,OMI00477,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO002858,OMI00478,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002864,OMI00479,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002870,OMI00480,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002876,OMI00481,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002882,OMI00482,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002888,OMI00483,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002894,OMI00484,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002900,OMI00485,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002906,OMI00486,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002912,OMI00487,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002918,OMI00488,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002924,OMI00489,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002930,OMI00490,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002936,OMI00491,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002942,OMI00492,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002948,OMI00493,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002954,OMI00494,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002960,OMI00495,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002966,OMI00496,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002972,OMI00497,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO002978,OMI00498,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002984,OMI00499,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002990,OMI00500,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO002996,OMI00501,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003002,OMI00502,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003008,OMI00503,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003014,OMI00504,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003020,OMI00505,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003026,OMI00506,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO003032,OMI00507,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003038,OMI00508,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003044,OMI00509,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003050,OMI00510,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003056,OMI00511,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003062,OMI00512,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003068,OMI00513,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003074,OMI00514,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003080,OMI00515,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003086,OMI00516,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003092,OMI00517,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003098,OMI00518,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003210,OMI00540,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003217,OMI00541,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003224,OMI00542,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003231,OMI00543,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003238,OMI00544,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003245,OMI00545,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003252,OMI00546,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO003259,OMI00547,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO003266,OMI00548,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003273,OMI00549,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO003280,OMI00550,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO003287,OMI00551,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO003294,OMI00552,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO003301,OMI00553,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO003308,OMI00554,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO003315,OMI00555,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO003322,OMI00556,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO003329,OMI00557,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO003336,OMI00558,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003343,OMI00559,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003350,OMI00560,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO003357,OMI00561,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003364,OMI00562,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO003371,OMI00563,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003378,OMI00564,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003385,OMI00565,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO003392,OMI00566,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003399,OMI00567,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO003406,OMI00568,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO003412,OMI00569,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003417,OMI00570,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003422,OMI00571,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003427,OMI00572,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003432,OMI00573,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003437,OMI00574,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003442,OMI00575,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003447,OMI00576,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003452,OMI00577,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003457,OMI00578,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003462,OMI00579,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003467,OMI00580,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003472,OMI00581,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003477,OMI00582,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003482,OMI00583,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003487,OMI00584,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003492,OMI00585,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003497,OMI00586,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003502,OMI00587,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003507,OMI00588,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003512,OMI00589,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003517,OMI00590,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003522,OMI00591,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003527,OMI00592,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003532,OMI00593,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003537,LTR0004,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003542,OMI00595,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003547,OMI00596,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003552,OMI00597,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003557,OMI00598,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003562,OMI00599,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO003567,OMI00600,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003572,OMI00601,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003577,OMI00602,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO003582,OMI00603,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003587,OMI00604,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003590,OMI00605,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003596,OMI00606,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003602,OMI00607,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003608,OMI00608,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003614,OMI00609,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO003620,OMI00610,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003626,OMI00611,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003632,OMI00612,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO003638,OMI00613,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003644,OMI00614,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003650,OMI00615,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003656,OMI00616,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003662,OMI00617,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003668,OMI00618,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003674,OMI00619,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003680,OMI00620,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003686,OMI00621,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003692,OMI00622,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003698,OMI00623,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003704,OMI00624,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003710,OMI00625,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003716,OMI00626,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003722,OMI00627,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003728,OMI00628,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003734,OMI00629,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO003740,HOU0032,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003746,OMI00631,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003752,OMI00632,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003758,OMI00633,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003764,OMI00634,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003770,OMI00635,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003776,OMI00636,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003782,OMI00637,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003788,OMI00638,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003794,OMI00639,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003800,OMI00640,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003806,OMI00641,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003812,OMI00642,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO003818,OMI00643,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO004067,OMI00684,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004073,OMI00685,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004079,OMI00686,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004085,OMI00687,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004091,OMI00688,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004097,OMI00689,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004103,OMI00690,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004109,OMI00691,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004115,OMI00692,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004121,OMI00693,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004127,OMI00694,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004133,OMI00695,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO004139,OMI00696,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004145,OMI00697,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004151,OMI00698,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004157,OMI00699,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004163,OMI00700,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004169,OMI00701,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004175,OMI00702,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004181,OMI00703,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004187,OMI00704,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004193,OMI00705,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004199,OMI00706,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004205,OMI00707,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO004211,OMI00708,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO004217,OMI00709,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004223,OMI00710,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004229,OMI00711,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004235,OMI00712,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO004241,OMI00713,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004247,OMI00714,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004253,OMI00715,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004259,OMI00716,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004265,OMI00717,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004271,OMI00718,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004277,OMI00719,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004283,OMI00720,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004289,OMI00721,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO004295,OMI00722,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO004300,OMI00723,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004305,OMI00724,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004310,OMI00725,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004315,CRF0122,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004320,OMI00727,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004325,OMI00728,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004330,OMI00729,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004335,OMI00730,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004340,OMI00731,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004345,OMI00732,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004350,OMI00733,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004355,OMI00734,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO004360,OMI00735,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO004365,OMI00736,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO004370,OMI00737,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004375,OMI00738,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO004380,OMI00739,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004385,OMI00740,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004390,OMI00741,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004395,OMI00742,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004400,OMI00743,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004405,OMI00744,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004410,OMI00745,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004415,OMI00746,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004420,OMI00747,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO004425,OMI00748,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO004430,OMI00749,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004435,OMI00750,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO004440,OMI00751,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO004445,OMI00752,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005206,OMI00904,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005211,OMI00905,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005216,OMI00906,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005221,OMI00907,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005226,OMI00908,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005231,OMI00909,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO005236,OMI00910,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005241,OMI00911,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005246,OMI00912,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005251,OMI00913,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005256,OMI00914,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005261,OMI00915,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO005266,OMI00916,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005271,OMI00917,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005276,OMI00918,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005281,OMI00919,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005286,OMI00920,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005291,OMI00921,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO005296,OMI00922,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005301,OMI00923,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005306,OMI00924,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005311,OMI00925,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005316,OMI00926,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005321,OMI00927,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005326,OMI00928,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO005331,OMI00929,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005336,OMI00930,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005341,OMI00931,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO005346,OMI00932,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005351,OMI00933,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005356,OMI00934,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005361,OMI00935,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005366,OMI00936,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO005371,MUS0005,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005381,OMI00939,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005386,OMI00940,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005391,OMI00941,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005396,OMI00942,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005401,OMI00943,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005406,OMI00944,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005411,OMI00945,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005416,OMI00946,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005421,OMI00947,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO005660,OMI01008,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005665,OMI01009,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005670,OMI01010,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005675,OMI01011,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005680,OMI01012,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005685,OMI01013,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005690,OMI01014,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005695,OMI01015,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005700,OMI01016,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005705,OMI01017,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005710,OMI01018,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005715,OMI01019,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005720,OMI01020,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005725,OMI01021,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005730,OMI01022,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005735,OMI01023,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005740,OMI01024,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005745,OMI01025,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005750,OMI01026,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005755,OMI01027,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO005760,OMI01028,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005765,OMI01029,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005770,CRF0132,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005775,OMI01031,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005780,OMI01032,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO005785,OMI01033,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO005790,OMI01034,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005795,OMI01035,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005800,OMI01036,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO005805,OMI01037,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005810,OMI01038,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005815,OMI01039,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO005820,OMI01040,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005825,OMI01041,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO005830,OMI01042,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006166,OMI01108,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006172,OMI01109,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006178,OMI01110,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006184,OMI01111,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006190,OMI01112,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006196,OMI01113,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006202,OMI01114,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006208,OMI01115,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006214,OMI01116,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006220,OMI01117,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006226,OMI01118,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006232,OMI01119,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006238,OMI01120,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006244,OMI01121,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO006250,OMI01122,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006256,OMI01123,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006262,OMI01124,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006268,OMI01125,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006274,OMI01126,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006280,OMI01127,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006286,OMI01128,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006292,OMI01129,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006298,OMI01130,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006304,OMI01131,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006310,OMI01132,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO006316,OMI01133,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006322,OMI01134,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO006328,OMI01135,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006334,OMI01136,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO006340,OMI01137,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006346,OMI01138,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006352,OMI01139,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006358,OMI01140,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006364,OMI01141,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006370,OMI01142,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO006376,OMI01143,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006381,OMI01144,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006387,OMI01145,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006393,OMI01146,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006399,OMI01147,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006405,OMI01148,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006411,OMI01149,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006417,OMI01150,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006423,OMI01151,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006429,OMI01152,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006435,CON0020,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006441,OMI01154,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006447,OMI01155,construction_site,ubiquitous,activity overlay without WK place family (gap for place_families)
+ILO006453,OMI01156,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006459,OMI01157,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006465,OMI01158,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006471,OMI01159,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006477,CON0023,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO006483,OMI01161,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006489,OMI01162,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006495,OMI01163,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO006501,OMI01164,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO006507,OMI01165,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO006513,OMI01166,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO006519,OMI01167,construction_site,rare,activity overlay without WK place family (gap for place_families)
+ILO006525,OMI01168,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006531,OMI01169,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006537,OMI01170,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006543,OMI01171,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006549,OMI01172,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006555,CON0019,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO006561,OMI01174,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006567,OMI01175,construction_site,common,activity overlay without WK place family (gap for place_families)
+ILO006573,OMI01176,construction_site,contextual,activity overlay without WK place family (gap for place_families)
+ILO007903,OMI01402,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007910,OMI01403,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007917,OMI01404,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007924,OMI01405,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007931,OMI01406,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007938,OMI01407,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007945,OMI01408,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007952,OMI01409,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007959,OMI01410,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007966,OMI01411,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007973,OMI01412,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007980,OMI01413,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007987,OMI01414,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO007994,OMI01415,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008001,OMI01416,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008008,OMI01417,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008015,OMI01418,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008022,OMI01419,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008029,OMI01420,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008036,OMI01421,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008043,OMI01422,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008050,OMI01423,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008057,OMI01424,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008064,OMI01425,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008071,OMI01426,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008078,OMI01427,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008085,OMI01428,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008092,OMI01429,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008099,OMI01430,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008106,OMI01431,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008113,OMI01432,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008120,OMI01433,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008127,OMI01434,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008134,OMI01435,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008576,OMI01504,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008582,OMI01505,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008588,OMI01506,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008594,OMI01507,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008600,OMI01508,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008606,OMI01509,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008612,OMI01510,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008618,OMI01511,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008624,OMI01512,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008630,OMI01513,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008636,OMI01514,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008642,OMI01515,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008648,OMI01516,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008654,OMI01517,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008660,OMI01518,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008666,OMI01519,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008672,OMI01520,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008678,OMI01521,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008684,OMI01522,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008690,OMI01523,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008696,OMI01524,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008702,OMI01525,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008708,OMI01526,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008714,OMI01527,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008720,OMI01528,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008726,OMI01529,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008732,OMI01530,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008738,OMI01531,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008744,OMI01532,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008750,OMI01533,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008756,OMI01534,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008762,OMI01535,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008768,OMI01536,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008774,OMI01537,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008780,OMI01538,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008786,OMI01539,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008790,OMI01540,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008791,OMI01540,cart_or_sledge,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008797,OMI01541,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008798,OMI01541,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008804,OMI01542,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008805,OMI01542,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008811,OMI01543,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008812,OMI01543,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008818,OMI01544,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008819,OMI01544,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008825,OMI01545,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008826,OMI01545,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008832,OMI01546,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008833,OMI01546,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008839,OMI01547,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008840,OMI01547,cart_or_sledge,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008846,OMI01548,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008847,OMI01548,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008853,OMI01549,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008854,OMI01549,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008860,OMI01550,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008861,OMI01550,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008867,OMI01551,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008868,OMI01551,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008874,OMI01552,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008875,OMI01552,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008881,OMI01553,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008882,OMI01553,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008888,OMI01554,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008889,OMI01554,cart_or_sledge,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008895,OMI01555,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008896,OMI01555,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008902,OMI01556,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008903,OMI01556,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008909,OMI01557,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008910,OMI01557,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008916,OMI01558,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008917,OMI01558,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008923,OMI01559,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008924,OMI01559,cart_or_sledge,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008930,OMI01560,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008931,OMI01560,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008937,OMI01561,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008938,OMI01561,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008944,OMI01562,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008945,OMI01562,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008951,OMI01563,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008952,OMI01563,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008958,OMI01564,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008959,OMI01564,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008965,OMI01565,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008966,OMI01565,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008972,OMI01566,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008973,OMI01566,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008979,OMI01567,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008980,OMI01567,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008986,OMI01568,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008987,OMI01568,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008993,OMI01569,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO008994,OMI01569,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009000,OMI01570,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009001,OMI01570,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009007,OMI01571,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009008,OMI01571,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009261,OMI01607,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009267,OMI01608,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009273,TRD0033,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009279,OMI01610,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009285,OMI01611,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009291,OMI01612,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009297,OMI01613,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009303,OMI01614,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009309,OMI01615,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009315,OMI01616,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009321,OMI01617,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009327,OMI01618,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009333,OMI01619,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009339,OMI01620,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009345,OMI01621,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009351,OMI01622,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009357,OMI01623,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009363,OMI01624,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009369,OMI01625,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009375,OMI01626,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009381,OMI01627,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009387,OMI01628,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009393,OMI01629,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009399,OMI01630,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009405,OMI01631,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009411,OMI01632,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009417,OMI01633,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009423,OMI01634,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009429,OMI01635,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO009435,OMI01636,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010124,OMI01768,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010129,OMI01769,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010134,OMI01770,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010139,OMI01771,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010144,OMI01772,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010149,OMI01773,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010154,OMI01774,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010159,OMI01775,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010164,OMI01776,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010169,OMI01777,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010174,OMI01778,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010179,OMI01779,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010184,OMI01780,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010189,OMI01781,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010194,OMI01782,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010199,OMI01783,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010204,OMI01784,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010209,OMI01785,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010214,OMI01786,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010219,OMI01787,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010224,OMI01788,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010229,OMI01789,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010234,OMI01790,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010239,OMI01791,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO010244,OMI01792,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010249,OMI01793,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010254,OMI01794,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010259,OMI01795,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010264,OMI01796,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010269,OMI01797,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010274,OMI01798,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010279,OMI01799,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010284,OMI01800,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010289,OMI01801,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010294,OMI01802,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010300,OMI01803,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010301,OMI01803,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010307,OMI01804,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010308,OMI01804,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010314,OMI01805,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010315,OMI01805,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010321,OMI01806,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010322,OMI01806,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010328,OMI01807,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010329,OMI01807,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010335,OMI01808,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010336,OMI01808,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010342,OMI01809,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010343,OMI01809,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010349,OMI01810,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010350,OMI01810,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010356,OMI01811,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010357,OMI01811,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010363,OMI01812,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010364,OMI01812,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010370,OMI01813,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010371,OMI01813,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010377,OMI01814,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010378,OMI01814,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010384,OMI01815,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010385,OMI01815,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010391,OMI01816,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010392,OMI01816,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010398,OMI00164,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010405,OMI01818,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010406,OMI01818,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010412,OMI01819,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010413,OMI01819,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010419,OMI01820,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010420,OMI01820,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010426,OMI01821,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010427,OMI01821,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010433,OMI01822,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010434,OMI01822,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010440,OMI01823,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010441,OMI01823,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010447,OMI01824,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010448,OMI01824,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010454,OMI01825,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010455,OMI01825,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010461,OMI01826,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010462,OMI01826,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010468,OMI01827,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010469,OMI01827,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010475,OMI01828,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010476,OMI01828,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010482,OMI01829,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010483,OMI01829,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010489,OMI01830,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010490,OMI01830,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010496,OMI01831,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010497,OMI01831,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010503,OMI01832,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010504,OMI01832,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010510,OMI01833,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010511,OMI01833,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010517,OMI01834,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010518,OMI01834,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010524,OMI01835,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010525,OMI01835,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010531,OMI01836,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO010532,OMI01836,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010718,OMI01867,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010724,OMI01868,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010730,OMI01869,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010736,OMI01870,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010742,OMI01871,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010748,OMI01872,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010754,OMI01873,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010760,OMI01874,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010766,OMI01875,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010772,OMI01876,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010778,OMI01877,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010784,OMI01878,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010790,OMI01879,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010796,OMI01880,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010802,OMI01881,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010808,OMI01882,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010814,OMI01883,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010820,OMI01884,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010826,OMI01885,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010832,OMI01886,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010838,OMI01887,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010844,OMI01888,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010850,OMI01889,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010856,OMI01890,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010862,OMI01891,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010868,OMI01892,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010874,OMI01893,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010880,OMI01894,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010886,OMI01895,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010892,OMI01896,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010898,OMI01897,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010904,OMI01898,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010910,OMI01899,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO010914,OMI01900,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010919,OMI01901,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010924,OMI01902,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO010929,OMI01903,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010934,OMI01904,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010939,OMI01905,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010944,OMI01906,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010949,OMI01907,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO010954,OMI01908,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010959,OMI01909,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010964,OMI01910,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010969,OMI01911,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010974,OMI01912,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010979,OMI01913,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010984,OMI01914,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010989,OMI01915,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010994,OMI01916,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO010999,OMI01917,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011004,OMI01918,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011009,OMI01919,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011014,OMI01920,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011019,OMI01921,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO011024,OMI01922,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO011029,OMI01923,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011034,OMI01924,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011037,MSC0008,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011043,OMI01926,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011049,OMI01927,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011055,OMI01928,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011061,OMI01929,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011067,OMI01930,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011073,OMI01931,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011079,OMI01932,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011085,OMI01933,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011091,OMI01934,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011097,OMI01935,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011103,CON0009,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011109,OMI01937,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011115,OMI01938,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011121,OMI01939,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011127,OMI01940,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011133,OMI01941,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011139,OMI01942,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011145,OMI01943,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011151,OMI01944,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011157,OMI01945,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011163,OMI01946,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011169,OMI01947,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011175,OMI01948,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011181,OMI01949,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011187,OMI01950,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011193,OMI01951,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011199,OMI01952,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011205,OMI01953,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011211,CRF0087,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011217,OMI01955,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011223,OMI01956,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011229,OMI01957,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011235,OMI01958,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011241,OMI01959,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011247,OMI01960,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011253,OMI01961,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011259,OMI01962,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011265,OMI01963,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011271,OMI01964,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011277,OMI01965,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011283,OMI01966,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011289,OMI01967,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011294,OMI01968,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011300,OMI01968,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011301,OMI01969,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011307,OMI01969,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011308,OMI01970,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011314,OMI01970,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011315,CRF0087,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011321,CRF0087,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011322,OMI01972,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011328,OMI01972,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011329,OMI01973,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011335,OMI01973,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011336,OMI01974,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011342,OMI01974,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011343,OMI01975,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011349,OMI01975,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011350,OMI01976,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011356,OMI01976,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011357,OMI01977,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011363,OMI01977,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011364,OMI01978,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011370,OMI01978,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011371,OMI01979,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011377,OMI01979,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011378,OMI01980,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011384,OMI01980,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011385,OMI01981,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011391,OMI01981,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011392,OMI01982,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011398,OMI01982,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011399,OMI01983,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011405,OMI01983,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011413,OMI01985,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011419,OMI01985,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011420,HOU0032,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011426,HOU0032,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011427,OMI01987,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011433,OMI01987,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011434,CON0009,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011440,CON0009,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011441,OMI01989,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011447,OMI01989,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011455,OMI01991,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011461,OMI01991,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011462,OMI01992,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011468,OMI01992,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011469,OMI01993,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011475,OMI01993,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011476,OMI01994,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011482,OMI01994,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011483,OMI01995,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011489,OMI01995,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011490,OMI01996,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011496,OMI01996,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011497,OMI01997,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011503,OMI01997,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011504,OMI01998,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011510,OMI01998,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011511,OMI01999,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011517,OMI01999,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011518,OMI02000,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011524,OMI02000,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011525,OMI02001,cart_or_sledge,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011531,OMI02001,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO011532,OMI02002,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011538,OMI02002,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011539,OMI02003,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011545,OMI02003,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011546,OMI02004,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011552,OMI02004,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011553,OMI02005,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011559,OMI02005,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011560,OMI02006,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011566,OMI02006,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011567,OMI02007,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011569,OMI02007,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011570,OMI02007,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011573,OMI02008,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011575,OMI02008,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011576,OMI02008,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011579,OMI02009,military_camp,ubiquitous,no WK place family for military camp (gap for military_security / place_families)
+ILO011581,OMI02009,boat,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011582,OMI02009,cart_or_sledge,ubiquitous,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011585,OMI02010,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011587,OMI02010,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011588,OMI02010,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011591,OMI02011,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011593,OMI02011,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011594,OMI02011,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011597,OMI02012,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO011599,OMI02012,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011600,OMI02012,cart_or_sledge,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011603,OMI02013,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011605,OMI02013,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011606,OMI02013,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011609,OMI02014,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011611,OMI02014,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011612,OMI02014,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011615,OMI02015,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011617,OMI02015,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011618,OMI02015,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011621,OMI02016,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011623,OMI02016,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011624,OMI02016,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011627,OMI02017,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011629,OMI02017,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011630,OMI02017,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011633,OMI02018,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011635,OMI02018,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011636,OMI02018,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011639,OMI02019,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011641,OMI02019,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011642,OMI02019,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011645,OMI02020,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011647,OMI02020,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011648,OMI02020,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011651,OMI02021,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011653,OMI02021,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011654,OMI02021,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011657,OMI02022,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011659,OMI02022,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011660,OMI02022,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011663,OMI02023,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011665,OMI02023,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011666,OMI02023,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011669,OMI02024,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011671,OMI02024,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011672,OMI02024,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011675,OMI02025,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO011677,OMI02025,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011678,OMI02025,cart_or_sledge,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011681,OMI02026,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO011683,OMI02026,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011684,OMI02026,cart_or_sledge,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011687,OMI02027,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011689,OMI02027,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011690,OMI02027,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011693,OMI02028,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011695,OMI02028,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011696,OMI02028,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011699,OMI02029,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011701,OMI02029,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011702,OMI02029,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011705,OMI02030,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011707,OMI02030,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011708,OMI02030,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011711,OMI02031,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO011713,OMI02031,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011714,OMI02031,cart_or_sledge,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011717,OMI02032,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011719,OMI02032,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011720,OMI02032,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011723,OMI02033,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011725,OMI02033,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011726,OMI02033,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011729,OMI02034,military_camp,contextual,no WK place family for military camp (gap for military_security / place_families)
+ILO011731,OMI02034,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011732,OMI02034,cart_or_sledge,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011735,OMI02035,military_camp,rare,no WK place family for military camp (gap for military_security / place_families)
+ILO011737,OMI02035,boat,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011738,OMI02035,cart_or_sledge,rare,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011741,OMI02036,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011743,OMI02036,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011744,OMI02036,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011747,OMI02037,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011749,OMI02037,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011750,OMI02037,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011753,OMI02038,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011755,OMI02038,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011756,OMI02038,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011759,OMI02039,military_camp,common,no WK place family for military camp (gap for military_security / place_families)
+ILO011761,OMI02039,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011762,OMI02039,cart_or_sledge,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO011971,FSH0006,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012001,OMI02079,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012025,FSH0008,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012031,FSH0007,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012061,FSH0013,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012067,OMI02090,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012073,FSH0014,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012085,OMI02093,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012091,OMI02094,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012097,OMI02095,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012103,OMI02096,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012109,OMI02097,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012115,OMI02098,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012121,OMI02099,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012127,OMI02100,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012133,OMI02101,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012139,OMI02102,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012145,OMI02103,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012151,OMI02104,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012157,OMI02105,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012163,OMI02106,boat,common,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012169,OMI02107,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"
+ILO012175,OMI02108,boat,contextual,"vehicle/container context, not a place family (belongs to containers_contents / transport_travel)"

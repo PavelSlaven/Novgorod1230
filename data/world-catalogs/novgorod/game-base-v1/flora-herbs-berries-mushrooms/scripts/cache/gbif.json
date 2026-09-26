@@ -1,0 +1,5179 @@
+{
+ "Phleum pratense": {
+  "usageKey": 9014945,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Phleum pratense L.",
+  "status": "ACCEPTED",
+  "nw_count": 929,
+  "month_facet": {
+   "1": 8,
+   "2": 3,
+   "3": 5,
+   "4": 1,
+   "5": 4,
+   "6": 265,
+   "7": 342,
+   "8": 162,
+   "9": 13,
+   "10": 11,
+   "11": 6,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Dactylis glomerata": {
+  "usageKey": 2705308,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Dactylis glomerata L.",
+  "status": "ACCEPTED",
+  "nw_count": 1283,
+  "month_facet": {
+   "1": 21,
+   "2": 16,
+   "3": 22,
+   "4": 33,
+   "5": 109,
+   "6": 472,
+   "7": 332,
+   "8": 157,
+   "9": 27,
+   "10": 15,
+   "11": 17,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Festuca pratensis": {
+  "query": "Lolium pratense",
+  "usageKey": 2706237,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lolium pratense (Huds.) Darbysh.",
+  "status": "ACCEPTED",
+  "nw_count": 353,
+  "month_facet": {
+   "6": 139,
+   "7": 183,
+   "8": 9
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Festuca rubra": {
+  "usageKey": 2704922,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Festuca rubra L.",
+  "status": "ACCEPTED",
+  "nw_count": 238,
+  "month_facet": {
+   "5": 5,
+   "6": 77,
+   "7": 114,
+   "8": 9
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Poa pratensis": {
+  "usageKey": 2704178,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Poa pratensis L.",
+  "status": "ACCEPTED",
+  "nw_count": 247,
+  "month_facet": {
+   "5": 20,
+   "6": 104,
+   "7": 80,
+   "8": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Poa annua": {
+  "usageKey": 2704179,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Poa annua L.",
+  "status": "ACCEPTED",
+  "nw_count": 458,
+  "month_facet": {
+   "1": 3,
+   "3": 3,
+   "4": 4,
+   "5": 31,
+   "6": 89,
+   "7": 69,
+   "8": 55,
+   "9": 13,
+   "10": 6,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Deschampsia cespitosa": {
+  "usageKey": 8059811,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Deschampsia cespitosa (L.) P.Beauv.",
+  "status": "ACCEPTED",
+  "nw_count": 351,
+  "month_facet": {
+   "5": 8,
+   "6": 135,
+   "7": 147,
+   "8": 35,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Calamagrostis epigejos": {
+  "usageKey": 6431455,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Calamagrostis epigejos (L.) Roth",
+  "status": "ACCEPTED",
+  "nw_count": 707,
+  "month_facet": {
+   "1": 17,
+   "2": 6,
+   "3": 10,
+   "4": 11,
+   "5": 6,
+   "6": 95,
+   "7": 278,
+   "8": 160,
+   "9": 61,
+   "10": 18,
+   "11": 16,
+   "12": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Calamagrostis canescens": {
+  "usageKey": 4108861,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Calamagrostis canescens (Weber) Roth",
+  "status": "ACCEPTED",
+  "nw_count": 179,
+  "month_facet": {
+   "6": 69,
+   "7": 67,
+   "8": 19,
+   "9": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Agrostis capillaris": {
+  "usageKey": 2706490,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Agrostis capillaris L.",
+  "status": "ACCEPTED",
+  "nw_count": 224,
+  "month_facet": {
+   "6": 47,
+   "7": 139,
+   "8": 8
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Alopecurus pratensis": {
+  "usageKey": 5290081,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Alopecurus pratensis L.",
+  "status": "ACCEPTED",
+  "nw_count": 366,
+  "month_facet": {
+   "1": 2,
+   "2": 1,
+   "4": 2,
+   "5": 108,
+   "6": 165,
+   "7": 54,
+   "8": 11,
+   "9": 3,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Anthoxanthum odoratum": {
+  "usageKey": 2705975,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Anthoxanthum odoratum L.",
+  "status": "ACCEPTED",
+  "nw_count": 344,
+  "month_facet": {
+   "5": 37,
+   "6": 144,
+   "7": 128,
+   "8": 13
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Nardus stricta": {
+  "usageKey": 2702717,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Nardus stricta L.",
+  "status": "ACCEPTED",
+  "nw_count": 51,
+  "month_facet": {
+   "6": 12,
+   "7": 15,
+   "8": 5,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Elymus repens": {
+  "usageKey": 5290299,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Elymus repens (L.) Gould",
+  "status": "ACCEPTED",
+  "nw_count": 955,
+  "month_facet": {
+   "1": 10,
+   "2": 4,
+   "3": 3,
+   "6": 156,
+   "7": 237,
+   "8": 97,
+   "9": 5,
+   "10": 1,
+   "11": 2,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Phalaris arundinacea": {
+  "usageKey": 5289756,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Phalaris arundinacea L.",
+  "status": "ACCEPTED",
+  "nw_count": 384,
+  "month_facet": {
+   "1": 9,
+   "2": 3,
+   "3": 2,
+   "4": 1,
+   "6": 130,
+   "7": 144,
+   "8": 60,
+   "9": 10,
+   "10": 6,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Glyceria maxima": {
+  "usageKey": 2705484,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Glyceria maxima (Hartm.) Holmb.",
+  "status": "ACCEPTED",
+  "nw_count": 149,
+  "month_facet": {
+   "2": 1,
+   "3": 1,
+   "5": 1,
+   "6": 33,
+   "7": 60,
+   "8": 28,
+   "9": 11,
+   "10": 5,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Molinia caerulea": {
+  "usageKey": 5289877,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Molinia caerulea (L.) Moench",
+  "status": "ACCEPTED",
+  "nw_count": 164,
+  "month_facet": {
+   "2": 2,
+   "4": 1,
+   "6": 25,
+   "7": 42,
+   "8": 54,
+   "9": 13,
+   "10": 6,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Melica nutans": {
+  "usageKey": 4118973,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Melica nutans L.",
+  "status": "ACCEPTED",
+  "nw_count": 264,
+  "month_facet": {
+   "5": 41,
+   "6": 125,
+   "7": 62,
+   "8": 15,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Milium effusum": {
+  "usageKey": 2706196,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Milium effusum L.",
+  "status": "ACCEPTED",
+  "nw_count": 161,
+  "month_facet": {
+   "4": 7,
+   "5": 17,
+   "6": 78,
+   "7": 41,
+   "8": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Briza media": {
+  "usageKey": 2702789,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Briza media L.",
+  "status": "ACCEPTED",
+  "nw_count": 402,
+  "month_facet": {
+   "5": 2,
+   "6": 176,
+   "7": 151,
+   "8": 46,
+   "9": 5,
+   "10": 2,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Carex nigra": {
+  "usageKey": 2724925,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Carex nigra (L.) Reichard",
+  "status": "ACCEPTED",
+  "nw_count": 347,
+  "month_facet": {
+   "5": 14,
+   "6": 128,
+   "7": 127,
+   "8": 34,
+   "9": 1,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Carex acuta": {
+  "usageKey": 2722833,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Carex acuta L.",
+  "status": "ACCEPTED",
+  "nw_count": 263,
+  "month_facet": {
+   "5": 21,
+   "6": 104,
+   "7": 81,
+   "8": 28,
+   "9": 4,
+   "10": 1,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Carex rostrata": {
+  "usageKey": 2726725,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Carex rostrata Stokes",
+  "status": "ACCEPTED",
+  "nw_count": 254,
+  "month_facet": {
+   "5": 9,
+   "6": 110,
+   "7": 72,
+   "8": 35,
+   "9": 3,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Carex lasiocarpa": {
+  "usageKey": 2728531,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Carex lasiocarpa Ehrh.",
+  "status": "ACCEPTED",
+  "nw_count": 114,
+  "month_facet": {
+   "5": 2,
+   "6": 52,
+   "7": 34,
+   "8": 7
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Carex limosa": {
+  "usageKey": 2725881,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Carex limosa L.",
+  "status": "ACCEPTED",
+  "nw_count": 98,
+  "month_facet": {
+   "5": 7,
+   "6": 37,
+   "7": 21,
+   "8": 12,
+   "9": 1,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Carex pauciflora": {
+  "usageKey": 2727907,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Carex pauciflora Lightf.",
+  "status": "ACCEPTED",
+  "nw_count": 72,
+  "month_facet": {
+   "6": 35,
+   "7": 14,
+   "8": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Carex digitata": {
+  "usageKey": 2727038,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Carex digitata L.",
+  "status": "ACCEPTED",
+  "nw_count": 211,
+  "month_facet": {
+   "4": 22,
+   "5": 71,
+   "6": 68,
+   "7": 28,
+   "8": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Carex globularis": {
+  "usageKey": 2724517,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Carex globularis L.",
+  "status": "ACCEPTED",
+  "nw_count": 92,
+  "month_facet": {
+   "5": 1,
+   "6": 40,
+   "7": 28,
+   "8": 1,
+   "9": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Eriophorum vaginatum": {
+  "usageKey": 2730185,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Eriophorum vaginatum L.",
+  "status": "ACCEPTED",
+  "nw_count": 364,
+  "month_facet": {
+   "1": 2,
+   "2": 1,
+   "3": 14,
+   "4": 33,
+   "5": 83,
+   "6": 122,
+   "7": 67,
+   "8": 13,
+   "9": 4,
+   "10": 2,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Eriophorum angustifolium": {
+  "usageKey": 2730127,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Eriophorum angustifolium Honck.",
+  "status": "ACCEPTED",
+  "nw_count": 80,
+  "month_facet": {
+   "5": 15,
+   "6": 24,
+   "7": 12,
+   "8": 7
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Juncus effusus": {
+  "usageKey": 2701311,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Juncus effusus L.",
+  "status": "ACCEPTED",
+  "nw_count": 435,
+  "month_facet": {
+   "1": 10,
+   "2": 1,
+   "3": 14,
+   "4": 11,
+   "5": 6,
+   "6": 111,
+   "7": 154,
+   "8": 82,
+   "9": 8,
+   "10": 9,
+   "11": 6,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Juncus bufonius": {
+  "usageKey": 6413649,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Juncus bufonius L.",
+  "status": "ACCEPTED",
+  "nw_count": 185,
+  "month_facet": {
+   "5": 1,
+   "6": 59,
+   "7": 54,
+   "8": 29,
+   "9": 8,
+   "10": 7,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Scheuchzeria palustris": {
+  "usageKey": 2865260,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Scheuchzeria palustris L.",
+  "status": "ACCEPTED",
+  "nw_count": 132,
+  "month_facet": {
+   "5": 2,
+   "6": 39,
+   "7": 32,
+   "8": 30,
+   "9": 6,
+   "10": 2,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Luzula pilosa": {
+  "usageKey": 2700736,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Luzula pilosa (L.) Willd.",
+  "status": "ACCEPTED",
+  "nw_count": 574,
+  "month_facet": {
+   "1": 2,
+   "3": 33,
+   "4": 126,
+   "5": 108,
+   "6": 101,
+   "7": 79,
+   "8": 72,
+   "9": 7,
+   "10": 7,
+   "11": 18
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Schoenoplectus lacustris": {
+  "usageKey": 2710941,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Schoenoplectus lacustris (L.) Palla",
+  "status": "ACCEPTED",
+  "nw_count": 220,
+  "month_facet": {
+   "1": 12,
+   "2": 7,
+   "3": 3,
+   "5": 1,
+   "6": 44,
+   "7": 70,
+   "8": 46,
+   "9": 10,
+   "10": 3,
+   "11": 3,
+   "12": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Scirpus sylvaticus": {
+  "usageKey": 2720080,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Scirpus sylvaticus L.",
+  "status": "ACCEPTED",
+  "nw_count": 561,
+  "month_facet": {
+   "2": 1,
+   "3": 8,
+   "4": 41,
+   "5": 53,
+   "6": 191,
+   "7": 154,
+   "8": 73,
+   "9": 12,
+   "10": 4,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Eleocharis palustris": {
+  "usageKey": 2717002,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Eleocharis palustris (L.) Roem. & Schult.",
+  "status": "ACCEPTED",
+  "nw_count": 149,
+  "month_facet": {
+   "6": 64,
+   "7": 39,
+   "8": 15
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Pteridium aquilinum": {
+  "usageKey": 5275012,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Pteridium aquilinum (L.) Kuhn",
+  "status": "ACCEPTED",
+  "nw_count": 705,
+  "month_facet": {
+   "1": 18,
+   "2": 10,
+   "3": 24,
+   "4": 8,
+   "5": 32,
+   "6": 208,
+   "7": 198,
+   "8": 148,
+   "9": 18,
+   "10": 12,
+   "11": 10,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Dryopteris filix-mas": {
+  "usageKey": 5275132,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Dryopteris filix-mas (L.) Schott",
+  "status": "ACCEPTED",
+  "nw_count": 418,
+  "month_facet": {
+   "2": 1,
+   "3": 6,
+   "4": 9,
+   "5": 27,
+   "6": 123,
+   "7": 112,
+   "8": 86,
+   "9": 13,
+   "10": 11,
+   "11": 11
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Dryopteris carthusiana": {
+  "usageKey": 5275149,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Dryopteris carthusiana (Vill.) H.P.Fuchs",
+  "status": "ACCEPTED",
+  "nw_count": 713,
+  "month_facet": {
+   "1": 11,
+   "2": 4,
+   "3": 48,
+   "4": 51,
+   "5": 74,
+   "6": 155,
+   "7": 139,
+   "8": 136,
+   "9": 24,
+   "10": 23,
+   "11": 23,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Athyrium filix-femina": {
+  "usageKey": 5275044,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Athyrium filix-femina (L.) Roth",
+  "status": "ACCEPTED",
+  "nw_count": 662,
+  "month_facet": {
+   "3": 2,
+   "4": 5,
+   "5": 107,
+   "6": 193,
+   "7": 153,
+   "8": 132,
+   "9": 28,
+   "10": 19,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Matteuccia struthiopteris": {
+  "usageKey": 2650999,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Matteuccia struthiopteris (L.) Tod.",
+  "status": "ACCEPTED",
+  "nw_count": 484,
+  "month_facet": {
+   "1": 10,
+   "2": 6,
+   "3": 23,
+   "4": 21,
+   "5": 120,
+   "6": 116,
+   "7": 83,
+   "8": 66,
+   "9": 7,
+   "10": 6,
+   "11": 5,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Gymnocarpium dryopteris": {
+  "usageKey": 2650832,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Gymnocarpium dryopteris (L.) Newman",
+  "status": "ACCEPTED",
+  "nw_count": 297,
+  "month_facet": {
+   "5": 60,
+   "6": 98,
+   "7": 75,
+   "8": 31,
+   "9": 10
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Polypodium vulgare": {
+  "usageKey": 5274951,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Polypodium vulgare L.",
+  "status": "ACCEPTED",
+  "nw_count": 29,
+  "month_facet": {
+   "3": 4,
+   "4": 1,
+   "5": 4,
+   "6": 2,
+   "7": 1,
+   "8": 3,
+   "9": 1,
+   "10": 3,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Equisetum arvense": {
+  "usageKey": 7924597,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Equisetum arvense L.",
+  "status": "ACCEPTED",
+  "nw_count": 1201,
+  "month_facet": {
+   "4": 95,
+   "5": 211,
+   "6": 305,
+   "7": 242,
+   "8": 136,
+   "9": 8,
+   "10": 3,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Equisetum sylvaticum": {
+  "usageKey": 2687929,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Equisetum sylvaticum L.",
+  "status": "ACCEPTED",
+  "nw_count": 719,
+  "month_facet": {
+   "4": 33,
+   "5": 168,
+   "6": 189,
+   "7": 193,
+   "8": 87,
+   "9": 18,
+   "10": 6,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Equisetum fluviatile": {
+  "usageKey": 2687937,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Equisetum fluviatile L.",
+  "status": "ACCEPTED",
+  "nw_count": 574,
+  "month_facet": {
+   "3": 3,
+   "4": 13,
+   "5": 76,
+   "6": 183,
+   "7": 153,
+   "8": 94,
+   "9": 16,
+   "10": 8,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Equisetum palustre": {
+  "usageKey": 2687932,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Equisetum palustre L.",
+  "status": "ACCEPTED",
+  "nw_count": 193,
+  "month_facet": {
+   "5": 14,
+   "6": 79,
+   "7": 63,
+   "8": 14,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Equisetum hyemale": {
+  "usageKey": 2687927,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Equisetum hyemale L.",
+  "status": "ACCEPTED",
+  "nw_count": 268,
+  "month_facet": {
+   "1": 6,
+   "2": 1,
+   "3": 4,
+   "4": 14,
+   "5": 44,
+   "6": 62,
+   "7": 41,
+   "8": 55,
+   "9": 5,
+   "10": 9,
+   "11": 7,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lycopodium clavatum": {
+  "usageKey": 2688393,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lycopodium clavatum L.",
+  "status": "ACCEPTED",
+  "nw_count": 350,
+  "month_facet": {
+   "2": 2,
+   "3": 14,
+   "4": 22,
+   "5": 44,
+   "6": 47,
+   "7": 67,
+   "8": 83,
+   "9": 26,
+   "10": 15,
+   "11": 11,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lycopodium annotinum": {
+  "usageKey": 2688369,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lycopodium annotinum L.",
+  "status": "SYNONYM",
+  "nw_count": 96,
+  "month_facet": {
+   "5": 1,
+   "6": 41,
+   "7": 35,
+   "8": 2,
+   "9": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Diphasiastrum complanatum": {
+  "usageKey": 2688424,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Diphasiastrum complanatum (L.) Holub",
+  "status": "ACCEPTED",
+  "nw_count": 142,
+  "month_facet": {
+   "4": 11,
+   "5": 16,
+   "6": 10,
+   "7": 32,
+   "8": 35,
+   "9": 10,
+   "10": 6,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Sphagnum magellanicum": {
+  "usageKey": 2669001,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Sphagnum magellanicum Brid.",
+  "status": "ACCEPTED",
+  "nw_count": 7,
+  "month_facet": {
+   "4": 1,
+   "7": 2,
+   "8": 1,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Sphagnum capillifolium": {
+  "usageKey": 8227194,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Sphagnum capillifolium (Ehrh.) Hedw.",
+  "status": "ACCEPTED",
+  "nw_count": 17,
+  "month_facet": {
+   "3": 1,
+   "5": 5,
+   "7": 1,
+   "8": 3,
+   "9": 3,
+   "10": 1,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Sphagnum fuscum": {
+  "usageKey": 2669215,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Sphagnum fuscum (Schimp.) H.Klinggr.",
+  "status": "ACCEPTED",
+  "nw_count": 14,
+  "month_facet": {
+   "5": 2,
+   "6": 2,
+   "7": 6,
+   "8": 1,
+   "9": 1,
+   "10": 1,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Sphagnum girgensohnii": {
+  "usageKey": 2669241,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Sphagnum girgensohnii Russow",
+  "status": "ACCEPTED",
+  "nw_count": 38,
+  "month_facet": {
+   "3": 1,
+   "4": 3,
+   "5": 2,
+   "6": 4,
+   "7": 7,
+   "8": 9,
+   "9": 2,
+   "10": 4,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Polytrichum commune": {
+  "usageKey": 2683084,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Polytrichum commune Hedw.",
+  "status": "ACCEPTED",
+  "nw_count": 109,
+  "month_facet": {
+   "4": 8,
+   "5": 13,
+   "6": 8,
+   "7": 33,
+   "8": 26,
+   "9": 11,
+   "10": 2,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Pleurozium schreberi": {
+  "usageKey": 2679715,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Pleurozium schreberi (Willd. ex Brid.) Mitt.",
+  "status": "ACCEPTED",
+  "nw_count": 148,
+  "month_facet": {
+   "1": 2,
+   "2": 2,
+   "3": 11,
+   "4": 14,
+   "5": 19,
+   "6": 8,
+   "7": 28,
+   "8": 29,
+   "9": 10,
+   "10": 13,
+   "11": 12
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Hylocomium splendens": {
+  "usageKey": 2679696,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Hylocomium splendens (Hedw.) Schimp.",
+  "status": "ACCEPTED",
+  "nw_count": 202,
+  "month_facet": {
+   "2": 1,
+   "3": 14,
+   "4": 22,
+   "5": 27,
+   "6": 11,
+   "7": 37,
+   "8": 46,
+   "9": 24,
+   "10": 9,
+   "11": 9,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Dicranum polysetum": {
+  "usageKey": 2675494,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Dicranum polysetum Sw.",
+  "status": "ACCEPTED",
+  "nw_count": 28,
+  "month_facet": {
+   "3": 3,
+   "4": 6,
+   "5": 2,
+   "7": 6,
+   "8": 3,
+   "9": 4,
+   "10": 1,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Ptilium crista-castrensis": {
+  "usageKey": 5283780,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Ptilium crista-castrensis (Hedw.) De Not.",
+  "status": "ACCEPTED",
+  "nw_count": 35,
+  "month_facet": {
+   "4": 3,
+   "5": 2,
+   "6": 5,
+   "7": 5,
+   "8": 9,
+   "9": 5,
+   "10": 3,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Climacium dendroides": {
+  "usageKey": 2678415,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Climacium dendroides (Hedw.) F.Weber & D.Mohr",
+  "status": "ACCEPTED",
+  "nw_count": 118,
+  "month_facet": {
+   "2": 1,
+   "3": 11,
+   "4": 9,
+   "5": 14,
+   "6": 6,
+   "7": 18,
+   "8": 32,
+   "9": 11,
+   "10": 8,
+   "11": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Aulacomnium palustre": {
+  "usageKey": 2675979,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Aulacomnium palustre (Hedw.) Schwägr.",
+  "status": "ACCEPTED",
+  "nw_count": 25,
+  "month_facet": {
+   "4": 2,
+   "5": 5,
+   "6": 2,
+   "7": 5,
+   "8": 7,
+   "9": 2,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Ceratodon purpureus": {
+  "usageKey": 5281381,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Ceratodon purpureus (Hedw.) Brid.",
+  "status": "ACCEPTED",
+  "nw_count": 28,
+  "month_facet": {
+   "3": 8,
+   "4": 3,
+   "5": 5,
+   "6": 1,
+   "7": 1,
+   "8": 4,
+   "9": 3,
+   "10": 2,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Marchantia polymorpha": {
+  "usageKey": 2688570,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Marchantia polymorpha L.",
+  "status": "ACCEPTED",
+  "nw_count": 200,
+  "month_facet": {
+   "1": 1,
+   "3": 9,
+   "4": 12,
+   "5": 26,
+   "6": 26,
+   "7": 44,
+   "8": 50,
+   "9": 21,
+   "10": 4,
+   "11": 5,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Fontinalis antipyretica": {
+  "usageKey": 2673408,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Fontinalis antipyretica Hedw.",
+  "status": "ACCEPTED",
+  "nw_count": 40,
+  "month_facet": {
+   "3": 1,
+   "4": 2,
+   "5": 6,
+   "6": 4,
+   "7": 12,
+   "8": 10,
+   "9": 3,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cladonia rangiferina": {
+  "usageKey": 8597577,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cladonia rangiferina (L.) Weber",
+  "status": "ACCEPTED",
+  "nw_count": 37,
+  "month_facet": {
+   "4": 3,
+   "5": 7,
+   "6": 3,
+   "7": 12,
+   "8": 3,
+   "9": 2,
+   "10": 4,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cladonia arbuscula": {
+  "usageKey": 10950385,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cladonia arbuscula (Wallr.) Flot.",
+  "status": "ACCEPTED",
+  "nw_count": 12,
+  "month_facet": {
+   "3": 1,
+   "4": 2,
+   "6": 1,
+   "7": 4,
+   "8": 2,
+   "9": 1,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cladonia stellaris": {
+  "usageKey": 2607712,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cladonia stellaris (Opiz) Pouzar & Vĕzda",
+  "status": "ACCEPTED",
+  "nw_count": 22,
+  "month_facet": {
+   "3": 1,
+   "5": 6,
+   "6": 2,
+   "7": 6,
+   "8": 1,
+   "9": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cladonia pyxidata": {
+  "usageKey": 2607695,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cladonia pyxidata (L.) Hoffm.",
+  "status": "ACCEPTED",
+  "nw_count": 4,
+  "month_facet": {
+   "3": 1,
+   "8": 1,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cetraria islandica": {
+  "usageKey": 2605272,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cetraria islandica (L.) Ach.",
+  "status": "ACCEPTED",
+  "nw_count": 106,
+  "month_facet": {
+   "2": 1,
+   "3": 1,
+   "4": 11,
+   "5": 16,
+   "6": 8,
+   "7": 12,
+   "8": 27,
+   "9": 11,
+   "10": 8,
+   "11": 2,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Hypogymnia physodes": {
+  "usageKey": 7247635,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Hypogymnia physodes (L.) Nyl.",
+  "status": "ACCEPTED",
+  "nw_count": 311,
+  "month_facet": {
+   "1": 31,
+   "2": 29,
+   "3": 53,
+   "4": 32,
+   "5": 40,
+   "6": 10,
+   "7": 42,
+   "8": 27,
+   "9": 13,
+   "10": 18,
+   "11": 9,
+   "12": 7
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Parmelia sulcata": {
+  "usageKey": 2605963,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Parmelia sulcata Taylor",
+  "status": "ACCEPTED",
+  "nw_count": 403,
+  "month_facet": {
+   "1": 36,
+   "2": 36,
+   "3": 77,
+   "4": 49,
+   "5": 66,
+   "6": 19,
+   "7": 40,
+   "8": 22,
+   "9": 10,
+   "10": 32,
+   "11": 12,
+   "12": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Evernia prunastri": {
+  "usageKey": 2605261,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Evernia prunastri (L.) Ach.",
+  "status": "ACCEPTED",
+  "nw_count": 269,
+  "month_facet": {
+   "1": 42,
+   "2": 29,
+   "3": 54,
+   "4": 30,
+   "5": 31,
+   "6": 10,
+   "7": 17,
+   "8": 9,
+   "9": 7,
+   "10": 24,
+   "11": 13,
+   "12": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Pseudevernia furfuracea": {
+  "usageKey": 10932974,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Pseudevernia furfuracea (L.) Zopf",
+  "status": "ACCEPTED",
+  "nw_count": 151,
+  "month_facet": {
+   "1": 1,
+   "2": 5,
+   "3": 24,
+   "4": 23,
+   "5": 14,
+   "6": 7,
+   "7": 34,
+   "8": 26,
+   "9": 8,
+   "10": 5,
+   "11": 3,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Usnea hirta": {
+  "usageKey": 2606030,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Usnea hirta (L.) F.H.Wigg.",
+  "status": "ACCEPTED",
+  "nw_count": 11,
+  "month_facet": {
+   "2": 1,
+   "3": 3,
+   "6": 1,
+   "8": 3,
+   "9": 1,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Bryoria furcellata": {
+  "usageKey": 2606550,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Bryoria furcellata (Fr.) Brodo & D.Hawksw.",
+  "status": "ACCEPTED",
+  "nw_count": 0,
+  "month_facet": {},
+  "fetched_at": "2026-09-26"
+ },
+ "Vulpicida pinastri": {
+  "usageKey": 2605831,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Vulpicida pinastri (Scop.) J.-E.Mattsson & M.J.Lai",
+  "status": "ACCEPTED",
+  "nw_count": 111,
+  "month_facet": {
+   "1": 6,
+   "2": 1,
+   "3": 16,
+   "4": 16,
+   "5": 8,
+   "6": 5,
+   "7": 18,
+   "8": 12,
+   "9": 4,
+   "10": 12,
+   "11": 12,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Xanthoria parietina": {
+  "usageKey": 8197849,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Xanthoria parietina (L.) Th.Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 1049,
+  "month_facet": {
+   "1": 69,
+   "2": 70,
+   "3": 167,
+   "4": 146,
+   "5": 281,
+   "6": 56,
+   "7": 59,
+   "8": 73,
+   "9": 32,
+   "10": 56,
+   "11": 28,
+   "12": 9
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Physcia stellaris": {
+  "usageKey": 2608941,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Physcia stellaris (L.) Nyl.",
+  "status": "ACCEPTED",
+  "nw_count": 7,
+  "month_facet": {
+   "1": 2,
+   "2": 1,
+   "3": 3,
+   "5": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Peltigera canina": {
+  "usageKey": 2601144,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Peltigera canina (L.) Willd.",
+  "status": "ACCEPTED",
+  "nw_count": 11,
+  "month_facet": {
+   "4": 1,
+   "5": 2,
+   "6": 1,
+   "7": 2,
+   "8": 1,
+   "9": 1,
+   "10": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Filipendula ulmaria": {
+  "usageKey": 2987999,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Filipendula ulmaria (L.) Maxim.",
+  "status": "ACCEPTED",
+  "nw_count": 1718,
+  "month_facet": {
+   "1": 48,
+   "2": 29,
+   "3": 24,
+   "4": 90,
+   "5": 234,
+   "6": 354,
+   "7": 631,
+   "8": 196,
+   "9": 39,
+   "10": 19,
+   "11": 16,
+   "12": 12
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Trifolium pratense": {
+  "usageKey": 8324121,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Trifolium pratense L.",
+  "status": "ACCEPTED",
+  "nw_count": 1120,
+  "month_facet": {
+   "3": 6,
+   "4": 40,
+   "5": 101,
+   "6": 361,
+   "7": 256,
+   "8": 176,
+   "9": 65,
+   "10": 46,
+   "11": 13,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Trifolium repens": {
+  "usageKey": 5358748,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Trifolium repens L.",
+  "status": "ACCEPTED",
+  "nw_count": 1203,
+  "month_facet": {
+   "1": 1,
+   "3": 3,
+   "4": 19,
+   "5": 78,
+   "6": 444,
+   "7": 321,
+   "8": 208,
+   "9": 30,
+   "10": 12,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Vicia cracca": {
+  "usageKey": 2975287,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Vicia cracca L.",
+  "status": "ACCEPTED",
+  "nw_count": 1420,
+  "month_facet": {
+   "1": 2,
+   "3": 1,
+   "4": 3,
+   "5": 39,
+   "6": 516,
+   "7": 402,
+   "8": 202,
+   "9": 34,
+   "10": 12,
+   "11": 6,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lathyrus pratensis": {
+  "usageKey": 5356701,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lathyrus pratensis L.",
+  "status": "ACCEPTED",
+  "nw_count": 987,
+  "month_facet": {
+   "2": 1,
+   "4": 5,
+   "5": 37,
+   "6": 378,
+   "7": 303,
+   "8": 153,
+   "9": 24,
+   "10": 12,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Ranunculus acris": {
+  "usageKey": 3033363,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Ranunculus acris L.",
+  "status": "ACCEPTED",
+  "nw_count": 762,
+  "month_facet": {
+   "4": 15,
+   "5": 65,
+   "6": 270,
+   "7": 201,
+   "8": 105,
+   "9": 11,
+   "10": 13,
+   "11": 10
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Ranunculus repens": {
+  "usageKey": 3033339,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Ranunculus repens L.",
+  "status": "ACCEPTED",
+  "nw_count": 1093,
+  "month_facet": {
+   "1": 3,
+   "2": 1,
+   "3": 28,
+   "4": 59,
+   "5": 172,
+   "6": 329,
+   "7": 167,
+   "8": 85,
+   "9": 26,
+   "10": 14,
+   "11": 14,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Ranunculus sceleratus": {
+  "usageKey": 3033374,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Ranunculus sceleratus L.",
+  "status": "ACCEPTED",
+  "nw_count": 229,
+  "month_facet": {
+   "3": 1,
+   "4": 3,
+   "5": 17,
+   "6": 66,
+   "7": 51,
+   "8": 42,
+   "9": 16,
+   "10": 8,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Caltha palustris": {
+  "usageKey": 5371685,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Caltha palustris L.",
+  "status": "ACCEPTED",
+  "nw_count": 1062,
+  "month_facet": {
+   "3": 1,
+   "4": 98,
+   "5": 574,
+   "6": 155,
+   "7": 114,
+   "8": 55,
+   "9": 6,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Leucanthemum vulgare": {
+  "usageKey": 8848598,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Leucanthemum vulgare Lam.",
+  "status": "ACCEPTED",
+  "nw_count": 1027,
+  "month_facet": {
+   "2": 2,
+   "3": 6,
+   "4": 18,
+   "5": 37,
+   "6": 351,
+   "7": 345,
+   "8": 121,
+   "9": 21,
+   "10": 14,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Achillea millefolium": {
+  "usageKey": 3120060,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Achillea millefolium L.",
+  "status": "ACCEPTED",
+  "nw_count": 1875,
+  "month_facet": {
+   "1": 13,
+   "2": 12,
+   "3": 36,
+   "4": 92,
+   "5": 137,
+   "6": 326,
+   "7": 573,
+   "8": 325,
+   "9": 75,
+   "10": 35,
+   "11": 31,
+   "12": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Hypericum perforatum": {
+  "usageKey": 3189486,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Hypericum perforatum L.",
+  "status": "ACCEPTED",
+  "nw_count": 339,
+  "month_facet": {
+   "2": 2,
+   "3": 3,
+   "4": 5,
+   "5": 5,
+   "6": 77,
+   "7": 118,
+   "8": 72,
+   "9": 14,
+   "10": 2,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Galium verum": {
+  "usageKey": 9063248,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Galium verum L.",
+  "status": "ACCEPTED",
+  "nw_count": 119,
+  "month_facet": {
+   "4": 1,
+   "5": 2,
+   "6": 50,
+   "7": 32,
+   "8": 9
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Galium mollugo": {
+  "usageKey": 9039392,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Galium mollugo L.",
+  "status": "ACCEPTED",
+  "nw_count": 1146,
+  "month_facet": {
+   "1": 2,
+   "3": 7,
+   "4": 63,
+   "5": 159,
+   "6": 319,
+   "7": 294,
+   "8": 226,
+   "9": 32,
+   "10": 16,
+   "11": 7
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Campanula patula": {
+  "usageKey": 5410564,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Campanula patula L.",
+  "status": "ACCEPTED",
+  "nw_count": 860,
+  "month_facet": {
+   "3": 2,
+   "4": 1,
+   "5": 12,
+   "6": 415,
+   "7": 267,
+   "8": 87,
+   "9": 16,
+   "10": 11,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Knautia arvensis": {
+  "usageKey": 2888808,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Knautia arvensis (L.) Coult.",
+  "status": "ACCEPTED",
+  "nw_count": 881,
+  "month_facet": {
+   "4": 1,
+   "5": 19,
+   "6": 284,
+   "7": 364,
+   "8": 141,
+   "9": 29,
+   "10": 17,
+   "11": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Plantago major": {
+  "usageKey": 3189767,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Plantago major L.",
+  "status": "ACCEPTED",
+  "nw_count": 1604,
+  "month_facet": {
+   "1": 7,
+   "2": 2,
+   "3": 13,
+   "4": 46,
+   "5": 182,
+   "6": 355,
+   "7": 416,
+   "8": 257,
+   "9": 56,
+   "10": 22,
+   "11": 13
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Plantago lanceolata": {
+  "usageKey": 8208358,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Plantago lanceolata L.",
+  "status": "ACCEPTED",
+  "nw_count": 575,
+  "month_facet": {
+   "1": 2,
+   "3": 7,
+   "4": 16,
+   "5": 42,
+   "6": 218,
+   "7": 149,
+   "8": 91,
+   "9": 16,
+   "10": 4,
+   "11": 6,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Rumex acetosa": {
+  "usageKey": 2888951,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Rumex acetosa L.",
+  "status": "ACCEPTED",
+  "nw_count": 287,
+  "month_facet": {
+   "4": 7,
+   "5": 10,
+   "6": 100,
+   "7": 117,
+   "8": 5,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Rumex acetosella": {
+  "usageKey": 2888995,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Rumex acetosella L.",
+  "status": "ACCEPTED",
+  "nw_count": 416,
+  "month_facet": {
+   "4": 1,
+   "5": 24,
+   "6": 135,
+   "7": 84,
+   "8": 75,
+   "9": 8,
+   "10": 7,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Alchemilla vulgaris": {
+  "usageKey": 7890713,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Alchemilla vulgaris L.",
+  "status": "ACCEPTED",
+  "nw_count": 133,
+  "month_facet": {
+   "6": 3,
+   "7": 102,
+   "8": 4,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Geranium pratense": {
+  "usageKey": 2891304,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Geranium pratense L.",
+  "status": "ACCEPTED",
+  "nw_count": 854,
+  "month_facet": {
+   "4": 7,
+   "5": 36,
+   "6": 329,
+   "7": 317,
+   "8": 123,
+   "9": 8,
+   "10": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Geranium sylvaticum": {
+  "usageKey": 2891147,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Geranium sylvaticum L.",
+  "status": "ACCEPTED",
+  "nw_count": 550,
+  "month_facet": {
+   "4": 15,
+   "5": 125,
+   "6": 296,
+   "7": 56,
+   "8": 22,
+   "9": 4,
+   "10": 5,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Veronica chamaedrys": {
+  "usageKey": 7874883,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Veronica chamaedrys L.",
+  "status": "ACCEPTED",
+  "nw_count": 1339,
+  "month_facet": {
+   "2": 1,
+   "3": 28,
+   "4": 63,
+   "5": 306,
+   "6": 555,
+   "7": 230,
+   "8": 90,
+   "9": 10,
+   "10": 6,
+   "11": 18,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Stellaria graminea": {
+  "usageKey": 5384616,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Stellaria graminea L.",
+  "status": "ACCEPTED",
+  "nw_count": 695,
+  "month_facet": {
+   "4": 2,
+   "5": 4,
+   "6": 256,
+   "7": 272,
+   "8": 65,
+   "9": 12,
+   "10": 8,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Taraxacum officinale": {
+  "usageKey": 5394163,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Taraxacum officinale Weber ex F.H.Wigg.",
+  "status": "ACCEPTED",
+  "nw_count": 2731,
+  "month_facet": {
+   "1": 9,
+   "2": 1,
+   "3": 48,
+   "4": 349,
+   "5": 617,
+   "6": 360,
+   "7": 317,
+   "8": 341,
+   "9": 64,
+   "10": 29,
+   "11": 25,
+   "12": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Tanacetum vulgare": {
+  "usageKey": 3118274,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Tanacetum vulgare L.",
+  "status": "ACCEPTED",
+  "nw_count": 1506,
+  "month_facet": {
+   "1": 35,
+   "2": 23,
+   "3": 25,
+   "4": 77,
+   "5": 134,
+   "6": 194,
+   "7": 493,
+   "8": 351,
+   "9": 80,
+   "10": 33,
+   "11": 22,
+   "12": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Artemisia vulgaris": {
+  "usageKey": 3120946,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Artemisia vulgaris L.",
+  "status": "ACCEPTED",
+  "nw_count": 1850,
+  "month_facet": {
+   "1": 47,
+   "2": 38,
+   "3": 30,
+   "4": 90,
+   "5": 180,
+   "6": 322,
+   "7": 421,
+   "8": 360,
+   "9": 60,
+   "10": 26,
+   "11": 22,
+   "12": 13
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Artemisia absinthium": {
+  "usageKey": 3121319,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Artemisia absinthium L.",
+  "status": "ACCEPTED",
+  "nw_count": 126,
+  "month_facet": {
+   "2": 1,
+   "3": 1,
+   "4": 11,
+   "5": 9,
+   "6": 33,
+   "7": 20,
+   "8": 30,
+   "9": 2,
+   "10": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Chamerion angustifolium": {
+  "usageKey": 3188783,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Chamerion angustifolium (L.) Holub",
+  "status": "SYNONYM",
+  "nw_count": 192,
+  "month_facet": {},
+  "fetched_at": "2026-09-26"
+ },
+ "Solidago virgaurea": {
+  "usageKey": 6446462,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Solidago virgaurea L.",
+  "status": "ACCEPTED",
+  "nw_count": 969,
+  "month_facet": {
+   "1": 5,
+   "2": 6,
+   "3": 13,
+   "4": 13,
+   "5": 72,
+   "6": 170,
+   "7": 289,
+   "8": 315,
+   "9": 36,
+   "10": 9,
+   "11": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Heracleum sibiricum": {
+  "usageKey": 6027427,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Heracleum sibiricum L.",
+  "status": "SYNONYM",
+  "nw_count": 634,
+  "month_facet": {
+   "3": 1,
+   "4": 8,
+   "5": 107,
+   "6": 236,
+   "7": 147,
+   "8": 81,
+   "9": 17,
+   "10": 15,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Angelica sylvestris": {
+  "usageKey": 5371818,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Angelica sylvestris L.",
+  "status": "ACCEPTED",
+  "nw_count": 974,
+  "month_facet": {
+   "1": 11,
+   "2": 3,
+   "3": 11,
+   "4": 32,
+   "5": 107,
+   "6": 178,
+   "7": 361,
+   "8": 193,
+   "9": 30,
+   "10": 5,
+   "11": 16
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Anthriscus sylvestris": {
+  "usageKey": 5371742,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Anthriscus sylvestris (L.) Hoffm.",
+  "status": "ACCEPTED",
+  "nw_count": 1806,
+  "month_facet": {
+   "3": 37,
+   "4": 162,
+   "5": 440,
+   "6": 600,
+   "7": 246,
+   "8": 184,
+   "9": 48,
+   "10": 8,
+   "11": 21,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Aegopodium podagraria": {
+  "usageKey": 3034620,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Aegopodium podagraria L.",
+  "status": "ACCEPTED",
+  "nw_count": 2113,
+  "month_facet": {
+   "3": 17,
+   "4": 237,
+   "5": 482,
+   "6": 602,
+   "7": 405,
+   "8": 216,
+   "9": 57,
+   "10": 33,
+   "11": 21,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Conium maculatum": {
+  "usageKey": 3034807,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Conium maculatum L.",
+  "status": "ACCEPTED",
+  "nw_count": 73,
+  "month_facet": {
+   "6": 20,
+   "7": 24,
+   "8": 4,
+   "9": 1,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cicuta virosa": {
+  "usageKey": 5371864,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cicuta virosa L.",
+  "status": "ACCEPTED",
+  "nw_count": 361,
+  "month_facet": {
+   "4": 1,
+   "5": 6,
+   "6": 105,
+   "7": 120,
+   "8": 94,
+   "9": 9,
+   "10": 6,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Sium latifolium": {
+  "usageKey": 3034530,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Sium latifolium L.",
+  "status": "ACCEPTED",
+  "nw_count": 192,
+  "month_facet": {
+   "5": 5,
+   "6": 37,
+   "7": 78,
+   "8": 54,
+   "10": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Oenanthe aquatica": {
+  "usageKey": 5371888,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Oenanthe aquatica (L.) Poir.",
+  "status": "ACCEPTED",
+  "nw_count": 119,
+  "month_facet": {
+   "5": 8,
+   "6": 39,
+   "7": 36,
+   "8": 19,
+   "9": 4,
+   "10": 1,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Aconitum septentrionale": {
+  "usageKey": 6374443,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Aconitum septentrionale Koelle",
+  "status": "ACCEPTED",
+  "nw_count": 219,
+  "month_facet": {
+   "5": 20,
+   "6": 101,
+   "7": 75,
+   "8": 13,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Paris quadrifolia": {
+  "usageKey": 5295911,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Paris quadrifolia L.",
+  "status": "ACCEPTED",
+  "nw_count": 687,
+  "month_facet": {
+   "4": 8,
+   "5": 153,
+   "6": 180,
+   "7": 147,
+   "8": 151,
+   "9": 25,
+   "10": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Convallaria majalis": {
+  "usageKey": 7459480,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Convallaria majalis L.",
+  "status": "ACCEPTED",
+  "nw_count": 1209,
+  "month_facet": {
+   "1": 2,
+   "3": 2,
+   "4": 8,
+   "5": 281,
+   "6": 406,
+   "7": 224,
+   "8": 204,
+   "9": 40,
+   "10": 21,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Maianthemum bifolium": {
+  "usageKey": 2769317,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Maianthemum bifolium (L.) F.W.Schmidt",
+  "status": "ACCEPTED",
+  "nw_count": 727,
+  "month_facet": {
+   "3": 2,
+   "4": 5,
+   "5": 169,
+   "6": 239,
+   "7": 151,
+   "8": 109,
+   "9": 25,
+   "10": 4,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Oxalis acetosella": {
+  "usageKey": 8211958,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Oxalis acetosella L.",
+  "status": "ACCEPTED",
+  "nw_count": 1062,
+  "month_facet": {
+   "2": 1,
+   "3": 16,
+   "4": 80,
+   "5": 422,
+   "6": 167,
+   "7": 164,
+   "8": 142,
+   "9": 24,
+   "10": 11,
+   "11": 13
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lysimachia europaea": {
+  "usageKey": 8272844,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lysimachia europaea (L.) U.Manns & Anderb.",
+  "status": "ACCEPTED",
+  "nw_count": 549,
+  "month_facet": {
+   "5": 105,
+   "6": 221,
+   "7": 122,
+   "8": 72,
+   "9": 6,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Linnaea borealis": {
+  "usageKey": 5334220,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Linnaea borealis L.",
+  "status": "ACCEPTED",
+  "nw_count": 201,
+  "month_facet": {
+   "3": 2,
+   "4": 3,
+   "5": 9,
+   "6": 78,
+   "7": 48,
+   "8": 32,
+   "9": 5,
+   "10": 2,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Pyrola rotundifolia": {
+  "usageKey": 2888269,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Pyrola rotundifolia L.",
+  "status": "ACCEPTED",
+  "nw_count": 511,
+  "month_facet": {
+   "1": 3,
+   "3": 14,
+   "4": 31,
+   "5": 64,
+   "6": 216,
+   "7": 94,
+   "8": 48,
+   "9": 9,
+   "10": 1,
+   "11": 5,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Orthilia secunda": {
+  "usageKey": 2888310,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Orthilia secunda (L.) House",
+  "status": "ACCEPTED",
+  "nw_count": 473,
+  "month_facet": {
+   "1": 1,
+   "3": 15,
+   "4": 22,
+   "5": 77,
+   "6": 102,
+   "7": 95,
+   "8": 92,
+   "9": 21,
+   "10": 10,
+   "11": 12,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Melampyrum pratense": {
+  "usageKey": 7693914,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Melampyrum pratense L.",
+  "status": "ACCEPTED",
+  "nw_count": 471,
+  "month_facet": {
+   "4": 1,
+   "5": 3,
+   "6": 173,
+   "7": 191,
+   "8": 79,
+   "9": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Anemone nemorosa": {
+  "usageKey": 3033263,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Anemone nemorosa L.",
+  "status": "ACCEPTED",
+  "nw_count": 1360,
+  "month_facet": {
+   "3": 5,
+   "4": 486,
+   "5": 736,
+   "6": 46,
+   "7": 24,
+   "8": 10,
+   "9": 5,
+   "10": 5,
+   "11": 2,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Hepatica nobilis": {
+  "usageKey": 5371699,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Hepatica nobilis Schreb.",
+  "status": "ACCEPTED",
+  "nw_count": 1052,
+  "month_facet": {
+   "1": 1,
+   "2": 1,
+   "3": 46,
+   "4": 374,
+   "5": 268,
+   "6": 132,
+   "7": 104,
+   "8": 44,
+   "9": 19,
+   "10": 16,
+   "11": 7
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Asarum europaeum": {
+  "usageKey": 7313595,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Asarum europaeum L.",
+  "status": "ACCEPTED",
+  "nw_count": 544,
+  "month_facet": {
+   "1": 1,
+   "3": 14,
+   "4": 70,
+   "5": 99,
+   "6": 130,
+   "7": 111,
+   "8": 70,
+   "9": 12,
+   "10": 13,
+   "11": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Pulmonaria obscura": {
+  "usageKey": 5439925,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Pulmonaria obscura Dumort.",
+  "status": "ACCEPTED",
+  "nw_count": 488,
+  "month_facet": {
+   "3": 10,
+   "4": 133,
+   "5": 168,
+   "6": 74,
+   "7": 51,
+   "8": 26,
+   "9": 3,
+   "10": 4,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Ficaria verna": {
+  "usageKey": 9094061,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Ficaria verna Huds.",
+  "status": "ACCEPTED",
+  "nw_count": 817,
+  "month_facet": {
+   "3": 30,
+   "4": 356,
+   "5": 403,
+   "6": 9,
+   "9": 1,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Gagea lutea": {
+  "usageKey": 5300245,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Gagea lutea (L.) Ker Gawl.",
+  "status": "ACCEPTED",
+  "nw_count": 304,
+  "month_facet": {
+   "3": 9,
+   "4": 207,
+   "5": 73
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Impatiens noli-tangere": {
+  "usageKey": 2891779,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Impatiens noli-tangere L.",
+  "status": "ACCEPTED",
+  "nw_count": 251,
+  "month_facet": {
+   "5": 3,
+   "6": 86,
+   "7": 116,
+   "8": 34
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Urtica dioica": {
+  "usageKey": 7960979,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Urtica dioica L.",
+  "status": "ACCEPTED",
+  "nw_count": 1929,
+  "month_facet": {
+   "1": 34,
+   "2": 17,
+   "3": 29,
+   "4": 155,
+   "5": 436,
+   "6": 392,
+   "7": 380,
+   "8": 246,
+   "9": 84,
+   "10": 35,
+   "11": 22,
+   "12": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Atriplex patula": {
+  "usageKey": 3083728,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Atriplex patula L.",
+  "status": "ACCEPTED",
+  "nw_count": 124,
+  "month_facet": {
+   "5": 3,
+   "6": 14,
+   "7": 34,
+   "8": 45,
+   "9": 8,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Arctium tomentosum": {
+  "usageKey": 5393080,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Arctium tomentosum Mill.",
+  "status": "ACCEPTED",
+  "nw_count": 903,
+  "month_facet": {
+   "1": 9,
+   "2": 8,
+   "3": 7,
+   "4": 27,
+   "5": 15,
+   "6": 205,
+   "7": 369,
+   "8": 160,
+   "9": 13,
+   "10": 3,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Capsella bursa-pastoris": {
+  "usageKey": 5375388,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Capsella bursa-pastoris (L.) Medik.",
+  "status": "ACCEPTED",
+  "nw_count": 1274,
+  "month_facet": {
+   "1": 2,
+   "3": 9,
+   "4": 43,
+   "5": 176,
+   "6": 235,
+   "7": 185,
+   "8": 112,
+   "9": 15,
+   "10": 13,
+   "11": 9
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Polygonum aviculare": {
+  "usageKey": 7821030,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Polygonum aviculare L.",
+  "status": "ACCEPTED",
+  "nw_count": 612,
+  "month_facet": {
+   "4": 1,
+   "6": 61,
+   "7": 67,
+   "8": 40,
+   "9": 4,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Persicaria hydropiper": {
+  "usageKey": 8323622,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Persicaria hydropiper (L.) Spach",
+  "status": "ACCEPTED",
+  "nw_count": 208,
+  "month_facet": {
+   "6": 47,
+   "7": 46,
+   "8": 74,
+   "9": 13,
+   "10": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Persicaria amphibia": {
+  "usageKey": 6391648,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Persicaria amphibia (L.) Gray",
+  "status": "ACCEPTED",
+  "nw_count": 426,
+  "month_facet": {
+   "5": 8,
+   "6": 95,
+   "7": 165,
+   "8": 116,
+   "9": 21,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Potentilla anserina": {
+  "usageKey": 5366829,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Potentilla anserina L.",
+  "status": "SYNONYM",
+  "nw_count": 139,
+  "month_facet": {
+   "6": 55,
+   "7": 64
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Potentilla erecta": {
+  "usageKey": 5365576,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Potentilla erecta (L.) Raeusch.",
+  "status": "ACCEPTED",
+  "nw_count": 571,
+  "month_facet": {
+   "3": 1,
+   "4": 1,
+   "5": 23,
+   "6": 199,
+   "7": 212,
+   "8": 91,
+   "9": 11,
+   "10": 8,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Comarum palustre": {
+  "usageKey": 3020532,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Comarum palustre L.",
+  "status": "ACCEPTED",
+  "nw_count": 452,
+  "month_facet": {
+   "1": 1,
+   "4": 3,
+   "5": 31,
+   "6": 157,
+   "7": 124,
+   "8": 97,
+   "9": 14,
+   "10": 6,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Menyanthes trifoliata": {
+  "usageKey": 5341511,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Menyanthes trifoliata L.",
+  "status": "ACCEPTED",
+  "nw_count": 324,
+  "month_facet": {
+   "5": 43,
+   "6": 124,
+   "7": 78,
+   "8": 46,
+   "9": 8,
+   "10": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Calla palustris": {
+  "usageKey": 2869101,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Calla palustris L.",
+  "status": "ACCEPTED",
+  "nw_count": 466,
+  "month_facet": {
+   "4": 1,
+   "5": 50,
+   "6": 178,
+   "7": 116,
+   "8": 91,
+   "9": 12,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Drosera rotundifolia": {
+  "usageKey": 3191030,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Drosera rotundifolia L.",
+  "status": "ACCEPTED",
+  "nw_count": 281,
+  "month_facet": {
+   "5": 7,
+   "6": 89,
+   "7": 108,
+   "8": 55,
+   "9": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Dactylorhiza maculata": {
+  "usageKey": 8179794,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Dactylorhiza maculata (L.) Soó",
+  "status": "ACCEPTED",
+  "nw_count": 518,
+  "month_facet": {
+   "5": 3,
+   "6": 249,
+   "7": 208,
+   "8": 14,
+   "9": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Utricularia vulgaris": {
+  "usageKey": 3172427,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Utricularia vulgaris L.",
+  "status": "ACCEPTED",
+  "nw_count": 112,
+  "month_facet": {
+   "5": 3,
+   "6": 37,
+   "7": 47,
+   "8": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Typha latifolia": {
+  "usageKey": 5289423,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Typha latifolia L.",
+  "status": "ACCEPTED",
+  "nw_count": 714,
+  "month_facet": {
+   "1": 28,
+   "2": 22,
+   "3": 23,
+   "4": 13,
+   "5": 31,
+   "6": 138,
+   "7": 205,
+   "8": 155,
+   "9": 31,
+   "10": 17,
+   "11": 14,
+   "12": 14
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Typha angustifolia": {
+  "usageKey": 5289461,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Typha angustifolia L.",
+  "status": "ACCEPTED",
+  "nw_count": 39,
+  "month_facet": {
+   "1": 4,
+   "6": 3,
+   "7": 7,
+   "8": 6,
+   "9": 3,
+   "10": 2,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Phragmites australis": {
+  "usageKey": 5290149,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Phragmites australis (Cav.) Trin. ex Steud.",
+  "status": "ACCEPTED",
+  "nw_count": 1277,
+  "month_facet": {
+   "1": 57,
+   "2": 52,
+   "3": 77,
+   "4": 112,
+   "5": 68,
+   "6": 198,
+   "7": 287,
+   "8": 249,
+   "9": 56,
+   "10": 48,
+   "11": 38,
+   "12": 13
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Nymphaea candida": {
+  "usageKey": 7410966,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Nymphaea candida C.Presl",
+  "status": "ACCEPTED",
+  "nw_count": 250,
+  "month_facet": {
+   "6": 76,
+   "7": 106,
+   "8": 49,
+   "9": 1,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Nuphar lutea": {
+  "usageKey": 7551339,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Nuphar lutea (L.) Sibth. & Sm.",
+  "status": "ACCEPTED",
+  "nw_count": 772,
+  "month_facet": {
+   "3": 2,
+   "4": 4,
+   "5": 24,
+   "6": 239,
+   "7": 301,
+   "8": 140,
+   "9": 16,
+   "10": 13,
+   "11": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Potamogeton natans": {
+  "usageKey": 5301147,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Potamogeton natans L.",
+  "status": "ACCEPTED",
+  "nw_count": 260,
+  "month_facet": {
+   "5": 4,
+   "6": 68,
+   "7": 82,
+   "8": 63,
+   "9": 16,
+   "10": 6,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Potamogeton perfoliatus": {
+  "usageKey": 5301200,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Potamogeton perfoliatus L.",
+  "status": "ACCEPTED",
+  "nw_count": 240,
+  "month_facet": {
+   "5": 1,
+   "6": 48,
+   "7": 79,
+   "8": 63,
+   "9": 19,
+   "10": 6,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lemna minor": {
+  "usageKey": 2867589,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lemna minor L.",
+  "status": "ACCEPTED",
+  "nw_count": 180,
+  "month_facet": {
+   "1": 2,
+   "4": 4,
+   "5": 2,
+   "6": 72,
+   "7": 56,
+   "8": 13,
+   "9": 7,
+   "10": 3,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Hydrocharis morsus-ranae": {
+  "usageKey": 5329266,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Hydrocharis morsus-ranae L.",
+  "status": "ACCEPTED",
+  "nw_count": 289,
+  "month_facet": {
+   "4": 1,
+   "5": 4,
+   "6": 73,
+   "7": 90,
+   "8": 90,
+   "9": 7,
+   "10": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Stratiotes aloides": {
+  "usageKey": 5329192,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Stratiotes aloides L.",
+  "status": "ACCEPTED",
+  "nw_count": 106,
+  "month_facet": {
+   "5": 6,
+   "6": 31,
+   "7": 30,
+   "8": 17,
+   "9": 3,
+   "10": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Sagittaria sagittifolia": {
+  "usageKey": 5328882,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Sagittaria sagittifolia L.",
+  "status": "ACCEPTED",
+  "nw_count": 353,
+  "month_facet": {
+   "6": 53,
+   "7": 137,
+   "8": 128,
+   "9": 15,
+   "10": 2,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Alisma plantago-aquatica": {
+  "usageKey": 2865100,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Alisma plantago-aquatica L.",
+  "status": "ACCEPTED",
+  "nw_count": 648,
+  "month_facet": {
+   "1": 10,
+   "2": 1,
+   "3": 1,
+   "4": 1,
+   "5": 10,
+   "6": 167,
+   "7": 249,
+   "8": 166,
+   "9": 14,
+   "10": 6,
+   "11": 3,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Butomus umbellatus": {
+  "usageKey": 2864467,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Butomus umbellatus L.",
+  "status": "ACCEPTED",
+  "nw_count": 396,
+  "month_facet": {
+   "1": 3,
+   "6": 66,
+   "7": 166,
+   "8": 128,
+   "9": 10,
+   "10": 6,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Sparganium erectum": {
+  "usageKey": 7679536,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Sparganium erectum L.",
+  "status": "ACCEPTED",
+  "nw_count": 161,
+  "month_facet": {
+   "1": 5,
+   "2": 2,
+   "6": 32,
+   "7": 49,
+   "8": 36,
+   "9": 6,
+   "10": 9,
+   "11": 1,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Iris pseudacorus": {
+  "usageKey": 5298231,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Iris pseudacorus L.",
+  "status": "ACCEPTED",
+  "nw_count": 635,
+  "month_facet": {
+   "1": 2,
+   "3": 3,
+   "4": 18,
+   "5": 41,
+   "6": 373,
+   "7": 97,
+   "8": 57,
+   "9": 12,
+   "10": 12,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lysimachia vulgaris": {
+  "usageKey": 3169386,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lysimachia vulgaris L.",
+  "status": "ACCEPTED",
+  "nw_count": 1355,
+  "month_facet": {
+   "1": 27,
+   "2": 20,
+   "3": 12,
+   "5": 14,
+   "6": 287,
+   "7": 684,
+   "8": 225,
+   "9": 37,
+   "10": 12,
+   "11": 7,
+   "12": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lythrum salicaria": {
+  "usageKey": 3188736,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lythrum salicaria L.",
+  "status": "ACCEPTED",
+  "nw_count": 825,
+  "month_facet": {
+   "1": 34,
+   "2": 23,
+   "3": 12,
+   "4": 3,
+   "5": 1,
+   "6": 85,
+   "7": 290,
+   "8": 304,
+   "9": 38,
+   "10": 5,
+   "11": 7,
+   "12": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Mentha arvensis": {
+  "usageKey": 2927192,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Mentha arvensis L.",
+  "status": "ACCEPTED",
+  "nw_count": 607,
+  "month_facet": {
+   "5": 1,
+   "6": 47,
+   "7": 188,
+   "8": 178,
+   "9": 13,
+   "10": 3,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lycopus europaeus": {
+  "usageKey": 5341478,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lycopus europaeus L.",
+  "status": "ACCEPTED",
+  "nw_count": 513,
+  "month_facet": {
+   "1": 6,
+   "2": 6,
+   "3": 4,
+   "5": 4,
+   "6": 114,
+   "7": 169,
+   "8": 149,
+   "9": 24,
+   "10": 9,
+   "11": 6,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Bidens tripartita": {
+  "usageKey": 5391862,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Bidens tripartita L.",
+  "status": "ACCEPTED",
+  "nw_count": 342,
+  "month_facet": {
+   "1": 1,
+   "6": 13,
+   "7": 61,
+   "8": 151,
+   "9": 10,
+   "10": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Myosotis scorpioides": {
+  "usageKey": 5341184,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Myosotis scorpioides L.",
+  "status": "ACCEPTED",
+  "nw_count": 684,
+  "month_facet": {
+   "4": 2,
+   "5": 23,
+   "6": 226,
+   "7": 238,
+   "8": 124,
+   "9": 29,
+   "10": 15
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cirsium palustre": {
+  "usageKey": 3113239,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cirsium palustre (L.) Scop.",
+  "status": "ACCEPTED",
+  "nw_count": 359,
+  "month_facet": {
+   "1": 1,
+   "3": 10,
+   "4": 21,
+   "5": 57,
+   "6": 106,
+   "7": 83,
+   "8": 50,
+   "9": 7,
+   "10": 3,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Valeriana officinalis": {
+  "usageKey": 2888763,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Valeriana officinalis L.",
+  "status": "ACCEPTED",
+  "nw_count": 763,
+  "month_facet": {
+   "1": 1,
+   "2": 2,
+   "3": 1,
+   "4": 16,
+   "5": 69,
+   "6": 182,
+   "7": 280,
+   "8": 164,
+   "9": 18,
+   "10": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Thymus serpyllum": {
+  "usageKey": 6409622,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Thymus serpyllum L.",
+  "status": "ACCEPTED",
+  "nw_count": 203,
+  "month_facet": {
+   "4": 2,
+   "5": 1,
+   "6": 50,
+   "7": 51,
+   "8": 74,
+   "9": 11,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Origanum vulgare": {
+  "usageKey": 2926612,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Origanum vulgare L.",
+  "status": "ACCEPTED",
+  "nw_count": 456,
+  "month_facet": {
+   "2": 1,
+   "4": 1,
+   "5": 10,
+   "6": 63,
+   "7": 236,
+   "8": 111,
+   "9": 14,
+   "10": 3,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Anthoxanthum nitens": {
+  "usageKey": 2703346,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Anthoxanthum nitens (Weber) Y.Schouten & Veldkamp",
+  "status": "ACCEPTED",
+  "nw_count": 179,
+  "month_facet": {
+   "5": 41,
+   "6": 71,
+   "7": 34,
+   "8": 2,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Hyoscyamus niger": {
+  "usageKey": 2928978,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Hyoscyamus niger L.",
+  "status": "ACCEPTED",
+  "nw_count": 121,
+  "month_facet": {
+   "4": 3,
+   "5": 23,
+   "6": 37,
+   "7": 19,
+   "8": 15,
+   "9": 7,
+   "10": 1,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Chelidonium majus": {
+  "usageKey": 5334186,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Chelidonium majus L.",
+  "status": "ACCEPTED",
+  "nw_count": 1081,
+  "month_facet": {
+   "1": 6,
+   "2": 2,
+   "3": 38,
+   "4": 104,
+   "5": 236,
+   "6": 292,
+   "7": 170,
+   "8": 150,
+   "9": 24,
+   "10": 18,
+   "11": 19,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Glechoma hederacea": {
+  "usageKey": 2926557,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Glechoma hederacea L.",
+  "status": "ACCEPTED",
+  "nw_count": 1386,
+  "month_facet": {
+   "1": 3,
+   "2": 1,
+   "3": 40,
+   "4": 144,
+   "5": 653,
+   "6": 223,
+   "7": 116,
+   "8": 125,
+   "9": 26,
+   "10": 20,
+   "11": 11,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lamium album": {
+  "usageKey": 2926683,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lamium album L.",
+  "status": "ACCEPTED",
+  "nw_count": 1188,
+  "month_facet": {
+   "1": 2,
+   "3": 6,
+   "4": 73,
+   "5": 413,
+   "6": 283,
+   "7": 114,
+   "8": 142,
+   "9": 73,
+   "10": 37,
+   "11": 14,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Solanum dulcamara": {
+  "usageKey": 2932737,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Solanum dulcamara L.",
+  "status": "ACCEPTED",
+  "nw_count": 831,
+  "month_facet": {
+   "1": 3,
+   "2": 1,
+   "3": 4,
+   "4": 2,
+   "5": 13,
+   "6": 218,
+   "7": 236,
+   "8": 219,
+   "9": 70,
+   "10": 28,
+   "11": 11,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Solanum nigrum": {
+  "usageKey": 9150405,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Solanum nigrum L.",
+  "status": "ACCEPTED",
+  "nw_count": 177,
+  "month_facet": {
+   "7": 28,
+   "8": 43,
+   "9": 38,
+   "10": 20,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Veratrum album": {
+  "usageKey": 2742119,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Veratrum album L.",
+  "status": "ACCEPTED",
+  "nw_count": 0,
+  "month_facet": {},
+  "fetched_at": "2026-09-26"
+ },
+ "Vaccinium myrtillus": {
+  "usageKey": 2882833,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Vaccinium myrtillus L.",
+  "status": "ACCEPTED",
+  "nw_count": 1233,
+  "month_facet": {
+   "1": 24,
+   "2": 8,
+   "3": 43,
+   "4": 67,
+   "5": 243,
+   "6": 246,
+   "7": 299,
+   "8": 173,
+   "9": 30,
+   "10": 10,
+   "11": 21,
+   "12": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Vaccinium vitis-idaea": {
+  "usageKey": 2882835,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Vaccinium vitis-idaea L.",
+  "status": "ACCEPTED",
+  "nw_count": 1355,
+  "month_facet": {
+   "1": 32,
+   "2": 7,
+   "3": 80,
+   "4": 110,
+   "5": 230,
+   "6": 211,
+   "7": 219,
+   "8": 290,
+   "9": 49,
+   "10": 21,
+   "11": 34,
+   "12": 11
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Vaccinium oxycoccos": {
+  "usageKey": 2882940,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Vaccinium oxycoccos L.",
+  "status": "ACCEPTED",
+  "nw_count": 437,
+  "month_facet": {
+   "1": 1,
+   "3": 1,
+   "4": 13,
+   "5": 67,
+   "6": 104,
+   "7": 90,
+   "8": 73,
+   "9": 24,
+   "10": 14,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Rubus chamaemorus": {
+  "usageKey": 2998290,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Rubus chamaemorus L.",
+  "status": "ACCEPTED",
+  "nw_count": 270,
+  "month_facet": {
+   "5": 23,
+   "6": 97,
+   "7": 93,
+   "8": 18,
+   "9": 1,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Vaccinium uliginosum": {
+  "usageKey": 8073364,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Vaccinium uliginosum L.",
+  "status": "ACCEPTED",
+  "nw_count": 395,
+  "month_facet": {
+   "4": 1,
+   "5": 21,
+   "6": 101,
+   "7": 142,
+   "8": 88,
+   "9": 14,
+   "10": 7,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Rubus idaeus": {
+  "usageKey": 2993094,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Rubus idaeus L.",
+  "status": "ACCEPTED",
+  "nw_count": 967,
+  "month_facet": {
+   "1": 6,
+   "2": 9,
+   "3": 17,
+   "4": 24,
+   "5": 102,
+   "6": 197,
+   "7": 250,
+   "8": 254,
+   "9": 25,
+   "10": 17,
+   "11": 13,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Fragaria vesca": {
+  "usageKey": 3029817,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Fragaria vesca L.",
+  "status": "ACCEPTED",
+  "nw_count": 1006,
+  "month_facet": {
+   "1": 4,
+   "2": 1,
+   "3": 24,
+   "4": 60,
+   "5": 192,
+   "6": 280,
+   "7": 195,
+   "8": 130,
+   "9": 26,
+   "10": 14,
+   "11": 13
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Rubus saxatilis": {
+  "usageKey": 2992808,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Rubus saxatilis L.",
+  "status": "ACCEPTED",
+  "nw_count": 665,
+  "month_facet": {
+   "3": 1,
+   "4": 1,
+   "5": 56,
+   "6": 181,
+   "7": 227,
+   "8": 167,
+   "9": 10,
+   "10": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Ribes nigrum": {
+  "usageKey": 2986192,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Ribes nigrum L.",
+  "status": "ACCEPTED",
+  "nw_count": 330,
+  "month_facet": {
+   "1": 1,
+   "2": 2,
+   "3": 3,
+   "4": 18,
+   "5": 62,
+   "6": 96,
+   "7": 71,
+   "8": 34,
+   "9": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Ribes spicatum": {
+  "usageKey": 2986129,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Ribes spicatum E.Robson",
+  "status": "ACCEPTED",
+  "nw_count": 83,
+  "month_facet": {
+   "4": 1,
+   "5": 11,
+   "6": 14,
+   "7": 23,
+   "8": 17,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Rubus caesius": {
+  "usageKey": 2995209,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Rubus caesius L.",
+  "status": "ACCEPTED",
+  "nw_count": 309,
+  "month_facet": {
+   "3": 1,
+   "4": 3,
+   "5": 13,
+   "6": 61,
+   "7": 71,
+   "8": 96,
+   "9": 15,
+   "10": 19,
+   "11": 8,
+   "12": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Empetrum nigrum": {
+  "usageKey": 8925249,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Empetrum nigrum L.",
+  "status": "ACCEPTED",
+  "nw_count": 235,
+  "month_facet": {
+   "3": 4,
+   "4": 12,
+   "5": 39,
+   "6": 33,
+   "7": 56,
+   "8": 40,
+   "9": 20,
+   "10": 8,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Arctostaphylos uva-ursi": {
+  "usageKey": 2882580,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Arctostaphylos uva-ursi (L.) Spreng.",
+  "status": "ACCEPTED",
+  "nw_count": 151,
+  "month_facet": {
+   "4": 9,
+   "5": 27,
+   "6": 30,
+   "7": 11,
+   "8": 50,
+   "9": 6,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Boletus edulis": {
+  "usageKey": 5954958,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Boletus edulis Bull.",
+  "status": "ACCEPTED",
+  "nw_count": 239,
+  "month_facet": {
+   "6": 12,
+   "7": 49,
+   "8": 87,
+   "9": 52,
+   "10": 17,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Leccinum scabrum": {
+  "usageKey": 9141390,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Leccinum scabrum (Bull.) Gray",
+  "status": "ACCEPTED",
+  "nw_count": 132,
+  "month_facet": {
+   "6": 18,
+   "7": 19,
+   "8": 43,
+   "9": 19,
+   "10": 16
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Leccinum aurantiacum": {
+  "usageKey": 2524513,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Leccinum aurantiacum (Bull.) Gray",
+  "status": "ACCEPTED",
+  "nw_count": 73,
+  "month_facet": {
+   "6": 2,
+   "7": 13,
+   "8": 28,
+   "9": 12
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Leccinum versipelle": {
+  "usageKey": 2524490,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Leccinum versipelle (Fr.) Snell",
+  "status": "ACCEPTED",
+  "nw_count": 31,
+  "month_facet": {
+   "6": 2,
+   "7": 4,
+   "8": 8,
+   "9": 16,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Imleria badia": {
+  "usageKey": 7832732,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Imleria badia (Fr.) Vizzini",
+  "status": "ACCEPTED",
+  "nw_count": 79,
+  "month_facet": {
+   "7": 8,
+   "8": 40,
+   "9": 19,
+   "10": 10,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Xerocomus subtomentosus": {
+  "usageKey": 2519457,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Xerocomus subtomentosus (L.) Quél.",
+  "status": "ACCEPTED",
+  "nw_count": 4,
+  "month_facet": {
+   "8": 1,
+   "9": 2,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Suillus luteus": {
+  "usageKey": 7777157,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Suillus luteus (L.) Roussel",
+  "status": "ACCEPTED",
+  "nw_count": 68,
+  "month_facet": {
+   "7": 3,
+   "8": 22,
+   "9": 16,
+   "10": 18,
+   "11": 9
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Suillus bovinus": {
+  "usageKey": 7623986,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Suillus bovinus (L.) Roussel",
+  "status": "ACCEPTED",
+  "nw_count": 23,
+  "month_facet": {
+   "7": 1,
+   "8": 3,
+   "9": 9,
+   "10": 8,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Suillus variegatus": {
+  "usageKey": 9043861,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Suillus variegatus (Sw.) Richon & Roze",
+  "status": "ACCEPTED",
+  "nw_count": 29,
+  "month_facet": {
+   "7": 4,
+   "8": 15,
+   "9": 7,
+   "10": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Tylopilus felleus": {
+  "usageKey": 2524910,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Tylopilus felleus (Bull.) P.Karst.",
+  "status": "ACCEPTED",
+  "nw_count": 63,
+  "month_facet": {
+   "7": 32,
+   "8": 25,
+   "9": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cantharellus cibarius": {
+  "usageKey": 5249504,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cantharellus cibarius Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 220,
+  "month_facet": {
+   "6": 26,
+   "7": 59,
+   "8": 85,
+   "9": 20,
+   "10": 11,
+   "11": 19
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lactarius resimus": {
+  "usageKey": 8959060,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lactarius resimus (Fr.) Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 0,
+  "month_facet": {},
+  "fetched_at": "2026-09-26"
+ },
+ "Lactarius necator": {
+  "usageKey": 5248670,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lactarius necator (Bull.) Pers.",
+  "status": "ACCEPTED",
+  "nw_count": 1,
+  "month_facet": {
+   "8": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lactarius torminosus": {
+  "usageKey": 8122710,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lactarius torminosus (Schaeff.) Pers.",
+  "status": "ACCEPTED",
+  "nw_count": 35,
+  "month_facet": {
+   "7": 1,
+   "8": 11,
+   "9": 17,
+   "10": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lactarius deterrimus": {
+  "usageKey": 7925734,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lactarius deterrimus Gröger",
+  "status": "ACCEPTED",
+  "nw_count": 13,
+  "month_facet": {
+   "8": 2,
+   "9": 9,
+   "10": 1,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lactarius rufus": {
+  "usageKey": 5248684,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lactarius rufus (Scop.) Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 9,
+  "month_facet": {
+   "6": 1,
+   "7": 3,
+   "8": 2,
+   "9": 1,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Russula vesca": {
+  "usageKey": 2551415,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Russula vesca Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 1,
+  "month_facet": {
+   "8": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Russula emetica": {
+  "usageKey": 2551213,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Russula emetica (Schaeff.) Pers.",
+  "status": "ACCEPTED",
+  "nw_count": 0,
+  "month_facet": {},
+  "fetched_at": "2026-09-26"
+ },
+ "Armillaria borealis": {
+  "usageKey": 2536906,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Armillaria borealis Marxm. & Korhonen",
+  "status": "ACCEPTED",
+  "nw_count": 18,
+  "month_facet": {
+   "8": 1,
+   "9": 14,
+   "10": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Kuehneromyces mutabilis": {
+  "usageKey": 2533962,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Kuehneromyces mutabilis (Schaeff.) Singer & A.H.Sm.",
+  "status": "ACCEPTED",
+  "nw_count": 82,
+  "month_facet": {
+   "5": 6,
+   "6": 8,
+   "7": 17,
+   "8": 27,
+   "9": 16,
+   "10": 2,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Flammulina velutipes": {
+  "usageKey": 3341441,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Flammulina velutipes (Curtis) Singer",
+  "status": "ACCEPTED",
+  "nw_count": 4,
+  "month_facet": {
+   "1": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Pleurotus ostreatus": {
+  "usageKey": 2526530,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Pleurotus ostreatus (Jacq.) P.Kumm.",
+  "status": "ACCEPTED",
+  "nw_count": 40,
+  "month_facet": {
+   "1": 1,
+   "2": 2,
+   "4": 3,
+   "8": 2,
+   "9": 8,
+   "10": 12,
+   "11": 10,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Coprinus comatus": {
+  "usageKey": 7987658,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Coprinus comatus (O.F.Müll.) Pers.",
+  "status": "ACCEPTED",
+  "nw_count": 276,
+  "month_facet": {
+   "6": 2,
+   "7": 9,
+   "8": 28,
+   "9": 150,
+   "10": 83,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Gyromitra esculenta": {
+  "usageKey": 5258510,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Gyromitra esculenta Pers. ex Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 47,
+  "month_facet": {
+   "4": 10,
+   "5": 35,
+   "6": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Morchella esculenta": {
+  "usageKey": 2594602,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Morchella esculenta (L.) Pers.",
+  "status": "ACCEPTED",
+  "nw_count": 8,
+  "month_facet": {
+   "5": 7,
+   "6": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lycoperdon perlatum": {
+  "usageKey": 5243258,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lycoperdon perlatum Pers.",
+  "status": "ACCEPTED",
+  "nw_count": 52,
+  "month_facet": {
+   "3": 2,
+   "5": 1,
+   "6": 1,
+   "7": 1,
+   "8": 13,
+   "9": 14,
+   "10": 16,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Scleroderma citrinum": {
+  "usageKey": 5239982,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Scleroderma citrinum Pers.",
+  "status": "ACCEPTED",
+  "nw_count": 4,
+  "month_facet": {
+   "8": 3,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cortinarius caperatus": {
+  "usageKey": 2529415,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cortinarius caperatus (Pers.) Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 33,
+  "month_facet": {
+   "7": 9,
+   "8": 14,
+   "9": 8,
+   "10": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Paxillus involutus": {
+  "usageKey": 5240002,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Paxillus involutus (Batsch) Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 51,
+  "month_facet": {
+   "6": 2,
+   "7": 2,
+   "8": 16,
+   "9": 21,
+   "10": 9,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Amanita phalloides": {
+  "usageKey": 5240325,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Amanita phalloides (Vaill. ex Fr.) Link",
+  "status": "ACCEPTED",
+  "nw_count": 11,
+  "month_facet": {
+   "8": 10,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Amanita virosa": {
+  "usageKey": 5240323,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Amanita virosa Bertill.",
+  "status": "ACCEPTED",
+  "nw_count": 16,
+  "month_facet": {
+   "7": 3,
+   "8": 6,
+   "9": 7
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Amanita muscaria": {
+  "usageKey": 8168319,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Amanita muscaria (L.) Lam.",
+  "status": "ACCEPTED",
+  "nw_count": 433,
+  "month_facet": {
+   "7": 29,
+   "8": 115,
+   "9": 185,
+   "10": 94,
+   "11": 10
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Amanita pantherina": {
+  "usageKey": 8961574,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Amanita pantherina (DC.) Krombh.",
+  "status": "ACCEPTED",
+  "nw_count": 28,
+  "month_facet": {
+   "6": 1,
+   "7": 7,
+   "8": 10,
+   "9": 9,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Galerina marginata": {
+  "usageKey": 8118872,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Galerina marginata (Batsch) Kühner",
+  "status": "ACCEPTED",
+  "nw_count": 5,
+  "month_facet": {
+   "8": 1,
+   "10": 2,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Hypholoma fasciculare": {
+  "usageKey": 3293632,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Hypholoma fasciculare (Huds.) P.Kumm.",
+  "status": "ACCEPTED",
+  "nw_count": 19,
+  "month_facet": {
+   "5": 1,
+   "6": 4,
+   "7": 2,
+   "8": 3,
+   "9": 4,
+   "10": 4,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cortinarius rubellus": {
+  "usageKey": 2528663,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cortinarius rubellus Cooke",
+  "status": "ACCEPTED",
+  "nw_count": 1,
+  "month_facet": {
+   "8": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Tricholoma equestre": {
+  "usageKey": 3324883,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Tricholoma equestre (L.) P.Kumm.",
+  "status": "ACCEPTED",
+  "nw_count": 15,
+  "month_facet": {
+   "9": 6,
+   "10": 5,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Entoloma sinuatum": {
+  "usageKey": 2539308,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Entoloma sinuatum (Bull.) P.Kumm.",
+  "status": "ACCEPTED",
+  "nw_count": 0,
+  "month_facet": {},
+  "fetched_at": "2026-09-26"
+ },
+ "Fomes fomentarius": {
+  "usageKey": 8068867,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Fomes fomentarius (L.) Fr.",
+  "status": "ACCEPTED",
+  "nw_count": 281,
+  "month_facet": {
+   "1": 8,
+   "2": 11,
+   "3": 64,
+   "4": 40,
+   "5": 38,
+   "6": 13,
+   "7": 25,
+   "8": 22,
+   "9": 9,
+   "10": 31,
+   "11": 16,
+   "12": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Fomitopsis betulina": {
+  "usageKey": 9819973,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Fomitopsis betulina (Bull.) B.K.Cui, M.L.Han & Y.C.Dai",
+  "status": "ACCEPTED",
+  "nw_count": 172,
+  "month_facet": {
+   "1": 5,
+   "2": 11,
+   "3": 31,
+   "4": 18,
+   "5": 14,
+   "6": 6,
+   "7": 13,
+   "8": 18,
+   "9": 27,
+   "10": 21,
+   "11": 7,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Inonotus obliquus": {
+  "usageKey": 2521089,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Inonotus obliquus (Fr.) Pilát",
+  "status": "ACCEPTED",
+  "nw_count": 117,
+  "month_facet": {
+   "1": 4,
+   "2": 8,
+   "3": 17,
+   "4": 6,
+   "5": 19,
+   "6": 10,
+   "7": 7,
+   "8": 13,
+   "9": 7,
+   "10": 22,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Laetiporus sulphureus": {
+  "usageKey": 9072021,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Laetiporus sulphureus (Bull.) Murrill",
+  "status": "ACCEPTED",
+  "nw_count": 329,
+  "month_facet": {
+   "1": 1,
+   "2": 3,
+   "3": 4,
+   "4": 3,
+   "5": 57,
+   "6": 126,
+   "7": 25,
+   "8": 60,
+   "9": 35,
+   "10": 11,
+   "11": 2,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Claviceps purpurea": {
+  "usageKey": 9378152,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Claviceps purpurea (Fr.) Tul.",
+  "status": "ACCEPTED",
+  "nw_count": 4,
+  "month_facet": {
+   "8": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Secale cereale": {
+  "usageKey": 2705966,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Secale cereale L.",
+  "status": "ACCEPTED",
+  "nw_count": 49,
+  "month_facet": {
+   "3": 1,
+   "6": 15,
+   "7": 8,
+   "8": 1,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Triticum aestivum": {
+  "usageKey": 7795888,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Triticum aestivum L.",
+  "status": "ACCEPTED",
+  "nw_count": 108,
+  "month_facet": {
+   "5": 1,
+   "6": 9,
+   "7": 34,
+   "8": 12,
+   "9": 4,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Hordeum vulgare": {
+  "usageKey": 2706056,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Hordeum vulgare L.",
+  "status": "ACCEPTED",
+  "nw_count": 82,
+  "month_facet": {
+   "6": 2,
+   "7": 17,
+   "8": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Avena sativa": {
+  "usageKey": 2705290,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Avena sativa L.",
+  "status": "ACCEPTED",
+  "nw_count": 47,
+  "month_facet": {
+   "6": 1,
+   "7": 16,
+   "8": 12,
+   "9": 1,
+   "10": 2,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Panicum miliaceum": {
+  "usageKey": 2705090,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Panicum miliaceum L.",
+  "status": "ACCEPTED",
+  "nw_count": 36,
+  "month_facet": {
+   "7": 3,
+   "8": 14,
+   "9": 7
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Pisum sativum": {
+  "usageKey": 5347845,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Pisum sativum L.",
+  "status": "SYNONYM",
+  "nw_count": 11,
+  "month_facet": {
+   "6": 1,
+   "7": 6,
+   "8": 1,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Vicia faba": {
+  "usageKey": 2974832,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Vicia faba L.",
+  "status": "ACCEPTED",
+  "nw_count": 6,
+  "month_facet": {
+   "6": 1,
+   "7": 2,
+   "8": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lens culinaris": {
+  "usageKey": 5350010,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lens culinaris Medik.",
+  "status": "SYNONYM",
+  "nw_count": 1,
+  "month_facet": {},
+  "fetched_at": "2026-09-26"
+ },
+ "Linum usitatissimum": {
+  "usageKey": 2873861,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Linum usitatissimum L.",
+  "status": "ACCEPTED",
+  "nw_count": 10,
+  "month_facet": {
+   "6": 1,
+   "7": 4,
+   "8": 3,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cannabis sativa": {
+  "usageKey": 5361880,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cannabis sativa L.",
+  "status": "ACCEPTED",
+  "nw_count": 36,
+  "month_facet": {
+   "5": 2,
+   "6": 8,
+   "7": 3,
+   "9": 6
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Fagopyrum esculentum": {
+  "usageKey": 2889373,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Fagopyrum esculentum Moench",
+  "status": "ACCEPTED",
+  "nw_count": 34,
+  "month_facet": {
+   "5": 1,
+   "6": 5,
+   "7": 12,
+   "8": 12,
+   "9": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Brassica rapa": {
+  "usageKey": 7903057,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Brassica rapa L.",
+  "status": "ACCEPTED",
+  "nw_count": 137,
+  "month_facet": {
+   "5": 1,
+   "6": 8,
+   "7": 12,
+   "8": 7,
+   "9": 6,
+   "10": 4,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Brassica oleracea": {
+  "usageKey": 3042845,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Brassica oleracea L.",
+  "status": "ACCEPTED",
+  "nw_count": 36,
+  "month_facet": {
+   "5": 1,
+   "6": 5,
+   "7": 4,
+   "8": 5,
+   "9": 13,
+   "10": 5,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Allium cepa": {
+  "usageKey": 2857697,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Allium cepa L.",
+  "status": "ACCEPTED",
+  "nw_count": 3,
+  "month_facet": {
+   "7": 1,
+   "8": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Allium sativum": {
+  "usageKey": 2856681,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Allium sativum L.",
+  "status": "ACCEPTED",
+  "nw_count": 4,
+  "month_facet": {
+   "3": 1,
+   "5": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Anethum graveolens": {
+  "usageKey": 3034646,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Anethum graveolens L.",
+  "status": "ACCEPTED",
+  "nw_count": 35,
+  "month_facet": {
+   "5": 2,
+   "6": 8,
+   "7": 11,
+   "8": 8,
+   "9": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Beta vulgaris": {
+  "usageKey": 8971274,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Beta vulgaris L.",
+  "status": "ACCEPTED",
+  "nw_count": 17,
+  "month_facet": {
+   "6": 1,
+   "7": 4,
+   "8": 4,
+   "9": 2,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Daucus carota subsp. sativus": {
+  "query": "Daucus carota",
+  "usageKey": 3034742,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Daucus carota L.",
+  "status": "ACCEPTED",
+  "nw_count": 105,
+  "month_facet": {
+   "5": 1,
+   "6": 6,
+   "7": 41,
+   "8": 29,
+   "9": 7,
+   "10": 4,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cucumis sativus": {
+  "usageKey": 2874569,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cucumis sativus L.",
+  "status": "ACCEPTED",
+  "nw_count": 19,
+  "month_facet": {
+   "8": 1,
+   "9": 8
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Armoracia rusticana": {
+  "usageKey": 3041022,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Armoracia rusticana P.Gaertn., B.Mey. & Scherb.",
+  "status": "ACCEPTED",
+  "nw_count": 367,
+  "month_facet": {
+   "4": 3,
+   "5": 31,
+   "6": 118,
+   "7": 85,
+   "8": 97,
+   "9": 13,
+   "10": 3,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Humulus lupulus": {
+  "usageKey": 2984535,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Humulus lupulus L.",
+  "status": "ACCEPTED",
+  "nw_count": 445,
+  "month_facet": {
+   "1": 12,
+   "2": 10,
+   "3": 11,
+   "4": 8,
+   "5": 30,
+   "6": 100,
+   "7": 111,
+   "8": 103,
+   "9": 26,
+   "10": 7,
+   "11": 3,
+   "12": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Prunus cerasus": {
+  "usageKey": 3021922,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Prunus cerasus L.",
+  "status": "ACCEPTED",
+  "nw_count": 63,
+  "month_facet": {
+   "4": 1,
+   "5": 11,
+   "6": 17,
+   "7": 15,
+   "8": 12,
+   "9": 1,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Malus domestica": {
+  "usageKey": 3001244,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Malus domestica (Suckow) Borkh.",
+  "status": "ACCEPTED",
+  "nw_count": 361,
+  "month_facet": {
+   "1": 7,
+   "2": 1,
+   "3": 1,
+   "4": 4,
+   "5": 28,
+   "6": 90,
+   "7": 86,
+   "8": 99,
+   "9": 10,
+   "10": 5,
+   "11": 3,
+   "12": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Agrostemma githago": {
+  "usageKey": 3085368,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Agrostemma githago L.",
+  "status": "ACCEPTED",
+  "nw_count": 18,
+  "month_facet": {
+   "7": 1,
+   "8": 10
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Galium aparine": {
+  "usageKey": 2913548,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Galium aparine L.",
+  "status": "ACCEPTED",
+  "nw_count": 237,
+  "month_facet": {
+   "4": 3,
+   "5": 6,
+   "6": 16,
+   "7": 10,
+   "8": 5,
+   "9": 3,
+   "10": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Galeopsis": {
+  "query": "Galeopsis",
+  "usageKey": 8423109,
+  "matchType": "EXACT",
+  "rank": "GENUS",
+  "scientificName": "Galeopsis L.",
+  "status": "ACCEPTED",
+  "nw_count": 1265,
+  "month_facet": {
+   "5": 2,
+   "6": 152,
+   "7": 352,
+   "8": 227,
+   "9": 40,
+   "10": 14,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Fallopia convolvulus": {
+  "usageKey": 6391461,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Fallopia convolvulus (L.) Á.Löve",
+  "status": "ACCEPTED",
+  "nw_count": 696,
+  "month_facet": {
+   "4": 1,
+   "5": 1,
+   "6": 66,
+   "7": 62,
+   "8": 49,
+   "9": 9,
+   "10": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Silene": {
+  "query": "Silene",
+  "usageKey": 3085897,
+  "matchType": "EXACT",
+  "rank": "GENUS",
+  "scientificName": "Silene L.",
+  "status": "ACCEPTED",
+  "nw_count": 2727,
+  "month_facet": {
+   "1": 3,
+   "3": 6,
+   "4": 17,
+   "5": 163,
+   "6": 1064,
+   "7": 698,
+   "8": 360,
+   "9": 116,
+   "10": 54,
+   "11": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Bromus secalinus": {
+  "usageKey": 2703717,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Bromus secalinus L.",
+  "status": "ACCEPTED",
+  "nw_count": 33,
+  "month_facet": {
+   "6": 7,
+   "7": 7,
+   "8": 1,
+   "9": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Bromus arvensis": {
+  "usageKey": 2703705,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Bromus arvensis L.",
+  "status": "ACCEPTED",
+  "nw_count": 23,
+  "month_facet": {
+   "6": 4,
+   "9": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lapsana communis": {
+  "usageKey": 3134857,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lapsana communis L.",
+  "status": "ACCEPTED",
+  "nw_count": 530,
+  "month_facet": {
+   "1": 2,
+   "2": 2,
+   "3": 4,
+   "4": 14,
+   "5": 18,
+   "6": 143,
+   "7": 129,
+   "8": 62,
+   "9": 14,
+   "10": 12,
+   "11": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Apera spica-venti": {
+  "usageKey": 5289642,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Apera spica-venti (L.) P.Beauv.",
+  "status": "ACCEPTED",
+  "nw_count": 33,
+  "month_facet": {
+   "6": 1,
+   "7": 3,
+   "8": 1,
+   "9": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Chenopodium album": {
+  "usageKey": 3083838,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Chenopodium album L.",
+  "status": "ACCEPTED",
+  "nw_count": 1288,
+  "month_facet": {
+   "4": 1,
+   "5": 20,
+   "6": 181,
+   "7": 207,
+   "8": 158,
+   "9": 18,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Centaurea cyanus": {
+  "usageKey": 3089561,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Centaurea cyanus L.",
+  "status": "ACCEPTED",
+  "nw_count": 324,
+  "month_facet": {
+   "5": 1,
+   "6": 72,
+   "7": 68,
+   "8": 56,
+   "9": 17,
+   "10": 5
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Neslia paniculata": {
+  "usageKey": 9040863,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Neslia paniculata (L.) Desv.",
+  "status": "ACCEPTED",
+  "nw_count": 16,
+  "month_facet": {
+   "7": 4,
+   "8": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Spergula arvensis": {
+  "usageKey": 3085810,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Spergula arvensis L.",
+  "status": "ACCEPTED",
+  "nw_count": 395,
+  "month_facet": {
+   "6": 40,
+   "7": 41,
+   "8": 41,
+   "9": 11,
+   "10": 7,
+   "11": 4
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Raphanus raphanistrum": {
+  "usageKey": 3040983,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Raphanus raphanistrum L.",
+  "status": "ACCEPTED",
+  "nw_count": 411,
+  "month_facet": {
+   "5": 2,
+   "6": 81,
+   "7": 63,
+   "8": 27,
+   "9": 8,
+   "10": 4,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Cirsium arvense": {
+  "usageKey": 3113414,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Cirsium arvense (L.) Scop.",
+  "status": "ACCEPTED",
+  "nw_count": 2210,
+  "month_facet": {
+   "1": 18,
+   "2": 16,
+   "3": 6,
+   "4": 16,
+   "5": 117,
+   "6": 360,
+   "7": 576,
+   "8": 354,
+   "9": 103,
+   "10": 47,
+   "11": 24,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Sonchus arvensis": {
+  "usageKey": 3105813,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Sonchus arvensis L.",
+  "status": "ACCEPTED",
+  "nw_count": 925,
+  "month_facet": {
+   "5": 3,
+   "6": 68,
+   "7": 139,
+   "8": 153,
+   "9": 47,
+   "10": 11,
+   "11": 1
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Viola arvensis": {
+  "usageKey": 5331235,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Viola arvensis Murray",
+  "status": "ACCEPTED",
+  "nw_count": 830,
+  "month_facet": {
+   "3": 1,
+   "4": 29,
+   "5": 153,
+   "6": 118,
+   "7": 68,
+   "8": 57,
+   "9": 16,
+   "10": 5,
+   "11": 3
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Tripleurospermum inodorum": {
+  "usageKey": 3104179,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Tripleurospermum inodorum (L.) Sch.-Bip",
+  "status": "ACCEPTED",
+  "nw_count": 1731,
+  "month_facet": {
+   "1": 2,
+   "2": 1,
+   "3": 12,
+   "4": 51,
+   "5": 125,
+   "6": 292,
+   "7": 312,
+   "8": 187,
+   "9": 54,
+   "10": 42,
+   "11": 17,
+   "12": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Lolium temulentum": {
+  "usageKey": 2706242,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Lolium temulentum L.",
+  "status": "ACCEPTED",
+  "nw_count": 4,
+  "month_facet": {
+   "7": 2
+  },
+  "fetched_at": "2026-09-26"
+ },
+ "Melampyrum arvense": {
+  "usageKey": 7331741,
+  "matchType": "EXACT",
+  "rank": "SPECIES",
+  "scientificName": "Melampyrum arvense L.",
+  "status": "ACCEPTED",
+  "nw_count": 0,
+  "month_facet": {},
+  "fetched_at": "2026-09-26"
+ }
+}

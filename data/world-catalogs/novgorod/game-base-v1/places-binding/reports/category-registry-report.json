@@ -1,0 +1,990 @@
+{
+  "registry_rows": 982,
+  "own_place_family_rows": 61,
+  "reused_v17_ids": 66,
+  "reused_v17_with_different_stable_code": 39,
+  "by_origin": {
+    "v17_actor_appearance": 42,
+    "game_base_v1:buildings-interiors-containers": 14,
+    "v17_item_container_v5": 366,
+    "game_base_v1:fauna-mammals-birds": 220,
+    "game_base_v1:flora-trees-shrubs": 42,
+    "game_base_v1:clothing-appearance": 59,
+    "game_base_v1:items-household-personal": 121,
+    "game_base_v1:places-binding": 61,
+    "v17_spatial_v3": 57
+  },
+  "by_domain": {
+    "actor_appearance": 42,
+    "container_content": 14,
+    "container": 100,
+    "fauna": 220,
+    "flora": 42,
+    "g5_anchor": 1,
+    "g5_edge": 1,
+    "g5_zone": 1,
+    "garment": 59,
+    "item_property": 1,
+    "item": 383,
+    "place_family": 61,
+    "spatial_materialization": 46,
+    "spatial_structure": 11
+  },
+  "definition_files": [
+    "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv",
+    "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/fauna_categories.csv",
+    "data/world-catalogs/novgorod/game-base-v1/flora-trees-shrubs/flora/woody_categories.csv",
+    "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_categories.csv",
+    "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_categories.csv"
+  ],
+  "reference_files": [
+    "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+    "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+    "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fish.csv",
+    "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv",
+    "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/livestock_species.csv",
+    "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/livestock_types.csv",
+    "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/birds.csv",
+    "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/mammals.csv",
+    "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv",
+    "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv",
+    "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv",
+    "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv",
+    "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv",
+    "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/household.csv",
+    "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv",
+    "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/personal.csv",
+    "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv",
+    "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv"
+  ],
+  "references_checked": 6988,
+  "unresolved_references": 788,
+  "unresolved_by_file": {
+    "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv": 32,
+    "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv": 74,
+    "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fish.csv": 38,
+    "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/invertebrates_herps.csv": 45,
+    "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/livestock_species.csv": 11,
+    "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/livestock_types.csv": 28,
+    "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/berries_mushrooms.csv": 56,
+    "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/cultivated_plants.csv": 42,
+    "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/herbs_mosses_aquatic.csv": 184,
+    "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv": 198,
+    "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapons_armour.csv": 49,
+    "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/items/weapon_equipment_profiles.csv": 31
+  },
+  "unresolved_sample": [
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.base_garment"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.lower_garment"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.outer_garment"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.over_garment_winter"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.cloak"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.waist"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.waist_garment"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.apron"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.headwear"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.head_under"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.headband"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.handwear"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.leg_wrap"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.foot_layer"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.insole"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.footwear"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.over_footwear"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.footwear_attachment"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.vestment_base"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.vestment_stole"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.vestment_outer"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.vestment_cuffs"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.vestment_omophorion"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.trim"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.component"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.neck"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.chest_pendant"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.ear_temple"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.head_ornament"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.wrist"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.finger"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/equipment_slots.csv",
+      "column": "category_id",
+      "value": "garment.equipment_slot.garment_fastener"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_bow_drill_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_drawknife_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_plane_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_nail_puller_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_marking_cord_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_compass_divider_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_plumb_line_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_workhorse_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_lathe_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_cooper_croze_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_caulking_iron_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_boat_stocks_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_forge_hearth_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_bellows_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_tuyere_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_anvil_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_anvil_block_v1"
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/crafts-tools-processes/craft_tools_gear/tools_gear.csv",
+      "column": "category_id",
+      "value": "cat_item_object_smith_chisel_v1"
+    }
+  ],
+  "problems_by_kind": {
+    "stable_code_missing": 59,
+    "parent_missing": 59
+  },
+  "problems": [
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.tunic_shirt",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.wool_tunic",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.trousers_porty",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.leg_wraps",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.svita",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.sheepskin_coat_kozhukh",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.fur_coat_shuba",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.cloak",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.hood",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.apron",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.blanket_wrap",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.long_wool_garment",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.wrap_skirt_poneva",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.belt",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.mittens",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.soft_cap",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.felt_cap",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.fur_cap",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.fur_trimmed_cap",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.headcloth",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.under_cap_povoi",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.head_veil_ubrus",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.headband_ochelye",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.maiden_band",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.monastic_hood",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.liturgical_mitre",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.porshni",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.low_shoe",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.ankle_shoe",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.boot",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.burial_shoe",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.insole",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.sock",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.foot_wrap_onucha",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.overshoe_porshni",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.ice_cleat",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.spur",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.woven_belt",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.belt_set",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.clergy_long_robe",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.monastic_tunic",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.monastic_mantle",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.sticharion",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.epitrachelion",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.phelonion",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.epimanikia",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.orarion",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.omophorion",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.hose_chausses",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.wrap_dress_regional",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.gloves",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.votola",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.korzno",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.kind.bast_shoes",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.component.trim",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.component.shoe_lace",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.component.belt_buckle",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.component.belt_fitting",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "stable_code_missing",
+      "category_id": "garment.component.belt_strap",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.tunic_shirt",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.wool_tunic",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.trousers_porty",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.leg_wraps",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.svita",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.sheepskin_coat_kozhukh",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.fur_coat_shuba",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.cloak",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.hood",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.apron",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.blanket_wrap",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.long_wool_garment",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.wrap_skirt_poneva",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.belt",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.mittens",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.soft_cap",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.felt_cap",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.fur_cap",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.fur_trimmed_cap",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.headcloth",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.under_cap_povoi",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.head_veil_ubrus",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.headband_ochelye",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.maiden_band",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.monastic_hood",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.liturgical_mitre",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.porshni",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.low_shoe",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.ankle_shoe",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.boot",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.burial_shoe",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.insole",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.sock",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.foot_wrap_onucha",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.overshoe_porshni",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.ice_cleat",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.spur",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.woven_belt",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.belt_set",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.clergy_long_robe",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.monastic_tunic",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.monastic_mantle",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.sticharion",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.epitrachelion",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.phelonion",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.epimanikia",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.orarion",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.omophorion",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.hose_chausses",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.wrap_dress_regional",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.gloves",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.votola",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.korzno",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.kind.bast_shoes",
+      "parent": "garment.kind",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.component.trim",
+      "parent": "garment.component",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.component.shoe_lace",
+      "parent": "garment.component",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.component.belt_buckle",
+      "parent": "garment.component",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.component.belt_fitting",
+      "parent": "garment.component",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    },
+    {
+      "kind": "parent_missing",
+      "category_id": "garment.component.belt_strap",
+      "parent": "garment.component",
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/garments/garment_categories.csv"
+    }
+  ],
+  "missing_target_domains": [
+    "food",
+    "behavior",
+    "motive",
+    "knowledge",
+    "activity"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "gb_flora_habitat_map_v1",
+  "status": "candidate",
+  "note": "Habitat class -> WK place-first-cartography environment_families ids (pf_id). pf_id = WK family id verbatim (main:data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json). A taxon's presence frequency_class in a habitat is copied to every pf of that habitat; if several habitats hit the same pf, the maximum class wins. Mapping is an editorial candidate, not an approved ecology.",
+  "seasons": {
+    "winter": [12, 1, 2, 3],
+    "spring": [4, 5],
+    "summer": [6, 7, 8],
+    "autumn": [9, 10, 11]
+  },
+  "season_note": "Season ids follow v17 nature-successor-candidate-v2 (winter/spring/summer/autumn). Month bounds are an editorial convention for Novgorod (snow cover usually XII-III; spring rasputitsa falls in IV); consumers with another season scheme re-derive from the month columns.",
+  "frequency_classes": {"ubiquitous": 8, "common": 4, "contextual": 2, "rare": 1},
+  "habitats": {
+    "BOG":        {"ru": "верховое (сфагновое) болото", "pf": ["bog"]},
+    "FEN":        {"ru": "низинное и переходное болото, топь, заболоченный ольшаник", "pf": ["bog", "marshy_stream"]},
+    "WETMEADOW":  {"ru": "сырой луг, пойменная низина", "pf": ["floodplain_meadow", "marshy_stream"]},
+    "MEADOW":     {"ru": "луг пойменный и суходольный, сенокос", "pf": ["floodplain_meadow", "hay_meadow"]},
+    "PASTURE":    {"ru": "выгон, пастбище, толока", "pf": ["pasture"]},
+    "RUDERAL":    {"ru": "сорные места у жилья, дворы, улицы, обочины, пустыри", "pf": ["rural_yard", "peasant_homestead", "village_lane", "town_street", "town_courtyard", "road", "churchyard", "monastery_yard", "town_wall_edge", "outbuildings"]},
+    "TRAMPLED":   {"ru": "вытоптанные места: тропы, дворы, торг, пристани", "pf": ["village_lane", "town_street", "rural_yard", "road", "market_square", "river_wharf", "ferry_landing", "forest_track"]},
+    "ARABLE":     {"ru": "пашня, посевы (сорняки полей)", "pf": ["arable_field"]},
+    "MARGIN":     {"ru": "межи, края полей, обочины полевых дорог", "pf": ["field_margin", "road", "forest_track"]},
+    "GARDEN":     {"ru": "огород, сад", "pf": ["orchard_garden"]},
+    "PINEDRY":    {"ru": "сухой сосновый бор (лишайниковый, беломошный)", "pf": ["conifer_woodland"]},
+    "CONIFER":    {"ru": "еловый и сосновый зеленомошный лес", "pf": ["conifer_woodland", "hunting_ground"]},
+    "MIXED":      {"ru": "смешанный лес", "pf": ["mixed_woodland", "hunting_ground"]},
+    "BROADLEAF":  {"ru": "широколиственный и пойменный лиственный лес, дубрава, липняк", "pf": ["broadleaf_woodland"]},
+    "EDGE":       {"ru": "опушка, лесная поляна, вырубка, гарь, лесная дорога", "pf": ["forest_edge", "forest_track"]},
+    "SHORE":      {"ru": "прибрежное мелководье и заросли (тростник, рогоз, камыш)", "pf": ["riverbank", "lake_shore", "marshy_stream", "fishing_camp"]},
+    "BANK":       {"ru": "берег реки и озера, прибрежные травы, приречная полоса", "pf": ["riverbank", "lake_shore", "fishing_camp", "ferry_landing", "bridge_crossing"]},
+    "WATERFLOAT": {"ru": "водоём со спокойной водой: плавающие листья", "pf": ["river_channel", "lake_shore", "marshy_stream"]},
+    "WATERSUB":   {"ru": "погружённые водные растения в реках и озёрах", "pf": ["river_channel", "lake_shore"]},
+    "EPIPHYTE":   {"ru": "кора деревьев в лесу и на опушке", "pf": ["conifer_woodland", "mixed_woodland", "broadleaf_woodland", "forest_edge", "bog"]},
+    "YARDTREE":   {"ru": "кора деревьев, изгороди и старое дерево у жилья и в садах", "pf": ["orchard_garden", "rural_yard", "peasant_homestead", "churchyard", "monastery_yard"]},
+    "DEADWOOD":   {"ru": "валеж, пни, гнилая древесина в лесу", "pf": ["conifer_woodland", "mixed_woodland", "broadleaf_woodland", "forest_edge"]},
+    "RYEHEAD":    {"ru": "колосья ржи и злаков на поле", "pf": ["arable_field"]}
+  }
+}

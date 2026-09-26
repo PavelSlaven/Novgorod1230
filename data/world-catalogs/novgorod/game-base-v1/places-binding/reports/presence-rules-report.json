@@ -1,0 +1,710 @@
+{
+  "rule": "presence_ppm_from_frequency_class@1",
+  "pool_files": [
+    "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv",
+    "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv"
+  ],
+  "frequency_files_not_matching_pool_contract": [
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profile_entries.csv",
+      "has_scope_column": false,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/place_containers.csv",
+      "has_scope_column": true,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scene_items.csv",
+      "has_scope_column": false,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/adornment_appearance/adornment.csv",
+      "has_scope_column": false,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/fauna-fish-invertebrates-livestock/fauna/fauna_presence.csv",
+      "has_scope_column": true,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/flora-herbs-berries-mushrooms/flora/flora_habitat_presence.csv",
+      "has_scope_column": true,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/flora-trees-shrubs/flora/tree_habitat_presence.csv",
+      "has_scope_column": true,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/food-drink/food/ingredients.csv",
+      "has_scope_column": false,
+      "has_category_column": true
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/misc/hazards_dangers/hazards.csv",
+      "has_scope_column": true,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/names-peoples/personal_names/personal_names.csv",
+      "has_scope_column": false,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/natural_materials_soils/g4_ground_and_materials.csv",
+      "has_scope_column": true,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/natural_materials_soils/material_landscape_presence.csv",
+      "has_scope_column": true,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/weather_climate/temperature_anomalies.csv",
+      "has_scope_column": false,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/nature-materials-weather/weather_climate/weather_season_climatology.csv",
+      "has_scope_column": false,
+      "has_category_column": false
+    },
+    {
+      "file": "data/world-catalogs/novgorod/game-base-v1/social-strata-law/incidents_conflicts/conflicts/incidents.csv",
+      "has_scope_column": true,
+      "has_category_column": false
+    }
+  ],
+  "pool_rows_accepted": 5632,
+  "rules_written": 2426,
+  "duplicates_merged": 3206,
+  "conflicting_duplicates": 129,
+  "conflicts": [
+    {
+      "key": "place_family|pf_conifer_woodland|novgorod_land|fauna.mammal.large_predator.brown_bear",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row135",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row143"
+    },
+    {
+      "key": "place_family|pf_mixed_woodland|novgorod_land|fauna.mammal.large_predator.brown_bear",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row136",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row144"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.mammal.large_predator.brown_bear",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row141",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row149"
+    },
+    {
+      "key": "place_family|pf_broadleaf_woodland|novgorod_land|fauna.mammal.fur_predator.badger",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row312",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row319"
+    },
+    {
+      "key": "place_family|pf_mixed_woodland|novgorod_land|fauna.mammal.fur_predator.badger",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row313",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row320"
+    },
+    {
+      "key": "place_family|pf_forest_edge|novgorod_land|fauna.mammal.fur_predator.badger",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row314",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row321"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.mammal.fur_predator.badger",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row317",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row324"
+    },
+    {
+      "key": "place_family|pf_broadleaf_woodland|novgorod_land|fauna.mammal.small_mammal.hedgehog",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row679",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row688"
+    },
+    {
+      "key": "place_family|pf_forest_edge|novgorod_land|fauna.mammal.small_mammal.hedgehog",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row680",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row689"
+    },
+    {
+      "key": "place_family|pf_orchard_garden|novgorod_land|fauna.mammal.small_mammal.hedgehog",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row681",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row690"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.mammal.small_mammal.hedgehog",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row686",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row695"
+    },
+    {
+      "key": "place_family|pf_forest_edge|novgorod_land|fauna.mammal.bat.whiskered_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1181",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1192"
+    },
+    {
+      "key": "place_family|pf_broadleaf_woodland|novgorod_land|fauna.mammal.bat.whiskered_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1182",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1193"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.mammal.bat.whiskered_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1190",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1201"
+    },
+    {
+      "key": "place_family|pf_forest_edge|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1225",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1239"
+    },
+    {
+      "key": "place_family|pf_peasant_homestead|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1226",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1240"
+    },
+    {
+      "key": "place_family|pf_rural_yard|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1227",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1241"
+    },
+    {
+      "key": "place_family|pf_village_lane|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1228",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1242"
+    },
+    {
+      "key": "place_family|pf_outbuildings|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1229",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1243"
+    },
+    {
+      "key": "place_family|pf_river_channel|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1230",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1244"
+    },
+    {
+      "key": "place_family|pf_lake_shore|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1231",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1245"
+    },
+    {
+      "key": "place_family|pf_town_street|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1232",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1246"
+    },
+    {
+      "key": "place_family|pf_town_courtyard|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1233",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1247"
+    },
+    {
+      "key": "place_family|pf_town_wall_edge|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1234",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1248"
+    },
+    {
+      "key": "place_family|pf_churchyard|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1235",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1249"
+    },
+    {
+      "key": "place_family|pf_monastery_yard|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1236",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1250"
+    },
+    {
+      "key": "place_family|pf_mixed_woodland|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1237",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1251"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.mammal.bat.northern_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1238",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1252"
+    },
+    {
+      "key": "place_family|pf_forest_edge|novgorod_land|fauna.mammal.bat.parti_coloured_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1281",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1291"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.mammal.bat.parti_coloured_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1290",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1300"
+    },
+    {
+      "key": "place_family|pf_mixed_woodland|novgorod_land|fauna.mammal.bat.brown_long_eared_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1321",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1331"
+    },
+    {
+      "key": "place_family|pf_broadleaf_woodland|novgorod_land|fauna.mammal.bat.brown_long_eared_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1322",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1332"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.mammal.bat.brown_long_eared_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1329",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1339"
+    },
+    {
+      "key": "place_family|pf_river_channel|novgorod_land|fauna.mammal.bat.daubentons_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1361",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1366"
+    },
+    {
+      "key": "place_family|pf_lake_shore|novgorod_land|fauna.mammal.bat.daubentons_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1362",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1367"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.mammal.bat.daubentons_bat",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1365",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1370"
+    },
+    {
+      "key": "place_family|pf_lake_shore|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1564",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1574"
+    },
+    {
+      "key": "place_family|pf_river_channel|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1565",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1575"
+    },
+    {
+      "key": "place_family|pf_marshy_stream|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1566",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1576"
+    },
+    {
+      "key": "place_family|pf_floodplain_meadow|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1567",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1577"
+    },
+    {
+      "key": "place_family|pf_riverbank|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1568",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1578"
+    },
+    {
+      "key": "place_family|pf_bog|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1569",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1579"
+    },
+    {
+      "key": "place_family|pf_river_wharf|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1570",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1580"
+    },
+    {
+      "key": "place_family|pf_ferry_landing|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1571",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1581"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.bird.waterfowl.mallard",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1572",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1582"
+    },
+    {
+      "key": "place_family|pf_lake_shore|novgorod_land|fauna.bird.waterfowl.goldeneye",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1667",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1672"
+    },
+    {
+      "key": "place_family|pf_river_channel|novgorod_land|fauna.bird.waterfowl.goldeneye",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1668",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1673"
+    },
+    {
+      "key": "place_family|pf_mixed_woodland|novgorod_land|fauna.bird.waterfowl.goldeneye",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1669",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1674"
+    },
+    {
+      "key": "place_family|pf_hunting_ground|novgorod_land|fauna.bird.waterfowl.goldeneye",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1670",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1675"
+    },
+    {
+      "key": "place_family|pf_arable_field|novgorod_land|fauna.bird.raptor.hen_harrier",
+      "a": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1902",
+      "b": "data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv#row1907"
+    }
+  ],
+  "rejected_rows": 16657,
+  "rejected_by_file": {
+    "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 16657
+  },
+  "reject_reasons": {
+    "category_ref empty": 16657
+  },
+  "rejected_sample": [
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1034",
+      "row_id": "ipf_m_agr0039__arable_field",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1035",
+      "row_id": "ipf_m_agr0039__cellar_granary",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1036",
+      "row_id": "ipf_m_agr0039__dwelling_interior",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1037",
+      "row_id": "ipf_m_agr0039__orchard_garden",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1038",
+      "row_id": "ipf_m_agr0039__ordinary_workshop",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1039",
+      "row_id": "ipf_m_agr0039__outbuildings",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1040",
+      "row_id": "ipf_m_agr0039__peasant_homestead",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1041",
+      "row_id": "ipf_m_agr0039__threshing_barn",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1042",
+      "row_id": "ipf_m_agr0039__town_courtyard",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1043",
+      "row_id": "ipf_m_con0009__cellar_granary",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1044",
+      "row_id": "ipf_m_con0009__ferry_landing",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1045",
+      "row_id": "ipf_m_con0009__fishing_camp",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1046",
+      "row_id": "ipf_m_con0009__lake_shore",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1047",
+      "row_id": "ipf_m_con0009__ordinary_workshop",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1048",
+      "row_id": "ipf_m_con0009__outbuildings",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1049",
+      "row_id": "ipf_m_con0009__peasant_homestead",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1050",
+      "row_id": "ipf_m_con0009__river_wharf",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1051",
+      "row_id": "ipf_m_con0009__riverbank",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1052",
+      "row_id": "ipf_m_con0009__road",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1053",
+      "row_id": "ipf_m_con0009__town_courtyard",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1054",
+      "row_id": "ipf_m_con0009__town_street",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1055",
+      "row_id": "ipf_m_con0009__village_lane",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1056",
+      "row_id": "ipf_m_con0019__cellar_granary",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1057",
+      "row_id": "ipf_m_con0019__church_interior",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1058",
+      "row_id": "ipf_m_con0019__monastery_yard",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1059",
+      "row_id": "ipf_m_con0019__outbuildings",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1060",
+      "row_id": "ipf_m_con0019__peasant_homestead",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1061",
+      "row_id": "ipf_m_con0019__town_courtyard",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1062",
+      "row_id": "ipf_m_con0020__cellar_granary",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1063",
+      "row_id": "ipf_m_con0020__church_interior",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1064",
+      "row_id": "ipf_m_con0020__monastery_yard",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1065",
+      "row_id": "ipf_m_con0020__outbuildings",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1066",
+      "row_id": "ipf_m_con0020__peasant_homestead",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1067",
+      "row_id": "ipf_m_con0020__town_courtyard",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1068",
+      "row_id": "ipf_m_con0023__cellar_granary",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1069",
+      "row_id": "ipf_m_con0023__church_interior",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1070",
+      "row_id": "ipf_m_con0023__monastery_yard",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1071",
+      "row_id": "ipf_m_con0023__outbuildings",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1072",
+      "row_id": "ipf_m_con0023__peasant_homestead",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1073",
+      "row_id": "ipf_m_con0023__town_courtyard",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1074",
+      "row_id": "ipf_m_con0035__broadleaf_woodland",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1075",
+      "row_id": "ipf_m_con0035__cellar_granary",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1076",
+      "row_id": "ipf_m_con0035__conifer_woodland",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1077",
+      "row_id": "ipf_m_con0035__ferry_landing",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1078",
+      "row_id": "ipf_m_con0035__forest_edge",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1079",
+      "row_id": "ipf_m_con0035__mixed_woodland",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1080",
+      "row_id": "ipf_m_con0035__ordinary_workshop",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1081",
+      "row_id": "ipf_m_con0035__outbuildings",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1082",
+      "row_id": "ipf_m_con0035__peasant_homestead",
+      "errors": [
+        "category_ref empty"
+      ]
+    },
+    {
+      "where": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row1083",
+      "row_id": "ipf_m_con0035__river_wharf",
+      "errors": [
+        "category_ref empty"
+      ]
+    }
+  ],
+  "class_capped_by_master_link": 0,
+  "class_capped_sample": [],
+  "by_scope_kind": {
+    "place_family": 2426
+  },
+  "by_class": {
+    "common": 629,
+    "contextual": 1072,
+    "ubiquitous": 173,
+    "rare": 552
+  }
+}

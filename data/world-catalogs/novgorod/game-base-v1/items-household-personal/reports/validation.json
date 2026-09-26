@@ -1,0 +1,122 @@
+{
+ "household_personal_items": {
+  "pass": true,
+  "failures": []
+ },
+ "identifying_text_slots": {
+  "pass": true,
+  "failures": []
+ },
+ "item_place_frequency": {
+  "pass": true,
+  "failures": [],
+  "peopled_pf_items_all": {
+   "town_courtyard": 1549,
+   "peasant_homestead": 1549,
+   "rural_yard": 1549,
+   "dwelling_interior": 1573,
+   "outbuildings": 1740,
+   "cellar_granary": 1821,
+   "bathhouse": 149,
+   "orchard_garden": 231,
+   "smithy": 251,
+   "ordinary_workshop": 1777,
+   "mill": 32,
+   "threshing_barn": 231,
+   "grain_drying_shed_ovin": 171,
+   "church_interior": 539,
+   "churchyard": 116,
+   "monastery_yard": 233,
+   "town_street": 184,
+   "market_square": 664,
+   "river_wharf": 552,
+   "town_wall_edge": 93,
+   "road": 235,
+   "village_lane": 217,
+   "bridge_crossing": 61,
+   "ferry_landing": 544,
+   "arable_field": 231,
+   "hay_meadow": 119,
+   "pasture": 113,
+   "field_margin": 50,
+   "fishing_camp": 362
+  },
+  "peopled_pf_items_catalog_only": {
+   "town_courtyard": 101,
+   "peasant_homestead": 101,
+   "rural_yard": 101,
+   "dwelling_interior": 172,
+   "outbuildings": 48,
+   "cellar_granary": 91,
+   "bathhouse": 28,
+   "orchard_garden": 6,
+   "smithy": 7,
+   "ordinary_workshop": 116,
+   "mill": 23,
+   "threshing_barn": 6,
+   "grain_drying_shed_ovin": 155,
+   "church_interior": 55,
+   "churchyard": 116,
+   "monastery_yard": 21,
+   "town_street": 35,
+   "market_square": 67,
+   "river_wharf": 18,
+   "town_wall_edge": 93,
+   "road": 37,
+   "village_lane": 19,
+   "bridge_crossing": 61,
+   "ferry_landing": 10,
+   "arable_field": 6,
+   "hay_meadow": 113,
+   "pasture": 101,
+   "field_margin": 42,
+   "fishing_camp": 27
+  },
+  "dropped_master_links": 1371,
+  "dropped_by_reason": {
+   "activity overlay without WK place family (gap for place_families)": 427,
+   "vehicle/container context, not a place family (belongs to containers_contents / transport_travel)": 542,
+   "no WK place family for military camp (gap for military_security / place_families)": 402
+  }
+ },
+ "item_ownership_rules": {
+  "pass": true,
+  "failures": []
+ },
+ "item_marks_text_pools": {
+  "pass": true,
+  "failures": [],
+  "groups_with_lt5_mark_kinds(info)": {
+   "HH_HEARTH_TOOLS": [
+    "damage",
+    "repair",
+    "wear"
+   ],
+   "HH_FOODPROC": [
+    "damage",
+    "owner_sign",
+    "repair",
+    "wear"
+   ],
+   "HH_VESSELS_WATER": [
+    "damage",
+    "owner_sign",
+    "repair",
+    "wear"
+   ],
+   "HH_CLEANING": [
+    "damage",
+    "wear"
+   ],
+   "HH_TOOLS_SMALL": [
+    "damage",
+    "repair",
+    "wear"
+   ],
+   "PS_FIRE_KIT": [
+    "owner_sign",
+    "wear"
+   ]
+  }
+ }
+}

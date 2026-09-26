@@ -1,0 +1,128 @@
+foreign_code,foreign_vocab,foreign_name,mt_ids,method,note
+wood,free_token,,mt_wood_generic,en_token,
+iron,free_token,,mt_iron,en_token,
+steel_edge,free_token,,mt_steel;mt_iron,en_token,наварное стальное лезвие на железной основе
+stone,free_token,,mt_fieldstone,en_token,порода не указана
+glass,free_token,,mt_glass,en_token,
+amber,free_token,,mt_amber,en_token,
+tin_alloy,free_token,,mt_tin,en_token,
+tin_or_lead_alloy,free_token,,mt_tin;mt_lead,en_token,
+lead,free_token,,mt_lead,en_token,
+silver,free_token,,mt_silver,en_token,
+copper_alloy,free_token,,mt_nonferrous_generic,en_token,сплав не назначается без данных (WK metal-classes-composition)
+fur_ordinary,free_token,,mt_fur,en_token,вид зверя — fauna
+birch_bark,free_token,,mt_birch_bark,en_token,
+birch_bark_bast,free_token,,mt_birch_bark;mt_bast_linden,en_token,
+bast,free_token,,mt_bast_linden,en_token,
+clay,free_token,,mt_clay,en_token,
+glaze,free_token,,mt_glaze,en_token,ограничено: поливная посуда редка
+plant_fiber,free_token,,mt_flax;mt_hemp;mt_bast_linden,en_token,волокно не указано
+linen,free_token,,mt_flax,en_token,
+flax,free_token,,mt_flax,en_token,
+hemp,free_token,,mt_hemp,en_token,
+textile,free_token,,mt_textile_generic,en_token,
+wool,free_token,,mt_wool,en_token,
+felt,free_token,,mt_felt,en_token,
+cord,free_token,,mt_cordage,en_token,
+beeswax,free_token,,mt_beeswax,en_token,
+tallow,free_token,,mt_tallow,en_token,
+tinder_fungus,free_token,,mt_tinder_fungus,en_token,
+twigs,free_token,,mt_wood_generic,en_token,ветки
+leafy_twigs,free_token,,mt_wood_generic,en_token,ветки с листвой (веник)
+straw,free_token,,mt_straw,en_token,
+grass,free_token,,mt_hay,en_token,сухая трава
+hay,free_token,,mt_hay,en_token,
+willow_or_roots,free_token,,mt_wood_willow;mt_roots,en_token,
+reed_or_splint,free_token,,mt_reed;mt_wood_generic,en_token,
+leather,free_token,,mt_leather_veg,en_token,способ выделки не указан
+rawhide,free_token,,mt_rawhide,en_token,
+bone_or_antler,free_token,,mt_bone;mt_antler,en_token,
+horn,free_token,,mt_horn,en_token,
+feather,free_token,,mt_feather,en_token,
+parchment,free_token,,mt_parchment,en_token,
+gesso,free_token,,mt_gesso,en_token,
+pigment,free_token,,mt_ochre;mt_carbon_black,en_token,пигмент не указан
+hair,free_token,,mt_hair,en_token,
+horsehair,free_token,,mt_horsehair,en_token,
+gut_or_metal_string,free_token,,mt_sinew_gut;mt_nonferrous_generic,en_token,
+ore,free_token,,mt_bog_ore,en_token,
+plant_bark,free_token,,mt_birch_bark;mt_bark_pine;mt_bark_tanning,en_token,кора не указана
+plant_resin,free_token,,mt_pine_resin,en_token,
+wood_resinous,free_token,,mt_wood_pine,en_token,смолистая древесина
+wood_dead,free_token,,mt_firewood;mt_wood_generic,en_token,"сухостой, валежник"
+wood_drift,free_token,,mt_wood_generic,en_token,плавник
+plant_stem,free_token,,mt_reed;mt_straw,en_token,
+moss,free_token,,mt_moss,en_token,
+plant_root,free_token,,mt_roots,en_token,
+water,free_token,,mt_water,en_token,
+ground,free_token,,,out_of_scope:soil_class,
+alluvial,free_token,,,out_of_scope:soil_class,
+lake-alluvial,free_token,,,out_of_scope:soil_class,
+moraine,free_token,,,out_of_scope:soil_class,
+fluvioglacial,free_token,,,out_of_scope:soil_class,
+organic,free_token,,,out_of_scope:soil_class,
+lacustrine,free_token,,,out_of_scope:soil_class,
+lacustrine-glacial,free_token,,,out_of_scope:soil_class,
+mineral_ground,free_token,,,out_of_scope:soil_class,
+mineral_stone,free_token,,,out_of_scope:soil_class,
+organic_ground,free_token,,,out_of_scope:soil_class,
+mat_log_crown,buildings-interiors-containers/buildings/materials_vocab.csv,венцовое бревно с чашей и пазом,mt_wood_pine;mt_wood_spruce,vocab_manual,венцовое бревно
+mat_sill_log,buildings-interiors-containers/buildings/materials_vocab.csv,подкладное бревно/лежень,mt_wood_pine;mt_wood_oak,vocab_manual,лежень
+mat_pile,buildings-interiors-containers/buildings/materials_vocab.csv,свая деревянная,mt_wood_oak;mt_wood_pine,vocab_manual,свая
+mat_pole,buildings-interiors-containers/buildings/materials_vocab.csv,жердь,mt_wood_generic,vocab_manual,жердь
+mat_slab,buildings-interiors-containers/buildings/materials_vocab.csv,горбыль/обапол,mt_wood_generic,vocab_manual,горбыль
+mat_lemekh,buildings-interiors-containers/buildings/materials_vocab.csv,лемех (осиновые дощечки),mt_wood_aspen,vocab_manual,осиновый лемех
+mat_roof_tes,buildings-interiors-containers/buildings/materials_vocab.csv,кровельный тёс,mt_wood_pine;mt_wood_spruce,vocab_manual,кровельный тёс
+mat_shingle_conifer,buildings-interiors-containers/buildings/materials_vocab.csv,хвойная дрань/щепа,mt_wood_pine;mt_wood_spruce,vocab_manual,
+mat_hardwood_bar,buildings-interiors-containers/buildings/materials_vocab.csv,брус твёрдой древесины,mt_wood_oak,vocab_manual,
+mat_hearth_stone,buildings-interiors-containers/buildings/materials_vocab.csv,камни печи/каменки,mt_fieldstone,vocab_manual,
+mat_shell_rock,buildings-interiors-containers/buildings/materials_vocab.csv,ракушечник,mt_limestone,vocab_manual,ракушечник — разновидность известняка
+mat_lime_mortar,buildings-interiors-containers/buildings/materials_vocab.csv,известковый раствор,mt_lime;mt_quartz_sand,vocab_manual,
+mat_lime_plaster,buildings-interiors-containers/buildings/materials_vocab.csv,фресковая штукатурка,mt_lime,vocab_manual,
+mat_pigment,buildings-interiors-containers/buildings/materials_vocab.csv,минеральный пигмент,mt_ochre;mt_carbon_black;mt_lazurite;mt_red_lead;mt_celadonite,vocab_manual,
+mat_wood_peg,buildings-interiors-containers/buildings/materials_vocab.csv,деревянный нагель,mt_wood_generic,vocab_manual,нагель
+mat_iron_nail,buildings-interiors-containers/buildings/materials_vocab.csv,кованый гвоздь,mt_iron,vocab_manual,
+mat_iron_clamp,buildings-interiors-containers/buildings/materials_vocab.csv,железная скоба,mt_iron,vocab_manual,
+mat_iron_hinge,buildings-interiors-containers/buildings/materials_vocab.csv,железная петля,mt_iron,vocab_manual,
+mat_iron_hasp,buildings-interiors-containers/buildings/materials_vocab.csv,железный пробой/накладка,mt_iron,vocab_manual,
+mat_iron_metal,buildings-interiors-containers/buildings/materials_vocab.csv,железо кованое (деталь),mt_iron,vocab_manual,
+mat_rope,buildings-interiors-containers/buildings/materials_vocab.csv,верёвка (лён/конопля/лыко),mt_cordage;mt_hemp;mt_flax;mt_bast_linden,vocab_manual,
+mat_wattle,buildings-interiors-containers/buildings/materials_vocab.csv,прутья (плетень),mt_wood_willow,vocab_manual,прутья плетня
+mat_glass_fragment,buildings-interiors-containers/buildings/materials_vocab.csv,оконное стекло малыми кусками,mt_glass,vocab_manual,оконное стекло — ограничено (dl_glass_window_common)
+mat_textile_felt,buildings-interiors-containers/buildings/materials_vocab.csv,шерстяная ткань/войлок,mt_wool;mt_felt,vocab_manual,
+mat_earth,buildings-interiors-containers/buildings/materials_vocab.csv,грунт/земля,mt_earth,vocab_manual,
+mat_boulder,buildings-interiors-containers/buildings/materials_vocab.csv,валун/бутовый камень,mt_fieldstone,vocab_manual,
+mat_plank_hewn,buildings-interiors-containers/buildings/materials_vocab.csv,тёсаная доска,mt_wood_pine;mt_wood_spruce,vocab_manual,тёсаная доска; порода по умолчанию хвойная
+mat_log_conifer,buildings-interiors-containers/buildings/materials_vocab.csv,хвойное строевое бревно (сосна/ель),mt_wood_pine;mt_wood_spruce,vocab_manual,хвойное бревно
+органическое волокно,free_token,,mt_flax;mt_hemp;mt_bast_linden,ru_token,
+растительное волокно,free_token,,mt_flax;mt_hemp;mt_bast_linden,ru_token,
+пигмент,free_token,,mt_ochre;mt_carbon_black,ru_token,
+fluvioglacial sand,free_token,,,out_of_scope:soil_class,
+mat_plank_split,buildings-interiors-containers/buildings/materials_vocab.csv,плаха (расколотое бревно),mt_wood_pine;mt_wood_spruce,vocab_manual,плаха
+mat_log_oak,buildings-interiors-containers/buildings/materials_vocab.csv,дубовое бревно,mt_wood_oak,ru_name_stem,
+mat_shingle_oak,buildings-interiors-containers/buildings/materials_vocab.csv,дубовая кровельная дрань,mt_wood_oak,ru_name_stem,
+mat_birch_bark,buildings-interiors-containers/buildings/materials_vocab.csv,береста листовая,mt_birch_bark,ru_name_stem,
+mat_turf,buildings-interiors-containers/buildings/materials_vocab.csv,дёрн кровельный,mt_turf,ru_name_stem,
+mat_straw,buildings-interiors-containers/buildings/materials_vocab.csv,солома,mt_straw,ru_name_stem,
+mat_hay,buildings-interiors-containers/buildings/materials_vocab.csv,сено,mt_hay,ru_name_stem,
+mat_moss,buildings-interiors-containers/buildings/materials_vocab.csv,мох (конопатка),mt_moss,ru_name_stem_partial,не распознано: конопатка
+mat_clay,buildings-interiors-containers/buildings/materials_vocab.csv,глина строительная,mt_clay,ru_name_stem,
+mat_sand,buildings-interiors-containers/buildings/materials_vocab.csv,песок,mt_quartz_sand,ru_name_stem,
+mat_limestone,buildings-interiors-containers/buildings/materials_vocab.csv,известняк строительный,mt_limestone,ru_name_stem,
+mat_plinfa,buildings-interiors-containers/buildings/materials_vocab.csv,плинфа,mt_plinfa,ru_name_stem,
+mat_charcoal,buildings-interiors-containers/buildings/materials_vocab.csv,древесный уголь,mt_charcoal,ru_name_stem,
+MAT001,clothing-appearance/garments/materials_colors.csv,Лён,mt_flax,ru_name_stem,
+MAT002,clothing-appearance/garments/materials_colors.csv,Конопляное полотно,mt_hemp,ru_name_stem,
+MAT003,clothing-appearance/garments/materials_colors.csv,Обычная шерстяная ткань,mt_wool,ru_name_stem,
+MAT004,clothing-appearance/garments/materials_colors.csv,Тонкое импортное сукно,mt_wool,ru_name_stem,
+MAT005,clothing-appearance/garments/materials_colors.csv,Войлок,mt_felt,ru_name_stem,
+MAT006,clothing-appearance/garments/materials_colors.csv,Кожа крупного и мелкого рогатого скота,mt_leather_veg,ru_name_stem_partial,не распознано: мелкого рогатого скота
+MAT007,clothing-appearance/garments/materials_colors.csv,Овчина,mt_sheepskin,ru_name_stem,
+MAT008,clothing-appearance/garments/materials_colors.csv,Ценный мех,mt_fur,ru_name_stem,
+MAT009,clothing-appearance/garments/materials_colors.csv,Шёлк,mt_silk,ru_name_stem,
+MAT010,clothing-appearance/garments/materials_colors.csv,Золотная нить/золото-тканая деталь,mt_gold,ru_name_stem,
+MAT011,clothing-appearance/garments/materials_colors.csv,Железо/сталь,mt_iron;mt_steel,ru_name_stem,
+MAT012,clothing-appearance/garments/materials_colors.csv,Бронза/медный сплав,mt_bronze;mt_copper,ru_name_stem,
+MAT013,clothing-appearance/garments/materials_colors.csv,Серебро,mt_silver,ru_name_stem,
+MAT014,clothing-appearance/garments/materials_colors.csv,Золото и эмаль,mt_gold;mt_enamel,ru_name_stem,
+MAT015,clothing-appearance/garments/materials_colors.csv,"Кость, рог и дерево",mt_bone;mt_horn;mt_wood_generic,ru_name_stem,

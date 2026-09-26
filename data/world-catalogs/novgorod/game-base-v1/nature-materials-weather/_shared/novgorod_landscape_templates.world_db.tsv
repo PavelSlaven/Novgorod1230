@@ -1,0 +1,36 @@
+id	title	landscape_group	dominant_vegetation	moisture_level	relief_type	soil_ground_type	openness	is_common	is_dominant	is_rare	generation_weight	rlt
+lt_alluvial_floodplain	Аллювиальная пойма	floodplain	трава, осока, кустарник, местами деревья	seasonally_wet	flat_lowland	alluvial_silt_clay	open	t	t	f	80	rlt_novgorod_alluvial_floodplain
+lt_boreal_mixed_forest	Бореальный смешанный лес	forest	хвойные с берёзой, осиной, ольхой	normal_or_wet	flat_or_rolling	podzolic_litter_roots	limited	t	t	f	95	rlt_novgorod_boreal_mixed_forest
+lt_boreal_taiga_coniferous_forest	Бореальный хвойный лес / тайга	forest	ель, сосна, лиственница, мхи, кустарнички	normal_or_wet	flat_or_rolling	podzolic_soil_moss_roots	limited	t	t	f	90	rlt_novgorod_boreal_taiga_coniferous_forest
+lt_dense_coniferous_forest	Густой хвойный лес	forest	плотный хвойный древостой, мох, валежник	normal_or_wet	flat_or_rolling	needle_litter_roots_deadwood	closed	t	f	f	50	rlt_novgorod_dense_coniferous_forest
+lt_dry_meadow	Сухой луг / сухая травянистая местность	meadow	низкая трава, разнотравье	dry	flat_or_rolling	firm_grass_soil	open	t	f	t	18	rlt_novgorod_dry_meadow
+lt_dry_ravine_gully	Сухой овраг / балка / промоина	ravine	кустарник, трава, редкие деревья	dry	ravine_gully	clay_sand_loam	limited	t	f	t	10	rlt_novgorod_dry_ravine_gully
+lt_fen	Низинное торфяное болото / фен	bog	осока, мхи, травы, иногда кустарник	waterlogged	lowland	minerotrophic_peat	open	t	f	f	50	rlt_novgorod_fen
+lt_floodplain_wet_grassland	Пойменный влажный луг	floodplain	влажная трава, осока, разнотравье	seasonally_wet	flat_lowland	alluvial_wet_soil	open	t	f	f	65	rlt_novgorod_floodplain_wet_grassland
+lt_freshwater_marsh	Пресноводный марш / травяное болото на минеральных почвах	marsh	осока, тростник, камыш, водно-болотное разнотравье	waterlogged	lowland	mineral_mud_silt	open	t	f	f	55	rlt_novgorod_freshwater_marsh
+lt_gentle_hills	Пологие холмы	hill	трава, кустарник, местами лес	normal	rolling_hills	firm_soil	semi_open	t	f	f	35	rlt_novgorod_gentle_hills
+lt_low_alluvial_riverbank	Низкий аллювиальный речной берег	riverbank	трава, ива, кустарник, осока	wet_or_seasonal	bank_low	alluvial_silt_mud	semi_open	t	f	f	55	rlt_novgorod_low_alluvial_riverbank
+lt_marsh_lake_margin	Заболоченная окраина озера	lake_shore	осока, мхи, камыш, кустарник	waterlogged	low_shore	mud_peat_silt	limited	t	f	f	60	rlt_novgorod_marsh_lake_margin
+lt_mesic_meadow	Умеренно влажный луг	meadow	трава, разнотравье, местами кустарник	normal	flat_or_rolling	loam_grass_soil	open	t	f	f	40	rlt_novgorod_mesic_meadow
+lt_peat_swamp_forest	Торфяной болотный лес	swamp	болотный лес на торфе, мхи, кустарники	waterlogged	lowland	deep_peat_roots	closed	t	f	f	45	rlt_novgorod_peat_swamp_forest
+lt_raised_bog	Верховое болото	bog	сфагнум, мхи, пушица, низкий кустарник	waterlogged	slightly_raised_or_lowland	sphagnum_peat	open	t	f	f	55	rlt_novgorod_raised_bog
+lt_reedbed_marsh	Тростниково-камышовый марш	marsh	тростник, камыш, высокая болотная растительность	waterlogged	lowland	mud_silt	limited	t	f	f	40	rlt_novgorod_reedbed_marsh
+lt_reed_lake_shore	Камышовый озёрный берег	lake_shore	камыш, тростник, осока	wet	low_shore	mud_silt_reeds	limited	t	f	f	55	rlt_novgorod_reed_lake_shore
+lt_riparian_scrub_bank	Кустарниковый прибрежный берег	riverbank	ива, ольха, кустарник, высокая трава	wet_or_normal	bank_low_or_slope	mud_roots_brush	limited	t	f	f	35	rlt_novgorod_riparian_scrub_bank
+lt_rocky_lake_shore	Каменистый озёрный берег	lake_shore	мхи, редкая трава, кустарник	normal_or_wet	rocky_shore	stone_boulder_gravel	semi_open	t	f	t	10	rlt_novgorod_rocky_lake_shore
+lt_sandy_lake_shore	Песчаный озёрный берег	lake_shore	низкая трава, камыш местами, редкий кустарник	normal_or_wet	low_shore	sand	open	t	f	t	16	rlt_novgorod_sandy_lake_shore
+lt_scrub_meadow	Кустарниковый луг / зарастающая травянистая среда	meadow	трава, кустарник, молодая древесная поросль	normal	flat_or_rolling	grass_brush_soil	semi_open	t	f	f	25	rlt_novgorod_scrub_meadow
+lt_seasonally_flooded_forest	Сезонно затапливаемый лес	floodplain	пойменный лес, кустарник, влажная трава	seasonally_wet	flat_lowland	alluvial_roots_mud	closed	t	f	f	30	rlt_novgorod_seasonally_flooded_forest
+lt_seasonal_sedge_marsh	Сезонный осоковый марш / временно затопляемая низина	marsh	осока, травы, сезонная болотная растительность	seasonally_wet	lowland	silt_mud_seasonal	open	t	f	f	45	rlt_novgorod_seasonal_sedge_marsh
+lt_shrub_swamp	Кустарниковое болото / shrub swamp	swamp	ивняк, ольха, кустарник, болотная трава	waterlogged	lowland	mud_roots_silt	limited	t	f	f	55	rlt_novgorod_shrub_swamp
+lt_steep_eroding_riverbank	Крутой подмываемый речной берег	riverbank	трава, кустарник, корни деревьев	normal_or_wet	steep_bank	clay_silt_roots	semi_open	t	f	t	20	rlt_novgorod_steep_eroding_riverbank
+lt_steep_hills	Крутые холмы и склоны	hill	трава, кустарник, редкий лес	normal	steep_slopes	clay_stony_soil	semi_open	t	f	t	10	rlt_novgorod_steep_hills
+lt_temperate_broadleaf_mixed_forest	Умеренный широколиственный и смешанный лес	forest	широколиственные и/или смешанные породы, кустарник, травы	normal	flat_or_rolling	leaf_litter_root_soil	limited	t	f	f	55	rlt_novgorod_temperate_broadleaf_mixed_forest
+lt_temperate_coniferous_forest	Умеренный хвойный лес	forest	сосна, ель, пихта или другие хвойные	normal_or_wet	flat_hill_or_mountain	needle_litter_roots	limited	t	f	f	55	rlt_novgorod_temperate_coniferous_forest
+lt_wet_lowland_forest	Сырой низинный лес	forest	ольха, берёза, ель, ива, кустарник	wet	flat_lowland	wet_roots_mud	limited	t	f	f	55	rlt_novgorod_wet_lowland_forest
+lt_wet_meadow	Сырой луг	meadow	высокая трава, осока, влажное разнотравье	wet	flat_lowland	wet_grass_soil	open	t	f	f	55	rlt_novgorod_wet_meadow
+lt_wet_ravine_gully	Сырой овраг / балка	ravine	кустарник, ольха, трава, мхи	wet	ravine_gully	mud_clay_roots	limited	t	f	f	15	rlt_novgorod_wet_ravine_gully
+lt_wooded_floodplain	Лесистая пойма	floodplain	ива, ольха, тополь, кустарник	seasonally_wet	flat_lowland	alluvial_mud_roots	limited	t	f	f	45	rlt_novgorod_wooded_floodplain
+lt_wooded_hills	Лесистые холмы	hill	лес, кустарник	normal	rolling_hills	roots_stony_soil	limited	t	f	f	30	rlt_novgorod_wooded_hills
+lt_wooded_swamp	Лесное болото / wooded swamp	swamp	болотный лес, кустарник, мхи, осока	waterlogged	lowland	peat_mud_roots	closed	t	f	f	70	rlt_novgorod_wooded_swamp
+(34 rows)

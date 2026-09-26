@@ -1,0 +1,36 @@
+{
+  "rows": 227,
+  "g4": 32,
+  "g5": 195,
+  "g5_rule_counts": {
+    "rule1_keyword": 125,
+    "rule2_parent_in_scene": 6,
+    "rule3_scene_in_composes": 26,
+    "rule4_inherit_parent": 32,
+    "gap": 6
+  },
+  "status_counts": {
+    "bound": 188,
+    "gap": 7,
+    "bound_inherited": 32
+  },
+  "pf_counts": {
+    "pf_river_channel": 49,
+    "pf_riverbank": 74,
+    "pf_floodplain_meadow": 15,
+    "pf_conifer_woodland": 9,
+    "pf_road": 10,
+    "pf_marshy_stream": 17,
+    "pf_ferry_landing": 13,
+    "pf_peasant_homestead": 6,
+    "pf_forest_edge": 7,
+    "GAP": 7,
+    "pf_forest_track": 2,
+    "pf_winter_ice_crossing": 7,
+    "pf_bog": 2,
+    "pf_village_lane": 3,
+    "pf_rural_yard": 1,
+    "pf_outbuildings": 3,
+    "pf_hunting_ground": 2
+  }
+}

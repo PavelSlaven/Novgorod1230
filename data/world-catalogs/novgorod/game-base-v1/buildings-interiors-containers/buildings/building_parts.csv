@@ -1,0 +1,74 @@
+bp_id,name_ru,name_en,part_class,default_material,restriction,source_refs,confidence,status
+bp_wall_crowns,"стены из венцов, угловая рубка «в обло» с пазом и чашей","log walls, round-notched",wall,mat_log_crown,,matcult:ARC0020|matcult:CON0029|matcult:CON0015|wk:claim:settlement-log-building-form,A,candidate
+bp_partition_log,рубленая стена-переруб (пятая стена),log cross-wall,wall,mat_log_crown,,matcult:ARC0019,A,candidate
+bp_caulk_moss,моховая конопатка пазов,moss caulking,wall,mat_moss,,matcult:CON0032,A,candidate
+bp_sill,нижний венец на подкладках/лежнях или камнях,sill on pads/boulders,foundation,mat_sill_log,,matcult:CON0012|matcult:CON0016|matcult:ARC0020|wk:claim:final-static-b01-wet-ground-wood-limit,A,candidate
+bp_floor_plank,дощатый пол на лагах,plank floor,floor,mat_plank_hewn,,matcult:INT0045,A,candidate
+bp_floor_split,пол из плах,split-log floor,floor,mat_plank_split,,matcult:INT0046,A,candidate
+bp_floor_earth,утрамбованный земляной пол,beaten earth floor,floor,mat_earth,,matcult:INT0047,B,candidate
+bp_ceiling_beam,потолочная балка/матица,ceiling beam,ceiling,mat_log_conifer,,matcult:INT0014,A,candidate
+bp_roof_gable,двускатная деревянная кровля с нахлёстом,gable timber roof,roof,mat_roof_tes,,matcult:ARC0024|wk:claim:household-roof-layers-shed-water,B,candidate
+bp_roof_underlay_bark,берестяная подкладка под кровлю,birch-bark underlay,roof,mat_birch_bark,,matcult:CON0025,B,candidate
+bp_roof_turf,дерновое покрытие по бересте,turf roof,roof,mat_turf,only_reconstruction,matcult:CON0026,C,candidate
+bp_door_plank,"дощатая дверь на пятах или петлях, низкий проём","plank door, low opening",opening,mat_plank_hewn,,matcult:ARC0010|matcult:INT0022,B,candidate
+bp_door_bar,дверной засов,door bar,closure,mat_hardwood_bar,,matcult:INT0023|matcult:FOR0004,A,candidate
+bp_door_hinge_iron,железные петли и пробой (статусный вариант),iron hinges and hasp,closure,mat_iron_hinge,status,matcult:CON0001|matcult:CON0002,A,candidate
+bp_window_volok,малое волоковое окно между венцами,small sliding-board window,opening,mat_plank_hewn,,matcult:ARC0029|matcult:INT0024,B,candidate
+bp_window_shutter,дощатая ставня/заслонка,board shutter,opening,mat_plank_hewn,,matcult:ARC0028,B,candidate
+bp_window_glazed,окно со стеклянной вставкой (спорно),glazed window insert (disputed),opening,mat_glass_fragment,elite_or_church_only,matcult:INT0025|matcult:ARC0030,C,candidate
+bp_stove_clay,глинобитная печь на деревянном/грунтовом основании,clay oven-stove,heating,mat_clay,,matcult:INT0001|matcult:INT0043|wk:claim:settlement-oven-cooking|wk:claim:settlement-oven-heating,B,candidate
+bp_stove_stone_clay,каменно-глиняная печь,stone-and-clay stove,heating,mat_hearth_stone,,matcult:INT0007,B,candidate
+bp_stove_base,подпечная площадка/опечек,stove base,heating,mat_clay,,matcult:INT0002|matcult:ARC0019,B,candidate
+bp_smoke_path,"дымовой путь: волоковое окно, дверь, отверстие в кровле (без трубы)",smoke outlet without chimney,heating,mat_plank_hewn,,matcult:INT0006|wk:claim:practical-dwelling-smoke-draft,C,candidate
+bp_kamenka,печь-каменка,bathhouse stone heater,heating,mat_hearth_stone,,matcult:INT0042,C,candidate
+bp_hearth_open,открытый очаг на негорючем основании,open hearth,heating,mat_hearth_stone,,matcult:INT0010|matcult:INT0044,B,candidate
+bp_bench_builtin,встроенная лавка вдоль стены,built-in wall bench,furniture_fixed,mat_plank_hewn,,matcult:FUR0018|matcult:FUR0002,B,candidate
+bp_sleep_platform,спальный настил,sleeping platform,furniture_fixed,mat_plank_hewn,,matcult:FUR0020|matcult:INT0017,B,candidate
+bp_shelf,настенная полка,wall shelf,furniture_fixed,mat_plank_hewn,,matcult:INT0048|matcult:INT0013,B,candidate
+bp_peg,колышек/крюк в стене,wall peg,furniture_fixed,mat_wood_peg,,matcult:INT0049|matcult:INT0003,A,candidate
+bp_porch,простое крыльцо/всход,porch steps,access,mat_plank_split,,matcult:ARC0013,B,candidate
+bp_ladder_shegla,лестница-шегла (бревно с зарубками),notched-log ladder,access,mat_log_conifer,,matcult:ARC0012,C,candidate
+bp_ladder,приставная лестница,ladder,access,mat_pole,,matcult:CON0044,A,candidate
+bp_cellar_crib,срубная камера погреба,cellar log lining,foundation,mat_log_conifer,,matcult:ARC0026,B,candidate
+bp_well_crib,срубная шахта колодца,well log shaft,foundation,mat_log_conifer,,matcult:ARC0027,A,candidate
+bp_well_bucket_rope,ведро и верёвка подъёма,bucket and rope,equipment,mat_rope,,matcult:ARC0027|matcult:CON0004,A,candidate
+bp_palisade_posts,вертикальные колья в траншее,palisade stakes,enclosure,mat_log_conifer,,matcult:ARC0014|matcult:FOR0012,A,candidate
+bp_gate_leaf,дощатая створка ворот,gate leaf,opening,mat_plank_split,,matcult:ARC0015|matcult:FOR0006,B,candidate
+bp_gate_post,опорный столб с пятником,gate post with pivot,opening,mat_log_oak,,matcult:FOR0005,B,candidate
+bp_wattle_panel,плетёное звено на кольях,wattle panel,enclosure,mat_wattle,,matcult:ARC0002,C,candidate
+bp_pavement_joist,продольная лага мостовой,pavement joist,pavement,mat_log_conifer,,matcult:STR0009,A,candidate
+bp_pavement_plank,поперечная плаха мостовой,pavement cross-plank,pavement,mat_plank_split,,matcult:STR0008,A,candidate
+bp_drain_box,дощатый водоотводный короб/канава,timber drain,drainage,mat_plank_hewn,,matcult:STR0004,B,candidate
+bp_piles,сваи,piles,foundation,mat_pile,,matcult:CON0013|matcult:STR0011,A,candidate
+bp_crib_pier,ряж: срубная опора с каменной забутовкой,stone-filled crib pier,foundation,mat_log_conifer,,wk:claim:construction-rjaz-polygonal-form|wk:claim:construction-rjaz-stone-fill|matcult:STR0002,B,candidate
+bp_deck,настил из плах,plank deck,pavement,mat_plank_split,,matcult:STR0013|matcult:STR0011,A,candidate
+bp_gangplank,сходня,gangplank,access,mat_plank_hewn,,matcult:STR0012,B,candidate
+bp_kiln_pit,топочная яма овина,kiln fire pit,heating,mat_clay,,wk:claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates,C,candidate
+bp_drying_grates,колосники для снопов,sheaf grates,equipment,mat_pole,,wk:claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates,C,candidate
+bp_threshing_floor,утрамбованная площадка тока,threshing floor,floor,mat_earth,,matcult:AGR0042,C,candidate
+bp_millstones,жерновой комплект,millstone pair,equipment,mat_boulder,,matcult_scene:SCN020|wk:claim:milling-plate-gap-pressure-fineness,B,candidate
+bp_water_wheel,водяное колесо с лотком,water wheel and race,equipment,mat_plank_hewn,only_reconstruction,matcult:AGR0019|wk:claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing,C,candidate
+bp_forge_hearth,кузнечный горн,forge hearth,heating,mat_clay,,matcult_scene:SCN011|master:workshop:forge,B,candidate
+bp_bellows,кузнечный мех,bellows,equipment,mat_plank_hewn,,matcult_scene:SCN011,B,candidate
+bp_anvil_block,наковальня на колоде,anvil on block,equipment,mat_iron_metal,,matcult_scene:SCN011,B,candidate
+bp_pottery_kiln,гончарная печь,pottery kiln,heating,mat_clay,,matcult_scene:SCN013|master:workshop:potter_yard,B,candidate
+bp_tanning_vats,дубильные чаны/кадки,tanning vats,equipment,mat_plank_hewn,,matcult_scene:SCN016,B,candidate
+bp_masonry_wall,кладка из камня и плинфы на известковом растворе,stone and plinthite masonry,wall,mat_plinfa,,matcult:CON0041|matcult:CON0020|wk:claim:construction-compared-church-masonry,A,candidate
+bp_fresco,фресковая штукатурка с росписью,fresco plaster,finish,mat_lime_plaster,,matcult:CON0023|matcult:CON0022,A,candidate
+bp_dome_head,глава на барабане,dome on drum,roof,mat_roof_tes,,matcult:ARC0005|matcult:ARC0008,A,candidate
+bp_wall_crib_fill,срубная городня с грунтовой/каменной засыпкой,earth-filled crib,wall,mat_log_oak,,matcult:FOR0013|matcult:FOR0014,B,candidate
+bp_wall_walk,боевая площадка на стене,wall-walk platform,access,mat_plank_split,,matcult:FOR0016|matcult:FOR0015,C,candidate
+bp_earth_bank,земляная насыпь,earth bank,earthwork,mat_earth,,wk:claim:civic-earth-rampart|matcult:FOR0001,B,candidate
+bp_manger,деревянная кормушка,manger,equipment,mat_plank_hewn,,matcult:ARC0001,B,candidate
+bp_stall_partition,простые перегородки стойл,stall partitions,wall,mat_pole,,matcult:ARC0001|matcult:ARC0002,B,candidate
+bp_litter,подстилка,bedding litter,floor,mat_straw,,matcult:ARC0001|matcult:ARC0002,B,candidate
+bp_stall_counter,прилавок,counter,furniture_fixed,mat_plank_hewn,,matcult:STR0006|matcult_scene:SCN021,B,candidate
+bp_awning,навес на столбах,awning on posts,roof,mat_roof_tes,,matcult:STR0006|matcult:ARC0017,B,candidate
+bp_drying_rack,рама-вешало для вяления,drying rack,equipment,mat_pole,,matcult:FSH0003,B,candidate
+bp_cutting_table,стол/доска разделки рыбы,gutting table,equipment,mat_plank_hewn,,matcult:FSH0028,B,candidate
+bp_post_frame,столбовой каркас,post frame,wall,mat_pole,,matcult:ARC0017,B,candidate
+bp_privy_pit,выгребная яма,privy pit,foundation,mat_earth,,matcult:ARC0025,C,candidate
+bp_turf_seal,дерново-глиняное укрытие ямы,turf and clay seal,earthwork,mat_turf,,wk:claim:fuel-charcoal-pit-sealing,B,candidate
+bp_grave_stone_setting,каменная обкладка грунтовой могилы (круг или прямоугольник валунов),stone grave setting,earthwork,mat_boulder,,ref:pravenc_zhalnik,B,candidate
+bp_scaffold,деревянные строительные леса,timber scaffold,access,mat_pole,,matcult:CON0043,B,candidate
+bp_hoist_block,подъёмный блок с канатом,hoist block,equipment,mat_rope,,matcult:CON0042,B,candidate

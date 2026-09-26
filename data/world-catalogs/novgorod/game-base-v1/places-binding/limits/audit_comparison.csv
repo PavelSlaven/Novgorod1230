@@ -1,0 +1,257 @@
+scope_ref,scale_class,household_estimate_text,field,ours,audit,verdict
+pt_administrative_court,administrative_or_authority_court,"1 комплекс; 10-80 зависимых, служебных или дворовых людей по значимости узла",households_min,,1,ours_gap
+pt_administrative_court,administrative_or_authority_court,"1 комплекс; 10-80 зависимых, служебных или дворовых людей по значимости узла",households_max,,15,ours_gap
+pt_boat_landing,water_crossing_or_landing,"0-6 постоянных дворов/изб перевозчиков, сторожей или складских держателей",households_min,0,0,equal
+pt_boat_landing,water_crossing_or_landing,"0-6 постоянных дворов/изб перевозчиков, сторожей или складских держателей",households_max,6,6,equal
+pt_city_major_center,major_city,около 4000-6000 дворов; игровая пропорция держится в диапазоне 3000-7000,households_min,4000,3000,differs
+pt_city_major_center,major_city,около 4000-6000 дворов; игровая пропорция держится в диапазоне 3000-7000,households_max,6000,7000,differs
+pt_crossroads,road_crossroads,0-3 двора сторожа/постоя/ремонтника пути,households_min,0,0,equal
+pt_crossroads,road_crossroads,0-3 двора сторожа/постоя/ремонтника пути,households_max,3,3,equal
+pt_estate_center,estate_or_large_yard_center,1 крупный двор с 3-15 зависимыми/служебными дворами или хозяйственными участками,households_min,4,4,equal
+pt_estate_center,estate_or_large_yard_center,1 крупный двор с 3-15 зависимыми/служебными дворами или хозяйственными участками,households_max,16,16,equal
+pt_ferry_place,water_crossing_or_landing,"0-6 постоянных дворов/изб перевозчиков, сторожей или складских держателей",households_min,0,0,equal
+pt_ferry_place,water_crossing_or_landing,"0-6 постоянных дворов/изб перевозчиков, сторожей или складских держателей",households_max,6,6,equal
+pt_fish_weir_site,fishing_production_site,0-6 дворов/изб рыбаков и хранителей снастей,households_min,0,0,equal
+pt_fish_weir_site,fishing_production_site,0-6 дворов/изб рыбаков и хранителей снастей,households_max,6,6,equal
+pt_fishing_station,fishing_production_site,0-6 дворов/изб рыбаков и хранителей снастей,households_min,0,0,equal
+pt_fishing_station,fishing_production_site,0-6 дворов/изб рыбаков и хранителей снастей,households_max,6,6,equal
+pt_ford_place,water_crossing_or_landing,"0-6 постоянных дворов/изб перевозчиков, сторожей или складских держателей",households_min,0,0,equal
+pt_ford_place,water_crossing_or_landing,"0-6 постоянных дворов/изб перевозчиков, сторожей или складских держателей",households_max,6,6,equal
+pt_forest_work_camp,resource_camp,0-3 временных двора/избы; постоянного поселения обычно нет,households_min,0,0,equal
+pt_forest_work_camp,resource_camp,0-3 временных двора/избы; постоянного поселения обычно нет,households_max,3,3,equal
+pt_hamlet,ordinary_village,примерно 8-18 дворов,households_min,8,8,equal
+pt_hamlet,ordinary_village,примерно 8-18 дворов,households_max,18,18,equal
+pt_hillfort_gorodishche,fortified_hillfort_or_old_site,"0-20 дворов при использовании; может быть сторожевой, складской или убежищный узел",households_min,0,0,equal
+pt_hillfort_gorodishche,fortified_hillfort_or_old_site,"0-20 дворов при использовании; может быть сторожевой, складской или убежищный узел",households_max,20,20,equal
+pt_hunting_camp,resource_camp,0-3 временных двора/избы; постоянного поселения обычно нет,households_min,0,0,equal
+pt_hunting_camp,resource_camp,0-3 временных двора/избы; постоянного поселения обычно нет,households_max,3,3,equal
+pt_isolated_farmstead,isolated_farmstead,1-3 двора,households_min,1,1,equal
+pt_isolated_farmstead,isolated_farmstead,1-3 двора,households_max,3,3,equal
+pt_market_place,market_or_trade_node,5-25 постоянных дворов/клетей плюс сезонный или событийный приток людей,households_min,5,5,equal
+pt_market_place,market_or_trade_node,5-25 постоянных дворов/клетей плюс сезонный или событийный приток людей,households_max,25,25,equal
+pt_monastery,monastery_complex,комплекс братии и служебных/монастырских дворов; дворовая численность задаётся сценой,households_min,,5,ours_gap
+pt_monastery,monastery_complex,комплекс братии и служебных/монастырских дворов; дворовая численность задаётся сценой,households_max,,30,ours_gap
+pt_pogost_center,church_pogost_center,обычно 8-25 постоянных дворов при центре плюс приходская округа вокруг,households_min,8,8,equal
+pt_pogost_center,church_pogost_center,обычно 8-25 постоянных дворов при центре плюс приходская округа вокруг,households_max,25,25,equal
+pt_posad_suburb,urban_quarter_or_suburb,примерно 40-180 дворов вдоль уличной оси,households_min,40,80,differs
+pt_posad_suburb,urban_quarter_or_suburb,примерно 40-180 дворов вдоль уличной оси,households_max,180,400,differs
+pt_posad_suburb,urban_quarter_or_suburb,примерно 400-1200 дворов в крупной городской части/конце,households_min,400,80,differs
+pt_posad_suburb,urban_quarter_or_suburb,примерно 400-1200 дворов в крупной городской части/конце,households_max,1200,400,differs
+pt_posad_suburb,urban_quarter_or_suburb,примерно 60-250 дворов в слободской или ремесленной части,households_min,60,80,differs
+pt_posad_suburb,urban_quarter_or_suburb,примерно 60-250 дворов в слободской или ремесленной части,households_max,250,400,differs
+pt_posad_suburb,urban_quarter_or_suburb,примерно 80-400 дворов в посадском участке,households_min,80,80,equal
+pt_posad_suburb,urban_quarter_or_suburb,примерно 80-400 дворов в посадском участке,households_max,400,400,equal
+pt_river_landing,water_crossing_or_landing,"0-6 постоянных дворов/изб перевозчиков, сторожей или складских держателей",households_min,0,0,equal
+pt_river_landing,water_crossing_or_landing,"0-6 постоянных дворов/изб перевозчиков, сторожей или складских держателей",households_max,6,6,equal
+pt_rural_church_center,church_pogost_center,обычно 8-25 постоянных дворов при центре плюс приходская округа вокруг,households_min,8,8,equal
+pt_rural_church_center,church_pogost_center,обычно 8-25 постоянных дворов при центре плюс приходская округа вокруг,households_max,25,25,equal
+pt_saltworks,salt_production_site,1-12 рабочих/служебных дворов и варничных зон,households_min,1,1,equal
+pt_saltworks,salt_production_site,1-12 рабочих/служебных дворов и варничных зон,households_max,12,12,equal
+pt_shipyard_boatyard,boatyard_or_shipyard,1-8 мастерских/служебных дворов,households_min,1,1,equal
+pt_shipyard_boatyard,boatyard_or_shipyard,1-8 мастерских/служебных дворов,households_max,8,8,equal
+pt_town,town,примерно 300-900 дворов с соляным и приильменским хозяйственным профилем,households_min,300,300,equal
+pt_town,town,примерно 300-900 дворов с соляным и приильменским хозяйственным профилем,households_max,900,900,equal
+pt_town,town,примерно 600-1600 дворов как важный торгово-дорожный городовой узел,households_min,600,300,differs
+pt_town,town,примерно 600-1600 дворов как важный торгово-дорожный городовой узел,households_max,1600,900,differs
+pt_village,large_village_or_selo,примерно 20-45 дворов,households_min,20,20,equal
+pt_village,large_village_or_selo,примерно 20-45 дворов,households_max,45,45,equal
+pt_wintering_hut,resource_camp,0-3 временных двора/избы; постоянного поселения обычно нет,households_min,0,0,equal
+pt_wintering_hut,resource_camp,0-3 временных двора/избы; постоянного поселения обычно нет,households_max,3,3,equal
+administrative_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+approach_road,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+approach_slope,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+approach_track,g4_location_type,,items_notable_max vs significant_item_max,,3,ours_gap
+back_gate,g4_location_type,,items_notable_max vs significant_item_max,20,3,differs
+back_path,g4_location_type,,items_notable_max vs significant_item_max,,3,ours_gap
+bank_path,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+barn_klet_strip,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+barns_kleti,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+boat_shelter,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+boat_zone,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+boats,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+boiling_house,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+boyar_estate_belts,g4_location_type,,items_notable_max vs significant_item_max,20,45,differs
+brine_source,g4_location_type,,items_notable_max vs significant_item_max,,10,ours_gap
+camp_fire,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+cargo_slope,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+cargo_stack,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+cargo_waiting,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+cart_loading,g4_location_type,,items_notable_max vs significant_item_max,16,24,differs
+cart_stand,g4_location_type,,items_notable_max vs significant_item_max,16,24,differs
+cattle_corner,g4_location_type,,items_notable_max vs significant_item_max,20,6,differs
+cattle_pens,g4_location_type,,items_notable_max vs significant_item_max,20,6,differs
+cattle_waiting,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+cattle_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+cells,g4_location_type,,items_notable_max vs significant_item_max,18,14,differs
+cemetery_edge,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+chapel_or_cross,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+church,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+church_courts,g4_location_type,,items_notable_max vs significant_item_max,20,45,differs
+church_gate,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+church_yard,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+churchyard,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+city_gate_spine,g4_location_type,,items_notable_max vs significant_item_max,14,45,differs
+clerks_corner,g4_location_type,,items_notable_max vs significant_item_max,20,6,differs
+common_yards,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+craft_quarters,g4_location_type,,items_notable_max vs significant_item_max,20,45,differs
+craft_repair_corner,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+craft_street,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+craft_yards,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+crossing_center,g4_location_type,,items_notable_max vs significant_item_max,16,18,differs
+crossing_line,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+dense_posad_yards,g4_location_type,,items_notable_max vs significant_item_max,20,45,differs
+dense_yards,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+detinets_bishop_core,g4_location_type,,items_notable_max vs significant_item_max,20,45,differs
+drying_racks,g4_location_type,,items_notable_max vs significant_item_max,18,22,differs
+dwelling_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+east_west_road,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+edge_poor_yards,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+elder_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+entry_street,g4_location_type,,items_notable_max vs significant_item_max,14,3,differs
+entry_track,g4_location_type,,items_notable_max vs significant_item_max,,3,ours_gap
+estate_approach,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+ferry_mooring,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+ferryman_shed,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+field_edge,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+field_forest_exit,g4_location_type,,items_notable_max vs significant_item_max,16,5,differs
+field_road,g4_location_type,,items_notable_max vs significant_item_max,18,5,differs
+ford_slope,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+forest_detour,g4_location_type,,items_notable_max vs significant_item_max,,5,ours_gap
+forest_exit,g4_location_type,,items_notable_max vs significant_item_max,16,5,differs
+forest_or_river_exit,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+front_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+fuel_yard,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+garden_backyards,g4_location_type,,items_notable_max vs significant_item_max,18,14,differs
+garden_orchard,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+garden_patch,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+garden_strip,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+gardens,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+gardens_and_hemp,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+gardens_hay_edge,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+gate_gap,g4_location_type,,items_notable_max vs significant_item_max,,3,ours_gap
+gate_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+guard_place,g4_location_type,,items_notable_max vs significant_item_max,20,6,differs
+guest_waiting,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+guest_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+hidden_lane_network,g4_location_type,,items_notable_max vs significant_item_max,14,45,differs
+hidden_passage,g4_location_type,,items_notable_max vs significant_item_max,14,3,differs
+holy_gate,g4_location_type,,items_notable_max vs significant_item_max,16,18,differs
+household_yards,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+hut_or_shelter,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+inner_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+judgement_hall,g4_location_type,,items_notable_max vs significant_item_max,20,6,differs
+kitchen_service,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+klet_and_barn,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+klet_barn_zone,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+landing_or_bridge,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+landing_or_river,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+landing_planks,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+livestock_corner,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+main_lane,g4_location_type,,items_notable_max vs significant_item_max,,3,ours_gap
+main_street,g4_location_type,,items_notable_max vs significant_item_max,14,3,differs
+market_link,g4_location_type,,items_notable_max vs significant_item_max,16,24,differs
+market_square,g4_location_type,,items_notable_max vs significant_item_max,18,24,differs
+master_corner,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+master_house,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+master_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+measure_place,g4_location_type,,items_notable_max vs significant_item_max,18,24,differs
+meeting_torg_spot,g4_location_type,,items_notable_max vs significant_item_max,20,24,differs
+merchant_guest_yards,g4_location_type,,items_notable_max vs significant_item_max,20,24,differs
+merchant_yards,g4_location_type,,items_notable_max vs significant_item_max,20,24,differs
+monastery_approach,g4_location_type,,items_notable_max vs significant_item_max,16,18,differs
+nets_and_tackle,g4_location_type,,items_notable_max vs significant_item_max,18,22,differs
+north_south_road,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+opposite_landing,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+opposite_road,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+opposite_route,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+outer_bank,g4_location_type,,items_notable_max vs significant_item_max,,10,ours_gap
+outer_gate,g4_location_type,,items_notable_max vs significant_item_max,20,3,differs
+outer_road_exit,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+outgoing_tracks,g4_location_type,,items_notable_max vs significant_item_max,16,18,differs
+poor_burnt_edges,g4_location_type,,items_notable_max vs significant_item_max,14,6,differs
+poor_edge,g4_location_type,,items_notable_max vs significant_item_max,14,6,differs
+poor_edge_yards,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+posad_yards,g4_location_type,,items_notable_max vs significant_item_max,20,45,differs
+priest_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+private_chambers,g4_location_type,,items_notable_max vs significant_item_max,18,14,differs
+ravine_edge,g4_location_type,,items_notable_max vs significant_item_max,,6,ours_gap
+refectory,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+repair_shelter,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+resource_line,g4_location_type,,items_notable_max vs significant_item_max,14,22,differs
+rich_yards,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+river_edge,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+river_exit,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+river_landings,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+river_or_market_exit,g4_location_type,,items_notable_max vs significant_item_max,18,24,differs
+road_approach,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+road_entry,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+road_exit,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+road_exits,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+road_or_landing_exit,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+road_to_ilmen,g4_location_type,,items_notable_max vs significant_item_max,16,3,differs
+road_to_volkhov_north,g4_location_type,,items_notable_max vs significant_item_max,16,45,differs
+roadside_shrine,g4_location_type,,items_notable_max vs significant_item_max,20,3,differs
+salt_storage,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+secret_forest_path,g4_location_type,,items_notable_max vs significant_item_max,,5,ours_gap
+senior_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+servant_yards,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+service_admin_yards,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+service_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+shallow_marker,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+shelter_huts,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+shelter_shed,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+shore_approach,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+slipway,g4_location_type,,items_notable_max vs significant_item_max,20,10,differs
+small_church_corner,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+sofia_side_spine,g4_location_type,,items_notable_max vs significant_item_max,14,45,differs
+stable_cattle,g4_location_type,,items_notable_max vs significant_item_max,20,6,differs
+stable_yard,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+storage_granary_belts,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+storage_klet,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+storage_kleti,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+storage_shed,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+store_shed,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+store_yard,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+storehouses,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+street_connection,g4_location_type,,items_notable_max vs significant_item_max,14,3,differs
+suburban_gardens,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+tar_pitch_corner,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+threshing_floor,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+timber_stack,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+tool_shed,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+tool_storage,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+town_gate,g4_location_type,,items_notable_max vs significant_item_max,,3,ours_gap
+track_entry,g4_location_type,,items_notable_max vs significant_item_max,,3,ours_gap
+trade_rows,g4_location_type,,items_notable_max vs significant_item_max,18,24,differs
+trade_side_spine,g4_location_type,,items_notable_max vs significant_item_max,14,24,differs
+treasury_klet,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+upstream_path,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+village_passage,g4_location_type,,items_notable_max vs significant_item_max,,3,ours_gap
+volkhov_bridge_axis,g4_location_type,,items_notable_max vs significant_item_max,14,45,differs
+waiting_bank,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+waiting_shelter,g4_location_type,,items_notable_max vs significant_item_max,16,18,differs
+watch_and_fire_points,g4_location_type,,items_notable_max vs significant_item_max,,6,ours_gap
+watch_corner,g4_location_type,,items_notable_max vs significant_item_max,,6,ours_gap
+watch_place,g4_location_type,,items_notable_max vs significant_item_max,18,6,differs
+water_channel,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+water_drain,g4_location_type,,items_notable_max vs significant_item_max,,10,ours_gap
+water_edge,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+water_or_landing,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+water_place,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+water_route_exit,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+water_spot,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+weir_or_sadki,g4_location_type,,items_notable_max vs significant_item_max,18,18,equal
+well_or_bank,g4_location_type,,items_notable_max vs significant_item_max,18,10,differs
+well_or_pond,g4_location_type,,items_notable_max vs significant_item_max,20,10,differs
+well_or_spring,g4_location_type,,items_notable_max vs significant_item_max,20,10,differs
+well_or_stream,g4_location_type,,items_notable_max vs significant_item_max,,10,ours_gap
+well_place,g4_location_type,,items_notable_max vs significant_item_max,14,10,differs
+wood_stack,g4_location_type,,items_notable_max vs significant_item_max,20,18,differs
+work_sheds,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+work_yard,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+work_yards,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+worker_huts,g4_location_type,,items_notable_max vs significant_item_max,18,22,differs
+working_bank,g4_location_type,,items_notable_max vs significant_item_max,18,22,differs
+working_yard,g4_location_type,,items_notable_max vs significant_item_max,20,22,differs
+yard_gate,g4_location_type,,items_notable_max vs significant_item_max,20,14,differs
+yaroslav_court_market_core,g4_location_type,,items_notable_max vs significant_item_max,20,45,differs

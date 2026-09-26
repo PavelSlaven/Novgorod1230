@@ -1,0 +1,112 @@
+ref,kind,title,url,trust
+ext:gramota147,ext,Берестяная грамота Новгород № 147 (1220–1240): сигов ещё нет,https://gramoty.ru/birchbark/document/show/novgorod/147/,A (primary)
+ext:gramota586,ext,"Берестяная грамота Новгород № 586 (1100–1120): вишни, вино, «гароусъ», мука, сковорода",https://gramoty.ru/birchbark/document/show/novgorod/586/,"A (primary; early, analogy for 1230)"
+ext:gramota706,ext,Берестяная грамота Новгород № 706 (1240–1260): «не продавай хмеля»,https://gramoty.ru/birchbark/document/show/novgorod/706/,A (primary)
+ext:gramota709,ext,Берестяная грамота Новгород № 709 (1240–1260): хмель,https://gramoty.ru/birchbark/document/show/novgorod/709/,A (primary)
+ext:gramota943,ext,"Берестяная грамота Новгород № 943 (1180–1200): покупка ржи, цена ячменя",https://gramoty.ru/birchbark/document/show/novgorod/943/,A (primary)
+ext:kirjanova1979,ext,Кирьянова Н.А. О составе земледельческих культур Древней Руси X–XV вв. (по археологическим материалам) // Советская археология. 1979. № 4. С. 72–85,http://annales.info/rus/small/zerno.htm,B (scholarly synthesis of archaeobotanical grain finds; A-grade underlying finds)
+ext:npl1950_6738_6739,ext,"Новгородская первая летопись старшего и младшего изводов. М.–Л., 1950. С. 276–298 (годы 6738–6739 / 1230–1231)",http://litopys.org.ua/novglet/novg24.htm,A (primary chronicle)
+ext:pvl_6504_996,ext,"Повесть временных лет, под 6504 (996): Владимир велит развозить хлебы, мясо, рыбу, овощь, мёд в бочках и квасы",http://lib.pushkinskijdom.ru/Default.aspx?tabid=4869,A text; B as analogy for Novgorod 1230
+ext:pvl_6505_997,ext,"Повесть временных лет, под 6505 (997): белгородский кисель — цеж из овса, пшеницы или отрубей; мёд «росытити»",http://lib.pushkinskijdom.ru/Default.aspx?tabid=4869,A text; B as analogy for Novgorod 1230
+ext:stepanova2014,ext,Степанова Л.Г. Традиционное питание русского крестьянина в XVI в. и резервные источники его пополнения // Политематический сетевой электронный научный журнал КубГАУ. 2014,https://cyberleninka.ru/article/n/traditsionnoe-pitanie-russkogo-krestyanina-v-xvi-v-i-rezervnye-istochniki-ego-popolneniya,B for XVI c.; C as analogy for 1230
+game-base-v1/food-drink/scripts/source_snapshot/famine_1230_context.csv,file,Repository file row,,see file
+game-base-v1/food-drink/scripts/source_snapshot/meal_sets.csv,file,Repository file row,,see file
+game-base-v1/food-drink/scripts/source_snapshot/recipe_steps.csv,file,Repository file row,,see file
+game-base-v1/food-drink/scripts/source_snapshot/rejected_recipes.csv,file,Repository file row,,see file
+game-base-v1/food-drink/scripts/source_snapshot/spoilage_states.csv,file,Repository file row,,see file
+master-food:FSRC001,master-food,"Berry and fruit plants in the nutrition of Novgorod dwellers (Borkova Street excavations, 2023)",https://doi.org/10.31857/S0869606324040101,A / primary archaeological publication
+master-food:FSRC002,master-food,Fishing in the Novgorod Land,https://novgorodmuseum.ru/visit/sobytiya/rybolovnyj-promysel-v-novgorodskoj-zemle,A / official museum
+master-food:FSRC003,master-food,Birch-bark letter No. 147,https://gramoty.ru/birchbark/document/show/novgorod/147/,A / primary source
+master-food:FSRC004,master-food,Birch-bark letter No. 586,https://gramoty.ru/birchbark/document/show/novgorod/586/,A / primary source
+master-food:FSRC005,master-food,Birch-bark letter No. 706,https://gramoty.ru/birchbark/document/show/novgorod/706/,A / primary source
+master-food:FSRC006,master-food,Birch-bark letter No. 709,https://gramoty.ru/birchbark/document/show/novgorod/709/,A / primary source
+master-food:FSRC007,master-food,"The Questions of Kirik, Savva and Ilia",https://doi.org/10.20913/script-2024-1-04,A for text/date; B for specific food-rule reconstruction unless directly quoted
+master-food:FSRC009,master-food,Staraya Russa salt production overview,https://www.fondazioneslowfood.com/en/ark-of-taste-slow-food/starorusskaya-salt/,B/C / secondary overview
+master-food:FSRC010,master-food,Animals and Archaeology in Northern Medieval Russia,https://www.jstor.org/stable/j.ctv138wsxr,A/B / academic synthesis
+master-food:SRC001,master-food,Новгородская археологическая экспедиция МГУ: общий обзор,https://archaeology.hist.msu.ru/expeditions/novgorod/,A / очень высокий
+master-food:SRC008,master-food,Древняя Русь. Быт и культура,https://archaeolog.ru/el-bib/el-cat/el-series/arch-sssr/archaeologyussr_16,A–B / высокий
+master-food:SRC024,master-food,Керамика средневекового Новгорода: музейная выставка,https://novgorodmuseum.ru/visit/sobytiya/keramika-srednevekovogo-novgoroda,A / высокий
+master-food:SRC025,master-food,Рыболовный промысел в Новгородской земле,https://novgorodmuseum.ru/visit/sobytiya/rybolovnyj-promysel-v-novgorodskoj-zemle,A / очень высокий
+master-food:SRC027,master-food,Древнерусские берестяные грамоты: научная база,https://gramoty.ru/birchbark/document/list/,A / очень высокий
+master-food:SRC040,master-food,Animals and Archaeology in Northern Medieval Russia,https://www.jstor.org/stable/j.ctv138wsxr,A / очень высокий
+master-food:SRC041,master-food,From bovid to beaver: mammal exploitation in Medieval northwest Russia,https://academic.oup.com/edited-volume/34661/chapter-abstract/295340039,A / высокий
+master-food:SRC042,master-food,Horseflesh and beaver pelts: faunal studies in Medieval Novgorod,https://eprints.bournemouth.ac.uk/30013/,A / высокий
+master-food:SRC044,master-food,Растительные макроостатки из средневекового Новгорода,https://archaeolog.ru/media/periodicals/rossiiskaya-arheologiya/2024/RA_2024_4_Mazei.pdf,A / высокий
+master-food:SRC045,master-food,Археология севернорусской деревни X–XIII вв. Том II: материальная культура,https://archaeolog.ru/el-bib/el-cat/el-series/arch-northrus-village/arch-northrus-village-2,A–B / высокий
+master-food:SRC046,master-food,"Археология севернорусской деревни X–XIII вв. Том III: палеоэкология, общество, культура",https://archaeolog.ru/el-bib/el-cat/el-series/arch-northrus-village/arch-northrus-village-3,A–B / высокий
+master-food:SRC050,master-food,Договор Новгорода с Готским берегом и немецкими городами,https://hist.msu.ru/ER/Etext/RP/goth.htm,A / очень высокий
+master-food:SRC075,master-food,German Merchants in Novgorod: Hospitality and Hostility,https://link.springer.com/chapter/10.1007/978-3-030-98527-1_5,A–B / высокий
+master-food:SRC082,master-food,Колодец с деревянной и керамической посудой на Троицком раскопе,https://autodesk.novsu.ru/university/press/news/242503/,A / высокий
+master-food:SRC094,master-food,"Берестяная грамота №147: подвойский, рыба и платежи",https://gramoty.ru/birchbark/document/show/novgorod/147/,A / очень высокий
+master-food:SRC101,master-food,Новгородская первая летопись: голод 1230–1231 годов,https://litopys.org.ua/novglet/novg24.htm,A / очень высокий
+rule:authored_prose_lexicon,rule,Stated derivation rule in scripts/curated or build.py,,C (rule)
+rule:curated_rules.json/meal_slots,rule,Stated derivation rule in scripts/curated or build.py,,C (rule)
+rule:curated_rules/household stock (build.py),rule,Stated derivation rule in scripts/curated or build.py,,C (rule)
+sources/master-archive-v1/data/normalized_source_tables/food_system/food_seasonality.csv,file,Repository file row,,see file
+sources/master-archive-v1/data/normalized_source_tables/food_system/ingredients.csv,file,Repository file row,,see file
+sources/master-archive-v1/data/normalized_source_tables/food_system/recipes.csv,file,Repository file row,,see file
+sources/master-archive-v1/data/normalized_source_tables/food_system/religious_food_rules.csv,file,Repository file row,,see file
+sqlite:novgorod_1230:economy:вино,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:economy:зерно: рожь,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:economy:мёд,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:economy:овёс,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:economy:просо,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:economy:пшеница,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:economy:рыба,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:economy:соль,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:economy:ячмень,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:events:1230-09-14 ок.,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:events:1230-осень/зима,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:famine_prices:овёс,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:famine_prices:просо,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:famine_prices:пшеница,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:famine_prices:рожь,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+sqlite:novgorod_1230:famine_prices:хлеб,sqlite,"Curated SQLite novgorod_1230 (owner Downloads), table:key",C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite,A/B/C per row (see table confidence)
+temporal-v4:record:historical_phase_local_effect_rules:novgorod_famine_1230_v2,temporal-v4,Temporal v4 approved record,,approved
+wk:claim:agriculture-fauna-borts-honey,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:agriculture-fauna-flax-hemp-cultivation,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:drying-reduces-microbial-growth-conditions,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:environment-p1-cattle,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:environment-p1-horse-meat,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:food-practices-barley-porridge-soup,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:food-practices-millet-cleaning-waste,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:food-practices-rye-flour-bread,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:food-practices-threshing-chaff,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:grain-processing-bread-open-fire-baking,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:grain-processing-bread-oven-baking,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:household-apple-orchard,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:household-barley-commodity,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:household-riverside-storage,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:household-rye-commodity,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:lactic-fermentation-affects-acidity-and-food-proteins,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:low-temperature-reduces-many-microbial-metabolic-rates,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:maslo-birchbark-718-account,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:microbial-growth-depends-on-available-moisture,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:occupation-directed-grain-procurement,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:place-milk-fresh-curd-can-progressively-separate-from-whey,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:population-fish-dried-form,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:population-fish-food,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:population-processes-malt-context,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:population-processes-oven-baking,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:regional-fish-exploitation,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:social-podvoisky-letter-reports-pochestie-assurance,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:solute-concentration-reduces-available-water-for-many-microbes,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland,wk,WK production-v1 approved claim,,approved (WK)
+wk:claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen,wk,WK production-v1 approved claim,,approved (WK)

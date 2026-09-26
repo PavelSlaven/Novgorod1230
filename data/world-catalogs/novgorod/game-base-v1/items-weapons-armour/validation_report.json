@@ -1,0 +1,43 @@
+{
+  "checked": "2026-09-26",
+  "ok": true,
+  "stats": {
+    "weapons_armour": 71,
+    "status_access_rows": 213,
+    "equipment_entries": 111,
+    "equipment_profiles": 16,
+    "crosswalk": 252,
+    "denylist": 27,
+    "security": 34,
+    "events": 21,
+    "combat_roles": 71,
+    "refs": {
+      "total": 1437,
+      "byScheme": {
+        "master": 211,
+        "costume": 109,
+        "v5": 36,
+        "wk": 76,
+        "lit": 146,
+        "sqlite": 66,
+        "bible": 82,
+        "tsv": 470,
+        "chbible": 1,
+        "catalog": 2,
+        "statusrules": 207,
+        "timeline": 31
+      }
+    }
+  },
+  "errors": [],
+  "warnings": [
+    "D-row WPN0018 (Праща — спорная для локального военного набора) kept under wp_sling as C with note",
+    "D-row ARM0028 (Чешуйчатый панцирь — спорная локальная реконструкция) kept under wp_scale as C with note",
+    "combat: role nov_role_posadnik has unknown combat_likelihood (gap)",
+    "combat: role nov_role_boyar_house_mistress has unknown combat_likelihood (gap)",
+    "combat: role nov_role_runaway has unknown combat_likelihood (gap)",
+    "combat: role nov_role_orphan has unknown combat_likelihood (gap)",
+    "combat: role nov_role_izgoi has unknown combat_likelihood (gap)",
+    "combat: role nov_role_captive has unknown combat_likelihood (gap)"
+  ]
+}

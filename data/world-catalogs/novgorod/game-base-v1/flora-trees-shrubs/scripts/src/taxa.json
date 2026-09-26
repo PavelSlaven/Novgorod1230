@@ -1,0 +1,2829 @@
+{
+ "schema": "gb_flora_trees_shrubs_taxa_src_v1",
+ "status": "candidate",
+ "authoring_note": "Hand-authored by collector collect-flora-trees-shrubs from the sources in sources.json (2026-09-26). Months are modern (Gregorian) values as printed by the cited source, mostly for central European Russia; they are mapped to game seasons by scripts/build.mjs. Uses and hazards restate the cited source; quality words (primary/good/occasional/poor) restate the source's qualitative wording, never measured values. Empty name_old_ru = no attested Old Russian form was checked (gap), not an absence.",
+ "ref_syntax": "wk:<claim_ref> (resolved in main runtime-bundle.json) | src:<src_id> (sources.json) | master:<repo path>#<row id>",
+ "taxa": [
+  {
+   "id": "fl_ts_pinus_sylvestris",
+   "name_ru": "сосна обыкновенная",
+   "name_en": "Scots pine",
+   "lat": "Pinus sylvestris",
+   "family": "Pinaceae",
+   "name_folk": [
+    "сосна кондовая (плотная смолистая, на суходоле)",
+    "сосна мяндовая (рыхлая, крупнослойная)"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_pinus_sylvestris"
+   ],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "evergreen_conifer",
+   "moisture": [
+    "dry",
+    "mesic",
+    "waterlogged"
+   ],
+   "soil": "сухие пески и боровые супеси; также болота (заболоченные сосняки на сфагнуме)",
+   "light": "light_demanding",
+   "phen": {
+    "flower": null,
+    "flower_note": "пыление (месяцы источником не даны); мужские шишки жёлтые или розовые",
+    "fruit": "11-12",
+    "fruit_note": "шишки созревают через ~20 мес. после опыления; раскрываются II-IV",
+    "seed_release": "2-4",
+    "leaf_out": null,
+    "needle_life_years": "2-3 (Средняя Россия)"
+   },
+   "winter_look": "вечнозелёная; тёмная хвоя по две в пучке, оранжевая кора верха ствола",
+   "cues": {
+    "bark": "внизу толстая серо-бурая с глубокими трещинами, вверху тонкая шелушащаяся оранжево-красная",
+    "leaf": "хвоя по две в пучке",
+    "smell": "смолистый запах",
+    "sound": "",
+    "other": "шишки опадают после созревания"
+   },
+   "uses": [
+    {
+     "use": "timber_building",
+     "part": "ствол",
+     "quality": "primary",
+     "note": "вместе с елью главный строевой лес: жилища, укрепления, мостовые, водопроводы, корабли; для прочих поделок новгородцы предпочитали сосну",
+     "refs": [
+      "src:src_kolchin_1968",
+      "wk:claim:settlement-pine-spruce-log"
+     ]
+    },
+    {
+     "use": "cooperage_staves",
+     "part": "клёпка",
+     "quality": "primary",
+     "note": "лучшая древесина для бондарных изделий (бочки, кадки, вёдра)",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "roots_weaving",
+     "part": "корни (лоза)",
+     "quality": "primary",
+     "note": "плетёная посуда XIII-XV вв. из прута, оплетённого сосновой лозой от корневища",
+     "refs": [
+      "src:src_kolchin_1968",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00144"
+     ]
+    },
+    {
+     "use": "resin",
+     "part": "живица",
+     "quality": "primary",
+     "note": "смола сосны на лодке №1 (XI в.), обмазка лыковых вязок",
+     "refs": [
+      "wk:claim:construction-pine-resin-surfaces",
+      "wk:claim:construction-pine-resin-bast",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00156"
+     ]
+    },
+    {
+     "use": "bark_floats",
+     "part": "кора",
+     "quality": "good",
+     "note": "сосновая кора для малых поплавков сетей и удочек",
+     "refs": [
+      "wk:claim:population-pine-float"
+     ]
+    },
+    {
+     "use": "fuel_kindling",
+     "part": "смолистая лучина",
+     "quality": "good",
+     "note": "смолистая лучина для растопки и светца",
+     "refs": [
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00150"
+     ]
+    },
+    {
+     "use": "fodder_browse",
+     "part": "хвоя, побеги",
+     "quality": "occasional",
+     "note": "зимний корм лося",
+     "refs": [
+      "src:src_wiki_pinus_sylvestris"
+     ]
+    }
+   ],
+   "building_timber": "high",
+   "craft_wood": "high",
+   "timber_note": "ядро стойко против гнили; легко режется; сучковатость ниже, чем у ели (Колчин)",
+   "hazards": [],
+   "yield_units": [
+    "log",
+    "pole",
+    "bark_piece",
+    "resin_lump",
+    "root_bundle",
+    "kindling_bundle",
+    "cone"
+   ],
+   "kolchin_name": "сосна",
+   "wk_refs": [
+    "wk:claim:residual-tree-pinus-sylvestris-evergreen-needles",
+    "wk:claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity",
+    "wk:claim:residual-tree-pinus-sylvestris-dry-infertile-soils"
+   ],
+   "confidence": "B",
+   "confidence_note": "местная порода по Колчину 1968; экология — энциклопедия",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_picea_abies",
+   "name_ru": "ель европейская",
+   "name_en": "Norway spruce",
+   "lat": "Picea abies",
+   "family": "Pinaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "evergreen_conifer",
+   "moisture": [
+    "mesic",
+    "moist"
+   ],
+   "soil": "супеси и суглинки, более плодородные; низины (по Колчину); плохо переносит сухость и застой воды",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": "5",
+    "flower_note": "пыление в мае",
+    "fruit": "10",
+    "fruit_note": "шишки созревают в октябре",
+    "seed_release": "1-3",
+    "leaf_out": null
+   },
+   "winter_look": "вечнозелёная островерхая конусовидная крона с ярусными ветвями; тёмная, под снегом ветви провисают",
+   "cues": {
+    "bark": "у взрослых красновато-бурая, тонкая",
+    "leaf": "жёсткая колючая одиночная хвоя",
+    "smell": "ароматная хвоя",
+    "sound": "",
+    "other": "ярусное ветвление; бурые висячие шишки"
+   },
+   "uses": [
+    {
+     "use": "timber_building",
+     "part": "ствол",
+     "quality": "primary",
+     "note": "в строительстве жилищ, надворных построек, мостовых, тынов сосну и ель применяли в одинаковой мере; прочее — реже",
+     "refs": [
+      "src:src_kolchin_1968",
+      "wk:claim:settlement-pine-spruce-log"
+     ]
+    },
+    {
+     "use": "boat_parts",
+     "part": "комель с корнем",
+     "quality": "good",
+     "note": "предпочтение ели — шпангоуты в судостроении",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "cooperage_small_hoops",
+     "part": "клёпка, обручи",
+     "quality": "good",
+     "note": "малообъёмная бондарная посуда и обручи",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "roots_weaving",
+     "part": "корни",
+     "quality": "good",
+     "note": "очищенный и расщеплённый еловый корень для шитья берестяной тары",
+     "refs": [
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00140",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00141"
+     ]
+    },
+    {
+     "use": "bark_tanning",
+     "part": "кора",
+     "quality": "occasional",
+     "note": "дубление кож (современная практика; для 1230 — аналогия)",
+     "refs": [
+      "src:src_wiki_picea_abies"
+     ]
+    },
+    {
+     "use": "resin",
+     "part": "живица",
+     "quality": "occasional",
+     "note": "смола (канифоль, скипидар — современные продукты; для 1230 только сбор смолы)",
+     "refs": [
+      "src:src_wiki_picea_abies"
+     ]
+    }
+   ],
+   "building_timber": "high",
+   "craft_wood": "medium",
+   "timber_note": "лёгкая мягкая древесина без ядра; сучковатее сосны",
+   "hazards": [
+    {
+     "hazard": "windthrow",
+     "note": "поверхностная корневая система, частый ветровал",
+     "refs": [
+      "src:src_wiki_picea_abies"
+     ]
+    }
+   ],
+   "yield_units": [
+    "log",
+    "pole",
+    "root_bundle",
+    "bark_piece",
+    "resin_lump",
+    "cone"
+   ],
+   "kolchin_name": "ель",
+   "wk_refs": [
+    "wk:claim:residual-tree-picea-abies-evergreen-needles",
+    "wk:claim:residual-tree-picea-abies-cones-brown-at-maturity"
+   ],
+   "confidence": "B",
+   "confidence_note": "Колчин: лес Новгородской земли «главным образом из ели»",
+   "notes": "Современные ели северо-запада часто относят к гибридной зоне с P. obovata (P. × fennica); вид оставлен как P. abies."
+  },
+  {
+   "id": "fl_ts_betula_pendula",
+   "name_ru": "берёза повислая (бородавчатая)",
+   "name_en": "silver birch",
+   "lat": "Betula pendula",
+   "family": "Betulaceae",
+   "name_folk": [
+    "плакучая",
+    "повисшая",
+    "чистяк (арх.)",
+    "чистуха (волог.)"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_betula_pendula"
+   ],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "супеси и лёгкие суглинки; не выносит заболачивания",
+   "light": "light_demanding",
+   "phen": {
+    "flower": null,
+    "flower_before_leaves": true,
+    "flower_note": "цветёт до распускания листьев (или одновременно)",
+    "fruit": "8",
+    "fruit_note": "плоды созревают к концу лета",
+    "seed_release": "9-2",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; белая кора с чёрными трещинами, тонкие ветви свисают вниз; семена сыплются на снег",
+   "cues": {
+    "bark": "белая, к старости у комля чернеющая, с глубокими трещинами",
+    "leaf": "простые очередные листья",
+    "smell": "",
+    "sound": "",
+    "other": "молодые ветви с бородавчатыми смолистыми железками, свисают"
+   },
+   "uses": [
+    {
+     "use": "bark_birch_berest",
+     "part": "береста",
+     "quality": "primary",
+     "note": "берестяная посуда (туесы, коробьи, лукошки) — массовая находка всех веков; грамоты; поплавки",
+     "refs": [
+      "src:src_kolchin_1968",
+      "wk:claim:household-bark-tues",
+      "wk:claim:population-bark-float",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00110"
+     ]
+    },
+    {
+     "use": "tar",
+     "part": "береста",
+     "quality": "primary",
+     "note": "берёзовый дёготь: нагрев бересты с отдельным сбором продукта",
+     "refs": [
+      "wk:claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00160"
+     ]
+    },
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "good",
+     "note": "сапожные колодки, игрушки, рукояти, части боевых луков, иногда ложки и резные сосуды; для строительства редко (не стойка на открытом воздухе)",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "fuel",
+     "part": "дрова, береста",
+     "quality": "primary",
+     "note": "высокая теплотворность; сухая береста для растопки",
+     "refs": [
+      "src:src_wiki_betula_pendula",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00151"
+     ]
+    },
+    {
+     "use": "brooms_rods",
+     "part": "ветви, прутья",
+     "quality": "good",
+     "note": "мётлы, веники; тонкий берёзовый прут",
+     "refs": [
+      "src:src_wiki_betula_pendula",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00036"
+     ]
+    },
+    {
+     "use": "sap",
+     "part": "сок",
+     "quality": "occasional",
+     "note": "берёзовый сок — напиток (для 1230 практика не засвидетельствована в источнике; реконструкция C)",
+     "refs": [
+      "src:src_wiki_betula_pendula"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "high",
+   "timber_note": "желтовато-белая, плотная, однородная, хорошо режется и полируется; быстро гниёт на воздухе во влажном климате",
+   "hazards": [],
+   "yield_units": [
+    "log",
+    "pole",
+    "bark_sheet",
+    "rod_bundle",
+    "firewood_bundle"
+   ],
+   "kolchin_name": "берёза",
+   "wk_refs": [
+    "wk:claim:residual-tree-betula-pendula-deciduous",
+    "wk:claim:residual-tree-betula-pendula-simple-leaves",
+    "wk:claim:residual-tree-betula-pendula-male-female-catkins",
+    "wk:claim:residual-tree-betula-pendula-moist-soil"
+   ],
+   "confidence": "B",
+   "confidence_note": "Колчин даёт род (берёза); разделение на два вида — по современной экологии",
+   "notes": "Пионер вырубок и гарей; вторичные березняки после подсеки."
+  },
+  {
+   "id": "fl_ts_betula_pubescens",
+   "name_ru": "берёза пушистая",
+   "name_en": "downy birch",
+   "lat": "Betula pubescens",
+   "family": "Betulaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "moist",
+    "wet",
+    "waterlogged"
+   ],
+   "soil": "сырые и заболоченные почвы, окраины болот, берега озёр",
+   "light": "light_demanding",
+   "phen": {
+    "flower": null,
+    "flower_before_leaves": true,
+    "flower_note": "как у берёзы повислой (род)",
+    "fruit": null,
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; кора белая и гладкая почти до основания, ветви не свисают",
+   "cues": {
+    "bark": "белая, гладкая почти до земли, трещиноватая лишь у комля старых деревьев",
+    "leaf": "",
+    "smell": "",
+    "sound": "",
+    "other": "молодые побеги густо опушённые, без бородавок"
+   },
+   "uses": [
+    {
+     "use": "bark_birch_berest",
+     "part": "береста",
+     "quality": "primary",
+     "note": "береста рода Betula; вид в археологии не различается",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "fuel",
+     "part": "дрова",
+     "quality": "good",
+     "note": "древесный уголь",
+     "refs": [
+      "src:src_wiki_betula_pubescens"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "medium",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "pole",
+    "bark_sheet",
+    "firewood_bundle"
+   ],
+   "kolchin_name": "берёза",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "род по Колчину; вид — современная экология (заболоченные березняки Валдая)",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_populus_tremula",
+   "name_ru": "осина",
+   "name_en": "aspen",
+   "lat": "Populus tremula",
+   "family": "Salicaceae",
+   "name_folk": [
+    "тополь дрожащий"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_populus_tremula"
+   ],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic",
+    "moist"
+   ],
+   "soil": "разные почвы; чистые осинники и примесь в хвойных и березняках, вырубки, берега",
+   "light": "light_demanding",
+   "phen": {
+    "flower": null,
+    "flower_before_leaves": true,
+    "flower_note": "цветёт до распускания листьев",
+    "fruit": null,
+    "fruit_note": "семена с пуховкой (пух разлетается)",
+    "leaf_out": "spring",
+    "autumn_colour": "от золотистой до красной"
+   },
+   "winter_look": "безлистная; серо-зелёная гладкая кора; обгрызенная зайцами и лосями кора у подроста",
+   "cues": {
+    "bark": "серо-зелёная у молодых",
+    "leaf": "листья дрожат даже в тихую погоду (плоские черешки)",
+    "smell": "",
+    "sound": "шелест трепещущих листьев",
+    "other": "осенью золотые и красные листья"
+   },
+   "uses": [
+    {
+     "use": "shingles_cladding",
+     "part": "доски, лемех",
+     "quality": "good",
+     "note": "тонкая осиновая обшивка на лодке №1 (XI в.); лемех на куполах (поздняя практика)",
+     "refs": [
+      "wk:claim:construction-aspen-cladding-joint",
+      "src:src_wiki_populus_tremula"
+     ]
+    },
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "лёгкая бледная древесина; в Новгороде изделий мало (7 из 909)",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "fodder_browse",
+     "part": "кора, побеги",
+     "quality": "good",
+     "note": "главный зимний корм лося, бобра, зайца",
+     "refs": [
+      "src:src_wiki_populus_tremula",
+      "wk:claim:fauna-mammals-moose-browse-aquatic-forage"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "low",
+   "timber_note": "малостойкая к гнили на воздухе (Колчин)",
+   "hazards": [],
+   "yield_units": [
+    "log",
+    "pole",
+    "plank",
+    "firewood_bundle"
+   ],
+   "kolchin_name": "осина",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "Колчин: встречается в Новгородской земле",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_alnus_glutinosa",
+   "name_ru": "ольха чёрная (клейкая)",
+   "name_en": "black alder",
+   "lat": "Alnus glutinosa",
+   "family": "Betulaceae",
+   "name_folk": [
+    "черноольшаник (заросли)"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_alnus_glutinosa"
+   ],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "wet",
+    "waterlogged"
+   ],
+   "soil": "сырые и топкие почвы по ручьям и берегам озёр; черноольховые топи",
+   "light": "intermediate",
+   "phen": {
+    "flower": "4-5",
+    "flower_before_leaves": true,
+    "flower_note": "серёжки до листьев",
+    "fruit": "9-10",
+    "fruit_note": "шишечки закрыты всю зиму, раскрываются к марту",
+    "seed_release": "3",
+    "leaf_out": "spring",
+    "autumn_colour": "листья опадают зелёными (по источнику — тёмно-зелёная листва)"
+   },
+   "winter_look": "безлистная; тёмная, почти чёрная кора; на ветвях чёрные шишечки и серёжки",
+   "cues": {
+    "bark": "тёмная, с возрастом почти чёрная",
+    "leaf": "молодые листья очень клейкие",
+    "smell": "",
+    "sound": "",
+    "other": "свежий срез древесины на воздухе быстро краснеет"
+   },
+   "uses": [
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "good",
+     "note": "40 из 909 изделий (много точёных сосудов); стойка в воде — колодезные срубы",
+     "refs": [
+      "src:src_kolchin_1968",
+      "src:src_wiki_alnus_glutinosa"
+     ]
+    },
+    {
+     "use": "bark_dye_tanning",
+     "part": "кора, шишечки",
+     "quality": "good",
+     "note": "дубильные вещества; жёлтые, красные и чёрные красители",
+     "refs": [
+      "src:src_wiki_alnus_glutinosa"
+     ]
+    },
+    {
+     "use": "fuel_smoking",
+     "part": "дрова, щепа",
+     "quality": "good",
+     "note": "хорошие дрова; щепа лучшая для копчения рыбы",
+     "refs": [
+      "src:src_wiki_alnus_glutinosa"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "medium",
+   "timber_note": "стойка под водой",
+   "hazards": [],
+   "yield_units": [
+    "log",
+    "pole",
+    "bark_piece",
+    "firewood_bundle"
+   ],
+   "kolchin_name": "ольха",
+   "wk_refs": [
+    "wk:claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
+    "wk:claim:residual-tree-alnus-glutinosa-catkins-nutlets",
+    "wk:claim:residual-tree-alnus-glutinosa-moist-soil"
+   ],
+   "confidence": "B",
+   "confidence_note": "Колчин: ольха «распространена повсеместно» (род)",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_alnus_incana",
+   "name_ru": "ольха серая",
+   "name_en": "grey alder",
+   "lat": "Alnus incana",
+   "family": "Betulaceae",
+   "name_folk": [
+    "сероольшаник (заросли)"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_alnus_incana"
+   ],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic",
+    "moist",
+    "wet"
+   ],
+   "soil": "заболоченные опушки, берега рек, лесосеки, гари, заброшенные пашни; менее требовательна, чем чёрная",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "3-4",
+    "flower_before_leaves": true,
+    "flower_note": "цветёт в марте-апреле до листьев",
+    "fruit": "9-10",
+    "fruit_note": "семена созревают осенью",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; гладкая светло-серая кора, серёжки на концах ветвей",
+   "cues": {
+    "bark": "светло-серая, гладкая",
+    "leaf": "",
+    "smell": "",
+    "sound": "",
+    "other": "первой пылит ранней весной"
+   },
+   "uses": [
+    {
+     "use": "fuel",
+     "part": "дрова",
+     "quality": "good",
+     "note": "горят хорошо; уголь не держит жар; дымом прочищали дымоходы",
+     "refs": [
+      "src:src_wiki_alnus_incana"
+     ]
+    },
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "токарные изделия (род ольха у Колчина)",
+     "refs": [
+      "src:src_kolchin_1968",
+      "src:src_wiki_alnus_incana"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "medium",
+   "timber_note": "древесина краснее, чем у чёрной",
+   "hazards": [],
+   "yield_units": [
+    "pole",
+    "firewood_bundle"
+   ],
+   "kolchin_name": "ольха",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "род по Колчину; сероольшаники Валдая (src_valdaypark_flora)",
+   "notes": "Зарастает брошенные пашни и подсеки — важна для антропогенной мозаики 1230 г."
+  },
+  {
+   "id": "fl_ts_tilia_cordata",
+   "name_ru": "липа мелколистная (сердцевидная)",
+   "name_en": "small-leaved lime",
+   "lat": "Tilia cordata",
+   "family": "Malvaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "плодородные водопроницаемые почвы",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": "7",
+    "flower_note": "с начала июля 10-15 дней; бледно-жёлтые душистые цветки",
+    "fruit": "8-9",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; тёмная бороздчатая кора, плотная крона; висят орешки с крыловидным прицветником",
+   "cues": {
+    "bark": "тёмная, бороздчатая у старых",
+    "leaf": "сердцевидные листья",
+    "smell": "сильный медовый аромат в цвету (июль), гул пчёл",
+    "sound": "гул пчёл над цветущей кроной",
+    "other": ""
+   },
+   "uses": [
+    {
+     "use": "bast_lime",
+     "part": "луб, лыко, мочало",
+     "quality": "primary",
+     "note": "лыко для вязок (лыковая вица на лодке №1), швов берестяной тары, рогож, верёвок, лаптей",
+     "refs": [
+      "wk:claim:construction-bast-vessel-fastening",
+      "wk:claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+      "src:src_kolchin_1968",
+      "src:src_wiki_tilia_cordata"
+     ]
+    },
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "good",
+     "note": "мягкая лёгкая белая, легко режется: ложки, утварь (24 из 909; 14 в «орнаментированном дереве»)",
+     "refs": [
+      "src:src_kolchin_1968",
+      "src:src_wiki_tilia_cordata"
+     ]
+    },
+    {
+     "use": "honey_plant",
+     "part": "цветки",
+     "quality": "primary",
+     "note": "исключительный медонос",
+     "refs": [
+      "src:src_wiki_tilia_cordata"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "high",
+   "timber_note": "малостойкая к гнили на открытом воздухе (Колчин)",
+   "hazards": [],
+   "yield_units": [
+    "bast_strip_bundle",
+    "log",
+    "plank"
+   ],
+   "kolchin_name": "липа",
+   "wk_refs": [
+    "wk:claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material"
+   ],
+   "confidence": "B",
+   "confidence_note": "Колчин: липа «распространена повсеместно»",
+   "notes": "WK использует T. americana как прокси луба; свойства на T. cordata переносятся только по новгородскому лыку (лодка №1)."
+  },
+  {
+   "id": "fl_ts_quercus_robur",
+   "name_ru": "дуб черешчатый",
+   "name_en": "pedunculate oak",
+   "lat": "Quercus robur",
+   "family": "Fagaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "плодородные суглинки",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "5",
+    "flower_note": "вместе с распусканием листьев; поздняя форма распускается на 2-4 недели позже",
+    "fruit": "9-10",
+    "fruit_note": "жёлуди созревают в сентябре-октябре",
+    "leaf_out": "spring",
+    "winter_retains": "сухие листья иногда держатся всю зиму"
+   },
+   "winter_look": "мощный безлистный ствол с корявыми ветвями; сухие бурые листья могут держаться всю зиму и шуршать",
+   "cues": {
+    "bark": "толстая, глубоко бороздчатая",
+    "leaf": "лопастные листья",
+    "smell": "",
+    "sound": "шорох сухой листвы зимой",
+    "other": "жёлуди под деревом осенью"
+   },
+   "uses": [
+    {
+     "use": "timber_heavy_duty",
+     "part": "ствол",
+     "quality": "primary",
+     "note": "дефицитная; санные полозья (только дуб), десятиведерные бочки, уключины, землекопные лопаты с X в., оглобли",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "shingles",
+     "part": "дрань, лемех",
+     "quality": "good",
+     "note": "дубовая дрань на кровлях Новгорода",
+     "refs": [
+      "wk:claim:settlement-oak-shingle-roof"
+     ]
+    },
+    {
+     "use": "boundary_tree",
+     "part": "дерево",
+     "quality": "good",
+     "note": "межевой/знаменный дуб охраняется Русской Правдой (ст. 64-66)",
+     "refs": [
+      "wk:claim:residual-law-boundaries-and-marked-trees"
+     ]
+    },
+    {
+     "use": "fodder_mast",
+     "part": "жёлуди",
+     "quality": "good",
+     "note": "корм свиней",
+     "refs": [
+      "src:src_wiki_quercus_robur"
+     ]
+    },
+    {
+     "use": "bark_tanning",
+     "part": "кора",
+     "quality": "primary",
+     "note": "одно из лучших дубильных средств; чернильные орешки (галлы)",
+     "refs": [
+      "src:src_wiki_quercus_robur"
+     ]
+    }
+   ],
+   "building_timber": "high",
+   "craft_wood": "high",
+   "timber_note": "плотная, прочная, стойкая к гниению на воздухе, в земле и под водой; запасы в новгородских лесах невелики (Колчин)",
+   "hazards": [
+    {
+     "hazard": "acorns_toxic_to_cattle_horses",
+     "note": "жёлуди в большом количестве вредны крупному рогатому скоту и лошадям",
+     "refs": [
+      "src:src_wiki_quercus_robur"
+     ]
+    }
+   ],
+   "yield_units": [
+    "log",
+    "plank",
+    "shingle_bundle",
+    "acorn_basket",
+    "bark_piece"
+   ],
+   "kolchin_name": "дуб",
+   "wk_refs": [
+    "wk:claim:civic-defence-log-courses"
+   ],
+   "confidence": "B",
+   "confidence_note": "Колчин: дуб растёт только в южных районах Новгородской земли",
+   "notes": "Редкость дуба — ключевой исторический факт: дуб ценен и дорог."
+  },
+  {
+   "id": "fl_ts_fraxinus_excelsior",
+   "name_ru": "ясень обыкновенный",
+   "name_en": "common ash",
+   "lat": "Fraxinus excelsior",
+   "family": "Oleaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic",
+    "moist"
+   ],
+   "soil": "плодородные, слабощелочные",
+   "light": "intermediate",
+   "phen": {
+    "flower": "4-5",
+    "flower_before_leaves": true,
+    "flower_note": "до появления листьев (центр Европейской России)",
+    "fruit": "8",
+    "fruit_note": "крылатки созревают в августе, часто держатся всю зиму",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный; гроздья бурых крылаток висят всю зиму; толстые побеги с чёрными почками",
+   "cues": {
+    "bark": "",
+    "leaf": "непарноперистые листья",
+    "smell": "",
+    "sound": "",
+    "other": "шелковистый блеск древесины"
+   },
+   "uses": [
+    {
+     "use": "turned_vessels",
+     "part": "древесина",
+     "quality": "primary",
+     "note": "у новгородцев из ясеня — только токарная посуда (62 из 909)",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "bow_wood",
+     "part": "древесина",
+     "quality": "good",
+     "note": "цельный охотничий лук из ясеня, слой 2-й четв. XIII в.",
+     "refs": [
+      "wk:claim:agriculture-fauna-ash-hunting-bow"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "high",
+   "timber_note": "высокая прочность, твёрдость и вязкость, малая водопроницаемость (Колчин)",
+   "hazards": [],
+   "yield_units": [
+    "log",
+    "billet"
+   ],
+   "kolchin_name": "ясень",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "Колчин: ясень растёт только в южных районах Новгородской земли",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_ulmus_glabra",
+   "name_ru": "вяз шершавый (ильм, вяз горный)",
+   "name_en": "wych elm",
+   "lat": "Ulmus glabra",
+   "family": "Ulmaceae",
+   "name_folk": [
+    "ильм",
+    "вяз горный"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_ulmus_glabra"
+   ],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic",
+    "moist"
+   ],
+   "soil": "плодородные; широколиственные леса, овраги, речные долины",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": "3-4",
+    "flower_before_leaves": true,
+    "flower_note": "цветки в марте или апреле",
+    "fruit": "5-6",
+    "fruit_note": "крылатки в мае-июне",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный; густая широкая крона из толстых ветвей",
+   "cues": {
+    "bark": "",
+    "leaf": "крупные шершавые листья 8-15 см с неравнобоким основанием",
+    "smell": "",
+    "sound": "",
+    "other": "ранней весной ветви в красноватых пучках цветков"
+   },
+   "uses": [
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "ильм — 4 изделия из 909",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "medium",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "log",
+    "bast_strip_bundle"
+   ],
+   "kolchin_name": "ильм",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "Колчин различает вяз и ильм; отнесение «ильм» = U. glabra — по народному названию",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_ulmus_laevis",
+   "name_ru": "вяз гладкий",
+   "name_en": "European white elm",
+   "lat": "Ulmus laevis",
+   "family": "Ulmaceae",
+   "name_folk": [
+    "вяз обыкновенный"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_ulmus_laevis"
+   ],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic",
+    "moist"
+   ],
+   "soil": "смешанные и дубовые леса (второй ярус)",
+   "light": "intermediate",
+   "phen": {
+    "flower": "4-5",
+    "flower_before_leaves": true,
+    "flower_note": "до листьев, ветроопыляемый",
+    "fruit": null,
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный; у старых деревьев досковидные корни-подпорки у основания",
+   "cues": {
+    "bark": "",
+    "leaf": "",
+    "smell": "",
+    "sound": "",
+    "other": "плоды гроздьями на длинных ножках; досковидные корни"
+   },
+   "uses": [
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "вяз — 9 изделий из 909; прочная, тяжёлая, стойкая к воде",
+     "refs": [
+      "src:src_kolchin_1968",
+      "src:src_wiki_ulmus_laevis"
+     ]
+    },
+    {
+     "use": "bast",
+     "part": "луб",
+     "quality": "occasional",
+     "note": "луб на верёвки и рогожи; кора для дубления",
+     "refs": [
+      "src:src_wiki_ulmus_laevis"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "medium",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "log",
+    "bast_strip_bundle"
+   ],
+   "kolchin_name": "вяз",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "Колчин даёт «вяз» (род/вид не уточнён); отнесение к U. laevis — реконструкция",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_acer_platanoides",
+   "name_ru": "клён остролистный",
+   "name_en": "Norway maple",
+   "lat": "Acer platanoides",
+   "family": "Sapindaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "гумусные свежие супеси и суглинки; не выносит заболачивания",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": "5",
+    "flower_before_leaves": true,
+    "flower_note": "первая половина мая, до и во время распускания листьев, 10-15 дней",
+    "fruit": "9-10",
+    "fruit_note": "крылатки держатся на дереве всю зиму",
+    "leaf_out": "spring",
+    "autumn_colour": "жёлтая или оранжевая"
+   },
+   "winter_look": "безлистный; на ветвях парные крылатки",
+   "cues": {
+    "bark": "",
+    "leaf": "пальчатолопастные листья; из черешка сочится млечный сок",
+    "smell": "",
+    "sound": "",
+    "other": "осенью ярко-жёлтая листва"
+   },
+   "uses": [
+    {
+     "use": "turned_carved_vessels_spoons",
+     "part": "древесина",
+     "quality": "primary",
+     "note": "самая частая порода изделий (177 из 909): точёные и резные сосуды, ложки (84 из 129), ковши",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "honey_plant",
+     "part": "цветки",
+     "quality": "good",
+     "note": "ранний медонос",
+     "refs": [
+      "src:src_wiki_acer_platanoides"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "high",
+   "timber_note": "однородная белая с красноватым оттенком, прочнее дуба, мало коробится, хорошо полируется (Колчин)",
+   "hazards": [],
+   "yield_units": [
+    "log",
+    "billet"
+   ],
+   "kolchin_name": "клён",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "Колчин: клён распространён повсеместно, но занимает меньше пространства",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_sorbus_aucuparia",
+   "name_ru": "рябина обыкновенная",
+   "name_en": "rowan",
+   "lat": "Sorbus aucuparia",
+   "family": "Rosaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "small_tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "подлесок и второй ярус хвойных и смешанных лесов, опушки, вырубки",
+   "light": "intermediate",
+   "phen": {
+    "flower": "5-6",
+    "flower_note": "белые щитки с неприятным запахом (триметиламин)",
+    "fruit": "8-9",
+    "fruit_note": "конец августа - сентябрь (Подмосковье); висят до зимы, после мороза теряют горечь",
+    "leaf_out": "spring",
+    "autumn_colour": "золотая и красная"
+   },
+   "winter_look": "безлистная; оранжево-красные гроздья ягод на снегу, стайки свиристелей и дроздов",
+   "cues": {
+    "bark": "",
+    "leaf": "непарноперистые листья",
+    "smell": "цветы пахнут неприятно",
+    "sound": "",
+    "other": "ягоды держатся до зимы; птицы"
+   },
+   "uses": [
+    {
+     "use": "food_fruit",
+     "part": "плоды",
+     "quality": "occasional",
+     "note": "косточки рябины в новгородском слое XIII в.; способ употребления не установлен",
+     "refs": [
+      "src:src_serezhnikova_2024",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/food_system/ingredients.csv#ING0067"
+     ]
+    },
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "9 изделий из 909; красноватая мелкопористая, для точёных изделий",
+     "refs": [
+      "src:src_kolchin_1968",
+      "src:src_wiki_sorbus_aucuparia"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "medium",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "fruit_cluster_basket",
+    "billet"
+   ],
+   "kolchin_name": "рябина",
+   "wk_refs": [],
+   "confidence": "A",
+   "confidence_note": "археоботаника XIII в. (Сережникова 2024) + древесина (Колчин)",
+   "notes": "Съедобность плодов — домен flora-herbs-berries-mushrooms / food; здесь только древесное растение."
+  },
+  {
+   "id": "fl_ts_prunus_padus",
+   "name_ru": "черёмуха обыкновенная",
+   "name_en": "bird cherry",
+   "lat": "Prunus padus",
+   "family": "Rosaceae",
+   "name_folk": [
+    "черёмуха кистевая"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_prunus_padus"
+   ],
+   "name_old_ru": "",
+   "life_form": "small_tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "moist",
+    "wet"
+   ],
+   "soil": "берега рек, приречные леса (уремы), кустарниковые заросли, опушки",
+   "light": "intermediate",
+   "phen": {
+    "flower": "5-6",
+    "flower_note": "белые кисти с сильным запахом; «черёмуховые холода»",
+    "fruit": "7-8",
+    "fruit_note": "чёрные блестящие костянки",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; серая кора с заметными чечевичками, тёмные гибкие ветви у воды",
+   "cues": {
+    "bark": "серая с крупными чечевичками",
+    "leaf": "",
+    "smell": "сильный пьянящий запах цветения",
+    "sound": "",
+    "other": "поздневесенний возврат холодов в пору цветения"
+   },
+   "uses": [
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "2 изделия из 909; плотная и гибкая",
+     "refs": [
+      "src:src_kolchin_1968",
+      "src:src_wiki_prunus_padus"
+     ]
+    },
+    {
+     "use": "bark_dye",
+     "part": "кора",
+     "quality": "occasional",
+     "note": "зелёный и красно-бурый красители",
+     "refs": [
+      "src:src_wiki_prunus_padus"
+     ]
+    },
+    {
+     "use": "food_fruit",
+     "part": "плоды",
+     "quality": "occasional",
+     "note": "плоды съедобны свежими и переработанными (современная практика; для 1230 — реконструкция C)",
+     "refs": [
+      "src:src_wiki_prunus_padus"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "low",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "seeds_leaves_cyanogenic",
+     "note": "ядра косточек и листья содержат амигдалин (синильная кислота при расщеплении)",
+     "refs": [
+      "src:src_wiki_prunus_padus"
+     ]
+    }
+   ],
+   "yield_units": [
+    "fruit_basket",
+    "rod_bundle"
+   ],
+   "kolchin_name": "черёмуха",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "Колчин: черёмуха встречается в Новгородской земле",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_malus_sylvestris",
+   "name_ru": "яблоня лесная",
+   "name_en": "European crab apple",
+   "lat": "Malus sylvestris",
+   "family": "Rosaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "small_tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic",
+    "moist"
+   ],
+   "soil": "пойменные леса, живые изгороди, кустарники; богатые глинистые почвы",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "4-5",
+    "flower_note": "розовато-белые цветки",
+    "fruit": null,
+    "fruit_note": "мелкие кислые яблоки осенью (месяцы источником не даны)",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; корявые ветви, под деревом мелкие палые яблоки в начале зимы",
+   "cues": {
+    "bark": "",
+    "leaf": "",
+    "smell": "аромат цветения",
+    "sound": "",
+    "other": "мелкие кислые плоды"
+   },
+   "uses": [
+    {
+     "use": "food_fruit",
+     "part": "плоды",
+     "quality": "occasional",
+     "note": "мелкоплодные яблоки в археоботанике Новгорода; Троицкий раскоп связывает яблоки с южными лиственными лесами",
+     "refs": [
+      "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/food_system/ingredients.csv#ING0072"
+     ]
+    },
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "6 изделий из 909",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "medium",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "seeds_poisonous",
+     "note": "плоды съедобны, семена ядовиты",
+     "refs": [
+      "wk:claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous"
+     ]
+    }
+   ],
+   "yield_units": [
+    "fruit_basket",
+    "billet"
+   ],
+   "kolchin_name": "яблоня",
+   "wk_refs": [
+    "wk:claim:household-apple-orchard"
+   ],
+   "confidence": "B",
+   "confidence_note": "северная граница ареала: Карельский перешеек - Вологда - Пермь (Новгород внутри); археоботаника",
+   "notes": "Садовая яблоня (сады XI в. на Десятинном) — домен cultivated_plants."
+  },
+  {
+   "id": "fl_ts_salix_alba",
+   "name_ru": "ива белая (ветла)",
+   "name_en": "white willow",
+   "lat": "Salix alba",
+   "family": "Salicaceae",
+   "name_folk": [
+    "ветла",
+    "белолоз"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_salix_alba"
+   ],
+   "name_old_ru": "",
+   "life_form": "tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "wet",
+    "moist"
+   ],
+   "soil": "поймы, берега рек и водоёмов, плотины, у жилья",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "4-5",
+    "flower_note": "одновременно с распусканием листьев",
+    "fruit": null,
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; крупное дерево с серебристой листвой летом, зимой — золотисто-серые ветви",
+   "cues": {
+    "bark": "",
+    "leaf": "серебристая листва",
+    "smell": "",
+    "sound": "",
+    "other": "20-30 м, у воды и жилья"
+   },
+   "uses": [
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "хозяйственные изделия, рукояти; ива в целом 12 изделий из 909",
+     "refs": [
+      "src:src_wiki_salix_alba",
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "honey_plant",
+     "part": "цветки",
+     "quality": "good",
+     "note": "ранний медонос",
+     "refs": [
+      "src:src_wiki_salix_alba"
+     ]
+    }
+   ],
+   "building_timber": "low",
+   "craft_wood": "low",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "pole",
+    "rod_bundle"
+   ],
+   "kolchin_name": "ива",
+   "wk_refs": [
+    "wk:claim:white-willow-depends-on-moist-lit-riparian-habitat"
+   ],
+   "confidence": "C",
+   "confidence_note": "аборигенность на северо-западе не подтверждена источником (у Колчина только род «ива»); оставлено с редким классом",
+   "notes": "Проверить в региональной флоре: возможно, одичавшая из культуры."
+  },
+  {
+   "id": "fl_ts_salix_caprea",
+   "name_ru": "ива козья (бредина)",
+   "name_en": "goat willow",
+   "lat": "Salix caprea",
+   "family": "Salicaceae",
+   "name_folk": [
+    "бредина",
+    "ракита",
+    "верба (цветущие ветви)"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_salix_caprea"
+   ],
+   "name_old_ru": "",
+   "life_form": "small_tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic",
+    "moist"
+   ],
+   "soil": "сырые леса на богатых почвах, опушки, вырубки, обочины; избегает заболоченных",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "3-4",
+    "flower_before_leaves": true,
+    "flower_note": "одно из самых раноцветущих; пушистые серебристые серёжки",
+    "fruit": "5",
+    "fruit_note": "семена в мае, разносятся ветром",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; к концу зимы набухают крупные почки, в оттепель — серебристые «барашки»",
+   "cues": {
+    "bark": "",
+    "leaf": "",
+    "smell": "",
+    "sound": "гул пчёл над цветущей вербой ранней весной",
+    "other": "серебристые пушистые серёжки до листьев"
+   },
+   "uses": [
+    {
+     "use": "bark_tanning",
+     "part": "кора",
+     "quality": "primary",
+     "note": "первосортный дубильный экстракт (16,5-21 % танинов)",
+     "refs": [
+      "src:src_wiki_salix_caprea"
+     ]
+    },
+    {
+     "use": "fodder_leaf",
+     "part": "побеги, листья",
+     "quality": "good",
+     "note": "охотно поедается козами и овцами",
+     "refs": [
+      "src:src_wiki_salix_caprea"
+     ]
+    },
+    {
+     "use": "honey_plant",
+     "part": "серёжки",
+     "quality": "good",
+     "note": "ранний медонос",
+     "refs": [
+      "src:src_wiki_salix_caprea"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "low",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "rod_bundle",
+    "bark_piece",
+    "leaf_fodder_bundle"
+   ],
+   "kolchin_name": "ива",
+   "wk_refs": [
+    "wk:claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee"
+   ],
+   "confidence": "B",
+   "confidence_note": "род по Колчину; вид — лесная зона Европейской России",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_salix_pentandra",
+   "name_ru": "ива пятитычинковая (чернотал)",
+   "name_en": "bay willow",
+   "lat": "Salix pentandra",
+   "family": "Salicaceae",
+   "name_folk": [
+    "чернотал",
+    "чернолоз"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_salix_pentandra"
+   ],
+   "name_old_ru": "",
+   "life_form": "small_tree",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "wet",
+    "waterlogged"
+   ],
+   "soil": "торфяные и травяные болота, влажные луга, сырые леса",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "5-7",
+    "flower_note": "почти одновременно с листьями (поздно для ив)",
+    "fruit": "7-10",
+    "fruit_note": "семенной пух летом-осенью",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистная; блестящие тёмные побеги, на ветвях остатки пуха",
+   "cues": {
+    "bark": "",
+    "leaf": "тёмно-зелёные блестящие кожистые, «лавровые» листья",
+    "smell": "",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [
+    {
+     "use": "honey_plant",
+     "part": "серёжки",
+     "quality": "good",
+     "note": "поздний медонос",
+     "refs": [
+      "src:src_wiki_salix_pentandra"
+     ]
+    },
+    {
+     "use": "fodder_browse",
+     "part": "побеги",
+     "quality": "good",
+     "note": "корм лося и бобра",
+     "refs": [
+      "src:src_wiki_salix_pentandra"
+     ]
+    },
+    {
+     "use": "bark_tanning",
+     "part": "кора",
+     "quality": "occasional",
+     "note": "танины",
+     "refs": [
+      "src:src_wiki_salix_pentandra"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "low",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "rod_bundle"
+   ],
+   "kolchin_name": "ива",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "присутствие в Новгородской земле — по современному ареалу",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_salix_cinerea",
+   "name_ru": "ива пепельная",
+   "name_en": "grey willow",
+   "lat": "Salix cinerea",
+   "family": "Salicaceae",
+   "name_folk": [
+    "ива серая"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_salix_cinerea"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "wet",
+    "waterlogged"
+   ],
+   "soil": "топкие места, моховые и травяные болота, канавы, сырые смешанные леса, пойменные луга; сплошные заросли",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "4",
+    "flower_note": "цветёт в апреле",
+    "fruit": "5",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный густой куст до 5 м с толстыми серыми ломкими ветвями",
+   "cues": {
+    "bark": "",
+    "leaf": "серовато-опушённые листья",
+    "smell": "",
+    "sound": "",
+    "other": "непролазные заросли по сырым местам"
+   },
+   "uses": [
+    {
+     "use": "bark_tanning",
+     "part": "кора",
+     "quality": "good",
+     "note": "9-11 % танинов",
+     "refs": [
+      "src:src_wiki_salix_cinerea"
+     ]
+    },
+    {
+     "use": "fuel",
+     "part": "ветви",
+     "quality": "occasional",
+     "note": "топливо и уголь",
+     "refs": [
+      "src:src_wiki_salix_cinerea"
+     ]
+    },
+    {
+     "use": "fodder_leaf",
+     "part": "листья",
+     "quality": "good",
+     "note": "корм овец и коз; лось и бобр круглый год",
+     "refs": [
+      "src:src_wiki_salix_cinerea"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "impenetrable_thicket",
+     "note": "образует обширные заросли по топким местам",
+     "refs": [
+      "src:src_wiki_salix_cinerea"
+     ]
+    }
+   ],
+   "yield_units": [
+    "rod_bundle",
+    "brushwood_armful"
+   ],
+   "kolchin_name": "ива",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_salix_aurita",
+   "name_ru": "ива ушастая",
+   "name_en": "eared willow",
+   "lat": "Salix aurita",
+   "family": "Salicaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "moist",
+    "wet"
+   ],
+   "soil": "окраины болот, сырые низины, светлые леса, обочины, вырубки, гари; кислые бедные почвы",
+   "light": "light_demanding",
+   "phen": {
+    "flower": null,
+    "flower_before_leaves": true,
+    "flower_note": "до распускания листьев или одновременно (месяцы не даны)",
+    "fruit": null,
+    "leaf_out": "spring"
+   },
+   "winter_look": "низкий (0,5-2 м) густой безлистный куст",
+   "cues": {
+    "bark": "",
+    "leaf": "морщинистые листья с крупными ушковидными прилистниками",
+    "smell": "",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [
+    {
+     "use": "rods_weaving",
+     "part": "прутья",
+     "quality": "occasional",
+     "note": "плетёный материал; для дров слишком мягка",
+     "refs": [
+      "src:src_wiki_salix_aurita"
+     ]
+    },
+    {
+     "use": "honey_plant",
+     "part": "серёжки",
+     "quality": "good",
+     "note": "медонос и пыльценос",
+     "refs": [
+      "src:src_wiki_salix_aurita"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "rod_bundle"
+   ],
+   "kolchin_name": "ива",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_salix_triandra",
+   "name_ru": "ива трёхтычинковая (белотал)",
+   "name_en": "almond willow",
+   "lat": "Salix triandra",
+   "family": "Salicaceae",
+   "name_folk": [
+    "белотал",
+    "белолоз",
+    "лоза",
+    "лозина"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_salix_triandra"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "wet"
+   ],
+   "soil": "берега рек и озёр, главным образом пойма",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "4-5",
+    "flower_note": "иногда вторично тёплой осенью",
+    "fruit": null,
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистные гибкие прутья вдоль берега",
+   "cues": {
+    "bark": "",
+    "leaf": "",
+    "smell": "",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [
+    {
+     "use": "rods_weaving",
+     "part": "однолетние прутья",
+     "quality": "primary",
+     "note": "плетение корзин",
+     "refs": [
+      "src:src_wiki_salix_triandra",
+      "wk:claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/source_snapshots/material_entities/catalog/wood_bark_plant_materials.md#OMI00033"
+     ]
+    },
+    {
+     "use": "bark_tanning",
+     "part": "кора",
+     "quality": "good",
+     "note": "10-12 % танинов",
+     "refs": [
+      "src:src_wiki_salix_triandra"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "rod_bundle"
+   ],
+   "kolchin_name": "ива",
+   "wk_refs": [
+    "wk:claim:final-static-b01-willow-selection"
+   ],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_salix_viminalis",
+   "name_ru": "ива прутовидная (корзиночная, тальник)",
+   "name_en": "osier",
+   "lat": "Salix viminalis",
+   "family": "Salicaceae",
+   "name_folk": [
+    "тальник",
+    "лоза",
+    "белотал",
+    "верболоз",
+    "кузовица"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_salix_viminalis"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "wet"
+   ],
+   "soil": "песчаный аллювий в прирусловой пойме, затопляемые острова",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "3-5",
+    "flower_before_leaves": true,
+    "flower_note": "до листьев или одновременно",
+    "fruit": null,
+    "leaf_out": "spring"
+   },
+   "winter_look": "длинные прямые безлистные прутья на песчаных отмелях",
+   "cues": {
+    "bark": "",
+    "leaf": "узкие длинные листья",
+    "smell": "",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [
+    {
+     "use": "rods_weaving",
+     "part": "прутья",
+     "quality": "primary",
+     "note": "превосходный корзиночный материал",
+     "refs": [
+      "src:src_wiki_salix_viminalis",
+      "wk:claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "rod_bundle"
+   ],
+   "kolchin_name": "ива",
+   "wk_refs": [
+    "wk:claim:final-static-b01-willow-preparation"
+   ],
+   "confidence": "C",
+   "confidence_note": "ареал — почти вся Европейская Россия (лесная зона)",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_salix_myrsinifolia",
+   "name_ru": "ива мирзинолистная (чернеющая)",
+   "name_en": "dark-leaved willow",
+   "lat": "Salix myrsinifolia",
+   "family": "Salicaceae",
+   "name_folk": [
+    "ива чернеющая"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_salix_myrsinifolia"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "moist"
+   ],
+   "soil": "лесные опушки, луга, окраины болот, обочины",
+   "light": "light_demanding",
+   "phen": {
+    "flower": null,
+    "flower_note": "одновременно с появлением листьев (месяцы не даны)",
+    "fruit": null,
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный куст; засохшие листья чернеют",
+   "cues": {
+    "bark": "",
+    "leaf": "при высыхании листья чернеют",
+    "smell": "",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [
+    {
+     "use": "fodder_leaf",
+     "part": "листья, побеги",
+     "quality": "good",
+     "note": "поедается скотом, бобром, лосем",
+     "refs": [
+      "src:src_wiki_salix_myrsinifolia"
+     ]
+    },
+    {
+     "use": "bark_tanning",
+     "part": "кора",
+     "quality": "occasional",
+     "note": "6-14 % танинов",
+     "refs": [
+      "src:src_wiki_salix_myrsinifolia"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "rod_bundle",
+    "leaf_fodder_bundle"
+   ],
+   "kolchin_name": "ива",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_salix_rosmarinifolia",
+   "name_ru": "ива розмаринолистная",
+   "name_en": "rosemary-leaved willow",
+   "lat": "Salix rosmarinifolia",
+   "family": "Salicaceae",
+   "name_folk": [
+    "ницелоз",
+    "нетала"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_salix_rosmarinifolia"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "wet",
+    "waterlogged",
+    "dry"
+   ],
+   "soil": "сырые и торфяные луга, торфяники; боровые пески и вырубки",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "5",
+    "fruit": "6",
+    "leaf_out": "spring"
+   },
+   "winter_look": "низкий (до 1 м) безлистный кустик, часто под снегом",
+   "cues": {
+    "bark": "",
+    "leaf": "узкие, снизу серебристые листья",
+    "smell": "",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [],
+   "kolchin_name": "",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "ареал — Европейская Россия",
+   "notes": "Использование источником не указано."
+  },
+  {
+   "id": "fl_ts_corylus_avellana",
+   "name_ru": "лещина обыкновенная (орешник)",
+   "name_en": "hazel",
+   "lat": "Corylus avellana",
+   "family": "Betulaceae",
+   "name_folk": [
+    "орешник",
+    "лесной орех"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_corylus_avellana"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "подлесок широколиственных, смешанных и хвойных лесов; опушки, вырубки, гари",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": "2-4",
+    "flower_before_leaves": true,
+    "flower_note": "жёлтые пылящие серёжки до листьев",
+    "fruit": "8-9",
+    "fruit_note": "реже конец июля",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный многоствольный куст; уже осенью висят зачатки серёжек, пылят в оттепель в конце зимы",
+   "cues": {
+    "bark": "светлая гладкая",
+    "leaf": "округлые листья",
+    "smell": "",
+    "sound": "",
+    "other": "орехи в листовидной плюске"
+   },
+   "uses": [
+    {
+     "use": "food_nut",
+     "part": "орехи",
+     "quality": "good",
+     "note": "орехи съедобны; в материалах Троицкого раскопа",
+     "refs": [
+      "wk:claim:research-corylus-avellana-hazelnuts-are-documented-edible",
+      "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland",
+      "master:data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/food_system/ingredients.csv#ING0074"
+     ]
+    },
+    {
+     "use": "rods_hoops",
+     "part": "гибкие стволики",
+     "quality": "good",
+     "note": "обручи бочек, плетение корзин и изгородей, трости",
+     "refs": [
+      "src:src_wiki_corylus_avellana"
+     ]
+    },
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "10 изделий из 909",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "medium",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "nut_handful",
+    "rod_bundle"
+   ],
+   "kolchin_name": "лещина",
+   "wk_refs": [],
+   "confidence": "A",
+   "confidence_note": "орехи в средневековом новгородском слое + древесина",
+   "notes": "«Северные дубравы с лещиной» Валдая (WK research WFM S1)."
+  },
+  {
+   "id": "fl_ts_juniperus_communis",
+   "name_ru": "можжевельник обыкновенный",
+   "name_en": "common juniper",
+   "lat": "Juniperus communis",
+   "family": "Cupressaceae",
+   "name_folk": [
+    "верес"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_juniperus_communis"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "evergreen_conifer",
+   "moisture": [
+    "dry",
+    "mesic"
+   ],
+   "soil": "подлесок боров, опушки, прогалины, сухие места",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "4-5",
+    "flower_note": "пылит в апреле-мае",
+    "fruit": "9-10",
+    "fruit_note": "шишкоягоды созревают на 2-3-й год, чёрно-синие с налётом",
+    "leaf_out": null
+   },
+   "winter_look": "вечнозелёный колючий куст 1-3 м (изредка деревце), тёмный на снегу",
+   "cues": {
+    "bark": "",
+    "leaf": "жёсткие шиловидные колючие иглы",
+    "smell": "смолистый запах растёртой хвои",
+    "sound": "",
+    "other": "сизые шишкоягоды"
+   },
+   "uses": [
+    {
+     "use": "timber_craft",
+     "part": "древесина",
+     "quality": "good",
+     "note": "27 изделий из 909; мало усыхает и не коробится, изделия не трескаются",
+     "refs": [
+      "src:src_kolchin_1968"
+     ]
+    },
+    {
+     "use": "smoking",
+     "part": "ветви, древесина",
+     "quality": "occasional",
+     "note": "копчение рыбы и мяса (современная практика)",
+     "refs": [
+      "src:src_wiki_juniperus_communis"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "high",
+   "timber_note": "ароматная красноватая плотная мелкослойная древесина",
+   "hazards": [
+    {
+     "hazard": "toxic_in_quantity",
+     "note": "токсичен при передозировке",
+     "refs": [
+      "src:src_wiki_juniperus_communis"
+     ]
+    },
+    {
+     "hazard": "prickly",
+     "note": "колючая хвоя",
+     "refs": [
+      "src:src_wiki_juniperus_communis"
+     ]
+    }
+   ],
+   "yield_units": [
+    "billet",
+    "branch_bundle",
+    "berry_handful"
+   ],
+   "kolchin_name": "можжевельник",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "Колчин: местная хвойная порода",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_frangula_alnus",
+   "name_ru": "крушина ломкая",
+   "name_en": "alder buckthorn",
+   "lat": "Frangula alnus",
+   "family": "Rhamnaceae",
+   "name_folk": [
+    "крушинник",
+    "волчья ягода"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_frangula_alnus"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "moist",
+    "wet"
+   ],
+   "soil": "опушки и подлесок пойменных лесов, берега рек и озёр, окраины болот, заболоченные и мелколиственные леса",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": null,
+    "flower_note": "невзрачные цветки (месяцы источником не даны)",
+    "fruit": null,
+    "fruit_note": "ягоды от зеленовато-жёлтых к иссиня-чёрным",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный куст с тёмной корой в светлых чечевичках; под корой красный слой",
+   "cues": {
+    "bark": "тёмная с чечевичками, под ней красный слой",
+    "leaf": "эллиптические с 6-8 параллельными жилками",
+    "smell": "",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [
+    {
+     "use": "charcoal",
+     "part": "древесина",
+     "quality": "good",
+     "note": "почти беззольный уголь (для пороха — поздняя практика)",
+     "refs": [
+      "src:src_wiki_frangula_alnus"
+     ]
+    },
+    {
+     "use": "bark_dye_tanning",
+     "part": "кора",
+     "quality": "occasional",
+     "note": "жёлтые и бурые красители, танины",
+     "refs": [
+      "src:src_wiki_frangula_alnus"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "berries_toxic",
+     "note": "ягоды ядовиты (особенно для детей) или несъедобны; свежая кора токсична",
+     "refs": [
+      "src:src_wiki_frangula_alnus"
+     ]
+    }
+   ],
+   "yield_units": [
+    "brushwood_armful",
+    "bark_piece"
+   ],
+   "kolchin_name": "",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "крушина в подлеске Новгородской обл. (src_nbcrs_novgorod_flora)",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_viburnum_opulus",
+   "name_ru": "калина обыкновенная",
+   "name_en": "guelder rose",
+   "lat": "Viburnum opulus",
+   "family": "Adoxaceae",
+   "name_folk": [
+    "калина красная"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_viburnum_opulus"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "moist",
+    "wet"
+   ],
+   "soil": "увлажнённые почвы; берега водоёмов, поляны, опушки, подлесок",
+   "light": "intermediate",
+   "phen": {
+    "flower": "5-6",
+    "flower_note": "конец мая - начало июня, 10-14 дней",
+    "fruit": "8-9",
+    "fruit_note": "горечь уходит после первых морозов; гроздья висят глубоко в зиму",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный куст с красными гроздьями ягод на снегу",
+   "cues": {
+    "bark": "",
+    "leaf": "трёхлопастные листья",
+    "smell": "своеобразный запах плодов",
+    "sound": "",
+    "other": "плоды горьковато-вяжущие"
+   },
+   "uses": [
+    {
+     "use": "food_fruit",
+     "part": "плоды",
+     "quality": "occasional",
+     "note": "съедобны после морозов (современная практика; для 1230 — реконструкция C)",
+     "refs": [
+      "src:src_wiki_viburnum_opulus"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "fruit_cluster_basket"
+   ],
+   "kolchin_name": "",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу (лесная зона умеренной Евразии)",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_rosa_majalis",
+   "name_ru": "шиповник майский (коричный)",
+   "name_en": "cinnamon rose",
+   "lat": "Rosa majalis",
+   "family": "Rosaceae",
+   "name_folk": [
+    "шиповник коричный",
+    "роза коричная"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_rosa_majalis"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic",
+    "moist"
+   ],
+   "soil": "подлесок, поляны, кустарники; чаще всего заросли в поймах рек",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "5-7",
+    "flower_note": "розовые цветки",
+    "fruit": "8-9",
+    "fruit_note": "красные плоды",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный колючий куст с оставшимися красными плодами",
+   "cues": {
+    "bark": "",
+    "leaf": "",
+    "smell": "аромат цветков",
+    "sound": "",
+    "other": "серповидные шипы парами у листьев"
+   },
+   "uses": [
+    {
+     "use": "food_fruit",
+     "part": "плоды",
+     "quality": "occasional",
+     "note": "плоды богаты витамином C (современное знание; для 1230 — реконструкция C)",
+     "refs": [
+      "src:src_wiki_rosa_majalis"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "prickly",
+     "note": "шипы и игольчатые шипики",
+     "refs": [
+      "src:src_wiki_rosa_majalis"
+     ]
+    }
+   ],
+   "yield_units": [
+    "fruit_basket"
+   ],
+   "kolchin_name": "",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "ареал от Скандинавии до Средней Сибири",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_daphne_mezereum",
+   "name_ru": "волчеягодник обыкновенный (волчье лыко)",
+   "name_en": "mezereon",
+   "lat": "Daphne mezereum",
+   "family": "Thymelaeaceae",
+   "name_folk": [
+    "волчье лыко",
+    "волчья ягода",
+    "волчий перец",
+    "пухляк",
+    "плоховец"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_daphne_mezereum"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "подлесок темнохвойных и смешанных лесов",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": "4-5",
+    "flower_before_leaves": true,
+    "flower_note": "розовые душистые цветки прямо на голых ветвях",
+    "fruit": "7-8",
+    "fruit_note": "красные ягоды",
+    "leaf_out": "spring"
+   },
+   "winter_look": "невысокий (до 1,2 м) безлистный прутовидный кустик",
+   "cues": {
+    "bark": "",
+    "leaf": "узкие тёмно-зелёные блестящие",
+    "smell": "душистые цветки ранней весной",
+    "sound": "",
+    "other": "яркие красные ягоды на стебле"
+   },
+   "uses": [],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "toxic_all_parts",
+     "note": "ядовиты все части, особенно ягоды; кора и сок вызывают покраснение и волдыри на коже",
+     "refs": [
+      "wk:claim:mezereon-poisonous-sap-all-parts",
+      "src:src_wiki_daphne_mezereum"
+     ]
+    }
+   ],
+   "yield_units": [],
+   "kolchin_name": "",
+   "wk_refs": [
+    "wk:claim:mezereon-poisonous-sap-all-parts"
+   ],
+   "confidence": "B",
+   "confidence_note": "волчье лыко в подлеске Новгородской обл. (src_nbcrs_novgorod_flora); WK approved hazard",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_lonicera_xylosteum",
+   "name_ru": "жимолость лесная (настоящая)",
+   "name_en": "fly honeysuckle",
+   "lat": "Lonicera xylosteum",
+   "family": "Caprifoliaceae",
+   "name_folk": [
+    "волчьи ягоды"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_lonicera_xylosteum"
+   ],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "подлесок хвойных и смешанных лесов, заросли в оврагах и у рек",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": "5-6",
+    "fruit": "7",
+    "fruit_note": "парные тёмно-красные ягоды к концу июля",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный куст с серой волокнистой корой",
+   "cues": {
+    "bark": "",
+    "leaf": "",
+    "smell": "",
+    "sound": "",
+    "other": "сросшиеся парами красные ягоды"
+   },
+   "uses": [
+    {
+     "use": "timber_craft_small",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "очень твёрдая желтоватая древесина для мелких поделок",
+     "refs": [
+      "src:src_wiki_lonicera_xylosteum"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "low",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "berries_toxic",
+     "note": "ягоды ядовиты (ксилостеин)",
+     "refs": [
+      "src:src_wiki_lonicera_xylosteum"
+     ]
+    }
+   ],
+   "yield_units": [],
+   "kolchin_name": "",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "жимолость в подлеске Новгородской обл. (src_nbcrs_novgorod_flora); вид — по ареалу",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_euonymus_verrucosus",
+   "name_ru": "бересклет бородавчатый",
+   "name_en": "warty spindle",
+   "lat": "Euonymus verrucosus",
+   "family": "Celastraceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "shrub",
+   "leaf_habit": "deciduous",
+   "moisture": [
+    "mesic"
+   ],
+   "soil": "плодородные почвы широколиственных и смешанных лесов, теневынослив",
+   "light": "shade_tolerant",
+   "phen": {
+    "flower": "5",
+    "flower_note": "с «мышиным» неприятным запахом",
+    "fruit": "8-9",
+    "fruit_note": "розовые коробочки с чёрными семенами в оранжево-красных присемянниках",
+    "leaf_out": "spring"
+   },
+   "winter_look": "безлистный куст, ветви в чёрных бородавках",
+   "cues": {
+    "bark": "ветви покрыты бородавочками",
+    "leaf": "",
+    "smell": "цветки пахнут мышами",
+    "sound": "",
+    "other": "яркие коробочки-«серёжки» осенью"
+   },
+   "uses": [
+    {
+     "use": "timber_craft_small",
+     "part": "древесина",
+     "quality": "occasional",
+     "note": "твёрдая плотная: челноки, спицы, гребни, шпильки; у Колчина 1 изделие",
+     "refs": [
+      "src:src_wiki_euonymus_verrucosus",
+      "src:src_kolchin_1968"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "low",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "toxic_all_parts",
+     "note": "ядовиты все части; плоды вызывают рвоту, понос, судороги",
+     "refs": [
+      "src:src_wiki_euonymus_verrucosus"
+     ]
+    }
+   ],
+   "yield_units": [],
+   "kolchin_name": "бересклет",
+   "wk_refs": [],
+   "confidence": "B",
+   "confidence_note": "Колчин: местная порода (вид рода не уточнён; E. verrucosus — единственный обычный вид северо-запада, по ареалу «от Пскова до Предуралья»)",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_calluna_vulgaris",
+   "name_ru": "вереск обыкновенный",
+   "name_en": "heather",
+   "lat": "Calluna vulgaris",
+   "family": "Ericaceae",
+   "name_folk": [],
+   "name_folk_refs": [],
+   "name_old_ru": "",
+   "life_form": "dwarf_shrub",
+   "leaf_habit": "evergreen_broadleaf",
+   "moisture": [
+    "dry",
+    "waterlogged"
+   ],
+   "soil": "бескарбонатные пески; гари, торфяные болота, пустоши; сплошные заросли в редких сосняках",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "8-10",
+    "flower_note": "период цветения вида — с конца лета до осени; белые, розовые, лиловые (диапазон «с конца июля по ноябрь» в статье относится только к садовым сортам, не к дикому вереску)",
+    "fruit": null,
+    "leaf_out": null
+   },
+   "winter_look": "вечнозелёный; засохшие цветки держатся на веточках, «цветёт» под снегом",
+   "cues": {
+    "bark": "",
+    "leaf": "мелкие чешуевидные листочки",
+    "smell": "",
+    "sound": "гул пчёл над цветущим вересковищем",
+    "other": "лиловые ковры в конце лета"
+   },
+   "uses": [
+    {
+     "use": "honey_plant",
+     "part": "цветки",
+     "quality": "primary",
+     "note": "важнейший медонос северной и средней полосы (вересковый мёд)",
+     "refs": [
+      "src:src_wiki_calluna_vulgaris"
+     ]
+    },
+    {
+     "use": "brooms_bedding_fodder",
+     "part": "побеги",
+     "quality": "occasional",
+     "note": "веники/метёлки, подстилка скоту в стойлах — подтверждено статьёй; корм овцам и краситель кож при окраске кож — практика Западной Европы по той же статье («в СССР вереск на корм почти не использовался, но в... Западной Европы... используется как пастбища для овец»), для Новгорода 1230 не подтверждено (аналогия); «кровля» в статье не найдена и убрана как неподтверждённая позиция",
+     "refs": [
+      "src:src_wiki_calluna_vulgaris"
+     ]
+    }
+   ],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [],
+   "yield_units": [
+    "armful_cut"
+   ],
+   "kolchin_name": "",
+   "wk_refs": [
+    "wk:claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation"
+   ],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу; «верещатники» на полянах косвенно в WK (черника)",
+   "notes": ""
+  },
+  {
+   "id": "fl_ts_rhododendron_tomentosum",
+   "name_ru": "багульник болотный",
+   "name_en": "marsh Labrador tea",
+   "lat": "Rhododendron tomentosum",
+   "lat_syn": "Ledum palustre",
+   "family": "Ericaceae",
+   "name_folk": [
+    "багно",
+    "багун душистый",
+    "болотная одурь",
+    "болотник"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_rhododendron_tomentosum"
+   ],
+   "name_old_ru": "",
+   "life_form": "dwarf_shrub",
+   "leaf_habit": "evergreen_broadleaf",
+   "moisture": [
+    "waterlogged"
+   ],
+   "soil": "моховые болота, торфяники, заболоченные хвойные леса",
+   "light": "intermediate",
+   "phen": {
+    "flower": "5-7",
+    "flower_note": "белые цветки с сильным, иногда одуряющим запахом",
+    "fruit": "7-8",
+    "leaf_out": null
+   },
+   "winter_look": "вечнозелёный; кожистые узкие листья с завёрнутым краем, рыжий войлок снизу",
+   "cues": {
+    "bark": "",
+    "leaf": "узкие кожистые листья с рыжим опушением снизу",
+    "smell": "сильный дурманящий смолистый запах, особенно в цвету",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "toxic_and_intoxicating_smell",
+     "note": "ядовит для людей и животных; одуряющий запах",
+     "refs": [
+      "src:src_wiki_rhododendron_tomentosum"
+     ]
+    }
+   ],
+   "yield_units": [],
+   "kolchin_name": "",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу (болота лесной зоны)",
+   "notes": "Историческое применение в 1230 г. не подтверждено — поле uses пусто намеренно."
+  },
+  {
+   "id": "fl_ts_chamaedaphne_calyculata",
+   "name_ru": "хамедафна (болотный мирт, кассандра)",
+   "name_en": "leatherleaf",
+   "lat": "Chamaedaphne calyculata",
+   "family": "Ericaceae",
+   "name_folk": [
+    "болотный мирт",
+    "кассандра"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_chamaedaphne_calyculata"
+   ],
+   "name_old_ru": "",
+   "life_form": "dwarf_shrub",
+   "leaf_habit": "evergreen_broadleaf",
+   "moisture": [
+    "waterlogged"
+   ],
+   "soil": "сфагновые болота и заболоченные редколесья",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "5-7",
+    "fruit": null,
+    "leaf_out": null
+   },
+   "winter_look": "вечнозелёный кустарничек; кожистые листья зимой красновато-бурые",
+   "cues": {
+    "bark": "",
+    "leaf": "кожистые листья, зимой красно-бурые",
+    "smell": "",
+    "sound": "",
+    "other": "белые колокольчики в один ряд на веточке"
+   },
+   "uses": [],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "toxic_andromedotoxin",
+     "note": "андромедотоксин в листьях и побегах; отравления скота; мёд ядовит",
+     "refs": [
+      "src:src_wiki_chamaedaphne_calyculata"
+     ]
+    }
+   ],
+   "yield_units": [],
+   "kolchin_name": "",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу",
+   "notes": "Это «мирт болотный» из брифа; восковник (Myrica gale) — отдельный вид, вынесен в gaps."
+  },
+  {
+   "id": "fl_ts_andromeda_polifolia",
+   "name_ru": "подбел многолистный",
+   "name_en": "bog rosemary",
+   "lat": "Andromeda polifolia",
+   "family": "Ericaceae",
+   "name_folk": [
+    "болотник",
+    "дикий розмарин",
+    "пьяная трава"
+   ],
+   "name_folk_refs": [
+    "src:src_wiki_andromeda_polifolia"
+   ],
+   "name_old_ru": "",
+   "life_form": "dwarf_shrub",
+   "leaf_habit": "evergreen_broadleaf",
+   "moisture": [
+    "waterlogged"
+   ],
+   "soil": "верховые и переходные сфагновые болота, заболоченные сосняки",
+   "light": "light_demanding",
+   "phen": {
+    "flower": "4-6",
+    "flower_note": "конец апреля - начало июня; розовые кувшинчатые цветки",
+    "fruit": null,
+    "leaf_out": null
+   },
+   "winter_look": "вечнозелёный низкий кустарничек во мху, под снегом",
+   "cues": {
+    "bark": "",
+    "leaf": "двуцветные: сверху тёмно-зелёные, снизу сизо-белые",
+    "smell": "",
+    "sound": "",
+    "other": ""
+   },
+   "uses": [],
+   "building_timber": "none",
+   "craft_wood": "none",
+   "timber_note": "",
+   "hazards": [
+    {
+     "hazard": "toxic_andromedotoxin",
+     "note": "андромедотоксин: слезотечение, рвота, брадикардия, паралич",
+     "refs": [
+      "src:src_wiki_andromeda_polifolia"
+     ]
+    }
+   ],
+   "yield_units": [],
+   "kolchin_name": "",
+   "wk_refs": [],
+   "confidence": "C",
+   "confidence_note": "присутствие — по современному ареалу",
+   "notes": ""
+  }
+ ]
+}

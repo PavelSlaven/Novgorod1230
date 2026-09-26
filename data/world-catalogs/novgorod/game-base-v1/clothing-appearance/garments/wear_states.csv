@@ -1,0 +1,10 @@
+wear_state,name_ru,applies_to_material_class,in_runtime_code,source_refs,status
+new,новое,textile|leather|fur|felt|metal|hard,false,costume:CMB001 (износ по достатку); risovalka §5 «Состояние вещей»,candidate
+serviceable,"исправное, ношеное",textile|leather|fur|felt|metal|hard,true,v17 m2c-npc runtime-bindings condition_state=serviceable,candidate
+worn,"поношенное, потёртое",textile|leather|fur|felt|metal|hard,false,risovalka §5 «обувь потёртая; низ свиты истёрт»,candidate
+patched,"латаное, чиненное",textile|leather|fur|felt,false,costume:CMB001 «заплаты допустимы»; risovalka §1 Б «одежда чиненная»; claim:ordinary-life-shoes-protect-feet (ремонт обуви),candidate
+dirty,грязное,textile|leather|fur|felt|metal|hard,false,claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces; costume:FW017 (грязь межсезонья),candidate
+torn,рваное,textile|leather|fur|felt,false,"costume:ANTI009/CMB001 (износ по достатку, «не театральные лохмотья»); sqlite:social_groups «нищие, беженцы, голодающие» (A)",candidate
+wet,мокрое,textile|leather|fur|felt,false,claim:ordinary-life-shoes-protect-feet (сушка обуви после сырости),candidate
+rusted,ржавое,metal,false,физическое свойство железа; C,candidate
+broken,сломанное,metal|hard,false,C,candidate

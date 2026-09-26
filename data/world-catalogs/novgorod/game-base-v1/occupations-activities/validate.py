@@ -62,6 +62,32 @@ def main():
     assert len({p["profile_id"] for p in profiles}) == len(profiles) == 28
     assert occ_ids <= {p["occupation_ref"] for p in profiles}
     assert all(not p["executable"] and p["appearance"] and p["clothing"] and p["equipment"] for p in profiles)
+    appearance_rows = [r for name in ("region_demographic_profile_entries", "region_appearance_profile_entries")
+                       for r in json.loads((HERE.parent.parent / f"spatial-v3/candidates/spatial-v3-production-v4/datasets/{name}.json").read_text(encoding="utf-8"))]
+    assert all(r["status"] == "approved" for r in appearance_rows)
+    appearance_ids = {r["id"] for r in appearance_rows}
+    outfit_rows = csv_rows(HERE.parent / "clothing-appearance/outfits_by_role/outfits.csv")
+    assert all(r["status"] == "candidate" for r in outfit_rows)
+    outfit_ids = {r["of_id"] for r in outfit_rows if r["runtime_selectable"] == "true"}
+    equipment_ids = {r["id"] for r in json.loads((HERE.parent / "items-weapons-armour/authoring/equipment_profiles.json").read_text(encoding="utf-8"))["profiles"]}
+    assert npc["approved"] is False and npc["activation_authorized"] is False
+    for profile in profiles:
+        assert profile["status"] == "candidate" and profile["regional_option_sets"]
+        assert {s["role_ref"] for s in profile["regional_option_sets"]} == set(profile["allowed_role_refs"])
+        assert len({(s["role_ref"], s["region_ref"]) for s in profile["regional_option_sets"]}) == len(profile["regional_option_sets"])
+        for regional in profile["regional_option_sets"]:
+            assert regional["status"] == "candidate"
+            assert regional["role_ref"] in profile["allowed_role_refs"] and regional["occupation_ref"] == profile["occupation_ref"]
+            appearance_options = npc["appearance_option_sets"][regional["appearance_option_set_ref"]]
+            assert set(appearance_options) == set(profile["required_facets"])
+            for options in [*appearance_options.values(), regional["clothing_options"], regional["equipment_options"]]:
+                assert options and all(isinstance(o["weight"], int) and o["weight"] > 0 for o in options)
+                assert all(o["source_ref"] or o["rule"] or o["no_source"] for o in options)
+            for options in appearance_options.values():
+                assert all(o["source_ref"].split("#", 1)[1] in appearance_ids for o in options)
+            assert all(o["value"] is None or o["value"] in outfit_ids for o in regional["clothing_options"])
+            assert all(o["value"] is None or o["value"] in equipment_ids or o["source_ref"].startswith(("occupations/", "pr98:"))
+                       for o in regional["equipment_options"])
     seed_skills = {r["id"] for r in csv_rows(ROOT_DATA / "world-base-seeds/skill_catalog_v1.csv")}
     defaults = {r["occupation_archetype_id"]: r for r in csv_rows(ROOT_DATA / "world-base-seeds/occupation_skill_defaults_v1.csv")}
     assert {s["id"] for s in skill["parent_skills"]} == seed_skills

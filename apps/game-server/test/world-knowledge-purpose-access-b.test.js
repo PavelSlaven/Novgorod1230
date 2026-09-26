@@ -1,13 +1,27 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { createWorldKnowledgeCore } from '@rus/world-knowledge';
 import {
-  actorFacetsOf, playerActorFacetsFromState, semanticInputOf
+  actorFacetsOf, playerActorFacetsFromState, playerWorldKnowledgeAuthoritativeFromState,
+  semanticInputOf, withPlayerWorldKnowledgeAuthoritative
 } from '../src/runtime/world-knowledge-request-context.js';
-import { createLowerDvinaTracePlayerConversationModel } from
+import { createLowerDvinaTracePlayerConversationModel,
+  rejectIntentParaphraseWorldKnowledgeLeak } from
   '../src/runtime/lower-dvina-trace-conversation-llm.js';
-import { createLowerDvinaTraceNarrationService } from
+import { createLowerDvinaTraceNarrationService, narrationWire } from
   '../src/runtime/lower-dvina-trace-narration-llm.js';
+import { createProductionWorldKnowledgeGrounder } from
+  '../src/runtime/world-knowledge-grounding.js';
 import { canAccess } from '@rus/world-knowledge';
+import { createSpatialV3RuntimeBindings } from
+  '../src/runtime/releases/spatial-v3-production-v17-bindings.js';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..');
+const bundlePath = join(ROOT,
+  'data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json');
 
 test('actorFacetsOf maps dossier social_role_id to role_ref', () => {
   assert.deepEqual(actorFacetsOf({
@@ -26,6 +40,24 @@ test('actorFacetsOf maps dossier social_role_id to role_ref', () => {
   });
 });
 
+test('F9 committed state wins over callContext facets/events/clock', async () => {
+  const seen = [];
+  const model = async (_request, ctx) => { seen.push(ctx); return { ok: true }; };
+  const wrapped = withPlayerWorldKnowledgeAuthoritative(model, () => ({
+    clock: { whole_minutes: '10', subminute_numerator: '0', subminute_denominator: '1' },
+    historical_events: [{ event_id: 'event:from-state', phases: [] }],
+    player_profile: { social_status: { social_role_id: 'role-state' } }
+  }));
+  await wrapped({ schema: 'x' }, {
+    clock: { whole_minutes: '99', subminute_numerator: '0', subminute_denominator: '1' },
+    historical_events: [{ event_id: 'event:from-call', phases: [] }],
+    actor_facets: { role_ref: 'role-call' }
+  });
+  assert.equal(seen[0].actor_facets.role_ref, 'role-state');
+  assert.equal(seen[0].historical_events[0].event_id, 'event:from-state');
+  assert.equal(seen[0].clock.whole_minutes, '10');
+});
+
 test('semanticInputOf accepts player raw_text and narration visible changes', () => {
   assert.equal(semanticInputOf({
     schema: 'player_conversation_input_v1',
@@ -38,6 +70,23 @@ test('semanticInputOf accepts player raw_text and narration visible changes', ()
   }), 'Ты поднял сеть. взять сеть');
 });
 
+test('F5 rejectIntentParaphraseWorldKnowledgeLeak catches copied fact text', () => {
+  assert.throws(() => rejectIntentParaphraseWorldKnowledgeLeak({
+    input_mode: 'intent_paraphrase',
+    speech: { utterance_text: 'Купальщик моется водой из бани для стирки белья.' }
+  }, {
+    facts: [{ claim_ref: 'claim:bathing-washing-water',
+      runtime_text: 'Купальщик моется водой из бани для стирки белья.' }]
+  }), /PLAYER_CONVERSATION_WK_UTTERANCE_LEAK|utterance must not copy/u);
+  assert.doesNotThrow(() => rejectIntentParaphraseWorldKnowledgeLeak({
+    input_mode: 'intent_paraphrase',
+    speech: { utterance_text: 'Где сети?' }
+  }, {
+    facts: [{ claim_ref: 'claim:bathing-washing-water',
+      runtime_text: 'Купальщик моется водой из бани для стирки белья.' }]
+  }));
+});
+
 test('player conversation model grounds with semantic_resolution', async () => {
   const grounds = [];
   let sawClosure = false;
@@ -46,6 +95,7 @@ test('player conversation model grounds with semantic_resolution', async () => {
       if (call.messages[0].content.includes('world_knowledge is the only factual')) {
         sawClosure = true;
       }
+      assert.match(call.messages[0].content, /Never add an unstated claim/u);
       return { output: { invalid: true } };
     }
   };
@@ -85,8 +135,50 @@ test('player conversation model grounds with semantic_resolution', async () => {
   assert.equal(sawClosure, true);
 });
 
-test('narration service calls ground with narration before writer', async () => {
+test('F3 narrationWire strips authoritative from nested repair original', () => {
+  const wired = narrationWire({
+    schema: 'narration_format_repair_request',
+    party_id: 'party-leak',
+    world_knowledge_authoritative: {
+      clock: { whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' },
+      historical_events: [{
+        event_id: 'event:future',
+        phases: [{ start: { whole_minutes: '10000000', subminute_numerator: '0',
+          subminute_denominator: '1' } }]
+      }],
+      actor_facets: { role_ref: 'nov_role_merchant_clerk' }
+    },
+    world_knowledge: {
+      schema: 'world_knowledge_slice_v1',
+      pack_ref: 'pack',
+      pack_revision: 'rev',
+      coverage: [], hard_constraints: [], facts: [{ claim_ref: 'c1', runtime_text: 'ok' }],
+      disputes: [], gaps: []
+    },
+    request: {
+      schema: 'narration_request',
+      party_id: 'nested-party',
+      world_knowledge_authoritative: {
+        actor_facets: { role_ref: 'should-not-leak' }
+      },
+      visible_context: {
+        visible_changes: ['Ты поднял сеть.'],
+        uncertainties: [],
+        do_not_imply: [],
+        allowed_tensions: [],
+        visible_scene: 'Река.'
+      }
+    }
+  });
+  assert.equal(Object.hasOwn(wired, 'world_knowledge_authoritative'), false);
+  assert.equal(Object.hasOwn(wired, 'party_id'), false);
+  assert.equal(wired.world_knowledge?.facts?.[0]?.claim_ref, 'c1');
+  assert.equal(wired.required_current_beat.changes[0].text, 'Ты поднял сеть.');
+});
+
+test('F1/F2 narration grounds once and keeps WK on writer wire', async () => {
   const grounds = [];
+  const writerBodies = [];
   const visible = {
     version: 1,
     schema: 'visible_context_package',
@@ -101,24 +193,44 @@ test('narration service calls ground with narration before writer', async () => 
   };
   const roleRunner = {
     async run(call) {
-      assert.equal(Object.hasOwn(JSON.parse(call.messages[1].content),
-        'world_knowledge_authoritative'), false);
+      const body = JSON.parse(call.messages[1].content);
+      assert.equal(Object.hasOwn(body, 'world_knowledge_authoritative'), false);
+      assert.equal(Object.hasOwn(body, 'party_id'), false);
       if (call.role_id === 'gameplay_narrator') {
+        writerBodies.push(body);
+        assert.equal(body.world_knowledge?.facts?.[0]?.claim_ref, 'claim:allowed');
         assert.match(call.messages[0].content, /world_knowledge is the only factual/u);
         return { output: { prose: 'Ты поднял сеть.' } };
+      }
+      if (call.role_id === 'gameplay_narrator_auditor') {
+        assert.equal(body.world_knowledge?.facts?.[0]?.claim_ref, 'claim:allowed');
+        return {
+          output: {
+            reviewed_segments: [{ segment_id: 's1', text: 'Ты поднял сеть.' }],
+            source_reviews: [{ ref: 'visible_change_1', segment_choices: ['s1'] }],
+            unsupported: [],
+            literary_failures: []
+          }
+        };
       }
       return { output: {} };
     }
   };
   const grounder = {
     async ground(request, purpose, authoritative) {
-      grounds.push({ purpose, authoritative });
+      grounds.push({ purpose, schema: request.schema, authoritative });
+      assert.equal(request.schema, 'narration_request');
       return {
         ...request,
         world_knowledge: {
-          sufficiency: 'PARTIAL_KNOWLEDGE',
-          pack_revision: 'test',
-          facts: []
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: 'pack',
+          pack_revision: 'rev',
+          coverage: [],
+          hard_constraints: [],
+          facts: [{ claim_ref: 'claim:allowed', runtime_text: 'Сеть мокрая.' }],
+          disputes: [],
+          gaps: []
         }
       };
     }
@@ -131,18 +243,158 @@ test('narration service calls ground with narration before writer', async () => 
     schema: 'narration_request',
     request_id: 'n1',
     surface: 'turn',
-    visible_context: visible,
-    world_knowledge_authoritative: {
+    visible_context: visible
+  }, {
+    worldKnowledgeAuthoritative: {
       clock: null,
       historical_events: [],
       actor_facets: { role_ref: 'nov_role_merchant_clerk' }
     }
   });
-  assert.equal(result.status, 'blocked');
-  assert.ok(grounds.length >= 1);
+  assert.equal(grounds.length, 1);
   assert.equal(grounds[0].purpose, 'narration');
   assert.deepEqual(grounds[0].authoritative.actor_facets,
     { role_ref: 'nov_role_merchant_clerk' });
+  assert.equal(writerBodies.length, 1);
+  assert.ok(result.status === 'approved' || result.status === 'blocked');
+});
+
+test('F1 production grounder does not throw on auditor/format-repair path', async () => {
+  const bundle = JSON.parse(readFileSync(bundlePath, 'utf8'));
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: {
+      bundle,
+      core: createWorldKnowledgeCore(bundle),
+      calendar_profile: {
+        profile_id: 'novgorod-calendar', version: '1', status: 'approved',
+        provenance: { source_id: 't', source_version: '1' },
+        epoch: { game_timestamp: { whole_minutes: '0', subminute_numerator: '0',
+          subminute_denominator: '1' }, year: '1230', month: '1', day: '1' },
+        calendar_system: 'source-backed',
+        month_rules: { month_lengths: ['30', '30'] },
+        leap_rules: { cycle_years: '4', leap_year_indexes: ['3'], leap_month: '2',
+          leap_days: '1' },
+        day_start_rule: { local_minute: '360' },
+        local_offset_rule: { offset_minutes: '0' },
+        daypart_rule: { ranges: [
+          { id: 'night', start_minute: '0', end_minute: '360' },
+          { id: 'day', start_minute: '360', end_minute: '1080' },
+          { id: 'evening', start_minute: '1080', end_minute: '1440' }] },
+        season_rule: { ranges: [
+          { id: 'cold', start_day: '1', end_day: '30' },
+          { id: 'warm', start_day: '31', end_day: '61' }] },
+        daylight_rule: { ranges: [
+          { id: 'dark', start_day: '1', end_day: '30' },
+          { id: 'light', start_day: '31', end_day: '61' }] }
+      },
+      encoder: { encode: async () => [1] },
+      vector_index: { search: () => new Map() }
+    },
+    roleRunner: {
+      async run() {
+        return {
+          output: {
+            schema: 'world_knowledge_query_plan_v1',
+            query_locale: 'ru',
+            domains: [],
+            focus_refs: [],
+            requested_predicates: [],
+            search_hints: []
+          }
+        };
+      }
+    },
+    year: 1230,
+    placeRefs: ['region_novgorod_land']
+  });
+  let writerGround = 0;
+  const counting = {
+    async ground(request, purpose, authoritative) {
+      writerGround += 1;
+      return grounder.ground(request, purpose, authoritative);
+    }
+  };
+  const roleRunner = {
+    async run(call) {
+      if (call.role_id === 'gameplay_narrator') {
+        return { output: { prose: 'Ты стоишь у воды.' } };
+      }
+      if (call.role_id === 'gameplay_narrator_auditor') {
+        return {
+          output: {
+            reviewed_segments: [{ segment_id: 's1', text: 'Ты стоишь у воды.' }],
+            source_reviews: [{ ref: 'visible_change_1', segment_choices: ['s1'] }],
+            unsupported: [],
+            literary_failures: []
+          }
+        };
+      }
+      return { output: {} };
+    }
+  };
+  const service = createLowerDvinaTraceNarrationService({
+    roleRunner, worldKnowledgeGrounder: counting
+  });
+  await service.run({
+    version: 1,
+    schema: 'narration_request',
+    request_id: 'n-prod',
+    surface: 'turn',
+    visible_context: {
+      version: 1,
+      schema: 'visible_context_package',
+      visible_scene: 'Река.',
+      visible_changes: ['Ты стоишь у воды.'],
+      uncertainties: [],
+      do_not_imply: [],
+      allowed_tensions: [],
+      sensory_details: [],
+      visible_objects: [],
+      known_context: []
+    }
+  }, {
+    worldKnowledgeAuthoritative: playerWorldKnowledgeAuthoritativeFromState({
+      clock: null,
+      historical_events: [],
+      player_profile: { social_status: { social_role_id: 'nov_role_merchant_clerk' } }
+    })
+  });
+  assert.equal(writerGround, 1);
+});
+
+test('F4 services narrator wrap uses options authoritative from post-commit helper', () => {
+  const source = readFileSync(join(ROOT,
+    'apps/game-server/src/runtime/lower-dvina-trace-phase-2-services.js'), 'utf8');
+  assert.match(source, /playerWorldKnowledgeAuthoritativeFromState\(narrationAuthState\)/u);
+  assert.match(source, /narrationAuthState = loaded/u);
+  assert.match(source, /worldKnowledgeAuthoritative:/u);
+  assert.equal(source.includes('world_knowledge_authoritative:'), false);
+  const auth = playerWorldKnowledgeAuthoritativeFromState({
+    clock: { whole_minutes: '7', subminute_numerator: '0', subminute_denominator: '1' },
+    historical_events: [{ event_id: 'event:a', phases: [] }],
+    player_profile: { social_status: { social_role_id: 'nov_role_merchant_clerk' } }
+  });
+  assert.equal(auth.clock.whole_minutes, '7');
+  assert.equal(auth.actor_facets.role_ref, 'nov_role_merchant_clerk');
+});
+
+test('F4 m2 exchange wraps player model with committed-state authoritative', () => {
+  const source = readFileSync(join(ROOT,
+    'apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-exchange.js'),
+  'utf8');
+  assert.match(source, /withPlayerWorldKnowledgeAuthoritative\(\s*context\.playerConversationModel/u);
+  assert.match(source, /prepareM2PlayerConversationPlan/u);
+});
+
+test('F4 v17 bindings wire playerConversationModel with grounder', () => {
+  const source = readFileSync(join(ROOT,
+    'apps/game-server/src/runtime/releases/spatial-v3-production-v17-bindings.js'),
+  'utf8');
+  assert.match(source,
+    /playerConversationModel: createLowerDvinaTracePlayerConversationModel\(\{\s*roleRunner, worldKnowledgeGrounder/u);
+  assert.match(source,
+    /npcSemanticModel: createLowerDvinaTraceNpcSemanticModel\(\{ roleRunner, worldKnowledgeGrounder \}\)/u);
+  assert.equal(typeof createSpatialV3RuntimeBindings, 'function');
 });
 
 test('canAccess still gates conversation/narration after D15', () => {

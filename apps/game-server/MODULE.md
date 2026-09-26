@@ -118,8 +118,8 @@ and adds no second transaction owner.
   fail-closed `WORLD_KNOWLEDGE_UNAVAILABLE` без lexical fallback.
   Непустая factual need сохраняет прежний validated retrieval path.
   Slice несёт `sufficiency` рядом с `verdict`; diagnostic — `cache_hit`/`cache_miss`.
-  Все шесть consumers (turn step/O1/S1/N1/autonomous/conversation) используют
-  один strip `context_text`.
+  Все восемь consumers (turn step/O1/S1/N1/autonomous/conversation/narration/
+  player conversation interpreter) используют один strip `context_text`.
 
 - Narration adapter даёт auditor request-local sources
   visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
@@ -259,7 +259,7 @@ and adds no second transaction owner.
   вещи в мире. Existing-item inspection, `look`, preflight и material-prerequisite
   inspect с полным неизменённым later intent остаются free; другая activity не
   получает этот вывод по соседнему query.
-- Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
+- Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают confirmed player-safe visible context/outcome плюс optional actor-visible World Knowledge slice (`purpose: narration`, D16/D20: `playerActorFacetsFromState` / `playerWorldKnowledgeAuthoritativeFromState`), а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success и тот же WK slice как evidence. WK грунтуется один раз на writer и переиспользуется; сбой WK не отклоняет post-commit narration. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
 - После P16 server ведёт existing presentation job для exact committed package.
   Approved narration сохраняет existing narrated `TurnScreen`. Только typed
   `final_audit_failed` после bounded repair/final audit может через один
@@ -917,8 +917,9 @@ verified target item/world tuple. Manifest digest связывает все poli
 он не равен raw SHA initial-perception candidate. Loader не выдаёт operational
 approval, не меняет default release и сохраняет historical authored catalog.
 
-## World Knowledge grounding (D18 / #153 part A)
+## World Knowledge grounding (D18 / #153 part A + B)
 
 - Party calendar clock wins over `request.historical_context.year`.
 - `partyHistoricalEventsOf(committedState)` + `withPartyHistoricalEvents(model, stateOf)` — server port: adapters pass `historical_events` explicitly in grounder `authoritative` / model-call context from committed party state (F1/F2). No `request_id` Map and no request-body injection. Turn step: `buildLowerDvinaTracePhase2Services` wraps `turnStepModel` per request as `(req, repair) => model(req, repair, { historical_events })` (3rd arg; no mutable function property). Conversation exchange wraps `npcSemanticModel` with exchange `context.state` (party state at exchange start; working overlay does not own `historical_events`). `partyWorldKnowledgeAuthoritative` always rebuilds `started_historical_events` from those events + party clock via `@rus/time-events-history` (never accepts a ready id list).
+- Part B (D16/D20): `createLowerDvinaTraceNarrationService` grounds `purpose: narration` once per flow; `withPlayerWorldKnowledgeAuthoritative` / `playerActorFacetsFromState` bind player dossier `social_role_id` → `role_ref` for conversation/narration. Committed state always wins over callContext (F9). Narration authoritative comes from post-commit state via options port, shared with presentation replay (F7).
 - Focus refs are filtered by claim `conditions` / access before the planner wire.

@@ -55,7 +55,8 @@
 | 048 | `npc-safe-request-projector` / `state.historical_context` | norms/customs пусты в v17 — отсутствие данных | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 049 | `frozen-role-requests` / `turn-step-generic-owners` / `temporal-world-v1` | pre-#152 app/domain fails вне WK diff | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 050 | NPC `knowledge_snapshot` / memory/rumors | actor-visible knowledge — `@rus/visibility-knowledge-memory` / npc-runtime, не #154 WK | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
-| 051 | `authored-opening-narration` | opening narration без WK date-gate — owner рассказчика | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 051 | `authored-opening-narration` | opening narration без WK вовсе — owner рассказчика | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 052 | turn-step `player_utterance` / `intent_paraphrase` | WK может впитаться в речь — вне Part B guard | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 
 ## Записи
 
@@ -253,7 +254,12 @@
 - **Как жить.** Не маршрутизировать в #154 WK actor-visible filter. Пересмотреть, когда visibility/npc-runtime CR явно подключит date-gated historical events к actor knowledge.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
-### LW-051 — opening narration без WK date-gate
-- **Где.** `authored-opening-narration.js` / narration owner.
-- **Как жить.** Не закрывать «narration owner» без issue; отдельный CR владельца рассказчика, если opening должен учитывать started historical events.
+### LW-051 — opening narration без WK вовсе
+- **Где.** `authored-opening-narration.js` / narration owner. Opening path не вызывает production World Knowledge grounder (ни date-gate, ни actor-visible slice).
+- **Как жить.** Не закрывать «narration owner» без issue; отдельный CR владельца рассказчика, если opening должен получать WK / started historical events.
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
+
+### LW-052 — turn-step intent_paraphrase / player_utterance может впитать WK в речь
+- **Где.** Turn-step `player_utterance` + `intent_paraphrase` (`@rus/turn` / lower-dvina turn-step planner). Player conversation interpreter закрыт в #153 REVIEW-041 (F5); тот же класс утечки в turn-step speech существовал раньше.
+- **Как жить.** Не считать turn-step speech WK-safe без отдельного CR: prompt/guard как у player conversation (`never add an unstated claim`). Не чинить попутно в #153 Part B/C.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)

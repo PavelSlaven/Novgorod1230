@@ -52,7 +52,10 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
-    return assemblePlayerConversationPlan(response.output, request);
+    const plan = assemblePlayerConversationPlan(response.output, request);
+    // F5: intent_paraphrase must not commit WK fact text as player speech.
+    rejectIntentParaphraseWorldKnowledgeLeak(plan, grounded?.world_knowledge);
+    return plan;
   };
 }
 
@@ -224,4 +227,26 @@ function requireRoleRunner(roleRunner) {
 
 function dependencyError(message) {
   return serverError('TRACE_PHASE_2_DEPENDENCY_MISSING', message, { status: 503 });
+}
+
+/** F5: reject intent_paraphrase that copies WK fact text into committed speech. */
+export function rejectIntentParaphraseWorldKnowledgeLeak(plan, slice) {
+  if (plan?.input_mode !== 'intent_paraphrase') return;
+  const utterance = plan?.speech?.utterance_text;
+  if (typeof utterance !== 'string' || !utterance.trim() || slice == null) return;
+  const normalized = normalizeLeakText(utterance);
+  for (const fact of [...(slice.facts ?? []), ...(slice.hard_constraints ?? [])]) {
+    const text = normalizeLeakText(fact?.runtime_text);
+    if (text.length >= 12 && normalized.includes(text)) {
+      throw serverError(
+        'PLAYER_CONVERSATION_WK_UTTERANCE_LEAK',
+        'intent_paraphrase utterance must not copy World Knowledge fact text.',
+        { status: 422, details: { claim_ref: fact?.claim_ref ?? null } }
+      );
+    }
+  }
+}
+
+function normalizeLeakText(value) {
+  return String(value ?? '').toLowerCase().replace(/\s+/gu, ' ').trim();
 }

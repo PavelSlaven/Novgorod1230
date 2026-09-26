@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(wk): #153 REVIEW-041 — narration ground-once+degrade; WK on wire; strip auth leak; post-commit authoritative; F5 utterance leak guard; §73/§102; LW-051/052 (#153, PR #98) LW-051 updated LW-052 added
 - feat(wk): #153 Part B D15/D16/D20 - npc_decision outside ACTOR_FACING; narration+player interpreter WK wire; player social_role_id→role_ref; contract §14/§67 (#153, PR #98)
 - fix(wk): #153 REVIEW-038 — turn historical_events via services 3rd arg; owner clock normalize; MODULE.md services wrap (#153, PR #98)
 - fix(wk): #153 REVIEW-037 — drop request_id event Map; explicit historical_events ports; facet present reject; pack validator messages (#153, PR #98)

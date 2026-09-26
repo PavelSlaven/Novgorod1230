@@ -2869,6 +2869,11 @@ committed visible party state
 → localized narration
 ```
 
+Actor-visible срез narration (D16/D20) строится с `purpose: narration` и
+`actor_facets` игрока: `role_ref` берётся из committed dossier
+(`social_role_id` → `role_ref`), чтобы `role_bound` claims были достижимы.
+Сбой WK после commit не отклоняет рассказ: деградация без среза, с trace.
+
 Если prose называет новый authoritative/actionable object, такой object уже должен существовать в approved working/committed projection.
 
 ---
@@ -3466,7 +3471,9 @@ Location/NPC/ordinary materialization integration готова, когда:
 
 # 102. NPC/social/legal Gate
 
-1. NPC получает только actor-safe factual context;
+1. `npc_decision` получает World Knowledge как устройство мира (не actor-facing
+   filter; см. §14/§67/D15). Actor-facing срез (`conversation`/`narration`) —
+   только actor-safe factual context;
 2. World Knowledge сообщает norm/procedure/context, но не выбирает NPC action;
 3. formal consequence остаётся у existing owner;
 4. law/authority reaction не выдумывается model memory при covered profile;

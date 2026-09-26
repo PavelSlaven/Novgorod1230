@@ -210,7 +210,9 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 | `scope_kind` | `landscape_template` / `place_template` / `scene_template` / `container_template` |
 | `scope_ref` | id шаблона scope |
 | `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |
-| `category_id` | категория hierarchical presence-фасета (`object_type` / `container_form` / …) |
+| `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |
+| `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |
+| `category_id` | для `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); иначе может дублировать `subject_ref` или быть NULL по DDL CR |
 | `presence_probability_ppm` | целое 0…1_000_000 |
 | `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |
 | `allowed_seasons` | закрытый словарь сезонов календаря |

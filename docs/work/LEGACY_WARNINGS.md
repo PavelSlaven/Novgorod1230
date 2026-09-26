@@ -130,9 +130,9 @@
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-028 — классовый блок оружия, денег и документов (ветка PR #98)
-- **Что.** `packages/turn/src/ordinary-materialization-presence.js` (набор RESTRICTED: `weapon_or_armament`, `currency_or_precious`, `document_like`, `specialized_or_valuable`, `other_restricted`) и `apps/game-server/src/runtime/context-bound-ordinary-policy.js` пропускают эти классы только при авторском scope-профиле, иначе `absent` или `authority_required`; eval-фикстуры Stage B закрепляют «меча нет». Решение владельца 2026-09-25: найти (малая вероятность) и изготовить (ресурсы, инструмент, навык) можно; typed gap — только уникальные и квестовые вещи.
-- **Как жить.** Блок новыми тестами не закреплять; снятие — через CR норм M2c.
-- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
+- **Что.** Нормы корпуса (#146 шаг 2) сняли классовый запрет: находка через presence, изготовление через A1; `authority_required` — только вещи по authority-записи. Код ещё держит блок: `packages/turn/src/ordinary-materialization-presence.js` (RESTRICTED: `weapon_or_armament`, `currency_or_precious`, `document_like`, …) и `apps/game-server/src/runtime/context-bound-ordinary-policy.js`; eval-фикстуры Stage B закрепляют «меча нет».
+- **Как жить.** Блок новыми тестами не закреплять; снятие в коде — CR реализации M2c. При конфликте норма > код до cutover.
+- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133), [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
 
 ### LW-029 — ordinary-профили v17 выключены (ветка PR #98)
 - **Что.** `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 загружены только профиль конечных природных источников при первом входе (`finite_first_entry`), A1 (`actionProductionProfile`) и N1 (`ordinary_profiles.n1`). `items_and_property.txt` и `code_driven_world_materialization_architecture.md` описывают эти профили как active: они действуют только на пути v16 / Lower Dvina Trace.
@@ -199,6 +199,6 @@
 - **Issue.** [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145)
 
 ### LW-042 — ACTIVE-нормы main против PC §9.1 до CR норм M2c
-- **Что.** На main ACTIVE D-005 и устаревшие формулировки `code_driven` (до §3A) / `items_and_property.txt:10` и UNDECLARED-гайд `npc_generation_profiles.txt:7` («LLM не создаёт NPC») (direct action не создаёт «ценные» предметы) расходятся с буквой PC §9.1:240 (по решению D8 LLM лишь сопоставляет запрос с ролью, а экземпляр создаёт код) и с классовым запретом, который PC §9.1 снял; сильнее всего с ним на ветке PR #98 ещё расходится хвост §4.4 Ordinary O2a (`code_driven` около «LLM не создаёт runtime G5/NPC…» / «Restricted weapon/currency/document/other … `authority_required`», ранее ~241/245) до шага 2 #146, плюс D-014 и `turn_step_llm_contract.md:1706` (полный список — #146 шаг 2). Решения владельца: [5836830425](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425), [5839745154](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154). Обычного NPC по запросу игрока создаёт код по сохранённому броску и лимиту места, изготовить можно всё реалистичное, typed gap — только для вещей по authority-записи. `knowledge:query` на main выдаёт старые формулировки. Нормы правит #146 на ветке PR #98; на main они придут с merge PR #98.
-- **Как жить.** При конфликте действуют PC §9.1 и решения #133. Эти формулировки не закреплять новыми тестами и не цитировать в CR как норму.
+- **Что.** На ветке PR #98 шаги 1–2 #146 закрыли расхождение норм с PC §9.1 / D1–D10 / D14 (presence §3A, O1/O2b, классовый запрет, D-005/D8, опознавательный текст). На main до merge #98 ACTIVE-корпус ещё старый: D-005, `items_and_property.txt:10`, гайд `npc_generation_profiles.txt:7`, хвост O2a/`turn_step` §20 (строки вроде бывшего 1706 — их целиком меняет шаг 3). `knowledge:query` на main выдаёт старые формулировки.
+- **Как жить.** При конфликте — PC §9.1 и #133; на ветке #98 — корпус после шагов #146. Старые формулировки main не закреплять новыми тестами.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)

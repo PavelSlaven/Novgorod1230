@@ -35,8 +35,6 @@ export async function readKnowledgeSourceInventory({ root = '.' } = {}) {
   return freezeInventory(inventory);
 }
 
-export { verifyKnowledgeSourceMigrationV2 as verifyKnowledgeSourceMigration } from './knowledge-v2-api.js';
-
 export async function importKnowledgeSourceFromLegacy({ root = '.', importedAt = '2026-07-12T00:00:00.000Z' } = {}) {
   const projectRoot = resolve(root);
   const inventory = await inventoryLegacyKnowledgeSource({ root: projectRoot });

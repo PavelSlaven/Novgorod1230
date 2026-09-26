@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, extname, join, relative, resolve } from 'node:path';
-import { verifyKnowledgeSourceMigration } from './knowledge-source.js';
+import { verifyKnowledgeSourceMigrationV2 as verifyKnowledgeSourceMigration } from './knowledge-v2-api.js';
 
 const GENERATED_NOTICE = '<!-- GENERATED FILE. Run `npm run docs:generate`; do not edit manually. -->';
 const GENERATED_OUTPUT_PATHS = new Set([

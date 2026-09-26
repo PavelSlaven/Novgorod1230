@@ -60602,7 +60602,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -60649,7 +60649,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -61521,7 +61521,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -71429,7 +71429,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -73804,7 +73804,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -84968,7 +84968,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -97249,7 +97249,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -98093,7 +98093,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -106210,7 +106210,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -106267,7 +106267,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -106324,7 +106324,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -109604,7 +109604,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -111565,7 +111565,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -116029,13 +116029,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_fisher"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -116097,13 +116092,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_fisher"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -116750,7 +116740,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -116876,13 +116866,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_fisher"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -117007,7 +116992,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -117235,7 +117220,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -119156,13 +119141,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_fisher"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -119224,13 +119204,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_fisher"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -119292,13 +119267,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_fisher"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -120831,7 +120801,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -120962,13 +120932,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_fisher"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -121345,7 +121310,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -124619,7 +124584,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -136481,6 +136446,13 @@
             "place_ref": "region_novgorod_land",
             "relation": "used_in"
           }
+        ],
+        "conditions": [
+          {
+            "facet": "started_historical_events",
+            "operator": "includes",
+            "value": "novgorod_upheaval_december_1230"
+          }
         ]
       },
       "qualifiers": {
@@ -136542,6 +136514,13 @@
           {
             "place_ref": "region_novgorod_land",
             "relation": "used_in"
+          }
+        ],
+        "conditions": [
+          {
+            "facet": "started_historical_events",
+            "operator": "includes",
+            "value": "novgorod_upheaval_december_1230"
           }
         ]
       },
@@ -136910,6 +136889,13 @@
           {
             "place_ref": "region_novgorod_land",
             "relation": "used_in"
+          }
+        ],
+        "conditions": [
+          {
+            "facet": "started_historical_events",
+            "operator": "includes",
+            "value": "novgorod_upheaval_december_1230"
           }
         ]
       },
@@ -141521,7 +141507,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -142419,7 +142405,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -142513,7 +142499,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -142570,7 +142556,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -142753,7 +142739,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -142814,7 +142800,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -142875,7 +142861,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -142936,7 +142922,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -142997,7 +142983,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -143058,7 +143044,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -143241,7 +143227,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -143302,7 +143288,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -143363,7 +143349,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -143424,7 +143410,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -143485,7 +143471,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -143546,7 +143532,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -145344,7 +145330,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -150027,7 +150013,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -156292,7 +156278,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -156445,7 +156431,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -156492,7 +156478,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -156898,7 +156884,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -157003,7 +156989,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,

@@ -2970,7 +2970,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3000,7 +3000,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3030,7 +3030,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3060,7 +3060,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3090,7 +3090,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3120,7 +3120,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3150,7 +3150,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3374,6 +3374,7 @@
         "semantic_resolution",
         "materialization_support",
         "source_grounded_qa",
+        "npc_decision",
         "conversation"
       ],
       "question_classes": [

@@ -3,21 +3,6 @@
   "verifications": [
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:gov-law-v2-1230-hundreds",
-      "claim_ref": "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
-      "claim_digest": "c5ba514c5dfefec700a38cf05efd0264aff5e06e9d33a27294fc7e9c59bffa33",
-      "candidate_ref": "git:aa9f0113d3eade9cb94bea0babd32c2184f08ec1:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-government-law-v2.json#claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
-      "auditor_ref": "/root/residual_source_review",
-      "independence_basis": "Independent RU→EN localization reconciliation against unchanged Russian source-bounded claims and existing independent source verdict; reviewer did not author candidate.",
-      "evidence_checked": [
-        "evidence:residual-government-law-v2-1230-hundreds"
-      ],
-      "review_ref": "verification/residual-government-law-v2.md#approved-nesin-dated-episodes",
-      "verdict": "APPROVE",
-      "limits": "1230 property-division terminology only; no standardized territorial hundreds, officers, jurisdiction, map, or present administrative state."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:gov-law-v2-mixed-court",
       "claim_ref": "claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
       "claim_digest": "02bf7200dedc620a9433e944d7ebe6395f213334ed6f1a1a3be4ff3a5ac49970",

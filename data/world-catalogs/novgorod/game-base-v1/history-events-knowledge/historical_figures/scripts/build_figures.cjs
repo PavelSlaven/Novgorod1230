@@ -6,14 +6,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const SQLITE_DUMP = process.argv[2];
-const STATUS_RULES = process.argv[3];
-const OUT_DIR = process.argv[4];
-// Optional 5th arg: book evidence CSV (history-events-knowledge.csv from servak:/srv/novgorod-work/data/books/evidence/),
-// used only to attach book:<id> §<section_path> ¶<para_no> citations for rows fixed in the 2026-09-26 rework pass.
-const BOOK_EVIDENCE = process.argv[5];
+const GROUP_ROOT = path.resolve(__dirname, '../..');
+const EXTRACT = process.argv[2] || path.resolve(GROUP_ROOT, 'sources/novgorod_1230_extract.json');
+const STATUS_RULES = process.argv[3] || path.resolve(GROUP_ROOT, '../../sources/nov-region-audit-v1/novgorod_status_rules_v1.json');
+const OUT_DIR = process.argv[4] || path.resolve(__dirname, '..');
 
-const sq = JSON.parse(fs.readFileSync(SQLITE_DUMP, 'utf8'));
+const extract = JSON.parse(fs.readFileSync(EXTRACT, 'utf8'));
 const sr = JSON.parse(fs.readFileSync(STATUS_RULES, 'utf8'));
 
 function csvEsc(v) {
@@ -106,7 +104,7 @@ const windowOverrides = {
     note: 'office_end ограничен 8 декабря 1230 г.: Ростислав ушёл из Новгорода с Водовиком по sqlite events и book:301539 §ПРОДОЛЖЕНИЕ МЕЖДОУСОБИЙ ¶4366; прежняя годовая граница 1230-12-31 перекрывала возвращение Ярослава 30 декабря.',
   },
 };
-const sqRows = sq.persons_1230.map(p => {
+const sqRows = extract.persons_1230.map(p => {
   const w = deriveWindow(p.period_1230);
   const override = windowOverrides[p.id];
   let note = '';

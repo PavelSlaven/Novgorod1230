@@ -99,9 +99,9 @@ escalation → impact → aftermath) несёт видимые признаки,
 ## Пересборка
 
 ```
-node scripts/build_events.cjs <novgorod_historical_timeline_1230_1250_v1.json> <sqlite_dump.json> .
+node scripts/build_events.cjs
 node scripts/validate_events.cjs .
 ```
-`sqlite_dump.json` — построчный JSON-экспорт `C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite`
-(таблицы `persons_1230, events, famine_prices, law, social_groups, institutions` и др.), сделанный через
-`python -c "import sqlite3,json; ..."` (см. `historical_figures/README.md` за полной командой).
+
+Без аргументов builder читает pinned timeline из `novgorod/sources/nov-region-audit-v1` и пишет в эту
+папку. Прежний аргумент `sqlite_dump.json` удалён: builder разбирал файл, но не читал ни одного поля.

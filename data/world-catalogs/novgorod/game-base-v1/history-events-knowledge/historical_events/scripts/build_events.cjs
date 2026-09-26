@@ -1,18 +1,16 @@
 // Deterministic extraction: novgorod_historical_timeline_1230_1250_v1.json (draft LLM, v6 map)
-// -> events.csv + event_phases.csv (candidate), cross-checked against sqlite novgorod_1230(1) events/persons
-// (chronicle-attested, confidence A) and, since the 2026-09-26 rework pass, against verified book evidence
+// -> events.csv + event_phases.csv (candidate), checked since the 2026-09-26 rework pass against verified book evidence
 // (servak:/srv/novgorod-work/data/books/evidence/history-events-knowledge.csv).
 // .cjs: package.json at repo root sets "type": "module"; this script uses require() and must keep the
 // .cjs extension so Node runs it as CommonJS (fix 2026-09-26, see VERIFICATION.md).
 const fs = require('fs');
 const path = require('path');
 
-const TIMELINE = process.argv[2];
-const SQLITE_DUMP = process.argv[3];
-const OUT_DIR = process.argv[4];
+const GROUP_ROOT = path.resolve(__dirname, '../..');
+const TIMELINE = process.argv[2] || path.resolve(GROUP_ROOT, '../../sources/nov-region-audit-v1/novgorod_historical_timeline_1230_1250_v1.json');
+const OUT_DIR = process.argv[3] || path.resolve(__dirname, '..');
 
 const d = JSON.parse(fs.readFileSync(TIMELINE, 'utf8'));
-const sq = JSON.parse(fs.readFileSync(SQLITE_DUMP, 'utf8'));
 
 function csvEsc(v) {
   if (v === null || v === undefined) return '';

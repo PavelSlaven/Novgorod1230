@@ -55,9 +55,9 @@
 - `data/rus13-base-staging/nov_region_audit/novgorod_rumor_templates_v1.json`,
   `novgorod_common_knowledge_v1.json`, `novgorod_route_knowledge_rules_v1.json` (draft)
 - `data/rus13-base-staging/nov_region_audit/novgorod_neighbor_regions_v1.json` (draft, 6 региональных периферий)
-- `C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite` — курированная база с кодами A–D и 30 источниками
-  (S01 = НПЛ, Насонов 1950/Michell&Forbes 1914; S02 = договор 1191–1192 с Готским берегом; S05 = gramoty.ru).
-  Не была упомянута в каталоге ранее (см. критику брифа) — теперь процитирована во всех четырёх доменах.
+- `sources/novgorod_1230_extract.json` — candidate-выжимка 14 строк `persons_1230` из курированной базы:
+  только семь полей, реально читаемых builder исторических лиц. Source pin: `novgorod_1230(1) (1).sqlite`,
+  163840 байт, SHA-256 `61f679a734aea087ccd9a9b34f6c0b76753f0856380b31b6735e603ff4efc94c`.
 - НПЛ, скачанные страницы izbornik.org.ua (старший извод 1219–1318, младший извод 1220–1257) —
   `scratchpad/gb-collect-history-events-knowledge/novg{06,07,08,23,24,25}.txt` — использованы для проверки
   годового покрытия источника; построчный аудит фаз по ним не завершён (см. выше).
@@ -70,9 +70,9 @@
 ## Как пересобрать всё
 
 ```
-node historical_events/scripts/build_events.cjs <timeline.json> <sqlite_dump.json> historical_events/
+node historical_events/scripts/build_events.cjs
 node historical_events/scripts/validate_events.cjs historical_events/
-node historical_figures/scripts/build_figures.cjs <sqlite_dump.json> <status_rules.json> historical_figures/
+node historical_figures/scripts/build_figures.cjs
 node historical_figures/scripts/validate_figures.cjs historical_figures/
 node knowledge_rumors/scripts/build_knowledge.js <rumor_templates.json> <common_knowledge.json> <route_knowledge_rules.json> <sqlite_dump.json> knowledge_rumors/
 node knowledge_rumors/scripts/validate_knowledge.js knowledge_rumors/
@@ -84,6 +84,6 @@ node polities_external_relations/scripts/build_polities.js <neighbor_regions.jso
 `polities_external_relations` не входили в проход исправлений 2026-09-26 — их скрипты не переименованы;
 если у них такая же проблема воспроизводимости, это отдельная задача для владельца тех доменов.
 
-Все скрипты только читают исходные JSON/sqlite-дампы (пути передаются аргументами) и пишут внутри своей папки.
-`sqlite_dump.json` — построчный экспорт `C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite` через
-`sqlite3`/python (см. `historical_figures/README.md` за точной командой экспорта).
+`historical_events` не зависит от SQLite; `historical_figures` по умолчанию читает минимальный extract.
+SQLite открывает только `scripts/export_novgorod_1230_extract.py`, в режиме read-only. Старый полный dump
+остаётся внешним входом прежних builders `knowledge_rumors` и `polities_external_relations` и не коммитится.

@@ -39,7 +39,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json",
-        "manifest_sha256": "ca020d053986a9796e7d5b4e747c33e7d8105bff366d36c11386812a7d145ea1"
+        "manifest_sha256": "d0e4fa829e52a3eb00ce91632fd2065494c925bf32eb3cdfdf6d746d7aa52344"
       },
       "blockers": []
     },
@@ -76,7 +76,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/activity_categories_profiles.json",
-        "manifest_sha256": "bc04e1487ece259ad6d4802c85ef2be2a0607cb0c90f6ec6a77123f60c8beba7"
+        "manifest_sha256": "471d14ecd30872e5f97382f65cb1ef087241d7bedb12cf3f473e91f77d74acfb"
       },
       "blockers": []
     },
@@ -114,7 +114,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/activity_execution_policies.json",
-        "manifest_sha256": "d022460b9430b1fb2bed580fef79efc78cb274d96e49efa1560c7a9e4e43cb9f"
+        "manifest_sha256": "b9a437c762fc7b1e973863eeebd608b5be5fdb19a238b0f60482b12a1be9b1ba"
       },
       "blockers": []
     },
@@ -151,7 +151,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/body_time_effect_profiles_thresholds.json",
-        "manifest_sha256": "3c120630eae2284a8a11e84a54761c5b1a7b24371d0e34ed00b52c5b2aeed13d"
+        "manifest_sha256": "21c96171b33144df53365aa680f6104e009ef5da3b6fac6cbdf9c7fe4c8ba589"
       },
       "blockers": []
     },
@@ -189,7 +189,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/npc_temporal_profiles_policies.json",
-        "manifest_sha256": "b6ab6a75bd7463ed3b26b4b641cff7178e5f1081aa025230e1c55209d5913935"
+        "manifest_sha256": "0275246148b471cd3b030fda24903a5f58885753e77751ba11582bdb64a655a1"
       },
       "blockers": []
     },
@@ -228,7 +228,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/exact_event_profiles.json",
-        "manifest_sha256": "1eed1b4da6fa20bfe94d74c63b5bc7f5d950943d7633cd815b9d5482748ed933"
+        "manifest_sha256": "d01d731e05bb54acf8eae0d91b3860aedc8a5d4a852235587186b04891799f57"
       },
       "blockers": []
     },
@@ -266,7 +266,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/place_access_schedules.json",
-        "manifest_sha256": "44d9e4e42bf2ad7e8cadabb47e0e2289e5c98c02defea93c022c123dea40775e"
+        "manifest_sha256": "31926b3f5db043feb4660d4e182b15599276b42d5294b6edf711b47d494b8b91"
       },
       "blockers": []
     },
@@ -304,7 +304,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json",
-        "manifest_sha256": "ea7bd94f46b4d12feba39b33480af44a08ed2199118a460d859090044a7f9beb"
+        "manifest_sha256": "6a237ee1c2b4afa66541e0956bd01fc10fd92222d0d0095fd85ad44905d35c58"
       },
       "blockers": []
     },
@@ -341,7 +341,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/historical_phase_local_effect_rules.json",
-        "manifest_sha256": "0154a8e18ef6cdc748f8a07ee8de0b6629b25cd7fad46fcfdecca7849d1658ff"
+        "manifest_sha256": "96610196ad3dd145a7d48106fcba6f0cbb71b6ae8f8642d37657714cc7bcd754"
       },
       "blockers": []
     },
@@ -380,7 +380,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/traversal_recheck_contracts.json",
-        "manifest_sha256": "cd08d378c4da4276563551345b2ea731bf29c3452e300eec291580942e8b17b0"
+        "manifest_sha256": "2a6490a0e6612ad92b032547cda741b9290d2f81b6d5b2bd093adc3bd2c44538"
       },
       "blockers": []
     },
@@ -418,7 +418,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/propagation_profiles.json",
-        "manifest_sha256": "8cfa6ffbbe91e7a65e0a1cd9cfd4872bafba05b066af50c466aa19fc014df561"
+        "manifest_sha256": "1ec1cb21b8ad577c782187ee63c639c02b653d742892261aea32af64a781bba9"
       },
       "blockers": []
     },
@@ -456,7 +456,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/remote_catch_up_rules.json",
-        "manifest_sha256": "d214cd5aaa0247720cc8f7795fd1e24057f8297adb645b9ef9a9be369f432aa3"
+        "manifest_sha256": "0939337d82f433fde2fc93fb1fd17768dd59a98f05255325585ae62617521f43"
       },
       "blockers": []
     },
@@ -496,7 +496,7 @@
           "novgorod"
         ],
         "manifest_path": "data/world-catalogs/novgorod/temporal-v4/approvals/carrier_synchronization_rescue_recovery_policies.json",
-        "manifest_sha256": "aaa83b4433740a6b37897ebf8f8d6ba2b25d5f96df282a55ca8c9eae7d231843"
+        "manifest_sha256": "10a87ba69e93dd76bac92e22f116e9e62d95b0e670898e8d12bfcfc940c403d6"
       },
       "blockers": []
     }

@@ -1,0 +1,30 @@
+{
+  "schema": "rus.temporal-world-v4.external-auditor-family-decision.v1",
+  "version": 1,
+  "family_id": "historical_phase_local_effect_rules",
+  "verdict": "approved",
+  "approved_record_ids": [
+    "record:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
+  ],
+  "source_ids_reviewed": [
+    "source:historical_phase_local_effect_rules:canonical_historical_policy",
+    "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
+    "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
+    "source:historical_phase_local_effect_rules:user_reconstruction_authorization"
+  ],
+  "applicability": [
+    "novgorod"
+  ],
+  "data_gaps": [],
+  "auditor": {
+    "name": "OpenAI GPT-5.6 Thinking",
+    "organization_or_role": "independent external data authoring auditor"
+  },
+  "decision_id": "decision:historical_phase_local_effect_rules:2026-07-24-reaudit-2",
+  "decided_at": "2026-07-24T17:45:00+03:00",
+  "method": "independent source, contract, controlled-vocabulary, exactness, closure, historical-labeling and no-fallback audit",
+  "rationale": "The rule binds a concrete cited 1230 Novgorod famine record at its source precision, represents the year as an exact calendar interval without inventing a narrower date, keeps numerical magnitudes unauthored, and preserves hidden-phase/knowledge separation.",
+  "limitations": [
+    "The source gives year-level precision; the rule intentionally does not infer month/day, price, population, inventory or mortality magnitudes. Local effect magnitudes remain separate approved-profile dependencies rather than hidden defaults."
+  ]
+}

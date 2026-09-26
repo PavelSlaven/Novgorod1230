@@ -61,3 +61,9 @@ node scripts/validate.cjs   # проверки приёмки; validation-report
 - В 68 занятиях нет литейщика-ювелира, костореза, токаря, стекольщика, сельского металлурга и красильщика. Их мастерские есть, занятия нужно добавить в домен occupations.
 - Для новых таблиц (process_templates и process_steps, material_definitions, tool categories) нужны CR и Contract Auditor (новая схема и persistence).
 - Идентификаторы мест — это id семейств WK (`smithy`, `ordinary_workshop` …). В `pf_id` домена place_families их переводит поле `wk_family_ref`. `bt_*_proposed` ждут домена buildings_structures, `pr:*` ждут доменов предметов.
+
+## Правки C002
+
+`craft_tools_gear/occupation_pf_crosswalk.csv` выводит пары `occupation_id` → `pf_id` из существующих `occupation_tools.tl_id` и `tools_gear.workplace_pf_id`, а также из `workshops.occupations` и `workshops.pf_id`. `tool_ids` и `workshop_ids` показывают основание каждой связи. `source` означает рабочий контекст занятия, а не постоянное присутствие работника. Для мест и занятий без такой связи записан `no_source`; все строки `candidate`.
+
+Сборка: `python -B scripts/pf_crosswalk.py`; проверка разрешения ID, полноты 44 PF и 16 видов, уникальности и побайтной воспроизводимости: `python -B scripts/pf_crosswalk.py --check`.

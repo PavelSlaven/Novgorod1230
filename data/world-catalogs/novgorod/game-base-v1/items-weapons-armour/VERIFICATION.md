@@ -176,3 +176,7 @@ eq_messenger без роли выбирает «редкое боевое ору
 
 - `items/weapon_status_access.csv` — **approve_with_limits** (было rework). Главная историческая ошибка (духовенство) и завышенная достоверность устранены, сборка воспроизводится байт в байт. Остаются пункт 3 (стрелы охотника зависят от tier в weapon_kinds), неверная ссылка на несуществующие overrides bishop_man/church_guard в тексте basis и опечатка.
 - `items/weapons_armour.csv` (производные столбцы) — вердикт не меняется: approve_with_limits, пункты 1–10 исходного вердикта открыты.
+
+## Правки C002
+
+Добавлен кандидат `items/role_tier_pf_crosswalk.csv`: 628 строк (`source` 80, `rule` 427, `no_source` 121); все 44 `pf_id` и 16 `pf_kind` представлены. `python -B scripts/pf_crosswalk.py --check` сверяет таблицу побайтно с таблицами security, снаряжения, доступа, оружия, ролей и PF, включая разрешение ID и отсутствие дублей. Данные не утверждены.

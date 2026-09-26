@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "20135e0adcef4bb4f2d422b764626dc4d335bf6a53c89976709c1828b1f10247",
-  "chunk_count": 2851,
+  "corpus_hash": "7fba70b476e28e8527f74c2810502fccd349c94db1e50a74194caa1f25b03864",
+  "chunk_count": 2852,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -1511,34 +1511,25 @@
       "file": "CONTRACT_INDEX.md",
       "section": "3. Governing source",
       "line_start": 59,
-      "line_end": 77,
-      "text": "## CONTRACT_INDEX.md — 3. Governing source\n## 3. Governing source\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §24.1 — обязательный sanitized Markdown report каждого реального gameplay run; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |\n\nGoverning-корпус `AGENTS.md` (§1.3) также включает:",
-      "char_count": 521
+      "line_end": 79,
+      "text": "## CONTRACT_INDEX.md — 3. Governing source\n## 3. Governing source\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §24.1 — обязательный sanitized Markdown report каждого реального gameplay run; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |\n\nGoverning-корпус `AGENTS.md` (§1.3) также включает:\n\n- [`docs/governance/README.md`](../../../../docs/governance/README.md) — преамбула, §1.2, карта старых разделов;\n- [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30;\n- [`docs/governance/ARCHITECTURE_INVARIANTS.md`](../../../../docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28;\n- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §21.1, §24, §24.1, §24.2, §29;\n- [`docs/governance/AUDIT_RULES.md`](../../../../docs/governance/AUDIT_RULES.md) — §25, §25.1;\n- [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.",
+      "char_count": 1209
     },
     {
       "id": "CONTRACT_INDEX.md:3. Governing source:1",
       "file": "CONTRACT_INDEX.md",
       "section": "3. Governing source",
       "line_start": 59,
-      "line_end": 77,
-      "text": "## CONTRACT_INDEX.md — 3. Governing source\nсная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |\n\nGoverning-корпус `AGENTS.md` (§1.3) также включает:\n\n- [`docs/governance/README.md`](../../../../docs/governance/README.md) — преамбула, §1.2, карта старых разделов;\n- [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30;\n- [`docs/governance/ARCHITECTURE_INVARIANTS.md`](../../../../docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28;\n- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §21.1, §24, §24.1, §24.2, §29; Источник явного перечисления §21.1/§24.1/§24.2: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.14.\n- [`docs/governance/AUDIT_RULES.md`](../../../../docs/governance/AUDIT_RULES.md) — §25, §25.1;\n- [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.",
-      "char_count": 1001
+      "line_end": 79,
+      "text": "## CONTRACT_INDEX.md — 3. Governing source\ngovernance/AUDIT_RULES.md) — §25, §25.1;\n- [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.\n\nИсточник явного перечисления §21.1/§24.1/§24.2 в §3: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.14.\n\n`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.",
+      "char_count": 936
     },
     {
       "id": "CONTRACT_INDEX.md:3. Governing source:2",
       "file": "CONTRACT_INDEX.md",
       "section": "3. Governing source",
       "line_start": 59,
-      "line_end": 77,
-      "text": "## CONTRACT_INDEX.md — 3. Governing source\ngovernance/AUDIT_RULES.md) — §25, §25.1;\n- [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.\n\n`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.",
-      "char_count": 810
-    },
-    {
-      "id": "CONTRACT_INDEX.md:3. Governing source:3",
-      "file": "CONTRACT_INDEX.md",
-      "section": "3. Governing source",
-      "line_start": 59,
-      "line_end": 77,
+      "line_end": 79,
       "text": "## CONTRACT_INDEX.md — 3. Governing source\nолча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.\n\nДля нетривиальных задач разработки §19 `AGENTS.md` задаёт обязательный workflow `codebase-memory-mcp` Verify (Tier 2): discovery владельцев и зависимостей, сверка исходников, `detect_changes` и проверка покрытия. Если инструмент недоступен, это отмечается в итоговом отчёте, а owners, зависимости и полнота выводов устанавливаются прямым чтением и `rg` по затронутому scope; сама недоступность не блокирует задачу. [Локальная настройка CBM](../../../../docs/setup/CODEBASE_MEMORY_MCP.md) — техническая инструкция; граф не заменяет нормативный канал `@rus/knowledge-source` и canonical documents.",
       "char_count": 790
     },
@@ -1546,8 +1537,8 @@
       "id": "CONTRACT_INDEX.md:3.1. Module contracts and public schemas:0",
       "file": "CONTRACT_INDEX.md",
       "section": "3.1. Module contracts and public schemas",
-      "line_start": 78,
-      "line_end": 83,
+      "line_start": 80,
+      "line_end": 85,
       "text": "## CONTRACT_INDEX.md — 3.1. Module contracts and public schemas\n## 3.1. Module contracts and public schemas\n\nВсе module-level contracts перечислены в generated [`MODULE_INDEX.md`](../../../../MODULE_INDEX.md). Этот generated файл используется только для навигации; точный owner и public boundary задаёт соответствующий `MODULE.md`, а physical schema — canonical DDL/schema source затронутой области.\n\nContract Auditor не копирует весь generated module index сюда и не редактирует его вручную. Он выбирает relevant `MODULE.md` по `MODULE_INDEX.md`, затем сверяет public exports, schemas, callers и tests.",
       "char_count": 603
     },
@@ -1555,8 +1546,8 @@
       "id": "CONTRACT_INDEX.md:4. Explicit active contracts:0",
       "file": "CONTRACT_INDEX.md",
       "section": "4. Explicit active contracts",
-      "line_start": 84,
-      "line_end": 109,
+      "line_start": 86,
+      "line_end": 111,
       "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts",
       "char_count": 83
     },
@@ -1564,8 +1555,8 @@
       "id": "CONTRACT_INDEX.md:4. Explicit active contracts:1",
       "file": "CONTRACT_INDEX.md",
       "section": "4. Explicit active contracts",
-      "line_start": 84,
-      "line_end": 109,
+      "line_start": 86,
+      "line_end": 111,
       "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts\n\n| Документ | Статус | Основной scope / примечание |\n|---|---|---|\n| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |\n| [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |\n| [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |\n| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, role-owned reasoning effort и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |\n| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; private auditor возвращает literal ordered source reviews и semantic/literary failures, Adapter без синтеза reviewed segments/evidence детерминированно собирает coverage/verdict и fail-closed отклоняет malformed output; factual/hidden/technical failures блокируют delivery, чисто литературный verdict сохраняется без блокировки сервера/первого экрана; atomic current-beat sources отдельно сохраняют выполненную попытку и неизвестный результат наблюдения; current beat получает только `visible_scene` support, новые sensory facts входят в required visible changes, а scene-only wire сохраняет descriptive sensory support; opening после factual materialization и до delivery требует persisted rich package, stable retry identity, eight-question reader control и bounded Stage 22/23, static prose только hint; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |\n| [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |\n| [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |\n| [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |\n| [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |\n| [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |\n| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Default gameplay model — exact `qwen3.8-27b-uncensored-w4a16-tp2` через настроенный пользователем OpenAI-compatible vLLM endpoint; managed gameplay provider и fallback отсутствуют. Readiness, persistence и UI принадлежат game-server/game-web/local-play MODULE owners. Runtime wiring spatial-v3 production v16 активирован как sole production owner и определяется actual release/binding. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |\n| [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `ACTIVE` | универсальные категории и фасеты; presence-правила только на иерархический фасет домена (`object_type` / `container_form`); [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146), PC §9.1 |",
       "char_count": 5164
     },
@@ -1573,8 +1564,8 @@
       "id": "CONTRACT_INDEX.md:4. Explicit active contracts:2",
       "file": "CONTRACT_INDEX.md",
       "section": "4. Explicit active contracts",
-      "line_start": 84,
-      "line_end": 109,
+      "line_start": 86,
+      "line_end": 111,
       "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\nила только на иерархический фасет домена (`object_type` / `container_form`); [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146), PC §9.1 |\n\nActive status applies only to the scope stated by each header and active profile. Exact schema/operation names must be verified against current code and tests.\n\n**Применимость к v17.** ACTIVE-контракты этого раздела применяются к production runtime v17 (пара `novgorod_world_v17` / `novgorod_party_v17`) в заявленном scope; где код v17 ещё расходится с нормой, это долг CR реализации M2c, а не основание читать норму как proposed: ordinary presence — LW-028/LW-029; погода D7 — LW-044; D9/D14 — LW-045. Упоминание v16 в строке WK выше — историческое (sole production owner на момент PR92); текущая применимость — v17. Umbrella [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) остаётся `PROPOSED UMBRELLA TARGET`; его разделы O2a/O2b/F1/S1/N1 — входные материалы для шагов 1–2 #146, не active сами по себе. Источник заметки: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.14.",
       "char_count": 1185
     },
@@ -1582,8 +1573,8 @@
       "id": "CONTRACT_INDEX.md:5. Explicit non-production, migration and supporting contracts:0",
       "file": "CONTRACT_INDEX.md",
       "section": "5. Explicit non-production, migration and supporting contracts",
-      "line_start": 110,
-      "line_end": 122,
+      "line_start": 112,
+      "line_end": 124,
       "text": "## CONTRACT_INDEX.md — 5. Explicit non-production, migration and supporting contracts\n## 5. Explicit non-production, migration and supporting contracts",
       "char_count": 151
     },
@@ -1591,8 +1582,8 @@
       "id": "CONTRACT_INDEX.md:5. Explicit non-production, migration and supporting contracts:1",
       "file": "CONTRACT_INDEX.md",
       "section": "5. Explicit non-production, migration and supporting contracts",
-      "line_start": 110,
-      "line_end": 122,
+      "line_start": 112,
+      "line_end": 124,
       "text": "## CONTRACT_INDEX.md — 5. Explicit non-production, migration and supporting contracts\n## 5. Explicit non-production, migration and supporting contracts\n\n| Документ | Статус | Правило применения |\n|---|---|---|\n| [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) | `PROPOSED UMBRELLA TARGET` | не active как единый контракт; активированные profile semantics берутся из их actual cutover/bindings/active contracts/code/tests, а не из старого umbrella snapshot |\n| [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE` | источники/обоснования ACTIVE classification policy |\n| [`read_only_database_and_graph_architecture.md`](read_only_database_and_graph_architecture.md) | `MIGRATION / ROLLBACK` | materialization v2; active owner — Spatial v3 specialization |\n| [`map_g0_g4_workflow.txt`](map_g0_g4_workflow.txt) | `MIGRATION / ROLLBACK` | прежний G0–G4 workflow; active owner — Spatial v3 compatibility workflow |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | explicit exception to filename heuristics |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | explicit exception to filename heuristics |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | explicit exception to filename heuristics |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | explicit exception to filename heuristics |",
       "char_count": 1852
     },
@@ -1600,8 +1591,8 @@
       "id": "CONTRACT_INDEX.md:6. Compatibility navigation:0",
       "file": "CONTRACT_INDEX.md",
       "section": "6. Compatibility navigation",
-      "line_start": 123,
-      "line_end": 131,
+      "line_start": 125,
+      "line_end": 133,
       "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation\n## 6. Compatibility navigation\n\n| Документ | Статус после этого index cutover | Replacement |\n|---|---|---|\n| [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |\n| [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |\n| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |\n| [`docs/archive/github/Правило вызова агента-критика.txt`](../../../../docs/archive/github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |",
       "char_count": 678
     },
@@ -1609,8 +1600,8 @@
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:0",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 132,
-      "line_end": 159,
+      "line_start": 134,
+      "line_end": 161,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\n## 7. Domain guides and legacy/supporting documents\n\nThe following files remain discoverable but do not establish active production behavior by filename alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.",
       "char_count": 371
     },
@@ -1618,8 +1609,8 @@
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:1",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 132,
-      "line_end": 159,
+      "line_start": 134,
+      "line_end": 161,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\name alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.\n\n| Документ | Default treatment until verified | Topic |\n|---|---|---|\n| [`base_turn_orchestration.txt`](base_turn_orchestration.txt) | `UNDECLARED / DOMAIN GUIDE` | legacy/general turn orchestration |\n| [`character_inventory_equipment.txt`](character_inventory_equipment.txt) | `UNDECLARED / DOMAIN GUIDE` | character inventory/equipment |\n| [`character_parameters.txt`](character_parameters.txt) | `UNDECLARED / DOMAIN GUIDE` | character parameters |\n| [`development_rules.txt`](development_rules.txt) | `REFERENCE`; cannot override `AGENTS.md` | legacy development rules |\n| [`formulas.md`](formulas.md) | `UNDECLARED / DOMAIN GUIDE` | formulas and mechanics |\n| [`g1_g5_generation_rules.txt`](g1_g5_generation_rules.txt) | `UNDECLARED / DOMAIN GUIDE` | generation rules |\n| [`historical_events_and_figures.txt`](historical_events_and_figures.txt) | `REFERENCE / KNOWLEDGE GUIDE` | historical figures/events boundary |\n| [`information_sources_llm_prompts.md`](information_sources_llm_prompts.md) | `UNDECLARED / DOMAIN GUIDE` | information-source prompts |\n| [`interface_ux.md`](interface_ux.md) | `UNDECLARED / DOMAIN GUIDE` | player-facing interface/UX |\n| [`llm_agent_prompt_templates.md`](llm_agent_prompt_templates.md) | `REFERENCE / TEMPLATE` | agent prompt templates |\n| [`movement_locations_regions.txt`](movement_locations_regions.txt) | `UNDECLARED / DOMAIN GUIDE` | movement/locations/regions |\n| [`new_game_start_pipeline.txt`](new_game_start_pipeline.txt) | `UNDECLARED / DOMAIN GUIDE` | new-game start pipeline |\n| [`npc_generation_profiles.txt`](npc_generation_profiles.txt) | `UNDECLARED / DOMAIN GUIDE` | NPC generation profiles |\n| [`npc_inventory_item_marks.txt`](npc_inventory_item_marks.txt) | `UNDECLARED / DOMAIN GUIDE` | NPC inventory and marks |\n| [`player_character_generation.txt`](player_character_generation.txt) | `UNDECLARED / DOMAIN GUIDE` | player character generation |\n| [`time_system.txt`](time_system.txt) | `REFERENCE / LEGACY` | older time-system description; active temporal contract has priority |\n| [`weapons_and_armor.txt`](weapons_and_armor.txt) | `UNDECLARED / DOMAIN GUIDE` | weapons/armor |\n| [`world_generation_and_turns.txt`](world_generation_and_turns.txt) | `UNDECLARED / DOMAIN GUIDE` | world generation and turns |\n| [`world_regions.txt`](world_regions.txt) | `REFERENCE / DOMAIN GUIDE` | world regions |",
       "char_count": 2583
     },
@@ -1627,8 +1618,8 @@
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:2",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 132,
-      "line_end": 159,
+      "line_start": 134,
+      "line_end": 161,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\n| `UNDECLARED / DOMAIN GUIDE` | world generation and turns |\n| [`world_regions.txt`](world_regions.txt) | `REFERENCE / DOMAIN GUIDE` | world regions |\n\nAn undeclared guide may still be relevant, but it must not silently override an explicit active contract, schema or current owner.",
       "char_count": 354
     },
@@ -1636,8 +1627,8 @@
       "id": "CONTRACT_INDEX.md:8. Contract Auditor:0",
       "file": "CONTRACT_INDEX.md",
       "section": "8. Contract Auditor",
-      "line_start": 160,
-      "line_end": 163,
+      "line_start": 162,
+      "line_end": 165,
       "text": "## CONTRACT_INDEX.md — 8. Contract Auditor\n## 8. Contract Auditor\n\nОбязательность Contract Auditor, границы логического изменения для его проведения, read-only роль, mandatory triggers, source set по затронутым owners и границам diff, формат `CONTRACT AUDIT FINDING` и blocking criteria определяются единственным governing owner — root `AGENTS.md`, §25.1. Этот индекс не дублирует эти правила; он дополняет их только навигацией и domain scope matrix.",
       "char_count": 450
     },
@@ -1645,8 +1636,8 @@
       "id": "CONTRACT_INDEX.md:8.1. Scope matrix:0",
       "file": "CONTRACT_INDEX.md",
       "section": "8.1. Scope matrix",
-      "line_start": 164,
-      "line_end": 181,
+      "line_start": 166,
+      "line_end": 183,
       "text": "## CONTRACT_INDEX.md — 8.1. Scope matrix\n### 8.1. Scope matrix",
       "char_count": 62
     },
@@ -1654,8 +1645,8 @@
       "id": "CONTRACT_INDEX.md:8.1. Scope matrix:1",
       "file": "CONTRACT_INDEX.md",
       "section": "8.1. Scope matrix",
-      "line_start": 164,
-      "line_end": 181,
+      "line_start": 166,
+      "line_end": 183,
       "text": "## CONTRACT_INDEX.md — 8.1. Scope matrix\n### 8.1. Scope matrix\n\n| Scope | Mandatory contract set |\n|---|---|\n| Player semantic action / LLM | `turn_step_llm_contract.md`, relevant operation schemas, `@rus/turn` MODULE, affected domain contract |\n| Production LLM provider/configuration | `turn_step_llm_contract.md`, `@rus/llm-runtime` MODULE, game-server settings/transport owner, game-web and local-play MODULEs; selected provider must reach every registered gameplay role without fallback |\n| Authored materialization | `code_driven_world_materialization_architecture.md` (в т.ч. раздел о наличии), `universal_category_classification_policy.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |\n| Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, `code_driven_world_materialization_architecture.md` (наличие при первом прибытии/открытии), `universal_category_classification_policy.md`, `world_base_materialization_table_requirements.md` (presence-правила), active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |\n| Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |\n| NPC agency | `npc_autonomous_decision_contract.md`, `turn_step_llm_contract.md`, `code_driven_world_materialization_architecture.md` §3A.5 (люди по времени суток и расписания мест), temporal/perception owners |\n| Conversation | NPC autonomous + `npc_conversation_mode_contract.md` + speech/perception/time contracts |\n| Combat | `npc_combat_and_trigger_contract.md`, `combat_system.md`, NPC autonomous, items/body/time owners |\n| Time/activities/processes | `temporal_world_and_interruptible_activities.md` (в т.ч. погода D7), `code_driven_world_materialization_architecture.md` §3A.5 (люди по времени суток и расписания мест), relevant time/world-process MODULEs, persistence contract/schema |\n| DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |\n| Historical/knowledge grounding | `universal_category_classification_policy.md`, active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |\n| World Knowledge | `world_knowledge_platform_implementation_contract.md`, active WK pack/profile/bindings, `@rus/world-knowledge` and affected consumer MODULEs |\n| Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |",
       "char_count": 2676
     },
@@ -1663,8 +1654,8 @@
       "id": "CONTRACT_INDEX.md:9. Audited conflict register:0",
       "file": "CONTRACT_INDEX.md",
       "section": "9. Audited conflict register",
-      "line_start": 182,
-      "line_end": 183,
+      "line_start": 184,
+      "line_end": 185,
       "text": "## CONTRACT_INDEX.md — 9. Audited conflict register\n## 9. Audited conflict register",
       "char_count": 83
     },
@@ -1672,8 +1663,8 @@
       "id": "CONTRACT_INDEX.md:C-001 — absent `Novgorod1230_project_instruction_full.md`:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-001 — absent `Novgorod1230_project_instruction_full.md`",
-      "line_start": 184,
-      "line_end": 188,
+      "line_start": 186,
+      "line_end": 190,
       "text": "## CONTRACT_INDEX.md — C-001 — absent `Novgorod1230_project_instruction_full.md`\n### C-001 — absent `Novgorod1230_project_instruction_full.md`\n\n**Observed:** exact filename is absent from `main`; an administrator may still supply it externally as current task instruction.  \n**Resolution:** do not add a duplicate to the repository. For merged/current implementation state use `main`, root `AGENTS.md`, active contracts, code and tests. An explicitly supplied administrator project instruction remains governing task input for product/reviewer intent; if it conflicts with repository state, report the conflict and distinguish current production from target instead of silently overriding either side.",
       "char_count": 701
     },
@@ -1681,8 +1672,8 @@
       "id": "CONTRACT_INDEX.md:C-002 — old navigation claimed precedence over root instructions:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-002 — old navigation claimed precedence over root instructions",
-      "line_start": 189,
-      "line_end": 193,
+      "line_start": 191,
+      "line_end": 195,
       "text": "## CONTRACT_INDEX.md — C-002 — old navigation claimed precedence over root instructions\n### C-002 — old navigation claimed precedence over root instructions\n\n**Observed:** `llm_documentation_navigation.md` and `DOCUMENTS/README.md` carried an older reading order and could imply that a domain document outranked root `AGENTS.md`.  \n**Resolution:** root `AGENTS.md` → this index → nested `AGENTS.md` → `MODULE.md` → active profile/contract/schema → code/tests. Compatibility files redirect here.",
       "char_count": 494
     },
@@ -1690,8 +1681,8 @@
       "id": "CONTRACT_INDEX.md:C-003 — critic required after every code change:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-003 — critic required after every code change",
-      "line_start": 194,
-      "line_end": 199,
+      "line_start": 196,
+      "line_end": 201,
       "text": "## CONTRACT_INDEX.md — C-003 — critic required after every code change\n### C-003 — critic required after every code change\n\n**Observed:** two legacy critic-rule files mandated a critic for every behavior/code change.  \n**Conflict:** root `AGENTS.md` requires independent audit for elevated-risk work and explicitly says ordinary local fixes do not require a separate critic.  \n**Resolution:** root `AGENTS.md` §25.1 wins; legacy files redirect to that single governing audit rule and this index supplies only contract status/navigation/scope-matrix data.",
       "char_count": 554
     },
@@ -1699,8 +1690,8 @@
       "id": "CONTRACT_INDEX.md:C-004 — `target` filename interpreted as proposed:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-004 — `target` filename interpreted as proposed",
-      "line_start": 200,
-      "line_end": 204,
+      "line_start": 202,
+      "line_end": 206,
       "text": "## CONTRACT_INDEX.md — C-004 — `target` filename interpreted as proposed\n### C-004 — `target` filename interpreted as proposed\n\n**Observed:** four Spatial v3 files retain `target` in their filenames but their headers state that versioned production activation completed.  \n**Resolution:** they are active specializations. Filename heuristics are forbidden.",
       "char_count": 356
     },
@@ -1708,8 +1699,8 @@
       "id": "CONTRACT_INDEX.md:C-005 — proposed umbrella snapshot versus later profile cutovers:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-005 — proposed umbrella snapshot versus later profile cutovers",
-      "line_start": 205,
-      "line_end": 209,
+      "line_start": 207,
+      "line_end": 211,
       "text": "## CONTRACT_INDEX.md — C-005 — proposed umbrella snapshot versus later profile cutovers\n### C-005 — proposed umbrella snapshot versus later profile cutovers\n\n**Observed:** `semantic_world_actions_materialization_and_processes_contract.md` remains a proposed umbrella snapshot checked against `main` on 2026-08-16, while later `main` contains active profile-specific rules and implementation.  \n**Resolution:** the umbrella never becomes production merely because some ideas were implemented. Current behavior comes from root `AGENTS.md`, active profile contracts/bindings, code and tests. Use the umbrella only as target/history unless explicitly promoted.",
       "char_count": 656
     },
@@ -1717,8 +1708,8 @@
       "id": "CONTRACT_INDEX.md:C-006 — generic world-base norm versus active v3 table specialization:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-006 — generic world-base norm versus active v3 table specialization",
-      "line_start": 210,
-      "line_end": 214,
+      "line_start": 212,
+      "line_end": 216,
       "text": "## CONTRACT_INDEX.md — C-006 — generic world-base norm versus active v3 table specialization\n### C-006 — generic world-base norm versus active v3 table specialization\n\n**Observed:** `world_base_materialization_table_requirements.md` is active for general authoring/readiness semantics but states that the v3 target specialization owns production table-purpose semantics; older v2 portions remain migration/rollback.  \n**Resolution:** use the generic document for shared authoring principles and the v3 specialization for current production table-purpose details. DDL/generated schema remain physical truth.",
       "char_count": 606
     },
@@ -1726,8 +1717,8 @@
       "id": "CONTRACT_INDEX.md:C-007 — authored candidate closure versus active ordinary paths:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-007 — authored candidate closure versus active ordinary paths",
-      "line_start": 215,
-      "line_end": 219,
+      "line_start": 217,
+      "line_end": 221,
       "text": "## CONTRACT_INDEX.md — C-007 — authored candidate closure versus active ordinary paths\n### C-007 — authored candidate closure versus active ordinary paths\n\n**Observed:** the general materialization contract remains fail-closed for authored/significant/hidden/informational candidates, while active item/turn profiles add separately gated ordinary paths.  \n**Resolution:** ordinary paths do not repair an empty authored candidate set. Apply the active ordinary profile through its own request/admission/persistence contract; preserve authored fail-closed semantics.",
       "char_count": 564
     },
@@ -1735,8 +1726,8 @@
       "id": "CONTRACT_INDEX.md:10. Maintenance rule:0",
       "file": "CONTRACT_INDEX.md",
       "section": "10. Maintenance rule",
-      "line_start": 220,
-      "line_end": 224,
+      "line_start": 222,
+      "line_end": 226,
       "text": "## CONTRACT_INDEX.md — 10. Maintenance rule\n## 10. Maintenance rule\n\nAny PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.\n\nПроцедура пересчёта корпуса — [`CORPUS_EDIT.md`](../../../../docs/process/CORPUS_EDIT.md).",
       "char_count": 462
     },
@@ -6434,16 +6425,34 @@
       "file": "npc_autonomous_decision_contract.md",
       "section": "Инварианты",
       "line_start": 1706,
-      "line_end": 1717,
-      "text": "## npc_autonomous_decision_contract.md — Инварианты\n### Инварианты\n\n1. Одно самостоятельное действие от лица конкретного NPC по субъективному context.\n2. Не выбирать действие ради пользы или наказания игрока, удобства сюжета или драматичности; ни одна отдельная черта не абсолютная команда. Общие знания и приоритет переданного состояния — §14.2.\n3. LLM не объявляет скрытые факты, contents закрытого контейнера, решение другого NPC, combat/conversation result, exact time или numeric domain effects.\n4. Обычные физические результаты и ограниченные классы — по [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) §3A (presence / A1), без классового запрета в тексте промпта.\n5. Инвариант D9 — как в `turn_step_llm_contract.md` §11.1 и в §18.1 этого документа: name — качественная метка; имена, даты, эмитент, текст грамоты и клеймо — только из пула кода или существующей сущности.\n6. `mechanics_proposal` необязателен; финальные числа пишет код (§18.4).\n7. Repair исправляет только формат и refs, не смысл решения.\n\nДействующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029; D9/D14 — LW-045).",
-      "char_count": 1154
+      "line_end": 1718,
+      "text": "## npc_autonomous_decision_contract.md — Инварианты\n### Инварианты",
+      "char_count": 66
+    },
+    {
+      "id": "npc_autonomous_decision_contract.md:Инварианты:1",
+      "file": "npc_autonomous_decision_contract.md",
+      "section": "Инварианты",
+      "line_start": 1706,
+      "line_end": 1718,
+      "text": "## npc_autonomous_decision_contract.md — Инварианты\n### Инварианты\n\n1. Одно самостоятельное действие от лица конкретного NPC по субъективному context.\n2. Мир обычный, немагический, если переданное состояние прямо не говорит иное; NPC — обычный человек, если его сохранённое состояние не содержит необычной способности или действующего эффекта.\n3. Не выбирать действие ради пользы игроку, наказания игрока, удобства сюжета, драматичности, обязательного конфликта или спасения NPC, исторически желательного результата; ни одна отдельная черта не абсолютная команда. Общие знания и приоритет переданного состояния — §14.2.\n4. LLM не объявляет скрытые факты, contents закрытого контейнера, решение другого NPC, combat/conversation result, exact time или numeric domain effects.\n5. Обычные физические результаты и ограниченные классы — по [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) §3A (presence / A1), без классового запрета в тексте промпта.\n6. Инвариант D9 — как в `turn_step_llm_contract.md` §11.1 и в §18.1 этого документа: name — качественная метка; имена, даты, эмитент, текст грамоты и клеймо — только из пула кода или существующей сущности.\n7. `mechanics_proposal` необязателен; финальные числа пишет код (§18.4).\n8. Repair исправляет только формат и refs, не смысл решения.",
+      "char_count": 1340
+    },
+    {
+      "id": "npc_autonomous_decision_contract.md:Инварианты:2",
+      "file": "npc_autonomous_decision_contract.md",
+      "section": "Инварианты",
+      "line_start": 1706,
+      "line_end": 1718,
+      "text": "## npc_autonomous_decision_contract.md — Инварианты\nвующей сущности.\n7. `mechanics_proposal` необязателен; финальные числа пишет код (§18.4).\n8. Repair исправляет только формат и refs, не смысл решения.\n\nДействующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029; D9/D14 — LW-045).",
+      "char_count": 289
     },
     {
       "id": "npc_autonomous_decision_contract.md:26. Схема format repair и владелец текста:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "26. Схема format repair и владелец текста",
-      "line_start": 1718,
-      "line_end": 1723,
+      "line_start": 1719,
+      "line_end": 1724,
       "text": "## npc_autonomous_decision_contract.md — 26. Схема format repair и владелец текста\n## 26. Схема format repair и владелец текста\n\nFormat repair используется только после невалидного JSON или нарушения machine schema. Текст repair prompt принадлежит коду; в контракте не дублируется. Источник: [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D9/D10; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.9 (расширение REVIEW-028 F3).\n\n**Владелец:** `apps/game-server/src/runtime/lower-dvina-trace-autonomous-llm.js` (role `npc_autonomous_decider_format_repair` при `repair`).",
       "char_count": 626
     },
@@ -6451,8 +6460,8 @@
       "id": "npc_autonomous_decision_contract.md:Схема:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "Схема",
-      "line_start": 1724,
-      "line_end": 1727,
+      "line_start": 1725,
+      "line_end": 1728,
       "text": "## npc_autonomous_decision_contract.md — Схема\n### Схема\n\nRepair получает исходный `NPC_ACTION_DECISION_REQUEST`, невалидный ответ и список формальных schema errors; возвращает один JSON `npc_step_plan_v1` (семантический выбор; identity собирает код).",
       "char_count": 251
     },
@@ -6460,8 +6469,8 @@
       "id": "npc_autonomous_decision_contract.md:Инварианты:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "Инварианты",
-      "line_start": 1728,
-      "line_end": 1734,
+      "line_start": 1729,
+      "line_end": 1735,
       "text": "## npc_autonomous_decision_contract.md — Инварианты\n### Инварианты\n\n1. Исправляются только структурные нарушения schema/refs/enum.\n2. Новые факты не добавляются.\n3. Identity-поля (`request_id`, `root_turn_id`, `boundary_id`, `committed_state_version`, `working_revision`, `decision_index`, `npc_ref`) не меняются.\n4. Смысловое решение сохраняется, если иное не требуется указанной ошибкой контракта.",
       "char_count": 399
     },
@@ -6469,8 +6478,8 @@
       "id": "npc_autonomous_decision_contract.md:27. Порядок внедрения:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "27. Порядок внедрения",
-      "line_start": 1735,
-      "line_end": 1736,
+      "line_start": 1736,
+      "line_end": 1737,
       "text": "## npc_autonomous_decision_contract.md — 27. Порядок внедрения\n## 27. Порядок внедрения",
       "char_count": 87
     },
@@ -6478,8 +6487,8 @@
       "id": "npc_autonomous_decision_contract.md:27.1. Контракты:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "27.1. Контракты",
-      "line_start": 1737,
-      "line_end": 1749,
+      "line_start": 1738,
+      "line_end": 1750,
       "text": "## npc_autonomous_decision_contract.md — 27.1. Контракты\n### 27.1. Контракты\n\nПереиспользовать общие:\n\n- `npc_decision_signal_v1`;\n- `npc_decision_boundary_v1`.\n\nДобавить только mode-specific:\n\n- `npc_action_decision_request_v1`;\n- `npc_step_plan_v1`;\n- `npc_semantic_decision_trace_v1`.",
       "char_count": 287
     },
@@ -6487,8 +6496,8 @@
       "id": "npc_autonomous_decision_contract.md:27.2. `@rus/npc-runtime`:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "27.2. `@rus/npc-runtime`",
-      "line_start": 1750,
-      "line_end": 1770,
+      "line_start": 1751,
+      "line_end": 1771,
       "text": "## npc_autonomous_decision_contract.md — 27.2. `@rus/npc-runtime`\n### 27.2. `@rus/npc-runtime`\n\nСохранить:\n\n- schedule transition;\n- perception;\n- policy snapshots;\n- deterministic decision ordering;\n- replay/idempotency.\n\nДобавить:\n\n- построитель NPC-safe decision context;\n- pure request builder для semantic decision;\n- plan validator;\n- decision trace builder.\n\nТекущий `proposeNpcReactionOptions` и `decideBoundedNpcAction` не остаются параллельным production path после cutover.\n\nДля миграционного PR они могут существовать в коде до завершения замены, но active production composition использует только один путь.",
       "char_count": 620
     },
@@ -6496,8 +6505,8 @@
       "id": "npc_autonomous_decision_contract.md:27.3. `@rus/turn`:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "27.3. `@rus/turn`",
-      "line_start": 1771,
-      "line_end": 1793,
+      "line_start": 1772,
+      "line_end": 1794,
       "text": "## npc_autonomous_decision_contract.md — 27.3. `@rus/turn`\n### 27.3. `@rus/turn`\n\nДобавить явно внедряемый `npcDecisionModel` service port и минимальный async loop:\n\n```text\nresolve code-owned temporal batch\n→ collect reaction_decision\n→ build current NPC-safe request\n→ await LLM\n→ validate plan\n→ resolve common actor step\n→ update working projection\n→ resume same timestamp\n```\n\nПереиспользовать существующие:\n\n- `stop_after_current_batch`;\n- same-time resolution order;\n- temporal safety limits;\n- working write plan;\n- atomic commit.",
       "char_count": 538
     },
@@ -6505,8 +6514,8 @@
       "id": "npc_autonomous_decision_contract.md:27.4. Общий actor-step:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "27.4. Общий actor-step",
-      "line_start": 1794,
-      "line_end": 1810,
+      "line_start": 1795,
+      "line_end": 1811,
       "text": "## npc_autonomous_decision_contract.md — 27.4. Общий actor-step\n### 27.4. Общий actor-step\n\nНе создавать новый пакет.\n\nМинимально переиспользовать внутри `@rus/turn` существующие стадии:\n\n- availability;\n- checks;\n- consequence;\n- time update;\n- body update;\n- hidden update;\n- visible/perception signals;\n- persistence planning.\n\nPlayer step plan и NPC step plan должны приводиться к одному внутреннему actor-step input.",
       "char_count": 421
     },
@@ -6514,8 +6523,8 @@
       "id": "npc_autonomous_decision_contract.md:27.5. Trigger sources:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "27.5. Trigger sources",
-      "line_start": 1811,
-      "line_end": 1825,
+      "line_start": 1812,
+      "line_end": 1826,
       "text": "## npc_autonomous_decision_contract.md — 27.5. Trigger sources\n### 27.5. Trigger sources\n\nКаждый существующий domain owner сохраняет собственный factual event vocabulary, но использует общий декларативный `decision_signal` descriptor.\n\nМинимальные источники:\n\n- perception/knowledge transition;\n- activity или intent transition;\n- schedule decision point;\n- body/capability transition;\n- movement/access/environment transition;\n- received message.\n\nЗапрещены event-specific trigger functions и отдельный автономный evaluator. Все источники передают `npc_decision_signal_v1` единому `evaluateNpcDecisionSignals`.",
       "char_count": 611
     },
@@ -6523,8 +6532,8 @@
       "id": "npc_autonomous_decision_contract.md:27.6. Persistence:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "27.6. Persistence",
-      "line_start": 1826,
-      "line_end": 1831,
+      "line_start": 1827,
+      "line_end": 1832,
       "text": "## npc_autonomous_decision_contract.md — 27.6. Persistence\n### 27.6. Persistence\n\nПереиспользовать существующий NPC decision trace persistence target.\n\nНовая таблица запрещена без доказанного ограничения текущего storage contract.",
       "char_count": 230
     },
@@ -6532,8 +6541,8 @@
       "id": "npc_autonomous_decision_contract.md:28. Обязательное обновление документации:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "28. Обязательное обновление документации",
-      "line_start": 1832,
-      "line_end": 1868,
+      "line_start": 1833,
+      "line_end": 1869,
       "text": "## npc_autonomous_decision_contract.md — 28. Обязательное обновление документации\n## 28. Обязательное обновление документации\n\nОдновременно с code cutover обновляются:\n\n- `AGENTS.md`;\n- `packages/npc-runtime/MODULE.md`;\n- `packages/turn/MODULE.md`;\n- `temporal_world_and_interruptible_activities.md`;\n- `code_driven_world_materialization_architecture.md`;\n- `npc_generation_profiles.txt`;\n- `llm_agent_prompt_templates.md`;\n- `information_sources_llm_prompts.md`;\n- documentation navigation;\n- formal contracts/schema references;\n- architecture tests.\n\nНужно заменить утверждение:\n\n```text\nLLM выбирает только option_id/command_token из закрытого списка.\n```\n\nна:\n\n```text\nНа formal reaction_decision boundary LLM принимает одно самостоятельное решение NPC и возвращает структурированный semantic actor-step plan. Код выполняет только формальную проверку, RNG, механику, temporal ordering и persistence.\n```\n\nТакже документация должна явно закрепить:",
       "char_count": 950
     },
@@ -6541,8 +6550,8 @@
       "id": "npc_autonomous_decision_contract.md:28. Обязательное обновление документации:1",
       "file": "npc_autonomous_decision_contract.md",
       "section": "28. Обязательное обновление документации",
-      "line_start": 1832,
-      "line_end": 1868,
+      "line_start": 1833,
+      "line_end": 1869,
       "text": "## npc_autonomous_decision_contract.md — 28. Обязательное обновление документации\nor-step plan. Код выполняет только формальную проверку, RNG, механику, temporal ordering и persistence.\n```\n\nТакже документация должна явно закрепить:\n\n- игрок и NPC используют одинаковый check/consequence pipeline;\n- NPC проходит тот же фильтр историчности и реализма;\n- trigger создаётся только на meaningful transition;\n- охрана и подозрительность влияют на условия trigger, но не задают готовое действие;\n- conversation mode является отдельной системой;\n- multiple NPC decisions обрабатываются через existing same-time temporal owner.",
       "char_count": 620
     },
@@ -6550,8 +6559,8 @@
       "id": "npc_autonomous_decision_contract.md:29. Обязательные тесты:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "29. Обязательные тесты",
-      "line_start": 1869,
-      "line_end": 1870,
+      "line_start": 1870,
+      "line_end": 1871,
       "text": "## npc_autonomous_decision_contract.md — 29. Обязательные тесты\n## 29. Обязательные тесты",
       "char_count": 89
     },
@@ -6559,8 +6568,8 @@
       "id": "npc_autonomous_decision_contract.md:29.1. Trigger tests:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "29.1. Trigger tests",
-      "line_start": 1871,
-      "line_end": 1889,
+      "line_start": 1872,
+      "line_end": 1890,
       "text": "## npc_autonomous_decision_contract.md — 29.1. Trigger tests\n### 29.1. Trigger tests",
       "char_count": 84
     },
@@ -6568,8 +6577,8 @@
       "id": "npc_autonomous_decision_contract.md:29.1. Trigger tests:1",
       "file": "npc_autonomous_decision_contract.md",
       "section": "29.1. Trigger tests",
-      "line_start": 1871,
-      "line_end": 1889,
+      "line_start": 1872,
+      "line_end": 1890,
       "text": "## npc_autonomous_decision_contract.md — 29.1. Trigger tests\n### 29.1. Trigger tests\n\n1. Все причины отображаются только в `self`, `others`, `environment`, `objective`, `communication`.\n2. Signal принимает только `material` или `critical`.\n3. Предметные события не создают новых trigger categories.\n4. Невоспринятое событие не создаёт resolved signal при `perception_required: true`.\n5. Повторное восприятие того же source event не создаёт второй signal.\n6. Постоянное состояние без нового перехода не создаёт signal.\n7. Охранник получает `others` при первом воспринятом входе неизвестного в guarded scope.\n8. Изменение охраняемого прохода создаёт `environment`, а не door-specific trigger.\n9. Подозрительность меняет applicability, но не category.\n10. Activity interruption или invalidation создаёт `objective`.\n11. Automatic schedule successor не создаёт signal.\n12. Полученный приказ создаёт `communication` без автоматического подчинения.\n13. Несколько signals одного NPC и batch агрегируются в одну boundary.\n14. Наличие хотя бы одного critical signal делает boundary critical.\n15. Один NPC получает не более одного LLM-вызова на batch.\n16. NPC без decision capability не вызывает LLM; deterministic terminal outcome потребляет применимые signals по commit rules.",
       "char_count": 1268
     },
@@ -6577,8 +6586,8 @@
       "id": "npc_autonomous_decision_contract.md:29.2. Decision tests:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "29.2. Decision tests",
-      "line_start": 1890,
-      "line_end": 1901,
+      "line_start": 1891,
+      "line_end": 1902,
       "text": "## npc_autonomous_decision_contract.md — 29.2. Decision tests\n### 29.2. Decision tests\n\n17. LLM возвращает одно действие.\n18. Цепочка действий отклоняется schema/semantic contract test.\n19. NPC может выбрать бездействие.\n20. NPC может выбрать domain movement.\n21. NPC может начать conversation без реплики.\n22. NPC может начать combat без attack outcome.\n23. Невозможное намерение адаптируется к реальной попытке.\n24. Суеверие влияет на решение, но не создаёт магию.\n25. LLM не использует неизвестный NPC hidden fact.",
       "char_count": 517
     },
@@ -6586,8 +6595,8 @@
       "id": "npc_autonomous_decision_contract.md:29.3. Check tests:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "29.3. Check tests",
-      "line_start": 1902,
-      "line_end": 1909,
+      "line_start": 1903,
+      "line_end": 1910,
       "text": "## npc_autonomous_decision_contract.md — 29.3. Check tests\n### 29.3. Check tests\n\n26. NPC generic check использует общий RNG owner.\n27. Проверка имеет пять outcomes.\n28. Код применяет modifiers NPC так же, как modifiers игрока.\n29. Domain-owned check не дублируется generic check.\n30. После результата новая LLM вызывается только при новой decision boundary.",
       "char_count": 358
     },
@@ -6595,8 +6604,8 @@
       "id": "npc_autonomous_decision_contract.md:29.4. Multiple NPC tests:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "29.4. Multiple NPC tests",
-      "line_start": 1910,
-      "line_end": 1922,
+      "line_start": 1911,
+      "line_end": 1923,
       "text": "## npc_autonomous_decision_contract.md — 29.4. Multiple NPC tests\n### 29.4. Multiple NPC tests\n\n31. Один factual event создаёт отдельные perception results.\n32. Trigger получают только NPC с применимой policy.\n33. Requests сортируются по timestamp, npc_ref, boundary_id.\n34. Вызовы LLM последовательны.\n35. Следующий NPC получает обновлённый subjective context только после perception предыдущего действия.\n36. Положительные activities нескольких NPC стартуют в одном timestamp.\n37. Время не движется до исчерпания same-time reactions.\n38. Моментальное действие может сделать следующий request stale.\n39. Stale plan не применяется.\n40. Same-time follow-up reaction достигает fixed point или existing temporal safety error.",
       "char_count": 722
     },
@@ -6604,8 +6613,8 @@
       "id": "npc_autonomous_decision_contract.md:29.5. Persistence tests:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "29.5. Persistence tests",
-      "line_start": 1923,
-      "line_end": 1931,
+      "line_start": 1924,
+      "line_end": 1932,
       "text": "## npc_autonomous_decision_contract.md — 29.5. Persistence tests\n### 29.5. Persistence tests\n\n41. Один boundary вызывает не более одного committed decision.\n42. Restart возвращает сохранённый decision без нового LLM-вызова.\n43. Сбой до commit не оставляет частично применённого NPC action.\n44. Player action, NPC decisions и consequences фиксируются атомарно.\n45. Internal `reason` не попадает в player-safe projection.\n46. Hidden NPC context не попадает narrator.",
       "char_count": 464
     },
@@ -6613,8 +6622,8 @@
       "id": "npc_autonomous_decision_contract.md:29.6. Documentation and architecture tests:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "29.6. Documentation and architecture tests",
-      "line_start": 1932,
-      "line_end": 1938,
+      "line_start": 1933,
+      "line_end": 1939,
       "text": "## npc_autonomous_decision_contract.md — 29.6. Documentation and architecture tests\n### 29.6. Documentation and architecture tests\n\n47. Active docs больше не утверждают bounded option-only model после cutover.\n48. Production composition содержит один NPC decision path.\n49. Scenario code не создаёт собственный NPC scheduler/resolver.\n50. Temporal resolution order сохраняет `perception_knowledge` перед `reaction_decision`.\n51. Conversation и combat остаются отдельными owners.",
       "char_count": 478
     },
@@ -6622,8 +6631,8 @@
       "id": "npc_autonomous_decision_contract.md:30. Критерии готовности cutover:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "30. Критерии готовности cutover",
-      "line_start": 1939,
-      "line_end": 1960,
+      "line_start": 1940,
+      "line_end": 1961,
       "text": "## npc_autonomous_decision_contract.md — 30. Критерии готовности cutover\n## 30. Критерии готовности cutover\n\nКонтракт считается внедрённым, когда одновременно выполнено:",
       "char_count": 169
     },
@@ -6631,8 +6640,8 @@
       "id": "npc_autonomous_decision_contract.md:30. Критерии готовности cutover:1",
       "file": "npc_autonomous_decision_contract.md",
       "section": "30. Критерии готовности cutover",
-      "line_start": 1939,
-      "line_end": 1960,
+      "line_start": 1940,
+      "line_end": 1961,
       "text": "## npc_autonomous_decision_contract.md — 30. Критерии готовности cutover\n## 30. Критерии готовности cutover\n\nКонтракт считается внедрённым, когда одновременно выполнено:\n\n1. Все режимы используют один signal/boundary protocol и закрытый словарь из пяти категорий.\n2. Все сигналы одного NPC и same-time batch агрегируются в одну boundary и один LLM-вызов.\n3. Обычные фоновые состояния без нового перехода не вызывают LLM.\n4. Охрана и подозрительность работают через applicability и generic categories, а не через отдельные trigger types.\n5. NPC возвращает одно односоставное действие.\n6. NPC проходит тот же actor-step pipeline, что и игрок.\n7. NPC checks используют общий RNG и пять outcomes.\n8. Реализм и историчность применяются одинаково к игроку и NPC.\n9. Разговор и бой передаются отдельным owners.\n10. Multiple NPC reactions разрешаются через existing temporal same-time owner.\n11. Положительные actions стартуют до продвижения времени.\n12. Stale response не применяется.\n13. Один boundary не исполняется дважды.\n14. Решение и последствия переживают restart.\n15. Hidden context не попадает в player-facing output.\n16. Новая таблица, scheduler или параллельный decision engine не добавлены без необходимости.\n17. Базовая документация обновлена одновременно с production cutover.",
       "char_count": 1283
     },
@@ -6640,8 +6649,8 @@
       "id": "npc_autonomous_decision_contract.md:Приложение A. Machine contract specifications:0",
       "file": "npc_autonomous_decision_contract.md",
       "section": "Приложение A. Machine contract specifications",
-      "line_start": 1961,
-      "line_end": 2040,
+      "line_start": 1962,
+      "line_end": 2041,
       "text": "## npc_autonomous_decision_contract.md — Приложение A. Machine contract specifications\n# Приложение A. Machine contract specifications\n\n```yaml\ncontract_name: npc_action_decision_request_v1\nstorage: immutable_request\nidentity:\n  - request_id\nfields:\n  schema: required enum[npc_action_decision_request_v1]\n  request_id: required stable_id\n  root_turn_id: required stable_id\n  boundary_id: required stable_id\n  committed_state_version: required state_version\n  working_revision: required non_negative_integer\n  decision_index: required positive_integer\n  occurred_at: required game_timestamp\n  npc_ref: required stable_id\n  decision_reasons: required json_object\n  historical_context: required json_object\n  npc: required json_object\n  perception: required json_object\n  knowledge: required json_object\n  memory: required json_object\n  decision_scope: required json_object\ninvariants:\n  - The request exposes only NPC-available subjective information plus technical identities and contracts.\n  - Decision categories use only the common five-category vocabulary in canonical order.\n  - Allowed refs and the operation contract are closed to the capabilities supplied by code.\n```",
       "char_count": 1176
     },
@@ -6649,8 +6658,8 @@
       "id": "npc_autonomous_decision_contract.md:Приложение A. Machine contract specifications:1",
       "file": "npc_autonomous_decision_contract.md",
       "section": "Приложение A. Machine contract specifications",
-      "line_start": 1961,
-      "line_end": 2040,
+      "line_start": 1962,
+      "line_end": 2041,
       "text": "## npc_autonomous_decision_contract.md — Приложение A. Machine contract specifications\ne common five-category vocabulary in canonical order.\n  - Allowed refs and the operation contract are closed to the capabilities supplied by code.\n```\n\n```yaml\ncontract_name: npc_step_plan_v1\nstorage: immutable_response\nidentity:\n  - request_id\n  - decision_index\nfields:\n  schema: required enum[npc_step_plan_v1]\n  request_id: required stable_id\n  root_turn_id: required stable_id\n  boundary_id: required stable_id\n  committed_state_version: required state_version\n  working_revision: required non_negative_integer\n  decision_index: required positive_integer\n  npc_ref: required stable_id\n  interpretation: required json_object\n  resolution: required enum[direct, generic_check, domain_request]\n  goal_result: required enum[pending, achieved, partially_achieved, not_achieved]\n  activity: required json_object\n  operations: required relation_set[json_object]\n  check: optional json_object\n  reason_code: required stable_id\n  reason: required string\ninvariants:\n  - The plan contains exactly one self-contained NPC action and no implicit continuation.\n  - Unused nullable values remain null and operations stay within the request operation contract.\n  - Generic checks expose all five outcomes; domain-owned actions are delegated without claiming their result.\n```",
       "char_count": 1351
     },
@@ -6658,8 +6667,8 @@
       "id": "npc_autonomous_decision_contract.md:Приложение A. Machine contract specifications:2",
       "file": "npc_autonomous_decision_contract.md",
       "section": "Приложение A. Machine contract specifications",
-      "line_start": 1961,
-      "line_end": 2040,
+      "line_start": 1962,
+      "line_end": 2041,
       "text": "## npc_autonomous_decision_contract.md — Приложение A. Machine contract specifications\nhin the request operation contract.\n  - Generic checks expose all five outcomes; domain-owned actions are delegated without claiming their result.\n```\n\n```yaml\ncontract_name: npc_semantic_decision_trace_v1\nstorage: party_runtime_append_only\nidentity:\n  - boundary_id\nfields:\n  schema: required enum[npc_semantic_decision_trace_v1]\n  request_id: required stable_id\n  root_turn_id: required stable_id\n  boundary_id: required stable_id\n  npc_ref: required stable_id\n  committed_state_version: required state_version\n  working_revision: required non_negative_integer\n  plan: required json_object\n  applied_change_set_id: required stable_id\n  status: required enum[committed]\ninvariants:\n  - One committed boundary has at most one persisted semantic decision trace.\n  - Replay returns the persisted plan and never invokes the model or applies the change set again.\n  - Internal decision reasons remain hidden from player-safe projections and other NPCs.\n```",
       "char_count": 1039
     },
@@ -8037,8 +8046,8 @@
       "section": "Инварианты",
       "line_start": 1980,
       "line_end": 1990,
-      "text": "## npc_combat_and_trigger_contract.md — Инварианты\n### Инварианты\n\n1. Одно устойчивое боевое намерение (`intent_kind` из `operation_contract`); не отдельные удары и не весь будущий бой.\n2. Не превращать неопытного в профессионального бойца; не создавать отсутствующее оружие или сверхъестественную способность; не выбирать действие ради пользы игроку или заранее желаемого сюжета.\n3. LLM не выполняет бросок, не объявляет попадание, вред, смерть, маршрут, factual write или решение другого участника.\n4. Допустим один короткий `combat_statement`, совместимый с intent; полноценный разговор запрещён.\n5. Используются только refs и значения, разрешённые `operation_contract` и subjective combat state.\n6. Repair исправляет только структуру; смысл намерения сохраняется.\n\nДействующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029).",
-      "char_count": 837
+      "text": "## npc_combat_and_trigger_contract.md — Инварианты\n### Инварианты\n\n1. Одно устойчивое боевое намерение (`intent_kind` из `operation_contract`); не отдельные удары и не весь будущий бой.\n2. Не превращать неопытного в профессионального бойца; не создавать отсутствующее оружие, сверхъестественную способность или невозможное перемещение; не выбирать действие ради пользы игроку, наказания игрока, драматичности или заранее желаемого сюжета.\n3. LLM не выполняет бросок, не объявляет попадание, вред, смерть, маршрут, factual write или решение другого участника.\n4. Допустим один короткий `combat_statement`, совместимый с intent; полноценный разговор запрещён.\n5. Используются только refs и значения, разрешённые `operation_contract` и subjective combat state.\n6. Repair исправляет только структуру; смысл намерения сохраняется.\n\nДействующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029).",
+      "char_count": 895
     },
     {
       "id": "npc_combat_and_trigger_contract.md:33. Схема format repair и владелец текста:0",
@@ -8424,8 +8433,8 @@
       "section": "40.12. `data/knowledge-source/corpus/DOCUMENTS/llm_agent_prompt_templates.md`",
       "line_start": 2545,
       "line_end": 2562,
-      "text": "## npc_combat_and_trigger_contract.md — 40.12. `data/knowledge-source/corpus/DOCUMENTS/llm_agent_prompt_templates.md`\n### 40.12. `data/knowledge-source/corpus/DOCUMENTS/llm_agent_prompt_templates.md`\n\nОбновить вступительное bounded-only ограничение.\n\nДобавить основной prompt и repair prompt из разделов 32–33.\n\nОбновить runtime pipeline:\n\n```text\ncombat factual exchange\n→ perception and signals\n→ optional NPC intent decision\n→ common execution owners\n→ atomic factual commit\n→ persisted visible package\n→ narration\n```",
-      "char_count": 521
+      "text": "## npc_combat_and_trigger_contract.md — 40.12. `data/knowledge-source/corpus/DOCUMENTS/llm_agent_prompt_templates.md`\n### 40.12. `data/knowledge-source/corpus/DOCUMENTS/llm_agent_prompt_templates.md`\n\nОбновить вступительное bounded-only ограничение.\n\nДобавить ссылку на схему и инварианты §32–§33; текст промпта — в `lower-dvina-trace-combat-llm.js`.\n\nОбновить runtime pipeline:\n\n```text\ncombat factual exchange\n→ perception and signals\n→ optional NPC intent decision\n→ common execution owners\n→ atomic factual commit\n→ persisted visible package\n→ narration\n```",
+      "char_count": 561
     },
     {
       "id": "npc_combat_and_trigger_contract.md:40.13. `data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md`:0",
@@ -9918,8 +9927,8 @@
       "section": "Инварианты",
       "line_start": 1965,
       "line_end": 1973,
-      "text": "## npc_conversation_mode_contract.md — Инварианты\n### Инварианты\n\n1. Один ближайший contribution от лица конкретного NPC по субъективно воспринятому сообщению.\n2. Не выбирать реплику ради пользы игроку, драматичности или обязательного раскрытия квеста; ни одна черта не абсолютная команда.\n3. Не использовать объективные факты, которых NPC не знает; не создавать отсутствующий предмет, маршрут, лицо, должность или objective event.\n4. Ложь или выдуманное имя остаются statement content и не создают сущность мира.\n5. Check только при попытке убедить/обмануть/запугать/добиться уступки; бросок и решение listener не выполняются.\n6. При `action_handoff` / `combat_handoff` — одно ближайшее намерение без расчёта маршрута, предметов, тела, попадания или исхода боя.",
-      "char_count": 762
+      "text": "## npc_conversation_mode_contract.md — Инварианты\n### Инварианты\n\n1. Один ближайший contribution от лица конкретного NPC по субъективно воспринятому сообщению.\n2. Не выбирать реплику ради пользы игроку, наказания игрока, драматичности, обязательного раскрытия квеста, обязательного конфликта или продолжения разговора; ни одна черта не абсолютная команда.\n3. Не использовать объективные факты, которых NPC не знает; не создавать отсутствующий предмет, маршрут, лицо, должность или objective event.\n4. Ложь или выдуманное имя остаются statement content и не создают сущность мира.\n5. Check только при попытке убедить/обмануть/запугать/добиться уступки; бросок и решение listener не выполняются.\n6. При `action_handoff` / `combat_handoff` — одно ближайшее намерение без расчёта маршрута, предметов, тела, попадания или исхода боя.",
+      "char_count": 828
     },
     {
       "id": "npc_conversation_mode_contract.md:40. Схема format repair разговора:0",
@@ -15300,8 +15309,8 @@
       "section": "0.1. Назначение",
       "line_start": 17,
       "line_end": 41,
-      "text": "## spatial_architecture_standard_g0_g6.md — 0.1. Назначение\n### 0.1. Назначение\n\nДокумент определяет действующую пространственную архитектуру после materialization v2. Он устраняет смешение масштаба, сцены, позиции и маршрута и задаёт единую реализационную модель:\n\n```text\nG0 → G1 → G2 → G3 → G4 → G5 → G6\n                                  ↓\n                         scene_position_node\n```\n\nГде:\n\n```text\nG0–G5                 = заранее утверждённая каноническая карта;\ngenerated G5          = конечные party-scoped дополнения из утверждённых templates;\nG6                    = materialized scene spaces;\nscene_position_node   = устойчивая техническая позиция внутри G6;\nmovement topology     = физические directed relations;\nperception topology   = отдельные visibility/acoustic relations;\ndynamic state         = actors, NPC, items, blockers, portals, hazards и overlays;\nvisual layout         = необязательное представление уже существующей topology.\n```\n\nG7 и G8 не вводятся.",
-      "char_count": 981
+      "text": "## spatial_architecture_standard_g0_g6.md — 0.1. Назначение\n### 0.1. Назначение\n\nДокумент определяет действующую пространственную архитектуру после materialization v2 (формулировка «действующий» вместо «целевой»: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.11). Он устраняет смешение масштаба, сцены, позиции и маршрута и задаёт единую реализационную модель:\n\n```text\nG0 → G1 → G2 → G3 → G4 → G5 → G6\n                                  ↓\n                         scene_position_node\n```\n\nГде:\n\n```text\nG0–G5                 = заранее утверждённая каноническая карта;\ngenerated G5          = конечные party-scoped дополнения из утверждённых templates;\nG6                    = materialized scene spaces;\nscene_position_node   = устойчивая техническая позиция внутри G6;\nmovement topology     = физические directed relations;\nperception topology   = отдельные visibility/acoustic relations;\ndynamic state         = actors, NPC, items, blockers, portals, hazards и overlays;\nvisual layout         = необязательное представление уже существующей topology.\n```\n\nG7 и G8 не вводятся.",
+      "char_count": 1099
     },
     {
       "id": "spatial_architecture_standard_g0_g6.md:0.2. Соотношение с active-нормативами:0",
@@ -18990,8 +18999,8 @@
       "section": "Read-only world base и графовая архитектура",
       "line_start": 1,
       "line_end": 13,
-      "text": "## spatial_v3_target_read_only_database_and_graph_architecture.md — Read-only world base и графовая архитектура\n# Read-only world base и графовая архитектура\n\n**Статус:** active production technical normative после завершённого\n`versioned production activation cutover`; historical P28 evidence само не\nпереключало authoritative reads или writes.\n**Источник физических деталей:** будущие v3 DDL и сгенерированный из них `infra/world-base/SCHEMA_REFERENCE.md`; этот документ не подменяет DDL.\n\nCurrent Temporal amendment `temporal-world-v1.1` / `4.4.0-target.1` с\nimmutable baseline `temporal-world-v1` / `4.3.0-target.1` находится в действующем нормативе `temporal_world_and_interruptible_activities.md`. `world_base` хранит\nтолько approved calendar/activity/environment/NPC/process profiles и rules;\nточные executions, clocks, effects и visible packages принадлежат\n`party_runtime`.",
-      "char_count": 883
+      "text": "## spatial_v3_target_read_only_database_and_graph_architecture.md — Read-only world base и графовая архитектура\n# Read-only world base и графовая архитектура\n\n**Статус:** active production technical normative после завершённого\n`versioned production activation cutover`; historical P28 evidence само не\nпереключало authoritative reads или writes.\n**Источник физических деталей:** будущие v3 DDL и сгенерированный из них `infra/world-base/SCHEMA_REFERENCE.md`; этот документ не подменяет DDL.\n\nCurrent Temporal amendment `temporal-world-v1.1` / `4.4.0-target.1` с\nimmutable baseline `temporal-world-v1` / `4.3.0-target.1` находится в действующем нормативе `temporal_world_and_interruptible_activities.md` (формулировка «действующий» вместо «целевой»: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.11). `world_base` хранит\nтолько approved calendar/activity/environment/NPC/process profiles и rules;\nточные executions, clocks, effects и visible packages принадлежат\n`party_runtime`.",
+      "char_count": 1001
     },
     {
       "id": "spatial_v3_target_read_only_database_and_graph_architecture.md:1. Single-source matrix:0",
@@ -20799,8 +20808,8 @@
       "section": "1. Назначение",
       "line_start": 10,
       "line_end": 39,
-      "text": "## turn_step_llm_contract.md — 1. Назначение\n## 1. Назначение\n\nЭтот документ задаёт действующий контракт обработки свободной заявки игрока.\n\nИгрок может написать любое действие, в том числе:\n\n- обычное действие;\n- длинную последовательность действий;\n- физически невозможное действие;\n- действие с отсутствующим предметом;\n- фантастическое или противоречащее эпохе действие;\n- формулировку, объявляющую желаемый результат уже совершившимся;\n- попытку навязать миру новые факты.\n\nИгра не отклоняет такую заявку как недопустимую. LLM переводит её в ближайшую реальную попытку персонажа, а код исполняет эту попытку через существующих владельцев механики.\n\nГлавный результат LLM — **план следующего исполнимого шага**, а не готовое новое состояние мира и не весь ход целиком.\n\n```text\nзаявка игрока\n→ LLM: следующий реальный шаг\n→ код: исполнение и новое рабочее состояние\n→ LLM: следующий шаг оставшегося намерения\n→ код\n→ ...\n→ завершение заявки или граница нового решения игрока\n```\n\nДля игрока вся последовательность остаётся одним ходом и одним итоговым ответом игры.",
-      "char_count": 1069
+      "text": "## turn_step_llm_contract.md — 1. Назначение\n## 1. Назначение\n\nЭтот документ задаёт действующий контракт обработки свободной заявки игрока (формулировка «действующий» вместо «целевой»: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.11).\n\nИгрок может написать любое действие, в том числе:\n\n- обычное действие;\n- длинную последовательность действий;\n- физически невозможное действие;\n- действие с отсутствующим предметом;\n- фантастическое или противоречащее эпохе действие;\n- формулировку, объявляющую желаемый результат уже совершившимся;\n- попытку навязать миру новые факты.\n\nИгра не отклоняет такую заявку как недопустимую. LLM переводит её в ближайшую реальную попытку персонажа, а код исполняет эту попытку через существующих владельцев механики.\n\nГлавный результат LLM — **план следующего исполнимого шага**, а не готовое новое состояние мира и не весь ход целиком.\n\n```text\nзаявка игрока\n→ LLM: следующий реальный шаг\n→ код: исполнение и новое рабочее состояние\n→ LLM: следующий шаг оставшегося намерения\n→ код\n→ ...\n→ завершение заявки или граница нового решения игрока\n```\n\nДля игрока вся последовательность остаётся одним ходом и одним итоговым ответом игры.",
+      "char_count": 1187
     },
     {
       "id": "turn_step_llm_contract.md:2. Архитектурное решение:0",

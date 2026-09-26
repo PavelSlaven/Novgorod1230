@@ -49,7 +49,7 @@
 | 042 | `code_driven_world_materialization_architecture.md`, `items_and_property.txt`, `turn_step_llm_contract.md` (+ гайд `npc_generation_profiles.txt`) | ACTIVE-нормы main против PC §9.1 до #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 | 043 | `scripts/m2c-capacity-successor.mjs`, `spatial_architecture_standard_g0_g6.md` | pin sha spatial_architecture после шага 3 #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 | 044 | `temporal_world…`, CONTRACT_INDEX v17 note | погода D7: next-state в turn + inertia profile | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
-| 045 | `turn_step`/`items`/`npc` D9/D14 | опознавательный текст и узнавание владельцем — долг кода v17 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 045 | `turn_step`/`items`/`npc` D9/D14 + финальные числа | D9/D14 и финальные числа от кода — долг кода v17 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 
 ## Записи
 
@@ -216,7 +216,7 @@
 - **Как жить.** Не имитировать живую смену погоды в тестах/доках как текущее поведение; реализация — CR M2c.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
 
-### LW-045 — D9/D14: опознавательный текст и узнавание владельцем (долг кода v17)
-- **Что.** Нормы D9/D14 ACTIVE в корпусе (#146 шаг 2–3), но код v17 ещё расходится: `plan-schema.js` требует `mass_grams`; `action-produced-output-semantics.js` принимает любой `inscription_text`; узнавания владельцем при восприятии нет.
+### LW-045 — D9/D14 и финальные числа от кода (долг кода v17)
+- **Что.** Нормы D9/D14 ACTIVE в корпусе (#146 шаг 2–3), но код v17 ещё расходится: `action-produced-output-semantics.js` принимает любой `inscription_text`; узнавания владельцем при восприятии нет. Отдельно: финальные числа пишет код (`mass_grams` и пр.), а `plan-schema.js` всё ещё требует `mass_grams` от модели.
 - **Как жить.** В нормах помечать «действующая норма; код v17 — долг CR реализации M2c (LW-045)»; не ослаблять норму под текущий код.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)

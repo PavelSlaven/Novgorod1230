@@ -6,7 +6,7 @@
 **Источник физических деталей:** будущие v3 DDL и сгенерированный из них `infra/world-base/SCHEMA_REFERENCE.md`; этот документ не подменяет DDL.
 
 Current Temporal amendment `temporal-world-v1.1` / `4.4.0-target.1` с
-immutable baseline `temporal-world-v1` / `4.3.0-target.1` находится в действующем нормативе `temporal_world_and_interruptible_activities.md`. `world_base` хранит
+immutable baseline `temporal-world-v1` / `4.3.0-target.1` находится в действующем нормативе `temporal_world_and_interruptible_activities.md` (формулировка «действующий» вместо «целевой»: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.11). `world_base` хранит
 только approved calendar/activity/environment/NPC/process profiles и rules;
 точные executions, clocks, effects и visible packages принадлежат
 `party_runtime`.

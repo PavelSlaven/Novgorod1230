@@ -67,9 +67,11 @@ Governing-корпус `AGENTS.md` (§1.3) также включает:
 - [`docs/governance/README.md`](../../../../docs/governance/README.md) — преамбула, §1.2, карта старых разделов;
 - [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30;
 - [`docs/governance/ARCHITECTURE_INVARIANTS.md`](../../../../docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28;
-- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §21.1, §24, §24.1, §24.2, §29; Источник явного перечисления §21.1/§24.1/§24.2: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.14.
+- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §21.1, §24, §24.1, §24.2, §29;
 - [`docs/governance/AUDIT_RULES.md`](../../../../docs/governance/AUDIT_RULES.md) — §25, §25.1;
 - [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.
+
+Источник явного перечисления §21.1/§24.1/§24.2 в §3: CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) п.14.
 
 `Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.
 

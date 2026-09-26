@@ -46,6 +46,7 @@ import {
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { activateGate1RuntimeCatalog } from
   '../../tools/runtime-catalog-activation/src/gate1-runtime-activation.js';
 import { loadActiveRuntimeCatalogPin } from
@@ -153,7 +154,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   let worldDatabaseUrl;
   if (dockerReady) {
     const started = docker([
-      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only',
       '-e', 'POSTGRES_USER=postgres',
       '-e', 'POSTGRES_DB=pr17_phase1b',

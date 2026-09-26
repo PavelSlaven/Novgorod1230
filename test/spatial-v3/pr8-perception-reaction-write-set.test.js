@@ -21,6 +21,7 @@ import {
 import {
   runSpatialV3TargetMigrations
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 const vr = (entity_kind, entity_id) => ({
@@ -371,7 +372,7 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
     docker(['rm', '-fv', containerName]);
   });
   assert.equal(docker([
-    'run', '-d', '-p', '127.0.0.1::5432', '--name', containerName,
+    'run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', containerName,
     '-e', 'POSTGRES_PASSWORD=pr8',
     '-e', 'POSTGRES_USER=pr8',
     '-e', 'POSTGRES_DB=pr8',

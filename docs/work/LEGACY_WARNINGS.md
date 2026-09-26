@@ -46,6 +46,7 @@
 | 039 | `universal_category_classification_policy.md` и ещё 3 | обрезанные документы корпуса | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 040 | `infra/world-base/README.md` | README пишет 201 таблиц при 208 в схеме | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 | 041 | `first-playable-party-migration.test.js` | тест ожидает 35 миграций при 36 | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
+| 042 | `code_driven_world_materialization_architecture.md`, `items_and_property.txt`, `turn_step_llm_contract.md` (+ гайд `npc_generation_profiles.txt`) | ACTIVE-нормы main против PC §9.1 до #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 
 ## Записи
 
@@ -74,10 +75,10 @@
 - **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112)
 
 ### LW-008 — три системы статусов
-- **Что.** Метки CONTRACT_INDEX §2, поле `status` (`active/proposed/deprecated`) записей `data/knowledge-source/corpus-manifest.json` (фильтр RAG — `default_statuses` в `retrieval-policy.json`) и строки «Status:» в шапках документов корпуса и ADR.
-- **Ловушки.** (1) `corpus-manifest.json` даёт `active` 14 UNDECLARED-гайдам, 3 redirect-заглушкам и 5 REFERENCE-документам, поэтому `npm run knowledge:query` по умолчанию показывает их как действующие и может ставить выше ACTIVE-контрактов. (2) Обратное: `universal_category_classification_policy.md` и `semantic_world_actions_materialization_and_processes_contract.md` — PROPOSED, хотя их механизмы работают в коде; запрос по умолчанию их не видит. (3) ACTIVE-документы называют себя «целевыми», версии вида `4.4.0-target.1` — идентификаторы, а не статус.
-- **Как жить.** Нормативный статус — только CONTRACT_INDEX; retrieval-статус влияет только на выдачу RAG. Для proposed-документов — `npm run knowledge:query -- --statuses active,proposed --query "…"`, затем чтение исходника.
-- **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112)
+- **Что.** Метки CONTRACT_INDEX §2, поле `status` / `priority_tier` записей `data/knowledge-source/corpus-manifest.json` (фильтр RAG — `default_statuses` только в `retrieval-policy.json`; `priority_tier` для ранжирования — только из manifest; оба пишет `knowledge:repin` из CONTRACT_INDEX, #144) и строки «Status:» в шапках документов корпуса и ADR. Retrieval-статусы: `active`, `proposed`, `reference`, `deprecated`.
+- **Ловушки.** (1) Шапки документов и ADR по-прежнему могут расходиться с индексом — статус для RAG брать из manifest после repin, нормативную роль — только из CONTRACT_INDEX. (2) PROPOSED-документы (`universal_category_classification_policy.md`, `semantic_world_actions_…`) механизмы в коде могут уже работать; запрос по умолчанию их не видит. (3) ACTIVE-документы называют себя «целевыми», версии вида `4.4.0-target.1` — идентификаторы, а не статус. (4) UNDECLARED / REFERENCE guide → `reference` (в `reference_results` по умолчанию); REFERENCE/LEGACY, REDIRECT, SUPERSEDED, MIGRATION → `deprecated` (не в default search).
+- **Как жить.** Нормативный статус — только CONTRACT_INDEX; `knowledge:repin` выводит retrieval-статус и priority_tier в manifest и канонический `default_statuses`; `knowledge:check` ловит расхождение с индексом, неизвестную метку, дубли строк с разными метками, ручную правку `priority_tier`/`default_statuses` в policy и отсутствие строки индекса. Поиск корпуса лексический: нормы в `results`, справочники в `reference_results`. Для proposed — `npm run knowledge:query -- --statuses active,proposed --query "…"`, затем чтение исходника.
+- **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112), [#144](https://github.com/PavelSlaven/Novgorod1230/issues/144)
 
 ### LW-010 — evidence, которое читают tools
 - **Что.** `docs/work/temporal-world-v4/`, `docs/implementation/*`, `docs/migration/*` читаются тестами и скриптами (`test/spatial-v3/*`, `tools/spatial-v3/check-production-activation-boundary.mjs`, `generate-temporal-normative-freeze.mjs`, `scripts/*pr17*`, `packages/knowledge-source/test/rag-policy-repository.test.js`).
@@ -134,7 +135,7 @@
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-029 — ordinary-профили v17 выключены (ветка PR #98)
-- **Что.** `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 есть только отдельный профиль конечных природных источников при первом входе (`finite_first_entry`). `items_and_property.txt` и `code_driven_world_materialization_architecture.md` описывают эти профили как active: они действуют только на пути v16 / Lower Dvina Trace.
+- **Что.** `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 загружены только профиль конечных природных источников при первом входе (`finite_first_entry`), A1 (`actionProductionProfile`) и N1 (`ordinary_profiles.n1`). `items_and_property.txt` и `code_driven_world_materialization_architecture.md` описывают эти профили как active: они действуют только на пути v16 / Lower Dvina Trace.
 - **Как жить.** Не «подключать существующий профиль» к v17 и не подгонять тесты под фикстуры v16. Обобщение профилей на все классы — M2c.
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
@@ -175,7 +176,7 @@
 
 ### LW-037 — утверждения данных разбросаны (ветка PR #98)
 - **Что.** Около 94 файлов approval/attest без индекса; у многих кандидатов в поле стоит `approved:false` или `pending`, хотя их точный sha утверждён в отдельном файле. `data/world-catalogs/novgorod/m2c-natural/nature-successor-*` изменены после утверждения и сверяются через `git show ae212e78`.
-- **Как жить.** Статус кандидата брать из файлов утверждения, а не из поля кандидата. Производные поля в утверждённый файл не дописывать (WR §21.1).
+- **Как жить.** Статус кандидата брать из файлов утверждения, а не из поля кандидата. Производные поля в утверждённый файл не дописывать (WR §21.1). Данные, изменённые после утверждения (`nature-successor-*`), считаются неутверждёнными до нового прохода (WR §21.1).
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-038 — `tools/world-catalog-workflow` в runtime
@@ -196,3 +197,8 @@
 - **Что.** `test/spatial-v3/first-playable-party-migration.test.js` ожидает `SPATIAL_V3_TARGET_MIGRATIONS.length === 35`, тогда как манифест и диск — **36** (до `036_party_runtime_visibility_modifiers.sql`).
 - **Как жить.** Не чинить в docs-задаче карт; починить в CR реализации M2c вместе с обновлением ожидания теста.
 - **Issue.** [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145)
+
+### LW-042 — ACTIVE-нормы main против PC §9.1 до CR норм M2c
+- **Что.** На main ACTIVE D-005 и строка 176 `code_driven_world_materialization_architecture.md`, `items_and_property.txt:10` и UNDECLARED-гайд `npc_generation_profiles.txt:7` («LLM не создаёт NPC») (direct action не создаёт «ценные» предметы) расходятся с буквой PC §9.1:240 (по решению D8 LLM лишь сопоставляет запрос с ролью, а экземпляр создаёт код) и с классовым запретом, который PC §9.1 снял; сильнее всего с ним расходятся `code_driven_world_materialization_architecture.md:180` (restricted weapon/currency/document → `authority_required`), D-014 и `turn_step_llm_contract.md:1706` (полный список — #146 шаг 2). Решения владельца: [5836830425](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425), [5839745154](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154). Обычного NPC по запросу игрока создаёт код по сохранённому броску и лимиту места, изготовить можно всё реалистичное, typed gap — только для вещей по authority-записи. `knowledge:query` на main выдаёт старые формулировки. Нормы правит #146 на ветке PR #98; на main они придут с merge PR #98.
+- **Как жить.** При конфликте действуют PC §9.1 и решения #133. Эти формулировки не закреплять новыми тестами и не цитировать в CR как норму.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)

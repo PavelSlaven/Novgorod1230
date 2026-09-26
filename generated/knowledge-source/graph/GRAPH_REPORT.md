@@ -1,12 +1,11 @@
 # Knowledge graph materialization report
 
-- Mode: `approved_semantic_snapshot_plus_structural_document_nodes`
-- Corpus documents: 39
-- Semantic documents: 2
-- Structural-only documents: 37
-- Nodes: 445
-- Links: 787
+- Mode: `structural_document_nodes_only`
+- Corpus documents: 17
+- Structural-only documents: 17
+- Nodes: 17
+- Links: 0
 - Hyperedges: 0
-- Graph SHA-256: `bf69fa645fab92ff46be1716f0164fcfc614dfffdd1f1ccba583f9f3a04ffb62`
+- Graph SHA-256: `7bf39050ca098da0969adde962193583b0a200a6353a4bfd21400fd754b2712e`
 
-Approved semantic nodes and links are preserved unchanged. New canonical documents receive structural document nodes only; the generator does not invent semantic relations.
+Graph is structural document nodes only. The generator does not invent semantic relations or embeddings.

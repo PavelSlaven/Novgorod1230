@@ -4,6 +4,7 @@ import test from 'node:test';
 import pg from 'pg';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { createSpatialV3PartyRepository } from '../../packages/party-store/src/spatial-v3-repository.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 
@@ -12,7 +13,7 @@ test('committed modifier read distinguishes complete empty set, active row, and 
   const name = `visibility-modifier-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
-  const started = docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
+  const started = docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name,
     '-e', 'POSTGRES_PASSWORD=visibility', '-e', 'POSTGRES_USER=visibility',
     '-e', 'POSTGRES_DB=visibility', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);

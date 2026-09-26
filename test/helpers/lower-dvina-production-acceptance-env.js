@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
+import { testContainerLabel } from './test-containers.js';
 
 import { createSpatialV3ProductionCompositionRoot } from
   '../../apps/game-server/src/composition/production-spatial-v3.js';
@@ -189,7 +190,7 @@ function acceptanceHttpRoot(root, llm) {
 
 function startPostgres(name) {
   const result = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     POSTGRES_IMAGE
   ], { timeout: 90_000 });

@@ -5,6 +5,7 @@ import { Pool } from 'pg';
 import { computeSpatialV3CanonicalDigest as digest } from
   '@rus/contracts/spatial-v3/registry';
 import { canonicalDigest,createOrdinaryAggregate } from '@rus/materialization';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
   '@rus/turn/temporal-advance';
 import { buildCombinedWritePlan } from
@@ -101,7 +102,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     let pool;
     t.after(async () => { if (pool) await pool.end();
       docker(['rm','-fv',container]); });
-    const started = docker(['run','-d','--name',container,
+    const started = docker(['run',...testContainerLabel(),'-d','--name',container,
       '-p','127.0.0.1::5432','-e','POSTGRES_PASSWORD=fire',
       '-e','POSTGRES_USER=fire','-e','POSTGRES_DB=fire','postgres:16-alpine']);
     assert.equal(started.status,0,started.stderr);

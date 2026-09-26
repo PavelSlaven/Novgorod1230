@@ -28,6 +28,7 @@ import {
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
 
@@ -45,7 +46,7 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
   });
   if (dockerReady) {
     const started = docker([
-      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase1a',
       '-e', 'POSTGRES_DB=phase1a', 'postgres:16-alpine'
     ]);

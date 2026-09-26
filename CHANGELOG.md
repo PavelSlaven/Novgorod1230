@@ -4,6 +4,9 @@
 
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- feat(knowledge-source): lexical-only normative RAG; status/priority_tier from CONTRACT_INDEX; `reference` + `reference_results`; independent norm/reference search; drop semantic CLI/readiness fields; CONTRACT_INDEX §5 label align to `ACTIVE SPECIALIZATION` (owner acceptance pending) (#144, PR #150) LW-008 updated
+- docs(governance): решения владельца 2026-09-26 — PC §9.1 (наличие решается при первом прибытии; typed gap только для вещей по authority-записи; опознавательный текст вещей не от LLM), WR §21.1 (утверждает старшая модель на высоком reasoning; путь и commit; правка снимает утверждение); HOW_WE_WORK и CURRENT_SPRINT по ним; LW-029 уточнён (#149) LW-042 added
+- fix(test): тестовый `docker run` несёт метку pid владельца (`testContainerLabel()`); контейнеры убитых прогонов удаляет следующий Docker-тест; страж #142 требует метку (#147, PR #148)
 - docs(process): обзор HOW_WE_WORK; замысел материализуемого мира (PC §9.1); правила об источниках истины (WR §2), скриптах и имеющихся знаниях (WR §19), утверждении данных (WR §21.1), регрессии плейтеста (WR §22), отчёте gameplay run (WR §24.1 из PR #98) и честности проверок (WR §24.2); поле уровня качества в CR; context dump на ветке этапа; исправлены неверные факты о `legacy/src` (#143) LW-026…LW-039 added
 - fix(test): PostgreSQL-тесты удаляют контейнер вместе с anonymous volume (`docker rm -fv`, GS §26); страж в `test:tools` (#142)
 - feat(spatial): M2c — authoring профилей расширения G4 и основа atomic generation/traversal (#98)

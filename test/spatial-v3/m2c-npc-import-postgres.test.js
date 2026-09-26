@@ -7,6 +7,7 @@ import { compileGeneratedNpcBindings } from '@rus/materialization';
 import { binding, bundle, environment } from '../../packages/materialization/test/fixtures/approved-procedural-npc.js';
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 120000 });
 const base = 'data/world-catalogs/novgorod/';
@@ -23,7 +24,7 @@ test('approved NPC dataset imports through P12 and actual PG reader closures fee
   const name = `m2c-npc-import-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
-  assert.equal(docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=npc', '-e', 'POSTGRES_USER=npc', '-e', 'POSTGRES_DB=npc', 'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 80; attempt += 1) {
     if (docker(['exec', name, 'pg_isready', '-U', 'npc']).status === 0) break;

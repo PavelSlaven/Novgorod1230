@@ -20,6 +20,7 @@ import { createOrdinaryMaterializationFirstEntryProvisioner,
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { loadTargetFiniteFirstEntryProfile } from '../../apps/game-server/src/internal/target-runtime-profiles.js';
 import { targetFiniteProfileCatalogFixture } from './target-finite-profile-fixture.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-enablement.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from
@@ -64,7 +65,7 @@ test('PostgreSQL natural first-entry preserves finite stock, exact G5 identity a
   const container = `m2c-natural-entry-${process.pid}`;
   let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', container]); });
-  const start = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+  const start = docker(['run', ...testContainerLabel(), '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',
     '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
   assert.equal(start.status, 0, start.stderr);

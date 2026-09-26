@@ -14,13 +14,6 @@ const generatedRoot = resolve(root, 'generated/knowledge-source');
 
 function sha(value) { return createHash('sha256').update(value).digest('hex'); }
 
-function activeBaselineGapCount(policy, manifest) {
-  const activeDocumentIds = new Set(manifest.documents.filter((document) => document.status === 'active').map((document) => document.document_id));
-  return policy.documents.filter((document) => (
-    activeDocumentIds.has(document.document_id) && document.semantic_coverage_disposition === 'baseline_gap'
-  )).length;
-}
-
 test('repository retrieval policy covers every registered document and pins current corpus', async () => {
   const manifestBytes = await readFile(resolve(sourceRoot, 'corpus-manifest.json'));
   const manifest = validateCorpusManifest(JSON.parse(manifestBytes.toString('utf8')));
@@ -30,7 +23,7 @@ test('repository retrieval policy covers every registered document and pins curr
   assert.ok(policy.control_queries.length >= 5);
 });
 
-test('repository policy registers proposed classification documents without changing their corpus status', async () => {
+test('repository policy registers proposed classification policy; references stay non-active per CONTRACT_INDEX', async () => {
   const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
   const policy = validateRetrievalPolicy(JSON.parse(await readFile(resolve(sourceRoot, 'retrieval-policy.json'), 'utf8')), manifest);
   const proposedIds = [
@@ -39,7 +32,7 @@ test('repository policy registers proposed classification documents without chan
   ];
   assert.deepEqual(
     manifest.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.status),
-    ['proposed', 'proposed']
+    ['proposed', 'reference']
   );
   assert.deepEqual(
     policy.documents.filter((document) => proposedIds.includes(document.document_id)).map((document) => document.document_id),
@@ -68,22 +61,24 @@ test('repository registers active spatial v3 specializations and excludes deprec
     manifest.documents.filter((document) => deprecatedV2Ids.includes(document.document_id)).map((document) => document.status),
     ['deprecated', 'deprecated']
   );
-  assert.deepEqual(policy.default_statuses, ['active']);
+  assert.deepEqual(policy.default_statuses, ['active', 'reference']);
   assert.equal(policy.documents.filter((document) => activeV3Ids.includes(document.document_id)).length, activeV3Ids.length);
   const indexDocument = manifest.documents.find((document) => document.document_id === 'contract-index');
   const indexMetadata = policy.documents.find((document) => document.document_id === 'contract-index');
   assert.equal(indexDocument?.status, 'active');
   assert.equal(indexMetadata?.document_type, 'navigation');
-  assert.equal(indexMetadata?.priority_tier, 'navigation');
+  assert.equal(Object.hasOwn(indexMetadata ?? {}, 'priority_tier'), false);
+  assert.equal(indexDocument?.priority_tier, 'navigation');
   assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('contract-index')));
 
   const reader = createKnowledgeRagReader({
     storage: createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot }),
-    allowedStatuses: ['active', 'deprecated']
+    allowedStatuses: ['active', 'reference', 'deprecated']
   });
   const defaultResult = await reader.searchKnowledge({ query: 'finite party-generated G5' });
   assert.ok(defaultResult.results.some((result) => activeV3Ids.includes(result.document_id)));
   assert.ok(defaultResult.results.every((result) => !deprecatedV2Ids.includes(result.document_id)));
+  assert.ok(defaultResult.results.every((result) => result.status === 'active' || result.status === 'proposed'));
 
   const deprecatedResult = await reader.searchKnowledge({ query: 'migration rollback G0 G4', statuses: ['deprecated'] });
   assert.ok(deprecatedResult.results.length > 0);
@@ -106,7 +101,8 @@ test('repository registers the audited spatial architecture standard as an activ
     status: 'active'
   });
   assert.equal(metadata?.document_type, 'target_normative');
-  assert.equal(metadata?.priority_tier, 'highest_materialization_normative');
+  assert.equal(Object.hasOwn(metadata ?? {}, 'priority_tier'), false);
+  assert.equal(document?.priority_tier, 'technical_contract');
   assert.ok(policy.control_queries.some((item) => item.expected_document_ids.includes('spatial-architecture-standard-g0-g6')));
 });
 
@@ -126,12 +122,26 @@ test('repository exposes the accepted Temporal World amendment through active-on
   assert.ok(result.results.some((item) => item.document_id === document.document_id));
 });
 
-test('repository RAG exposes explicit baseline semantic gaps and no unacknowledged blocker', async () => {
+test('repository RAG readiness is ready for lexical-only coverage', async () => {
   const storage = createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot });
   const status = await createKnowledgeRagReader({ storage }).getReadinessStatus();
-  const manifest = validateCorpusManifest(JSON.parse(await readFile(resolve(sourceRoot, 'corpus-manifest.json'), 'utf8')));
-  const policy = validateRetrievalPolicy(JSON.parse(await readFile(resolve(sourceRoot, 'retrieval-policy.json'), 'utf8')), manifest);
-  assert.equal(status.status, 'degraded');
-  assert.equal(status.semantic_coverage_blocker_document_ids.length, 0);
-  assert.equal(status.semantic_coverage_gap_document_ids.length, activeBaselineGapCount(policy, manifest));
+  assert.equal(status.status, 'ready');
+  assert.equal(Object.hasOwn(status, 'semantic_coverage_gap_document_ids'), false);
+  assert.equal(Object.hasOwn(status, 'semantic_coverage_blocker_document_ids'), false);
+});
+
+test('repository reference_results surface npc-generation-profiles and interface-ux', async () => {
+  const reader = createKnowledgeRagReader({
+    storage: createFileSystemKnowledgeSourceStorage({ sourceRoot, generatedRoot })
+  });
+  const npc = await reader.searchKnowledge({ query: 'генерация NPC' });
+  assert.ok(
+    npc.reference_results.some((item) => item.document_id === 'npc-generation-profiles'),
+    `expected npc-generation-profiles in reference_results; got ${npc.reference_results.map((item) => item.document_id).join(',')}`
+  );
+  const ux = await reader.searchKnowledge({ query: 'интерфейс игрока' });
+  assert.ok(
+    ux.reference_results.some((item) => item.document_id === 'interface-ux'),
+    `expected interface-ux in reference_results; got ${ux.reference_results.map((item) => item.document_id).join(',')}`
+  );
 });

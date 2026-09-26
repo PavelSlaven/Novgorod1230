@@ -8,6 +8,7 @@ import test from 'node:test';
 import pg from 'pg';
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { buildTransactionalImportSql } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8',
   timeout: 45_000 });
@@ -23,7 +24,7 @@ test('P12 imports an approved G6 acoustic baseline and the reader returns its ex
     await rm(temp, { recursive: true, force: true });
     docker(['rm', '-fv', name]);
   });
-  assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name,
     '-e', 'POSTGRES_PASSWORD=m2c', '-e', 'POSTGRES_USER=m2c',
     '-e', 'POSTGRES_DB=m2c', 'postgres:16-alpine']).status, 0);
   let ready = false;

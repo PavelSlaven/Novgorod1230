@@ -22,6 +22,7 @@ import {
   createPostgresOrdinaryMaterializationAtomicCommitter,
   createPostgresOrdinaryMaterializationPhase6Factory
 } from '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-phase-6-commit.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-enablement.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
@@ -171,7 +172,7 @@ async function postgresFixture(t) {
     if (pool) await pool.end();
     docker(['rm', '-fv', container]);
   });
-  const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=ordinary', '-e', 'POSTGRES_USER=ordinary',
     '-e', 'POSTGRES_DB=ordinary', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);

@@ -2,19 +2,68 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "rus.knowledge_rag_manifest.v1",
   "type": "object",
-  "required": ["schema_version", "generation_mode", "corpus_root", "corpus_manifest_sha256", "corpus_hash", "source_snapshot_sha256", "source_document_count", "chunk_count", "model", "dimensions", "index_sha256"],
+  "required": [
+    "schema_version",
+    "generation_mode",
+    "corpus_root",
+    "corpus_manifest_sha256",
+    "corpus_hash",
+    "lexical_index",
+    "lexical_index_sha256",
+    "registered_document_count",
+    "source_document_count",
+    "lexical_document_count",
+    "coverage"
+  ],
   "properties": {
-    "schema_version": { "const": "rus.knowledge_rag_manifest.v1" },
-    "generation_mode": { "const": "corpus_rechunk_with_approved_embedding_snapshot" },
-    "corpus_root": { "const": "data/knowledge-source/corpus/DOCUMENTS" },
-    "corpus_manifest_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "corpus_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "source_snapshot_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "source_document_count": { "type": "integer", "minimum": 1 },
-    "chunk_count": { "type": "integer", "minimum": 1 },
-    "model": { "type": "string", "minLength": 1 },
-    "dimensions": { "type": "integer", "minimum": 1 },
-    "index_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+    "schema_version": {
+      "const": "rus.knowledge_rag_manifest.v1"
+    },
+    "generation_mode": {
+      "const": "deterministic_lexical_coverage"
+    },
+    "corpus_root": {
+      "const": "data/knowledge-source/corpus/DOCUMENTS"
+    },
+    "corpus_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "corpus_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "lexical_index": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lexical_index_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "registered_document_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source_document_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "active_document_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "lexical_document_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "lexical_chunk_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "coverage": {
+      "type": "array"
+    }
   },
   "additionalProperties": true
 }

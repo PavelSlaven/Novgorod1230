@@ -8,6 +8,7 @@ import { materializeSpatialV3GeneratedScene } from '@rus/materialization/spatial
 import { addAuthoredStartSpatialV3Batches } from '../../packages/new-game/src/stages/stage-24-party-db-write-plan/code/authored-start-spatial-v3.js';
 import { addBatch } from '../../packages/new-game/src/stages/stage-24-party-db-write-plan/code/write-plan-batches.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const json = async (path) => JSON.parse(await readFile(path, 'utf8'));
 const manifestPath = 'data/world-catalogs/novgorod/m2c-acoustic-import-manifest.json';
@@ -79,7 +80,7 @@ test('Stage24 canonical batches persist full approved scene in PostgreSQL withou
   const name = `m2c-canonical-start-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
-  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_USER=test', '-e', 'POSTGRES_PASSWORD=test', '-e', 'POSTGRES_DB=test', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   for (let attempt = 0; attempt < 60; attempt += 1) {

@@ -7,6 +7,7 @@ import pg from 'pg';
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
 import { assertLocalMovementEligibilityPostgres } from './local-movement-eligibility-postgres-acceptance.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 120_000 });
 const candidateDir = resolve('data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1');
@@ -56,7 +57,7 @@ test('M2c candidate imports under full DDL and preserves approved topology readb
   assert.equal(validation.ok, true, JSON.stringify(validation.errors));
 
   const started = docker([
-    'run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=m2c', '-e', 'POSTGRES_USER=m2c', '-e', 'POSTGRES_DB=m2c', 'postgres:16-alpine'
   ]);
   assert.equal(started.status, 0, started.stderr);

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import pg from 'pg';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 
@@ -12,7 +13,7 @@ test('035 preserves topology and permits nonportal conditions while requiring po
   const name = `nonportal-availability-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
-  const started = docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
+  const started = docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name,
     '-e', 'POSTGRES_PASSWORD=availability', '-e', 'POSTGRES_USER=availability',
     '-e', 'POSTGRES_DB=availability', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);

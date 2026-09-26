@@ -5,6 +5,7 @@ import pg from 'pg';
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from
@@ -125,7 +126,7 @@ for (const conditionRef of [condition, null]) test(
   const name = `m2c-site-traversal-${conditionRef ? 'condition' : 'no-condition'}-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
-  assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name,
     '-e', 'POSTGRES_PASSWORD=site', '-e', 'POSTGRES_USER=site', '-e', 'POSTGRES_DB=site',
     'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 60; attempt += 1) {

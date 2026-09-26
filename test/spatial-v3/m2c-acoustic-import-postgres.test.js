@@ -9,6 +9,7 @@ import { canonicalDigest } from '../../packages/contracts/src/spatial-v3/control
 import { materializeSpatialV3GeneratedScene } from '../../packages/materialization/src/spatial-v3-generated-scene.js';
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const manifestPath = 'data/world-catalogs/novgorod/m2c-acoustic-import-manifest.json';
 const basePath = 'data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/import-manifest.json';
@@ -47,7 +48,7 @@ test('approved generated25 and canonical46 acoustic bundle imports exact pins th
   const container = `m2c-acoustic-import-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', container]); });
-  const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=m2c', '-e', 'POSTGRES_USER=m2c', '-e', 'POSTGRES_DB=m2c', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   let ready = false;

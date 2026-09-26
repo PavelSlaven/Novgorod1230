@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
 import { applySpatialV3WorldMigration, buildSpatialV3MigrationInventory, readV2WorldSource } from '../../tools/spatial-v3/p24-migration.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const port = 57100 + (process.pid % 400); const name = `p24-world-${process.pid}`;
@@ -64,7 +65,7 @@ function canonicalWorldRows(source) {
 
 test('P24 world migration applies canonical G0–G5, semantic grid, route and template chain in isolated PostgreSQL', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
-  t.after(() => docker(['rm', '-fv', name])); assert.equal(docker(['run', '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p24', '-e', 'POSTGRES_USER=p24', '-e', 'POSTGRES_DB=p24', 'postgres:16-alpine']).status, 0);
+  t.after(() => docker(['rm', '-fv', name])); assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', `${port}:5432`, '-e', 'POSTGRES_PASSWORD=p24', '-e', 'POSTGRES_USER=p24', '-e', 'POSTGRES_DB=p24', 'postgres:16-alpine']).status, 0);
   const pool = new pg.Pool({ host: '127.0.0.1', port, user: 'p24', password: 'p24', database: 'p24' }); t.after(() => pool.end());
   for (let i = 0; i < 50; i += 1) { try { await pool.query('SELECT 1'); break; } catch { await new Promise((resolve) => setTimeout(resolve, 200)); if (i === 49) throw new Error('postgres unavailable'); } }
   for (let i = 1; i <= 17; i += 1) await pool.query(await readFile(`infra/world-base/schema/${String(i).padStart(2, '0')}.sql`, 'utf8'));

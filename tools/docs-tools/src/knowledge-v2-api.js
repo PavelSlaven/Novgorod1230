@@ -1,8 +1,13 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import { CANONICAL_DEFAULT_STATUSES } from '../../../packages/knowledge-source/src/domain/retrieval-policy.js';
 import { buildKnowledgeSourceOutputsV2 } from './knowledge-materializer-v2.js';
 import { readKnowledgeSourceInventory } from './knowledge-source.js';
+import {
+  diffCorpusStatusesAgainstIndex,
+  loadContractIndexCorpusStatuses
+} from './contract-index-corpus-status.js';
 
 const SOURCE_ROOT = 'data/knowledge-source';
 const GENERATED_ROOT = 'generated/knowledge-source';
@@ -20,12 +25,9 @@ export async function buildKnowledgeGraphFromSnapshotV2({ root = '.' } = {}) {
 
 export async function buildRagIndexFromSnapshotV2({ root = '.' } = {}) {
   const outputs = await buildKnowledgeSourceOutputsV2({ root });
-  const indexText = outputs.get(`${GENERATED_ROOT}/rag/index.json`);
   const lexicalText = outputs.get(`${GENERATED_ROOT}/rag/lexical-index.json`);
   const manifestText = outputs.get(`${GENERATED_ROOT}/rag/manifest.json`);
   return Object.freeze({
-    index: JSON.parse(indexText),
-    index_text: indexText,
     lexical_index: JSON.parse(lexicalText),
     lexical_index_text: lexicalText,
     manifest: JSON.parse(manifestText)
@@ -84,6 +86,41 @@ export async function verifyKnowledgeSourceMigrationV2({ root = '.' } = {}) {
         hashParity = false;
         errors.push(`${record.document_id}: available legacy source differs`);
       }
+    }
+  }
+
+  const corpusHasIndex = (manifest.documents ?? []).some((record) => record.file_name === 'CONTRACT_INDEX.md');
+  if (corpusHasIndex) {
+    try {
+      const statusByFile = await loadContractIndexCorpusStatuses({ root: projectRoot });
+      errors.push(...diffCorpusStatusesAgainstIndex(manifest.documents ?? [], statusByFile));
+    } catch (error) {
+      errors.push(`CONTRACT_INDEX status load failed: ${error.message}`);
+    }
+  }
+
+  const policyBytes = await readFile(join(projectRoot, SOURCE_ROOT, 'retrieval-policy.json')).catch((error) => {
+    errors.push(`retrieval policy missing: ${error.message}`);
+    return null;
+  });
+  if (policyBytes) {
+    try {
+      const policy = JSON.parse(policyBytes.toString('utf8'));
+      const defaults = Array.isArray(policy.default_statuses) ? policy.default_statuses : [];
+      const expectedDefaults = [...CANONICAL_DEFAULT_STATUSES];
+      if (defaults.length !== expectedDefaults.length || expectedDefaults.some((status, index) => defaults[index] !== status)) {
+        errors.push(`retrieval policy default_statuses must be ${JSON.stringify(expectedDefaults)} (got ${JSON.stringify(defaults)}); run knowledge:repin`);
+      }
+      for (const item of policy.documents ?? []) {
+        if (item && Object.hasOwn(item, 'priority_tier')) {
+          errors.push(`${item.document_id ?? '<unknown>'}: retrieval policy must not declare priority_tier; ranking reads corpus-manifest`);
+        }
+      }
+      if (policy.baseline_manifest_sha256 !== sha256(manifestBytes)) {
+        errors.push('retrieval policy baseline_manifest_sha256 does not match corpus-manifest; run knowledge:repin');
+      }
+    } catch (error) {
+      errors.push(`retrieval policy: ${error.message}`);
     }
   }
 

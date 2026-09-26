@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
+import { testContainerLabel } from '../../../test/helpers/test-containers.js';
 import { createSpatialV3LocalSceneRuntime } from
   '../src/runtime/spatial-v3-local-scene-runtime.js';
 import { recheckS1LocalMovement } from
@@ -17,7 +18,7 @@ test('committed canonical scene edges move arrival→focus→departure with stal
     const name = `m2c-local-${randomUUID().slice(0, 12)}`;
     let db;
     t.after(async () => { await db?.end(); docker(['rm', '-fv', name]); });
-    assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
+    assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name,
       '-e', 'POSTGRES_PASSWORD=local', '-e', 'POSTGRES_USER=local',
       '-e', 'POSTGRES_DB=local', 'postgres:16-alpine']).status, 0);
     let ready = false;

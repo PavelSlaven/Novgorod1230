@@ -50,8 +50,8 @@ test('root migration summaries delegate mutable knowledge counts and evidence', 
   assert.equal(graph.source_document_count, activeDocumentCount);
   assert.equal(rag.source_document_count, corpus.documents.length);
   assert.equal(rag.active_document_count, activeDocumentCount);
-  assert.equal(graph.semantic_document_count + graph.structural_only_document_count, activeDocumentCount);
-  assert.equal(rag.semantic_document_count + rag.lexical_only_document_count, corpus.documents.length);
+  assert.equal(graph.structural_only_document_count, activeDocumentCount);
+  assert.equal(rag.lexical_document_count, corpus.documents.length);
 
   const reportNames = (await readdir(resolve(root, 'docs/migration/reports'))).filter(
     (name) => name.startsWith('KNOWLEDGE_SOURCE') && name.endsWith('.md') && name !== 'KNOWLEDGE_SOURCE_CRITIC_REPORT.md'

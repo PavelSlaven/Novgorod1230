@@ -8,6 +8,7 @@ import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write
 import { createSpatialV3PartyRepository } from '../../packages/party-store/src/spatial-v3-repository.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const ref = (entity_id) => ({ entity_id, authoring_version: '1' });
@@ -104,7 +105,7 @@ test('expansion P16 preserves normalized state, replay, concurrent CAS and rollb
   const name = `m2c-expansion-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
-  assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name,
     '-e', 'POSTGRES_PASSWORD=p16', '-e', 'POSTGRES_USER=p16', '-e', 'POSTGRES_DB=p16',
     'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 60; attempt += 1) {

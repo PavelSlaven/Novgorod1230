@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { buildApprovedTemporalImportSql } from '../../tools/temporal-v4/import-approved-data.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const name = `temporal-approved-${process.pid}`;
 const docker = (args, input) => spawnSync('docker', args, {
@@ -18,6 +19,7 @@ test('approved Temporal data imports atomically and idempotently in isolated Pos
   t.after(() => docker(['rm', '-fv', name]));
   const started = docker([
     'run',
+    ...testContainerLabel(),
     '-d',
     '--name',
     name,

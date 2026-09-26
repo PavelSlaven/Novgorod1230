@@ -9,6 +9,7 @@ import { prepareGeneratedNpcFirstEntry } from '../../apps/game-server/src/infras
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const ref = (entity_id) => ({ entity_id, authoring_version: '1' });
 const row = (target_table, id, record) => ({ target_table, id, record: { party_id: 'p', ...record } });
@@ -153,7 +154,7 @@ test('generated NPC rows commit atomically and reload without reroll in PostgreS
   const name = `m2c-npc-entry-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
-  assert.equal(docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=npc', '-e', 'POSTGRES_USER=npc', '-e', 'POSTGRES_DB=npc',
     'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 60; attempt += 1) {

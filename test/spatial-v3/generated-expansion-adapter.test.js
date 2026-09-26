@@ -13,6 +13,7 @@ import { createSpatialV3ExpansionRuntime } from '../../apps/game-server/src/runt
 import { SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF } from '../../apps/game-server/src/runtime/spatial-v3-current-visible-context.js';
 import { projectSpatialV3ProposedVisiblePackage } from '../../apps/game-server/src/runtime/spatial-v3-proposed-visible-context.js';
 import { approvedNaturalPerceptionFixture } from '../../apps/game-server/test/g4-natural-perception-fixture.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const hash = 'a'.repeat(64);
 const profile = { id: 'profile', version: 1, world_revision_id: 'world', status: 'approved', canonical_digest: hash };
@@ -95,7 +96,7 @@ for (const terminalOrdinal of [1, 0]) test(`generated adapter terminal=${termina
   currentClosure.continuation_length_candidates[0].terminal_ordinal = terminalOrdinal;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', name]); });
-  assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name, '-e', 'POSTGRES_PASSWORD=test',
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name, '-e', 'POSTGRES_PASSWORD=test',
     '-e', 'POSTGRES_USER=test', '-e', 'POSTGRES_DB=test', 'postgres:16-alpine']).status, 0);
   for (let attempt = 0; attempt < 60; attempt += 1) {
     if (docker(['exec', name, 'pg_isready', '-U', 'test']).status === 0) break;

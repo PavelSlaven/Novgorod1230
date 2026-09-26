@@ -45,6 +45,7 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world,
   installLowerDvinaTraceV6World, lowerDvinaTraceV6World } from
   '../fixtures/lower-dvina-trace-v5-world-fixture.js';
@@ -65,7 +66,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     docker(['rm', '-fv', name]);
   });
   const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=phase2',
     '-e', 'POSTGRES_DB=pr17_phase2',
@@ -660,7 +661,7 @@ test('active A1 partial authored result survives reload, retry and reuse',
       docker(['rm', '-fv', name]);
     });
     const started = docker([
-      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=a1',
       '-e', 'POSTGRES_DB=pr17_a1', 'postgres:16-alpine'
     ]);

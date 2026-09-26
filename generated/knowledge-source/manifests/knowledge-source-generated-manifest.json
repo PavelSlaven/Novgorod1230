@@ -5,23 +5,23 @@
   "files": [
     {
       "path": "generated/knowledge-source/graph/GRAPH_REPORT.md",
-      "sha256": "c2fefd8b466285b6ba440e0ccc755f7194fd9b1a0a4021f88b13e1fb6ee91c20",
-      "bytes": 489
+      "sha256": "a2709d2f6f3b87b570bc71247e668619a92a8c05e03e0dc22ef97035db5ecf23",
+      "bytes": 367
     },
     {
       "path": "generated/knowledge-source/graph/graph.html",
-      "sha256": "67d25d52f6bed450c29d6b9ec57a867297a4ab7b2f35b3cc614f611269af21a8",
-      "bytes": 233
+      "sha256": "5854339c16ad758444b5afc3b6debd574d93dcaca39e840eeaaaa9234a9653d2",
+      "bytes": 219
     },
     {
       "path": "generated/knowledge-source/graph/graph.json",
-      "sha256": "bf69fa645fab92ff46be1716f0164fcfc614dfffdd1f1ccba583f9f3a04ffb62",
-      "bytes": 957762
+      "sha256": "7bf39050ca098da0969adde962193583b0a200a6353a4bfd21400fd754b2712e",
+      "bytes": 7421
     },
     {
       "path": "generated/knowledge-source/graph/manifest.json",
-      "sha256": "c67c76233fda8b58802aa4eb736ce19c689904173a9b07006ea0e03fac04856b",
-      "bytes": 820
+      "sha256": "743f12223defdb2da46957fd531c06b3b675d11929dd0593e862444caf934179",
+      "bytes": 591
     },
     {
       "path": "generated/knowledge-source/manifests/inventory.json",
@@ -29,19 +29,14 @@
       "bytes": 9212
     },
     {
-      "path": "generated/knowledge-source/rag/index.json",
-      "sha256": "90b5ced51daf4b5b3d2d1c502e8f23df62ef8fcb0213eeece5badaab2bfffcc0",
-      "bytes": 1002175
-    },
-    {
       "path": "generated/knowledge-source/rag/lexical-index.json",
-      "sha256": "3068165e46658d864e22fdfe647d57231003d03b105110d5e5a5ca34807b1ac7",
-      "bytes": 3317728
+      "sha256": "6ad56af22868dbf9dc2d12c8a5f6678a62b049e0b43dff11963eecc3025e0bb5",
+      "bytes": 3399081
     },
     {
       "path": "generated/knowledge-source/rag/manifest.json",
-      "sha256": "b91b0fa7959716f7f6c0c4f5539b3dc4f404a7badf2ec07f5cf079b41407bcf9",
-      "bytes": 11854
+      "sha256": "fed75b29032a8d4ef8134889a01d41f8bf766995758a7e9acb9e1dde314d57f5",
+      "bytes": 7543
     }
   ]
 }

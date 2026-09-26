@@ -18,6 +18,7 @@ import { recheckS1LocalMovement } from
 import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys, spatialSemanticRows } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-atomic-write-plan.js';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 import { admitSpatialSemanticRemainder, prepareSpatialSemanticRemainder } from
   '@rus/materialization/internal/lower-dvina-trace-s1';
 
@@ -46,7 +47,7 @@ test('S1 P16 schema stores envelope capacity and resolution without reservations
     if (pool) await pool.end();
     docker(['rm', '-fv', container]);
   });
-  const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
     'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
@@ -144,7 +145,7 @@ test('S1 P16 commit reloads one resolution and stale last-slot plan cannot commi
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const name = `${container}-commit`; let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
-  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
     'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
@@ -196,7 +197,7 @@ test('S1 combined P16 maps concurrent last-slot loss to typed conflict', async (
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   const name = `${container}-combined`; let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
-  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
     'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
@@ -523,7 +524,7 @@ async function startP16Postgres(t, suffix) {
   const name = `${container}-${suffix}`;
   let pool;
   t.after(async () => { if (pool) await pool.end(); docker(['rm', '-fv', name]); });
-  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
     'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);

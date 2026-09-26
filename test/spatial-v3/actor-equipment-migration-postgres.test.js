@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const container = `actor-equipment-${randomUUID().slice(0, 12)}`;
 const docker = (args, input, timeout = 60_000) => spawnSync('docker', args, { input, encoding: 'utf8', timeout });
@@ -11,7 +12,7 @@ test('party migration 020 preserves rows and permits equipped NPC or player hold
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   t.after(() => docker(['rm', '-fv', container]));
   assert.equal(docker([
-    'run', '-d', '--name', container,
+    'run', ...testContainerLabel(), '-d', '--name', container,
     '-e', 'POSTGRES_PASSWORD=equipment', '-e', 'POSTGRES_USER=equipment',
     '-e', 'POSTGRES_DB=party', 'postgres:16-alpine'
   ]).status, 0);

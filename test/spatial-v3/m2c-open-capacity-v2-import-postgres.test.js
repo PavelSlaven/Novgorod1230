@@ -7,6 +7,7 @@ import { planApprovedActorDestinationTransition } from '@rus/movement-routes';
 import { createSpatialV3WorldBaseReader } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-world-base-reader.js';
 import { promoteM2cOpenCapacity } from '../../scripts/promote-m2c-open-capacity-v2.mjs';
 import { buildTransactionalImportSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const manifestPath = 'data/world-catalogs/novgorod/m2c-open-capacity-v2-import-manifest.json';
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 120_000 });
@@ -19,7 +20,7 @@ test('approved M2c open capacity successor imports through P12 without overwriti
   const container = `m2c-capacity-import-${process.pid}`;
   let pool;
   t.after(async () => { await pool?.end(); docker(['rm', '-fv', container]); });
-  const started = docker(['run', '-d', '--name', container, '-p', '127.0.0.1::5432',
+  const started = docker(['run', ...testContainerLabel(), '-d', '--name', container, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=m2c', '-e', 'POSTGRES_USER=m2c', '-e', 'POSTGRES_DB=m2c', 'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
   let ready = false;

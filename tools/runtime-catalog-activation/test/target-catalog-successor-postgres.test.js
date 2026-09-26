@@ -21,6 +21,7 @@ import { runActorBaseAttributesImport } from '../../../scripts/run-actor-base-at
 import { runActorBaseAttributesRuntimeActivation } from
   '../../../scripts/run-actor-base-attributes-runtime-activation.mjs';
 import { runForwardMigration } from '../src/forward-migration.js';
+import { testContainerLabel } from '../../../test/helpers/test-containers.js';
 import { ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION, ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION,
   runPartyRuntimeCatalogMigration, runWorldRuntimeCatalogMigration } from '../src/forward-migrations.js';
 import { prepareSpatialV3TargetItemCatalog, buildSpatialV3TargetItemImport } from
@@ -54,7 +55,7 @@ test('target item and actor successors preserve v6 parties through real PostgreS
       await Promise.all([pool?.end(), importer?.end(), activator?.end()]);
       docker(['rm', '-fv', name]);
     });
-    assert.equal(docker(['run', '-d', '-p', '127.0.0.1::5432', '--name', name,
+    assert.equal(docker(['run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', name,
       '-e', 'POSTGRES_PASSWORD=test', '-e', 'POSTGRES_USER=postgres',
       '-e', 'POSTGRES_DB=pr17_target_successor_test', 'postgres:16-alpine']).status, 0);
     for (let attempt = 0; attempt < 60; attempt += 1) {

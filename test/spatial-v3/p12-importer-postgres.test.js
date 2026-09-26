@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import { buildStagedDryRunSql, validateAuthoringBundle } from '../../tools/spatial-v3/p12-authoring-importer.mjs';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 45_000 });
 const name = `p12-import-${process.pid}`;
@@ -21,7 +22,7 @@ test('P12 runs FK-derived staged import/readback only in isolated PostgreSQL and
   assert.equal((await validateAuthoringBundle({ root: process.cwd(), manifestPath: manifestFile })).errors.length, 0);
   const staged = await buildStagedDryRunSql({ root: process.cwd(), manifestPath: manifestFile }); assert.match(staged, /BEGIN;[\s\S]*imported_rows[\s\S]*ROLLBACK;/);
   t.after(() => docker(['rm', '-fv', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p12_local', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p12_local', '-e', 'POSTGRES_USER=p12', '-e', 'POSTGRES_DB=p12', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let i = 0; i < 40; i += 1) {
     await new Promise((done) => setTimeout(done, 350));

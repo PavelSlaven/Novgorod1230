@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { RUNTIME_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/migrations.js';
 import { SPATIAL_V3_TARGET_MIGRATIONS } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 45_000 });
 const name = `p13-party-${process.pid}`;
@@ -17,7 +18,7 @@ test('P13 applies 001→002 idempotently and enforces the v3 spatial foundation'
     return;
   }
   t.after(() => docker(['rm', '-fv', name]));
-  assert.equal(docker(['run', '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p13_local', '-e', 'POSTGRES_USER=p13', '-e', 'POSTGRES_DB=p13', 'postgres:16-alpine']).status, 0);
+  assert.equal(docker(['run', ...testContainerLabel(), '-d', '--name', name, '-e', 'POSTGRES_PASSWORD=p13_local', '-e', 'POSTGRES_USER=p13', '-e', 'POSTGRES_DB=p13', 'postgres:16-alpine']).status, 0);
   let ready = false;
   for (let i = 0; i < 40; i += 1) { await new Promise((done) => setTimeout(done, 350)); if (docker(['exec', name, 'pg_isready', '-U', 'p13', '-d', 'p13']).status === 0) { await new Promise((done) => setTimeout(done, 500)); if (docker(['exec', name, 'pg_isready', '-U', 'p13', '-d', 'p13']).status === 0) { ready = true; break; } } }
   assert.equal(ready, true);

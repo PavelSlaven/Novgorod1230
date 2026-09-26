@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import {
   createFileSystemKnowledgeSourceStorage,
@@ -33,14 +33,16 @@ async function fixture({ text = '# Alpha\n\nCanonical text.\nSecond line.\n' } =
       file_name: 'alpha.md',
       sha256: sha256(text),
       bytes: Buffer.byteLength(text),
-      status: 'active'
+      status: 'active',
+      priority_tier: 'technical_contract'
     }, {
       document_id: 'beta',
       canonical_path: 'corpus/DOCUMENTS/beta.md',
       file_name: 'beta.md',
       sha256: sha256(proposedText),
       bytes: Buffer.byteLength(proposedText),
-      status: 'proposed'
+      status: 'proposed',
+      priority_tier: 'profile_normative'
     }]
   }));
   await writeFile(join(root, 'source-aliases.json'), JSON.stringify({
@@ -48,7 +50,6 @@ async function fixture({ text = '# Alpha\n\nCanonical text.\nSecond line.\n' } =
     aliases: { 'alpha.md': 'alpha', 'beta.md': 'beta' }
   }));
   const graphText = JSON.stringify({ nodes: [] });
-  const ragText = JSON.stringify({ schema_version: 'rus.rag_index.v1', chunks: [] });
   const lexicalText = JSON.stringify({ schema_version: 'rus.lexical_index.v1', chunks: [] });
   await writeFile(join(generated, 'graph', 'graph.json'), graphText);
   await writeFile(join(generated, 'graph', 'manifest.json'), JSON.stringify({
@@ -56,16 +57,13 @@ async function fixture({ text = '# Alpha\n\nCanonical text.\nSecond line.\n' } =
     corpus_manifest_sha256: sha256(await readFile(join(root, 'corpus-manifest.json'))),
     graph_sha256: sha256(graphText)
   }));
-  await writeFile(join(generated, 'rag', 'index.json'), ragText);
   await writeFile(join(generated, 'rag', 'lexical-index.json'), lexicalText);
   await writeFile(join(generated, 'rag', 'manifest.json'), JSON.stringify({
     schema_version: 'rus.knowledge_rag_manifest.v1',
     corpus_manifest_sha256: sha256(await readFile(join(root, 'corpus-manifest.json'))),
-    generation_mode: 'approved_semantic_snapshot_plus_deterministic_lexical_coverage',
-    semantic_index_sha256: sha256(ragText),
+    generation_mode: 'deterministic_lexical_coverage',
     lexical_index_sha256: sha256(lexicalText),
-    semantic_document_count: 1,
-    lexical_only_document_count: 0
+    lexical_document_count: 2
   }));
   return { root, corpus, generated, text };
 }
@@ -143,18 +141,17 @@ test('generated status detects stale corpus binding', async () => {
   assert.equal(stale.rag.status, 'stale');
 });
 
-test('v2 generated status rejects invalid, missing and corrupt semantic or lexical artifacts', async () => {
+test('v2 generated status rejects invalid, missing and corrupt lexical artifacts', async () => {
   const cases = [
-    ['semantic digest mismatch', async (fx) => writeFile(join(fx.generated, 'rag', 'index.json'), '{"changed":true}'), 'stale', 'semantic_artifact_hash_mismatch'],
-    ['semantic artifact missing', async (fx) => rename(join(fx.generated, 'rag', 'index.json'), join(fx.generated, 'rag', 'index.json.missing')), 'missing', 'semantic_artifact_missing'],
     ['lexical digest mismatch', async (fx) => writeFile(join(fx.generated, 'rag', 'lexical-index.json'), '{"changed":true}'), 'stale', 'lexical_artifact_hash_mismatch'],
     ['lexical artifact missing', async (fx) => rename(join(fx.generated, 'rag', 'lexical-index.json'), join(fx.generated, 'rag', 'lexical-index.json.missing')), 'missing', 'lexical_artifact_missing'],
     ['invalid digest contract', async (fx) => {
       const path = join(fx.generated, 'rag', 'manifest.json');
       const manifest = JSON.parse(await readFile(path, 'utf8'));
-      delete manifest.semantic_index_sha256;
+      delete manifest.lexical_index_sha256;
       await writeFile(path, JSON.stringify(manifest));
-    }, 'stale', 'manifest_contract_invalid']
+    }, 'stale', 'manifest_contract_invalid'],
+    ['current on lexical fixture', async () => {}, 'current', undefined]
   ];
 
   for (const [label, corrupt, status, reason] of cases) {
@@ -165,6 +162,17 @@ test('v2 generated status rejects invalid, missing and corrupt semantic or lexic
     });
     const result = await reader.getGeneratedIndexStatus({});
     assert.equal(result.rag.status, status, label);
-    assert.equal(result.rag.reason, reason, label);
+    if (reason) assert.equal(result.rag.reason, reason, label);
   }
+
+  const repoRoot = resolve(import.meta.dirname, '../../..');
+  const repoReader = createKnowledgeSourceReader({
+    storage: createFileSystemKnowledgeSourceStorage({
+      sourceRoot: join(repoRoot, 'data/knowledge-source'),
+      generatedRoot: join(repoRoot, 'generated/knowledge-source')
+    })
+  });
+  const repoStatus = await repoReader.getGeneratedIndexStatus({});
+  assert.equal(repoStatus.rag.status, 'current');
+  assert.equal(repoStatus.graph.status, 'current');
 });

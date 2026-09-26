@@ -8,6 +8,7 @@ import {
   runSpatialV3TargetMigrations
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { createTemporalPresentationPostgresStore } from '../../apps/game-server/src/infrastructure/postgres/temporal-presentation-store.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const containerName = `temporal-world-${process.pid}`;
@@ -64,7 +65,7 @@ test('Temporal World target persistence is exact, party-isolated, replay-safe an
     return;
   }
   assert.equal(docker([
-    'run', '-d', '-p', '127.0.0.1::5432', '--name', containerName,
+    'run', ...testContainerLabel(), '-d', '-p', '127.0.0.1::5432', '--name', containerName,
     '-e', 'POSTGRES_PASSWORD=temporal',
     '-e', 'POSTGRES_USER=temporal',
     '-e', 'POSTGRES_DB=temporal',

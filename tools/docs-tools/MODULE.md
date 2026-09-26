@@ -7,7 +7,7 @@
 ## Владеет
 
 - проверкой source ranges document graph;
-- построением RAG index через injected embedding port;
+- построением lexical RAG index (deterministic chunks, без embedding);
 - генерацией `MODULE_INDEX.md` и schema reference;
 - generated manifest и проверкой reproducibility;
 - canonical-path, seed-source и dated-artifact policy checks.

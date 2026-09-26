@@ -29,7 +29,8 @@ export function createLowerDvinaTracePhase2DurableNarrator({
   const store = presentationStore
     ?? createTemporalPresentationPostgresStore({ pool: partyPool });
   return Object.freeze({
-    async run(request) {
+    // N1: forward options (authoritative) through durable claim → inner service.
+    async run(request, options = {}) {
       const turnBudget = request.turnBudget ?? null;
       const narrationRequest = { ...request };
       delete narrationRequest.turnBudget;
@@ -78,7 +79,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       }
       let flow;
       try {
-        flow = await narrationService.run(narrationRequest);
+        flow = await narrationService.run(narrationRequest, options);
       } catch (error) {
         await store.finalizePresentationAttempt({
           ...identity,

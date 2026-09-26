@@ -248,5 +248,11 @@ export function rejectIntentParaphraseWorldKnowledgeLeak(plan, slice) {
 }
 
 function normalizeLeakText(value) {
-  return String(value ?? '').toLowerCase().replace(/\s+/gu, ' ').trim();
+  // N5: ignore punctuation and ё/е so lightly disguised WK copy still fails.
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/ё/gu, 'е')
+    .replace(/[^\p{L}\p{N}\s]+/gu, ' ')
+    .replace(/\s+/gu, ' ')
+    .trim();
 }

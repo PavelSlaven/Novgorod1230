@@ -246,7 +246,7 @@
 
 ### LW-049 — pre-#152 app/domain test failures: frozen-role, generic-owners, temporal-world
 - **Где.** `apps/game-server/test/frozen-role-requests.test.js`, `apps/game-server/test/lower-dvina-trace-turn-step-generic-owners.test.js`, `packages/contracts/test/temporal-world-v1.test.js` (`Factual visible envelope:` / line ~94).
-- **Как жить.** Падают уже на `73a69dda` (до #152) и на `c40c18b3`; diff части A (#153) их не трогает. `test:apps` baseline 2 fail; `test:domain` baseline 1 fail. Не чинить попутно в WK-задачах; owner — turn/NPC routine / frozen role / temporal contracts (отдельный CR).
+- **Как жить.** Падают уже на `73a69dda` (до #152) и на `c40c18b3`; diff части A (#153) их не трогает. `test:apps` baseline 2 fail; `test:domain` baseline 1 fail. Не чинить попутно в WK-задачах; owner — turn/NPC routine / frozen role / temporal contracts (отдельный CR). В REVIEW-042 перегенерированы 3 player-conversation fixture (`intent-paraphrase`, `format-repair`, `verbatim-allowed-refs`) под F5 prompt; тест frozen теперь собирает все несовпадения за один прогон — остальные narration auditor mismatches остаются baseline LW-049.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) (зафиксировано при A-04 / N-6)
 
 ### LW-050 — NPC knowledge_snapshot / memory/rumors вне WK date-gate #153
@@ -259,7 +259,7 @@
 - **Как жить.** Не закрывать «narration owner» без issue; отдельный CR владельца рассказчика, если opening должен получать WK / started historical events.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
-### LW-052 — turn-step intent_paraphrase / player_utterance может впитать WK в речь
-- **Где.** Turn-step `player_utterance` + `intent_paraphrase` (`@rus/turn` / lower-dvina turn-step planner). Player conversation interpreter закрыт в #153 REVIEW-041 (F5); тот же класс утечки в turn-step speech существовал раньше.
-- **Как жить.** Не считать turn-step speech WK-safe без отдельного CR: prompt/guard как у player conversation (`never add an unstated claim`). Не чинить попутно в #153 Part B/C.
+### LW-052 — intent_paraphrase может впитать WK в речь (остаточный риск)
+- **Где.** Player conversation `intent_paraphrase` (`rejectIntentParaphraseWorldKnowledgeLeak`) и turn-step `player_utterance` (`@rus/turn` / lower-dvina turn-step planner).
+- **Как жить.** Player conversation guard (#153 REVIEW-042 N5) ловит точную/пунктуационно-изменённую и ё/е копию `runtime_text`, но **не закрыт**: частичный пересказ, синонимы и перестановка слов проходят. Найденная точная утечка сейчас рвёт ход (`PLAYER_CONVERSATION_WK_UTTERANCE_LEAK` → model failed), а не уходит в format repair. Turn-step speech по-прежнему без guard — отдельный CR. Не объявлять «WK utterance leak закрыт».
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)

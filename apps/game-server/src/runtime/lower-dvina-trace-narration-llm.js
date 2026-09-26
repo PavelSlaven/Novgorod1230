@@ -101,11 +101,9 @@ export function createLowerDvinaTraceNarrationService({ roleRunner,
   };
   const service = createNarrationService(ports);
   return Object.freeze({
-    // F1/F3/F7: authoritative via options/ALS, not smuggled through request body.
+    // F1/F3/F7/N7: authoritative only via options/ALS, never request body.
     run(request, options = {}) {
-      const authoritative = options.worldKnowledgeAuthoritative
-        ?? request?.world_knowledge_authoritative
-        ?? null;
+      const authoritative = options.worldKnowledgeAuthoritative ?? null;
       const {
         world_knowledge_authoritative: _auth,
         ...cleanRequest
@@ -194,10 +192,22 @@ async function resolveNarrationGrounded(roleId, request, store, worldKnowledgeGr
       });
       if (store) store.pack = grounded?.world_knowledge ?? null;
       return grounded;
-    } catch {
-      // §73: WK optional — degrade without WK rather than reject post-commit narration.
-      if (store) store.pack = null;
-      return request;
+    } catch (error) {
+      // §73/N3: degrade only on WK/turn-WK errors; leave trace; rethrow program bugs.
+      const code = typeof error?.code === 'string' ? error.code : '';
+      if (code.startsWith('WORLD_KNOWLEDGE_')
+          || code.startsWith('TURN_WORLD_KNOWLEDGE_')) {
+        if (store) {
+          store.pack = null;
+          store.degradation = Object.freeze({
+            code,
+            purpose: 'narration',
+            request_id: request?.request_id ?? request?.request?.request_id ?? null
+          });
+        }
+        return request;
+      }
+      throw error;
     }
   }
   if (store?.pack != null) {

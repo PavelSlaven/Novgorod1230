@@ -4162,21 +4162,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-ceramic-water",
-      "claim_ref": "claim:population-ceramic-water",
-      "claim_digest": "3b956909ba36bca13198f6b20dcee90a606d727d6bc9e456cdd530f63742cfd4",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/woodwork-ceramics.json#claim:population-ceramic-water",
-      "auditor_ref": "/root/claim_verifier",
-      "independence_basis": "Current reviewer is distinct from earlier extraction. This verdict requires an exact candidate-verdict row, not claim review_status or an inferred shard match.",
-      "evidence_checked": [
-        "evidence:cci-ceramics-glass"
-      ],
-      "review_ref": "verification/verification-woodwork-ceramics.md#source-access",
-      "verdict": "APPROVE",
-      "limits": "W01–08: музейная коллекция X–XV вв., не инструмент/транспорт в сцене; C01–07: универсальная качественная физика, без рецепта, доступности, параметра или результата. Review mapping: candidate=C03."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-population-ceramic-porosity",
       "claim_ref": "claim:population-ceramic-porosity",
       "claim_digest": "f1dfc7e7f7955e06e1aaf75870f015cdb9ccb16c02a4f9a841e42467607aa406",
@@ -4282,186 +4267,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-load-deformation",
-      "claim_ref": "claim:population-physics-load-deformation",
-      "claim_digest": "793943271a6a26db49caa6b3ad469cd89e54761a78f42a1adfa27020732bc94a",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-load-deformation",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-elasticity"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-01; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-01."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-elastic-recovery",
-      "claim_ref": "claim:population-physics-elastic-recovery",
-      "claim_digest": "a57a813bbeb7feba217a2038be42f1f8e64d8a582d88cce8ddbb2af97d570720",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-elastic-recovery",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-elasticity"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-02; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-02."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-stress-failure",
-      "claim_ref": "claim:population-physics-stress-failure",
-      "claim_digest": "d3bf5fabcca4220af9658532c68b9db7d30844957a769b49b8c95391a70a1760",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-stress-failure",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-elasticity"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-03; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-03."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-section-response",
-      "claim_ref": "claim:population-physics-section-response",
-      "claim_digest": "94746b6a5eaebf06315e370d162d2f46b90c50a6b1e1dc7c0b48c08ee4e5ffad",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-section-response",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-elasticity"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-04; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-04."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-point-pressure",
-      "claim_ref": "claim:population-physics-point-pressure",
-      "claim_digest": "06c5e6176c6cbbaf96304e16659df5d6755c902a9f22e81cc359bdefd57e2ade",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-point-pressure",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-pressure"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-05; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-05."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-static-friction",
-      "claim_ref": "claim:population-physics-static-friction",
-      "claim_digest": "828c0424910ab9da0109d04ed0f13f5fd5b5c7c086d3de58fa2d531d7e2195bf",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-static-friction",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-friction"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-06; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-06."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-sliding-friction",
-      "claim_ref": "claim:population-physics-sliding-friction",
-      "claim_digest": "4ab99bc694a8a00992e2dc019a2503e6b5bd7b40207028de72642d5340b115bc",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-sliding-friction",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-friction"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-07; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-07."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-immersion-buoyancy",
-      "claim_ref": "claim:population-physics-immersion-buoyancy",
-      "claim_digest": "01209d38d68d029080612e16e08b4038f333ac564498349ed7e52fbe9b16532e",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-immersion-buoyancy",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-buoyancy"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-08; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-08."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-floating-shape",
-      "claim_ref": "claim:population-physics-floating-shape",
-      "claim_digest": "9267641456f27be8333a1dbfce10e2db701fe6f6a3a2cfe95ed5a7819699efaf",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-floating-shape",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-buoyancy"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-09; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-09."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-melting-vaporization-energy",
-      "claim_ref": "claim:population-physics-melting-vaporization-energy",
-      "claim_digest": "228092ecac021882eec0880de5189a2b436ddb2ea31ed67753ce6b6b583ff470",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-melting-vaporization-energy",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-phase"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-10; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-10."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-freezing-condensation-energy",
-      "claim_ref": "claim:population-physics-freezing-condensation-energy",
-      "claim_digest": "6c7abc7724f271d1aaad6b3f273f927346c5235f78e3d12ea369f22027a6d631",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-freezing-condensation-energy",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-phase"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-11; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-11."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-conduction-gradient",
-      "claim_ref": "claim:population-physics-conduction-gradient",
-      "claim_digest": "4da456793a53a9e704c402a35a108387dc6ee997db39a68512e2bdf1b24e9971",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-conduction-gradient",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-conduction"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-12; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-12."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-population-physics-evaporation-below-boiling",
       "claim_ref": "claim:population-physics-evaporation-below-boiling",
       "claim_digest": "a8827b19677acb96993c7fc266206af41ac8b4d27e808e4260e645df514e8d6f",
@@ -4474,21 +4279,6 @@
       "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
       "verdict": "APPROVE",
       "limits": "candidate GPI-13; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-13."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-physics-evaporation-humidity",
-      "claim_ref": "claim:population-physics-evaporation-humidity",
-      "claim_digest": "14a49ab36e396382279a9f3ef0bc825ef6ff834c011fafd4c0f8a94d546a7f78",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/physical-interaction.json#claim:population-physics-evaporation-humidity",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-physics-evaporation"
-      ],
-      "review_ref": "research/verification-population-general-physical-interaction.md#candidate-by-candidate-verdict",
-      "verdict": "APPROVE",
-      "limits": "candidate GPI-14; universal qualitative physics only; retain material, geometry, loading and stated phase/fluid conditions; no numeric threshold, item, tool, or outcome. Review mapping: candidate=GPI-14."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -4519,21 +4309,6 @@
       "review_ref": "verification/verification-resin-properties.md#post-normalization-check-488",
       "verdict": "APPROVE",
       "limits": "candidate RP-02; severely oxidized examined pitch coatings only; no age, climate threshold, probability, or present-object state. Review mapping: candidate=RP-02."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-material-wood-moisture",
-      "claim_ref": "claim:population-material-wood-moisture",
-      "claim_digest": "499a62c78f55b01fc1cdc9b6c96d83d9f0fd782950aee1af28a39acb27afa54c",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/material-response.json#claim:population-material-wood-moisture",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-material-wood-moisture"
-      ],
-      "review_ref": "research/verification-population-causal-materials.md#final-source-path-correction",
-      "verdict": "APPROVE",
-      "limits": "candidate CM-01; wood-air equilibrium moisture exchange; species, temperature, exposure and initial-state conditions retained. Review mapping: candidate=CM-01."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -4582,21 +4357,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-material-wood-combustion",
-      "claim_ref": "claim:population-material-wood-combustion",
-      "claim_digest": "74552f26e1ab39a2500acf041b70ec4bad83b6a5aba20c5c3a7910cd6060d522",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/material-response.json#claim:population-material-wood-combustion",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-material-wood-fire"
-      ],
-      "review_ref": "research/verification-population-causal-materials.md#result",
-      "verdict": "APPROVE",
-      "limits": "candidate CM-16; wood only; sufficient heat and oxygen, with moisture/shape/airflow conditions; no ignition or outcome guarantee. Review mapping: candidate=CM-16."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-population-material-wood-pyrolysis",
       "claim_ref": "claim:population-material-wood-pyrolysis",
       "claim_digest": "5eaa43f119b608ff08e68f5ee24decc6346b55e9e5a3ecbc13c8ea5a213e7f3d",
@@ -4609,51 +4369,6 @@
       "review_ref": "research/verification-population-causal-materials.md#result",
       "verdict": "APPROVE",
       "limits": "candidate CM-17; limited oxygen wood heating only; no yield or temperature. Review mapping: candidate=CM-17."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-material-wood-loading",
-      "claim_ref": "claim:population-material-wood-loading",
-      "claim_digest": "787778b164b283a8e2e20265282f74917d278369c380c63f94319f60d2d21286",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/material-response.json#claim:population-material-wood-loading",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-material-wood-mechanics"
-      ],
-      "review_ref": "research/verification-population-causal-materials.md#result",
-      "verdict": "APPROVE",
-      "limits": "candidate CM-18; grain, moisture, density, geometry and loading mode retained; no joint/peg extrapolation. Review mapping: candidate=CM-18."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-material-iron-coating",
-      "claim_ref": "claim:population-material-iron-coating",
-      "claim_digest": "fb3ff1682be1db81612b67890aca8bb51840d411d4119bdd27a56d7ff067273e",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/material-response.json#claim:population-material-iron-coating",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-material-iron-corrosion"
-      ],
-      "review_ref": "research/verification-population-causal-materials.md#second-pass--replacement-causal-claims",
-      "verdict": "APPROVE",
-      "limits": "candidate CM-R09; continuous coating excluding oxygen and moisture only; damaged/absent coating no protection. Review mapping: candidate=CM-R09."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-material-iron-rust",
-      "claim_ref": "claim:population-material-iron-rust",
-      "claim_digest": "e16d17cb53118f627c1ce616cf84c907f4db86203ac2a85d57eee3d9f71e3b7a",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/material-response.json#claim:population-material-iron-rust",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-material-iron-corrosion"
-      ],
-      "review_ref": "research/verification-population-causal-materials.md#second-pass--replacement-causal-claims",
-      "verdict": "APPROVE",
-      "limits": "candidate CM-R10; oxygen/moisture exposure only; no rate, age, product, or instant strength loss. Review mapping: candidate=CM-R10."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -4702,21 +4417,6 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-material-clay-plasticity",
-      "claim_ref": "claim:population-material-clay-plasticity",
-      "claim_digest": "11fc4420a60051f487f10afaa4a6d62c14c912a316eb0b64b9134c71ba668276",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/material-response.json#claim:population-material-clay-plasticity",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-material-pottery"
-      ],
-      "review_ref": "research/verification-population-causal-materials.md#second-pass--replacement-causal-claims",
-      "verdict": "APPROVE",
-      "limits": "candidate CM-R14; adsorbed water between clay particles; arbitrary soil not potter clay. Review mapping: candidate=CM-R14."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:production-population-material-clay-drying",
       "claim_ref": "claim:population-material-clay-drying",
       "claim_digest": "933cfda1a43a155e85414858de16741b3d33d6b39ea6a3462b93644e6fd9c2ab",
@@ -4729,21 +4429,6 @@
       "review_ref": "research/verification-population-causal-materials.md#second-pass--replacement-causal-claims",
       "verdict": "APPROVE",
       "limits": "candidate CM-R15; slow even drying reduces risk only; no intact-object guarantee. Review mapping: candidate=CM-R15."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-material-clay-steam",
-      "claim_ref": "claim:population-material-clay-steam",
-      "claim_digest": "83407b7ce955e72b054950c3a94ac05c9becc4befebd9ac4d21347c79c279d4d",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/material-response.json#claim:population-material-clay-steam",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-material-pottery"
-      ],
-      "review_ref": "research/verification-population-causal-materials.md#second-pass--replacement-causal-claims",
-      "verdict": "APPROVE",
-      "limits": "candidate CM-R16; rapid heating with remaining pore water; water/thickness/heating history required. Review mapping: candidate=CM-R16."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -4849,21 +4534,6 @@
       "review_ref": "research/verification-population-joining-metals.md#вердикты",
       "verdict": "APPROVE",
       "limits": "candidate JM-metal-fatigue; retain report’s material-specific composition, moisture, load, temperature or assembly condition; no exact regime or success guarantee. Review mapping: candidate=JM-metal-fatigue."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:production-population-joining-wax-soften",
-      "claim_ref": "claim:population-joining-wax-soften",
-      "claim_digest": "68d78d9021a5980de256329fabc8f963546c177d8ed2326076937e9770ce0439",
-      "candidate_ref": "git:782a9b4162dbc2358ad947ea0b929beaa081ace6:data/world-catalogs/novgorod/world-knowledge/production-v1/joining-metals.json#claim:population-joining-wax-soften",
-      "auditor_ref": "/root/foundation_verifier",
-      "independence_basis": "Reconciled current RU/EN, applicability, qualifiers, anchors with independent report; no fresh primary-source read.",
-      "evidence_checked": [
-        "evidence:population-joining-temperature"
-      ],
-      "review_ref": "research/verification-population-joining-metals.md#вердикты",
-      "verdict": "APPROVE",
-      "limits": "candidate JM-wax-soften; retain report’s material-specific composition, moisture, load, temperature or assembly condition; no exact regime or success guarantee. Review mapping: candidate=JM-wax-soften."
     },
     {
       "schema": "world_knowledge_verification_v1",

@@ -65,19 +65,8 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": [
-            "nov_role_church_scribe",
-            "nov_role_deacon",
-            "nov_role_monk",
-            "nov_role_ponomar",
-            "nov_role_priest"
-          ]
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [

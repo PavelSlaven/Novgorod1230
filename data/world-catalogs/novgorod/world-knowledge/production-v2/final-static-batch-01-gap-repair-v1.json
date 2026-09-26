@@ -718,70 +718,70 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-living-birch-limits",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Не расширять рану и не снимать кору кольцом снижает добавочный вред; наблюдение не доказывает выздоровление.",
+      "runtime_text": "Не расширять рану и не снимать кору кольцом снижает добавочный вред; наблюдение не доказывает выздоровление.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-living-birch-limits",
       "locale": "en",
-      "runtime_text": "INFERENCE: Avoiding wound extension and leaving bark around the stem reduces avoidable additional harm; observation after damage does not establish recovery.",
+      "runtime_text": "Avoiding wound extension and leaving bark around the stem reduces avoidable additional harm; observation after damage does not establish recovery.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-willow-selection",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Прямизну, ветвление, толщину и гибкость ивового прута наблюдают на самом пруте; признаки не доказывают породу или прочность.",
+      "runtime_text": "Прямизну, ветвление, толщину и гибкость ивового прута наблюдают на самом пруте; признаки не доказывают породу или прочность.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-willow-selection",
       "locale": "en",
-      "runtime_text": "INFERENCE: A willow shoot's straightness, branching, thickness and flexible response can be observed on that shoot; these cues do not prove species or defect-free strength.",
+      "runtime_text": "A willow shoot's straightness, branching, thickness and flexible response can be observed on that shoot; these cues do not prove species or defect-free strength.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-willow-preparation",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Свежая ива усыхает при сушке; сухие прутья могут нуждаться в сортировке и вымачивании; толстым нужна большая подготовка.",
+      "runtime_text": "Свежая ива усыхает при сушке; сухие прутья могут нуждаться в сортировке и вымачивании; толстым нужна большая подготовка.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-willow-preparation",
       "locale": "en",
-      "runtime_text": "INFERENCE: Fresh willow can shrink as it dries; dried willow may need sorting and soaking to regain flexibility; thicker rods can need more preparation.",
+      "runtime_text": "Fresh willow can shrink as it dries; dried willow may need sorting and soaking to regain flexibility; thicker rods can need more preparation.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-willow-limits",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Пробный изгиб, трещины, сухость и ветвление направляют осторожное обращение, но не гарантируют годное плетение.",
+      "runtime_text": "Пробный изгиб, трещины, сухость и ветвление направляют осторожное обращение, но не гарантируют годное плетение.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-willow-limits",
       "locale": "en",
-      "runtime_text": "INFERENCE: A trial bend and observed cracks, dryness or branching can guide cautious handling but do not guarantee a usable woven result.",
+      "runtime_text": "A trial bend and observed cracks, dryness or branching can guide cautious handling but do not guarantee a usable woven result.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-textile-cues",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Лён, шерсть и шёлк дают разные наблюдаемые признаки, но гладкость или блеск сами не доказывают шёлк.",
+      "runtime_text": "Лён, шерсть и шёлк дают разные наблюдаемые признаки, но гладкость или блеск сами не доказывают шёлк.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-textile-cues",
       "locale": "en",
-      "runtime_text": "INFERENCE: Linen, wool and silk have differing observable handling tendencies, but smoothness or lustre alone does not identify silk.",
+      "runtime_text": "Linen, wool and silk have differing observable handling tendencies, but smoothness or lustre alone does not identify silk.",
       "search_aliases": []
     },
     {
@@ -802,56 +802,56 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-textile-wet-limit",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Шёлк может слабеть мокрым, а шерсть сваливаться; это не доказывает состав, происхождение, цену или статус ткани.",
+      "runtime_text": "Шёлк может слабеть мокрым, а шерсть сваливаться; это не доказывает состав, происхождение, цену или статус ткани.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-textile-wet-limit",
       "locale": "en",
-      "runtime_text": "INFERENCE: Silk can weaken when wet and wool can felt; such material tendencies do not prove fibre identity, origin, price or status of an observed cloth.",
+      "runtime_text": "Silk can weaken when wet and wool can felt; such material tendencies do not prove fibre identity, origin, price or status of an observed cloth.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-wet-ground-goal",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Отвести поверхностную воду и ограничить постоянный контакт древесины с мокрым грунтом — причинные цели, не обязательная конструкция основания.",
+      "runtime_text": "Отвести поверхностную воду и ограничить постоянный контакт древесины с мокрым грунтом — причинные цели, не обязательная конструкция основания.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-wet-ground-goal",
       "locale": "en",
-      "runtime_text": "INFERENCE: Directing surface water away from a structure and limiting persistent wood-to-wet-ground contact are causal moisture-control goals, not a prescribed foundation design.",
+      "runtime_text": "Directing surface water away from a structure and limiting persistent wood-to-wet-ground contact are causal moisture-control goals, not a prescribed foundation design.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-wet-ground-observation",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Стоячая вода, сток и мягкий либо подвижный грунт — наблюдаемые причины перепроверить опору и водоотвод.",
+      "runtime_text": "Стоячая вода, сток и мягкий либо подвижный грунт — наблюдаемые причины перепроверить опору и водоотвод.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-wet-ground-observation",
       "locale": "en",
-      "runtime_text": "INFERENCE: Standing water, runoff paths and soft or moving ground are observable reasons to reassess local support and drainage conditions.",
+      "runtime_text": "Standing water, runoff paths and soft or moving ground are observable reasons to reassess local support and drainage conditions.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-wet-ground-wood-limit",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Древесина у постоянной сырости сильнее рискует гниением; общий принцип не задаёт глубину, несущую способность или долговечность.",
+      "runtime_text": "Древесина у постоянной сырости сильнее рискует гниением; общий принцип не задаёт глубину, несущую способность или долговечность.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:final-static-b01-wet-ground-wood-limit",
       "locale": "en",
-      "runtime_text": "INFERENCE: Wood kept near persistent ground moisture has greater decay risk; a general moisture principle does not establish safe depth, bearing capacity or longevity.",
+      "runtime_text": "Wood kept near persistent ground moisture has greater decay risk; a general moisture principle does not establish safe depth, bearing capacity or longevity.",
       "search_aliases": []
     }
   ]

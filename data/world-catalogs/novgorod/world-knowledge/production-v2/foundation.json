@@ -2246,7 +2246,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2759,7 +2759,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2789,7 +2789,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2819,7 +2819,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2849,7 +2849,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2879,7 +2879,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2910,7 +2910,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -2940,7 +2940,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3180,7 +3180,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3210,7 +3210,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3240,7 +3240,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3270,7 +3270,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3300,7 +3300,7 @@
         "directness": "direct"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -3324,9 +3324,7 @@
         "semantic_resolution",
         "materialization_support",
         "source_grounded_qa",
-        "npc_decision",
-        "conversation",
-        "narration"
+        "npc_decision"
       ],
       "question_classes": [
         "attention_and_perception",
@@ -3351,9 +3349,7 @@
         "semantic_resolution",
         "materialization_support",
         "source_grounded_qa",
-        "npc_decision",
-        "conversation",
-        "narration"
+        "npc_decision"
       ],
       "question_classes": [
         "group_influence",
@@ -3378,8 +3374,7 @@
         "semantic_resolution",
         "materialization_support",
         "source_grounded_qa",
-        "conversation",
-        "narration"
+        "conversation"
       ],
       "question_classes": [
         "soil_and_rock_processes",
@@ -3463,8 +3458,7 @@
         "materialization_support",
         "source_grounded_qa",
         "npc_decision",
-        "conversation",
-        "narration"
+        "conversation"
       ],
       "question_classes": [
         "physics_chemistry_general",
@@ -3496,8 +3490,7 @@
         "semantic_resolution",
         "materialization_support",
         "npc_decision",
-        "conversation",
-        "narration"
+        "conversation"
       ],
       "question_classes": [
         "material_interaction",
@@ -3619,8 +3612,7 @@
         "materialization_support",
         "source_grounded_qa",
         "npc_decision",
-        "conversation",
-        "narration"
+        "conversation"
       ],
       "question_classes": [
         "physics_chemistry_general",

@@ -85,7 +85,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -145,7 +145,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -198,14 +198,14 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r301-honeydew-ants",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Липкая медвяная роса и повторяющееся движение муравьёв по стеблям — совместимые признаки сосущих насекомых, но не доказательство тлей или вида.",
+      "runtime_text": "Липкая медвяная роса и повторяющееся движение муравьёв по стеблям — совместимые признаки сосущих насекомых, но не доказательство тлей или вида.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r301-honeydew-ants",
       "locale": "en",
-      "runtime_text": "INFERENCE: Sticky honeydew and repeated ant movement on stems are compatible clues for honeydew-producing sap feeders, not proof of aphids or species.",
+      "runtime_text": "Sticky honeydew and repeated ant movement on stems are compatible clues for honeydew-producing sap feeders, not proof of aphids or species.",
       "search_aliases": []
     },
     {

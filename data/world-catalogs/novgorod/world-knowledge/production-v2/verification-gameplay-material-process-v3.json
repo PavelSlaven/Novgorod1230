@@ -3,19 +3,6 @@
   "verifications": [
     {
       "schema": "world_knowledge_verification_v1",
-      "verification_ref": "wk-verification:gameplay-material-process-v3-stored-grain-moisture",
-      "claim_ref": "claim:stored-grain-temperature-gradient-can-migrate-moisture",
-      "claim_digest": "14d5bbef6a72fc0be4a849a4c6b4d5fcd18f3d2da9db80e0ffe222a0dc03de16",
-      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-material-process-v3.json#claim:stored-grain-temperature-gradient-can-migrate-moisture",
-      "auditor_ref": "/root/flora_ecology_research",
-      "independence_basis": "Auditor independently reopened the Purdue source and compared its stated moisture-migration mechanism with the exact normalized claim and RU/EN localization; auditor did not author the candidate commit.",
-      "evidence_checked": ["evidence:gmp3-purdue-moisture-migration"],
-      "review_ref": "verification/gameplay-material-process-v3.md#stored-grain-temperature-gradient-can-migrate-moisture",
-      "verdict": "APPROVE",
-      "limits": "Qualitative stored-grain mechanism only. No grain, store, temperature difference, moisture value, quantity, species, spoilage, time, access, actor observation or outcome is established. Purdue's storage context does not supply a scene fact."
-    },
-    {
-      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:gameplay-material-process-v3-water-class-a-cooling",
       "claim_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame",
       "claim_digest": "503f8ef315af10425b528ddd7aa568aac9ee0e921351e4769d4b5b5e1f597a1d",

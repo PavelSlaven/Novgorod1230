@@ -205,13 +205,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -283,13 +278,8 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "role_bound",
-        "required_facets": [
-          "role_ref"
-        ],
-        "required_values": {
-          "role_ref": "nov_role_craftsman_master"
-        }
+        "class": "domain_internal_only",
+        "required_facets": []
       },
       "hard_exclusion": null,
       "evidence_refs": [
@@ -318,7 +308,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "general_physical",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -418,7 +408,7 @@
         "directness": "inferred"
       },
       "knowledge_access": {
-        "class": "common_cultural",
+        "class": "domain_internal_only",
         "required_facets": []
       },
       "hard_exclusion": null,
@@ -612,28 +602,28 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:streak01-lime-weather",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Свежая известковая работа уязвима к морозу, дождю и быстрому высыханию; это может прервать или ослабить схватывание без предсказания результата.",
+      "runtime_text": "Свежая известковая работа уязвима к морозу, дождю и быстрому высыханию; это может прервать или ослабить схватывание без предсказания результата.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:streak01-lime-weather",
       "locale": "en",
-      "runtime_text": "INFERENCE: Fresh lime work is vulnerable to frost, rain and rapid drying; these exposures can interrupt or weaken setting without predicting a bond outcome.",
+      "runtime_text": "Fresh lime work is vulnerable to frost, rain and rapid drying; these exposures can interrupt or weaken setting without predicting a bond outcome.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:streak01-lime-curing-limits",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Состав, воздействие, защита и время влияют на твердение извести; общий предел не даёт рецепта и не гарантирует прочный результат.",
+      "runtime_text": "Состав, воздействие, защита и время влияют на твердение извести; общий предел не даёт рецепта и не гарантирует прочный результат.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:streak01-lime-curing-limits",
       "locale": "en",
-      "runtime_text": "INFERENCE: Mix, exposure, protection and elapsed time affect lime curing; a general limit supplies neither a recipe nor a guaranteed sound result.",
+      "runtime_text": "Mix, exposure, protection and elapsed time affect lime curing; a general limit supplies neither a recipe nor a guaranteed sound result.",
       "search_aliases": []
     },
     {
@@ -654,14 +644,14 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:streak01-splinter-escalation",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Глубокая, трудная, болезненная, близкая к глазу или воспалённая заноза — граница для обращения за опытной помощью, не диагноз и не исход инфекции.",
+      "runtime_text": "Глубокая, трудная, болезненная, близкая к глазу или воспалённая заноза — граница для обращения за опытной помощью, не диагноз и не исход инфекции.",
       "search_aliases": []
     },
     {
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:streak01-splinter-escalation",
       "locale": "en",
-      "runtime_text": "INFERENCE: A deep, difficult, painful, eye-adjacent or inflamed splinter is an escalation boundary for skilled help, not a diagnosis or infection outcome.",
+      "runtime_text": "A deep, difficult, painful, eye-adjacent or inflamed splinter is an escalation boundary for skilled help, not a diagnosis or infection outcome.",
       "search_aliases": []
     },
     {

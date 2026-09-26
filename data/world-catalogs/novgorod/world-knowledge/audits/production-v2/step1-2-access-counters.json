@@ -1,0 +1,98 @@
+{
+ "v1": {
+  "claims": 1723,
+  "byClass": {
+   "general_physical": 63,
+   "domain_internal_only": 1527,
+   "common_cultural": 118,
+   "role_bound": 15
+  },
+  "internal_share": 0.886,
+  "reach": {
+   "npc_decision": {
+    "no_facets": 144,
+    "nov_role_fisher": 159,
+    "nov_role_trader": 144,
+    "nov_role_boatman": 144,
+    "nov_role_hunter": 144,
+    "nov_role_craftsman_master": 144
+   },
+   "conversation": {
+    "no_facets": 93,
+    "nov_role_fisher": 97,
+    "nov_role_trader": 93,
+    "nov_role_boatman": 93,
+    "nov_role_hunter": 93,
+    "nov_role_craftsman_master": 93
+   },
+   "narration": {
+    "no_facets": 134,
+    "nov_role_fisher": 138,
+    "nov_role_trader": 134,
+    "nov_role_boatman": 134,
+    "nov_role_hunter": 134,
+    "nov_role_craftsman_master": 134
+   }
+  },
+  "criterion_v": {
+   "phys_chem_open_to_conversation": 0,
+   "not_on_keep_list": []
+  },
+  "domains_per_purpose": {
+   "semantic_resolution": 11,
+   "materialization_support": 10,
+   "npc_decision": 8,
+   "narration": 6,
+   "source_grounded_qa": 6,
+   "conversation": 3
+  }
+ },
+ "v2": {
+  "claims": 1723,
+  "byClass": {
+   "general_physical": 254,
+   "domain_internal_only": 916,
+   "common_cultural": 369,
+   "role_bound": 184
+  },
+  "internal_share": 0.532,
+  "reach": {
+   "npc_decision": {
+    "no_facets": 623,
+    "nov_role_fisher": 661,
+    "nov_role_trader": 624,
+    "nov_role_boatman": 638,
+    "nov_role_hunter": 637,
+    "nov_role_craftsman_master": 688
+   },
+   "conversation": {
+    "no_facets": 623,
+    "nov_role_fisher": 661,
+    "nov_role_trader": 624,
+    "nov_role_boatman": 638,
+    "nov_role_hunter": 637,
+    "nov_role_craftsman_master": 688
+   },
+   "narration": {
+    "no_facets": 548,
+    "nov_role_fisher": 563,
+    "nov_role_trader": 549,
+    "nov_role_boatman": 554,
+    "nov_role_hunter": 562,
+    "nov_role_craftsman_master": 563
+   }
+  },
+  "criterion_v": {
+   "phys_chem_open_to_conversation": 64,
+   "not_on_keep_list": []
+  },
+  "domains_per_purpose": {
+   "semantic_resolution": 11,
+   "materialization_support": 10,
+   "npc_decision": 11,
+   "conversation": 9,
+   "narration": 6,
+   "source_grounded_qa": 6
+  }
+ }
+}

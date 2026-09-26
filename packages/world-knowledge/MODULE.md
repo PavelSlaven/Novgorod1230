@@ -24,13 +24,21 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 - caller-provided vector scores и pure flat-vector scan; Core остаётся
   backend-neutral, а active production server требует этот input; vector
   similarity only adds recall candidates and never bypasses applicability;
+- optional caller-provided `rerankScores` (D17): reorder admitted candidates
+  only (between ranking and packing); do not expand recall; production wiring
+  stays behind D21 gate (LW-053);
 - pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing;
 - lexicographic ranking: hard constraints, exact focus, requested predicates,
-  query relevance, context specificity, qualifiers, stable claim reference;
+  query relevance (lexical+vector, or rerank when supplied), context specificity, qualifiers, stable claim reference;
 - relative lexical admission per independent search hint; aggregate lexical
   relevance ranks the admitted candidates without suppressing common topics;
-- `search_hint_hits` on the Core slice: one bool per hint (`strongest > 0` on
-  applicable claims); orchestrator-facing only, not model wire;
+- `search_hint_hits` / `search_hint_relevance` on the Core slice: one bool and
+  one topical score per hint (orchestrator §63 sufficiency; not model wire).
+  Relevance is cosine of the claim against the **joined** search query (not a
+  single hint); claims outside the vector top-k score 0. When D21 rerank
+  applies all-or-nothing, scores are min-max bge over admitted and must not be
+  compared to the provisional Giga-cosine floor (`wk-sufficiency:giga-cosine:v1`,
+  LW-054).
 - actor-safe filtering только по уже переданным caller facets.
   `knowledge_access.required_values` опционально ограничивает значение
   разрешённого facet только для actor-facing purposes (`conversation`,
@@ -52,7 +60,7 @@ LLM calls, filesystem/network/DB, party state, presence/materialization, actor d
 - `candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit|options)`;
   optional `options.{limit,purpose,context}` applies the same `isApplicable` /
   `canAccess` date/access gate as Core before offering concepts to the planner;
-- `createWorldKnowledgeCore(bundle)` → frozen `{ resolveWorldKnowledge(query) }`;
+- `createWorldKnowledgeCore(bundle)` → frozen `{ resolveWorldKnowledge(query, { vectorScores?, rerankScores? }) }`;
 - `createWorldKnowledgeFlatVectorIndex(metadata, bytes,
   { conceptToClaimRefs? })` → frozen `{ search(vector, options) }`; optional
   mapping is snapshotted and collapses concept hits to claim refs before limit.

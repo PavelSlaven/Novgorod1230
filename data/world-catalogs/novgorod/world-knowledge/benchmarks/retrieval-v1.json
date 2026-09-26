@@ -1845,21 +1845,6 @@
         "actor_facets": {
           "role_ref": "nov_role_fisher"
         }
-      },
-      "inapplicable_claim_refs": [
-        "claim:population-bark-bast",
-        "claim:population-bark-pierce"
-      ],
-      "inapplicable_context": {
-        "time": {
-          "year": 1230
-        },
-        "place_refs": [
-          "region_novgorod_land"
-        ],
-        "actor_facets": {
-          "role_ref": "nov_role_boatman"
-        }
       }
     },
     {

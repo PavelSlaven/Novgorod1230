@@ -1,0 +1,28 @@
+{
+  "schema": "world_knowledge_reranker_profile_v1",
+  "reranker_profile_ref": "wk-reranker:bge-v2-m3:v1",
+  "model_id": "BAAI/bge-reranker-v2-m3",
+  "model_revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+  "license": "Apache-2.0",
+  "upstream_url": "https://huggingface.co/BAAI/bge-reranker-v2-m3",
+  "weights_distribution": "not_in_repository",
+  "production_enabled": false,
+  "gate": {
+    "max_p95_ms": 150,
+    "require_retrieval_miss_reduction": true,
+    "require_noise_reduction": true,
+    "benchmark_source": "Novgorod-model-bench/REPORT.md 2026-09-17 T1",
+    "bge_recall_at_10": 0.9795,
+    "bge_mrr": 0.9512,
+    "bge_noise_at_10": 0.8493,
+    "b1_giga_recall_at_10": 0.9825,
+    "b1_giga_mrr": 0.9579,
+    "bge_p95_gpu_ms": 71.6,
+    "bge_p95_cpu_ms": 6523,
+    "decision": "not_enabled",
+    "reason": "D21: B1 Giga cosine is not worse on recall@10/MRR; CPU p95 6523ms exceeds 150ms; owner-server GPU budget not verified (LW-053). Owner-server remeasure + 120-situation audit still pending (REVIEW-046 R5)."
+  },
+  "license_reviewed_at": "2026-09-27",
+  "verified_at": "2026-09-17",
+  "status": "available_not_wired"
+}

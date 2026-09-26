@@ -4,6 +4,7 @@
 
 - data(wk): World Knowledge pack revision production-v2 — D15 access reclassification with strict review, book-sourced claims, in-world law rewrites, 1230 famine claims gated by the event (D19/D22), final WR §21.1 approval of every changed claim, Giga vectors and benchmark; runtime still pins production-v1 until #153 step 7 (#154) LW-060..LW-065 added
 - data(temporal-v4): 1230 famine rule re-issued 14.09.1230–31.12.1231 with book 667380 source (D19/D22, #154)
+- feat(wk): #153 Part C D17/D21 — Core `rerankScores`, gated-off bge pin+provision, SUFFICIENT relevance floor, plan-mode harness in world-catalog-workflow, M16 body-only auth; §49/§63/§74; LW-053/054 (#153, PR #98)
 - fix(wk): #153 REVIEW-044 — createTraceTurnRuntime grounder+telemetry wire (B1/B5); provider-failure degrade §73 (B2); F4 post-commit reload (B3); §15 coverage_profiles text; M2b exchange facets; degradation schema (#153, PR #98)
 - fix(wk): #153 REVIEW-043 — m2 player WK factory+prepare test (A1); export v17 ports factory (A2); production grounder approved slice (A3); degradation telemetry+TypeError rethrow (A4); split purpose-access-b; §15 D15 align (#153, PR #98)
 - fix(wk): #153 REVIEW-042 — durable narrator options (N1); behavioral F4 wire tests; WK catch+trace (N3); F5 punct/ё; frozen collect-all + 3 fixtures; CONTRACT_INDEX §14/67/73/102; LW-049/052 (#153, PR #98) LW-049 updated LW-052 updated

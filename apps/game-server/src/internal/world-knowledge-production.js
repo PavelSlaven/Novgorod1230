@@ -4,21 +4,29 @@ import { createWorldKnowledgeCore,
   createWorldKnowledgeFlatVectorIndex } from '@rus/world-knowledge';
 import { createGigaQueryEncoder } from
   '../infrastructure/embedding/giga-query-encoder.js';
+import { loadRerankerProfile, rerankerProductionEnabled,
+  createBgeRerankerScorePairs, wireRerankerIfEnabled } from
+  '../runtime/world-knowledge-reranker.js';
 
 const BUNDLE_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json';
 const EMBEDDING_PROFILE_PATH = 'data/world-catalogs/novgorod/world-knowledge/embedding-profiles/giga-480m-0826-v1.json';
+const SUFFICIENCY_PROFILE_PATH = 'data/world-catalogs/novgorod/world-knowledge/sufficiency-profiles/giga-cosine-v1.json';
 const VECTOR_METADATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v1/vector-index.json';
 const VECTOR_DATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v1/vectors.f32';
 
 export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
   python = 'python', requireEncoderReady = false,
-  encoderFactory = createGigaQueryEncoder } = {}) {
-  const [bundle, embeddingProfile, vectorMetadata, vectorBytes] =
+  encoderFactory = createGigaQueryEncoder,
+  rerankerModelPath = process.env.WK_RERANKER_MODEL_PATH ?? null } = {}) {
+  const [bundle, embeddingProfile, sufficiencyProfile, vectorMetadata,
+    vectorBytes, rerankerProfile] =
     await Promise.all([
     readJson(resolve(rootDir, BUNDLE_PATH)),
     readJson(resolve(rootDir, EMBEDDING_PROFILE_PATH)),
+    readJson(resolve(rootDir, SUFFICIENCY_PROFILE_PATH)),
     readJson(resolve(rootDir, VECTOR_METADATA_PATH)),
-    readFile(resolve(rootDir, VECTOR_DATA_PATH))
+    readFile(resolve(rootDir, VECTOR_DATA_PATH)),
+    loadRerankerProfile({ rootDir })
   ]);
   if (bundle?.schema !== 'world_knowledge_runtime_bundle_v1'
       || bundle.manifest?.pack_ref !== 'wk-pack:novgorod-1230'
@@ -39,6 +47,13 @@ export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
         !== embeddingProfile.embedding_profile_ref) {
     throw new TypeError('World Knowledge embedding profile is invalid');
   }
+  if (sufficiencyProfile?.schema !== 'world_knowledge_sufficiency_profile_v1'
+      || sufficiencyProfile.sufficiency_profile_ref
+        !== 'wk-sufficiency:giga-cosine:v1'
+      || !Number.isFinite(sufficiencyProfile.min_hint_relevance)
+      || sufficiencyProfile.relevance_source !== 'giga_cosine') {
+    throw new TypeError('World Knowledge sufficiency profile is invalid');
+  }
   if (vectorMetadata?.schema !== 'world_knowledge_vector_index_v1'
       || vectorMetadata.pack_ref !== bundle.manifest.pack_ref
       || vectorMetadata.pack_revision !== bundle.manifest.revision_id
@@ -55,7 +70,25 @@ export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
   const encoder = encoderFactory({
     profilePath: resolve(rootDir, EMBEDDING_PROFILE_PATH), python });
   if (requireEncoderReady) await encoder.ready();
+  // D21 closed (LW-053): profile is loaded, but nothing is provisioned/spawned.
+  // When gate opens, attach scorePairs against a local snapshot only.
+  let reranker = null;
+  if (rerankerProductionEnabled(rerankerProfile)) {
+    if (typeof rerankerModelPath !== 'string' || !rerankerModelPath.trim()) {
+      throw new TypeError(
+        'enabled reranker requires WK_RERANKER_MODEL_PATH local snapshot');
+    }
+    reranker = wireRerankerIfEnabled({
+      profile: rerankerProfile,
+      scorePairs: createBgeRerankerScorePairs({
+        rootDir, python, modelPath: rerankerModelPath
+      })
+    });
+  }
   return freeze({ bundle, embedding_profile: embeddingProfile,
+    sufficiency_profile: sufficiencyProfile,
+    reranker_profile: rerankerProfile,
+    reranker,
     core: createWorldKnowledgeCore(bundle),
     vector_index: createWorldKnowledgeFlatVectorIndex(vectorMetadata,
       vectorBytes, { conceptToClaimRefs: bundle.exact_indexes.concept_to_claim_refs }),

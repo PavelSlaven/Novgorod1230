@@ -194,6 +194,20 @@ test('sufficiency marks partial when a search hint misses admitted claims', () =
     search_hint_hits: [true], verdict: 'supported'
   }), 'SUFFICIENT_KNOWLEDGE');
   assert.equal(groundingSufficiencyOf({
+    facts: [{ claim_ref: 'claim:a' }], hard_constraints: [],
+    coverage: [{ domain: 'materials_substances', status: 'covered' }],
+    search_hint_hits: [true],
+    search_hint_relevance: [0.1],
+    verdict: 'supported'
+  }), 'PARTIAL_KNOWLEDGE');
+  assert.equal(groundingSufficiencyOf({
+    facts: [{ claim_ref: 'claim:a' }], hard_constraints: [],
+    coverage: [{ domain: 'materials_substances', status: 'covered' }],
+    search_hint_hits: [true],
+    search_hint_relevance: [0.35],
+    verdict: 'supported'
+  }), 'SUFFICIENT_KNOWLEDGE');
+  assert.equal(groundingSufficiencyOf({
     facts: [], hard_constraints: [],
     coverage: [{ domain: 'materials_substances', status: 'covered' }],
     search_hint_hits: [false], verdict: 'unresolved'

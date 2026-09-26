@@ -172,9 +172,16 @@ function scopeMatches(scope, context) {
 }
 
 export function compareClaims(a, b, query, exactRefs, lexicalScores,
-  vectorScores = new Map()) {
-  const relevance = (claim) => (lexicalScores.get(claim.claim_ref) ?? 0)
-    + (vectorScores.get(claim.claim_ref) ?? 0);
+  vectorScores = new Map(), rerankScores = null) {
+  // All-or-nothing: when rerankScores is non-null, every admitted claim was
+  // scored; relevance is rerank-only (no hybrid mix of scales).
+  const relevance = (claim) => {
+    if (rerankScores != null) {
+      return rerankScores.get(claim.claim_ref) ?? 0;
+    }
+    return (lexicalScores.get(claim.claim_ref) ?? 0)
+      + (vectorScores.get(claim.claim_ref) ?? 0);
+  };
   return Number(Boolean(b.hard_exclusion?.eligible)) - Number(Boolean(a.hard_exclusion?.eligible))
     || Number(exactRefs.has(b.claim_ref)) - Number(exactRefs.has(a.claim_ref))
     || Number(query.requested_predicates.includes(b.predicate)) - Number(query.requested_predicates.includes(a.predicate))
@@ -184,11 +191,27 @@ export function compareClaims(a, b, query, exactRefs, lexicalScores,
     || a.claim_ref.localeCompare(b.claim_ref);
 }
 
+/** Hybrid lexical/vector norm: divide by max, clamp negatives. Do not min-max —
+ * that changes lex↔vector weight (REVIEW-047 Q1). */
 export function normalizeScores(scores) {
   const maximum = Math.max(0, ...scores.values());
   if (maximum === 0) return new Map();
   return new Map([...scores].map(([ref, score]) => [ref,
     Math.max(0, score) / maximum]));
+}
+
+/** Rerank-only min-max over admitted scores. Preserves negative bge logits. */
+export function normalizeRerankScores(scores) {
+  const entries = [...scores].filter(([, score]) => Number.isFinite(score));
+  if (entries.length === 0) return new Map();
+  const values = entries.map(([, score]) => score);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  if (max === min) {
+    if (max === 0) return new Map();
+    return new Map(entries.map(([ref]) => [ref, 1]));
+  }
+  return new Map(entries.map(([ref, score]) => [ref, (score - min) / (max - min)]));
 }
 
 function specificity(value) { return value.context_scope === 'universal' ? 0 : ['time', 'places', 'actors', 'conditions'].filter((key) => value[key] != null).length; }

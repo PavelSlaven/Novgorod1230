@@ -3708,6 +3708,21 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-physics-floating-shape",
+      "claim_ref": "claim:population-physics-floating-shape",
+      "claim_digest": "af197b759b24404fad2a78dc7e6b6b94d413164afe9ace9fc3b06ac2bba638f4",
+      "candidate_ref": "git:7e5c207cc2c2fe9772b3e9ba67402e7978eaac8f:data/world-catalogs/novgorod/world-knowledge/production-v2/physical-interaction.json#claim:population-physics-floating-shape",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/A-fix",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-physics-buoyancy"
+      ],
+      "review_ref": "verification/verification-production-v2-A-fix.md#A-fix",
+      "verdict": "APPROVE",
+      "limits": "Качественное правило для решений NPC и механики мира о лодках, плотах, поплавках и перегрузе; оно не даёт количественного расчёта и не попадает в речь NPC или текст рассказчика."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-population-physics-freezing-condensation-energy",
       "claim_ref": "claim:population-physics-freezing-condensation-energy",
       "claim_digest": "63b09abe6a52ecc7c76a33dfa9b1d1046fd4524abec85e2d97f979822045701c",

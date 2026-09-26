@@ -10,3 +10,5 @@ Author-side records for the final independent approval (WR §21.1). Not approval
 - `step4-law-rewrites.json` — in-world rewrites of Russkaya Pravda and river-landing claims (text without article numbers or source wording) and their access class.
 - `step3-time-precision.json` — review of the 8 `precision: unknown` claims; 7 narrowed to the catalogue date of their source.
 - `step5-aliases-A1.json`, `step5-aliases-A2.json` — search aliases added for audit `retrieval_miss` needs, with the target claim or concept.
+- `final-approval-verdicts.json` — final independent approval (Claude Opus 5.5, high reasoning) of 853 changed or new claims: 486 APPROVE, 364 REJECT, 3 NEEDS_REVIEW. Rejected changes were undone (existing claims back to their production-v1 state, access never widened; rejected new claims removed). Per-batch reports: `verification/verification-production-v2-*.md`.
+- `final-access-counters.json` — production-v1 vs production-v2 after the approval.

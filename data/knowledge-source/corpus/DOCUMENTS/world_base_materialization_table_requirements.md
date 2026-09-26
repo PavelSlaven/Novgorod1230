@@ -212,7 +212,7 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 | `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |
 | `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |
 | `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |
-| `category_id` | для `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); иначе может дублировать `subject_ref` или быть NULL по DDL CR |
+| `category_id` | заполняется только при `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); при `social_role` / `occupation` поле не заполняется (предмет правила — `subject_ref`) |
 | `presence_probability_ppm` | целое 0…1_000_000 |
 | `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |
 | `allowed_seasons` | закрытый словарь сезонов календаря |

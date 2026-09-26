@@ -199,6 +199,6 @@
 - **Issue.** [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145)
 
 ### LW-042 — ACTIVE-нормы main против PC §9.1 до CR норм M2c
-- **Что.** На ветке PR #98 шаги 1–2 #146 закрыли расхождение норм с PC §9.1 / D1–D10 / D14 (presence §3A, O1/O2b, классовый запрет, D-005/D8, опознавательный текст). На main до merge #98 ACTIVE-корпус ещё старый: D-005, `items_and_property.txt:10`, гайд `npc_generation_profiles.txt:7`, хвост O2a/`turn_step` §20 (строки вроде бывшего 1706 — их целиком меняет шаг 3). `knowledge:query` на main выдаёт старые формулировки.
+- **Что.** На ветке PR #98 шаги 1–2 #146 закрыли расхождение норм с PC §9.1 / D1–D10 / D14 (presence §3A, O1/O2b, классовый запрет, D-005/D8, опознавательный текст). На ветке §20 `turn_step_llm_contract.md` (~:1692) и §25 `npc_autonomous_decision_contract.md` (~:1962) ещё держат классовый запрет до шага 3 #146. На main до merge #98 ACTIVE-корпус ещё старый: D-005, `items_and_property.txt:10`, гайд `npc_generation_profiles.txt:7`, хвост O2a/`turn_step` §20 (строки вроде бывшего 1706 — их целиком меняет шаг 3). `knowledge:query` на main выдаёт старые формулировки.
 - **Как жить.** При конфликте — PC §9.1 и #133; на ветке #98 — корпус после шагов #146. Старые формулировки main не закреплять новыми тестами.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)

@@ -73,7 +73,7 @@ category → template → profile → rule → instance
 
 ### D-005. Базовые NPC создаются кодом
 
-Ключевые и значимые NPC создаются только по authority. Обычного NPC создаёт **код** ([#133 D1, D8](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154); PC §9.1; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 2):
+Ключевые и значимые NPC создаются только по authority. Обычного NPC создаёт **код** ([#133 D1, D8](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154); PC §9.1; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029).
 
 - людей места — при первом прибытии, по сохранённым броскам наличия и лимиту;
 - по запросу игрока: LLM лишь сопоставляет запрос с ролью или занятием из словарей БД (`region_social_roles`, `region_occupations`); код создаёт человека, если бросок по этой категории — «есть» и лимит не выбран; иначе человека здесь нет, и повторный запрос ничего не меняет.
@@ -146,7 +146,7 @@ Materialization, bounded decisions, player semantic steps, NPC decision signals/
 
 ### D-014. Пустой authored candidate set блокирует; ordinary action result отделён
 
-Для authored, significant, hidden и informational materialization отсутствие допустимого варианта создаёт диагностируемый gap и hard block. Запрещены ослабление фильтра, выбор запрещённого варианта и создание временного удобного объекта.
+Для authored, significant, hidden и informational materialization отсутствие допустимого варианта создаёт диагностируемый gap и hard block. Informational здесь — только сведение по authority-записи (§3A.7); обычный документ или письмо informational не являются и этим hard block сами по себе не блокируются. Запрещены ослабление фильтра, выбор запрещённого варианта и создание временного удобного объекта.
 
 Ordinary direct action result не выбирается из authored candidate set и поэтому не превращает его пустоту в fallback. Он допустим только когда действие непосредственно отделяет, изготавливает или конкретизирует обычный доступный материал, проходит code-owned admission и получает persisted exact runtime mechanics snapshot. NPC, места, улики, container contents и вещи по authority-записи (уникальные, квестовые, authored/hidden) этим путём не создаются. Класс вещи (оружие, деньги, документы) сам по себе не запрет: находка — через presence (§3A), изготовление — через A1 (материалы, инструмент, навык, технология) (PC §9.1; D10).
 
@@ -182,7 +182,9 @@ Repair/migration обязана указать причину, прежний и
 
 У экземпляра по одной ссылке на каждый `scope_kind`. Два применимых правила на одной категории с одинаковыми `scope_kind` и регионом — ошибка валидации. Категория без правила на всех уровнях = отсутствует (0 ppm), не ошибка runtime.
 
-Бросок один и сохраняется; переброса нет. Seed: `{ party_id, scope_instance_ref, category_id, rng_algorithm_id: mulberry32_v1 }`; для сезонного правила добавляется номер периода. `rule_id`, `rule_version` и `world_revision_id` в seed не входят. Исход хранится по ключу (партия, экземпляр scope, `category_id` правила) в существующем агрегате ordinary-материализации (`presence_resolutions` / `closed_observation_scopes`). Новая версия правил уже решённую пару не перебрасывает; `rule_id@rule_version` хранится в записи как причинное основание. Если предок уже решён, правила на потомках в этом экземпляре не бросаются.
+Бросок один и сохраняется; переброса нет. Seed: `{ party_id, scope_instance_ref, subject_kind, subject_ref, rng_algorithm_id: mulberry32_v1 }`; для сезонного правила добавляется номер периода. `rule_id`, `rule_version` и `world_revision_id` в seed не входят. Исход хранится по ключу (партия, экземпляр scope, `subject_kind`, `subject_ref` правила) в существующем агрегате ordinary-материализации (`presence_resolutions` / `closed_observation_scopes`). Новая версия правил уже решённую пару не перебрасывает; `rule_id@rule_version` хранится в записи как причинное основание. Если предок уже решён, правила на потомках в этом экземпляре не бросаются.
+
+Для `subject_kind` = `social_role` | `occupation` иерархии `parent_category_id` и выбора подвида по весам нет: бросок решает наличие по `subject_ref`, число — равномерно из `1..count_limit`. Наследование по `parent_category_id` и выбор подкатегории по `region_category_options.weight` (§3A.4) относятся только к `subject_kind=category`.
 
 Обязательное наличие — правило с `presence_probability_ppm = 1_000_000`. Отдельного поля «обязательный минимум» нет. Причины появления (следы, стоянка и т.п.) — отдельные утверждённые правила, не свободный JSONB condition set.
 
@@ -207,8 +209,8 @@ Repair/migration обязана указать причину, прежний и
 
 После исхода «есть» код тем же seed выбирает:
 
-- подкатегорию среди потомков категории правила, у которых нет своего правила, по `region_category_options.weight`; если весов нет — равномерно, и это пробел данных;
-- число: для контейнера — `min_quantity..max_quantity` записи профиля содержимого; для места — равномерно из `1..count_limit`. У природных конечных источников число не бросается.
+- для `subject_kind=category`: подкатегорию среди потомков категории правила, у которых нет своего правила, по `region_category_options.weight`; если весов нет — равномерно, и это пробел данных;
+- число: для контейнера — `min_quantity..max_quantity` записи профиля содержимого; для места при `subject_kind=category` — равномерно из `1..count_limit`; для `social_role` / `occupation` — равномерно из `1..count_limit` без выбора подвида. У природных конечных источников число не бросается.
 
 Подкатегория и число сохраняются с исходом. LLM описывает уже выбранный экземпляр с опорой на WK и может предложить характеристики. Для изготовленного и для названного игроком категорию выбирает LLM, код проверяет.
 
@@ -230,6 +232,7 @@ Repair/migration обязана указать причину, прежний и
 - **Authored** — заранее заданный авторским источником экземпляр или слот.
 - **Significant** — назначено authority-записью. Ценность, редкость и класс вещи никогда не делают её significant и не служат причиной запрета.
 - **Hidden** — уже существует после броска, но не в воспринимаемом слое до навыка/условия.
+- **Informational** — сведение по authority-записи (улика, сюжетное сведение, назначенный informational fact). Обычный документ, письмо, грамота или носитель письма сами по себе informational не являются: это ordinary/authored по наличию и authority, а не класс «информация» (D10).
 - **`authority_required` / typed gap для вещей** — только вещи, назначенные authority-записью: уникальные, квестовые, размещённые или спрятанные авторским источником. Technical/typed gap не выдаётся игроку как физическая невозможность, отсутствие вещи в мире или отказ персонажа (AI §10.1; O2a: `authority_required` не доказывает физическое отсутствие).
 
 Канонический пример изготовления (PC §9.1; D10): можно ли изготовить поддельную грамоту — да, через A1 (материалы, инструмент, навык, технология эпохи); нехватка любого из них — неудача внутри мира, не запрет команды. Опознавательный текст подделки пишет игрок; подлинность и правовые последствия оценивает `@rus/social-law`, физический предмет ведёт `@rus/items-property`.
@@ -257,7 +260,7 @@ Player step planner получает только player-safe working projection
 
 LLM не создаёт runtime G5, key/significant NPC, authored/significant/hidden items или party-state patch. Обычного NPC создаёт код по D-005/D8. Узкий ordinary result из D-011/D-014 становится экземпляром только после code-owned validation и сохранения exact runtime mechanics snapshot. Содержимое контейнера решает код при первом открытии (D3/D9); LLM может описать уже выбранное. Visible factual projection формирует код; narrator читает её только после commit.
 
-O1 — discovery уже существующего через `request_discovery` / поиск / осмотр (PC §9.1; D3; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 2). Поиск и `request_discovery` находят только то, что уже существует после сохранённого броска кода при первом прибытии (место) или первом открытии контейнера (O2b). Они не создают нового. О наличии решает только сохранённый бросок кода; из плана LLM убраны `presence_resolutions` и `density_band_proposal`. `density_band` код выводит из сохранённых исходов; `identity_budget` равен сумме сохранённых чисел экземпляров (или отсутствует как отдельное поле плана). Meaningful gate и code-first short circuit предшествуют model call. Stage A/B могут описывать уже выбранный экземпляр с опорой на WK; код строит identity/classification/policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`; это не noun/recipe gate и не authority. Exact normalized retry использует persisted resolution без reroll. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution и item при positive. Player-safe projection — через `@rus/visibility-knowledge-memory`. O1 не включает A1, F1, S1, N1 и template-less runtime containers как путь создания; finite sources и fabrication — у своих owners.
+O1 — discovery уже существующего через `request_discovery` / поиск / осмотр (PC §9.1; D3; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029). Поиск и `request_discovery` находят только то, что уже существует после сохранённого броска кода при первом прибытии (место) или первом открытии контейнера (O2b). Они не создают нового. О наличии решает только сохранённый бросок кода; из плана LLM убраны `presence_resolutions` и `density_band_proposal`. `density_band` код выводит из сохранённых исходов; `identity_budget` равен сумме сохранённых чисел экземпляров (или отсутствует как отдельное поле плана). Meaningful gate и code-first short circuit предшествуют model call. Stage A/B могут описывать уже выбранный экземпляр с опорой на WK; код строит identity/classification/policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`; это не noun/recipe gate и не authority. Exact normalized retry использует persisted resolution без reroll. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution и item при positive. Player-safe projection — через `@rus/visibility-knowledge-memory`. O1 не включает A1, F1, S1, N1 и template-less runtime containers как путь создания; finite sources и fabrication — у своих owners.
 
 Текущая O2a activation поверх O1 discovery включает authored abundant ambient source берега и authored first-entry context-bound finite stock подготовленной глины. Context-bound marker сообщает только `discovery_available`; committed stock виден как обычный source только при отдельном approved disclosure state, а concealed capability остаётся server-only. Expected result, permission и capacity не раскрываются. Stage B свободно конкретизирует unlisted ordinary semantic type/name внутри approved class, но не может менять source/property/permission/mechanics или добавлять facts. Обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. First-entry атомарно provision-ит finite basis, permission/property/placement pins и resource row. Conservation является generic owner-native правилом любого admitted `finite_source`, независимо от `common_mundane` или constrained admission; mutable state загружается по выбранному source ref, поэтому несколько stocks не делят quantity. Constrained policy только добавляет региональные/resource permissions. `authority_required` — только для вещей по authority-записи (D10); класс weapon/currency/document сам по себе не запрет находки или изготовления (PC §9.1). Не provisioned precious/remnant profiles остаются fail-closed, пока нет presence-правила или A1-пути.
 
@@ -405,7 +408,7 @@ profile entries, отсортированных по stable ID. Appearance draws
 
 ## 9. Предметы, контейнеры и имущество
 
-Предмет создаётся только при наличии категории, template/profile, materialization rule, causal basis, допустимого slot, количества и ownership/holder policy. Location, holder, owner, controller, access, visibility, condition, quantity, legal status и container relation хранятся раздельно.
+Предмет создаётся только при наличии категории, template/profile, materialization rule, causal basis, допустимого slot, количества и ownership/holder policy — кроме ordinary-результата A1 или direct action по D-014. Location, holder, owner, controller, access, visibility, condition, quantity, legal status и container relation хранятся раздельно.
 
 Одежда материализуется тем же item owner, а не отдельным outfit materializer.
 Каждый garment имеет реальный item ID, owner/holder/controller, placement и
@@ -419,7 +422,7 @@ cache, не вызывает LLM/RNG и возвращает `null` для incom
 ambiguous equipment state. Renderer использует поля spec напрямую и не
 выбирает внешность hash/RNG.
 
-Содержимое контейнера решается кодом при первом открытии: один бросок presence по правилам §3A (`container_template`); число — `min_quantity..max_quantity` профиля содержимого (D3, D9). Создание контейнера само по себе содержимое не материализует. Заявка игрока не создаёт новый slot и не reroll-ит сохранённое.
+Содержимое контейнера решается кодом при первом открытии: один бросок presence по правилам §3A (`container_template`); число — `min_quantity..max_quantity` профиля содержимого (D3, D9). Создание контейнера само по себе содержимое не материализует. Заявка игрока не создаёт новый slot и не reroll-ит сохранённое. Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029).
 
 ## 10. Bounded decision protocol
 

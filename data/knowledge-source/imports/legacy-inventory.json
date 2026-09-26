@@ -61,8 +61,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/items_and_property.txt",
       "relative_path": "corpus/DOCUMENTS/items_and_property.txt",
-      "bytes": 49317,
-      "sha256": "a67a36ae4129fb4a9e7104484957922c799fccff4dd3f24e0440810ba262c725",
+      "bytes": 50810,
+      "sha256": "b01f6b5cc69a6589fcca3c3744562c90789dc70dac573d0d8ddd195a5d99e8aa",
       "classification": "canonical_source"
     },
     {
@@ -89,8 +89,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_generation_profiles.txt",
       "relative_path": "corpus/DOCUMENTS/npc_generation_profiles.txt",
-      "bytes": 28021,
-      "sha256": "6bb8db51790c1467f542d93c72de9fab466d508cc7fd2208a129b77f8faf4449",
+      "bytes": 27985,
+      "sha256": "62ecc33808421e9e6d7a27185c6017d1b144cbe34c556fc7dda8c94b8a06c3c6",
       "classification": "canonical_source"
     },
     {

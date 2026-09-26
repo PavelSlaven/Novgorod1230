@@ -4,6 +4,11 @@
 
 - data(wk): World Knowledge pack revision production-v2 — D15 access reclassification with strict review, book-sourced claims, in-world law rewrites, 1230 famine claims gated by the event (D19/D22), final WR §21.1 approval of every changed claim, Giga vectors and benchmark; runtime still pins production-v1 until #153 step 7 (#154) LW-060..LW-065 added
 - data(temporal-v4): 1230 famine rule re-issued 14.09.1230–31.12.1231 with book 667380 source (D19/D22, #154)
+- fix(wk): #153 REVIEW-044 — createTraceTurnRuntime grounder+telemetry wire (B1/B5); provider-failure degrade §73 (B2); F4 post-commit reload (B3); §15 coverage_profiles text; M2b exchange facets; degradation schema (#153, PR #98)
+- fix(wk): #153 REVIEW-043 — m2 player WK factory+prepare test (A1); export v17 ports factory (A2); production grounder approved slice (A3); degradation telemetry+TypeError rethrow (A4); split purpose-access-b; §15 D15 align (#153, PR #98)
+- fix(wk): #153 REVIEW-042 — durable narrator options (N1); behavioral F4 wire tests; WK catch+trace (N3); F5 punct/ё; frozen collect-all + 3 fixtures; CONTRACT_INDEX §14/67/73/102; LW-049/052 (#153, PR #98) LW-049 updated LW-052 updated
+- fix(wk): #153 REVIEW-041 — narration ground-once+degrade; WK on wire; strip auth leak; post-commit authoritative; F5 utterance leak guard; §73/§102; LW-051/052 (#153, PR #98) LW-051 updated LW-052 added
+- feat(wk): #153 Part B D15/D16/D20 - npc_decision outside ACTOR_FACING; narration+player interpreter WK wire; player social_role_id→role_ref; contract §14/§67 (#153, PR #98)
 - fix(wk): #153 REVIEW-038 — turn historical_events via services 3rd arg; owner clock normalize; MODULE.md services wrap (#153, PR #98)
 - fix(wk): #153 REVIEW-037 — drop request_id event Map; explicit historical_events ports; facet present reject; pack validator messages (#153, PR #98)
 - fix(wk): #153 REVIEW-036 — party historical_events port; O1 clock through exactModelContext; N-1..N-6 started-historical/v3/facet validator; LW-049..051 (#153, PR #98) LW-049 updated LW-050 LW-051 added

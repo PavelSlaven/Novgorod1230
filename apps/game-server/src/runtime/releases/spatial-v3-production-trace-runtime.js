@@ -83,7 +83,9 @@ export function createTraceTurnRuntime({
   readCurrentExitDisclosure = null,
   loadInitialNaturalScenePerceptionInput = null,
   worldKnowledge,
-  createPhase2RuntimeFactory, createNpcRuntimePorts
+  createPhase2RuntimeFactory, createNpcRuntimePorts,
+  // Test seam: production default is createLowerDvinaTraceNarrationService.
+  createNarrationService = createLowerDvinaTraceNarrationService
 }) {
   const decisionSecret = String(
     config.traceTurnDecisionSecret ?? env.RUS_TURN_DECISION_SECRET ?? ''
@@ -106,7 +108,9 @@ export function createTraceTurnRuntime({
         worldKnowledge, roleRunner, telemetry: llmDiagnostics.telemetry,
         year: 1230, placeRefs: ['region_novgorod_land']
       });
-  const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
+  const narrationService = createNarrationService({
+    roleRunner, worldKnowledgeGrounder, telemetry: llmDiagnostics.telemetry
+  });
   const authoredOpeningNarration = createAuthoredOpeningNarrationService({
     roleRunner, llmDiagnostics
   });

@@ -15,10 +15,23 @@ import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
-export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}) {
+export function createLowerDvinaTracePlayerConversationModel({ roleRunner,
+  worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
   return async function interpretPlayerConversation(request, context = {}) {
     const repair = context.repair ?? null;
+    // D16: interpreter uses semantic_resolution (same family as turn-step parsers).
+    const historicalEvents = Array.isArray(context.historical_events)
+      ? context.historical_events : [];
+    const grounded = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'semantic_resolution', {
+        clock: context.clock
+          ?? request.player_safe_context?.current_game_timestamp
+          ?? null,
+        historical_events: historicalEvents,
+        actor_facets: context.actor_facets ?? {}
+      });
+    const modelRequest = omitWorldKnowledgeContextText(grounded);
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -27,18 +40,22 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: playerConversationInstructions(repair, request)
+        content: [playerConversationInstructions(repair, grounded),
+          ...worldKnowledgeFactualClosure(grounded)].join(' ')
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
-          request,
+          request: modelRequest,
           original_output: repair.original_output,
           validation_errors: repair.validation_errors
-        } : request)
+        } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 1_000 }
     });
-    return assemblePlayerConversationPlan(response.output, request);
+    const plan = assemblePlayerConversationPlan(response.output, request);
+    // F5: intent_paraphrase must not commit WK fact text as player speech.
+    rejectIntentParaphraseWorldKnowledgeLeak(plan, grounded?.world_knowledge);
+    return plan;
   };
 }
 
@@ -210,4 +227,32 @@ function requireRoleRunner(roleRunner) {
 
 function dependencyError(message) {
   return serverError('TRACE_PHASE_2_DEPENDENCY_MISSING', message, { status: 503 });
+}
+
+/** F5: reject intent_paraphrase that copies WK fact text into committed speech. */
+export function rejectIntentParaphraseWorldKnowledgeLeak(plan, slice) {
+  if (plan?.input_mode !== 'intent_paraphrase') return;
+  const utterance = plan?.speech?.utterance_text;
+  if (typeof utterance !== 'string' || !utterance.trim() || slice == null) return;
+  const normalized = normalizeLeakText(utterance);
+  for (const fact of [...(slice.facts ?? []), ...(slice.hard_constraints ?? [])]) {
+    const text = normalizeLeakText(fact?.runtime_text);
+    if (text.length >= 12 && normalized.includes(text)) {
+      throw serverError(
+        'PLAYER_CONVERSATION_WK_UTTERANCE_LEAK',
+        'intent_paraphrase utterance must not copy World Knowledge fact text.',
+        { status: 422, details: { claim_ref: fact?.claim_ref ?? null } }
+      );
+    }
+  }
+}
+
+function normalizeLeakText(value) {
+  // N5: ignore punctuation and ё/е so lightly disguised WK copy still fails.
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/ё/gu, 'е')
+    .replace(/[^\p{L}\p{N}\s]+/gu, ' ')
+    .replace(/\s+/gu, ' ')
+    .trim();
 }

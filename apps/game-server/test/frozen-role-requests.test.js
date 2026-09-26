@@ -40,12 +40,17 @@ const models = {
 
 test('frozen role fixtures ship exact production-built messages', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
+  const mismatches = [];
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
     role_id in models || role_id === 'ordinary_materialization'
       || role_id.startsWith('gameplay_narrator'))) {
-    assert.deepEqual(await productionMessages(fixture), fixture.messages,
-      fixture.id);
+    try {
+      assert.deepEqual(await productionMessages(fixture), fixture.messages);
+    } catch (error) {
+      mismatches.push(`${fixture.id}: ${error.message}`);
+    }
   }
+  assert.equal(mismatches.length, 0, mismatches.join('\n'));
 });
 
 test('frozen narration writer fixtures expose only model-owned prose', async () => {

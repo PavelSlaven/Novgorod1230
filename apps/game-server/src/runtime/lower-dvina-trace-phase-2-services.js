@@ -13,7 +13,8 @@ import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { createLowerDvinaTracePhase2StateReader } from './lower-dvina-trace-phase-2-state-reader.js';
 import { actorMovementBlocked } from './lower-dvina-trace-phase-3-command-shared.js';
-import { partyHistoricalEventsOf } from './world-knowledge-request-context.js';
+import { partyHistoricalEventsOf, playerWorldKnowledgeAuthoritativeFromState } from
+  './world-knowledge-request-context.js';
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt, scenarioId,
@@ -49,6 +50,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
   let committedPublicResult = null, turnCommitStatus = 'not_started';
+  // F7: narration WK uses post-commit party state when available (same as replay).
+  let narrationAuthState = state;
   const trace = (record) => { try { context.llmDiagnostics?.recordGameplayTrace?.(record); }
     catch { /* Diagnostic capture must not affect gameplay. */ } };
   const randomSource = injectedRandomSource ?? randomSourceFactory({
@@ -218,6 +221,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
         if (authoritativeNotStarted(committed)) turnCommitStatus = 'not_started';
         else if (committed?.ok === true) turnCommitStatus = 'committed';
         committedPublicResult = committed.committed_public_result ?? null;
+        if (turnCommitStatus === 'committed'
+            && typeof repository.loadPhase2State === 'function') {
+          try {
+            const loaded = await repository.loadPhase2State(partyId, { turnBudget });
+            if (loaded != null) narrationAuthState = loaded;
+          } catch { /* keep pre-commit state; narration still degrades without WK */ }
+        }
         trace({ event: 'owner_commit_completed',
           turn_commit_status: turnCommitStatus, outcome: committed,
           committed_public_result: committedPublicResult });
@@ -236,10 +246,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
     narrator: {
       ...narrator,
       run(request) {
+        // F3/F7: authoritative via options port, not request body smuggling.
         return runWithinTurnDeadline(turnBudget, () => narrator.run({
           ...request, party_id: partyId,
           delivery_turn_number: committedPublicResult?.turn_number,
           turnBudget
+        }, {
+          worldKnowledgeAuthoritative:
+            playerWorldKnowledgeAuthoritativeFromState(narrationAuthState)
         }));
       }
     },

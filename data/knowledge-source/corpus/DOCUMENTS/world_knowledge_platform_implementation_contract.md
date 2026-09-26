@@ -924,8 +924,8 @@ knowledge_access
 (`occupation_bound` → `occupation_ref`, `role_bound` → `role_ref`,
 `specialist_bound` → `specialist_domain`); general/common/domain-internal
 classes facet values не задают. Runtime применяет value-match только к actor-facing
-`npc_decision`/`conversation`/`narration`; historical applicability и
-materialization-support от него не зависят.
+`conversation`/`narration`; `npc_decision` — устройство мира и не входит в actor-facing
+фильтр (D15). Historical applicability и materialization-support от value-match не зависят.
 
 Зарегистрированный condition facet для event semantics:
 
@@ -1019,10 +1019,15 @@ social_behavior
 support и source-grounded QA. Они не подменяют исторически контекстный
 `social_law_economy` и не устанавливают состояние, мотив, знание, согласие,
 отношение, репутацию или обязанность конкретного actor. Claims этого слоя
-остаются `domain_internal_only`; решения NPC и exact mechanics сохраняют
-прежних владельцев. Общие геологические, гидрологические и атмосферные
-premises используют отдельный universal profile существующего `environment`,
-не расширяя историческую применимость его contextual claims.
+помечены `domain_internal_only`: actor-facing `conversation`/`narration` их
+не показывают; для `npc_decision` класс доступа не фильтрует (D15 / §14 / §67),
+а достижимость по purpose задают `coverage_profiles` (в production-v1 профили
+`psychology_behavior` / `social_behavior` не включают `npc_decision`, в
+production-v2 (#154) включают).
+Решения NPC и exact mechanics сохраняют прежних владельцев. Общие геологические,
+гидрологические и атмосферные premises используют отдельный universal profile
+существующего `environment`, не расширяя историческую применимость его
+contextual claims.
 
 ---
 
@@ -2698,9 +2703,11 @@ World Knowledge не становится вторым runtime catalog.
 
 # 67. NPC decisions
 
-World Knowledge используется как actor-safe general factual context, но не выбирает действие NPC.
+`npc_decision` получает World Knowledge всех доменов как устройство мира (не actor-facing
+фильтр доступа; покрытие по-прежнему задают `coverage_profiles`). World Knowledge не выбирает
+действие NPC.
 
-NPC-facing slice может включать:
+Actor-facing срез для `conversation`/`narration` может включать:
 
 ```text
 general physical knowledge
@@ -2711,7 +2718,9 @@ known technology
 legal/economic context
 ```
 
-Он не включает private knowledge другого NPC, hidden party truth или objective fact, который actor не имеет основания знать.
+Он не включает private knowledge другого NPC, hidden party truth или objective fact, который
+actor не имеет основания знать. Это ограничение относится к речи и рассказчику, не к
+`npc_decision`.
 
 После slice NPC принимает самостоятельное решение через existing semantic boundary и проходит обычные mechanics.
 
@@ -2864,6 +2873,11 @@ committed visible party state
 → optional general World Knowledge context
 → localized narration
 ```
+
+Actor-visible срез narration (D16/D20) строится с `purpose: narration` и
+`actor_facets` игрока: `role_ref` берётся из committed dossier
+(`social_role_id` → `role_ref`), чтобы `role_bound` claims были достижимы.
+Сбой WK после commit не отклоняет рассказ: деградация без среза, с trace.
 
 Если prose называет новый authoritative/actionable object, такой object уже должен существовать в approved working/committed projection.
 
@@ -3462,7 +3476,9 @@ Location/NPC/ordinary materialization integration готова, когда:
 
 # 102. NPC/social/legal Gate
 
-1. NPC получает только actor-safe factual context;
+1. `npc_decision` получает World Knowledge как устройство мира (не actor-facing
+   filter; см. §14/§67/D15). Actor-facing срез (`conversation`/`narration`) —
+   только actor-safe factual context;
 2. World Knowledge сообщает norm/procedure/context, но не выбирает NPC action;
 3. formal consequence остаётся у existing owner;
 4. law/authority reaction не выдумывается model memory при covered profile;

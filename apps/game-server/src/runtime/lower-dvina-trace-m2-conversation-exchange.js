@@ -2,7 +2,7 @@ import { requestPlayerConversationContribution, runConversationExchange } from
   '@rus/turn';
 import { buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
-import { withPartyHistoricalEvents } from
+import { withPartyHistoricalEvents, withPlayerWorldKnowledgeAuthoritative } from
   './world-knowledge-request-context.js';
 import { buildNpcResponseBoundaryBatch } from
   './lower-dvina-trace-m2-conversation-boundaries.js';
@@ -141,6 +141,12 @@ function npcAtPlayerPosition(npc, position) {
       || (typeof npc.anchor_id === 'string'
         && npc.anchor_id === position?.g5_anchor_id));
 }
+/** Player conversation model with committed-state WK ports (A1). */
+export function m2PlayerConversationModel(context) {
+  return withPlayerWorldKnowledgeAuthoritative(
+    context.playerConversationModel, () => context.state);
+}
+
 export async function executeM2ConversationExchange(context, {
   initialNpcDecision = null
 } = {}) {
@@ -155,7 +161,8 @@ export async function executeM2ConversationExchange(context, {
   let resumedOutcome = null;
   const exchange = await runConversationExchange(exchangeInput, {
     conversationModel: context.playerPlan ? async () =>
-      structuredClone(context.playerPlan) : context.playerConversationModel,
+      structuredClone(context.playerPlan)
+      : m2PlayerConversationModel(context),
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     applyPlayerContribution: ({ working_state: working, plan }) =>
       applyPlayerPlan(workingConversationContext(context, working), working, plan),
@@ -300,7 +307,7 @@ export async function executeM2ConversationExchange(context, {
 export async function prepareM2PlayerConversationPlan(context) {
   const decision = await requestPlayerConversationContribution({
     request: buildPlayerRequest(context),
-    conversationModel: context.playerConversationModel,
+    conversationModel: m2PlayerConversationModel(context),
     revalidateStateVersion: context.revalidateStateVersion
   });
   return decision.plan;

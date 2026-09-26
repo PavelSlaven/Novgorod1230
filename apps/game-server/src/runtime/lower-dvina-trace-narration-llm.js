@@ -1,7 +1,10 @@
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { createNarrationService } from '@rus/narration';
+import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { assembleNarrationAuditOutput, narrationAuditInstruction } from
   './lower-dvina-trace-narration-audit.js';
+import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
 
 const PROSE_RULES = 'Write connected, restrained literary Russian in second person. '
   + 'Put the current beat first. Convey every required_current_beat source once '
@@ -77,27 +80,51 @@ const INSPECTION_REPAIR_RULE = 'For an inspection or perception current beat wit
   + 'before/after relation. Never use an action followed by a colon and a factual catalogue; a focal verb '
   + 'or colon before an independent catalogue is not a repair. ';
 
+/** Per-run pack: ground once on writer; reuse for repair/auditor (F1). */
+const narrationWkStore = new AsyncLocalStorage();
 
-export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
+export function createLowerDvinaTraceNarrationService({ roleRunner,
+  worldKnowledgeGrounder = null, telemetry = null } = {}) {
   if (typeof roleRunner?.run !== 'function') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING', 'Configured LLM role runner is required.', { status: 503 });
-  return createNarrationService({
-    writer: { generate: (request) => runNarrationRole(roleRunner, 'gameplay_narrator',
-      `${WRITER_SHAPE} ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`, request) },
-    formatRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_format_repair',
-      `${WRITER_SHAPE} Repair the invalid JSON shape against validation_errors, retaining supported meaning. ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`, request) },
-    auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
-      narrationAuditInstruction(request), request) },
-    semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
-      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. source_segments are evidence for source_segment_ids in concerns; only the immutable s1 target is replaceable. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. Use only supplied player-safe facts. current_light_phase is a calendar daylight phase and gives no evidence of local dimness, darkness, brightness, shadows or visibility; remove such claims unless an exact sensory fact supports them. Preserve every required proposition and certainty once, confirmed speech verbatim with its NPC speaker, performed-action order, unresolved-result uncertainty, and each sensory modality exactly. Second person denotes only the player. Completed actions must stay completed; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. An unexecuted continuation stays the player's open choice and explicitly has not happened and has no known result. ${INSPECTION_REPAIR_RULE}Optional support is a candidate set, never a coverage target. For static_context_dump, remove the unchanged independent panorama and retain only support that composes the current beat; fluent spatial regrouping of the same snapshot is not a repair. Regroup retained observations only by supplied shared subjects and spatial anchors. visible_scene may locate the passage but supplies no observed object or action target. For elapsed_as_service_report, remove elapsed-time wording; turn duration belongs only to the UI. A label or ID supplies identity, not a trait, action, result, time, cause, or sensation. A transient attempt supplies only its performed handling unless a result is also supplied. With sparse support, shorten rather than embellish. Add no hidden fact, diagnosis, unsupported bridge, cause, reaction, sensation, action, result, or certainty. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. FINAL REPAIR CHECK: a weak-composition repair is never a copy, synonym swap, punctuation change, clause-order change, or standalone-sentence permutation. Compare every grammatical subject and spatial relation to required_current_beat; if compression would reattach one to a different object or place, use a separate player-perception clause. ${DENSE_COMPOSITION_RULE}`, request) }
+  const runRole = (roleId, instruction) => async (request) =>
+    runNarrationRole(roleRunner, roleId, instruction, request,
+      worldKnowledgeGrounder, telemetry);
+  const ports = {
+    writer: { generate: runRole('gameplay_narrator',
+      `${WRITER_SHAPE} ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`) },
+    formatRepairer: { repair: runRole('gameplay_narrator_format_repair',
+      `${WRITER_SHAPE} Repair the invalid JSON shape against validation_errors, retaining supported meaning. ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`) },
+    auditor: { audit: runRole('gameplay_narrator_auditor',
+      null) },
+    semanticRepairer: { repair: runRole('gameplay_narrator_semantic_repair',
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. source_segments are evidence for source_segment_ids in concerns; only the immutable s1 target is replaceable. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. Use only supplied player-safe facts. current_light_phase is a calendar daylight phase and gives no evidence of local dimness, darkness, brightness, shadows or visibility; remove such claims unless an exact sensory fact supports them. Preserve every required proposition and certainty once, confirmed speech verbatim with its NPC speaker, performed-action order, unresolved-result uncertainty, and each sensory modality exactly. Second person denotes only the player. Completed actions must stay completed; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. An unexecuted continuation stays the player's open choice and explicitly has not happened and has no known result. ${INSPECTION_REPAIR_RULE}Optional support is a candidate set, never a coverage target. For static_context_dump, remove the unchanged independent panorama and retain only support that composes the current beat; fluent spatial regrouping of the same snapshot is not a repair. Regroup retained observations only by supplied shared subjects and spatial anchors. visible_scene may locate the passage but supplies no observed object or action target. For elapsed_as_service_report, remove elapsed-time wording; turn duration belongs only to the UI. A label or ID supplies identity, not a trait, action, result, time, cause, or sensation. A transient attempt supplies only its performed handling unless a result is also supplied. With sparse support, shorten rather than embellish. Add no hidden fact, diagnosis, unsupported bridge, cause, reaction, sensation, action, result, or certainty. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. FINAL REPAIR CHECK: a weak-composition repair is never a copy, synonym swap, punctuation change, clause-order change, or standalone-sentence permutation. Compare every grammatical subject and spatial relation to required_current_beat; if compression would reattach one to a different object or place, use a separate player-perception clause. ${DENSE_COMPOSITION_RULE}`) }
+  };
+  const service = createNarrationService(ports);
+  return Object.freeze({
+    // F1/F3/F7/N7: authoritative only via options/ALS, never request body.
+    run(request, options = {}) {
+      const authoritative = options.worldKnowledgeAuthoritative ?? null;
+      const {
+        world_knowledge_authoritative: _auth,
+        ...cleanRequest
+      } = request ?? {};
+      return narrationWkStore.run({ authoritative, pack: null }, () =>
+        service.run(cleanRequest, options));
+    }
   });
 }
 
-function narrationWire(request) {
-  const { request: original, ...outer } = request;
+/** Strip service-only fields from nested writer clone (F3). Keep WK prompt-data (F2). */
+export function narrationWire(request) {
+  const { request: original, world_knowledge_authoritative: _wkAuth,
+    party_id: _partyId, world_knowledge: outerWk, ...outer } = request ?? {};
+  const cleanedOriginal = original == null ? null : stripNarrationServiceFields(original);
   const { visible_context, style_policy = {}, context, action_intent_context,
     confirmed_outcome: confirmedOutcome,
-    ...rest } = original ? { ...original, ...outer } : outer;
+    world_knowledge: nestedWk,
+    ...rest } = cleanedOriginal ? { ...cleanedOriginal, ...outer } : outer;
+  const worldKnowledge = outerWk ?? nestedWk;
   const { visible_changes, uncertainties, do_not_imply, allowed_tensions,
     current_light_phase, ...support } = visible_context;
   const { outcome: contextOutcome, ...otherContext } = context ?? {};
@@ -120,20 +147,84 @@ function narrationWire(request) {
     constraints: { do_not_imply, allowed_tensions, style_policy },
     ...(outcome === undefined ? {} : { confirmed_outcome: outcome }),
     ...(action_intent_context === undefined ? {} : { action_intent: action_intent_context }),
-    ...(Object.keys(otherContext).length ? { context: otherContext } : {})
+    ...(Object.keys(otherContext).length ? { context: otherContext } : {}),
+    // §73: party facts above; optional WK prompt-data after them (F2).
+    ...(worldKnowledge == null ? {} : { world_knowledge: worldKnowledge })
   };
 }
 
-async function runNarrationRole(roleRunner, roleId, instruction, request) {
+function stripNarrationServiceFields(value) {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) return value;
+  const { world_knowledge_authoritative: _a, party_id: _p, ...rest } = value;
+  return rest;
+}
+
+async function runNarrationRole(roleRunner, roleId, instruction, request,
+  worldKnowledgeGrounder = null, telemetry = null) {
+  const store = narrationWkStore.getStore();
+  const grounded = await resolveNarrationGrounded(roleId, request, store,
+    worldKnowledgeGrounder, telemetry);
+  const systemInstruction = roleId === 'gameplay_narrator_auditor'
+    ? [narrationAuditInstruction(request),
+      ...worldKnowledgeFactualClosure(grounded)].join(' ')
+    : [instruction, ...worldKnowledgeFactualClosure(grounded)].join(' ');
+  const modelRequest = omitWorldKnowledgeContextText(grounded);
   const response = await roleRunner.run({ scope: 'turn_runtime', role_id: roleId,
     request_identity: request.request_id ?? request.request?.request_id,
-    messages: [{ role: 'system', content: instruction },
-      { role: 'user', content: JSON.stringify(narrationWire(request)) }],
+    messages: [{ role: 'system', content: systemInstruction },
+      { role: 'user', content: JSON.stringify(narrationWire(modelRequest)) }],
     overrides: { temperature: roleId === 'gameplay_narrator_semantic_repair' ? 0.2 : 0 } });
   if (!response?.output || typeof response.output !== 'object') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING',
     `Narration role ${roleId} returned no JSON object.`, { status: 503 });
   return assembleNarrationRoleOutput(roleId, response.output, request);
+}
+
+async function resolveNarrationGrounded(roleId, request, store,
+  worldKnowledgeGrounder, telemetry = null) {
+  // F1: ground once on writer narration_request; reuse pack; never re-ground repair/auditor.
+  if (roleId === 'gameplay_narrator' && worldKnowledgeGrounder != null) {
+    try {
+      const authoritative = store?.authoritative ?? null;
+      const grounded = await worldKnowledgeGrounder.ground(request, 'narration', {
+        clock: authoritative?.clock ?? null,
+        historical_events: Array.isArray(authoritative?.historical_events)
+          ? authoritative.historical_events : [],
+        actor_facets: authoritative?.actor_facets ?? {}
+      });
+      if (store) store.pack = grounded?.world_knowledge ?? null;
+      return grounded;
+    } catch (error) {
+      // §73/B2: degrade on WK/turn-WK codes or provider failure; never on turn budget.
+      const code = typeof error?.code === 'string' ? error.code : '';
+      const budgetExhausted = code === 'LLM_TURN_BUDGET_EXHAUSTED';
+      const wkFailure = code.startsWith('WORLD_KNOWLEDGE_')
+        || code.startsWith('TURN_WORLD_KNOWLEDGE_');
+      const providerFailure = error?.llm_provider_failure === true;
+      if (!budgetExhausted && (wkFailure || providerFailure)) {
+        const requestId = request?.request_id ?? request?.request?.request_id
+          ?? null;
+        const degradation = Object.freeze({
+          schema: 'world_knowledge_narration_degradation_v1',
+          event: 'world_knowledge_narration_degraded',
+          code: code || 'LLM_ROLE_FAILED',
+          purpose: 'narration',
+          request_identity: requestId,
+          request_id: requestId
+        });
+        if (store) store.pack = null;
+        // A4/B5: ALS store dies after run(); telemetry keeps the §73 trace.
+        telemetry?.onGameplayTrace?.(degradation);
+        telemetry?.onDetail?.(degradation);
+        return request;
+      }
+      throw error;
+    }
+  }
+  if (store?.pack != null) {
+    return { ...request, world_knowledge: store.pack };
+  }
+  return request;
 }
 
 export function assembleNarrationRoleOutput(roleId, output, request) {

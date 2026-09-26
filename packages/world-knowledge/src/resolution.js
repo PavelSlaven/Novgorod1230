@@ -1,4 +1,5 @@
-const ACTOR_FACING_PURPOSES = new Set(['npc_decision', 'conversation', 'narration']);
+// D15: npc_decision is world machinery (all domains via coverage), not actor-facing.
+const ACTOR_FACING_PURPOSES = new Set(['conversation', 'narration']);
 
 export function lexicalCandidates(bundle, query) {
   return lexicalScores(bundle, query.search_hints.join(' '), query.query_locale, false);

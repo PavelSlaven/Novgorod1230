@@ -55,7 +55,8 @@
 | 048 | `npc-safe-request-projector` / `state.historical_context` | norms/customs пусты в v17 — отсутствие данных | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 049 | `frozen-role-requests` / `turn-step-generic-owners` / `temporal-world-v1` | pre-#152 app/domain fails вне WK diff | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 050 | NPC `knowledge_snapshot` / memory/rumors | actor-visible knowledge — `@rus/visibility-knowledge-memory` / npc-runtime, не #154 WK | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
-| 051 | `authored-opening-narration` | opening narration без WK date-gate — owner рассказчика | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 051 | `authored-opening-narration` | opening narration без WK вовсе — owner рассказчика | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 052 | turn-step `player_utterance` / `intent_paraphrase` | WK может впитаться в речь — вне Part B guard | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 060 | `world-knowledge/production-v2` claims `domain_internal_only` | знание эпохи скрыто из-за формулировки (служебные обороты, историография, наука) — нужна переписка языком 1230 года и повторное утверждение | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 | 061 | `audits/production-v2/step4-*-coverage.json`, `category-cartography.json` | пробелы аудита WK не закрыты: 37 must отклонены на утверждении, 22 без источника; `missing_families` (шаг 4.8) не делались | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 | 062 | WK `applicability.conditions.started_historical_events`, история событий | события с датой внутри года — только через условие события; события `novgorod_famine_1230` (фазы), `novgorod_upheaval_december_1230` и поздние события голода должны быть заведены при импорте истории; компилятор не проверяет существование event id | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
@@ -251,7 +252,7 @@
 
 ### LW-049 — pre-#152 app/domain test failures: frozen-role, generic-owners, temporal-world
 - **Где.** `apps/game-server/test/frozen-role-requests.test.js`, `apps/game-server/test/lower-dvina-trace-turn-step-generic-owners.test.js`, `packages/contracts/test/temporal-world-v1.test.js` (`Factual visible envelope:` / line ~94).
-- **Как жить.** Падают уже на `73a69dda` (до #152) и на `c40c18b3`; diff части A (#153) их не трогает. `test:apps` baseline 2 fail; `test:domain` baseline 1 fail. Не чинить попутно в WK-задачах; owner — turn/NPC routine / frozen role / temporal contracts (отдельный CR).
+- **Как жить.** Падают уже на `73a69dda` (до #152) и на `c40c18b3`; diff части A (#153) их не трогает. `test:apps` baseline 2 fail; `test:domain` baseline 1 fail. Не чинить попутно в WK-задачах; owner — turn/NPC routine / frozen role / temporal contracts (отдельный CR). В REVIEW-042 перегенерированы 3 player-conversation fixture (`intent-paraphrase`, `format-repair`, `verbatim-allowed-refs`) под F5 prompt; тест frozen теперь собирает все несовпадения за один прогон — остальные narration auditor mismatches остаются baseline LW-049.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) (зафиксировано при A-04 / N-6)
 
 ### LW-050 — NPC knowledge_snapshot / memory/rumors вне WK date-gate #153
@@ -259,9 +260,14 @@
 - **Как жить.** Не маршрутизировать в #154 WK actor-visible filter. Пересмотреть, когда visibility/npc-runtime CR явно подключит date-gated historical events к actor knowledge.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
-### LW-051 — opening narration без WK date-gate
-- **Где.** `authored-opening-narration.js` / narration owner.
-- **Как жить.** Не закрывать «narration owner» без issue; отдельный CR владельца рассказчика, если opening должен учитывать started historical events.
+### LW-051 — opening narration без WK вовсе
+- **Где.** `authored-opening-narration.js` / narration owner. Opening path не вызывает production World Knowledge grounder (ни date-gate, ни actor-visible slice).
+- **Как жить.** Не закрывать «narration owner» без issue; отдельный CR владельца рассказчика, если opening должен получать WK / started historical events.
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
+
+### LW-052 — intent_paraphrase может впитать WK в речь (остаточный риск)
+- **Где.** Player conversation `intent_paraphrase` (`rejectIntentParaphraseWorldKnowledgeLeak`) и turn-step `player_utterance` (`@rus/turn` / lower-dvina turn-step planner).
+- **Как жить.** Player conversation guard (#153 REVIEW-042 N5) ловит точную/пунктуационно-изменённую и ё/е копию `runtime_text`, но **не закрыт**: частичный пересказ, синонимы и перестановка слов проходят. Найденная точная утечка сейчас рвёт ход (`PLAYER_CONVERSATION_WK_UTTERANCE_LEAK` → model failed), а не уходит в format repair. Turn-step speech по-прежнему без guard — отдельный CR. Не объявлять «WK utterance leak закрыт».
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-060 — знание эпохи скрыто из-за формулировки

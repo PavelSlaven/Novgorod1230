@@ -1,0 +1,82 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+      "claim_ref": "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+      "claim_digest": "124b4eb527702d7114959ea0426073b032deaada0e360ff17cc5e47ed58b9c22",
+      "candidate_ref": "git:0dc6869deed17fd7bf0e754af7654a715aeb078b:data/world-catalogs/novgorod/world-knowledge/production-v1/place-animal-brood-cat-hoof-v1.json#claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading and source-access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-animal-ant-cocoon-life-cycle"
+      ],
+      "review_ref": "verification/place-animal-brood-cat-hoof-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Ant immature-stage and cocoon relation only; no particular object, taxon, nest, season or cause of worker movement."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+      "claim_ref": "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+      "claim_digest": "fec2d129dfac55e62cc5079dbb0bbd8b9e23b85e6855aba5daab380329278ac7",
+      "candidate_ref": "git:0dc6869deed17fd7bf0e754af7654a715aeb078b:data/world-catalogs/novgorod/world-knowledge/production-v1/place-animal-brood-cat-hoof-v1.json#claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading and source-access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-animal-ant-brood-relocation"
+      ],
+      "review_ref": "verification/place-animal-brood-cat-hoof-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Some-species new-nest budding relation only; no heat, disturbance, direction, present-colony or intra-nest movement explanation."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-cats-can-use-secluded-or-elevated-hiding-places",
+      "claim_ref": "claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+      "claim_digest": "b136101a8a9ba2f737df820421f47ba4b34ea2ae6bb8233c53b4308dc98544c7",
+      "candidate_ref": "git:0dc6869deed17fd7bf0e754af7654a715aeb078b:data/world-catalogs/novgorod/world-knowledge/production-v1/place-animal-brood-cat-hoof-v1.json#claim:place-cats-can-use-secluded-or-elevated-hiding-places",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading and source-access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-animal-cat-secluded-hiding",
+        "evidence:place-animal-cat-elevated-hiding"
+      ],
+      "review_ref": "verification/place-animal-brood-cat-hoof-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Modern general hiding-place relation only; absence from a bowl establishes no particular location, reason, condition, appetite or cue response."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+      "claim_ref": "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+      "claim_digest": "6104aaad77303de6d555a2a6a85646c9428db136e16c8d53edcbc7d08fda2f57",
+      "candidate_ref": "git:0dc6869deed17fd7bf0e754af7654a715aeb078b:data/world-catalogs/novgorod/world-knowledge/production-v1/place-animal-brood-cat-hoof-v1.json#claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading and source-access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-animal-equine-hoof-functions"
+      ],
+      "review_ref": "verification/place-animal-brood-cat-hoof-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Equine-foot function only; no diagnosis of stance, pain, injury or hoof condition, or trimming, shoeing or treatment instruction."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+      "claim_ref": "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+      "claim_digest": "2dd8cfc7ac408cf3bbc8a2f1e6c9ab5fb8f4bac8f109e02d6e0eaf6166237f7f",
+      "candidate_ref": "git:0dc6869deed17fd7bf0e754af7654a715aeb078b:data/world-catalogs/novgorod/world-knowledge/production-v1/place-animal-brood-cat-hoof-v1.json#claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading and source-access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-animal-equine-hoof-debris",
+        "evidence:place-animal-equine-compacted-manure"
+      ],
+      "review_ref": "verification/place-animal-brood-cat-hoof-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Bounded debris-removal purpose around the named frog only; no anatomy claim, diagnosis, wound finding, forceful-handling method, shoeing, farriery procedure or treatment."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-static-r6-reed-mat-preparation",
+      "claim_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+      "claim_digest": "0ac50bf4cc0b017dd1605a8b99f99439377c4e9e63d45558dd4bf216f6388394",
+      "candidate_ref": "git:8963a6869aabe3d949eefb7d5728e6e9fa266999:data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r6-reed-mat-gap-repair-v1.json#claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+      "auditor_ref": "/root/verify_r6_reed_mat_candidate",
+      "independence_basis": "Independent review by an auditor who did not author the exact candidate; checked its editorial reconstruction, reused approved premises, universal physics-material-science retrieval, claim/localization boundaries, and assembled authoring plus candidate.",
+      "evidence_checked": ["evidence:r6-reed-mat-editorial"],
+      "review_ref": "verification/final-static-r6-reed-mat-gap-repair-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal conditional material premise for already present freshly cut reed stems only; no reed source, presence, access, quantity, tool, skill, drying duration, mat, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-static-r6-reed-mat-interlacing",
+      "claim_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+      "claim_digest": "440665af887e73993e1016358472ae6c1eb686bcfdf80223cb90a0471f90ab77",
+      "candidate_ref": "git:8963a6869aabe3d949eefb7d5728e6e9fa266999:data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r6-reed-mat-gap-repair-v1.json#claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+      "auditor_ref": "/root/verify_r6_reed_mat_candidate",
+      "independence_basis": "Independent review by an auditor who did not author the exact candidate; checked its editorial reconstruction, reused approved premises, universal physics-material-science retrieval, claim/localization boundaries, and assembled authoring plus candidate.",
+      "evidence_checked": ["evidence:r6-reed-mat-editorial"],
+      "review_ref": "verification/final-static-r6-reed-mat-gap-repair-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal conditional construction possibility only; no recipe, binding material, reed presence, access, quantity, tool, skill, created mat, durability, floor use, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-static-r6-reed-mat-usability",
+      "claim_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+      "claim_digest": "6d75d94d4a8d80ca617711c09f1bb5a2bbe5dc6e854a76cf91b0154123c4200e",
+      "candidate_ref": "git:8963a6869aabe3d949eefb7d5728e6e9fa266999:data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r6-reed-mat-gap-repair-v1.json#claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+      "auditor_ref": "/root/verify_r6_reed_mat_candidate",
+      "independence_basis": "Independent review by an auditor who did not author the exact candidate; checked its editorial reconstruction, reused approved premises, universal physics-material-science retrieval, claim/localization boundaries, and assembled authoring plus candidate.",
+      "evidence_checked": ["evidence:r6-reed-mat-editorial"],
+      "review_ref": "verification/final-static-r6-reed-mat-gap-repair-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal conditional usability relation only; no mat presence, construction recipe, binding material, tool, skill, load, durability, comfort, cleanliness, floor use, or outcome."
+    }
+  ]
+}

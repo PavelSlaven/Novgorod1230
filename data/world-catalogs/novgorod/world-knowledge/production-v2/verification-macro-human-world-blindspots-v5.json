@@ -1,0 +1,230 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota109-date",
+      "claim_ref": "claim:candidate-v5-gramota109-is-dated-private-letter",
+      "claim_digest": "1e3456e4e01e0d5943d2dc8a3fe7dd405b4d7535b24da50b1b277c4983f818d5",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota109-is-dated-private-letter",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Gramoty.ru record 109; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-gramota109-date-genre"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-109",
+      "verdict": "APPROVE",
+      "limits": "One conditional 1100–1120 private-letter record only; no 1230 speech, literacy, correspondence, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota109-address",
+      "claim_ref": "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula",
+      "claim_digest": "060d1711a29f96bb7aa95e09226cfa51ef48770b0125ab1f89e1d6683272dea2",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota109-names-zhiznomir-and-mikula",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Gramoty.ru record 109; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-gramota109-names"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-109",
+      "verdict": "APPROVE",
+      "limits": "One document address only; no naming, patronymic, title, kinship, or form-of-address system."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota109-dispute",
+      "claim_ref": "claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
+      "claim_digest": "177cb032bbbb1f56fe5de8c6d001561e3af931d3bd7c2bfb4c0bd48c51d305c1",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota109-reports-disputed-purchase-of-enslaved-woman",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Gramoty.ru record 109; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-gramota109-status-context"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-109",
+      "verdict": "APPROVE",
+      "limits": "Corpus summary of one disputed-record context only; no person, legal status system, transaction rule, court, sanction, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota600-date",
+      "claim_ref": "claim:candidate-v5-gramota600-is-near-1230-private-letter",
+      "claim_digest": "d68a6583b7f79527f61dafada118108fc92d89e7ed04fff11b7266c69a0c20e6",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota600-is-near-1230-private-letter",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Gramoty.ru record 600; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-gramota600-date-genre"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-600",
+      "verdict": "APPROVE",
+      "limits": "One conditional 1220–1240 private-letter record with probable backward shift; unknown temporal applicability does not establish a 1230 communication, messenger, travel, lodging, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota600-khotynians",
+      "claim_ref": "claim:candidate-v5-gramota600-reports-khotynians-context",
+      "claim_digest": "d8e7efaaefe373f4602f4cf39ba5da439a1a5f4d82dc5a62de3109674b013ac4",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota600-reports-khotynians-context",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Gramoty.ru record 600; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-gramota600-khotynians"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-600",
+      "verdict": "APPROVE",
+      "limits": "One corpus summary about named people only; no identity, place, authority, political relation, conflict, or current report."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota715-date",
+      "claim_ref": "claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
+      "claim_digest": "de8adbbcb5e74e75e2603ebc303a91ceecdffc2383247b0567c5de1ec9daa601",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota715-is-dated-literary-folklore-text",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Gramoty.ru record 715; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-gramota715-date-category"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-715",
+      "verdict": "APPROVE",
+      "limits": "One conditionally dated 1220–1240 literary/folklore record only; no speaker, oral performance, belief, literacy, or current text."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota715-charm",
+      "claim_ref": "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
+      "claim_digest": "55a0de6a0d7d6ef60118e00bf8a567b0ef968391de4f6173079da07aa952ab60",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Gramoty.ru record 715; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-gramota715-genre"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-715",
+      "verdict": "APPROVE",
+      "limits": "One corpus genre/content classification only; no efficacy, diagnosis, treatment, medical role, or current ritual."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-gramota715-name",
+      "claim_ref": "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form",
+      "claim_digest": "a6ea51bb3b615a61e36ca0d4c8114ab6b05c09099446a16d1e5f9f2596aee256",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Gramoty.ru record 715; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-gramota715-mikhei"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#gramota-715",
+      "verdict": "APPROVE",
+      "limits": "One surviving textual name form only; no identity model, patient, gender/status norm, or person’s condition."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-fever-definition",
+      "claim_ref": "claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+      "claim_digest": "636bf4fca93861475392410ed707ebaf3f2454a62656c00f1718dee5ae5ec51a",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-fever-is-higher-than-normal-body-temperature",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of NLM MedlinePlus Fever; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-medlineplus-fever-definition"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#fever",
+      "verdict": "APPROVE",
+      "limits": "Universal definition only; no actor temperature, illness, cause, severity, diagnosis, or treatment."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-fever-sign",
+      "claim_ref": "claim:candidate-v5-fever-is-not-itself-a-disease",
+      "claim_digest": "cc14a07451cb835cfdbda415e2c8ac7f60dec7f4d8d16546d4a33718c53f4886",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-fever-is-not-itself-a-disease",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of NLM MedlinePlus Fever; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-medlineplus-fever-sign"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#fever",
+      "verdict": "APPROVE",
+      "limits": "Universal usual relation only; no individual diagnosis or cause."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-fever-infection",
+      "claim_ref": "claim:candidate-v5-infections-cause-most-fevers",
+      "claim_digest": "9af16466fa454f3ebd3b14becfad60c5eb58f311adbced09e6bf864bef37180b",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-infections-cause-most-fevers",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of NLM MedlinePlus Fever; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-medlineplus-infections-fever"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#fever",
+      "verdict": "APPROVE",
+      "limits": "Universal frequency statement only; no infection, organism, exposure, transmission, or outcome in a scene."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-sleep-need",
+      "claim_ref": "claim:candidate-v5-sleep-is-basic-human-need",
+      "claim_digest": "ac223416045d53403454d47f89aaf66c9f2c94c128ac1a1e5fa82f5449e03e65",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-sleep-is-basic-human-need",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of NIH/NHLBI Sleep Deprivation and Deficiency; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-nhlbi-sleep-basic-need"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#sleep",
+      "verdict": "APPROVE",
+      "limits": "Universal physiology only; not a historical Novgorod lodging, hospitality, travel, or rest custom."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-sleep-focus-reaction",
+      "claim_ref": "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
+      "claim_digest": "c2d435b709d8808720a5ab3a702709c94dba744d0d3ba4844347378ff48f827f",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of NIH/NHLBI Sleep Deprivation and Deficiency; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-nhlbi-sleep-focus-reaction"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#sleep",
+      "verdict": "APPROVE",
+      "limits": "Universal effect only; no actor sleep history, travel fitness, exact mechanic, or outcome; not a historical hospitality norm."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-old-russian-corpus",
+      "claim_ref": "claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+      "claim_digest": "e44bf828bde092fa0b4e1c78c41098b526a87e6ef54a7cee7112a5066bcf24bf",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-birch-letter-corpus-is-mostly-old-russian",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Zaliznyak’s Gramoty.ru overview; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-zaliznyak-old-russian-language"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#zaliznyak-language",
+      "verdict": "APPROVE",
+      "limits": "Corpus fact only; no character language, competence, intelligibility, or a 1230 utterance."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-human-world-blindspots-v5-household-dialect",
+      "claim_ref": "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
+      "claim_digest": "c17d1638ff0a0dccc95f3844e4501dfb6d8a258f8bb2e20560101441b0e809b0",
+      "candidate_ref": "git:87ef4ba6d6969d29457bcbaf28e03ae300863363:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-human-world-blindspots-v5.json#claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
+      "auditor_ref": "/root/blindspot_v5_verifier",
+      "independence_basis": "Independent direct review of Zaliznyak’s Gramoty.ru overview; auditor did not author candidate.",
+      "evidence_checked": [
+        "evidence:candidate-v5-zaliznyak-dialect-near-live-speech"
+      ],
+      "review_ref": "verification/macro-human-world-blindspots-v5.md#zaliznyak-language",
+      "verdict": "APPROVE",
+      "limits": "Corpus linguistic relation only: source says an absolute majority of the described household categories are dialectal and overall nearer living Old Russian speech; no scene register, utterance, actor competence, or intelligibility."
+    }
+  ]
+}

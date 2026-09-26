@@ -1,0 +1,2549 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-first-static-editorial-v1",
+      "title": "Reality-first static factual families v1",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Candidate reconstruction from completed gameplay factual-family audit",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/verification/cartography-gap-review-v2.json",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-first-usfs-wood",
+      "title": "Wood Handbook",
+      "authors": [
+        "US Forest Service"
+      ],
+      "publication": "Forest Products Laboratory",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fpl.fs.usda.gov/documnts/fplgtr/fpl_gtr190.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-first-usda-storage",
+      "title": "Grain storage management",
+      "authors": [
+        "USDA"
+      ],
+      "publication": "USDA grain storage guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://www.ars.usda.gov/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-first-osha-work",
+      "title": "Machine guarding",
+      "authors": [
+        "Occupational Safety and Health Administration"
+      ],
+      "publication": "OSHA guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://www.osha.gov/machine-guarding",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-first-nps-travel",
+      "title": "Outdoor safety",
+      "authors": [
+        "National Park Service"
+      ],
+      "publication": "NPS safety guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://www.nps.gov/subjects/safety/index.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-first-cdc-care",
+      "title": "Cleaning and hygiene",
+      "authors": [
+        "Centers for Disease Control and Prevention"
+      ],
+      "publication": "CDC hygiene guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/hygiene/about/index.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-first-fao-livestock",
+      "title": "Good practices for livestock",
+      "authors": [
+        "Food and Agriculture Organization"
+      ],
+      "publication": "FAO animal production guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fao.org/animal-production/en/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-first-place",
+      "source_ref": "source:reality-first-usfs-wood",
+      "anchor": {
+        "section": "moisture and material response"
+      },
+      "note": "Candidate applies universal material/weather relations only; no local feature, state, route, resource or result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-first-rural",
+      "source_ref": "source:reality-first-fao-livestock",
+      "anchor": {
+        "section": "animal husbandry"
+      },
+      "note": "Candidate applies husbandry and storage dependencies only; no household, animal, stock, ownership, access, yield or veterinary outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-first-work",
+      "source_ref": "source:reality-first-osha-work",
+      "anchor": {
+        "section": "moving parts and handling"
+      },
+      "note": "Candidate applies general interference and clearance relations only; it is not a worksite inventory, safety code or repair procedure.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-first-travel",
+      "source_ref": "source:reality-first-nps-travel",
+      "anchor": {
+        "section": "weather and route awareness"
+      },
+      "note": "Candidate applies universal travel dependencies only; it creates no road, guide, safe passage, distance or arrival.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-first-military",
+      "source_ref": "source:reality-first-static-editorial-v1",
+      "anchor": {
+        "section": "military ordinary basis"
+      },
+      "note": "Candidate composition of already established people, equipment, animal, place and supply concerns. It creates no force, command, weapon, conflict, doctrine or combat outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-first-social",
+      "source_ref": "source:reality-first-static-editorial-v1",
+      "anchor": {
+        "section": "social materiality and learning"
+      },
+      "note": "Candidate composition of existing writing, craft observation, possession and access boundaries. It creates no literacy, apprenticeship, title, permission, authority or legal result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-first-care",
+      "source_ref": "source:reality-first-cdc-care",
+      "anchor": {
+        "section": "hygiene and separation"
+      },
+      "note": "Candidate is non-diagnostic hygiene context only; it creates no sickness, contamination, helper, treatment, cleanliness, recovery or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-first-food-animal",
+      "source_ref": "source:reality-first-fao-livestock",
+      "anchor": {
+        "section": "feed water handling and products"
+      },
+      "note": "Candidate applies established-input food/animal dependencies only; it creates no animal, food, product, safety, ration, yield or care result.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:reality-first-place-composition",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:reality-first-travel-exposure",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:reality-first-military-basis",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-place-composition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "At an established place, drainage changes where water stands"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-place"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r2",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-place-composition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ground bearing changes footing and load placement"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-place"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r3",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-place-composition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "vegetation can screen sight and snag a load"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-place"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r4",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-place-composition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wind and wetness change exposure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-place"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-place-composition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "daylight changes what can be inspected or done safely. Each relation requires the observed place and condition."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-place"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Dry stored grain needs protection from wetting and pests"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-rural"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fodder is kept apart from animal waste"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-rural"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "animals need water, feed, shelter and routine handling"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-rural"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a yard needs a passable path for people and loads"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-rural"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cleaning or moving stock takes labour and interrupts other work. These depend on existing household, stock and stores."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-rural"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A work flow needs a clear path between material, tool and work surface"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-work"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a carried load can obstruct another task"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-work"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "heat, sparks and dry fuel need separation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-work"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "moisture changes material handling and drying time"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-work"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "moving parts or suspended loads require people and loose clothing to stay clear. Actual equipment and conditions decide the result."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-work"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-travel-exposure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A wet or uneven surface changes footing and pace"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-travel"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-travel-exposure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "darkness or poor visibility weakens wayfinding"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-travel"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-travel-exposure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wind, rain and cold increase exposure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-travel"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-travel-exposure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a heavier load changes endurance and balance"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-travel"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-first-travel-exposure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "tracks, landmarks and local knowledge can aid orientation but can be absent, old or misleading. This proves neither route nor arrival."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-travel"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:reality-first-military-basis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "People on watch need relief, food, water and shelter according to actual circumstances"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-military"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:reality-first-military-basis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "equipment needs carrying, storage and inspection"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-military"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:reality-first-military-basis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a horse needs fodder, water, rest and handling"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-military"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:reality-first-military-basis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "damp can affect clothing, cords and stored supplies"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-military"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:reality-first-military-basis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a march or guard changes only through available routes, orders, people and material means. This supplies no force, command or combat result."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-military"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A written carrier can be copied, carried, read aloud or left unread according to access and literacy"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "learning a craft requires observation, instruction, practice and materials"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "requested entry or tool use remains subject to the holder's response"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "possession and ownership are not the same fact"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a disputed object can prompt inquiry, return, refusal or appeal without fixing a legal outcome."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Cleaning hands, tools and contact surfaces removes visible soil but does not diagnose illness"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-care"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "separating waste from water and food reduces direct contact"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-care"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rest, warmth and protection can support comfort after exertion or minor injury"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-care"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a wound can be covered and observed for change"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-care"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "experienced help may be sought when available, without promised diagnosis or recovery."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-care"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r1",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Food can spoil when time, warmth and moisture favour deterioration"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "clean handling and separation from waste reduce direct fouling"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an animal product needs an actual animal and collection or processing labour"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "animals need water, feed, rest and shelter appropriate to conditions"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "milk, meat, eggs, hides or wool are not interchangeable and each depends on a real source and handling path."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-first-food-animal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reality-first-place-composition",
+      "locale": "ru",
+      "labels": [
+        "Состав условий места"
+      ],
+      "short_definition": "Связь наблюдаемых условий уже установленного места.",
+      "search_aliases": [
+        "местность",
+        "условия места"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reality-first-place-composition",
+      "locale": "en",
+      "labels": [
+        "Place condition composition"
+      ],
+      "short_definition": "Links among observed conditions of an established place.",
+      "search_aliases": [
+        "place conditions"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "locale": "ru",
+      "labels": [
+        "Сельское хозяйство и двор"
+      ],
+      "short_definition": "Условная связь хозяйства, запасов и животных.",
+      "search_aliases": [
+        "двор",
+        "хозяйство"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:reality-first-rural-household",
+      "locale": "en",
+      "labels": [
+        "Rural household and yard"
+      ],
+      "short_definition": "Conditional links among household, stores, and animals.",
+      "search_aliases": [
+        "yard",
+        "subsistence"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "locale": "ru",
+      "labels": [
+        "Поток обычной работы"
+      ],
+      "short_definition": "Связь процесса работы, пространства и внимания.",
+      "search_aliases": [
+        "мастерская",
+        "безопасность"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reality-first-worksite-flow",
+      "locale": "en",
+      "labels": [
+        "Ordinary work flow"
+      ],
+      "short_definition": "Links among work process, space, and attention.",
+      "search_aliases": [
+        "worksite",
+        "clearance"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reality-first-travel-exposure",
+      "locale": "ru",
+      "labels": [
+        "Путь, ориентирование и воздействие"
+      ],
+      "short_definition": "Условные пределы путешествия и ориентирования.",
+      "search_aliases": [
+        "дорога",
+        "ориентирование"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reality-first-travel-exposure",
+      "locale": "en",
+      "labels": [
+        "Travel, wayfinding, and exposure"
+      ],
+      "short_definition": "Conditional bounds of travel and orientation.",
+      "search_aliases": [
+        "travel",
+        "wayfinding"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:reality-first-military-basis",
+      "locale": "ru",
+      "labels": [
+        "Обычная материальная основа военного контекста"
+      ],
+      "short_definition": "Пределы средств и ухода при уже установленном военном контексте.",
+      "search_aliases": [
+        "караул",
+        "поход"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:reality-first-military-basis",
+      "locale": "en",
+      "labels": [
+        "Ordinary material basis of military context"
+      ],
+      "short_definition": "Means and care bounds in an established military context.",
+      "search_aliases": [
+        "guard",
+        "march"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "locale": "ru",
+      "labels": [
+        "Социальная материальность и обучение"
+      ],
+      "short_definition": "Границы записи, обучения, доступа и вещного спора.",
+      "search_aliases": [
+        "грамота",
+        "ученик",
+        "вещь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:reality-first-social-materiality",
+      "locale": "en",
+      "labels": [
+        "Social materiality and learning"
+      ],
+      "short_definition": "Bounds of writing, learning, access, and possession inquiry.",
+      "search_aliases": [
+        "writing",
+        "apprentice",
+        "property"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "locale": "ru",
+      "labels": [
+        "Обычный уход и санитарное разделение"
+      ],
+      "short_definition": "Недiagnosticические пределы обычного ухода.",
+      "search_aliases": [
+        "уход",
+        "чистота"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:reality-first-ordinary-care",
+      "locale": "en",
+      "labels": [
+        "Ordinary care and sanitation"
+      ],
+      "short_definition": "Non-diagnostic bounds of ordinary care.",
+      "search_aliases": [
+        "care",
+        "sanitation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "locale": "ru",
+      "labels": [
+        "Пища, животные и уход"
+      ],
+      "short_definition": "Условные связи пищи, животных и средств ухода.",
+      "search_aliases": [
+        "корм",
+        "животное"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:reality-first-food-animal-care",
+      "locale": "en",
+      "labels": [
+        "Food, animals, and care"
+      ],
+      "short_definition": "Conditional links among food, animals, and care means.",
+      "search_aliases": [
+        "fodder",
+        "animal care"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
+      "locale": "ru",
+      "runtime_text": "Дренаж меняет, где стоит вода",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
+      "locale": "en",
+      "runtime_text": "At an established place, drainage changes where water stands",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r2",
+      "locale": "ru",
+      "runtime_text": "несущая способность грунта — опору и постановку груза",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r2",
+      "locale": "en",
+      "runtime_text": "ground bearing changes footing and load placement",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r3",
+      "locale": "ru",
+      "runtime_text": "растительность может закрывать обзор и цеплять груз",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r3",
+      "locale": "en",
+      "runtime_text": "vegetation can screen sight and snag a load",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r4",
+      "locale": "ru",
+      "runtime_text": "ветер и сырость меняют воздействие среды",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r4",
+      "locale": "en",
+      "runtime_text": "wind and wetness change exposure",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+      "locale": "ru",
+      "runtime_text": "дневной свет — возможность осмотра и работы. Это требует наблюдения реального места, не создаёт его.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+      "locale": "en",
+      "runtime_text": "daylight changes what can be inspected or done safely. Each relation requires the observed place and condition.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+      "locale": "ru",
+      "runtime_text": "Сухое зерно защищают от намокания и вредителей",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
+      "locale": "en",
+      "runtime_text": "Dry stored grain needs protection from wetting and pests",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
+      "locale": "ru",
+      "runtime_text": "корм держат отдельно от навоза",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
+      "locale": "en",
+      "runtime_text": "fodder is kept apart from animal waste",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
+      "locale": "ru",
+      "runtime_text": "животным нужны вода, корм, укрытие и уход",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
+      "locale": "en",
+      "runtime_text": "animals need water, feed, shelter and routine handling",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4",
+      "locale": "ru",
+      "runtime_text": "во дворе нужен проход для людей и грузов",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4",
+      "locale": "en",
+      "runtime_text": "a yard needs a passable path for people and loads",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+      "locale": "ru",
+      "runtime_text": "чистка или перегон требует труда. Это зависимости уже существующих хозяйства, запасов и животных.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+      "locale": "en",
+      "runtime_text": "cleaning or moving stock takes labour and interrupts other work. These depend on existing household, stock and stores.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
+      "locale": "ru",
+      "runtime_text": "Рабочий поток требует прохода между материалом, инструментом и поверхностью",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
+      "locale": "en",
+      "runtime_text": "A work flow needs a clear path between material, tool and work surface",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
+      "locale": "ru",
+      "runtime_text": "груз может мешать другой операции",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
+      "locale": "en",
+      "runtime_text": "a carried load can obstruct another task",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+      "locale": "ru",
+      "runtime_text": "жар, искры и сухое топливо разводят",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+      "locale": "en",
+      "runtime_text": "heat, sparks and dry fuel need separation",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+      "locale": "ru",
+      "runtime_text": "влага меняет сушку",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+      "locale": "en",
+      "runtime_text": "moisture changes material handling and drying time",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
+      "locale": "ru",
+      "runtime_text": "от движущихся и подвешенных частей держатся в стороне. Исход зависит от реального оборудования и условий.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
+      "locale": "en",
+      "runtime_text": "moving parts or suspended loads require people and loose clothing to stay clear. Actual equipment and conditions decide the result.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
+      "locale": "ru",
+      "runtime_text": "Мокрая или неровная поверхность меняет опору и темп",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
+      "locale": "en",
+      "runtime_text": "A wet or uneven surface changes footing and pace",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2",
+      "locale": "ru",
+      "runtime_text": "темнота ослабляет ориентирование",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2",
+      "locale": "en",
+      "runtime_text": "darkness or poor visibility weakens wayfinding",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
+      "locale": "ru",
+      "runtime_text": "ветер, дождь и холод усиливают воздействие среды",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
+      "locale": "en",
+      "runtime_text": "wind, rain and cold increase exposure",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
+      "locale": "ru",
+      "runtime_text": "тяжёлый груз меняет выносливость",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
+      "locale": "en",
+      "runtime_text": "a heavier load changes endurance and balance",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+      "locale": "ru",
+      "runtime_text": "следы и ориентиры могут помогать, но быть старыми или ложными. Это не доказывает маршрут или прибытие.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+      "locale": "en",
+      "runtime_text": "tracks, landmarks and local knowledge can aid orientation but can be absent, old or misleading. This proves neither route nor arrival.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
+      "locale": "ru",
+      "runtime_text": "Караульным нужны смена, пища, вода и укрытие",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
+      "locale": "en",
+      "runtime_text": "People on watch need relief, food, water and shelter according to actual circumstances",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
+      "locale": "ru",
+      "runtime_text": "снаряжению — переноска, хранение и осмотр",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
+      "locale": "en",
+      "runtime_text": "equipment needs carrying, storage and inspection",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
+      "locale": "ru",
+      "runtime_text": "лошади — корм, вода, отдых и уход",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
+      "locale": "en",
+      "runtime_text": "a horse needs fodder, water, rest and handling",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+      "locale": "ru",
+      "runtime_text": "сырость влияет на одежду, верёвки и запасы",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+      "locale": "en",
+      "runtime_text": "damp can affect clothing, cords and stored supplies",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
+      "locale": "ru",
+      "runtime_text": "поход меняется только через реальные пути, приказы, людей и средства. Это не создаёт отряд, командование или боевой исход.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
+      "locale": "en",
+      "runtime_text": "a march or guard changes only through available routes, orders, people and material means. This supplies no force, command or combat result.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+      "locale": "ru",
+      "runtime_text": "Запись можно переписать, перенести, прочесть вслух или оставить непрочитанной — по доступу и грамотности",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+      "locale": "en",
+      "runtime_text": "A written carrier can be copied, carried, read aloud or left unread according to access and literacy",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
+      "locale": "ru",
+      "runtime_text": "ремесло требует наблюдения, наставления, практики и материалов",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
+      "locale": "en",
+      "runtime_text": "learning a craft requires observation, instruction, practice and materials",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
+      "locale": "ru",
+      "runtime_text": "вход или инструмент зависят от ответа держателя",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
+      "locale": "en",
+      "runtime_text": "requested entry or tool use remains subject to the holder's response",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+      "locale": "ru",
+      "runtime_text": "владение и собственность — не один факт",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+      "locale": "en",
+      "runtime_text": "possession and ownership are not the same fact",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
+      "locale": "ru",
+      "runtime_text": "спорная вещь допускает разбирательство, возврат, отказ или обращение без заданного юридического итога.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
+      "locale": "en",
+      "runtime_text": "a disputed object can prompt inquiry, return, refusal or appeal without fixing a legal outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+      "locale": "ru",
+      "runtime_text": "Мытьё рук, инструментов и поверхностей убирает видимую грязь, но не ставит диагноз",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+      "locale": "en",
+      "runtime_text": "Cleaning hands, tools and contact surfaces removes visible soil but does not diagnose illness",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
+      "locale": "ru",
+      "runtime_text": "отделение отходов от воды и пищи уменьшает прямой контакт",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
+      "locale": "en",
+      "runtime_text": "separating waste from water and food reduces direct contact",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+      "locale": "ru",
+      "runtime_text": "отдых, тепло и защита поддерживают комфорт после нагрузки",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+      "locale": "en",
+      "runtime_text": "rest, warmth and protection can support comfort after exertion or minor injury",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
+      "locale": "ru",
+      "runtime_text": "рану можно закрыть и наблюдать",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
+      "locale": "en",
+      "runtime_text": "a wound can be covered and observed for change",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+      "locale": "ru",
+      "runtime_text": "опытную помощь ищут при наличии без обещания диагноза или выздоровления.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+      "locale": "en",
+      "runtime_text": "experienced help may be sought when available, without promised diagnosis or recovery.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r1",
+      "locale": "ru",
+      "runtime_text": "Пища может портиться от времени, тепла и влаги",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r1",
+      "locale": "en",
+      "runtime_text": "Food can spoil when time, warmth and moisture favour deterioration",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
+      "locale": "ru",
+      "runtime_text": "чистое обращение и отделение от отходов уменьшают загрязнение",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
+      "locale": "en",
+      "runtime_text": "clean handling and separation from waste reduce direct fouling",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+      "locale": "ru",
+      "runtime_text": "животный продукт требует реального животного и труда сбора либо обработки",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+      "locale": "en",
+      "runtime_text": "an animal product needs an actual animal and collection or processing labour",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
+      "locale": "ru",
+      "runtime_text": "животным нужны вода, корм, отдых и укрытие",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
+      "locale": "en",
+      "runtime_text": "animals need water, feed, rest and shelter appropriate to conditions",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+      "locale": "ru",
+      "runtime_text": "молоко, мясо, яйца, шкуры и шерсть не взаимозаменяемы и требуют реального источника и пути обращения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+      "locale": "en",
+      "runtime_text": "milk, meat, eggs, hides or wool are not interchangeable and each depends on a real source and handling path.",
+      "search_aliases": []
+    }
+  ]
+}

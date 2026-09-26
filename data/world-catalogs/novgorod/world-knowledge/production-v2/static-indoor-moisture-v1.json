@@ -1,0 +1,198 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-epa-mold-moisture-home",
+      "title": "A Brief Guide to Mold, Moisture and Your Home",
+      "authors": [
+        "United States Environmental Protection Agency"
+      ],
+      "publication": "US EPA, updated February 18, 2026",
+      "source_kind": "official_documentation",
+      "citation": "https://www.epa.gov/mold/brief-guide-mold-moisture-and-your-home",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "source_ref": "source:research-epa-mold-moisture-home",
+      "anchor": {
+        "section": "Moisture and Mold Prevention and Control Tips — Actions that will help to reduce humidity"
+      },
+      "note": "EPA identifies combustion appliances, including stoves, as water-vapour sources that increase humidity unless vented outdoors. Conditional stove premise, not every fuel or combustion reaction; no actual appliance, draught, humidity or historical installation is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-increased-ventilation-can-help-reduce-condensation",
+      "source_ref": "source:research-epa-mold-moisture-home",
+      "anchor": {
+        "section": "Moisture and Mold Prevention and Control Tips — Actions that will help prevent condensation"
+      },
+      "note": "EPA lists increased ventilation or air movement among measures that help prevent condensation. Conditional mitigation, not guaranteed drying or a universal effect of opening a window; no current room conditions are inferred.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fuel_burning_stoves_can_produce_water_vapour_and_increase_indoor_humidity_without_outdoor_venting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-fuel-burning-stoves-can-add-indoor-water-vapour"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-increased-ventilation-can-help-reduce-condensation",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "increased_ventilation_or_air_movement_can_help_reduce_condensation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-increased-ventilation-can-help-reduce-condensation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "locale": "ru",
+      "labels": [
+        "Печное горение и влажность помещения"
+      ],
+      "short_definition": "Печное горение и влажность помещения",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "locale": "en",
+      "labels": [
+        "Stove combustion and indoor humidity"
+      ],
+      "short_definition": "Stove combustion and indoor humidity",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation",
+      "locale": "ru",
+      "labels": [
+        "Воздухообмен и конденсация"
+      ],
+      "short_definition": "Воздухообмен и конденсация",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation",
+      "locale": "en",
+      "labels": [
+        "Air movement and condensation"
+      ],
+      "short_definition": "Air movement and condensation",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "locale": "ru",
+      "runtime_text": "Печи, сжигающие топливо, могут выделять водяной пар и повышать влажность помещения без отвода наружу. Наличие печи, состав топлива, тяга и фактическая влажность задаются состоянием сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "locale": "en",
+      "runtime_text": "Fuel-burning stoves can produce water vapour and increase indoor humidity without outdoor venting. Stove presence, fuel composition, draught and actual humidity come from scene state.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-increased-ventilation-can-help-reduce-condensation",
+      "locale": "ru",
+      "runtime_text": "Усиление вентиляции или движения воздуха может помогать уменьшать конденсацию. Результат зависит от фактических условий; это не устанавливает воздухообмен, температуру, влажность или сухость конкретного помещения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-increased-ventilation-can-help-reduce-condensation",
+      "locale": "en",
+      "runtime_text": "Increased ventilation or air movement can help reduce condensation. The result depends on actual conditions; this establishes no air exchange, temperature, humidity or dryness for a particular room.",
+      "search_aliases": []
+    }
+  ]
+}

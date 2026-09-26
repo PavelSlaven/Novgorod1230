@@ -1,0 +1,52 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physical-environment-v3-smoke-particles-can-attenuate-light-and-reduce-visibility",
+      "claim_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+      "claim_digest": "bc1baaf999a3c46dd05e108e6dd476e70d135e6792ce217692d61956c5384ffb",
+      "candidate_ref": "git:1273859aa502c7798d80c9a48245d040a448f8f6:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physical-environment-v3.json#claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+      "auditor_ref": "verification-auditor:independent-physical-environment-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:gameplay-pe3-nist-smoke-visibility"
+      ],
+      "review_ref": "verification/gameplay-physical-environment-v3.md#independent-verification-gameplay-physical-environment-v3",
+      "verdict": "APPROVE",
+      "limits": "NIST supports smoke optical attenuation and visibility estimation only; no concrete smoke, range, perception, or scene outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physical-environment-v3-aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+      "claim_ref": "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+      "claim_digest": "47e67e9287fde1dcf639c1c015a0573cf346e39465a49c6ff1672ef3ba4d80a5",
+      "candidate_ref": "git:1273859aa502c7798d80c9a48245d040a448f8f6:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physical-environment-v3.json#claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+      "auditor_ref": "verification-auditor:independent-physical-environment-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:gameplay-pe3-aquatic-life-forms",
+        "evidence:gameplay-pe3-uf-ifas-aquatic-types"
+      ],
+      "review_ref": "verification/gameplay-physical-environment-v3.md#independent-verification-gameplay-physical-environment-v3",
+      "verdict": "APPROVE",
+      "limits": "Class-level form distinction only; no complete species key, local plant, or passability conclusion."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physical-environment-v3-modern-fibre-rope-condition-can-reduce-available-strength",
+      "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+      "claim_digest": "a57aac013b94b0e4366a3c108752add668e3d722ae12828165d31356db1584db",
+      "candidate_ref": "git:46ca23c9fdbdc2a6aa50f4d0890cae1c52a0d6b5:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physical-environment-v3.json#claim:modern-fibre-rope-condition-can-reduce-available-strength",
+      "auditor_ref": "verification-auditor:independent-physical-environment-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:gameplay-pe3-uaf-fibre-rope-condition",
+        "evidence:gameplay-pe3-army-natural-fibre-rope-strength"
+      ],
+      "review_ref": "verification/gameplay-physical-environment-v3.md#independent-verification-gameplay-physical-environment-v3",
+      "verdict": "APPROVE",
+      "limits": "Inferred across modern and natural fibre-rope evidence; no number, load, break, wet condition, cannabis/hemp-specific property, historical construction, or concrete scene rope."
+    }
+  ]
+}

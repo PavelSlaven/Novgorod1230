@@ -1,0 +1,170 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-measurement-net-excludes-tare",
+      "claim_ref": "claim:measurement-net-excludes-tare",
+      "claim_digest": "f4db6bda99ac999571766b2107aaff062c930fedf8de1eb20c3f2d55fe8269f9",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:measurement-net-excludes-tare",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-measurement-tare"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General physical/dimensional relation only; no medieval unit, fixed density, current scale law, quantity, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-measurement-grain-mass-volume-density",
+      "claim_ref": "claim:measurement-grain-mass-volume-density",
+      "claim_digest": "02ba5a64764fe0a8702d70f3f210c0e7fbb80c91c74255d0e3a06d4357184ea2",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:measurement-grain-mass-volume-density",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-measurement-grain"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General physical/dimensional relation only; no medieval unit, fixed density, current scale law, quantity, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-measurement-units-must-be-identified",
+      "claim_ref": "claim:measurement-units-must-be-identified",
+      "claim_digest": "7517aa86204e5844c47593b914df4497dbfae97695da68b785404f9a8ae921d7",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:measurement-units-must-be-identified",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-measurement-grain"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "General physical/dimensional relation only; no medieval unit, fixed density, current scale law, quantity, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-milling-grain-compression-shear-fracture",
+      "claim_ref": "claim:milling-grain-compression-shear-fracture",
+      "claim_digest": "ad689e3b4a51d66f9c93a9b30bc78dc1753a79411ee0a6bf1b385a929780b2cd",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:milling-grain-compression-shear-fracture",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-milling-fracture"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Qualitative grain/plate-mill mechanism only; no historical machine availability, universal mill setting, quantity, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-milling-moisture-changes-grain-deformation",
+      "claim_ref": "claim:milling-moisture-changes-grain-deformation",
+      "claim_digest": "eddd330655beb3a2a540c2369efd33d68bf25b84d2b80c1cf79f3cf995930ae0",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:milling-moisture-changes-grain-deformation",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-milling-fracture"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Qualitative grain/plate-mill mechanism only; no historical machine availability, universal mill setting, quantity, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-milling-plate-gap-pressure-fineness",
+      "claim_ref": "claim:milling-plate-gap-pressure-fineness",
+      "claim_digest": "22f943ccf9b04ff8665bb9936cc5c1ae0afa8070a89222a3122f3f0d491be10c",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:milling-plate-gap-pressure-fineness",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-milling-fracture"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Qualitative grain/plate-mill mechanism only; no historical machine availability, universal mill setting, quantity, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-sound-spreading-reduces-intensity",
+      "claim_ref": "claim:sound-spreading-reduces-intensity",
+      "claim_digest": "0c3804ee9843575dcf03df735df587334160ee23f210d37915a5bdab9bd721f3",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:sound-spreading-reduces-intensity",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-sound-intensity"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Conditional qualitative acoustics only; no local audible distance, weather state, church acoustics, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-sound-background-noise-masks-speech",
+      "claim_ref": "claim:sound-background-noise-masks-speech",
+      "claim_digest": "adbb55f237562be7b6285d02bec5f691fa4d586fa3c5166f137ae5bd9cc7b54d",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:sound-background-noise-masks-speech",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-sound-intensity"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Conditional qualitative acoustics only; no local audible distance, weather state, church acoustics, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-sound-reflections-arrive-after-direct-path",
+      "claim_ref": "claim:sound-reflections-arrive-after-direct-path",
+      "claim_digest": "3e229506592d34f8df5f63d61c3e15dc4d6d40e95eab4bdb52f758cc7006754b",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:sound-reflections-arrive-after-direct-path",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-sound-delay"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Conditional qualitative acoustics only; no local audible distance, weather state, church acoustics, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-sound-wind-temperature-gradients-refract",
+      "claim_ref": "claim:sound-wind-temperature-gradients-refract",
+      "claim_digest": "828e7db0679141392b807d4dde89b197807a94736e0a0a56b7c880a3609dee38",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:sound-wind-temperature-gradients-refract",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-sound-weather"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Conditional qualitative acoustics only; no local audible distance, weather state, church acoustics, or scene result."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-measurement-sound-milling-v1-random-independent-trials-do-not-owe-reversal",
+      "claim_ref": "claim:random-independent-trials-do-not-owe-reversal",
+      "claim_digest": "731d097666164ba6038d21c29fb355b8f24a837aa969c1ea4c7a5a47a6f5d2c8",
+      "candidate_ref": "git:ce8f135152accb0fe35ed488371a4c9846f64b25:data/world-catalogs/novgorod/world-knowledge/production-v1/static-measurement-sound-milling-v1.json#claim:random-independent-trials-do-not-owe-reversal",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live primary-source and domain review of current RU/EN claim, evidence, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:static-random-independence"
+      ],
+      "review_ref": "verification/static-measurement-sound-milling-v1.md#approved-claims",
+      "verdict": "APPROVE",
+      "limits": "Conditional independent fair-roll model only; no physical die, historical game, RNG implementation, or current fairness assertion."
+    }
+  ]
+}

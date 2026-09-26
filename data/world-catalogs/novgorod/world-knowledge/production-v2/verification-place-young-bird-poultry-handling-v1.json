@@ -1,0 +1,57 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place08-place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+      "claim_ref": "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+      "claim_digest": "413f9fafb3eee63507c7e00d54de5a87809a4af297e825e0cd806cda3d7d4eec",
+      "candidate_ref": "git:b274091285cc4e0e650fa158c9712a7f781bf41c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-young-bird-poultry-handling-v1.json#claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+      "auditor_ref": "/root/place08_verify_birds",
+      "independence_basis": "Independent source/domain reviewer distinct from root editor and research author /root/place08_fauna_research; actual source access and two superseded REQUEST_CHANGES rounds are recorded in the review note.",
+      "evidence_checked": ["evidence:place-feathered-mobile-young-bird-can-be-fledgling"],
+      "review_ref": "verification/place-young-bird-poultry-handling-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Fully feathered and able to hop or flutter only; ground presence alone proves neither orphaning nor injury, species, health, parents, nest or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place08-place-young-bird-plumage-and-immediate-danger-bound-intervention",
+      "claim_ref": "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+      "claim_digest": "283d815a3e6603d4e3cb9f66e76bce5c21c499a2ddb65e47e35975f6a06f39a6",
+      "candidate_ref": "git:b274091285cc4e0e650fa158c9712a7f781bf41c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-young-bird-poultry-handling-v1.json#claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+      "auditor_ref": "/root/place08_verify_birds",
+      "independence_basis": "Independent source/domain reviewer distinct from root editor and research author /root/place08_fauna_research; actual source access and two superseded REQUEST_CHANGES rounds are recorded in the review note.",
+      "evidence_checked": ["evidence:place-sparse-young-bird-or-direct-danger-changes-response", "evidence:place-young-bird-direct-danger-nearby-move"],
+      "review_ref": "verification/place-young-bird-poultry-handling-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Known accessible nest for a bare or sparsely feathered nestling; nearby move is cat-threat-specific, not a general danger, handling, feeding, treatment or outcome rule."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place08-place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+      "claim_ref": "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+      "claim_digest": "7a396925fba335746e69ec5cbce24bd3b6d63df411e016812962f50617675800",
+      "candidate_ref": "git:b274091285cc4e0e650fa158c9712a7f781bf41c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-young-bird-poultry-handling-v1.json#claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression",
+      "auditor_ref": "/root/place08_verify_birds",
+      "independence_basis": "Independent source/domain reviewer distinct from root editor and research author /root/place08_fauna_research; actual source access and two superseded REQUEST_CHANGES rounds are recorded in the review note.",
+      "evidence_checked": ["evidence:place-domestic-fowl-body-wing-support", "evidence:place-domestic-fowl-whole-body-and-wing-restraint"],
+      "review_ref": "verification/place-young-bird-poultry-handling-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Brief whole-body and folded-wing support without breast compression; no species protocol, force, duration, diagnosis, treatment or safety guarantee."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place08-place-poultry-observable-emergency-signs-bound-casual-examination",
+      "claim_ref": "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+      "claim_digest": "c9b9bf0f6562c0372fe7360aa1ad62cebaa2ba3f2e92447d9f641802893c1c6e",
+      "candidate_ref": "git:b274091285cc4e0e650fa158c9712a7f781bf41c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-young-bird-poultry-handling-v1.json#claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+      "auditor_ref": "/root/place08_verify_birds",
+      "independence_basis": "Independent source/domain reviewer distinct from root editor and research author /root/place08_fauna_research; actual source access and two superseded REQUEST_CHANGES rounds are recorded in the review note.",
+      "evidence_checked": ["evidence:place-poultry-observable-emergency-signs"],
+      "review_ref": "verification/place-young-bird-poultry-handling-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Listed observable emergency categories bound casual examination but diagnose no cause and create no available care, treatment or outcome."
+    }
+  ]
+}

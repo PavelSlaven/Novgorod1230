@@ -1,0 +1,1803 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {
+    "architecture_settlement": {
+      "attested_form": {
+        "subject_domains": [
+          "architecture_settlement"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "architecture_settlement"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Documented settlement form; no present building, ownership or permission is implied."
+      },
+      "may_attach_to": {
+        "subject_domains": [
+          "architecture_settlement"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "architecture_settlement"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Documented conditional architectural relation; no default layout is implied."
+      },
+      "attested_function": {
+        "subject_domains": [
+          "architecture_settlement"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Documented function; no current fuel, contents, capacity or successful process is implied."
+      },
+      "may_enclose": {
+        "subject_domains": [
+          "architecture_settlement"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "architecture_settlement"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Documented possible enclosure relation; no present boundary, owner or access rule is implied."
+      }
+    }
+  },
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:makarov-northern-village-3",
+      "title": "Археология севернорусской деревни X–XIII веков. Том 3: Палеоэкологические условия, общество и культура",
+      "authors": [
+        "N. A. Makarov (ed.)"
+      ],
+      "publication": "IA RAS / Nauka, 2009",
+      "source_kind": "scholarship",
+      "citation": "https://www.archaeolog.ru/media/series/arch-northrus-village/Arch_northrus_village-3.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:kolchin-novgorod-1957",
+      "title": "Русский феодальный город Великий Новгород",
+      "authors": [
+        "B. A. Kolchin"
+      ],
+      "publication": "Советская археология 3 (1957)",
+      "source_kind": "scholarship",
+      "citation": "https://arheologija.ru/kolchin-b-a-russkiy-feodalnyiy-gorod-velikiy-novgorod/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only."
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:northern-village-economic-context",
+      "source_ref": "source:makarov-northern-village-3",
+      "anchor": {
+        "page": "5–6",
+        "section": "Foreword: rural economy and life support; agriculture and crop composition"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS: verification/verification-rural-settlement-context.md. Northern-Rus comparative context, not direct Novgorod-1230 attestation; no pogost or seasonal routine.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:kolchin-settlement",
+      "source_ref": "source:kolchin-novgorod-1957",
+      "anchor": {
+        "section": "Новгородские улицы; Основная масса новгородских домов; План застройки 40–50-х годов XIII в."
+      },
+      "note": "Independently reopened through browser-harness; urban Novgorod categories only.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:rural-settlement-context",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:log-structure",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:plank-vestibule",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:domestic-oven",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:underfloor-space",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:yard",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:post-fence",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:workshop",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:street",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-paving",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:pine-spruce-log",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:oak-shingle",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:cart",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:timber-dwelling",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:architecture_settlement:log-structure"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:bone",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:iron-ice-grip",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:bone-skate",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:rural-household-economy-context",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:rural-settlement-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rural_household_economy_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:northern-village-economic-context"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:rural-agriculture-crop-context",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:rural-settlement-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rural_agriculture_crop_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:northern-village-economic-context"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-wood-building",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:log-structure",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wood"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-pine-spruce-log",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:log-structure",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:pine-spruce-log"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-log-building-form",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:timber-dwelling",
+      "predicate": "attested_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:log-structure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-vestibule-log",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:plank-vestibule",
+      "predicate": "may_attach_to",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:log-structure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-oven-heating",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:domestic-oven",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "dwelling_heating"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-oven-cooking",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:domestic-oven",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "food_preparation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-underfloor-utility",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:underfloor-space",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "cold_utility_space"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-underfloor-storage",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:underfloor-space",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "property_provisions_utensils_storage"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-oak-shingle-roof",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:log-structure",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:oak-shingle"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-post-fence-yard",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:post-fence",
+      "predicate": "may_enclose",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:yard"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-workshop-street",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:workshop",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "urban_street_frontage"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-wooden-paving",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:wooden-paving",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "urban_street_surface"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-cart-transport",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:street",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:cart"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-ice-grip-iron",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-ice-grip",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:iron"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-ice-grip-footwear",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-ice-grip",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:footwear"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-skate-bone",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:bone-skate",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:bone"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:settlement-skate-footwear",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:bone-skate",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:footwear"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:rural-settlement-context",
+      "locale": "ru",
+      "labels": [
+        "Контекст севернорусского сельского поселения"
+      ],
+      "short_definition": "Контекст севернорусского сельского поселения",
+      "search_aliases": [
+        "Контекст севернорусского сельского поселения"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:rural-settlement-context",
+      "locale": "en",
+      "labels": [
+        "Northern-Rus rural settlement context"
+      ],
+      "short_definition": "Northern-Rus rural settlement context",
+      "search_aliases": [
+        "Northern-Rus rural settlement context"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:log-structure",
+      "locale": "ru",
+      "labels": [
+        "Срубная постройка"
+      ],
+      "short_definition": "Срубная постройка: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Срубная постройка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:log-structure",
+      "locale": "en",
+      "labels": [
+        "Log-built structure"
+      ],
+      "short_definition": "Attested log-built urban structure category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Log-built structure"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:plank-vestibule",
+      "locale": "ru",
+      "labels": [
+        "Дощатые сени"
+      ],
+      "short_definition": "Дощатые сени: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Дощатые сени"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:plank-vestibule",
+      "locale": "en",
+      "labels": [
+        "Plank vestibule"
+      ],
+      "short_definition": "Attested adjoining vestibule category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Plank vestibule"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:domestic-oven",
+      "locale": "ru",
+      "labels": [
+        "Домашняя печь"
+      ],
+      "short_definition": "Домашняя печь: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Домашняя печь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:domestic-oven",
+      "locale": "en",
+      "labels": [
+        "Domestic oven"
+      ],
+      "short_definition": "Attested urban domestic oven category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Domestic oven"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:underfloor-space",
+      "locale": "ru",
+      "labels": [
+        "Подклет"
+      ],
+      "short_definition": "Подклет: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Подклет"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:underfloor-space",
+      "locale": "en",
+      "labels": [
+        "Underfloor utility space"
+      ],
+      "short_definition": "Attested cold utility underfloor category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Underfloor utility space"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:yard",
+      "locale": "ru",
+      "labels": [
+        "Двор"
+      ],
+      "short_definition": "Двор: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Двор"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:yard",
+      "locale": "en",
+      "labels": [
+        "Yard"
+      ],
+      "short_definition": "Urban yard category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Yard"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:post-fence",
+      "locale": "ru",
+      "labels": [
+        "Частокол"
+      ],
+      "short_definition": "Частокол: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Частокол"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:post-fence",
+      "locale": "en",
+      "labels": [
+        "Post fence"
+      ],
+      "short_definition": "Attested urban post-fence category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Post fence"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:workshop",
+      "locale": "ru",
+      "labels": [
+        "Мастерская"
+      ],
+      "short_definition": "Мастерская: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Мастерская"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:workshop",
+      "locale": "en",
+      "labels": [
+        "Workshop"
+      ],
+      "short_definition": "Attested urban workshop category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Workshop"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:street",
+      "locale": "ru",
+      "labels": [
+        "Улица"
+      ],
+      "short_definition": "Улица: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Улица"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:street",
+      "locale": "en",
+      "labels": [
+        "Street"
+      ],
+      "short_definition": "Urban street category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Street"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-paving",
+      "locale": "ru",
+      "labels": [
+        "Деревянная мостовая"
+      ],
+      "short_definition": "Деревянная мостовая: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Деревянная мостовая"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-paving",
+      "locale": "en",
+      "labels": [
+        "Wooden street paving"
+      ],
+      "short_definition": "Attested urban route-surface category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Wooden street paving"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pine-spruce-log",
+      "locale": "ru",
+      "labels": [
+        "Сосновое или еловое бревно"
+      ],
+      "short_definition": "Сосновое или еловое бревно: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Сосновое или еловое бревно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pine-spruce-log",
+      "locale": "en",
+      "labels": [
+        "Pine or spruce log"
+      ],
+      "short_definition": "Attested construction-material category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Pine or spruce log"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:oak-shingle",
+      "locale": "ru",
+      "labels": [
+        "Дубовая кровельная дрань"
+      ],
+      "short_definition": "Дубовая кровельная дрань: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Дубовая кровельная дрань"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:oak-shingle",
+      "locale": "en",
+      "labels": [
+        "Oak roof shingle"
+      ],
+      "short_definition": "Attested roof-covering category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Oak roof shingle"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:cart",
+      "locale": "ru",
+      "labels": [
+        "Телега"
+      ],
+      "short_definition": "Телега: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте.",
+      "search_aliases": [
+        "Телега"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:cart",
+      "locale": "en",
+      "labels": [
+        "Cart"
+      ],
+      "short_definition": "Attested urban transport category. Historical compatibility is not present inventory.",
+      "search_aliases": [
+        "Cart"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:timber-dwelling",
+      "locale": "ru",
+      "labels": [
+        "Деревянное жилище"
+      ],
+      "short_definition": "Жилище с деревянными конструкциями; историческая категория, не наличие в мире.",
+      "search_aliases": [
+        "деревянный дом"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:timber-dwelling",
+      "locale": "en",
+      "labels": [
+        "Timber dwelling"
+      ],
+      "short_definition": "A dwelling with timber structural fabric; historical category, not current presence.",
+      "search_aliases": [
+        "wooden house"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:bone",
+      "locale": "ru",
+      "labels": [
+        "Кость"
+      ],
+      "short_definition": "Кость: материальная категория; конкретное наличие устанавливает мир.",
+      "search_aliases": [
+        "Кость"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:bone",
+      "locale": "en",
+      "labels": [
+        "Bone"
+      ],
+      "short_definition": "Bone: material category; presence depends on the world state.",
+      "search_aliases": [
+        "Bone"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-ice-grip",
+      "locale": "ru",
+      "labels": [
+        "Железный ледоход"
+      ],
+      "short_definition": "Железный ледоход: материальная категория; конкретное наличие устанавливает мир.",
+      "search_aliases": [
+        "Железный ледоход"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-ice-grip",
+      "locale": "en",
+      "labels": [
+        "Iron ice grip"
+      ],
+      "short_definition": "Iron ice grip: material category; presence depends on the world state.",
+      "search_aliases": [
+        "Iron ice grip"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:bone-skate",
+      "locale": "ru",
+      "labels": [
+        "Костяной конёк"
+      ],
+      "short_definition": "Костяной конёк: материальная категория; конкретное наличие устанавливает мир.",
+      "search_aliases": [
+        "Костяной конёк"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:bone-skate",
+      "locale": "en",
+      "labels": [
+        "Bone skate"
+      ],
+      "short_definition": "Bone skate: material category; presence depends on the world state.",
+      "search_aliases": [
+        "Bone skate"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rural-household-economy-context",
+      "locale": "ru",
+      "runtime_text": "Севернорусское сельское поселение X–XIII веков исторически совместимо с хозяйственной и жизненно-обеспечивающей деятельностью сельской общины. Это сравнительная археологическая рамка, выводимая для Новгородской земли 1100–1300 годов, а не прямое местное свидетельство, обязательная или единственная сельская деятельность. Она не создаёт поселение, постройку, человека, деятельность, запас, владение или доступ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rural-household-economy-context",
+      "locale": "en",
+      "runtime_text": "An X–XIII-century northern-Rus rural settlement is historically compatible with rural household economy and community life support. This is a comparative archaeological envelope, inferred for Novgorod Land in 1100–1300, not direct local attestation or a mandatory or exclusive rural activity. It creates no settlement, building, person, activity, stock, ownership or access.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rural-agriculture-crop-context",
+      "locale": "ru",
+      "runtime_text": "В севернорусском сельском археологическом контексте X–XIII веков земледелие и состав сельскохозяйственных культур являются исторически совместимыми хозяйственными измерениями. Перенос на Новгородскую землю 1100–1300 годов — выводимая сравнительная совместимость, а не свидетельство земледелия или конкретной культуры в каждом поселении. Отсюда не следуют наличное поле, семена, инструмент, работник, обработка земли, календарь, урожай, запас пищи или повинность.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:rural-agriculture-crop-context",
+      "locale": "en",
+      "runtime_text": "In the X–XIII-century northern-Rus rural archaeological context, agriculture and the composition of agricultural crops are historically compatible economic dimensions. Transfer to Novgorod Land in 1100–1300 is inferred comparative compatibility, not evidence that every settlement farmed or had any particular crop. No current field, seed, tool, labourer, cultivation, calendar, yield, food stock or duty follows.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-wood-building",
+      "locale": "ru",
+      "runtime_text": "В средневековом Новгороде жилые постройки преимущественно были деревянными. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "В средневековом Новгороде жилые постройки преимущественно были деревянными."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-wood-building",
+      "locale": "en",
+      "runtime_text": "Medieval Novgorod dwellings were predominantly wooden. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Medieval Novgorod dwellings were predominantly wooden."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-pine-spruce-log",
+      "locale": "ru",
+      "runtime_text": "Для новгородских срубов применяли сосновые и еловые брёвна. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Для новгородских срубов применяли сосновые и еловые брёвна."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-pine-spruce-log",
+      "locale": "en",
+      "runtime_text": "Pine and spruce logs were used in Novgorod log buildings. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Pine and spruce logs were used in Novgorod log buildings."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-log-building-form",
+      "locale": "ru",
+      "runtime_text": "Для деревянных домов средневекового Новгорода засвидетельствована срубная конструкция. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Для деревянных домов средневекового Новгорода засвидетельствована срубная конструкция."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-log-building-form",
+      "locale": "en",
+      "runtime_text": "Log construction is attested for wooden houses in medieval Novgorod. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Log construction is attested for wooden houses in medieval Novgorod."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-vestibule-log",
+      "locale": "ru",
+      "runtime_text": "К новгородским срубным домам могли примыкать дощатые сени. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "К новгородским срубным домам могли примыкать дощатые сени."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-vestibule-log",
+      "locale": "en",
+      "runtime_text": "Plank vestibules could adjoin Novgorod log houses. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Plank vestibules could adjoin Novgorod log houses."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-oven-heating",
+      "locale": "ru",
+      "runtime_text": "Домашние печи в средневековом Новгороде служили для отопления жилищ. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Домашние печи в средневековом Новгороде служили для отопления жилищ."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-oven-heating",
+      "locale": "en",
+      "runtime_text": "Domestic ovens in medieval Novgorod heated dwellings. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Domestic ovens in medieval Novgorod heated dwellings."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-oven-cooking",
+      "locale": "ru",
+      "runtime_text": "Домашние печи в средневековом Новгороде использовали для приготовления пищи. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Домашние печи в средневековом Новгороде использовали для приготовления пищи."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-oven-cooking",
+      "locale": "en",
+      "runtime_text": "Domestic ovens in medieval Novgorod were used for cooking. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Domestic ovens in medieval Novgorod were used for cooking."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-underfloor-utility",
+      "locale": "ru",
+      "runtime_text": "Подклет новгородского дома мог служить холодным хозяйственным помещением. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Подклет новгородского дома мог служить холодным хозяйственным помещением."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-underfloor-utility",
+      "locale": "en",
+      "runtime_text": "The underfloor level of a Novgorod house could serve as an unheated utility space. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "The underfloor level of a Novgorod house could serve as an unheated utility space."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-underfloor-storage",
+      "locale": "ru",
+      "runtime_text": "В новгородских подклетах хранили имущество, припасы и утварь. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "В новгородских подклетах хранили имущество, припасы и утварь."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-underfloor-storage",
+      "locale": "en",
+      "runtime_text": "Novgorod underfloor utility spaces stored property, provisions and utensils. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Novgorod underfloor utility spaces stored property, provisions and utensils."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-oak-shingle-roof",
+      "locale": "ru",
+      "runtime_text": "Для новгородских домов засвидетельствованы кровли из дубовой драни. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Для новгородских домов засвидетельствованы кровли из дубовой драни."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-oak-shingle-roof",
+      "locale": "en",
+      "runtime_text": "Oak-shingle roofing is attested for Novgorod houses. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Oak-shingle roofing is attested for Novgorod houses."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-post-fence-yard",
+      "locale": "ru",
+      "runtime_text": "Новгородские городские дворы могли ограждаться частоколом. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Новгородские городские дворы могли ограждаться частоколом."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-post-fence-yard",
+      "locale": "en",
+      "runtime_text": "Post fences could enclose urban yards in Novgorod. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Post fences could enclose urban yards in Novgorod."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-workshop-street",
+      "locale": "ru",
+      "runtime_text": "Среди построек, выходивших на новгородские улицы, были мастерские. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Среди построек, выходивших на новгородские улицы, были мастерские."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-workshop-street",
+      "locale": "en",
+      "runtime_text": "Workshops were among the buildings fronting Novgorod streets. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Workshops were among the buildings fronting Novgorod streets."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-wooden-paving",
+      "locale": "ru",
+      "runtime_text": "В средневековом Новгороде улицы покрывали деревянными мостовыми. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "В средневековом Новгороде улицы покрывали деревянными мостовыми."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-wooden-paving",
+      "locale": "en",
+      "runtime_text": "Medieval Novgorod streets had wooden paving. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Medieval Novgorod streets had wooden paving."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-cart-transport",
+      "locale": "ru",
+      "runtime_text": "Телеги использовались для передвижения по городским улицам Новгорода. Это городская историческая совместимость, не план сельского двора и не доказательство текущего наличия.",
+      "search_aliases": [
+        "Телеги использовались для передвижения по городским улицам Новгорода."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-cart-transport",
+      "locale": "en",
+      "runtime_text": "Carts were used for transport on Novgorod urban streets. This is urban historical compatibility, not a rural layout or proof of present objects.",
+      "search_aliases": [
+        "Carts were used for transport on Novgorod urban streets."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-ice-grip-iron",
+      "locale": "ru",
+      "runtime_text": "Новгородские ледоходы могли изготавливаться из железа.",
+      "search_aliases": [
+        "Новгородские ледоходы могли изготавливаться из железа."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-ice-grip-iron",
+      "locale": "en",
+      "runtime_text": "Novgorod ice grips could be made of iron.",
+      "search_aliases": [
+        "Novgorod ice grips could be made of iron."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-ice-grip-footwear",
+      "locale": "ru",
+      "runtime_text": "В средневековом Новгороде засвидетельствованы ледоходы, привязывавшиеся к обуви.",
+      "search_aliases": [
+        "В средневековом Новгороде засвидетельствованы ледоходы, привязывавшиеся к обуви."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-ice-grip-footwear",
+      "locale": "en",
+      "runtime_text": "Ice grips tied to footwear are attested in medieval Novgorod.",
+      "search_aliases": [
+        "Ice grips tied to footwear are attested in medieval Novgorod."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-skate-bone",
+      "locale": "ru",
+      "runtime_text": "Для коньков в средневековом Новгороде использовали кости животных.",
+      "search_aliases": [
+        "Для коньков в средневековом Новгороде использовали кости животных."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-skate-bone",
+      "locale": "en",
+      "runtime_text": "Animal bones were used for skates in medieval Novgorod.",
+      "search_aliases": [
+        "Animal bones were used for skates in medieval Novgorod."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-skate-footwear",
+      "locale": "ru",
+      "runtime_text": "Засвидетельствован вариант костяных коньков, прикреплявшихся к подошве; это не единственный способ их использования.",
+      "search_aliases": [
+        "Засвидетельствован вариант костяных коньков, прикреплявшихся к подошве; это не единственный способ их использования."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:settlement-skate-footwear",
+      "locale": "en",
+      "runtime_text": "A form of bone skate attached to a sole is attested; this was not the only way to use bone skates.",
+      "search_aliases": [
+        "A form of bone skate attached to a sole is attested; this was not the only way to use bone skates."
+      ]
+    }
+  ]
+}

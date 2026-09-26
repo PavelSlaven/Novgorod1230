@@ -1,0 +1,1551 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reconstructed-ordinary-lifeways-editorial",
+      "title": "Reconstructed ordinary lifeways v1 editorial rationale",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/reconstructed-ordinary-lifeways-v1.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ordinary-life-clothing",
+      "source_ref": "source:reconstructed-ordinary-lifeways-editorial",
+      "anchor": {
+        "section": "Clothing and work"
+      },
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ordinary-life-smith",
+      "source_ref": "source:reconstructed-ordinary-lifeways-editorial",
+      "anchor": {
+        "section": "Smith and forge"
+      },
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ordinary-life-trades",
+      "source_ref": "source:reconstructed-ordinary-lifeways-editorial",
+      "anchor": {
+        "section": "Other trades"
+      },
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ordinary-life-household",
+      "source_ref": "source:reconstructed-ordinary-lifeways-editorial",
+      "anchor": {
+        "section": "Household and means"
+      },
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ordinary-life-status",
+      "source_ref": "source:reconstructed-ordinary-lifeways-editorial",
+      "anchor": {
+        "section": "Status, learning and public conduct"
+      },
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ordinary-life-social",
+      "source_ref": "source:reconstructed-ordinary-lifeways-editorial",
+      "anchor": {
+        "section": "Public and private relations"
+      },
+      "note": "Editorial reconstruction; contextual ordinary possibility, not a scene grant.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:ordinary-household-lifeways",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-linen-wool-clothing",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ordinary clothing can include a linen shirt and a woollen outer layer, with material and layers chosen for season, work and means"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-clothing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-work-clothes-protect-and-move",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a belt can gather working clothes for movement; additional layers can be added in cold weather while work clothing still protects from dirt, weather, sparks or rough material"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-clothing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-shoes-protect-feet",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "leather footwear can be repaired and dried after wet use; excessive heat can damage it, while wet ground, cold, walking and task hazards affect its use"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-clothing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-apron-when-work-warrants",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a leather or coarse-cloth apron can protect main clothing during repeatedly dirty work; leather is particularly suitable around forge work"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-clothing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-festive-clothes-differ-from-work",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "clothes for a feast or visit can be cleaner, less worn and less work-suited than everyday clothing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-clothing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-smith-forge-and-bellows",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ironworking can require a forge and bellows for controlled working heat"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-smith"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-smith-anvil-hammer-tongs",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a smith can use an anvil, hammer and tongs to hold and shape heated iron"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-smith"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-smith-needs-iron-and-fuel",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "iron stock and fuel can limit or delay a smith's current order"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-smith"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "forge work can leave scale, ash, charcoal residue and small iron offcuts"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-smith"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-smith-fire-needs-managed-space",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:ordinary-household-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a forge needs space where heat, smoke, fuel and fire risk can be managed"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-smith"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-carpenter-works-wood-with-tools",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a carpenter can work timber with an axe, adze, chisel and marking tools, leaving shavings and offcuts"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-trades"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "weaving can depend on yarn and a loom or setup that keeps warp under tension while weft is interlaced; the work can be paused and resumed"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-trades"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-fisher-needs-water-and-gear",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fishing can require water access and a suitable set of gear such as a net with floats and sinkers, lines, a trap basket or a boat, chosen by place and means"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-trades"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-craftsman-income-varies-with-orders",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a master's working orders can include repairs and new tools; payment or exchange, and a craft worker's means, vary with orders, season, material costs and household obligations"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-household"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-household-needs-heat-food-storage",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:ordinary-household-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a household can need shelter, heat, food preparation, storage and repair"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-household"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-household-repairs-compete-with-new-goods",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:ordinary-household-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "maintaining clothing, tools and shelter can take priority over new goods"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-household"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-master-has-work-responsibility",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a master can hold responsibility for quality, tools, orders and instruction while means remain variable"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-status"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-worker-means-and-duty-vary",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a hired or dependent worker can control less of tools, time and output; treatment remains contextual"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-status"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-apprentice-learns-and-assists",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a learner can combine instruction with ordinary assistance and depend on a household or workshop"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-status"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-status-does-not-fix-wealth",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "occupation or status can shape expectations without proving present wealth, stock or influence"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-status"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-public-reputation-follows-conduct",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "visible conduct, reliability and reports can affect public reputation, with contextual effect"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-public-and-private-conduct-differ",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "people can express requests, disagreement, deference or generosity differently in public and private"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hospitality can offer food, warmth, shelter or attention within resources, trust and risk"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-help-can-create-reciprocity",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "help can create gratitude, negotiation or reciprocal expectation rather than guaranteed debt"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ordinary-life-private-needs-shape-decisions",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "private needs such as care, food, rest, repair or household duty can shape choices without public proof"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ordinary-life-social"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "locale": "ru",
+      "labels": [
+        "Обычная трудовая жизнь"
+      ],
+      "short_definition": "Обычная трудовая жизнь",
+      "search_aliases": [
+        "Обычная трудовая жизнь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:ordinary-work-lifeways",
+      "locale": "en",
+      "labels": [
+        "Ordinary work lifeways"
+      ],
+      "short_definition": "Ordinary work lifeways",
+      "search_aliases": [
+        "Ordinary work lifeways"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:ordinary-household-lifeways",
+      "locale": "ru",
+      "labels": [
+        "Обычная домашняя жизнь"
+      ],
+      "short_definition": "Обычная домашняя жизнь",
+      "search_aliases": [
+        "Обычная домашняя жизнь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:ordinary-household-lifeways",
+      "locale": "en",
+      "labels": [
+        "Ordinary household lifeways"
+      ],
+      "short_definition": "Ordinary household lifeways",
+      "search_aliases": [
+        "Ordinary household lifeways"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "locale": "ru",
+      "labels": [
+        "Обычные социальные отношения"
+      ],
+      "short_definition": "Обычные социальные отношения",
+      "search_aliases": [
+        "Обычные социальные отношения"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_behavior:ordinary-social-lifeways",
+      "locale": "en",
+      "labels": [
+        "Ordinary social lifeways"
+      ],
+      "short_definition": "Ordinary social lifeways",
+      "search_aliases": [
+        "Ordinary social lifeways"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-linen-wool-clothing",
+      "locale": "ru",
+      "runtime_text": "Обычная одежда может включать льняную рубаху и шерстяной верх; материал и слои зависят от сезона, работы и средств.",
+      "search_aliases": [
+        "Обычная одежда может включать льняную рубаху и шерстяной верх; материал и слои зависят от сезона, работы и средств."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-linen-wool-clothing",
+      "locale": "en",
+      "runtime_text": "ordinary clothing can include a linen shirt and a woollen outer layer, with material and layers chosen for season, work and means",
+      "search_aliases": [
+        "ordinary clothing can include a linen shirt and a woollen outer layer, with material and layers chosen for season, work and means"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-work-clothes-protect-and-move",
+      "locale": "ru",
+      "runtime_text": "Пояс может собрать рабочую одежду для движения; в холод добавляют слои, а одежда защищает от грязи, погоды, искр и грубого материала.",
+      "search_aliases": [
+        "Пояс может собрать рабочую одежду для движения; в холод добавляют слои, а одежда защищает от грязи, погоды, искр и грубого материала."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-work-clothes-protect-and-move",
+      "locale": "en",
+      "runtime_text": "a belt can gather working clothes for movement; additional layers can be added in cold weather while work clothing still protects from dirt, weather, sparks or rough material",
+      "search_aliases": [
+        "a belt can gather working clothes for movement; additional layers can be added in cold weather while work clothing still protects from dirt, weather, sparks or rough material"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-shoes-protect-feet",
+      "locale": "ru",
+      "runtime_text": "Кожаную обувь можно чинить и сушить после сырости; очень горячее место ей вредит.",
+      "search_aliases": [
+        "Кожаную обувь можно чинить и сушить после сырости; очень горячее место ей вредит."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-shoes-protect-feet",
+      "locale": "en",
+      "runtime_text": "leather footwear can be repaired and dried after wet use; excessive heat can damage it, while wet ground, cold, walking and task hazards affect its use",
+      "search_aliases": [
+        "leather footwear can be repaired and dried after wet use; excessive heat can damage it, while wet ground, cold, walking and task hazards affect its use"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-apron-when-work-warrants",
+      "locale": "ru",
+      "runtime_text": "Кожаный или грубый тканевый передник защищает одежду при грязной работе; кожа особенно уместна возле кузни.",
+      "search_aliases": [
+        "Кожаный или грубый тканевый передник защищает одежду при грязной работе; кожа особенно уместна возле кузни."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-apron-when-work-warrants",
+      "locale": "en",
+      "runtime_text": "a leather or coarse-cloth apron can protect main clothing during repeatedly dirty work; leather is particularly suitable around forge work",
+      "search_aliases": [
+        "a leather or coarse-cloth apron can protect main clothing during repeatedly dirty work; leather is particularly suitable around forge work"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-festive-clothes-differ-from-work",
+      "locale": "ru",
+      "runtime_text": "Одежда для праздника или визита может быть чище, менее изношенной и менее рабочей.",
+      "search_aliases": [
+        "Одежда для праздника или визита может быть чище, менее изношенной и менее рабочей."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-festive-clothes-differ-from-work",
+      "locale": "en",
+      "runtime_text": "clothes for a feast or visit can be cleaner, less worn and less work-suited than everyday clothing",
+      "search_aliases": [
+        "clothes for a feast or visit can be cleaner, less worn and less work-suited than everyday clothing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-forge-and-bellows",
+      "locale": "ru",
+      "runtime_text": "Кузнечная работа может требовать горна и мехов для управляемого рабочего жара.",
+      "search_aliases": [
+        "Кузнечная работа может требовать горна и мехов для управляемого рабочего жара."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-forge-and-bellows",
+      "locale": "en",
+      "runtime_text": "ironworking can require a forge and bellows for controlled working heat",
+      "search_aliases": [
+        "ironworking can require a forge and bellows for controlled working heat"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-anvil-hammer-tongs",
+      "locale": "ru",
+      "runtime_text": "Кузнец может применять наковальню, молот и клещи для формовки нагретого железа.",
+      "search_aliases": [
+        "Кузнец может применять наковальню, молот и клещи для формовки нагретого железа."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-anvil-hammer-tongs",
+      "locale": "en",
+      "runtime_text": "a smith can use an anvil, hammer and tongs to hold and shape heated iron",
+      "search_aliases": [
+        "a smith can use an anvil, hammer and tongs to hold and shape heated iron"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-needs-iron-and-fuel",
+      "locale": "ru",
+      "runtime_text": "Запас железа и топлива может ограничить или задержать заказ кузнеца.",
+      "search_aliases": [
+        "Запас железа и топлива может ограничить или задержать заказ кузнеца."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-needs-iron-and-fuel",
+      "locale": "en",
+      "runtime_text": "iron stock and fuel can limit or delay a smith's current order",
+      "search_aliases": [
+        "iron stock and fuel can limit or delay a smith's current order"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+      "locale": "ru",
+      "runtime_text": "Кузнечная работа может оставлять окалину, золу, остатки угля и обрезки железа.",
+      "search_aliases": [
+        "Кузнечная работа может оставлять окалину, золу, остатки угля и обрезки железа."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+      "locale": "en",
+      "runtime_text": "forge work can leave scale, ash, charcoal residue and small iron offcuts",
+      "search_aliases": [
+        "forge work can leave scale, ash, charcoal residue and small iron offcuts"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-fire-needs-managed-space",
+      "locale": "ru",
+      "runtime_text": "Кузне нужен участок для управления жаром, дымом, топливом и пожарным риском.",
+      "search_aliases": [
+        "Кузне нужен участок для управления жаром, дымом, топливом и пожарным риском."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-smith-fire-needs-managed-space",
+      "locale": "en",
+      "runtime_text": "a forge needs space where heat, smoke, fuel and fire risk can be managed",
+      "search_aliases": [
+        "a forge needs space where heat, smoke, fuel and fire risk can be managed"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-carpenter-works-wood-with-tools",
+      "locale": "ru",
+      "runtime_text": "Плотник может работать с древесиной топором, теслом, долотом и разметкой; остаются стружка и обрезки.",
+      "search_aliases": [
+        "Плотник может работать с древесиной топором, теслом, долотом и разметкой; остаются стружка и обрезки."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-carpenter-works-wood-with-tools",
+      "locale": "en",
+      "runtime_text": "a carpenter can work timber with an axe, adze, chisel and marking tools, leaving shavings and offcuts",
+      "search_aliases": [
+        "a carpenter can work timber with an axe, adze, chisel and marking tools, leaving shavings and offcuts"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+      "locale": "ru",
+      "runtime_text": "Ткачество требует пряжи и устройства, держащего основу под натяжением, пока уток переплетается; работу можно прервать и продолжить.",
+      "search_aliases": [
+        "Ткачество требует пряжи и устройства, держащего основу под натяжением, пока уток переплетается; работу можно прервать и продолжить."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+      "locale": "en",
+      "runtime_text": "weaving can depend on yarn and a loom or setup that keeps warp under tension while weft is interlaced; the work can be paused and resumed",
+      "search_aliases": [
+        "weaving can depend on yarn and a loom or setup that keeps warp under tension while weft is interlaced; the work can be paused and resumed"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-fisher-needs-water-and-gear",
+      "locale": "ru",
+      "runtime_text": "Рыболовству могут быть нужны вода и рациональный набор снастей: сеть с поплавками и грузилами, леса, верша или лодка.",
+      "search_aliases": [
+        "Рыболовству могут быть нужны вода и рациональный набор снастей: сеть с поплавками и грузилами, леса, верша или лодка."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-fisher-needs-water-and-gear",
+      "locale": "en",
+      "runtime_text": "fishing can require water access and a suitable set of gear such as a net with floats and sinkers, lines, a trap basket or a boat, chosen by place and means",
+      "search_aliases": [
+        "fishing can require water access and a suitable set of gear such as a net with floats and sinkers, lines, a trap basket or a boat, chosen by place and means"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-craftsman-income-varies-with-orders",
+      "locale": "ru",
+      "runtime_text": "Заказы мастера могут состоять из починки и новых инструментов; оплата или обмен и средства ремесленника зависят от обстоятельств.",
+      "search_aliases": [
+        "Заказы мастера могут состоять из починки и новых инструментов; оплата или обмен и средства ремесленника зависят от обстоятельств."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-craftsman-income-varies-with-orders",
+      "locale": "en",
+      "runtime_text": "a master's working orders can include repairs and new tools; payment or exchange, and a craft worker's means, vary with orders, season, material costs and household obligations",
+      "search_aliases": [
+        "a master's working orders can include repairs and new tools; payment or exchange, and a craft worker's means, vary with orders, season, material costs and household obligations"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-household-needs-heat-food-storage",
+      "locale": "ru",
+      "runtime_text": "Дому могут быть нужны кров, тепло, приготовление пищи, хранение и починка.",
+      "search_aliases": [
+        "Дому могут быть нужны кров, тепло, приготовление пищи, хранение и починка."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-household-needs-heat-food-storage",
+      "locale": "en",
+      "runtime_text": "a household can need shelter, heat, food preparation, storage and repair",
+      "search_aliases": [
+        "a household can need shelter, heat, food preparation, storage and repair"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-household-repairs-compete-with-new-goods",
+      "locale": "ru",
+      "runtime_text": "Починка одежды, инструмента и жилья может быть важнее новой вещи.",
+      "search_aliases": [
+        "Починка одежды, инструмента и жилья может быть важнее новой вещи."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-household-repairs-compete-with-new-goods",
+      "locale": "en",
+      "runtime_text": "maintaining clothing, tools and shelter can take priority over new goods",
+      "search_aliases": [
+        "maintaining clothing, tools and shelter can take priority over new goods"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-master-has-work-responsibility",
+      "locale": "ru",
+      "runtime_text": "Мастер может отвечать за качество, инструмент, заказ и обучение, хотя его средства переменчивы.",
+      "search_aliases": [
+        "Мастер может отвечать за качество, инструмент, заказ и обучение, хотя его средства переменчивы."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-master-has-work-responsibility",
+      "locale": "en",
+      "runtime_text": "a master can hold responsibility for quality, tools, orders and instruction while means remain variable",
+      "search_aliases": [
+        "a master can hold responsibility for quality, tools, orders and instruction while means remain variable"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-worker-means-and-duty-vary",
+      "locale": "ru",
+      "runtime_text": "Наёмный или зависимый работник может меньше распоряжаться инструментом, временем и результатом.",
+      "search_aliases": [
+        "Наёмный или зависимый работник может меньше распоряжаться инструментом, временем и результатом."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-worker-means-and-duty-vary",
+      "locale": "en",
+      "runtime_text": "a hired or dependent worker can control less of tools, time and output; treatment remains contextual",
+      "search_aliases": [
+        "a hired or dependent worker can control less of tools, time and output; treatment remains contextual"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-apprentice-learns-and-assists",
+      "locale": "ru",
+      "runtime_text": "Ученик может сочетать обучение с помощью и зависеть от дома или мастерской.",
+      "search_aliases": [
+        "Ученик может сочетать обучение с помощью и зависеть от дома или мастерской."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-apprentice-learns-and-assists",
+      "locale": "en",
+      "runtime_text": "a learner can combine instruction with ordinary assistance and depend on a household or workshop",
+      "search_aliases": [
+        "a learner can combine instruction with ordinary assistance and depend on a household or workshop"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-status-does-not-fix-wealth",
+      "locale": "ru",
+      "runtime_text": "Занятие или статус влияют на ожидания, но не доказывают богатство, запас или влияние.",
+      "search_aliases": [
+        "Занятие или статус влияют на ожидания, но не доказывают богатство, запас или влияние."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-status-does-not-fix-wealth",
+      "locale": "en",
+      "runtime_text": "occupation or status can shape expectations without proving present wealth, stock or influence",
+      "search_aliases": [
+        "occupation or status can shape expectations without proving present wealth, stock or influence"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-public-reputation-follows-conduct",
+      "locale": "ru",
+      "runtime_text": "Видимое поведение, надёжность и рассказы других могут влиять на репутацию.",
+      "search_aliases": [
+        "Видимое поведение, надёжность и рассказы других могут влиять на репутацию."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-public-reputation-follows-conduct",
+      "locale": "en",
+      "runtime_text": "visible conduct, reliability and reports can affect public reputation, with contextual effect",
+      "search_aliases": [
+        "visible conduct, reliability and reports can affect public reputation, with contextual effect"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-public-and-private-conduct-differ",
+      "locale": "ru",
+      "runtime_text": "Человек может по-разному выражать просьбу, спор, почтение или щедрость публично и наедине.",
+      "search_aliases": [
+        "Человек может по-разному выражать просьбу, спор, почтение или щедрость публично и наедине."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-public-and-private-conduct-differ",
+      "locale": "en",
+      "runtime_text": "people can express requests, disagreement, deference or generosity differently in public and private",
+      "search_aliases": [
+        "people can express requests, disagreement, deference or generosity differently in public and private"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+      "locale": "ru",
+      "runtime_text": "Гостеприимство может дать еду, тепло, кров или внимание в пределах средств, доверия и риска.",
+      "search_aliases": [
+        "Гостеприимство может дать еду, тепло, кров или внимание в пределах средств, доверия и риска."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+      "locale": "en",
+      "runtime_text": "hospitality can offer food, warmth, shelter or attention within resources, trust and risk",
+      "search_aliases": [
+        "hospitality can offer food, warmth, shelter or attention within resources, trust and risk"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-help-can-create-reciprocity",
+      "locale": "ru",
+      "runtime_text": "Помощь может породить благодарность, переговоры или ожидание взаимности, но не долг.",
+      "search_aliases": [
+        "Помощь может породить благодарность, переговоры или ожидание взаимности, но не долг."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-help-can-create-reciprocity",
+      "locale": "en",
+      "runtime_text": "help can create gratitude, negotiation or reciprocal expectation rather than guaranteed debt",
+      "search_aliases": [
+        "help can create gratitude, negotiation or reciprocal expectation rather than guaranteed debt"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-private-needs-shape-decisions",
+      "locale": "ru",
+      "runtime_text": "Частные нужды могут объяснять выбор без публичного доказательства.",
+      "search_aliases": [
+        "Частные нужды могут объяснять выбор без публичного доказательства."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ordinary-life-private-needs-shape-decisions",
+      "locale": "en",
+      "runtime_text": "private needs such as care, food, rest, repair or household duty can shape choices without public proof",
+      "search_aliases": [
+        "private needs such as care, food, rest, repair or household duty can shape choices without public proof"
+      ]
+    }
+  ]
+}

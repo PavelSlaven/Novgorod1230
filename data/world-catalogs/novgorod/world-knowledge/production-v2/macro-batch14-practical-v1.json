@@ -1,0 +1,1300 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-ewe-lamb-observation",
+      "source_ref": "source:fauna-merck-sheep",
+      "anchor": {
+        "section": "Sexual and Maternal Behavior"
+      },
+      "note": "Merck describes ewe maternal behavior and lamb recognition. This supports attentive, conditional care of an already-present ewe-lamb pair, not a diagnosis, birth outcome, milk supply, treatment, or historical husbandry protocol.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-net-vegetation",
+      "source_ref": "source:fao-freshwater-fishery-technology-net-upkeep",
+      "anchor": {
+        "section": "§§3.1.1.6, 3.1.2.6, 3.1.3.6, 3.1.6.6"
+      },
+      "note": "FAO discusses net upkeep and repair. It supports treating gear condition and obstruction as work constraints, not a catch, species, site, weather, or successful haul.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-fever-sign",
+      "source_ref": "source:candidate-v5-medlineplus-fever",
+      "anchor": {
+        "section": "Summary",
+        "record_id": "fever-not-disease-usually-sign"
+      },
+      "note": "MedlinePlus says fever is a sign rather than a disease. It supports observation and avoiding a causal diagnosis, not a treatment, severity, recovery, or actor condition.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-cut-pressure",
+      "source_ref": "source:cdc-bleeding-care",
+      "anchor": {
+        "section": "Preventing Diabetes-Related Amputations"
+      },
+      "note": "CDC supports clean covering and direct pressure for external bleeding. It supplies no wound depth, clean material, duration, diagnosis, outcome, or historical protocol.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-wood-moisture-and-grain",
+      "source_ref": "source:population-wood-mechanics",
+      "anchor": {
+        "section": "Factors Affecting Mechanical Properties"
+      },
+      "note": "The Wood Handbook explains that wood mechanical response varies with grain and moisture. It supports cautious splitting and reassessment, not a species-specific method, tool, force, board yield, or result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-ceramic-firing",
+      "source_ref": "source:population-pottery",
+      "anchor": {
+        "section": "Plasticity; drying; early firing; quartz inversion"
+      },
+      "note": "The pottery source describes firing as a staged thermal process. It supports gradual observation of firing conditions, not a kiln design, temperature, fuel amount, wind state, or successful firing.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-forge-heat",
+      "source_ref": "source:static-process-asm-forge-welding",
+      "anchor": {
+        "section": "Forge Welding, lines 376--378"
+      },
+      "note": "ASM describes heating metal before pressure work. It supports a qualitative hot-versus-cooled workability distinction, not colour-to-temperature conversion, alloy, tool, exact heat, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-soil-workability",
+      "source_ref": "source:nrcs-infiltration",
+      "anchor": {
+        "section": "Soil Quality Indicators: Infiltration"
+      },
+      "note": "NRCS explains that soil water movement depends on soil condition. It supports checking local workability rather than copying a neighbouring plot, not an oat variety, calendar date, yield, or field state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-cabbage-cold",
+      "source_ref": "source:place-garden-snails-slugs-ucipm",
+      "anchor": {
+        "section": "Damage; Cultural Control"
+      },
+      "note": "The existing cabbage source confirms a crop-specific garden context only. The claim is a bounded reconstruction that exposed young plants can be protected or planting delayed under adverse cold; it does not establish frost, cover stock, survival, or historical practice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-milk-temperature",
+      "source_ref": "source:openstax-micro94-temperature",
+      "anchor": {
+        "section": "Temperature and Microbial Growth"
+      },
+      "note": "OpenStax explains temperature-dependent microbial growth. It supports using cooler available conditions and prompt use as risk reduction, not milk condition, a safe duration, spoilage diagnosis, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-fibre-rope-condition",
+      "source_ref": "source:uaf-sea-grant-fibre-rope-maintenance",
+      "anchor": {
+        "section": "Rope Maintenance"
+      },
+      "note": "UAF Sea Grant describes inspection and maintenance of vessel rope. It supports checking damaged rope and mending or replacing only with available material, not a particular rope, repair quality, load, or voyage.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-roof-water",
+      "source_ref": "source:household-roof-water",
+      "anchor": {
+        "section": "Description"
+      },
+      "note": "The roof-water guide supports directing water away from openings and protecting the interior. It supports a temporary cover and moving vulnerable stores, not roof access, a material stock, repair success, or building state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-load-and-running-gear",
+      "source_ref": "source:reconstructed-practical-world-editorial",
+      "anchor": {
+        "section": "Boundary"
+      },
+      "note": "Approved editorial practical reconstruction supports treating load arrangement and observable running gear as separate candidates for inspection. It does not diagnose a wagon, wheel, axle, road, repair, or travel outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-boat-wind-current",
+      "source_ref": "source:reconstructed-practical-world-editorial",
+      "anchor": {
+        "section": "Boat work and shore transfer"
+      },
+      "note": "Approved editorial reconstruction: rowing, wind, current and approach direction jointly affect control. It supports waiting or changing approach when control is inadequate, not a boat, current, wind, berth, or manoeuvre result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-fragile-separation",
+      "source_ref": "source:fracture",
+      "anchor": {
+        "section": "Fractography of Ceramics and Glasses"
+      },
+      "note": "NIST describes brittle fracture. It supports separating and cushioning fragile vessels to limit impacts, not a vessel condition, packing material, journey, breakage, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mb14-practical-grease-cleaning",
+      "source_ref": "source:static-soap-rsc-detergent",
+      "anchor": {
+        "section": "How do detergents work?; Washing clothes"
+      },
+      "note": "RSC explains that surfactants help lift and disperse oily soil in washing. It supports repeated washing with a suitable cleaning agent, not a material stock, water temperature, stain cause, or clean result.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:mb14-practical-care",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:mb14-practical-field-and-water",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-ewe-lamb-postbirth-observation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:mb14-practical-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "after_a_lamb_is_born_the_ewe_and_lamb_can_be_kept_under_quiet_individual_observation_and_a_failure_to_stand_or_nurse_is_a_reason_to_seek_available_experienced_help_without_asserting_a_diagnosis_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-ewe-lamb-observation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_net_draw_requires_enough_clear_controlled_water_edge_for_gear_to_be_set_recovered_and_checked_and_reeds_or_other_obstruction_can_make_a_short_trial_or_delay_more_prudent_without_establishing_catch_weather_or_site"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-net-vegetation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:mb14-practical-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fever_is_a_sign_not_a_complete_diagnosis_so_ordinary_home_support_can_prioritize_rest_water_and_observation_while_worsening_or_unmanageable_condition_calls_for_available_experienced_help_without_claiming_cause_or_recovery"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-fever-sign"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:mb14-practical-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "for_an_already_bleeding_cut_work_can_stop_and_clean_covering_with_direct_pressure_can_be_applied_while_persistent_or_concerning_bleeding_requires_available_help_without_claiming_depth_diagnosis_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-cut-pressure"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wood_splitting_response_varies_with_grain_and_moisture_so_a_worker_can_secure_the_piece_follow_an_observed_line_and_reposition_or_stop_when_a_wedge_does_not_open_it_without_promising_a_cut_or_yield"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-wood-moisture-and-grain"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-clay-firing-needs-gradual-observation",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "clay_firing_is_a_staged_thermal_process_so_changes_to_fuel_or_air_can_be_made_gradually_while_vessels_are_observed_as_separate_pieces_without_asserting_a_kiln_temperature_wind_state_or_equal_result"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-ceramic-firing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hot_iron_can_be_worked_while_a_cooled_piece_may_need_returning_to_the_fire_and_visible_heat_cues_are_qualitative_workshop_guides_not_exact_temperature_or_guaranteed_forge_result"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-forge-heat"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-sowing-follows-local-workable-soil",
+      "domain": "environment",
+      "subject_ref": "wk:environment:mb14-practical-field-and-water",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "spring_sowing_can_begin_with_a_small_part_of_an_oat_field_when_that_local_soil_is_workable_while_a_wet_patch_can_be_left_until_conditions_change_without_inheriting_a_neighbouring_fields_timing_or_promising_germination_or_yield"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-soil-workability"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
+      "domain": "environment",
+      "subject_ref": "wk:environment:mb14-practical-field-and-water",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "young_cabbage_transplants_exposed_to_late_cold_can_be_protected_with_available_cover_or_planting_can_be_delayed_when_no_suitable_protection_exists_without_establishing_frost_cover_stock_or_plant_survival"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-cabbage-cold"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "warm_conditions_increase_the_reason_to_keep_available_milk_in_the_coolest_accessible_place_and_use_or_process_it_promptly_without_asserting_its_freshness_a_safe_duration_or_spoilage"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-milk-temperature"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wet_fibre_rope_can_be_inspected_for_wear_before_a_voyage_and_a_local_damage_can_be_mended_only_when_material_and_time_are_available_otherwise_the_load_or_plan_can_change_without_claiming_strength_or_success"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-fibre-rope-condition"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "when_rain_enters_through_a_roof_the_immediate_household_priority_can_be_a_temporary_cover_and_moving_vulnerable_stores_away_from_the_leak_before_a_full_repair_without_asserting_roof_access_materials_or_success"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-roof-water"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "when_a_wagon_pulls_to_one_side_a_driver_can_first_reduce_or_redistribute_load_then_compare_wheel_axle_and_road_behavior_so_load_effects_are_not_mistaken_for_a_single_running_gear_fault_without_diagnosing_the_vehicle"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-load-and-running-gear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+      "domain": "environment",
+      "subject_ref": "wk:environment:mb14-practical-field-and-water",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_boat_approaching_a_pier_or_piles_must_balance_oar_control_with_wind_and_current_and_can_wait_or_choose_a_different_approach_when_the_combination_does_not_allow_control_without_promising_a_manoeuvre"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-boat-wind-current"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fragile_vessels_for_river_transport_can_be_separated_from_one_another_and_cushioned_with_available_soft_material_or_carried_in_smaller_loads_without_promising_that_they_are_sound_or_will_not_break"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-fragile-separation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "greasy_soil_on_linen_can_need_a_suitable_soap_or_other_surfactant_and_repeated_washing_or_rinsing_while_cold_water_and_one_pass_do_not_promise_a_clean_result"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mb14-practical-grease-cleaning"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:mb14-practical-care",
+      "locale": "ru",
+      "labels": [
+        "Практический уход"
+      ],
+      "short_definition": "Осторожные действия при животном и человеческом недомогании.",
+      "search_aliases": [
+        "окот",
+        "лихорадка",
+        "порез",
+        "первая помощь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:mb14-practical-care",
+      "locale": "en",
+      "labels": [
+        "Practical care"
+      ],
+      "short_definition": "Cautious actions around animal and human illness or injury.",
+      "search_aliases": [
+        "lambing",
+        "fever",
+        "cut",
+        "first aid"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "locale": "ru",
+      "labels": [
+        "Практическая работа и ремонт"
+      ],
+      "short_definition": "Наблюдаемые ограничения ремесла, снасти и повозки.",
+      "search_aliases": [
+        "сеть",
+        "древесина",
+        "обжиг",
+        "кузница",
+        "верёвка",
+        "телега"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:mb14-practical-making-and-repair",
+      "locale": "en",
+      "labels": [
+        "Practical making and repair"
+      ],
+      "short_definition": "Observable limits of craft, gear, and vehicle work.",
+      "search_aliases": [
+        "net",
+        "wood",
+        "kiln",
+        "forge",
+        "rope",
+        "wagon"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:mb14-practical-field-and-water",
+      "locale": "ru",
+      "labels": [
+        "Поле и вода"
+      ],
+      "short_definition": "Локальные условия посева, берега и лодки.",
+      "search_aliases": [
+        "овёс",
+        "капуста",
+        "лодка",
+        "ветер",
+        "течение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:mb14-practical-field-and-water",
+      "locale": "en",
+      "labels": [
+        "Field and water"
+      ],
+      "short_definition": "Local conditions for sowing, shore work, and boats.",
+      "search_aliases": [
+        "oats",
+        "cabbage",
+        "boat",
+        "wind",
+        "current"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "locale": "ru",
+      "labels": [
+        "Домашняя работа"
+      ],
+      "short_definition": "Хранение пищи, защита жилья, перевозка и стирка.",
+      "search_aliases": [
+        "молоко",
+        "крыша",
+        "посуда",
+        "стирка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:mb14-practical-household-work",
+      "locale": "en",
+      "labels": [
+        "Household work"
+      ],
+      "short_definition": "Food keeping, shelter protection, transport, and washing.",
+      "search_aliases": [
+        "milk",
+        "roof",
+        "pottery",
+        "washing"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-ewe-lamb-postbirth-observation",
+      "locale": "ru",
+      "runtime_text": "После окота овцу и ягнёнка можно держать под спокойным отдельным наблюдением; если кто-то не встаёт или не сосёт, зовут доступного опытного помощника, не называя причину или исход.",
+      "search_aliases": [
+        "овца",
+        "ягнёнок",
+        "окот",
+        "уход"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-ewe-lamb-postbirth-observation",
+      "locale": "en",
+      "runtime_text": "After lambing, ewe and lamb can be kept under quiet individual observation; inability to stand or nurse calls for available experienced help without asserting cause or outcome.",
+      "search_aliases": [
+        "ewe",
+        "lamb",
+        "lambing",
+        "care"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
+      "locale": "ru",
+      "runtime_text": "Для тяги невода нужны достаточно свободная управляемая кромка воды и проверка снасти; камыш или иной зацеп могут сделать разумнее короткую пробу либо ожидание.",
+      "search_aliases": [
+        "невод",
+        "камыш",
+        "рыбалка",
+        "сеть"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
+      "locale": "en",
+      "runtime_text": "A net draw needs a sufficiently clear, controlled water edge and gear check; reeds or another obstruction can make a short trial or delay wiser.",
+      "search_aliases": [
+        "net",
+        "reeds",
+        "fishing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
+      "locale": "ru",
+      "runtime_text": "Лихорадка — признак, а не готовый диагноз: обычный уход может дать покой, воду и наблюдение, а ухудшение требует доступной опытной помощи без утверждения причины или выздоровления.",
+      "search_aliases": [
+        "лихорадка",
+        "болезнь",
+        "уход",
+        "вода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
+      "locale": "en",
+      "runtime_text": "Fever is a sign, not a complete diagnosis: ordinary care can give rest, water, and observation, while worsening calls for available experienced help without asserting cause or recovery.",
+      "search_aliases": [
+        "fever",
+        "illness",
+        "care"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
+      "locale": "ru",
+      "runtime_text": "При уже кровоточащем порезе работу останавливают, накладывают чистое покрытие с прямым давлением и при тревожном или неослабевающем кровотечении зовут помощь, не определяя глубину или исход.",
+      "search_aliases": [
+        "порез",
+        "кровотечение",
+        "давление",
+        "первая помощь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
+      "locale": "en",
+      "runtime_text": "For an already bleeding cut, work can stop and a clean cover with direct pressure can be applied; concerning or persistent bleeding calls for help without asserting depth or outcome.",
+      "search_aliases": [
+        "cut",
+        "bleeding",
+        "pressure",
+        "first aid"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
+      "locale": "ru",
+      "runtime_text": "Раскол древесины меняется с направлением волокон и влажностью: заготовку закрепляют, идут по наблюдаемой линии, а неподатливую переустанавливают или оставляют без обещания выхода досок.",
+      "search_aliases": [
+        "древесина",
+        "раскол",
+        "клин",
+        "бревно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
+      "locale": "en",
+      "runtime_text": "Wood splitting varies with grain and moisture: secure the piece, follow an observed line, and reposition or stop a resistant piece without promising boards.",
+      "search_aliases": [
+        "wood",
+        "splitting",
+        "wedge",
+        "log"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-clay-firing-needs-gradual-observation",
+      "locale": "ru",
+      "runtime_text": "Обжиг глины идёт этапами: топливо и воздух меняют постепенно, а сосуды наблюдают по отдельности, не обещая одинаковый результат или точную температуру.",
+      "search_aliases": [
+        "обжиг",
+        "глина",
+        "печь",
+        "гончар"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-clay-firing-needs-gradual-observation",
+      "locale": "en",
+      "runtime_text": "Clay firing proceeds in stages: fuel and air are changed gradually and vessels watched separately, without promising equal results or an exact temperature.",
+      "search_aliases": [
+        "firing",
+        "clay",
+        "kiln",
+        "pottery"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
+      "locale": "ru",
+      "runtime_text": "Горячее железо можно ковать, а остывшую заготовку иногда возвращают в горн; видимые признаки жара — только качественный ориентир, не точная температура или гарантия результата.",
+      "search_aliases": [
+        "железо",
+        "кузница",
+        "горн",
+        "ковка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
+      "locale": "en",
+      "runtime_text": "Hot iron can be worked and a cooled piece may return to the fire; visible heat cues are qualitative guides, not exact temperature or a guaranteed result.",
+      "search_aliases": [
+        "iron",
+        "forge",
+        "heat",
+        "smithing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-sowing-follows-local-workable-soil",
+      "locale": "ru",
+      "runtime_text": "Весенний сев овса можно начать с малого участка, когда именно эта земля годится для работы; мокрую полосу оставляют ждать, не копируя соседа и не обещая всходы или урожай.",
+      "search_aliases": [
+        "овёс",
+        "посев",
+        "поле",
+        "сырая почва"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-sowing-follows-local-workable-soil",
+      "locale": "en",
+      "runtime_text": "Spring oat sowing can begin on a small locally workable patch; a wet strip can wait without copying a neighbour or promising germination or yield.",
+      "search_aliases": [
+        "oats",
+        "sowing",
+        "field",
+        "wet soil"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
+      "locale": "ru",
+      "runtime_text": "Молодую капустную рассаду при позднем холоде можно прикрыть доступным материалом либо отложить пересадку, если защиты нет; это не устанавливает мороз, наличие покрытия или выживание.",
+      "search_aliases": [
+        "капуста",
+        "рассада",
+        "холод",
+        "укрытие"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
+      "locale": "en",
+      "runtime_text": "Young cabbage transplants in late cold can be covered with available material or planting delayed if no protection exists; this establishes neither frost nor survival.",
+      "search_aliases": [
+        "cabbage",
+        "transplant",
+        "cold",
+        "cover"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
+      "locale": "ru",
+      "runtime_text": "В жару молоко разумнее держать в самом прохладном доступном месте и использовать или переработать скорее, не утверждая свежесть, безопасный срок или порчу.",
+      "search_aliases": [
+        "молоко",
+        "жара",
+        "хранение",
+        "порча"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
+      "locale": "en",
+      "runtime_text": "In heat, milk is better kept in the coolest available place and used or processed sooner, without asserting freshness, safe duration, or spoilage.",
+      "search_aliases": [
+        "milk",
+        "heat",
+        "storage",
+        "spoilage"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
+      "locale": "ru",
+      "runtime_text": "Мокрую волокнистую снасть осматривают на износ перед рейсом; местное повреждение чинят лишь при наличии времени и материала, иначе меняют груз или план без обещания прочности.",
+      "search_aliases": [
+        "верёвка",
+        "снасть",
+        "ремонт",
+        "рейс"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
+      "locale": "en",
+      "runtime_text": "Wet fibre rope is inspected for wear before a voyage; local damage is mended only with time and material, otherwise load or plan changes without promising strength.",
+      "search_aliases": [
+        "rope",
+        "rigging",
+        "repair",
+        "voyage"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
+      "locale": "ru",
+      "runtime_text": "Если дождь идёт через крышу, сначала делают временное прикрытие и уводят уязвимые запасы от течи, а полный ремонт оставляют без предположений о доступе, материале или успехе.",
+      "search_aliases": [
+        "крыша",
+        "течь",
+        "дождь",
+        "зерно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
+      "locale": "en",
+      "runtime_text": "When rain enters through a roof, a household can first make temporary cover and move vulnerable stores away from the leak, without assuming access, material, or success.",
+      "search_aliases": [
+        "roof",
+        "leak",
+        "rain",
+        "grain"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+      "locale": "ru",
+      "runtime_text": "Когда телегу уводит в сторону, возчик сначала уменьшает или перераспределяет груз, затем сравнивает колесо, ось и дорогу, не выдавая один признак за готовую поломку.",
+      "search_aliases": [
+        "телега",
+        "колесо",
+        "ось",
+        "груз"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+      "locale": "en",
+      "runtime_text": "When a wagon pulls aside, a driver can first reduce or redistribute load, then compare wheel, axle, and road behavior without treating one sign as a diagnosis.",
+      "search_aliases": [
+        "wagon",
+        "wheel",
+        "axle",
+        "load"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+      "locale": "ru",
+      "runtime_text": "Подходя к сваям или причалу, лодочник соотносит вёсла с ветром и течением; если контроля нет, ждёт или выбирает иной подход без обещания манёвра.",
+      "search_aliases": [
+        "лодка",
+        "ветер",
+        "течение",
+        "пристань"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+      "locale": "en",
+      "runtime_text": "Approaching piles or a berth, a boatman balances oars with wind and current; if control is lacking, waits or chooses another approach without promising manoeuvre.",
+      "search_aliases": [
+        "boat",
+        "wind",
+        "current",
+        "pier"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport",
+      "locale": "ru",
+      "runtime_text": "Хрупкую посуду для речной перевозки разделяют и прокладывают доступным мягким материалом либо везут меньшими частями, не обещая целость или отсутствие поломки.",
+      "search_aliases": [
+        "посуда",
+        "лодка",
+        "упаковка",
+        "перевозка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport",
+      "locale": "en",
+      "runtime_text": "Fragile vessels for river transport can be separated and cushioned with available soft material, or carried in smaller loads, without promising they remain sound.",
+      "search_aliases": [
+        "pottery",
+        "boat",
+        "packing",
+        "transport"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
+      "locale": "ru",
+      "runtime_text": "Жир на льне может потребовать подходящего мыла или иного поверхностно-активного средства, повторной стирки и полоскания; холодная вода и один проход не обещают чистый результат.",
+      "search_aliases": [
+        "лён",
+        "жир",
+        "мыло",
+        "стирка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
+      "locale": "en",
+      "runtime_text": "Greasy soil on linen can need suitable soap or another surfactant plus repeated washing and rinsing; cold water and one pass do not promise a clean result.",
+      "search_aliases": [
+        "linen",
+        "grease",
+        "soap",
+        "washing"
+      ]
+    }
+  ]
+}

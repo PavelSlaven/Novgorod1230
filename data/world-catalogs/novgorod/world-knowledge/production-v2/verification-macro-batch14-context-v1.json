@@ -1,0 +1,44 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-b14-context-mixed-shore-trace",
+      "claim_ref": "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+      "claim_digest": "c9ed03b9aa0f192381447fe413ba6f12d40e8f84fffc4678589644c4432d7d95",
+      "candidate_ref": "git:bdde588f732fc645328985a1a75c9c2f0b4bea85:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-batch14-context-v1.json#claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+      "auditor_ref": "/root/macro_b14_context_verifier",
+      "independence_basis": "Independent plausibility, scope, localization and evidence-boundary review of the exact candidate; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:macro-b14-shore-mixed-trace"],
+      "review_ref": "verification/macro-batch14-context-v1.md#mixed-shoreline-trace",
+      "verdict": "APPROVE",
+      "limits": "A cautious possible signal from already observed traces only; it identifies no structure, function, date, owner, extent, present safety, entitlement, or current material presence."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-b14-context-market-weighing",
+      "claim_ref": "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+      "claim_digest": "c76af6cafc03dfe8571bc38fcbb3432671d4f10f06243630b5c2b6bccf857f19",
+      "candidate_ref": "git:bdde588f732fc645328985a1a75c9c2f0b4bea85:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-batch14-context-v1.json#claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+      "auditor_ref": "/root/macro_b14_context_verifier",
+      "independence_basis": "Independent plausibility, scope, localization and evidence-boundary review of the exact corrected candidate; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:macro-b14-market-weighing"],
+      "review_ref": "verification/macro-batch14-context-v1.md#market-weighing",
+      "verdict": "APPROVE",
+      "limits": "Conditional optional check after an apparent difference only; no named unit, price, official, mandatory procedure, legal rule, accepted reference, dispute result, or current sale follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-b14-context-road-hospitality",
+      "claim_ref": "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+      "claim_digest": "6076ca50b8f608a029f57a39ad77998b003fb7060d42b39ef1a2987f046b1145",
+      "candidate_ref": "git:bdde588f732fc645328985a1a75c9c2f0b4bea85:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-batch14-context-v1.json#claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+      "auditor_ref": "/root/macro_b14_context_verifier",
+      "independence_basis": "Independent plausibility, scope, localization and evidence-boundary review of the exact candidate; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:macro-b14-road-hospitality"],
+      "review_ref": "verification/macro-batch14-context-v1.md#road-hospitality",
+      "verdict": "APPROVE",
+      "limits": "Conditional social possibility only; it establishes no historical custom, host or traveller presence, resource, access, trust, right of entry, duty, payment, uniform response, or outcome."
+    }
+  ]
+}

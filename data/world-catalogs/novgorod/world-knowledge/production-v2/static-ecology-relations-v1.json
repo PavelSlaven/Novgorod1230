@@ -1,0 +1,110 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-falkingham-track-substrate-2014",
+      "title": "Mitigating the Goldilocks effect: the effects of different substrate models on track formation potential",
+      "authors": ["Peter L. Falkingham", "Julian Hage", "Martin Bäker"],
+      "publication": "Royal Society Open Science, 2014",
+      "source_kind": "scholarship",
+      "citation": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4448835/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-lopes-sickness-behaviour-2021",
+      "title": "Sickness behaviors across vertebrate taxa: proximate and ultimate mechanisms",
+      "authors": ["Patricia C. Lopes", "Susannah S. French", "Douglas C. Woodhams", "Sandra A. Binning"],
+      "publication": "Journal of Experimental Biology, 2021",
+      "source_kind": "scholarship",
+      "citation": "https://pubmed.ncbi.nlm.nih.gov/33942101/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-openstax-plant-herbivore-response",
+      "title": "Biology 2e — 30.6 Plant Sensory Systems and Responses",
+      "authors": ["Mary Ann Clark", "Matthew Douglas", "Jung Choi"],
+      "publication": "OpenStax, Rice University, 2018",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/biology-2e/pages/30-6-plant-sensory-systems-and-responses",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-usfs-herbivory-plant-effects",
+      "title": "Dodecahema leptoceras, slenderhorn spineflower",
+      "authors": ["Christie J. Sclafani"],
+      "publication": "USDA Forest Service Fire Effects Information System, 2013",
+      "source_kind": "official_documentation",
+      "citation": "https://research.fs.usda.gov/feis/species-reviews/dodlep#seedling-establishment",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-track-substrate-interpretation",
+      "source_ref": "source:research-falkingham-track-substrate-2014",
+      "anchor": {"section": "2. Introduction, first paragraph"},
+      "note": "Track morphology is determined by foot anatomy, motion and substrate properties; substrate response affects depth, preservation/weathering and correct interpretation. Footprints/tracks only, not every animal sign. No local trace, species, age, time, route, abundance or encounter.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-vertebrate-infection-sickness-behaviour",
+      "source_ref": "source:research-lopes-sickness-behaviour-2021",
+      "anchor": {"section": "Abstract"},
+      "note": "Review describes altered social interactions and changed eating and drinking patterns as sickness behaviours during infection in vertebrates. Conditional association only. No infection, cause, diagnosis, particular behaviour, transmission, intent, mortality or treatment.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-plant-herbivore-tissue-damage",
+      "source_ref": "source:research-openstax-plant-herbivore-response",
+      "anchor": {"section": "Defense Responses against Herbivores and Pathogens"},
+      "note": "OpenStax states herbivores use plants as food and actively chew them, and that mechanical wounding/predator attacks activate responses in damaged tissue. No local herbivore, plant, amount, growth, reproduction, yield or vegetation change.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-herbivory-can-affect-plant-growth-reproduction",
+      "source_ref": "source:research-usfs-herbivory-plant-effects",
+      "anchor": {"section": "Seedling Establishment"},
+      "note": "USFS reports that herbivory reduced growth and reproduction in some years in its species review. It supports a conditional effect, not an inevitable outcome. No local herbivore, plant, amount, growth, reproduction, yield or vegetation change.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:environment:research-track-substrate-interpretation", "domain": "environment", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour", "domain": "biology_physiology", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:biology_physiology:research-plant-herbivory-effects", "domain": "biology_physiology", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"}
+  ],
+  "claims": [
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:research-footprint-track-interpretation-can-depend-on-substrate", "domain": "environment", "subject_ref": "wk:environment:research-track-substrate-interpretation", "predicate": "supported_fact", "object": {"kind": "literal", "value": "footprint_track_morphology_and_interpretation_can_depend_on_substrate_conditions"}, "polarity": "support", "applicability": {"context_scope": "universal"}, "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"}, "knowledge_access": {"class": "domain_internal_only", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:research-track-substrate-interpretation"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour", "domain": "biology_physiology", "subject_ref": "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour", "predicate": "supported_fact", "object": {"kind": "literal", "value": "infection_in_vertebrates_can_be_associated_with_sickness_behaviours_including_altered_social_interactions_or_eating_and_drinking_patterns"}, "polarity": "support", "applicability": {"context_scope": "universal"}, "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"}, "knowledge_access": {"class": "domain_internal_only", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:research-vertebrate-infection-sickness-behaviour"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction", "domain": "biology_physiology", "subject_ref": "wk:biology_physiology:research-plant-herbivory-effects", "predicate": "supported_fact", "object": {"kind": "literal", "value": "herbivory_can_remove_plant_tissue_and_can_reduce_plant_growth_or_reproduction_under_some_conditions"}, "polarity": "support", "applicability": {"context_scope": "universal"}, "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"}, "knowledge_access": {"class": "domain_internal_only", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:research-plant-herbivore-tissue-damage", "evidence:research-herbivory-can-affect-plant-growth-reproduction"], "review_status": "approved", "conflict_group_ref": null}
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:environment:research-track-substrate-interpretation", "locale": "ru", "labels": ["След и условия субстрата"], "short_definition": "Качественная связь отпечатка следа, субстрата и пределов интерпретации.", "search_aliases": []},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:environment:research-track-substrate-interpretation", "locale": "en", "labels": ["Track and substrate conditions"], "short_definition": "Qualitative relation between footprint tracks, substrate conditions, and interpretation limits.", "search_aliases": []},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour", "locale": "ru", "labels": ["Болезненное поведение позвоночных при инфекции"], "short_definition": "Качественная условная связь инфекции и изменений поведения у позвоночных.", "search_aliases": []},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour", "locale": "en", "labels": ["Vertebrate infection-associated sickness behaviour"], "short_definition": "Qualitative conditional relation between infection and behavioural change in vertebrates.", "search_aliases": []},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:biology_physiology:research-plant-herbivory-effects", "locale": "ru", "labels": ["Поедание растений и последствия для растения"], "short_definition": "Качественная условная связь поедания растений, потери тканей, роста или размножения.", "search_aliases": []},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:biology_physiology:research-plant-herbivory-effects", "locale": "en", "labels": ["Plant herbivory effects"], "short_definition": "Qualitative conditional relation of herbivory to plant tissue loss, growth, or reproduction.", "search_aliases": []}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:research-footprint-track-interpretation-can-depend-on-substrate", "locale": "ru", "runtime_text": "Форма отпечатка следа и его интерпретация могут зависеть от условий субстрата. Это не устанавливает местный след, вид животного, возраст следа, время, маршрут, численность или встречу.", "search_aliases": []},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:research-footprint-track-interpretation-can-depend-on-substrate", "locale": "en", "runtime_text": "Footprint-track morphology and interpretation can depend on substrate conditions. This establishes no local trace, animal species, trace age, time, route, abundance, or encounter.", "search_aliases": []},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour", "locale": "ru", "runtime_text": "Инфекция у позвоночных может быть связана с болезненным поведением, включая изменённые социальные взаимодействия или режимы еды и питья. Это не устанавливает инфекцию, причину, диагноз, конкретное поведение, передачу, намерение, смертность или лечение.", "search_aliases": []},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour", "locale": "en", "runtime_text": "Infection in vertebrates can be associated with sickness behaviours including altered social interactions or eating and drinking patterns. This establishes no infection, cause, diagnosis, particular behaviour, transmission, intent, mortality, or treatment.", "search_aliases": []},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction", "locale": "ru", "runtime_text": "Поедание растений животными может удалять ткани растения и при некоторых условиях снижать его рост или размножение. Это не устанавливает местное животное или растение, величину поедания, результат роста или размножения, урожай либо изменение растительности.", "search_aliases": []},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction", "locale": "en", "runtime_text": "Herbivory can remove plant tissue and can reduce plant growth or reproduction under some conditions. This establishes no local animal or plant, consumption amount, growth or reproduction result, yield, or vegetation change.", "search_aliases": []}
+  ]
+}

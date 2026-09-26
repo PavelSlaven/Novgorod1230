@@ -1,0 +1,796 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:grain-processing-hansson-2002",
+      "title": "Pre- and protohistoric bread in Sweden: a definition and a review",
+      "authors": [
+        "Ann-Marie Hansson"
+      ],
+      "publication": "Civilisations 49 (2002), pp. 183–190",
+      "source_kind": "scholarship",
+      "citation": "https://journals.openedition.org/civilisations/1432",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:serezhnikova-borkova-2024",
+      "title": "Ягодные и плодовые растения в питании новгородцев (по материалам раскопок на ул. Боркова в 2023 г.)",
+      "authors": [
+        "Д. С. Сережникова",
+        "А. Ю. Сергеев",
+        "О. М. Олейников",
+        "В. Д. Половинчук"
+      ],
+      "publication": "Российская археология, 2024, №4, с.129–143; DOI 10.31857/S0869606324040101",
+      "source_kind": "scholarship",
+      "citation": "https://journals.rcsi.science/0869-6063/article/view/277271/ru_RU",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:grain-processing-hansson-ingredients",
+      "source_ref": "source:grain-processing-hansson-2002",
+      "anchor": {
+        "section": "§12, Ingredients"
+      },
+      "note": "Independent disposition: verification/verification-grain-processing.md. General process description only; it does not establish a Novgorod ingredient, stock, recipe, mill or loaf.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:grain-processing-hansson-preparation",
+      "source_ref": "source:grain-processing-hansson-2002",
+      "anchor": {
+        "section": "§13, Preparation"
+      },
+      "note": "Independent disposition: verification/verification-grain-processing.md. Oven and open-fire heating are alternative general methods, not jointly required facilities or scene facts.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:food-practices-minino",
+      "source_ref": "source:population-processes-fur-exchange",
+      "anchor": {
+        "page": "10–11",
+        "section": "Archaeobotanical cereal food results, Minino I and VI"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-food-practices.md. Minino is northern Rus, not direct Novgorod-city evidence; Borkova is redeposited early-XIII material. No present food, stock, facility, tool, safety, recipe or actor knowledge follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:food-practices-borkova",
+      "source_ref": "source:serezhnikova-borkova-2024",
+      "anchor": {
+        "page": "129–143",
+        "section": "Results paragraph beginning «А вот чешуи проса»: probable millet-cleaning waste"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-food-practices.md. Minino is northern Rus, not direct Novgorod-city evidence; Borkova is redeposited early-XIII material. No present food, stock, facility, tool, safety, recipe or actor knowledge follows.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:grain-threshing",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:grain-processing-area-evidence",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:millet-cleaning",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:grain-processing-bread-ground-plant-base",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "bread_dough_uses_ground_food_plants_usually_cereals_as_its_main_ingredient"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:grain-processing-hansson-ingredients"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:grain-processing-bread-liquid",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "liquid_is_added_to_ground_food_plant_material_when_making_bread_dough"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:grain-processing-hansson-ingredients"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:grain-processing-bread-optional-leaven",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_leavening_substance_may_be_added_to_bread_dough_but_is_not_necessary"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:grain-processing-hansson-ingredients"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:grain-processing-bread-dough-before-baking",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "bread_preparation_forms_dough_before_baking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:grain-processing-hansson-preparation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:grain-processing-bread-oven-baking",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "bread_dough_can_be_baked_in_an_oven_or_oven_like_construction"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:grain-processing-hansson-preparation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:grain-processing-bread-open-fire-baking",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "bread_dough_can_be_baked_at_an_open_fire_in_embers_or_in_ashes"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:grain-processing-hansson-preparation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:food-practices-barley-porridge-soup",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:barley",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1100,
+          "to": 1300
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:food-practices-minino"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:food-practices-rye-flour-bread",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:rye",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1100,
+          "to": 1300
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:food-practices-minino"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:food-practices-threshing-chaff",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:grain-threshing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1100,
+          "to": 1300
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:food-practices-minino"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:food-practices-processing-area-inference",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:grain-processing-area-evidence",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1100,
+          "to": 1300
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:food-practices-minino"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:food-practices-millet-cleaning-waste",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:millet-cleaning",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1200,
+          "to": 1250
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:food-practices-borkova"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "locale": "ru",
+      "labels": [
+        "Формирование и выпечка хлебного теста"
+      ],
+      "short_definition": "Общие отношения между растительной основой, тестом и его нагревом при выпечке.",
+      "search_aliases": [
+        "Хлебное тесто",
+        "Выпечка хлеба",
+        "Хлеб на углях"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:bread-dough-formation-and-baking",
+      "locale": "en",
+      "labels": [
+        "Bread-dough formation and baking"
+      ],
+      "short_definition": "General relations between a plant base, dough formation, and baking heat.",
+      "search_aliases": [
+        "Bread dough",
+        "Bread baking",
+        "Bread in embers"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:grain-threshing",
+      "locale": "ru",
+      "labels": [
+        "Обмолот зерна"
+      ],
+      "short_definition": "Обмолот зерна",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:grain-threshing",
+      "locale": "en",
+      "labels": [
+        "Grain threshing"
+      ],
+      "short_definition": "Grain threshing",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:grain-processing-area-evidence",
+      "locale": "ru",
+      "labels": [
+        "Контекстные свидетельства обработки зерна"
+      ],
+      "short_definition": "Контекстные свидетельства обработки зерна",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:grain-processing-area-evidence",
+      "locale": "en",
+      "labels": [
+        "Grain-processing area evidence"
+      ],
+      "short_definition": "Grain-processing area evidence",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:millet-cleaning",
+      "locale": "ru",
+      "labels": [
+        "Очистка пшена"
+      ],
+      "short_definition": "Очистка пшена",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:millet-cleaning",
+      "locale": "en",
+      "labels": [
+        "Millet cleaning"
+      ],
+      "short_definition": "Millet cleaning",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-ground-plant-base",
+      "locale": "ru",
+      "runtime_text": "Основой хлебного теста служит измельчённое растительное сырьё, обычно зерновое; конкретный злак и его запас эта связь не задаёт.",
+      "search_aliases": [
+        "Молотое зерно для хлеба",
+        "Хлеб из растительного сырья"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-ground-plant-base",
+      "locale": "en",
+      "runtime_text": "Bread dough uses ground plant material, usually cereal; this relation does not name a grain or provide a stock.",
+      "search_aliases": [
+        "Ground cereal for bread",
+        "Plant food bread"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-liquid",
+      "locale": "ru",
+      "runtime_text": "При замешивании хлебного теста к измельчённому растительному сырью добавляют жидкость; её вид и количество не определены.",
+      "search_aliases": [
+        "Жидкость для хлебного теста"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-liquid",
+      "locale": "en",
+      "runtime_text": "Bread-dough preparation adds liquid to ground plant material; its kind and quantity are unspecified.",
+      "search_aliases": [
+        "Liquid for bread dough"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-optional-leaven",
+      "locale": "ru",
+      "runtime_text": "В хлебное тесто может входить разрыхляющее вещество; тесто не доказывает, что оно было заквашено.",
+      "search_aliases": [
+        "Закваска для теста",
+        "Разрыхление хлеба"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-optional-leaven",
+      "locale": "en",
+      "runtime_text": "A leavening substance may be added to bread dough; dough does not prove that it was leavened.",
+      "search_aliases": [
+        "Leaven for dough",
+        "Bread leavening"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-dough-before-baking",
+      "locale": "ru",
+      "runtime_text": "Перед выпечкой хлеба пищевое сырьё замешивают в тесто; эта связь не задаёт рецепт, время или выход.",
+      "search_aliases": [
+        "Замешивание хлебного теста"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-dough-before-baking",
+      "locale": "en",
+      "runtime_text": "Bread preparation forms dough before baking; this relation supplies no recipe, time, or yield.",
+      "search_aliases": [
+        "Making bread dough"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-oven-baking",
+      "locale": "ru",
+      "runtime_text": "Печь или сходное сооружение может выпекать хлебное тесто; это не доказывает печь в текущей сцене.",
+      "search_aliases": [
+        "Выпечка теста в печи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-oven-baking",
+      "locale": "en",
+      "runtime_text": "An oven or similar construction can bake bread dough; this does not establish an oven in the current scene.",
+      "search_aliases": [
+        "Oven baking dough"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-open-fire-baking",
+      "locale": "ru",
+      "runtime_text": "Хлебное тесто можно печь у открытого огня, на углях или в золе; это альтернатива печи, а не наличие костра в сцене.",
+      "search_aliases": [
+        "Хлеб на углях",
+        "Хлеб в золе"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:grain-processing-bread-open-fire-baking",
+      "locale": "en",
+      "runtime_text": "Bread dough can be baked at an open fire, in embers, or in ashes; this is an alternative to an oven, not a current fire.",
+      "search_aliases": [
+        "Bread in embers",
+        "Bread in ashes"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-barley-porridge-soup",
+      "locale": "ru",
+      "runtime_text": "Ячмень в севернорусском сельском контексте X–XIII вв. засвидетельствован в жидких кашах и супах. Для Новгородской земли это косвенная региональная совместимость, не местная трапеза, рецепт, порция или гарантированно съедобный результат.",
+      "search_aliases": [
+        "ячмень каша суп"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-barley-porridge-soup",
+      "locale": "en",
+      "runtime_text": "Barley is attested in liquid porridges and soups in the X–XIII-century rural northern-Rus context. For Novgorod Land this is inferred regional compatibility, not a local meal, recipe, portion or guaranteed edible result.",
+      "search_aliases": [
+        "barley porridge soup"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-rye-flour-bread",
+      "locale": "ru",
+      "runtime_text": "В обсуждении севернорусских зерновых материалов рожь описана как подходящее сырьё для получения муки и выпечки хлеба. Это совместимость сырья, не наличие мельницы, муки, печи или хлеба и не заданный выход продукта.",
+      "search_aliases": [
+        "рожь мука хлеб"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-rye-flour-bread",
+      "locale": "en",
+      "runtime_text": "In the discussion of northern-Rus cereal material, rye is described as a suitable material for flour production and bread baking. This is material compatibility, not the presence of a mill, flour, oven or bread, or a specified yield.",
+      "search_aliases": [
+        "rye flour bread"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-threshing-chaff",
+      "locale": "ru",
+      "runtime_text": "При обмолоте зерна образуется мякина — остатки колоса; такая связь описана по севернорусским зерновым материалам. Это не устанавливает инструмент, обязательную последовательность, количество отходов или текущий обмолот.",
+      "search_aliases": [
+        "обмолот мякина остатки колоса"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-threshing-chaff",
+      "locale": "en",
+      "runtime_text": "Grain threshing produces chaff, the remains of ears; this relationship is described in the northern-Rus cereal material. It does not establish a tool, mandatory sequence, waste quantity or current threshing episode.",
+      "search_aliases": [
+        "threshing chaff ear fragments"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-processing-area-inference",
+      "locale": "ru",
+      "runtime_text": "В Минино I скопление зерновых остатков с мякиной вне жилища авторы осторожно интерпретируют как возможный след площадки обмолота, первичного просеивания или веяния. Это локальная вероятностная интерпретация, не правило определения функции любой площадки и не основание создать новгородский двор или сито.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-processing-area-inference",
+      "locale": "en",
+      "runtime_text": "At Minino I, the authors cautiously interpret grain remains with chaff outside a dwelling as a possible trace of an area for threshing, initial sieving or winnowing. This is a local probabilistic interpretation, not a rule identifying any area's function or a basis to create a Novgorod yard or sieve.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-millet-cleaning-waste",
+      "locale": "ru",
+      "runtime_text": "Целые чешуи проса в переотложенном новгородском депозите первой половины XIII в. авторы вероятно трактуют как отход очистки пшена. Это вероятностный след обработки, не безусловное свойство любого зерна, наличие партии пшена, инструмента или места отходов.",
+      "search_aliases": [
+        "очистка пшена чешуи проса отходы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:food-practices-millet-cleaning-waste",
+      "locale": "en",
+      "runtime_text": "The authors probably interpret intact millet husks in a redeposited first-half-XIII-century Novgorod deposit as waste from millet cleaning. This is a probable processing trace, not an unconditional property of every grain, a present millet batch, tool or disposal site.",
+      "search_aliases": [
+        "millet cleaning husks waste"
+      ]
+    }
+  ]
+}

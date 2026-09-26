@@ -1,0 +1,66 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
+      "claim_ref": "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
+      "claim_digest": "c5386e4f2d95891779122e9ee52b114935bdf920a9f059c62ced87fa1dbd639d",
+      "candidate_ref": "git:355305bb4707f744e7e9e1a51777ae506c88c6a6:data/world-catalogs/novgorod/world-knowledge/production-v1/place-orchard-peat-processes-v1.json#claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:orchard-pruning-wound"
+      ],
+      "review_ref": "verification/place-orchard-peat-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No pruning instruction, disease diagnosis, tree, tool, wound treatment, or care outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+      "claim_ref": "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+      "claim_digest": "dcb52c37ddb20c027029ef6f0c4cbb27e13842b03e7d57d7dc72dcdfe4cfd3b5",
+      "candidate_ref": "git:355305bb4707f744e7e9e1a51777ae506c88c6a6:data/world-catalogs/novgorod/world-knowledge/production-v1/place-orchard-peat-processes-v1.json#claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:orchard-pruning-season"
+      ],
+      "review_ref": "verification/place-orchard-peat-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Conditional fruit-tree relation only; no Novgorod calendar, species rule, current season, disease, or mandatory work follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
+      "claim_ref": "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
+      "claim_digest": "8bce7b95e0e261af8f4173cf47a52064e32afb240b1a564720f33120c4806ba9",
+      "candidate_ref": "git:355305bb4707f744e7e9e1a51777ae506c88c6a6:data/world-catalogs/novgorod/world-knowledge/production-v1/place-orchard-peat-processes-v1.json#claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:orchard-renovation-leaf-area"
+      ],
+      "review_ref": "verification/place-orchard-peat-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No universal pruning recipe, time, cut size, tree condition, or result follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+      "claim_ref": "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+      "claim_digest": "f0d569ecbcd800ee622b7a64c6a9523fe59e27b6d4f9b581976c2645b0c8f0f1",
+      "candidate_ref": "git:355305bb4707f744e7e9e1a51777ae506c88c6a6:data/world-catalogs/novgorod/world-knowledge/production-v1/place-orchard-peat-processes-v1.json#claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:peat-cut-dry-stages",
+        "evidence:orchard-peat-editorial-place"
+      ],
+      "review_ref": "verification/place-orchard-peat-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Low-confidence editorial reconstruction only; no local peat industry, source, tool, method, amount, fuel, weather, readiness, or outcome follows. Source-access limit: independently checked official indexed Cut peat excerpt; complete PDF fetch unavailable."
+    }
+  ]
+}

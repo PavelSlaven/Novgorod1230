@@ -1,0 +1,50 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
+      "claim_ref": "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
+      "claim_digest": "a40ef15205f1461f8ace875987f036d5fdd7226151ce153d3227f38b3cdf5f45",
+      "candidate_ref": "git:e9ea5d9cfa479337e24699b1fd0350a4d333133e:data/world-catalogs/novgorod/world-knowledge/production-v1/static-bait-b11.json#claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent direct-source/domain review by a reviewer distinct from the candidate authors. Root mechanically binds the recorded verdict to the frozen candidate and assembled authoring pack.",
+      "evidence_checked": [
+        "evidence:static-bait-b11-target-fish-response-varies"
+      ],
+      "review_ref": "verification/static-bait-b11.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Animal or invertebrate bait attractiveness can vary by target fish type. This establishes no fish species, catch, dose, bait condition, water state, or local availability. Modern factual context does not create historical actor knowledge or local availability."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish",
+      "claim_ref": "claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish",
+      "claim_digest": "0f48ea870e2d9545a6a31ba1b89afb22dce67e349f257e676ecc8312863fd6d6",
+      "candidate_ref": "git:e9ea5d9cfa479337e24699b1fd0350a4d333133e:data/world-catalogs/novgorod/world-knowledge/production-v1/static-bait-b11.json#claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent direct-source/domain review by a reviewer distinct from the candidate authors. Root mechanically binds the recorded verdict to the frozen candidate and assembled authoring pack.",
+      "evidence_checked": [
+        "evidence:static-bait-b11-natural-animal-bait-categories"
+      ],
+      "review_ref": "verification/static-bait-b11.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Natural freshwater animal bait can include worms, minnows, or crayfish, with differing target-fish associations. This creates no bait, tackle, historical practice, or catch result. Modern factual context does not create historical actor knowledge or local availability."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
+      "claim_ref": "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
+      "claim_digest": "322132cbd77cb39dddddfb49556e31ec7a7d4ca24349a44dc0b8d9ea21082fad",
+      "candidate_ref": "git:e9ea5d9cfa479337e24699b1fd0350a4d333133e:data/world-catalogs/novgorod/world-knowledge/production-v1/static-bait-b11.json#claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent direct-source/domain review by a reviewer distinct from the candidate authors. Root mechanically binds the recorded verdict to the frozen candidate and assembled authoring pack.",
+      "evidence_checked": [
+        "evidence:static-bait-b11-mollusc-soft-tissue-bait"
+      ],
+      "review_ref": "verification/static-bait-b11.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Mollusc soft tissue can be bait in some freshwater-angling contexts. This does not make any shell bait or establish a mollusc, legality, target fish, method, or catch. Modern factual context does not create historical actor knowledge or local availability."
+    }
+  ]
+}

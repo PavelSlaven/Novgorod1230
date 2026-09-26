@@ -1,0 +1,1775 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:construction-ia-bridge",
+      "title": "Археологи выяснили, как был построен древнейший новгородский мост",
+      "authors": [],
+      "publication": "Институт археологии РАН, 19 марта 2019",
+      "source_kind": "excavation",
+      "citation": "https://archaeolog.ru/press/articles/arkheologi-vyyasnili-kak-byl-postroen-drevneyshiy-novgorodskiy-most",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:construction-orlov-1958",
+      "title": "Новая находка деталей корабля XII в. в Новгороде",
+      "authors": [
+        "С. Н. Орлов"
+      ],
+      "publication": "Советская археология 1958, № 4",
+      "source_kind": "scholarship",
+      "citation": "https://arheologija.ru/orlov-novaya-nahodka-detaley-korablya-xii-v-v-novgorode/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:construction-aleshkovsky-1969",
+      "title": "Ладья XI в. из Новгорода",
+      "authors": [
+        "М. Х. Алешковский"
+      ],
+      "publication": "Советская археология 1969, № 2, с. 264–269",
+      "source_kind": "scholarship",
+      "citation": "https://arheologija.ru/aleshkovskiy-m-h-ladya-xi-v-iz-novgoroda/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:construction-bulkin-antipov-2017",
+      "title": "Об особенностях организации строительства и строительного производства в Новгородской земле в домонгольское время",
+      "authors": [
+        "В. А. Булкин",
+        "И. В. Антипов"
+      ],
+      "publication": "Актуальные проблемы теории и истории искусства 7 (2017), с. 410–418",
+      "source_kind": "scholarship",
+      "citation": "https://doi.org/10.18688/aa177-4-40",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:construction-ia-bridge",
+      "source_ref": "source:construction-ia-bridge",
+      "anchor": {
+        "section": "Bridge-support construction paragraphs"
+      },
+      "note": "Independent verification: verification/verification-construction.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:construction-orlov-joints",
+      "source_ref": "source:construction-orlov-1958",
+      "anchor": {
+        "section": "Sternpost, planking and caulking paragraphs"
+      },
+      "note": "Independent verification: verification/verification-construction.md; caulking comparison is inferred.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:construction-aleshkovsky-organic",
+      "source_ref": "source:construction-aleshkovsky-1969",
+      "anchor": {
+        "section": "Boat no. 1 organic analysis and cladding, after figure 6; frame/half-stringer lashing before figure 3"
+      },
+      "note": "Independently approved ORA-01–08 in verification/verification-oils-resins-adhesives.md. Boat dates to early XI century and was deposited in 1044: 1100–1300 is inferred/medium Old-Rus compatibility, not direct 1230 attestation. ORA-05 redundant composite omitted; ORA-07/08 share one general bast-fastening premise.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:construction-bulkin-organisation",
+      "source_ref": "source:construction-bulkin-antipov-2017",
+      "anchor": {
+        "page": "410–418",
+        "section": "Abstract: quarry procurement, auxiliary labour, pottery workshops, and compared churches"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-terrain-resource-context.md. Pre-Mongol monumental church projects only; quarry procurement and the 1207 reconstruction are inferred/medium. No ordinary-house, source-site, stock, access or NPC assignment.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:construction-bulkin-1207",
+      "source_ref": "source:construction-bulkin-antipov-2017",
+      "anchor": {
+        "page": "415",
+        "section": "Probable 1207 visiting-builder templates and local plinth manufacture"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-terrain-resource-context.md. Pre-Mongol monumental church projects only; quarry procurement and the 1207 reconstruction are inferred/medium. No ordinary-house, source-site, stock, access or NPC assignment.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-bridge",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:rjaz-supported-bridge",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:polygonal-log-crib",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:riverbed-founded-log-crib",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:stone-filled-log-crib",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wooden-peg",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:forged-broad-headed-iron-nail",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wooden-nail",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:tarred-tow",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:vessel-joinery",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:hull-planking-attachment",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:plank-gap-caulking",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:pine-resin",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:animal-glue",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:aspen-cladding",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:monumental-stone-church-construction",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:construction-pottery-production",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-rjaz-bridge-support",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:wooden-bridge",
+      "predicate": "attested_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:rjaz-supported-bridge"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-ia-bridge"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-rjaz-polygonal-form",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:rjaz-supported-bridge",
+      "predicate": "attested_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:polygonal-log-crib"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-ia-bridge"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-rjaz-riverbed-foundation",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:rjaz-supported-bridge",
+      "predicate": "attested_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:riverbed-founded-log-crib"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-ia-bridge"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-rjaz-stone-fill",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:rjaz-supported-bridge",
+      "predicate": "attested_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:stone-filled-log-crib"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-ia-bridge"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-wooden-peg-vessel-joint",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wooden-peg",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:vessel-joinery"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-orlov-joints"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-forged-iron-nail-vessel-joint",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:forged-broad-headed-iron-nail",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:vessel-joinery"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-orlov-joints"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-wooden-nail-planking",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wooden-nail",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:hull-planking-attachment"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-orlov-joints"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-tarred-tow-caulking",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:tarred-tow",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:plank-gap-caulking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-orlov-joints"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-iron-clamp-caulking",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-repair-clamp",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:plank-gap-caulking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-orlov-joints"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-pine-resin-surfaces",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:pine-resin",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pine_resin_identified_on_early_novgorod_boat_surfaces"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-aleshkovsky-organic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-pine-resin-bast",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:pine-resin",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pine_resin_clumps_on_coated_bast_lashing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-aleshkovsky-organic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-animal-glue-chalk",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:animal-glue",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "animal_glue_bound_exterior_chalk_mass"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-aleshkovsky-organic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-animal-glue-pegged-planks",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:animal-glue",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "animal_glue_between_mechanically_pegged_wooden_layers"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-aleshkovsky-organic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-aspen-cladding-joint",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:aspen-cladding",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "thin_aspen_cladding_covers_hull_side_joint_reconstructed_water_protection"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-aleshkovsky-organic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-bast-vessel-fastening",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:bast",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "bast_lashing_fastens_vessel_components"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-aleshkovsky-organic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-quarry-procurement",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:monumental-stone-church-construction",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "limestone_shell_rock_probably_purchased_at_quarries_for_church_projects"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-bulkin-organisation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-auxiliary-construction-work",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:monumental-stone-church-construction",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "auxiliary_workers_excavated_foundation_trenches_delivered_materials_in_church_projects"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-bulkin-organisation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-construction-pottery-products",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:construction-pottery-production",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pottery_workshops_made_bricks_resonators_floor_tiles_for_builders"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-bulkin-organisation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-compared-church-masonry",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:monumental-stone-church-construction",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "compared_churches_different_patrons_similar_plinth_mortar_masonry_character"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-bulkin-organisation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:construction-plinth-patterns-1207",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:construction-pottery-production",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "probable_local_plinth_manufacture_to_visiting_builder_patterns_in_1207_project"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:construction-bulkin-1207"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-bridge",
+      "locale": "ru",
+      "labels": [
+        "Деревянный мост"
+      ],
+      "short_definition": "Деревянный переход через водную преграду",
+      "search_aliases": [
+        "Деревянный мост"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-bridge",
+      "locale": "en",
+      "labels": [
+        "Wooden bridge"
+      ],
+      "short_definition": "Wooden crossing over a water obstacle",
+      "search_aliases": [
+        "Wooden bridge"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:rjaz-supported-bridge",
+      "locale": "ru",
+      "labels": [
+        "Мост на ряжевых опорах"
+      ],
+      "short_definition": "Мост, опирающийся на деревянные ряжи",
+      "search_aliases": [
+        "Мост на ряжевых опорах"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:rjaz-supported-bridge",
+      "locale": "en",
+      "labels": [
+        "Log-crib-supported bridge"
+      ],
+      "short_definition": "Bridge resting on wooden log cribs",
+      "search_aliases": [
+        "Log-crib-supported bridge"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:polygonal-log-crib",
+      "locale": "ru",
+      "labels": [
+        "Многоугольный деревянный ряж"
+      ],
+      "short_definition": "Многоугольный сруб, служащий опорой",
+      "search_aliases": [
+        "Многоугольный деревянный ряж"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:polygonal-log-crib",
+      "locale": "en",
+      "labels": [
+        "Polygonal wooden log crib"
+      ],
+      "short_definition": "Polygonal log frame used as a support",
+      "search_aliases": [
+        "Polygonal wooden log crib"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:riverbed-founded-log-crib",
+      "locale": "ru",
+      "labels": [
+        "Ряж, поставленный на дно"
+      ],
+      "short_definition": "Ряж, опущенный на грунт водоёма",
+      "search_aliases": [
+        "Ряж, поставленный на дно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:riverbed-founded-log-crib",
+      "locale": "en",
+      "labels": [
+        "Riverbed-founded log crib"
+      ],
+      "short_definition": "Log crib lowered onto a watercourse bed",
+      "search_aliases": [
+        "Riverbed-founded log crib"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:stone-filled-log-crib",
+      "locale": "ru",
+      "labels": [
+        "Каменно-забутованный ряж"
+      ],
+      "short_definition": "Ряж, заполненный камнем для устойчивости",
+      "search_aliases": [
+        "Каменно-забутованный ряж"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:stone-filled-log-crib",
+      "locale": "en",
+      "labels": [
+        "Stone-filled log crib"
+      ],
+      "short_definition": "Log crib filled with stone for stability",
+      "search_aliases": [
+        "Stone-filled log crib"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wooden-peg",
+      "locale": "ru",
+      "labels": [
+        "Деревянный нагель"
+      ],
+      "short_definition": "Деревянный штифт для соединения деталей",
+      "search_aliases": [
+        "Деревянный нагель"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wooden-peg",
+      "locale": "en",
+      "labels": [
+        "Wooden peg"
+      ],
+      "short_definition": "Wooden pin joining components",
+      "search_aliases": [
+        "Wooden peg"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:forged-broad-headed-iron-nail",
+      "locale": "ru",
+      "labels": [
+        "Кованый железный гвоздь с широкой шляпкой"
+      ],
+      "short_definition": "Кованый железный гвоздь с широкой шляпкой",
+      "search_aliases": [
+        "Кованый железный гвоздь с широкой шляпкой"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:forged-broad-headed-iron-nail",
+      "locale": "en",
+      "labels": [
+        "Forged broad-headed iron nail"
+      ],
+      "short_definition": "Forged iron nail with a broad head",
+      "search_aliases": [
+        "Forged broad-headed iron nail"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wooden-nail",
+      "locale": "ru",
+      "labels": [
+        "Деревянный гвоздь"
+      ],
+      "short_definition": "Деревянный крепёжный стержень",
+      "search_aliases": [
+        "Деревянный гвоздь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wooden-nail",
+      "locale": "en",
+      "labels": [
+        "Wooden nail"
+      ],
+      "short_definition": "Wooden fastening pin",
+      "search_aliases": [
+        "Wooden nail"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tarred-tow",
+      "locale": "ru",
+      "labels": [
+        "Просмоленная пакля"
+      ],
+      "short_definition": "Волокнистый материал, пропитанный смолой",
+      "search_aliases": [
+        "Просмоленная пакля"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tarred-tow",
+      "locale": "en",
+      "labels": [
+        "Tarred tow"
+      ],
+      "short_definition": "Fibrous material impregnated with tar",
+      "search_aliases": [
+        "Tarred tow"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:vessel-joinery",
+      "locale": "ru",
+      "labels": [
+        "Соединение деталей судна"
+      ],
+      "short_definition": "Соединение деревянных деталей судна",
+      "search_aliases": [
+        "Соединение деталей судна"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:vessel-joinery",
+      "locale": "en",
+      "labels": [
+        "Vessel joinery"
+      ],
+      "short_definition": "Joining wooden components of a vessel",
+      "search_aliases": [
+        "Vessel joinery"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:hull-planking-attachment",
+      "locale": "ru",
+      "labels": [
+        "Крепление обшивки корпуса"
+      ],
+      "short_definition": "Крепление обшивочных досок к каркасу",
+      "search_aliases": [
+        "Крепление обшивки корпуса"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:hull-planking-attachment",
+      "locale": "en",
+      "labels": [
+        "Hull-planking attachment"
+      ],
+      "short_definition": "Fastening hull planks to the frame",
+      "search_aliases": [
+        "Hull-planking attachment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:plank-gap-caulking",
+      "locale": "ru",
+      "labels": [
+        "Конопатка зазоров обшивки"
+      ],
+      "short_definition": "Уплотнение зазоров между обшивочными досками",
+      "search_aliases": [
+        "Конопатка зазоров обшивки"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:plank-gap-caulking",
+      "locale": "en",
+      "labels": [
+        "Plank-gap caulking"
+      ],
+      "short_definition": "Sealing gaps between hull planks",
+      "search_aliases": [
+        "Plank-gap caulking"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pine-resin",
+      "locale": "ru",
+      "labels": [
+        "Сосновая смола"
+      ],
+      "short_definition": "Сосновая смола",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pine-resin",
+      "locale": "en",
+      "labels": [
+        "Pine resin"
+      ],
+      "short_definition": "Pine resin",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:animal-glue",
+      "locale": "ru",
+      "labels": [
+        "Животный клей"
+      ],
+      "short_definition": "Животный клей",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:animal-glue",
+      "locale": "en",
+      "labels": [
+        "Animal glue"
+      ],
+      "short_definition": "Animal glue",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:aspen-cladding",
+      "locale": "ru",
+      "labels": [
+        "Осиновая обшивка"
+      ],
+      "short_definition": "Осиновая обшивка",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:aspen-cladding",
+      "locale": "en",
+      "labels": [
+        "Aspen cladding"
+      ],
+      "short_definition": "Aspen cladding",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:monumental-stone-church-construction",
+      "locale": "ru",
+      "labels": [
+        "Домонгольское каменное храмовое строительство"
+      ],
+      "short_definition": "Специализированное строительство каменных храмов Новгородской земли; не обычный дом и не текущая стройка.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:monumental-stone-church-construction",
+      "locale": "en",
+      "labels": [
+        "Pre-Mongol stone-church construction"
+      ],
+      "short_definition": "Specialist stone-church construction in Novgorod Land; not ordinary housing or a present project.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:construction-pottery-production",
+      "locale": "ru",
+      "labels": [
+        "Строительная керамика новгородских гончаров"
+      ],
+      "short_definition": "Керамические изделия для домонгольского храмового строительства; не доказательство мастерской, сырья или бытового гончарства.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:construction-pottery-production",
+      "locale": "en",
+      "labels": [
+        "Novgorodian construction-pottery production"
+      ],
+      "short_definition": "Ceramic products for pre-Mongol church construction; not proof of a workshop, raw stock or domestic pottery.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-rjaz-bridge-support",
+      "locale": "ru",
+      "runtime_text": "В Новгороде X века засвидетельствован деревянный мост на ряжевых опорах; это историческая совместимость, не мост в текущей сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-rjaz-bridge-support",
+      "locale": "en",
+      "runtime_text": "A tenth-century Novgorod wooden bridge is attested on log-crib supports; this is historical compatibility, not a bridge in the current scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-rjaz-polygonal-form",
+      "locale": "ru",
+      "runtime_text": "Ряжевые опоры были многоугольными деревянными срубами; форма не обязательна для каждого моста.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-rjaz-polygonal-form",
+      "locale": "en",
+      "runtime_text": "The log-crib supports were polygonal wooden frames; that form is not required for every bridge.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-rjaz-riverbed-foundation",
+      "locale": "ru",
+      "runtime_text": "Ряж выводили на точку, наращивали венцами до опускания на грунт русла, затем забутовывали камнем; это не готовый проект или гарантия устойчивости.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-rjaz-riverbed-foundation",
+      "locale": "en",
+      "runtime_text": "A log crib was floated to position, raised with courses until it settled on the riverbed, then filled with stone; this is not a ready design or guarantee of stability.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-rjaz-stone-fill",
+      "locale": "ru",
+      "runtime_text": "Ряжевые опоры засыпали камнем для устойчивости; это не создаёт камень или мост в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-rjaz-stone-fill",
+      "locale": "en",
+      "runtime_text": "Log-crib supports were filled with stone for stability; this does not create stone or a bridge in a scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-wooden-peg-vessel-joint",
+      "locale": "ru",
+      "runtime_text": "В новгородском судне XII века соединение ахтерштевня с килем включало деревянный нагель; это не требование для всех судов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-wooden-peg-vessel-joint",
+      "locale": "en",
+      "runtime_text": "A twelfth-century Novgorod vessel joined its sternpost to the keel with a wooden peg; this is not a requirement for every vessel.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-forged-iron-nail-vessel-joint",
+      "locale": "ru",
+      "runtime_text": "В корабельной древесине найдены кованые железные гвозди с широкими шляпками; находка не даёт текущего запаса.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-forged-iron-nail-vessel-joint",
+      "locale": "en",
+      "runtime_text": "Forged broad-headed iron nails were found in ship timber; the find does not provide a current stock.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-wooden-nail-planking",
+      "locale": "ru",
+      "runtime_text": "Сверлёные отверстия обшивочной доски поддерживают реконструкцию её крепления к шпангоутам деревянными гвоздями.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-wooden-nail-planking",
+      "locale": "en",
+      "runtime_text": "Drilled holes in a hull plank support its reconstructed attachment to frames with wooden nails.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-tarred-tow-caulking",
+      "locale": "ru",
+      "runtime_text": "По сравнительной интерпретации Орлова зазоры обшивки конопатили просмоленной паклей; это не доказательство состояния каждого корпуса.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-tarred-tow-caulking",
+      "locale": "en",
+      "runtime_text": "In Orlov's comparative interpretation, plank gaps were caulked with tarred tow; this does not prove the condition of every hull.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-iron-clamp-caulking",
+      "locale": "ru",
+      "runtime_text": "По сравнительной интерпретации Орлова железные скобочки закрепляли планки, поджимавшие паклю в зазорах обшивки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-iron-clamp-caulking",
+      "locale": "en",
+      "runtime_text": "In Orlov's comparative interpretation, iron clamps held battens that pressed tow into plank gaps.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-pine-resin-surfaces",
+      "locale": "ru",
+      "runtime_text": "На поверхностях новгородской лодки № 1 начала XI века анализом определена сосновая смола. Это раннее наблюдение присутствия смолы на поверхности, не установление её функции, обработки каждой лодки или наличия смолы в сцене.",
+      "search_aliases": [
+        "Смола на деревянном корпусе"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-pine-resin-surfaces",
+      "locale": "en",
+      "runtime_text": "Analysis identified pine resin on surfaces of early-11th-century Novgorod boat no. 1. This earlier observation identifies resin on a surface, not its function, treatment of every boat or present resin stock.",
+      "search_aliases": [
+        "Resin on a wooden hull"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-pine-resin-bast",
+      "locale": "ru",
+      "runtime_text": "У полустрингеров той же лодки начала XI века обнаружены крупные сгустки сосновой смолы в месте просмоленной лыковой вицы. Это ранний пример обработки связки, не обязательность смоления любого лыка и не доказательство водонепроницаемости.",
+      "search_aliases": [
+        "Смоление лыковой связки"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-pine-resin-bast",
+      "locale": "en",
+      "runtime_text": "Large pine-resin clumps occurred at half-stringers where the same early-11th-century boat's bast vitsa was resin-coated. This earlier lashing-treatment example establishes neither a requirement to coat all bast nor waterproofness.",
+      "search_aliases": [
+        "Resin-coated bast lashing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-animal-glue-chalk",
+      "locale": "ru",
+      "runtime_text": "На внешней поверхности новгородской лодки № 1 начала XI века белковое вещество, определённое как животный клей, скрепляло меловую массу. Этот ранний пример не задаёт рецепт, изготовление клея, прочность или наличие покрытия в текущей сцене.",
+      "search_aliases": [
+        "Животный клей как связующее мела"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-animal-glue-chalk",
+      "locale": "en",
+      "runtime_text": "On the exterior of early-11th-century Novgorod boat no. 1, protein material identified as animal glue bound a chalk mass. This earlier example supplies no recipe, glue-production process, strength or present coating.",
+      "search_aliases": [
+        "Animal glue chalk binder"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-animal-glue-pegged-planks",
+      "locale": "ru",
+      "runtime_text": "На лодке № 1 начала XI века животный клей найден между деревянными пластинами борта, скреплёнными мелкими нагелями. Клей здесь сопровождал механическое крепление; ранний пример не заменяет крепёж и не гарантирует произвольный деревянный шов.",
+      "search_aliases": [
+        "Склеенные деревянные слои и нагели"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-animal-glue-pegged-planks",
+      "locale": "en",
+      "runtime_text": "Animal glue was found between wooden side-planks secured with small pegs on early-11th-century boat no. 1. Glue accompanied mechanical fastening; this earlier example neither replaces fasteners nor guarantees an arbitrary wooden joint.",
+      "search_aliases": [
+        "Glue between pegged wooden layers"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-aspen-cladding-joint",
+      "locale": "ru",
+      "runtime_text": "Тонкая осиновая обшивка лодки № 1 начала XI века закрывала соединение корпуса и борта; автор реконструирует защиту этой линии от воды. Это ранний пример устройства, не измеренная герметичность, мореходность или правило для любого корпуса.",
+      "search_aliases": [
+        "Обшивка поверх соединения"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-aspen-cladding-joint",
+      "locale": "en",
+      "runtime_text": "Thin aspen cladding covered the hull-side joint of early-11th-century boat no. 1; the author reconstructs protection of that joint from water. This earlier construction example is not measured watertightness, seaworthiness or a rule for every hull.",
+      "search_aliases": [
+        "Cladding over a hull joint"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-bast-vessel-fastening",
+      "locale": "ru",
+      "runtime_text": "В новгородской лодке № 1 начала XI века липовая лыковая вица через отверстие привязывала шпангоут к полустрингеру; две части носового фрагмента также скрепляло лыко. Это ранние примеры механической связки, не смолёная пакля, клей или обязательный способ крепления каждого судна.",
+      "search_aliases": [
+        "Лыковое крепление деталей лодки"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-bast-vessel-fastening",
+      "locale": "en",
+      "runtime_text": "In early-11th-century Novgorod boat no. 1, lime-bast vitsa passed through an opening to tie a frame to a half-stringer; bast also fastened two bow-fragment parts. These earlier examples are mechanical lashings, not tarred tow, glue or a required fastening for every vessel.",
+      "search_aliases": [
+        "Bast fastening vessel parts"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-quarry-procurement",
+      "locale": "ru",
+      "runtime_text": "По оценке Булкина и Антипова, для домонгольского каменного храмового строительства Новгородской земли известняк и ракушечник, видимо, закупались в каменоломнях. Это предположение о снабжении специализированных строек, не месторождение, карьер, доступный запас или право добычи в текущей сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-quarry-procurement",
+      "locale": "en",
+      "runtime_text": "In Bulkin and Antipov's assessment, limestone and shell rock for pre-Mongol stone-church construction in Novgorod Land were probably purchased at quarries. This is a specialist-project procurement inference, not a deposit, quarry, accessible stock or extraction right in the present scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-auxiliary-construction-work",
+      "locale": "ru",
+      "runtime_text": "В исследованных домонгольских каменных строительных проектах подсобные работники выполняли простые работы, включая откопку фундаментных рвов и доставку материалов. Это разделение труда в проектном контексте, не обязательная роль любого NPC, наличие груза, оплата или совершённая доставка.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-auxiliary-construction-work",
+      "locale": "en",
+      "runtime_text": "In the studied pre-Mongol stone-building projects, auxiliary workers performed simple work including foundation-trench excavation and material delivery. This is project-level division of labour, not a mandatory NPC role, existing load, wage or completed delivery.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-construction-pottery-products",
+      "locale": "ru",
+      "runtime_text": "В домонгольском новгородском строительном производстве гончарные мастерские изготовляли для строителей кирпичи, керамические сосуды-голосники и напольные плитки. Это специализированные категории продукции, не наличие печи, мастерской, глиняного источника, топлива, рецепта или такой керамики в обычном доме.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-construction-pottery-products",
+      "locale": "en",
+      "runtime_text": "In pre-Mongol Novgorodian construction production, pottery workshops made bricks, ceramic resonators and floor tiles for builders. These are specialist product categories, not an existing kiln, workshop, clay source, fuel, recipe or such pottery in an ordinary house.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-compared-church-masonry",
+      "locale": "ru",
+      "runtime_text": "В сопоставленных храмах Новгородской земли разных заказчиков на рубеже XII–XIII веков авторы отмечают одинаковый характер плинфы, раствора и техники кладки. Это характеристика сравненного монументального корпуса, не единый обязательный рецепт, местный источник сырья или умение текущего строителя.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-compared-church-masonry",
+      "locale": "en",
+      "runtime_text": "In the compared Novgorod-Land churches funded by different patrons around the turn of the 12th–13th centuries, the authors note similar character of plinth, mortar and masonry technique. This describes the compared monumental corpus, not a compulsory recipe, local raw source or a present builder's skill.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-plinth-patterns-1207",
+      "locale": "ru",
+      "runtime_text": "Для новгородского храма 1207 года авторы предлагают вероятную реконструкцию: новгородские гончары изготовляли плинфу по образцам пришлых строителей. Это предположение об одном проекте, не подтверждение общего кирпичного производства, прибытия строителей, мастерской 1230 года, источника глины или наличия образца.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:construction-plinth-patterns-1207",
+      "locale": "en",
+      "runtime_text": "For a Novgorodian church dated 1207, the authors propose a probable reconstruction: Novgorodian potters made plinth to patterns supplied by visiting builders. This is an inference about one project, not proof of a general brick industry, the builders' arrival, a 1230 workshop, clay source or present pattern.",
+      "search_aliases": []
+    }
+  ]
+}

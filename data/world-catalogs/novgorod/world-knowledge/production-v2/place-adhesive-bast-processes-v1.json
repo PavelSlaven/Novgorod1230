@@ -1,0 +1,153 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-adhesive-bast-openstax-gelatin",
+      "title": "Chemistry 2e: Colloids",
+      "authors": ["Flowers, Paul", "Theopold, Klaus", "Langley, Richard", "Robinson, William R."],
+      "publication": "OpenStax, Rice University",
+      "source_kind": "technical_reference",
+      "citation": "https://openstax.org/books/chemistry-2e/pages/11-5-colloids",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-adhesive-bast-smithsonian-animal-glue",
+      "title": "Painting Conservation Glossary of Terms",
+      "authors": ["Smithsonian Museum Conservation Institute"],
+      "publication": "Smithsonian Institution",
+      "source_kind": "official_documentation",
+      "citation": "https://mci.si.edu/painting-conservation-glossary-terms",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-adhesive-bast-cci-gelatin-repair",
+      "title": "The Salzinnes Antiphonal – Part 2: Conservation Treatment of the Textblock",
+      "authors": ["Canadian Conservation Institute"],
+      "publication": "Government of Canada",
+      "source_kind": "official_documentation",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/videos/salzinnes-treatment-textblock.html",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-adhesive-bast-usgs-linden",
+      "title": "Plants of Louisiana: Tilia americana",
+      "authors": ["U.S. Geological Survey"],
+      "publication": "USGS Wetland and Aquatic Research Center",
+      "source_kind": "official_documentation",
+      "citation": "https://warcapps.usgs.gov/PlantID/Species/Details/163",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-adhesive-bast-usfs-tilia",
+      "title": "Tilia spp.: linden, basswood",
+      "authors": ["U.S. Department of Agriculture Forest Service"],
+      "publication": "USDA Forest Service Woody Plant Seed Manual",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fs.usda.gov/nsl/Wpsm/Tilia.pdf",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:adhesive-bast-animal-glue-gelatin-kind",
+      "source_ref": "source:place-adhesive-bast-smithsonian-animal-glue",
+      "anchor": {"section": "size"},
+      "note": "Smithsonian defines the relevant water-diluted animal-glue size as collagen/gelatin material. It does not identify any particular glue batch, preparation, substrate, or bond.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:adhesive-bast-gelatin-cooling-set",
+      "source_ref": "source:place-adhesive-bast-openstax-gelatin",
+      "anchor": {"section": "Gels"},
+      "note": "OpenStax describes a hot aqueous gelatin mixture setting as it cools into a viscous gel. This is a material relation, not a glue recipe, temperature, setting time, bond strength, or universal adhesive rule.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:adhesive-bast-gelatin-adhesive-drying",
+      "source_ref": "source:place-adhesive-bast-cci-gelatin-repair",
+      "anchor": {"section": "Tear repair"},
+      "note": "CCI documents a gelatine adhesive used in a repair while the work dries between blotters. This is a modern conservation example, not a historical binding method or a guaranteed bond.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:adhesive-bast-linden-inner-bark-soaking-separation",
+      "source_ref": "source:place-adhesive-bast-usgs-linden",
+      "anchor": {"section": "Plant Uses"},
+      "note": "USGS records soaking Tilia americana inner bark in water to separate tough fibres, then using them for cordage and other fibre goods. This named-species modern regional account is analogical support for the bounded editorial linden-bast work relation; it establishes no Novgorod tree, bark, season, access, yield, or tool.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:adhesive-bast-linden-bast-fibre-character",
+      "source_ref": "source:place-adhesive-bast-usfs-tilia",
+      "anchor": {"section": "Uses"},
+      "note": "USDA Forest Service describes Tilia inner bark as long, tough bast fibres used for cordage, mats, and clothing. It supports the material characterization for the bounded editorial relation, not a processing prescription or local availability.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:aqueous-animal-glue-setting-and-drying", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:craft_technology:linden-bast-soaking-and-separation", "domain": "craft_technology", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"}
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "where_an_aqueous_collagen_gelatin_animal_glue_preparation_is_established_it_can_gel_as_it_cools_and_an_assembled_joint_can_be_left_to_dry_without_this_establishing_a_recipe_temperature_duration_or_bond_result"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:adhesive-bast-animal-glue-gelatin-kind", "evidence:adhesive-bast-gelatin-cooling-set", "evidence:adhesive-bast-gelatin-adhesive-drying"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:linden-bast-soaking-and-separation",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "where_linden_bast_is_already_established_water_soaking_can_support_practical_fibre_separation_and_flexible_handling_such_as_twisting_without_establishing_a_fixed_process_or_material_presence"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:adhesive-bast-linden-inner-bark-soaking-separation", "evidence:adhesive-bast-linden-bast-fibre-character"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:aqueous-animal-glue-setting-and-drying", "locale": "ru", "labels": ["Схватывание и высыхание водного животного клея"], "short_definition": "Качественная связь охлаждения желатинового клея, гелеобразования и высыхания соединения.", "search_aliases": ["животный клей", "желатиновый клей", "клей остыл", "клей сохнет"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:aqueous-animal-glue-setting-and-drying", "locale": "en", "labels": ["Aqueous animal-glue setting and drying"], "short_definition": "Qualitative relation of cooling gelatin glue, gelling, and joint drying.", "search_aliases": ["animal glue", "gelatin glue", "glue cooling", "glue drying"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:craft_technology:linden-bast-soaking-and-separation", "locale": "ru", "labels": ["Замачивание и отделение луба липы"], "short_definition": "Связь замачивания внутренней коры Tilia americana с отделением лубяных волокон.", "search_aliases": ["луб липы", "лыко", "мочить кору", "отделить луб"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:craft_technology:linden-bast-soaking-and-separation", "locale": "en", "labels": ["Linden-bast soaking and separation"], "short_definition": "Relation of soaking Tilia americana inner bark to bast-fibre separation.", "search_aliases": ["linden bast", "basswood inner bark", "soak bark", "separate bast"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining", "locale": "ru", "runtime_text": "Если уже есть водный животный клей на основе коллагена/желатина, при остывании он может перейти в более вязкое гелевое состояние, а собранное соединение может оставаться для высыхания. Это не относится ко всем клеям и не задаёт рецепт, температуру, длительность, прижим, прочность или успех склейки.", "search_aliases": ["клей застыл", "животный клей", "желатиновый клей", "сохнет переплёт"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining", "locale": "en", "runtime_text": "Where an aqueous collagen/gelatin animal glue is already present, cooling can make it gel more viscously, and an assembled joint can be left to dry. This does not apply to every glue and supplies no recipe, temperature, duration, clamping, strength, or successful bond.", "search_aliases": ["glue set", "animal glue", "gelatin glue", "binding dries"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling", "locale": "ru", "runtime_text": "Если липовое лыко уже установлено, замачивание в воде может поддержать практическое отделение волокон и их гибкую дальнейшую обработку, например скручивание. Это editorial reconstruction для Новгородской земли 1200–1300, не доказательство местного дерева или коры, не фиксированный способ, срок, инструмент, выход или готовое изделие; она не объявляет тот же приём законом для крапивы либо всех лубяных растений.", "search_aliases": ["замочить лыко", "луб липы", "отделить волокна", "крутить шнур"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling", "locale": "en", "runtime_text": "Where linden bast is already established, water soaking can support practical fibre separation and flexible further handling, such as twisting. This is editorial reconstruction for Novgorod Land 1200–1300, not evidence of a local tree or bark, fixed method, duration, tool, yield, or finished item; it does not make the same process a law for nettle or all bast plants.", "search_aliases": ["soak bast", "linden bast", "separate fibres", "twist cordage"]}
+  ]
+}

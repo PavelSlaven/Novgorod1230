@@ -1,0 +1,35 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-indoor-moisture-v1-stove-water-vapour",
+      "claim_ref": "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "claim_digest": "7f404b669e264b236ad18e086c75026498a128322e99f6e6893dd3b337f4bf97",
+      "candidate_ref": "git:cd68250993d8be235389dd6d747578483d9e8a98:data/world-catalogs/novgorod/world-knowledge/production-v1/static-indoor-moisture-v1.json#claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Independent direct EPA source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-fuel-burning-stoves-can-add-indoor-water-vapour"
+      ],
+      "review_ref": "verification/static-indoor-moisture-v1.md#claimresearch-fuel-burning-stoves-can-add-indoor-water-vapour",
+      "verdict": "APPROVE",
+      "limits": "Supports a conditional indoor moisture source only; no stove, fuel, draught, outdoor vent, humidity measurement, historical installation, or scene outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-indoor-moisture-v1-ventilation-condensation",
+      "claim_ref": "claim:research-increased-ventilation-can-help-reduce-condensation",
+      "claim_digest": "47fe0315097e78790b72e07dd161e877926ee66c08032c5cf906b43ab56187f6",
+      "candidate_ref": "git:cd68250993d8be235389dd6d747578483d9e8a98:data/world-catalogs/novgorod/world-knowledge/production-v1/static-indoor-moisture-v1.json#claim:research-increased-ventilation-can-help-reduce-condensation",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Independent direct EPA source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-increased-ventilation-can-help-reduce-condensation"
+      ],
+      "review_ref": "verification/static-indoor-moisture-v1.md#claimresearch-increased-ventilation-can-help-reduce-condensation",
+      "verdict": "APPROVE",
+      "limits": "Supports conditional condensation mitigation only; no actual ventilation, air movement, temperature, humidity, dryness, or result for a particular room follows."
+    }
+  ]
+}

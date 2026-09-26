@@ -1,0 +1,44 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-cordage-reworking-v1-unlaid-fibre-cord",
+      "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+      "claim_digest": "183058518826512eea48cdc1ed55c3408db3bce18bb3bfa04d1f280fc7e82dd0",
+      "candidate_ref": "git:6324b0e49ccea95ce6dc7e28147b2f0bf0168ef2:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-cordage-reworking-v1.json#claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+      "auditor_ref": "/root/verify_cordage_candidate",
+      "independence_basis": "Independent review by an auditor who did not author the committed candidate; checked candidate claim/localizations, editorial rationale, physics-material-science universal applicability, existing fibre-rope evidence and limits against the assembled current authoring plus candidate.",
+      "evidence_checked": ["evidence:gameplay-cordage-reworking-editorial"],
+      "review_ref": "verification/gameplay-cordage-reworking-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal conditional editorial material premise for an already present laid fibre cord only; no material identity, access, ownership, tool, length, strength, historical construction, scene item or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-cordage-reworking-v1-reworked-components",
+      "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+      "claim_digest": "88a3661c7ff5b91c4cb0b73bc7b0489cc6e52ff09439e3d587369e94c64faf80",
+      "candidate_ref": "git:6324b0e49ccea95ce6dc7e28147b2f0bf0168ef2:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-cordage-reworking-v1.json#claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+      "auditor_ref": "/root/verify_cordage_candidate",
+      "independence_basis": "Independent review by an auditor who did not author the committed candidate; checked candidate claim/localizations, editorial rationale, physics-material-science universal applicability, existing fibre-rope evidence and limits against the assembled current authoring plus candidate.",
+      "evidence_checked": ["evidence:gameplay-cordage-reworking-editorial", "evidence:gameplay-pe3-uaf-fibre-rope-condition", "evidence:gameplay-pe3-army-natural-fibre-rope-strength"],
+      "review_ref": "verification/gameplay-cordage-reworking-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal conditional editorial material premise only; no particular material, remaining length, strength, tool, skill, ownership, historical practice, resulting cord or successful action."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-cordage-reworking-v1-fishing-line-limit",
+      "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+      "claim_digest": "36ccda6db4519eb76e3566b9ef2e9f39e5c5c44ae7da70a5ebda82b3cb12d164",
+      "candidate_ref": "git:6324b0e49ccea95ce6dc7e28147b2f0bf0168ef2:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-cordage-reworking-v1.json#claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+      "auditor_ref": "/root/verify_cordage_candidate",
+      "independence_basis": "Independent review by an auditor who did not author the committed candidate; checked candidate claim/localizations, editorial rationale, physics-material-science universal applicability, existing fibre-rope evidence and limits against the assembled current authoring plus candidate.",
+      "evidence_checked": ["evidence:gameplay-cordage-reworking-editorial", "evidence:gameplay-pe3-uaf-fibre-rope-condition", "evidence:gameplay-pe3-army-natural-fibre-rope-strength"],
+      "review_ref": "verification/gameplay-cordage-reworking-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal suitability boundary only; no fishing line, tackle, material identity, condition, attachment, load, access, ownership, tool, catch or successful outcome."
+    }
+  ]
+}

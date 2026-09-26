@@ -1,0 +1,65 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-mechanisms-v1-carbon-monoxide-perceptibility",
+      "claim_ref": "claim:research-carbon-monoxide-is-colorless-and-odorless",
+      "claim_digest": "e6c3bd83eb70b80263341bc881c6fc0fe48e3382a24633c6d2d915d5300f8884",
+      "candidate_ref": "git:65d49f0805c93a57b93c32df68a77ba6d7718562:data/world-catalogs/novgorod/world-knowledge/production-v1/static-exposure-mechanisms-v1.json#claim:research-carbon-monoxide-is-colorless-and-odorless",
+      "auditor_ref": "/root/food_source_verifier",
+      "independence_basis": "Independent direct source review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-exposure-co-no-odor-or-color"
+      ],
+      "review_ref": "verification/static-exposure-mechanisms-v1.md#claimresearch-carbon-monoxide-is-colorless-and-odorless",
+      "verdict": "APPROVE",
+      "limits": "Supports only carbon monoxide's colourless and odourless property; no presence, concentration, source, exposure, detector state, symptoms, diagnosis, safety, or scene outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-mechanisms-v1-local-exhaust-airflow",
+      "claim_ref": "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
+      "claim_digest": "6ddd3744222cd8707f4cda9a8c24fe574192d62e7dbdabf2d3e597b07be60dbe",
+      "candidate_ref": "git:65d49f0805c93a57b93c32df68a77ba6d7718562:data/world-catalogs/novgorod/world-knowledge/production-v1/static-exposure-mechanisms-v1.json#claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
+      "auditor_ref": "/root/food_source_verifier",
+      "independence_basis": "Independent direct source review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-exposure-local-exhaust-removes-contaminated-air"
+      ],
+      "review_ref": "verification/static-exposure-mechanisms-v1.md#claimresearch-local-exhaust-can-remove-contaminated-air-from-a-room",
+      "verdict": "APPROVE",
+      "limits": "Supports local exhaust capture at source and discharge outside a room only; no actual exhaust, draught, sealing, airflow rate, contaminant, concentration, safe level, or scene outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-mechanisms-v1-cold-water-muscle-control",
+      "claim_ref": "claim:research-cold-water-immersion-can-impair-muscle-control",
+      "claim_digest": "4902eb9d1d0b8531f452bba050164243e32c6819fcdd79740f230b0953056bef",
+      "candidate_ref": "git:65d49f0805c93a57b93c32df68a77ba6d7718562:data/world-catalogs/novgorod/world-knowledge/production-v1/static-exposure-mechanisms-v1.json#claim:research-cold-water-immersion-can-impair-muscle-control",
+      "auditor_ref": "/root/food_source_verifier",
+      "independence_basis": "Independent direct source review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-exposure-cold-water-can-impair-muscle-control"
+      ],
+      "review_ref": "verification/static-exposure-mechanisms-v1.md#claimresearch-cold-water-immersion-can-impair-muscle-control",
+      "verdict": "APPROVE",
+      "limits": "Supports possible cold-water immersion impairment of muscle control only; no water temperature, duration, clothing, person, degree of impairment, diagnosis, injury, survival, treatment, or scene outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-mechanisms-v1-fire-plume-upper-layer-transport",
+      "claim_ref": "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+      "claim_digest": "f2d63822d5249bf1d3ab51cce463a16e1c86fd7f963dafad57b4b07a1475ea12",
+      "candidate_ref": "git:79cbbdc42d0d2f15fb28047eeaf2ff1460e46c86:data/world-catalogs/novgorod/world-knowledge/production-v1/static-exposure-mechanisms-v1.json#claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+      "auditor_ref": "/root/food_source_verifier",
+      "independence_basis": "Independent direct source review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-exposure-fire-plume-upper-layer-transport"
+      ],
+      "review_ref": "verification/static-exposure-mechanisms-v1.md#claimresearch-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
+      "verdict": "APPROVE",
+      "limits": "Supports fire-plume transfer of entrained combustion products from lower to upper layer in an enclosure only; no actual fire, enclosure, opening geometry, smoke quantity, layer height, temperature, concentration, visibility, exposure, safe location, or scene outcome follows."
+    }
+  ]
+}

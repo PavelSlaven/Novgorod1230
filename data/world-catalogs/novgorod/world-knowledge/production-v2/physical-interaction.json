@@ -1,0 +1,1162 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {
+    "physics_material_science": {
+      "can_produce": {
+        "subject_domains": [
+          "physics_material_science"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Conditional qualitative physical response, not an automatic outcome or numerical mechanics."
+      },
+      "depends_on": {
+        "subject_domains": [
+          "physics_material_science",
+          "material_culture"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Physical factors needed to reason about a response; the actual values remain code-owned."
+      },
+      "requires_condition": {
+        "subject_domains": [
+          "physics_material_science",
+          "material_culture"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Necessary physical condition, not sufficient success, source availability, or historical technology."
+      }
+    }
+  },
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:west-jade-1963",
+      "title": "Jade: Its Character and Occurrence",
+      "authors": [
+        "Elisabeth H. West"
+      ],
+      "publication": "Expedition 5(2), 1963, University of Pennsylvania Museum",
+      "source_kind": "scholarship",
+      "citation": "https://www.penn.museum/sites/expedition/jade/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-physics-elasticity",
+      "source_ref": "source:openstax",
+      "anchor": {
+        "section": "5.3 Elasticity: Stress and Strain"
+      },
+      "note": "Independently reopened for GPI research/verification-population-general-physical-interaction.md: https://openstax.org/books/college-physics-2e/pages/5-3-elasticity-stress-and-strain",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-physics-pressure",
+      "source_ref": "source:openstax",
+      "anchor": {
+        "section": "11.3 Pressure"
+      },
+      "note": "Independently reopened for GPI research/verification-population-general-physical-interaction.md: https://openstax.org/books/college-physics-2e/pages/11-3-pressure",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-physics-friction",
+      "source_ref": "source:openstax",
+      "anchor": {
+        "section": "5.1 Friction"
+      },
+      "note": "Independently reopened for GPI research/verification-population-general-physical-interaction.md: https://openstax.org/books/college-physics-2e/pages/5-1-friction",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-physics-buoyancy",
+      "source_ref": "source:openstax",
+      "anchor": {
+        "section": "11.7 Archimedes' Principle"
+      },
+      "note": "Independently reopened for GPI research/verification-population-general-physical-interaction.md: https://openstax.org/books/college-physics-2e/pages/11-7-archimedes-principle",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-physics-phase",
+      "source_ref": "source:openstax",
+      "anchor": {
+        "section": "14.3 Phase Change and Latent Heat"
+      },
+      "note": "Independently reopened for GPI research/verification-population-general-physical-interaction.md: https://openstax.org/books/college-physics-2e/pages/14-3-phase-change-and-latent-heat",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-physics-conduction",
+      "source_ref": "source:openstax",
+      "anchor": {
+        "section": "14.5 Conduction"
+      },
+      "note": "Independently reopened for GPI research/verification-population-general-physical-interaction.md: https://openstax.org/books/college-physics-2e/pages/14-5-conduction",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-physics-evaporation",
+      "source_ref": "source:openstax",
+      "anchor": {
+        "section": "13.6 Humidity, Evaporation, and Boiling"
+      },
+      "note": "Independently reopened for GPI research/verification-population-general-physical-interaction.md: https://openstax.org/books/college-physics-2e/pages/13-6-humidity-evaporation-and-boiling",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:hard-stone-abrasive-working",
+      "source_ref": "source:west-jade-1963",
+      "anchor": {
+        "section": "Sections beginning The raw material was first broken and trimmed; British Columbia and Alaska working reconstructions"
+      },
+      "note": "Conditional hard-stone working inference from jade examples, not direct proof for every stone. Probable/possible sawing and limited abrasive shaping support inferred/medium possibilities only; no Rus availability or drilling claim.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:solid-deformation",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:contact-pressure",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:surface-friction",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:fluid-buoyancy",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:phase-change",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:thermal-conduction",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:evaporation",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-load-deformation",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:solid-deformation",
+      "predicate": "can_produce",
+      "object": {
+        "kind": "literal",
+        "value": "deformation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-elasticity"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-elastic-recovery",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:solid-deformation",
+      "predicate": "can_produce",
+      "object": {
+        "kind": "literal",
+        "value": "elastic_recovery"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-elasticity"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-stress-failure",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:solid-deformation",
+      "predicate": "can_produce",
+      "object": {
+        "kind": "literal",
+        "value": "permanent_deformation_or_fracture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-elasticity"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-section-response",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:solid-deformation",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "material_length_section_force"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-elasticity"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-point-pressure",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:contact-pressure",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "force_and_contact_area"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-pressure"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-static-friction",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:surface-friction",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "surface_pair_and_normal_load"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-friction"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-sliding-friction",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:surface-friction",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "sliding_surfaces_and_normal_load"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-friction"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-immersion-buoyancy",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:fluid-buoyancy",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "displaced_fluid"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-buoyancy"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-floating-shape",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:fluid-buoyancy",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "total_weight_displaced_volume_shape"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-buoyancy"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-melting-vaporization-energy",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:phase-change",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "energy_input"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-phase"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-freezing-condensation-energy",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:phase-change",
+      "predicate": "can_produce",
+      "object": {
+        "kind": "literal",
+        "value": "heat_release"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-phase"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-conduction-gradient",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:thermal-conduction",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "temperature_difference"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-conduction"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-evaporation-below-boiling",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:evaporation",
+      "predicate": "can_produce",
+      "object": {
+        "kind": "literal",
+        "value": "water_vapour_below_boiling"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-evaporation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-physics-evaporation-humidity",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:evaporation",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "temperature_and_surrounding_water_vapour"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-physics-evaporation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:hard-stone-abrasive-sawing",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:stone",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "suitable_hard_stone_blank_can_be_sawn_with_cutting_carrier_and_compatible_abrasive"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:hard-stone-abrasive-working"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:hard-stone-abrasive-shaping",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:stone",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "suitable_hard_stone_blank_can_be_smoothed_or_limitedly_shaped_by_rubbing_hard_surface_with_compatible_abrasive"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:hard-stone-abrasive-working"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:solid-deformation",
+      "locale": "ru",
+      "labels": [
+        "Деформация твёрдого тела"
+      ],
+      "short_definition": "Деформация твёрдого тела",
+      "search_aliases": [
+        "Деформация твёрдого тела"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:solid-deformation",
+      "locale": "en",
+      "labels": [
+        "Solid deformation"
+      ],
+      "short_definition": "Solid deformation",
+      "search_aliases": [
+        "Solid deformation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:contact-pressure",
+      "locale": "ru",
+      "labels": [
+        "Давление в контакте"
+      ],
+      "short_definition": "Давление в контакте",
+      "search_aliases": [
+        "Давление в контакте"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:contact-pressure",
+      "locale": "en",
+      "labels": [
+        "Contact pressure"
+      ],
+      "short_definition": "Contact pressure",
+      "search_aliases": [
+        "Contact pressure"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:surface-friction",
+      "locale": "ru",
+      "labels": [
+        "Трение поверхностей"
+      ],
+      "short_definition": "Трение поверхностей",
+      "search_aliases": [
+        "Трение поверхностей"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:surface-friction",
+      "locale": "en",
+      "labels": [
+        "Surface friction"
+      ],
+      "short_definition": "Surface friction",
+      "search_aliases": [
+        "Surface friction"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:fluid-buoyancy",
+      "locale": "ru",
+      "labels": [
+        "Плавучесть"
+      ],
+      "short_definition": "Плавучесть",
+      "search_aliases": [
+        "Плавучесть"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:fluid-buoyancy",
+      "locale": "en",
+      "labels": [
+        "Fluid buoyancy"
+      ],
+      "short_definition": "Fluid buoyancy",
+      "search_aliases": [
+        "Fluid buoyancy"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:phase-change",
+      "locale": "ru",
+      "labels": [
+        "Фазовое изменение"
+      ],
+      "short_definition": "Фазовое изменение",
+      "search_aliases": [
+        "Фазовое изменение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:phase-change",
+      "locale": "en",
+      "labels": [
+        "Phase change"
+      ],
+      "short_definition": "Phase change",
+      "search_aliases": [
+        "Phase change"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:thermal-conduction",
+      "locale": "ru",
+      "labels": [
+        "Теплопроводность"
+      ],
+      "short_definition": "Теплопроводность",
+      "search_aliases": [
+        "Теплопроводность"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:thermal-conduction",
+      "locale": "en",
+      "labels": [
+        "Thermal conduction"
+      ],
+      "short_definition": "Thermal conduction",
+      "search_aliases": [
+        "Thermal conduction"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:evaporation",
+      "locale": "ru",
+      "labels": [
+        "Испарение"
+      ],
+      "short_definition": "Испарение",
+      "search_aliases": [
+        "Испарение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:evaporation",
+      "locale": "en",
+      "labels": [
+        "Evaporation"
+      ],
+      "short_definition": "Evaporation",
+      "search_aliases": [
+        "Evaporation"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-load-deformation",
+      "locale": "ru",
+      "runtime_text": "Нагрузка может изменить форму твёрдого тела; результат зависит от материала, геометрии и направления силы.",
+      "search_aliases": [
+        "Нагрузка может изменить форму твёрдого тела; результат зависит от материала, геометрии и направления силы."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-load-deformation",
+      "locale": "en",
+      "runtime_text": "A load can deform a solid; the result depends on material, geometry and force direction.",
+      "search_aliases": [
+        "A load can deform a solid; the result depends on material, geometry and force direction."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-elastic-recovery",
+      "locale": "ru",
+      "runtime_text": "Малая деформация в упругой области может исчезнуть после снятия нагрузки; это не относится ко всем согнутым предметам.",
+      "search_aliases": [
+        "Малая деформация в упругой области может исчезнуть после снятия нагрузки; это не относится ко всем согнутым предметам."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-elastic-recovery",
+      "locale": "en",
+      "runtime_text": "Small deformation within the elastic range can reverse after unloading; not every bent object recovers.",
+      "search_aliases": [
+        "Small deformation within the elastic range can reverse after unloading; not every bent object recovers."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-stress-failure",
+      "locale": "ru",
+      "runtime_text": "При достаточно большом напряжении материал может необратимо деформироваться или разрушиться; единого порога для всех материалов нет.",
+      "search_aliases": [
+        "При достаточно большом напряжении материал может необратимо деформироваться или разрушиться; единого порога для всех материалов нет."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-stress-failure",
+      "locale": "en",
+      "runtime_text": "Sufficient stress can cause permanent deformation or fracture; there is no single threshold for all materials.",
+      "search_aliases": [
+        "Sufficient stress can cause permanent deformation or fracture; there is no single threshold for all materials."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-section-response",
+      "locale": "ru",
+      "runtime_text": "Растяжение и сжатие стержня зависят от материала, длины, сечения и силы; название предмета не задаёт его прочность.",
+      "search_aliases": [
+        "Растяжение и сжатие стержня зависят от материала, длины, сечения и силы; название предмета не задаёт его прочность."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-section-response",
+      "locale": "en",
+      "runtime_text": "Rod tension and compression depend on material, length, cross-section and force; a name does not determine strength.",
+      "search_aliases": [
+        "Rod tension and compression depend on material, length, cross-section and force; a name does not determine strength."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-point-pressure",
+      "locale": "ru",
+      "runtime_text": "При одинаковой перпендикулярной силе меньшая площадь контакта даёт большее давление. Остриё может помочь прокалыванию, но не гарантирует его.",
+      "search_aliases": [
+        "При одинаковой перпендикулярной силе меньшая площадь контакта даёт большее давление. Остриё может помочь прокалыванию, но не гарантирует его."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-point-pressure",
+      "locale": "en",
+      "runtime_text": "For the same perpendicular force, a smaller contact area gives greater pressure. A point can aid piercing but does not guarantee penetration.",
+      "search_aliases": [
+        "For the same perpendicular force, a smaller contact area gives greater pressure. A point can aid piercing but does not guarantee penetration."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-static-friction",
+      "locale": "ru",
+      "runtime_text": "Трение покоя может удерживать поверхности от сдвига до зависящего от контакта и нагрузки предела; удержание узла или захвата не безусловно.",
+      "search_aliases": [
+        "Трение покоя может удерживать поверхности от сдвига до зависящего от контакта и нагрузки предела; удержание узла или захвата не безусловно."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-static-friction",
+      "locale": "en",
+      "runtime_text": "Static friction can resist sliding up to a surface- and load-dependent limit; a knot or grip does not hold unconditionally.",
+      "search_aliases": [
+        "Static friction can resist sliding up to a surface- and load-dependent limit; a knot or grip does not hold unconditionally."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-sliding-friction",
+      "locale": "ru",
+      "runtime_text": "Трение при скольжении зависит от соприкасающихся материалов и прижимающей нагрузки. Для мокрой или смазанной поверхности нельзя брать произвольный общий коэффициент.",
+      "search_aliases": [
+        "Трение при скольжении зависит от соприкасающихся материалов и прижимающей нагрузки. Для мокрой или смазанной поверхности нельзя брать произвольный общий коэффициент."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-sliding-friction",
+      "locale": "en",
+      "runtime_text": "Sliding friction depends on contacting materials and normal load. Wet or lubricated surfaces do not have one arbitrary universal coefficient.",
+      "search_aliases": [
+        "Sliding friction depends on contacting materials and normal load. Wet or lubricated surfaces do not have one arbitrary universal coefficient."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-immersion-buoyancy",
+      "locale": "ru",
+      "runtime_text": "Погружённый предмет испытывает выталкивающую силу со стороны жидкости, даже если тонет.",
+      "search_aliases": [
+        "Погружённый предмет испытывает выталкивающую силу со стороны жидкости, даже если тонет."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-immersion-buoyancy",
+      "locale": "en",
+      "runtime_text": "An immersed object experiences buoyant support from the fluid even when it sinks.",
+      "search_aliases": [
+        "An immersed object experiences buoyant support from the fluid even when it sinks."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-floating-shape",
+      "locale": "ru",
+      "runtime_text": "Способность плавать зависит от общего веса и объёма вытесненной жидкости, включая форму. Один материал не задаёт грузоподъёмность лодки или поплавка.",
+      "search_aliases": [
+        "Способность плавать зависит от общего веса и объёма вытесненной жидкости, включая форму. Один материал не задаёт грузоподъёмность лодки или поплавка."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-floating-shape",
+      "locale": "en",
+      "runtime_text": "Floating depends on total weight and displaced fluid volume, including shape. Material alone does not establish boat or float capacity.",
+      "search_aliases": [
+        "Floating depends on total weight and displaced fluid volume, including shape. Material alone does not establish boat or float capacity."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-melting-vaporization-energy",
+      "locale": "ru",
+      "runtime_text": "Плавление и переход жидкости в пар требуют энергии; при фазовом переходе тепло может расходоваться без одновременного роста температуры.",
+      "search_aliases": [
+        "Плавление и переход жидкости в пар требуют энергии; при фазовом переходе тепло может расходоваться без одновременного роста температуры."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-melting-vaporization-energy",
+      "locale": "en",
+      "runtime_text": "Melting and vaporization require energy; during a phase change heat can be absorbed without a simultaneous temperature rise.",
+      "search_aliases": [
+        "Melting and vaporization require energy; during a phase change heat can be absorbed without a simultaneous temperature rise."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-freezing-condensation-energy",
+      "locale": "ru",
+      "runtime_text": "При замерзании и конденсации выделяется тепло. Реальный переход зависит от состояния вещества, температуры и давления.",
+      "search_aliases": [
+        "При замерзании и конденсации выделяется тепло. Реальный переход зависит от состояния вещества, температуры и давления."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-freezing-condensation-energy",
+      "locale": "en",
+      "runtime_text": "Freezing and condensation release heat. An actual transition depends on material state, temperature and pressure.",
+      "search_aliases": [
+        "Freezing and condensation release heat. An actual transition depends on material state, temperature and pressure."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-conduction-gradient",
+      "locale": "ru",
+      "runtime_text": "Тепло передаётся через материал при разности температур; скорость зависит от теплопроводности и геометрии. Нагретый конец предмета не делает весь предмет мгновенно одинаково горячим.",
+      "search_aliases": [
+        "Тепло передаётся через материал при разности температур; скорость зависит от теплопроводности и геометрии. Нагретый конец предмета не делает весь предмет мгновенно одинаково горячим."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-conduction-gradient",
+      "locale": "en",
+      "runtime_text": "Heat passes through material across a temperature difference; rate depends on conductivity and geometry. Heating one end does not instantly heat the whole object equally.",
+      "search_aliases": [
+        "Heat passes through material across a temperature difference; rate depends on conductivity and geometry. Heating one end does not instantly heat the whole object equally."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-evaporation-below-boiling",
+      "locale": "ru",
+      "runtime_text": "Вода может испаряться без кипения. Поэтому сушка не обязательно требует очага или пламени.",
+      "search_aliases": [
+        "Вода может испаряться без кипения. Поэтому сушка не обязательно требует очага или пламени."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-evaporation-below-boiling",
+      "locale": "en",
+      "runtime_text": "Water can evaporate without boiling. Drying therefore does not necessarily require a hearth or flame.",
+      "search_aliases": [
+        "Water can evaporate without boiling. Drying therefore does not necessarily require a hearth or flame."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-evaporation-humidity",
+      "locale": "ru",
+      "runtime_text": "Испарительное удаление воды зависит от температуры и влажности окружающего воздуха; это не задаёт точный срок сушки или безопасность продукта.",
+      "search_aliases": [
+        "Испарительное удаление воды зависит от температуры и влажности окружающего воздуха; это не задаёт точный срок сушки или безопасность продукта."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-physics-evaporation-humidity",
+      "locale": "en",
+      "runtime_text": "Evaporative water loss depends on temperature and surrounding humidity; this establishes neither exact drying time nor food safety.",
+      "search_aliases": [
+        "Evaporative water loss depends on temperature and surrounding humidity; this establishes neither exact drying time nor food safety."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:hard-stone-abrasive-sawing",
+      "locale": "ru",
+      "runtime_text": "Подходящая заготовка из твёрдого камня может распиливаться режущим носителем вместе с совместимым абразивом. Это выводная возможность из описанных методов обработки нефрита и твёрдого камня, не гарантия для любой породы или ножа; наличие средств, время, результат и доступность на Руси не установлены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:hard-stone-abrasive-sawing",
+      "locale": "en",
+      "runtime_text": "A suitable hard-stone blank can be sawn with a cutting carrier and compatible abrasive. This possibility is inferred from described jade and hard-stone working methods, not guaranteed for every rock or knife; means, time, outcome and availability in Rus are not established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:hard-stone-abrasive-shaping",
+      "locale": "ru",
+      "runtime_text": "Подходящая заготовка из твёрдого камня может сглаживаться или ограниченно изменять форму шлифованием либо трением по твёрдой поверхности с совместимым абразивом. Вывод из описанных методов не обещает пригодность любой породы или зерна, большую переделку, скорость, качество или историческую доступность средств.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:hard-stone-abrasive-shaping",
+      "locale": "en",
+      "runtime_text": "A suitable hard-stone blank can be smoothed or undergo limited shaping by grinding or rubbing on a hard surface with compatible abrasive. Inference from the described methods does not promise suitability of every rock or grit, major reshaping, speed, finish or historical availability of the means.",
+      "search_aliases": []
+    }
+  ]
+}

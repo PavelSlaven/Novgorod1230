@@ -1,0 +1,320 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1220-vsevolod-court-armed-in-armour",
+      "claim_ref": "claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
+      "claim_digest": "3451dda2eb8a7606af2b63ac3959ea17057f8d1b60fbc5bae8550aa84eaa9fa3",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1220-armed-court"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1220-vsevolod-court-armed-in-armour",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1220-tverdislav-supporters-five-regiments",
+      "claim_ref": "claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
+      "claim_digest": "7a59f564fd0a497761f09555936a53cb615053f97ce33aa644b2e86210b4b9ad",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1220-five-regiments"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1220-tverdislav-supporters-five-regiments",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1220-mitrofan-mediated-reconciliation",
+      "claim_ref": "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
+      "claim_digest": "34bbb297ec542f463ac0fed9e0928994c32378bb28f765fce8aec1dcaa95cfdf",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1220-mediation"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1220-mitrofan-mediated-reconciliation",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+      "claim_ref": "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+      "claim_digest": "2fd3378414561a0355f620a9cb06abfb1fd3f228003638e84a54478929787e9c",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1220-posadnik-succession"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1222-novgorod-delegation-to-vladimir",
+      "claim_ref": "claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
+      "claim_digest": "6d68a3da74504d547cb332c6d76420b64932e46ceb8da8d6c0b2cc5da382ae9d",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1222-delegation"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1222-novgorod-delegation-to-vladimir",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1222-yuri-gives-vsevolod",
+      "claim_ref": "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
+      "claim_digest": "e12a6e5fb569a70ff6ea10816c089f29a0759784063a5ebb17f5b0e76fa7a1b6",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1222-princely-grant"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1222-yuri-gives-vsevolod",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1222-kesi-campaign",
+      "claim_ref": "claim:candidate-v7-npl-1222-kesi-campaign",
+      "claim_digest": "aae1cc4ead258789807f05a68d17b2bfcefa534fcd451f1580b297e89465f98f",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1222-kesi-campaign",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1222-kesi-campaign"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1222-kesi-campaign",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1223-yaroslav-colyvan-campaign",
+      "claim_ref": "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign",
+      "claim_digest": "87241fe6a9826b3305518326efba241804acc4745b307e2017311ba93e954052",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1223-colyvan-campaign"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1223-yaroslav-colyvan-campaign",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1223-colyvan-captives-and-gold",
+      "claim_ref": "claim:candidate-v7-npl-1223-colyvan-captives-and-gold",
+      "claim_digest": "530ff95caa8cdb78c14a36ecaa3c7fbd10c33747159ed96af78e3f8ea3be5436",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1223-colyvan-captives-and-gold",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1223-colyvan-aftermath"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1223-colyvan-captives-and-gold",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-npl-1220-tverdislav-wife-children-monastic-event",
+      "claim_ref": "claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+      "claim_digest": "816953b28c973f5603177d2401a665d6209164295f414a185e9928d06e8cda27",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-npl-1220-wife-children"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-npl-1220-tverdislav-wife-children-monastic-event",
+      "verdict": "APPROVE",
+      "limits": "One named chronicle event at its explicit 1220, 1222, or 1223 date only; no present actor, force, skill, inventory, authority, policy, procedure, entitlement, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-gramota9-gostyata-reports-property-from-father-and-kin",
+      "claim_ref": "claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
+      "claim_digest": "ebc2c066a71e34c5e4eb0d8ea7b5af2d74b79bf454e235719a7ffa8211bae7dd",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-gramota9-property"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-gramota9-gostyata-reports-property-from-father-and-kin",
+      "verdict": "APPROVE",
+      "limits": "Conditional 1160–1180 letter record only; no 1230 applicability, property, inheritance, marriage, gender, sanction, actor, or current relationship."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-gramota9-reports-another-wife",
+      "claim_ref": "claim:candidate-v7-gramota9-reports-another-wife",
+      "claim_digest": "9993d5852316a14c493c11c492dc133c935fe2b1d365f96dbd47b6e0da3fbaf6",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-gramota9-reports-another-wife",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-gramota9-another-wife"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-gramota9-reports-another-wife",
+      "verdict": "APPROVE",
+      "limits": "Conditional 1160–1180 letter record only; no 1230 applicability, property, inheritance, marriage, gender, sanction, actor, or current relationship."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-gramota531-anna-asks-brother-klimyata-protection",
+      "claim_ref": "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+      "claim_digest": "1492d27f957b85bfaf0612044efd947c1fb4ef49e3cde89b8908f26c0c758c28",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-gramota531-anna-kin-request"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
+      "verdict": "APPROVE",
+      "limits": "Conditionally dated 1200–1220 with probable forward shift; time remains unknown. One private request only; no 1230 applicability, kin duty, legal system, status, accusation truth, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+      "claim_ref": "claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+      "claim_digest": "b7b86a0f4372290059a50153f6b0c8ad476f684a236b10db31aaa0bd05dd06ad",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-gramota778-alphabet"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-gramota778-early-thirteenth-century-alphabet-exercise",
+      "verdict": "APPROVE",
+      "limits": "Conditionally dated 1200–1220 with probable backward shift and alternatives; time remains unknown. One alphabet exercise only; no 1230 applicability, school, curriculum, literacy rate, learner, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-gramota907-letter-to-posadnik-theft-inquiry",
+      "claim_ref": "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+      "claim_digest": "6ae85d96fdc5fb747931a0c6fc7efc55cd4540bc27a39ad29e20b12b0459887b",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-gramota907-theft-inquiry"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-gramota907-letter-to-posadnik-theft-inquiry",
+      "verdict": "APPROVE",
+      "limits": "Conditionally dated 1100–1120 with probable backward shift; time remains unknown. One letter only; no 1230 applicability, procedure, jurisdiction, sanction, current accusation, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-x-xvii-novgorod-archaeological-collection",
+      "claim_ref": "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
+      "claim_digest": "89486abf8c02a52e51c5f2c11082f2515bd47eb94633ef4ff91c594cc69d2f3f",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-museum-archaeology-collection"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
+      "verdict": "APPROVE",
+      "limits": "Museum collection context only; no object presence in 1230, ownership, actor, availability, skill, prevalence, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-onfim-learning-writing-reading-counting",
+      "claim_ref": "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+      "claim_digest": "4c7e828da4c02ac32bebd689bb70b80a1f372c70f49ddbc30d80ae9f9fcc27f8",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-museum-onfim-learning"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-museum-onfim-learning-writing-reading-counting",
+      "verdict": "APPROVE",
+      "limits": "Museum-exhibition context only; no date, school, curriculum, literacy rate, child, present writing, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-individual-toy-types",
+      "claim_ref": "claim:candidate-v7-museum-individual-toy-types",
+      "claim_digest": "8ce9c4fe01cff18a7f28eb1dd3cfd4cdbedc82c517daa0edca64fd019d6c4ddd",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-museum-individual-toy-types",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-museum-individual-toys"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-museum-individual-toy-types",
+      "verdict": "APPROVE",
+      "limits": "Museum collection context only; no object presence in 1230, ownership, actor, availability, skill, prevalence, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-leather-balls-and-wooden-spinning-tops",
+      "claim_ref": "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
+      "claim_digest": "bb15561b49d680e6da79f59a3ea7ab88dee347cff49d2591bc3254e3a5eccc01",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-museum-collective-games"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-museum-leather-balls-and-wooden-spinning-tops",
+      "verdict": "APPROVE",
+      "limits": "Museum collection context only; no object presence in 1230, ownership, actor, availability, skill, prevalence, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-toy-vessel-sail-xi-xii",
+      "claim_ref": "claim:candidate-v7-museum-toy-vessel-sail-xi-xii",
+      "claim_digest": "7b3ba39ee6c29f474588a60d7fd4463ef4e12da122b260e653a4ecb506692faa",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-museum-toy-vessel-sail-xi-xii",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-museum-toy-sail"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-museum-toy-vessel-sail-xi-xii",
+      "verdict": "APPROVE",
+      "limits": "Museum collection context only; no object presence in 1230, ownership, actor, availability, skill, prevalence, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-bone-skates-xii-xiii",
+      "claim_ref": "claim:candidate-v7-museum-bone-skates-xii-xiii",
+      "claim_digest": "0b3558230f7a02dd44b1852ee92d7dac5203450324d781786f8e21d1d3111261",
+      "candidate_ref": "git:74f66903ec636c43af4e2f588bef3265ddc07301:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-historical-p1-closure-v7.json#claim:candidate-v7-museum-bone-skates-xii-xiii",
+      "auditor_ref": "/root/historical_v7_verifier",
+      "independence_basis": "Independent direct-source review by an auditor who did not author v7; corrected candidate rechecked against the same direct chronicle, gramoty.ru, and Novgorod Museum anchors.",
+      "evidence_checked": [
+        "evidence:candidate-v7-museum-bone-skates"
+      ],
+      "review_ref": "verification/macro-historical-p1-closure-v7.md#candidate-v7-museum-bone-skates-xii-xiii",
+      "verdict": "APPROVE",
+      "limits": "XII–XIII-century find context only; no ice condition, skater, skill, current recreation, safety, or scene fact."
+    }
+  ]
+}

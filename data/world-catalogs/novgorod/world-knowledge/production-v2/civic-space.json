@@ -1,0 +1,986 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:lebedev-trade-side",
+      "title": "Торговая сторона Ярославова Дворища",
+      "authors": [
+        "Г. С. Лебедев"
+      ],
+      "publication": "Эпоха викингов в Северной Европе и на Руси",
+      "source_kind": "scholarship",
+      "citation": "https://arheologija.ru/torgovaya-storona-yaroslavova-dvorishha/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:khvoshchinskaya-fortification-2021",
+      "title": "Раскопки мысовой части Новгородского (Рюрикова) городища, 2021",
+      "authors": [
+        "Н. В. Хвощинская"
+      ],
+      "publication": "ИИМК РАН, Новгородская областная экспедиция, полевой отчёт 2021",
+      "source_kind": "scholarship",
+      "citation": "https://www.archeo.ru/field-research/annotations/raskopki-myisovoj-chasti-novgorodskgo-ryurik-12aee",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:tikhomirov-cities-1956",
+      "title": "Древнерусские города",
+      "authors": [
+        "М. Н. Тихомиров"
+      ],
+      "publication": "Москва, 1956; 2-е исправленное издание",
+      "source_kind": "scholarship",
+      "citation": "http://rusarch.ru/tihomirov1.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:lebedev-trade-side",
+      "source_ref": "source:lebedev-trade-side",
+      "anchor": {
+        "section": "Final paragraph: 1116 timber-and-earth walls; earth rampart; trade and assembly spaces"
+      },
+      "note": "Broad reported categories, not precise dating of the surviving outer rampart or a current canonical place. Independently checked in verification-civic-space.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:khvoshchinskaya-fortification-2021",
+      "source_ref": "source:khvoshchinskaya-fortification-2021",
+      "anchor": {
+        "section": "Description accompanying Figs. 2–3; absolute dendrochronological dating"
+      },
+      "note": "Excavated defensive structure dates to 858–862 and ceased functioning in IX century. Only earlier material-construction analogy, not a XII–XIII-century installation. Independently checked in verification-civic-space.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:river-landing-ustav-reading",
+      "source_ref": "source:tikhomirov-cities-1956",
+      "anchor": {
+        "page": "45–46",
+        "section": "Trade-Side Podol, vymoly and Ustav Yaroslava o mostekh: landing names, market approaches and allocated surfacing"
+      },
+      "note": "Independent verification/verification-river-landing.md: RL-01–04 APPROVE_WITH_LIMITS. Scholarly exposition dates the Ustav to late XII/early XIII while its earliest surviving copy is XIV. Not an independently examined manuscript or excavation; no canonical route or present facility follows.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:timber-earth-defence",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:earth-rampart",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:urban-public-space",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:market-space",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:assembly-space",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:river-landing",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-wood-earth-wall",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:timber-earth-defence",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "novgorod_timber_earth_fortification_reported_1116"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:lebedev-trade-side"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-earth-rampart",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:earth-rampart",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "reported_earth_rampart_city_enclosure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:lebedev-trade-side"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-public-market",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:urban-public-space",
+      "predicate": "attested_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:market-space"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:lebedev-trade-side"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-public-assembly",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:urban-public-space",
+      "predicate": "attested_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:assembly-space"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:lebedev-trade-side"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-defence-log-courses",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:timber-earth-defence",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wood"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:khvoshchinskaya-fortification-2021"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-defence-transverse-support",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:timber-earth-defence",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "transverse_walls_support_outer_log_wall"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:khvoshchinskaya-fortification-2021"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-defence-stake-support",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:timber-earth-defence",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "driven_stakes_support_wall_foot"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:khvoshchinskaya-fortification-2021"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-defence-clay-gaps",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:timber-earth-defence",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:clay"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:khvoshchinskaya-fortification-2021"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:civic-defence-log-length-joint",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:timber-earth-defence",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "notched_log_ends_overlap_for_lengthwise_extension"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:khvoshchinskaya-fortification-2021"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:river-landing-category",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:river-landing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "novgorod_podol_vymol_designated_river_landing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:river-landing-ustav-reading"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:river-landing-named-list",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:river-landing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ustav_lists_five_trade_side_vymoly"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:river-landing-ustav-reading"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:river-landing-market-approaches",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:river-landing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "road_surfaces_from_great_row_market_to_vymoly"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:river-landing-ustav-reading"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:river-landing-surfacing-allocation",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:river-landing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "specified_vymoly_sections_had_allocated_surfacing_responsibility"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:river-landing-ustav-reading"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:timber-earth-defence",
+      "locale": "ru",
+      "labels": [
+        "Деревоземляное укрепление"
+      ],
+      "short_definition": "Деревоземляное укрепление",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:timber-earth-defence",
+      "locale": "en",
+      "labels": [
+        "Timber-and-earth fortification"
+      ],
+      "short_definition": "Timber-and-earth fortification",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:earth-rampart",
+      "locale": "ru",
+      "labels": [
+        "Земляной вал"
+      ],
+      "short_definition": "Земляной вал",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:earth-rampart",
+      "locale": "en",
+      "labels": [
+        "Earth rampart"
+      ],
+      "short_definition": "Earth rampart",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:urban-public-space",
+      "locale": "ru",
+      "labels": [
+        "Городское общественное пространство"
+      ],
+      "short_definition": "Городское общественное пространство",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:urban-public-space",
+      "locale": "en",
+      "labels": [
+        "Urban public space"
+      ],
+      "short_definition": "Urban public space",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:market-space",
+      "locale": "ru",
+      "labels": [
+        "Торговая площадь"
+      ],
+      "short_definition": "Торговая площадь",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:market-space",
+      "locale": "en",
+      "labels": [
+        "Market space"
+      ],
+      "short_definition": "Market space",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:assembly-space",
+      "locale": "ru",
+      "labels": [
+        "Место городского собрания"
+      ],
+      "short_definition": "Место городского собрания",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:assembly-space",
+      "locale": "en",
+      "labels": [
+        "Urban assembly space"
+      ],
+      "short_definition": "Urban assembly space",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:river-landing",
+      "locale": "ru",
+      "labels": [
+        "Речная пристань"
+      ],
+      "short_definition": "Исторически совместимая категория речного рабочего места, не конкретная пристань или маршрут.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:river-landing",
+      "locale": "en",
+      "labels": [
+        "River landing"
+      ],
+      "short_definition": "A historically compatible river-workplace category, not a particular landing or route.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-wood-earth-wall",
+      "locale": "ru",
+      "runtime_text": "Лебедев описывает расширение деревоземляных стен Детинца в 1116 году; это исторический класс укрепления, не его текущая линия.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-wood-earth-wall",
+      "locale": "en",
+      "runtime_text": "Lebedev describes enlargement of timber-and-earth Detinets walls in 1116: a historical fortification class, not its current line.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-earth-rampart",
+      "locale": "ru",
+      "runtime_text": "В описании средневековой Торговой стороны земляной вал служит городским ограждением; точная датировка сохранившегося вала этим не устанавливается.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-earth-rampart",
+      "locale": "en",
+      "runtime_text": "The medieval Trade Side account describes an earth rampart enclosing urban space; it does not date the surviving rampart precisely.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-public-market",
+      "locale": "ru",
+      "runtime_text": "В средневековом описании Торговой стороны Торг входит в общественное городское пространство.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-public-market",
+      "locale": "en",
+      "runtime_text": "The medieval Trade Side account includes a market in urban public space.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-public-assembly",
+      "locale": "ru",
+      "runtime_text": "Вечевая площадь названа частью средневековой городской застройки; само место не задаёт порядок или полномочия собрания.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-public-assembly",
+      "locale": "en",
+      "runtime_text": "An assembly square is named within medieval urban development; the place alone establishes no assembly procedure or authority.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-log-courses",
+      "locale": "ru",
+      "runtime_text": "Стена Рюрикова городища IX века сложена из лежащих друг на друге дубовых брёвен. Для XIII века это ранний конструктивный аналог.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-log-courses",
+      "locale": "en",
+      "runtime_text": "The ninth-century Rurikovo wall used stacked oak logs. For the thirteenth century this is an earlier construction analogue.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-transverse-support",
+      "locale": "ru",
+      "runtime_text": "У стены Рюрикова городища IX века врубленные поперечные стенки поддерживали фасадную часть. Это ранний аналог, не план укрепления XIII века.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-transverse-support",
+      "locale": "en",
+      "runtime_text": "The ninth-century Rurikovo wall had notched-in transverse walls supporting its front. This is an earlier analogue, not a thirteenth-century plan.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-stake-support",
+      "locale": "ru",
+      "runtime_text": "Снаружи подножие стены Рюрикова городища IX века подпирали вбитые в грунт колья; это ранний аналог приёма поддержки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-stake-support",
+      "locale": "en",
+      "runtime_text": "Driven stakes supported the outside foot of the ninth-century Rurikovo wall: an earlier example of a supporting technique.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-clay-gaps",
+      "locale": "ru",
+      "runtime_text": "Глину между брёвнами укрепления Рюрикова городища IX века исследователь объясняет вероятной промазкой зазоров; водонепроницаемость не доказана.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-clay-gaps",
+      "locale": "en",
+      "runtime_text": "The excavator interprets clay between ninth-century Rurikovo wall logs as probable gap coating; waterproofing is not established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-log-length-joint",
+      "locale": "ru",
+      "runtime_text": "Прямоугольные врубки на концах брёвен стены Рюрикова городища IX века позволяли соединять их внахлёст по длине; это ранний конструктивный аналог.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:civic-defence-log-length-joint",
+      "locale": "en",
+      "runtime_text": "Rectangular end notches allowed lengthwise overlap of ninth-century Rurikovo wall logs; this is an earlier construction analogue.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:river-landing-category",
+      "locale": "ru",
+      "runtime_text": "В изложении Тихомирова вымол в новгородском подольском контексте обозначался как речная пристань. Это ограниченная историческая категория, не универсальное значение слова и не наличие конкретной пристани, её форма, материал, глубина, безопасность или право доступа.",
+      "search_aliases": [
+        "вымол речная пристань"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:river-landing-category",
+      "locale": "en",
+      "runtime_text": "In Tikhomirov's exposition, a vymol in the Novgorod Podol context was designated as a river landing. This is a limited historical category, not a universal word meaning or a present landing, its form, material, depth, safety or access right.",
+      "search_aliases": [
+        "vymol river landing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:river-landing-named-list",
+      "locale": "ru",
+      "runtime_text": "В толковании Тихомирова списки Устава называют на Торговой стороне пять вымолов: Немецкий, Ивань, Алфердов, Будятин и Матфеев. Автор относит Устав к концу XII — началу XIII века, при этом древнейший сохранившийся список — XIV века. Перечень не создаёт пять пристаней, их координаты, связи, владельцев или доступность в партии.",
+      "search_aliases": [
+        "именованные вымолы Торговая сторона"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:river-landing-named-list",
+      "locale": "en",
+      "runtime_text": "In Tikhomirov's reading, the Ustav lists five Trade-Side vymoly: Nemetskii, Ivan', Alferdov, Budjatin and Matfeev. He dates the Ustav to the late twelfth–early thirteenth century, while its earliest surviving copy is fourteenth-century. The list creates no five landings, coordinates, connections, owners or availability in the party.",
+      "search_aliases": [
+        "named Trade-Side vymoly"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:river-landing-market-approaches",
+      "locale": "ru",
+      "runtime_text": "В изложении Тихомирова мостовые вели от Великого ряда на торговой площади к вымолам. Эта историческая связь рынка и пристаней не задаёт маршрут партии, проходимость, материал или ширину мостовой, последовательность погрузки, груз, перевозчика или состоявшийся перенос.",
+      "search_aliases": [
+        "торговая площадь подходы к пристаням"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:river-landing-market-approaches",
+      "locale": "en",
+      "runtime_text": "In Tikhomirov's exposition, road surfaces led from the Great Row on the market square to the vymoly. This historical market-to-landing connection supplies no party route, passability, surface material or width, loading sequence, cargo, carrier or completed transfer.",
+      "search_aliases": [
+        "market square landing approaches"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:river-landing-surfacing-allocation",
+      "locale": "ru",
+      "runtime_text": "В изложении Тихомирова для определённых участков территории вымолов было предусмотрено, кто должен был их мостить. Это описанное историческое распределение работ, не общий режим содержания, налог, владелец, строительный стандарт, уже исправленная поверхность или обязанность конкретного actor.",
+      "search_aliases": [
+        "мощение вымолов распределение работ"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:river-landing-surfacing-allocation",
+      "locale": "en",
+      "runtime_text": "In Tikhomirov's exposition, specified sections of vymoly territory had an allocation of who was to surface them. This is a described historical work allocation, not a general maintenance regime, tax, owner, construction standard, already repaired surface or a particular actor's obligation.",
+      "search_aliases": [
+        "landing surfacing work allocation"
+      ]
+    }
+  ]
+}

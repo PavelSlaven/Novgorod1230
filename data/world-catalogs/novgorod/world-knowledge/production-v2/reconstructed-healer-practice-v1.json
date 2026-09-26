@@ -1,0 +1,451 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reconstructed-healer-practice-editorial",
+      "title": "Ordinary healer practice — editorial reconstruction",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/reconstructed-healer-practice-v1.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reconstructed-healer-practice",
+      "source_ref": "source:reconstructed-healer-practice-editorial",
+      "anchor": {
+        "section": "Ordinary healer practice"
+      },
+      "note": "Explicit plausible reconstruction under WK §0.2, not attestation or medical advice. Existing ordinary learning, livelihood, illness support and religious context are composed into a usable healer role; no remedy efficacy or treatment protocol.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-observation-and-questioning",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A healer can begin by asking the sufferer or relatives when illness began, what hurts, what was eaten or drunk, and what has already been tried, then observe alertness, breathing and visible injuries and feel the forehead. This reconstructs practical examination, not modern diagnosis."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-portable-and-household-kit",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Linen cloths, a water vessel, a small bag and familiar dried plants are plausible ordinary healer equipment; at home or with a patient the healer can use available vessels, water and warmth. This possible kit specifies neither a particular medicine, its efficacy nor scene possession."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-experience-and-reputation",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A plausible reconstruction has healing skill learned through observation, work alongside an experienced person, family transmission and experience. Acquaintances and prior reputation can bring patients; occupation or renown guarantees neither literacy, competence nor successful treatment."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-livelihood-and-household-support",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A healer can maintain a household and help neighbours or seek welcome and work while travelling. Agreed payment, food, lodging, a service or a gift are plausible returns for help; means and respect depend on ties, patients' resources and past dealings, not automatically on occupation."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-belief-and-bodily-attention",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "In the game reconstruction, bodily attention can coexist with prayer, blessing and familiar explanations of illness. Healer, patient and household may understand the illness differently and choose among available helpers; belief in a remedy does not establish a physical effect."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:healer-care-coordination-and-uncertainty",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A healer can ask relatives to stay with the sufferer, bring available water or cloth, clear resting space and report changes, or seek a more experienced helper when skill is insufficient. Organizing care and acknowledging uncertainty remain meaningful actions without a known treatment, but do not promise recovery."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "locale": "ru",
+      "labels": [
+        "Повседневная практика лекаря"
+      ],
+      "short_definition": "Повседневная практика лекаря",
+      "search_aliases": [
+        "Повседневная практика лекаря"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-healer-practice",
+      "locale": "en",
+      "labels": [
+        "Ordinary healer practice"
+      ],
+      "short_definition": "Ordinary healer practice",
+      "search_aliases": [
+        "Ordinary healer practice"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-observation-and-questioning",
+      "locale": "ru",
+      "runtime_text": "Лекарь может начать помощь с расспроса больного или близких: когда началось недомогание, что болит, что человек ел и пил, что уже пробовали; затем смотреть на бодрость, дыхание, видимые повреждения и ощупывать лоб. Это практическая реконструкция осмотра, не современная диагностика.",
+      "search_aliases": [
+        "лекарь",
+        "осмотр",
+        "расспрос больного",
+        "лихорадка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-observation-and-questioning",
+      "locale": "en",
+      "runtime_text": "A healer can begin by asking the sufferer or relatives when illness began, what hurts, what was eaten or drunk, and what has already been tried, then observe alertness, breathing and visible injuries and feel the forehead. This reconstructs practical examination, not modern diagnosis.",
+      "search_aliases": [
+        "healer",
+        "examination",
+        "illness history"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-portable-and-household-kit",
+      "locale": "ru",
+      "runtime_text": "Для обычного лекаря правдоподобны льняные тряпицы, сосуд для воды, небольшая сумка и знакомые ему сушёные растения; дома или у больного он пользуется доступной посудой, водой и теплом. Такой возможный набор не задаёт конкретного лекарства, его действенности или наличия в данной сцене.",
+      "search_aliases": [
+        "лекарь",
+        "сумка лекаря",
+        "тряпицы",
+        "сушёные травы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-portable-and-household-kit",
+      "locale": "en",
+      "runtime_text": "Linen cloths, a water vessel, a small bag and familiar dried plants are plausible ordinary healer equipment; at home or with a patient the healer can use available vessels, water and warmth. This possible kit specifies neither a particular medicine, its efficacy nor scene possession.",
+      "search_aliases": [
+        "healer kit",
+        "cloths",
+        "dried plants"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-experience-and-reputation",
+      "locale": "ru",
+      "runtime_text": "В правдоподобной реконструкции лекарское умение приобретается наблюдением, работой рядом с более опытным человеком, семейной передачей и собственным опытом. К лекарю могут обращаться по совету знакомых и прежней репутации; ни название занятия, ни известность не гарантируют грамотности, умения или успешного лечения.",
+      "search_aliases": [
+        "лекарское умение",
+        "обучение лекаря",
+        "репутация"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-experience-and-reputation",
+      "locale": "en",
+      "runtime_text": "A plausible reconstruction has healing skill learned through observation, work alongside an experienced person, family transmission and experience. Acquaintances and prior reputation can bring patients; occupation or renown guarantees neither literacy, competence nor successful treatment.",
+      "search_aliases": [
+        "healing skill",
+        "learning",
+        "reputation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-livelihood-and-household-support",
+      "locale": "ru",
+      "runtime_text": "Лекарь может жить своим хозяйством и помогать соседям либо искать приём и работу в дороге. За помощь правдоподобны договорённая плата, пища, ночлег, услуга или дар; достаток и уважение зависят от связей, средств пациентов и прежнего опыта общения, а не следуют автоматически из профессии.",
+      "search_aliases": [
+        "быт лекаря",
+        "плата лекарю",
+        "ночлег",
+        "достаток"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-livelihood-and-household-support",
+      "locale": "en",
+      "runtime_text": "A healer can maintain a household and help neighbours or seek welcome and work while travelling. Agreed payment, food, lodging, a service or a gift are plausible returns for help; means and respect depend on ties, patients' resources and past dealings, not automatically on occupation.",
+      "search_aliases": [
+        "healer livelihood",
+        "payment",
+        "lodging"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-belief-and-bodily-attention",
+      "locale": "ru",
+      "runtime_text": "В игровой реконструкции телесная помощь может соседствовать с молитвой, благословением и привычными объяснениями болезни. Лекарь, больной и семья могут по-разному понимать причину недуга и выбирать между доступными помощниками; вера в средство не доказывает его физического действия.",
+      "search_aliases": [
+        "лекарь",
+        "молитва",
+        "объяснение болезни"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-belief-and-bodily-attention",
+      "locale": "en",
+      "runtime_text": "In the game reconstruction, bodily attention can coexist with prayer, blessing and familiar explanations of illness. Healer, patient and household may understand the illness differently and choose among available helpers; belief in a remedy does not establish a physical effect.",
+      "search_aliases": [
+        "healer",
+        "prayer",
+        "illness beliefs"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-care-coordination-and-uncertainty",
+      "locale": "ru",
+      "runtime_text": "Лекарь может попросить близких побыть с больным, принести доступные воду или ткань, освободить место для отдыха и сообщать об изменениях; при недостатке умения — позвать более опытного помощника. Распределение ухода и признание неуверенности дают содержательное действие даже без известного лечения, но не обещают выздоровления.",
+      "search_aliases": [
+        "лекарь",
+        "уход",
+        "родственники больного",
+        "помощник"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:healer-care-coordination-and-uncertainty",
+      "locale": "en",
+      "runtime_text": "A healer can ask relatives to stay with the sufferer, bring available water or cloth, clear resting space and report changes, or seek a more experienced helper when skill is insufficient. Organizing care and acknowledging uncertainty remain meaningful actions without a known treatment, but do not promise recovery.",
+      "search_aliases": [
+        "healer",
+        "care coordination",
+        "relatives"
+      ]
+    }
+  ]
+}

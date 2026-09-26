@@ -1,0 +1,1079 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-nature-nsidc-snow",
+      "title": "Science of Snow",
+      "authors": [
+        "National Snow and Ice Data Center"
+      ],
+      "publication": "CIRES, University of Colorado Boulder",
+      "source_kind": "official_documentation",
+      "citation": "https://nsidc.org/learn/parts-cryosphere/snow/science-snow",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-nature-pnnl-snow-loads",
+      "title": "Managing Snow Loads on Roofs and Decks",
+      "authors": [
+        "Pacific Northwest National Laboratory"
+      ],
+      "publication": "Building America Solution Center, updated 2021-09-26",
+      "source_kind": "official_documentation",
+      "citation": "https://basc.pnnl.gov/resource-guides/managing-snow-loads-roofs-and-decks",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-nature-nps-ice",
+      "title": "Beach Safety",
+      "authors": [
+        "National Park Service"
+      ],
+      "publication": "Indiana Dunes National Park, updated 2024-08-23",
+      "source_kind": "official_documentation",
+      "citation": "https://www.nps.gov/indu/planyourvisit/beach-safety.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-nature-rmg-twilight",
+      "title": "Dawn, dusk and twilight",
+      "authors": [
+        "Royal Museums Greenwich"
+      ],
+      "publication": "Royal Observatory Greenwich",
+      "source_kind": "official_documentation",
+      "citation": "https://www.rmg.co.uk/stories/time/when-dawn-dusk-twilight",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-nature-nasa-north",
+      "title": "What is the North Star and How Do You Find It?",
+      "authors": [
+        "Preston Dyches"
+      ],
+      "publication": "NASA Science, 2021-07-28; updated 2024-11-06",
+      "source_kind": "official_documentation",
+      "citation": "https://science.nasa.gov/solar-system/what-is-the-north-star-and-how-do-you-find-it/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-nature-nasa-moon",
+      "title": "Moon Phases",
+      "authors": [
+        "NASA"
+      ],
+      "publication": "NASA Science, Moon in Motion",
+      "source_kind": "official_documentation",
+      "citation": "https://science.nasa.gov/moon/moon-phases/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-snow-grain-compaction",
+      "source_ref": "source:residual-nature-nsidc-snow",
+      "anchor": {
+        "section": "Snow on the ground; Snow and sound"
+      },
+      "note": "Snow grains change after deposition, later snowfalls compress them, and stepping on snow also compresses grains.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-snow-melt-refreeze-crust",
+      "source_ref": "source:residual-nature-nsidc-snow",
+      "anchor": {
+        "section": "Snow and sound; Types of snow"
+      },
+      "note": "The source describes a melted/refrozen snow surface as hard and smooth and snowpack crusted layers caused by melting and refreezing.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-snow-wind-drift-visibility",
+      "source_ref": "source:residual-nature-nsidc-snow",
+      "anchor": {
+        "section": "Types of snowfall; Blizzards"
+      },
+      "note": "Strong winds can lift already fallen snow, reduce visibility and create drifts that obstruct travel.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-snow-depth-not-load",
+      "source_ref": "source:residual-nature-pnnl-snow-loads",
+      "anchor": {
+        "section": "Snow Types and Conditions"
+      },
+      "note": "Wet snow can weigh much more than dry snow at equal depth; rain retained in snow and additional snowfalls increase load. No design capacities or modern code requirements are imported.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-snow-uneven-roof-loading",
+      "source_ref": "source:residual-nature-pnnl-snow-loads",
+      "anchor": {
+        "section": "Description; Building Topology and Shape"
+      },
+      "note": "Wind and roof geometry create uneven accumulation; excessive snow can deflect structural members or cause failure.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-roof-melt-eave-refreezing",
+      "source_ref": "source:residual-nature-pnnl-snow-loads",
+      "anchor": {
+        "section": "Roof Insulation Quality"
+      },
+      "note": "Heat escaping from the interior can melt roof snow even when outside air is below freezing; runoff can refreeze at colder eaves, impede drainage and back water under covering.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-ice-current-thin-areas",
+      "source_ref": "source:residual-nature-nps-ice",
+      "anchor": {
+        "section": "Winter Beach Safety"
+      },
+      "note": "NPS explicitly states that subsurface flows can create unseen thin areas in ponds, creeks and other waterways. Universal causal relation only; no Indiana-specific condition is projected onto Novgorod.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-snow-conceals-ice-gaps",
+      "source_ref": "source:residual-nature-nps-ice",
+      "anchor": {
+        "section": "Winter Beach Safety; Shelf Ice"
+      },
+      "note": "NPS describes hidden thin spots and gaps in lake/shelf ice, often further hidden by snow. Claim stays conditional on ice with such gaps, without importing local occurrence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-twilight-solar-afterglow",
+      "source_ref": "source:residual-nature-rmg-twilight",
+      "anchor": {
+        "section": "What is twilight?"
+      },
+      "note": "Civil twilight permits bright-star/horizon visibility; astronomical twilight ends the Sun's afterglow. Extract qualitative lighting transition, not fixed clock times or a guarantee under clouds.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-stars-horizon-navigation",
+      "source_ref": "source:residual-nature-rmg-twilight",
+      "anchor": {
+        "section": "Nautical twilight"
+      },
+      "note": "Source explicitly explains navigation by known stars relative to a still discernible horizon. No medieval adoption or actual observer skill is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-celestial-pole-daily-circles",
+      "source_ref": "source:residual-nature-nasa-north",
+      "anchor": {
+        "section": "Opening explanation of Earth's rotational axis and apparent star circles"
+      },
+      "note": "Stars appear to circle the celestial pole as Earth rotates; the northern pole is the direction of Earth's north rotational axis. Do not assert modern Polaris angular alignment in 1230.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-pole-star-precession-limit",
+      "source_ref": "source:residual-nature-nasa-north",
+      "anchor": {
+        "section": "Polaris has not always been the North Star"
+      },
+      "note": "Precession slowly changes which star lies near the celestial pole. This is the source-backed limit on carrying a modern star alignment into another historical epoch.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-moonlight-reflected-sunlight",
+      "source_ref": "source:residual-nature-nasa-moon",
+      "anchor": {
+        "section": "3 Quick Facts; overview"
+      },
+      "note": "Moonlight is reflected sunlight. This is complementary to the already approved apparent-phase claim and does not establish ground lux or a visible Moon in the scene.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-nature-moon-phase-time-of-visibility",
+      "source_ref": "source:residual-nature-nasa-moon",
+      "anchor": {
+        "section": "New Moon; First Quarter; Full Moon; Last Quarter; Daytime Moons"
+      },
+      "note": "At most latitudes full Moon rises around sunset and sets around sunrise, first quarter roughly midday/midnight, last quarter midnight/midday; source explicitly qualifies by latitude, season and local predictions.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:residual-nature-winter",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:residual-nature-sky",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-snow-grain-compaction",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-winter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "snow_grain_compaction"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-snow-grain-compaction"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-snow-melt-refreeze-crust",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-winter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "snow_melt_refreeze_crust"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-snow-melt-refreeze-crust"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-snow-wind-drift-visibility",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-winter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "snow_wind_drift_visibility"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-snow-wind-drift-visibility"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-snow-depth-not-load",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-winter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "snow_depth_not_load"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-snow-depth-not-load"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-snow-uneven-roof-loading",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-winter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "snow_uneven_roof_loading"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-snow-uneven-roof-loading"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-roof-melt-eave-refreezing",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-winter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "roof_melt_eave_refreezing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-roof-melt-eave-refreezing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-ice-current-thin-areas",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-winter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ice_current_thin_areas"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-ice-current-thin-areas"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-snow-conceals-ice-gaps",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-winter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "snow_conceals_ice_gaps"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-snow-conceals-ice-gaps"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-twilight-solar-afterglow",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-sky",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "twilight_solar_afterglow"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-twilight-solar-afterglow"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-stars-horizon-navigation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-sky",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "stars_horizon_navigation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-stars-horizon-navigation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-celestial-pole-daily-circles",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-sky",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "celestial_pole_daily_circles"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-celestial-pole-daily-circles"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-pole-star-precession-limit",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-sky",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pole_star_precession_limit"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-pole-star-precession-limit"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-moonlight-reflected-sunlight",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-sky",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "moonlight_reflected_sunlight"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-moonlight-reflected-sunlight"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-nature-moon-phase-time-of-visibility",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-nature-sky",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "moon_phase_time_of_visibility"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-nature-moon-phase-time-of-visibility"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:residual-nature-winter",
+      "locale": "ru",
+      "labels": [
+        "Снег, лёд и зимние поверхности"
+      ],
+      "short_definition": "Качественные природные связи; конкретные условия задаёт состояние мира.",
+      "search_aliases": [
+        "снег",
+        "лёд",
+        "наст",
+        "крыша"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:residual-nature-winter",
+      "locale": "en",
+      "labels": [
+        "Snow, ice and winter surfaces"
+      ],
+      "short_definition": "Qualitative natural relations; actual conditions come from world state.",
+      "search_aliases": [
+        "snow",
+        "ice",
+        "crust",
+        "roof"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:residual-nature-sky",
+      "locale": "ru",
+      "labels": [
+        "Естественное освещение и небесные ориентиры"
+      ],
+      "short_definition": "Качественные природные связи; конкретные условия задаёт состояние мира.",
+      "search_aliases": [
+        "сумерки",
+        "Луна",
+        "звёзды",
+        "ориентирование"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:residual-nature-sky",
+      "locale": "en",
+      "labels": [
+        "Natural lighting and celestial references"
+      ],
+      "short_definition": "Qualitative natural relations; actual conditions come from world state.",
+      "search_aliases": [
+        "twilight",
+        "Moon",
+        "stars",
+        "orientation"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-grain-compaction",
+      "locale": "ru",
+      "runtime_text": "Снег после выпадения меняется: новые снегопады сжимают нижние слои, а шаги уплотняют зёрна. Свежий рыхлый снег и утоптанная поверхность поэтому могут иметь разную структуру.",
+      "search_aliases": [
+        "снег",
+        "рыхлый снег",
+        "утоптанный снег",
+        "уплотнение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-grain-compaction",
+      "locale": "en",
+      "runtime_text": "Snow changes after deposition: later snowfall compresses lower layers, and footsteps compact its grains. Fresh loose snow and a trodden surface can therefore have different structures.",
+      "search_aliases": [
+        "snow",
+        "loose snow",
+        "packed snow",
+        "compaction"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-melt-refreeze-crust",
+      "locale": "ru",
+      "runtime_text": "Подтаявший и вновь замёрзший снег может образовать твёрдую гладкую корку — наст. Наличие корки само по себе не определяет, выдержит ли она человека или груз.",
+      "search_aliases": [
+        "наст",
+        "корка",
+        "оттепель",
+        "замерзание"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-melt-refreeze-crust",
+      "locale": "en",
+      "runtime_text": "Snow that melts and refreezes can form a hard, smooth crust. The presence of a crust alone does not establish whether it can support a person or load.",
+      "search_aliases": [
+        "snow crust",
+        "thaw",
+        "refreeze"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-wind-drift-visibility",
+      "locale": "ru",
+      "runtime_text": "Ветер способен поднимать уже выпавший снег, ухудшать видимость и образовывать сугробы, затрудняющие движение. Для позёмки новый снегопад не обязателен.",
+      "search_aliases": [
+        "позёмка",
+        "метель",
+        "сугроб",
+        "видимость"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-wind-drift-visibility",
+      "locale": "en",
+      "runtime_text": "Wind can lift previously fallen snow, reduce visibility and form drifts that impede travel. Blowing snow does not require a new snowfall.",
+      "search_aliases": [
+        "blowing snow",
+        "snowdrift",
+        "visibility"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-depth-not-load",
+      "locale": "ru",
+      "runtime_text": "Одинаковая глубина снега не означает одинаковую нагрузку: мокрый снег тяжелее сухого рыхлого снега. Задержавшийся дождь и новые снегопады добавляют массу.",
+      "search_aliases": [
+        "снеговая нагрузка",
+        "мокрый снег",
+        "масса снега",
+        "крыша"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-depth-not-load",
+      "locale": "en",
+      "runtime_text": "Equal snow depth does not imply equal loading: wet snow is heavier than dry loose snow. Retained rainfall and further snowfall add mass.",
+      "search_aliases": [
+        "snow load",
+        "wet snow",
+        "snow weight",
+        "roof"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-uneven-roof-loading",
+      "locale": "ru",
+      "runtime_text": "Ветер и форма крыши создают неравномерные скопления снега. Избыточная снеговая нагрузка может прогибать несущие элементы и привести к обрушению; порог зависит от конкретной конструкции.",
+      "search_aliases": [
+        "снег на крыше",
+        "сугроб",
+        "прогиб",
+        "обрушение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-uneven-roof-loading",
+      "locale": "en",
+      "runtime_text": "Wind and roof shape create uneven snow accumulation. Excessive snow loading can bend structural members and cause collapse; the threshold depends on the actual structure.",
+      "search_aliases": [
+        "roof snow",
+        "drift",
+        "deflection",
+        "collapse"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-roof-melt-eave-refreezing",
+      "locale": "ru",
+      "runtime_text": "Тепло из помещения может растопить снег на крыше даже при морозе снаружи. На более холодном свесе вода может замёрзнуть, затруднить сток и вызвать подпор воды под покрытие.",
+      "search_aliases": [
+        "наледь",
+        "сосульки",
+        "свес крыши",
+        "талая вода",
+        "течь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-roof-melt-eave-refreezing",
+      "locale": "en",
+      "runtime_text": "Heat from the interior can melt roof snow even when the outside air is below freezing. Water can refreeze at a colder eave, obstruct drainage and back up beneath the covering.",
+      "search_aliases": [
+        "ice dam",
+        "icicles",
+        "eave",
+        "meltwater",
+        "leak"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-ice-current-thin-areas",
+      "locale": "ru",
+      "runtime_text": "Подлёдное течение может создавать незаметные сверху тонкие участки льда на водоёмах и водотоках. Видимая замёрзшая поверхность не доказывает равномерной толщины.",
+      "search_aliases": [
+        "течение",
+        "тонкий лёд",
+        "промоина",
+        "подлёдная вода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-ice-current-thin-areas",
+      "locale": "en",
+      "runtime_text": "Subsurface flow can create thin ice that is not apparent from above on water bodies and waterways. A visibly frozen surface does not establish uniform thickness.",
+      "search_aliases": [
+        "current",
+        "thin ice",
+        "opening",
+        "under-ice flow"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-conceals-ice-gaps",
+      "locale": "ru",
+      "runtime_text": "Снег может скрывать слабые участки и отверстия в прибрежном озёрном льду. Сплошной белый покров сам по себе не подтверждает непрерывность льда под ним.",
+      "search_aliases": [
+        "снег на льду",
+        "полынья",
+        "скрытая промоина",
+        "береговой лёд"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-snow-conceals-ice-gaps",
+      "locale": "en",
+      "runtime_text": "Snow can conceal weak spots and gaps in lake shore ice. A continuous white cover does not itself confirm continuous ice beneath it.",
+      "search_aliases": [
+        "snow-covered ice",
+        "hidden gap",
+        "shore ice"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-twilight-solar-afterglow",
+      "locale": "ru",
+      "runtime_text": "После захода Солнца сумеречное свечение не исчезает сразу: при углублении Солнца под горизонт оно ослабевает, становятся заметны более слабые звёзды. Облачность и закрытый горизонт могут мешать наблюдению.",
+      "search_aliases": [
+        "сумерки",
+        "закат",
+        "темнота",
+        "звёзды",
+        "видимость"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-twilight-solar-afterglow",
+      "locale": "en",
+      "runtime_text": "After sunset, twilight does not disappear at once: as the Sun sinks farther below the horizon its afterglow fades and fainter stars become visible. Cloud or an obstructed horizon can prevent observation.",
+      "search_aliases": [
+        "twilight",
+        "sunset",
+        "darkness",
+        "stars",
+        "visibility"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-stars-horizon-navigation",
+      "locale": "ru",
+      "runtime_text": "Когда известные наблюдателю звёзды и горизонт одновременно различимы, их взаимное положение может служить ориентиром для навигации. Это требует распознавания ориентиров и не задаёт готовый маршрут.",
+      "search_aliases": [
+        "навигация",
+        "звёздный ориентир",
+        "горизонт"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-stars-horizon-navigation",
+      "locale": "en",
+      "runtime_text": "When an observer can distinguish both familiar stars and the horizon, their relative positions can support navigation. This requires identifying the reference points and does not provide a route by itself.",
+      "search_aliases": [
+        "navigation",
+        "star reference",
+        "horizon"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-celestial-pole-daily-circles",
+      "locale": "ru",
+      "runtime_text": "При вращении Земли звёзды кажутся движущимися вокруг небесного полюса. Северный небесный полюс связан с направлением земной оси и даёт северный ориентир, если наблюдатель умеет определить его положение.",
+      "search_aliases": [
+        "север",
+        "небесный полюс",
+        "движение звёзд"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-celestial-pole-daily-circles",
+      "locale": "en",
+      "runtime_text": "As Earth rotates, stars appear to circle the celestial pole. The northern celestial pole follows the direction of Earth's axis and provides a northward reference when an observer can locate it.",
+      "search_aliases": [
+        "north",
+        "celestial pole",
+        "star motion"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-pole-star-precession-limit",
+      "locale": "ru",
+      "runtime_text": "Из-за прецессии положение небесного полюса относительно звёзд медленно меняется. Современную точность ориентира по Полярной звезде нельзя автоматически переносить на другую историческую эпоху.",
+      "search_aliases": [
+        "Полярная звезда",
+        "прецессия",
+        "историческое небо"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-pole-star-precession-limit",
+      "locale": "en",
+      "runtime_text": "Precession slowly changes the celestial pole's position relative to the stars. Modern precision of orientation by Polaris cannot automatically be transferred to another historical epoch.",
+      "search_aliases": [
+        "Polaris",
+        "precession",
+        "historical sky"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-moonlight-reflected-sunlight",
+      "locale": "ru",
+      "runtime_text": "Лунный свет — отражённый солнечный свет. Наличие Луны в описании или её фаза сами по себе не задают освещённость места: нужны условия наблюдения и положение светила.",
+      "search_aliases": [
+        "лунный свет",
+        "свет Луны",
+        "освещённость ночью"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-moonlight-reflected-sunlight",
+      "locale": "en",
+      "runtime_text": "Moonlight is reflected sunlight. Mentioning the Moon or its phase does not itself set local illumination: observing conditions and the Moon's position are required.",
+      "search_aliases": [
+        "moonlight",
+        "reflected sunlight",
+        "night illumination"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-moon-phase-time-of-visibility",
+      "locale": "ru",
+      "runtime_text": "Фаза связана с временем видимости Луны: на большинстве широт полнолуние примерно соответствует восходу около заката и заходу около рассвета; первая четверть видна вечером, последняя — во второй половине ночи и утром. Точное время зависит от места и сезона.",
+      "search_aliases": [
+        "Луна вечером",
+        "полнолуние",
+        "первая четверть",
+        "последняя четверть"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-nature-moon-phase-time-of-visibility",
+      "locale": "en",
+      "runtime_text": "The phase is related to when the Moon is visible: at most latitudes a full Moon rises around sunset and sets around sunrise; first quarter is visible in the evening, last quarter in the latter night and morning. Exact times depend on location and season.",
+      "search_aliases": [
+        "Moon in evening",
+        "full Moon",
+        "first quarter",
+        "last quarter"
+      ]
+    }
+  ]
+}

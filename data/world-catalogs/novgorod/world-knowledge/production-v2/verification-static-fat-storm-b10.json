@@ -1,0 +1,65 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
+      "claim_ref": "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
+      "claim_digest": "e3563215cdaff3dd587c85baad597e3f7a048529c3827e226c7a4bd66879062e",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-fat-storm-b10.json#claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-fat-storm-b10-gentle-rendering-avoids-burning"
+      ],
+      "review_ref": "verification/static-fat-storm-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Gentle heating can render liquid animal fat from fatty tissue, while overheating can burn it. This is inferred from pork-lard rendering; it establishes no animal, temperature, duration, yield, purity, safety, or concrete-scene result. Modern care or analogy does not create historical availability or actor knowledge."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
+      "claim_ref": "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
+      "claim_digest": "bc71fff4bfaa6bcb70ca9e1a69d541b0891baab4ca5c762836e825a016d2f657",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-fat-storm-b10.json#claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-fat-storm-b10-animal-fat-wick-fuel"
+      ],
+      "review_ref": "verification/static-fat-storm-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Animal fat can fuel a wick lamp when a suitable lamp and wick are present. This is a Roman-lamp-context analogy, not evidence of a Novgorod lamp type, available fat, construction, brightness, duration, or safety. Modern care or analogy does not create historical availability or actor knowledge."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+      "claim_ref": "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+      "claim_digest": "e71bbf1b306f833313fd174bbee48330ca44af922aedf6a0a0c09bcb5b4cbdc9",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-fat-storm-b10.json#claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-fat-storm-b10-lightning-outdoor-exposure"
+      ],
+      "review_ref": "verification/static-fat-storm-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "A thunderstorm lightning threat leaves no safe outdoor position; isolated tall trees and open water are exposures to avoid. This is modern qualitative risk guidance, not a local forecast, procedure, safe alternative, or outcome guarantee. Modern care or analogy does not create historical availability or actor knowledge."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+      "claim_ref": "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+      "claim_digest": "cab0c6c5891fdc2e9ad93078a2f323e4a60cb25731d6e2d7ae2440bc4eb06175",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-fat-storm-b10.json#claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+      "auditor_ref": "/root/static_b10_care_material_sources",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-fat-storm-b10-substantial-building-option"
+      ],
+      "review_ref": "verification/static-fat-storm-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "A reachable substantial building can be a lightning-shelter option, while small or open structures are not. This establishes no building, access, construction, complete safety, or concrete-scene outcome. Modern care or analogy does not create historical availability or actor knowledge."
+    }
+  ]
+}

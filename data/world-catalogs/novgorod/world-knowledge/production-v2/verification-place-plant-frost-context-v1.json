@@ -1,0 +1,35 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place05-place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+      "claim_ref": "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+      "claim_digest": "ef6fdbcb1ba32eb03d8fbbd516854252069995fc6ad4b866046196714c0c61af",
+      "candidate_ref": "git:5d9f27e3d600d31e2897a4eefe2a286108ae1273:data/world-catalogs/novgorod/world-knowledge/production-v1/place-plant-frost-context-v1.json#claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate author /root/place05_plant_frost and root editorial integrator; actual source access limits recorded in review note.",
+      "evidence_checked": [
+        "evidence:place-plant-frost-vulnerability"
+      ],
+      "review_ref": "verification/place-plant-frost-context-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Conditional susceptibility varies by kind/variety/development; no transferred threshold, particular crop, injury, survival, yield or recovery."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place05-place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+      "claim_ref": "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+      "claim_digest": "cd01158fe652af7e39a4400e677ed941403c125864e6c1d935998ddb21a13a43",
+      "candidate_ref": "git:5d9f27e3d600d31e2897a4eefe2a286108ae1273:data/world-catalogs/novgorod/world-knowledge/production-v1/place-plant-frost-context-v1.json#claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate author /root/place05_plant_frost and root editorial integrator; actual source access limits recorded in review note.",
+      "evidence_checked": [
+        "evidence:place-plant-frost-cover"
+      ],
+      "review_ref": "verification/place-plant-frost-context-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Bounded inferred heat-retention relation from modern row-cover evidence; no specific matting/cabbage performance, historical use, prescribed placement, temperature or outcome."
+    }
+  ]
+}

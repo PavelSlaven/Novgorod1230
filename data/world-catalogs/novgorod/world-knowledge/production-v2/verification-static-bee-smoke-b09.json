@@ -1,0 +1,51 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-bee-smoke-b09-alarm-perception-defense",
+      "claim_ref": "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+      "claim_digest": "381f3c7cbe013a684aa89f950378dc24fd416d3de9d39af60c5e2804b020226d",
+      "candidate_ref": "git:6636736d7af725f07b6f0031745290aa7262ff3c:data/world-catalogs/novgorod/world-knowledge/production-v1/static-bee-smoke-b09.json#claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+      "auditor_ref": "/root/mixed_sampling_contract_audit",
+      "independence_basis": "Independent direct-source review by an auditor who did not author the candidate; reviewed RU/EN claim text, qualifiers, evidence, and full assembled 1322-claim pack.",
+      "evidence_checked": [
+        "evidence:static-bee-smoke-b09-smoke-reduces-alarm-perception"
+      ],
+      "review_ref": "verification/static-bee-smoke-b09.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Apis mellifera/honeybee context only. Smoke temporarily reduced antennal alarm-pheromone response; reduced defense is one described component, not guaranteed calm, dose, duration, hive access, scene outcome, or a historical practice."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-bee-smoke-b09-honey-engorgement-stinging-limit",
+      "claim_ref": "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+      "claim_digest": "a997a29d8d11e25c6d11285cb7f91341eb098abc4f214d9d17e82690ee38835b",
+      "candidate_ref": "git:6636736d7af725f07b6f0031745290aa7262ff3c:data/world-catalogs/novgorod/world-knowledge/production-v1/static-bee-smoke-b09.json#claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
+      "auditor_ref": "/root/mixed_sampling_contract_audit",
+      "independence_basis": "Independent direct-source review by an auditor who did not author the candidate; reviewed RU/EN claim text, qualifiers, evidence, and full assembled 1322-claim pack.",
+      "evidence_checked": [
+        "evidence:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement"
+      ],
+      "review_ref": "verification/static-bee-smoke-b09.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Conditional managed-honeybee handling relation only. The source permits honey engorgement and lower stinging likelihood while some bees remain active; it establishes no stores, individual response, safety, colony access, or historical smoker."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-bee-smoke-b09-excess-and-heat-limits",
+      "claim_ref": "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+      "claim_digest": "e7daf5efaa21993fc548621320962ac54c398c01dcfe6aa82f3b0930b6a9ff5f",
+      "candidate_ref": "git:6636736d7af725f07b6f0031745290aa7262ff3c:data/world-catalogs/novgorod/world-knowledge/production-v1/static-bee-smoke-b09.json#claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+      "auditor_ref": "/root/mixed_sampling_contract_audit",
+      "independence_basis": "Independent direct-source review by an auditor who did not author the candidate; reviewed RU/EN claim text, qualifiers, evidence, and full assembled 1322-claim pack.",
+      "evidence_checked": [
+        "evidence:static-bee-smoke-b09-excess-smoke-irritation",
+        "evidence:static-bee-smoke-b09-hot-smoke-limit"
+      ],
+      "review_ref": "verification/static-bee-smoke-b09.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Qualitative handling limits only: excess smoke can irritate and bare-hand heat is a practical upper limit. No temperature, dose, burn, diagnosis, safe handling procedure, guaranteed outcome, or historical device follows."
+    }
+  ]
+}

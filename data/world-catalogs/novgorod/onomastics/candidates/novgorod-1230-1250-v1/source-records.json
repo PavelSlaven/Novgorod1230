@@ -1,0 +1,95 @@
+{
+  "schema_version": "rus.onomastics.source_records.v1",
+  "records": [
+    {
+      "source_id": "onom_src_gramota_729",
+      "full_citation": "Древнерусские берестяные грамоты, Новгород №729, список имён.",
+      "source_class": "primary_document_corpus",
+      "access_location": "https://gramoty.ru/birchbark/document/show/novgorod/729/",
+      "use_status": "binding",
+      "limitations": [
+        "Дата 1160–1180; свидетельствует о новгородской форме, не о частотности 1230–1250."
+      ]
+    },
+    {
+      "source_id": "onom_src_gramota_1091",
+      "full_citation": "Древнерусские берестяные грамоты, Новгород №1091, список имён.",
+      "source_class": "primary_document_corpus",
+      "access_location": "https://gramoty.ru/birchbark/document/show/novgorod/1091/",
+      "use_status": "binding",
+      "limitations": [
+        "Вероятностное чтение Степаниды не компилируется."
+      ]
+    },
+    {
+      "source_id": "onom_src_gramota_334",
+      "full_citation": "Древнерусские берестяные грамоты, Новгород №334.",
+      "source_class": "primary_document_corpus",
+      "access_location": "https://gramoty.ru/birchbark/document/show/novgorod/334/",
+      "use_status": "binding",
+      "limitations": [
+        "Имена подтверждены записью; частотность не выводится."
+      ]
+    },
+    {
+      "source_id": "onom_src_gramota_404",
+      "full_citation": "Древнерусские берестяные грамоты, Новгород №404.",
+      "source_class": "primary_document_corpus",
+      "access_location": "https://gramoty.ru/birchbark/document/show/novgorod/404/",
+      "use_status": "binding",
+      "limitations": [
+        "Одна документальная форма имени."
+      ]
+    },
+    {
+      "source_id": "onom_src_gramota_73",
+      "full_citation": "Древнерусские берестяные грамоты, Новгород №73.",
+      "source_class": "primary_document_corpus",
+      "access_location": "https://gramoty.ru/birchbark/document/show/novgorod/73/",
+      "use_status": "binding",
+      "limitations": [
+        "Одна документальная форма имени."
+      ]
+    },
+    {
+      "source_id": "onom_src_npl_1230",
+      "full_citation": "Новгородская первая летопись старшего и младшего изводов. М.–Л., 1950. 1230 год.",
+      "source_class": "critical_edition_primary_text",
+      "access_location": "https://litopys.org.ua/novglet/novg24.htm",
+      "use_status": "binding",
+      "limitations": [
+        "Династическое или церковное упоминание не доказывает общего сословного whitelist."
+      ]
+    },
+    {
+      "source_id": "onom_src_chaykina_2006",
+      "full_citation": "Чайкина Ю. И. Именования женщин в новгородских берестяных грамотах XI–XIV вв. // Вопросы ономастики. 2006. №3. С. 33–37.",
+      "source_class": "scholarly_corpus_analysis",
+      "access_location": "https://ruslang.ru/doc/onomastica/onomastica3text.pdf",
+      "use_status": "binding",
+      "limitations": [
+        "XI–XIV вв.; корпусные числа не являются генераторными весами."
+      ]
+    },
+    {
+      "source_id": "onom_src_runic_german_court",
+      "full_citation": "Гайдуков П. Г., Мельникова Е. А. Скандинавские рунические надписи из раскопок Немецкого двора. С. 142–163.",
+      "source_class": "archaeological_epigraphic_publication",
+      "access_location": "https://writing.igh.ru/index.php?id=2023-3-1-142-163&lang=ru",
+      "use_status": "contextual",
+      "limitations": [
+        "Контекстуальное западнобалтийское имя; не default и не доказательство merchant role."
+      ]
+    },
+    {
+      "source_id": "onom_src_treaty_1229",
+      "full_citation": "Договор 1229 г. между Смоленском, Ригой и Готландом, электронное научное издание J. Schaeken.",
+      "source_class": "primary_document_edition",
+      "access_location": "https://www.schaeken.nl/lu/research/online/editions/1229/1229atranslgerm.html",
+      "use_status": "contextual",
+      "limitations": [
+        "Балтийский торговый круг; не доказывает проживание каждого свидетеля в Новгороде."
+      ]
+    }
+  ]
+}

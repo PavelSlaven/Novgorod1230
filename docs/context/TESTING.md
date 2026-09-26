@@ -1,6 +1,6 @@
 # Тестирование: карта и команды
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-25, commit 59c1a33c.
 
 Это карта, а не норма. Правила проверок задаёт [AGENTS.md §24](../governance/WORKFLOW_RULES.md) (и §22 для отладки, §29 для
 отчёта). Все команды по группам перечислены в [генерируемом каталоге](../../generated/npm-script-catalog.md)
@@ -56,21 +56,25 @@ PostgreSQL-тесты: часть из них пропускается без п
 `test:cutover` → `docs:check` → `test:integration` → `test:acceptance` → `test:browser-e2e` →
 `architecture:check` (package.json, скрипт `test`).
 
-CI (`test.yml`, один job `full-npm-test`, профиль `full` для pull_request) до `npm test` выполняет: Node 22 и
-`npm ci`; Python 3.12; проверку World Knowledge encoder; dry-run импорта world_base и FK-аудит; `world-db:schema-check`
-и `world-db:schema-doc-check`; контейнер `postgres:16`, DDL world_base с проверкой 201 таблицы и grants
-`world_reader`; две PostgreSQL-интеграции (`world-db:import:stage3b1:integration`,
-`character-appearance:test-world-v4-postgres`); `knowledge:check-corpus`; `docs:generate` и
-`character-appearance:generate`, затем `git diff --exit-code` по `MODULE_INDEX.md`, `generated/`,
-`infra/world-base/SCHEMA_REFERENCE.md` и нескольким каталогам lower-dvina. Незакоммиченный generated-артефакт
-роняет CI. Профиль `evidence_only` (push в main по `p28-ci-profile.mjs`) гоняет только P28-проверки и `docs:check`.
+CI ([test.yml](../../.github/workflows/test.yml)): матрица jobs `full-npm-test-${{ matrix.suite }}` с
+`suite: [fast, integration, acceptance, browser-architecture]`, `fail-fast: false`. Профиль `full` для
+`pull_request`. До/вместо полного suite (по suite):
 
-> ⚠ PR #98 меняет: job становится матрицей `full-npm-test-${{ matrix.suite }}` с `suite: [fast, integration,
-> acceptance, browser-architecture]` и `fail-fast: false`; `fast` = `test:modules … docs:check`, остальные jobs —
-> `test:integration`, `test:acceptance`, `test:browser-e2e && architecture:check`; `evidence-only` выносится в
-> отдельный job; `test:integration` запускается через `scripts/run-integration-tests.mjs`. Источник — `test.yml`
-> и `package.json` в ветке `codex/live-world-runtime`. После merge #98 раздел нужно обновить по
-> [CONTEXT_DUMP](../process/CONTEXT_DUMP.md).
+- общие: Node 22, `npm ci`; для `fast`/`acceptance`/`browser-architecture` — Python 3.12 и проверка WK encoder;
+- `fast`: dry-run импорта world_base и FK-аудит; `world-db:schema-check` / `world-db:schema-doc-check`;
+  контейнер `postgres:16`, DDL world_base с проверкой **208** таблиц и grants `world_reader`;
+  PostgreSQL-интеграции `world-db:import:stage3b1:integration` и
+  `character-appearance:test-world-v4-postgres` (**в suite `fast`**, не `integration` —
+  [.github/workflows/test.yml](../../.github/workflows/test.yml));
+  `knowledge:check-corpus`; `docs:generate` / `character-appearance:generate` + `git diff --exit-code` по
+  `MODULE_INDEX.md`, `generated/`, `infra/world-base/SCHEMA_REFERENCE.md` и каталогам lower-dvina;
+  затем `test:modules` … `docs:check` (как в package.json до integration);
+- `integration`: `world-db:schema-check` / `world-db:schema-doc-check` / DDL 208 (как в `fast`) и
+  `scripts/run-integration-tests.mjs`;
+- `acceptance`: `test:acceptance`;
+- `browser-architecture`: `test:browser-e2e` и `architecture:check`.
+
+Профиль `evidence_only` — отдельный job (P28 + `docs:check`). Незакоммиченный generated-артефакт роняет CI.
 
 ## 4. Матрица «тип изменения → команды»
 

@@ -1,0 +1,43 @@
+{
+  "schema": "rus.procedural_scene_functional_mapping_approval_attestation.v1",
+  "decision": "approve_functional_mapping_candidate",
+  "subject_commit_sha": "13da77a208e0a03f1a96a427ccf9d7759956aa21",
+  "request_digest": "229fa7d273e2201bd47d3cac75122507762a7ef7675a9bc25a89f2ff0c188245",
+  "candidate_ref": "novgorod_procedural_functional_mapping_candidate_001@1",
+  "candidate_digest": "aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588",
+  "authoring_approved": true,
+  "approval_scope": "authoring_mapping_only",
+  "approved_by": "independent_reaudit",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "mapping_ids": [
+    "drying_dormant_storage_place_group_v1",
+    "drying_dormant_work_zone_place_group_v1",
+    "fishing_storage_place_group_v1",
+    "fishing_tool_group_v1",
+    "fishing_work_material_group_v1",
+    "fishing_work_zone_place_group_v1",
+    "natural_shore_typed_layers_v1"
+  ],
+  "remaining_gap_codes": [
+    "FUNCTIONAL_CONTAINER_MAPPING_MISSING",
+    "ACTIVE_PROCESS_TOOL_REF_REQUIRED",
+    "ACTIVE_PROCESS_MATERIAL_REF_REQUIRED",
+    "ACTIVE_PROCESS_CONTAINER_MAPPING_CONDITIONAL",
+    "FINITE_WRECK_SOURCE_REF_REQUIRED"
+  ],
+  "limits": {
+    "runtime_instance_authorized": false,
+    "stock_authorized": false,
+    "container_authorized": false,
+    "process_authorized": false,
+    "operation_authorized": false,
+    "active_operation_requires": [
+      "separate_approved_process_mapping",
+      "committed_finite_source"
+    ],
+    "remaining_gaps_preserved": true
+  },
+  "attestation_digest": "6979d4d4ca5af9527258e187011bd48f82bf998c5969fa5ee0000059bcf9c698"
+}

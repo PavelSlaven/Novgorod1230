@@ -98,6 +98,19 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     }
     if (audited.length === 0) {
       if (!directSemanticActivity(plan, request)) return true;
+      if (plan.activity?.requested_duration_minutes != null
+          && containsElapsedDuration(
+            plan.interpretation?.grounded_attempt)) {
+        throw serverError('TURN_STEP_PLAN_INVALID',
+          'Performed activity wording must leave elapsed time to the code-owned UI.', {
+            details: { errors: [{
+              path: '$.interpretation.grounded_attempt',
+              rule: 'elapsed_time_grounding',
+              code: 'elapsed_time_grounding',
+              message: 'remove elapsed duration wording while preserving the performed activity'
+            }] }
+          });
+      }
       const response = await roleRunner.run({
         scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
         request_identity: request.request_id,
@@ -131,6 +144,12 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         'Turn-step semantic grounding is invalid.', { details: { errors:
           [concern('operation_semantic_grounding', audited, resolved)] } });
     }
+    const exactBackgroundDiscovery = audited.length === 1
+      && plan.operations?.length === 1
+      && audited[0].operation?.op === 'request_discovery'
+      ? audited[0].operation : null;
+    if (exactBackgroundNpcDiscoveryGrounding({ operation: exactBackgroundDiscovery,
+      plan, request })) return true;
     const genericDiscovery = denialProjection && plan.operations.length === 1
       ? plan.operations[0] : genericOrdinaryDiscovery({ audited, plan, request, resolved });
     if (genericDiscovery != null
@@ -280,4 +299,32 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         response.output.concerns.map(({ kind }) =>
           concern(kind, audited, resolved)) } });
   };
+}
+
+export function exactBackgroundNpcDiscoveryGrounding({ operation, plan,
+  request }) {
+  const target = operation?.target_refs?.length === 1
+    ? operation.target_refs[0] : null;
+  const eligible = request?.player_safe_state?.background_npc_remainder
+    ?.eligible_npc_refs;
+  const visible = request?.player_safe_state?.current_visible_context
+    ?.visible_npc;
+  return operation?.op === 'request_discovery'
+    && ['look', 'inspect'].includes(operation.discovery_kind)
+    && typeof target === 'string' && Array.isArray(eligible)
+    && eligible.includes(target) && Array.isArray(visible)
+    && visible.some(({ entity_ref: ref }) => ref?.entity_kind === 'npc'
+      && ref.entity_id === target)
+    && normalized(operation.query) === normalized(request.remaining_intent)
+    && normalized(plan?.interpretation?.grounded_attempt)
+      === normalized(request.remaining_intent)
+    && plan.interpretation?.adaptation === 'literal'
+    && plan.continuation == null && plan.clarification == null
+    && plan.direct_result_kind == null;
+}
+
+function containsElapsedDuration(value) {
+  return typeof value === 'string'
+    && /(?:^|[\s,.;:!?])(?:\d+\s*)?(?:минут(?:а|ы)?|час(?:а|ов)?|сут(?:ки|ок)|дн(?:я|ей)|недел(?:ю|и|ь))(?=$|[\s,.;:!?])/iu
+      .test(value);
 }

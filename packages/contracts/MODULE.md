@@ -18,6 +18,13 @@ Exports `.` plus documented subpaths for JSON, stages, approvals, digests, schem
 
 ## Ошибки, зависимости и effects
 
+Spatial controlled vocabulary revision 4 adds the technical authoring entity
+kinds `expansion_rule_set` and `g6_acoustic_baseline` so M2c can retain exact
+typed dependency pins. Revisions 1–3 remain immutable and validate through the
+same registry validator. `tools/spatial-v3/generate-expansion-vocabularies.mjs`
+reproduces revision 4; unknown entity kinds still fail closed. This registry
+extension does not approve acoustic data or activate a production release.
+
 Validators return structured validation errors or typed-error DTO; malformed canonical input may throw type/range errors. Missing vocabulary, schema mismatch and target port availability never degrade to inferred data. Depends only on `@rus/kernel`; no I/O, DB, network, LLM, persistence or side effects.
 
 ## Target / P28 и тесты

@@ -2,6 +2,8 @@ import { createSpatialV3ActivityExecution } from './spatial-v3-execution-activit
 import { deepFreeze } from './spatial-v3-execution-support.js';
 import { createSpatialV3TraversalExecution } from './spatial-v3-execution-traversal.js';
 
+export { prepareSpatialV3SiteConnectionTraversal } from './spatial-v3-site-connection-traversal.js';
+
 export function createSpatialV3ExecutionEngine() {
   const replays = new Map();
   const traversal = createSpatialV3TraversalExecution(replays);

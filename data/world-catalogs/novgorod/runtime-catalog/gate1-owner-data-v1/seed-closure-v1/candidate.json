@@ -1,0 +1,416 @@
+{
+  "schema": "rus.gate1_rus13_seed_closure_candidate.v1",
+  "status": "pending_independent_authoring_approval",
+  "operation": "derive_deterministic_rus13_seed_and_full_table_closure",
+  "approved_owner_binding": {
+    "parent_request_digest": "38ea4275130afc53a4bf0368c01cc0d18e2304c7373bb510432528a9765e1da3",
+    "parent_attestation_digest": "ab153b6e20c1bb9cac7e276e8dd8776b38d554a1cfbfa4d9b9d2f85350c05061",
+    "archive": {
+      "path": "data/world-base-sources/rus13-base-v1.tar.gz",
+      "sha256": "c2aa107250d859d3c2a6f3a49f15f70598b0fc869c6aa416e5b3de6b95c117d9"
+    },
+    "archive_manifest": {
+      "path": "data/world-base-sources/rus13-base-v1.manifest.json",
+      "sha256": "0bb105a5011c2d54de9965830e7537904e74f26fc525972586c2ed244ec272ef"
+    }
+  },
+  "derivation_inputs": {
+    "importer": {
+      "path": "tools/rus13-world-base-importer/world_base_importer_v1/scripts/import_world_base.py",
+      "sha256": "96ae5bc5c84faa98d7caa79e238dcab55754b9693f75af2f179dbc34c558ad24"
+    },
+    "config": {
+      "path": "tools/rus13-world-base-importer/world_base_importer_v1/config/world_base_import_manifest_v1.json",
+      "sha256": "7b960127665574f38a4f45d3b406da6c8c86571e22058a35cbcc098b9323cc81"
+    },
+    "deterministic_generated_at": "2026-07-06T00:00:00Z"
+  },
+  "derived_outputs": {
+    "seed": {
+      "path": "tools/rus13-world-base-importer/world_base_importer_v1/world_base_seed_v1.sql.gz",
+      "sha256": "69833f0a829dd8623dcc128f07f31a6101d2fa502c3b0ba6a6ccd02d22b9e731"
+    },
+    "uncompressed_sql_sha256": "04d9362307049e9842f34a7c8cf610aa10b1f8c10976fb40ae6976091e68ae97",
+    "report": {
+      "path": "tools/rus13-world-base-importer/world_base_importer_v1/reports/world_base_import_report_v1.json",
+      "sha256": "915db4168aca53cc55c96f585a1d444e74fedef5c1837776330e9ee5d0008f48"
+    },
+    "total_row_count": 42577,
+    "table_count": 30,
+    "table_closure": [
+      {
+        "table": "class_role_rules",
+        "row_count": 29,
+        "payload_sha256": "8767df71300df4c8720d88105ce053b14f1bbcc1cb5722a7a33243e47afb57de",
+        "order_columns": [
+          "social_class_id",
+          "role_archetype_id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "dependency_archetypes",
+        "row_count": 14,
+        "payload_sha256": "d438a77bb0a32659e252a0faf298046f94f559a1b566918d377f4f7221819348",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "graph_edge_modifiers",
+        "row_count": 49,
+        "payload_sha256": "e0868e9d3fb418f02a54c415a00b2eca835ba9dd611f76bfd22358ab7de09cba",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "graph_edges",
+        "row_count": 30248,
+        "payload_sha256": "b68617d8c8129259cfad2181a6a97467904469d29f54e1c3585220d90024d958",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "graph_nodes",
+        "row_count": 11359,
+        "payload_sha256": "cd6560d4603f8b049fe08a35a46bcd7177928c1afd7665479aa4703a431dbefb",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "graph_scale_rules",
+        "row_count": 6,
+        "payload_sha256": "90db36fee64d1ef921857d8e41b4f19f8e0f939c5973b228e4213cb18b07fd6f",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "historical_anchors",
+        "row_count": 28,
+        "payload_sha256": "75c10392c46239f993830f1e52c5be660004de86e43d06cbd9d3440cbcb309e1",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "land_use_templates",
+        "row_count": 45,
+        "payload_sha256": "ba139f872a4a19a2303368f856fba42d543be35a4ed3f261a7f7fc8ae2ffecfb",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "landscape_templates",
+        "row_count": 70,
+        "payload_sha256": "05fda9d867ae209e1f1c65051236e110c882905bcf419082c0dc0713c294bb82",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "legal_status_archetypes",
+        "row_count": 8,
+        "payload_sha256": "dff3d36d022e35d0c03c32407078642f509b0b3b060620778c05ca2a448ad088",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "mobility_archetypes",
+        "row_count": 8,
+        "payload_sha256": "626e6bf02db77f3abba4c79cb33a991f8a1030b23ba79f0da52dd82746f60107",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "occupation_archetypes",
+        "row_count": 15,
+        "payload_sha256": "8b83584d4aa80eed11891ebef98d49e6f1c3809d800e219daf7907c9fc2930eb",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "occupation_skill_defaults",
+        "row_count": 15,
+        "payload_sha256": "867438a62939bb6703be64ab99b13455b2817c05cf80a19a266c53e6fcd4ac26",
+        "order_columns": [
+          "occupation_archetype_id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "place_templates",
+        "row_count": 64,
+        "payload_sha256": "e2c786804d8b998935d07e9716388e56ea913ff2af8338c9a6e30d2f47446e9e",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "region_land_use_templates",
+        "row_count": 31,
+        "payload_sha256": "4b88b7685ae105196f0ed9f2c068f834f1e3e32d2f88824e2b03d7405101447d",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "region_landscape_templates",
+        "row_count": 34,
+        "payload_sha256": "4c1c17ef1e336a3150132796a87b66c4f3c4e3855ba1dcfd45cbf871631ec603",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "region_neighbors",
+        "row_count": 6,
+        "payload_sha256": "ab61a1acc7bef702c1dc46e45c5a4115b625a60361cf8c5d881243d93b6cf2eb",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "region_occupations",
+        "row_count": 68,
+        "payload_sha256": "0acc38a3e0f6dcb4fd0af08412b9288813c5379701ad745ea7b225b9e431f3df",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "region_place_templates",
+        "row_count": 39,
+        "payload_sha256": "e138993e2438d9ef707527df3b012a6aec0508a7ae6f7c946b073b9c141d3b9e",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "region_social_roles",
+        "row_count": 71,
+        "payload_sha256": "2ab2adae32d54b12db94d59d895d80395195a21e84a2bdfc77097e3d9b2bdfaa",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "region_water_body_templates",
+        "row_count": 24,
+        "payload_sha256": "dbd383f1f4103371d33c83a4b5c3453a029c2fe16ae16be108f5dc25da617bd0",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "regions",
+        "row_count": 7,
+        "payload_sha256": "648eed7875c2624fed5c98fef217c8e87394d62ff242161e82251753b46ab8d6",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "role_occupation_rules",
+        "row_count": 26,
+        "payload_sha256": "abedce71f022475d7eb25f871d04e474859079ed4ad7d39a8907a314e066df3e",
+        "order_columns": [
+          "role_archetype_id",
+          "occupation_archetype_id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "route_templates",
+        "row_count": 21,
+        "payload_sha256": "7b9095f591c3ad565cca05657055d3273509763e4312fbf0aa780150dea26946",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "skill_catalog",
+        "row_count": 12,
+        "payload_sha256": "e07d67e2e2bfd25c29352e27c4668602b3da9e3339c4d5f650512b573fd94762",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "social_classes",
+        "row_count": 10,
+        "payload_sha256": "ce765aae2231968b25647371938301ba7ebb5dfe570f3466223d946232c2bef4",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "social_position_archetypes",
+        "row_count": 30,
+        "payload_sha256": "ff796286d1aa5e9bc55e1020fa3d28f14cd23242eb5bdf0bf808662cab2d22b3",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "social_role_archetypes",
+        "row_count": 16,
+        "payload_sha256": "9c28f6c63a1bd94a76480d44d7757e7efd624d95b75b92ef7bbb8095ba92ab96",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "source_records",
+        "row_count": 183,
+        "payload_sha256": "2e98d0585d3e0f59fc2040b8605d7aa34b11c03b167a8e7a92b3cbf72107ac4d",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      },
+      {
+        "table": "water_body_templates",
+        "row_count": 41,
+        "payload_sha256": "c59442b1df644366987b856cb9adec1f2baa88d53128d4f9ec01a9c5ba23c2e3",
+        "order_columns": [
+          "id"
+        ],
+        "excluded_mutable_columns": [
+          "created_at",
+          "updated_at"
+        ]
+      }
+    ],
+    "table_closure_digest": "384a2e3269965dac7d93cfe60ae73873b1b1361faeb733fe36bab04a9641c434"
+  },
+  "authority": {
+    "approval_attestation_present": false,
+    "seed_derivation_authorized": false,
+    "import_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "runtime_item_creation_authorized": false
+  },
+  "candidate_digest": "ac832b7130e54bfba67812adac490536b111694ced601c8c283cff1edd9b3ee0"
+}

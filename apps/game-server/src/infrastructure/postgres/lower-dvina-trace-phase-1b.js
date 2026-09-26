@@ -9,6 +9,16 @@ import {
   readPartyDatabaseSchemaSnapshot,
   readWorldBaseReferenceSnapshot
 } from './lower-dvina-trace-phase-1b-snapshots.js';
+import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
+import { createRuntimeCatalogLoader, loadApprovedProceduralCompiledCatalog } from '@rus/runtime-catalog';
+import { createPostgresWorldBaseReader } from './world-base.js';
+import { readCurrentNaturalPerceptionFacts } from './g4-natural-perception-reader.js';
+import { readInitialCanonicalNaturalSourceState } from './lower-dvina-trace-phase-2-initial-state.js';
+import { readCurrentNaturalSourceState } from './g4-current-natural-source-state.js';
+import { createTargetCurrentFactualContext } from './target-current-factual-context.js';
+import { prepareG4NaturalScenePerceptionInput } from '../../runtime/g4-natural-perception.js';
+import { createSpatialV3CurrentVisibilityProvider } from './spatial-v3-current-visibility-provider.js';
+import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKnowledge } from './spatial-v3-current-visibility-inputs.js';
 export {
   readPartyDatabaseSchemaSnapshot,
   readWorldBaseReferenceSnapshot
@@ -20,13 +30,26 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   release,
   runtimeCatalogPin,
   initialOrdinaryProvisioner = null,
-  initialOrdinaryScopeBinding = null,
   worldKnowledge = null,
+  authoredStartResolver = null,
+  approvedActorCatalog = null,
+  actorBaseAttributesBinding = null,
+  runtimeCatalogLoader = null,
+  targetStartRuntime = null,
+  committer = null,
+  authoredRuntimeBindingResolver = null,
   rootDir = process.cwd()
 } = {}) {
   requirePool(partyPool, 'partyPool');
   requirePool(worldPool, 'worldPool');
   assertProductionPin(release, runtimeCatalogPin);
+  const targetStarts = targetStartRuntime?.starts ?? (targetStartRuntime == null ? [] : [targetStartRuntime]);
+  if (targetStarts.some((start) => start.itemPin?.activation_event_id !== runtimeCatalogPin.activation_event_id
+    || !((release.scenario_binding_ids ?? [release.scenario_binding_id]).includes(start.profile?.scenario_id))
+    || start.profile?.manifest_digest !== (release.scenario_profile_exact_pins_by_id?.[start.profile.scenario_id]
+      ?? release.scenario_profile_exact_pins)?.phase_1a_manifest_digest)) {
+    fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Target start runtime must match the exact release and catalog event.');
+  }
   const repository = createLowerDvinaTracePhase1ARepository({
     query: partyPool.query.bind(partyPool)
   });
@@ -46,14 +69,36 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     async materialize(request) {
       assertLowerDvinaTraceExecutionSupport(request);
       assertRequestWorldBinding(request, release, runtimeCatalogPin);
-      const [partyDatabaseSchema, worldBaseReferenceSnapshot] =
+      const authoredProfile = await authoredStartResolver?.(
+        request.scenario_id
+      ) ?? null;
+      const selectedStart = targetStarts.find(({ profile }) => profile.scenario_id === request.scenario_id) ?? null;
+      const catalogLoader = runtimeCatalogLoader ?? createRuntimeCatalogLoader({
+          worldBaseReader: createPostgresWorldBaseReader({ pool: worldPool }),
+          supportedRuntimeContractDigests: [
+            runtimeCatalogPin.runtime_contract_digest
+          ]
+        });
+      const [partyDatabaseSchema, worldBaseReferenceSnapshot,
+        domainCatalog] =
         await Promise.all([
           readPartyDatabaseSchemaSnapshot(partyPool),
-          readWorldBaseReferenceSnapshot(
+          selectedStart ? selectedStart.materialization_inputs.world_base_reference_snapshot : readWorldBaseReferenceSnapshot(
             worldPool,
             request.world_compatibility
-          )
+          ),
+          catalogLoader.loadApprovedItemCatalog({ pin: runtimeCatalogPin })
         ]);
+      if (actorBaseAttributesBinding != null) {
+        assertActorBaseAttributesBinding(actorBaseAttributesBinding, release);
+      }
+      const verifiedProceduralCatalog = domainCatalog != null
+        && runtimeCatalogPin.catalog_revision_id
+          === 'procedural_scene_final_candidate_v2_001'
+        ? loadApprovedProceduralCompiledCatalog({
+          verifiedCatalog: domainCatalog, pin: runtimeCatalogPin
+        })
+        : null;
       return materializeLowerDvinaTraceParty({
         request,
         domainCatalogPinLoader: async (identity) => {
@@ -71,20 +116,33 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         },
         partyDatabaseSchema,
         worldBaseReferenceSnapshot,
+        domainCatalog,
+        actorBaseAttributesBinding,
+        approvedActorCatalog: selectedStart?.profile.actor_catalog ?? approvedActorCatalog,
+        verified_procedural_compiled_catalog: verifiedProceduralCatalog,
         repository,
         stage25Ports,
         worldKnowledge,
+        ...(authoredProfile == null ? {} : {
+          scenarioBundleLoader: async () => selectedStart ? authoredProfile : ({
+            ...structuredClone(authoredProfile),
+            definition: {
+              schema: 'rus.live_world_runtime.authored_start_definition.v1',
+              ...structuredClone(authoredProfile)
+            }
+          }),
+          materializePartyInstance: (input) => materializeAuthoredStartPartyInstance({
+            ...(selectedStart?.materialization_inputs ?? {}), ...input }),
+          validatePlayerDossier: (result) => result.validation_report
+        }),
         rootDir
       });
     },
     ...(initialOrdinaryProvisioner == null ? {} : {
       async provisionInitialOrdinary(partyId) {
-        const binding = initialOrdinaryScopeBinding;
-        if (!text(partyId) || !text(binding?.position_ref)
-            || !text(binding?.g6_ref)
-            || typeof partyPool.connect !== 'function') {
+        if (!text(partyId) || typeof partyPool.connect !== 'function') {
           fail('TRACE_INITIAL_ORDINARY_PROVISIONING_INVALID',
-            'Initial ordinary scope binding is invalid.');
+            'Initial ordinary party identity is invalid.');
         }
         const transaction = await partyPool.connect();
         try {
@@ -94,6 +152,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
                       '{immediate,spatial,node,state,location_profile_ref}'
                       AS location_ref,
                     journey.scene_position_id AS position_id,
+                    position.g6_instance_id AS g6_instance_id,
                     change_set.id AS change_set_id
                FROM party_runtime.parties party
                JOIN party_runtime.party_state_snapshots snapshot
@@ -106,6 +165,10 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
                 AND journey.owner_kind='actor'
                 AND journey.owner_id=player.character_id
                 AND journey.location_kind='scene'
+               JOIN party_runtime.scene_position_nodes position
+                 ON position.party_id=party.party_id
+                AND position.id=journey.scene_position_id
+                AND position.status='active'
                JOIN LATERAL (
                  SELECT id FROM party_runtime.party_v3_change_sets
                   WHERE party_id=party.party_id AND operation_kind='new_game'
@@ -115,15 +178,15 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
               FOR UPDATE OF party`, [partyId]);
           const row = loaded.rows[0];
           if (loaded.rowCount !== 1
-              || row?.location_ref !== binding.position_ref
-              || !text(row?.position_id) || !text(row.change_set_id)) {
+              || !text(row?.position_id) || !text(row?.g6_instance_id)
+              || !text(row.change_set_id)) {
             fail('TRACE_INITIAL_ORDINARY_PROVISIONING_INVALID',
-              'Committed initial position does not match the ordinary scope.');
+              'Committed initial ordinary scope is incomplete.');
           }
           const result = await initialOrdinaryProvisioner.provision({
             transaction, partyId, changeSetId: row.change_set_id,
             firstEntryBinding: {
-              g6_instance_id: binding.g6_ref,
+              g6_instance_id: row.g6_instance_id,
               position_id: row.position_id
             }
           });
@@ -138,8 +201,64 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
       }
     }),
     loadInternal: (partyId) => repository.loadInternal(partyId),
-    loadVisible: (partyId) => repository.loadVisible(partyId)
+    loadVisible: (partyId) => repository.loadVisible(partyId),
+    ...(targetStartRuntime == null ? {} : {
+      async loadNaturalScenePerceptionInput({ partyId, actorId, internal, initialState }) {
+        const committedScenarioId = internal?.request_identity?.scenario_id ?? initialState?.scenario_id;
+        if ((internal != null && internal.request_identity?.party_id !== partyId)
+          || (initialState != null && (initialState.party_id !== partyId
+            || (internal != null && initialState.scenario_id !== committedScenarioId)))) {
+          fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Committed target start identity is inconsistent.');
+        }
+        const selectedStart = targetStarts.find(({ profile }) =>
+          profile.scenario_id === committedScenarioId);
+        if (!selectedStart) fail('SPATIAL_V3_TARGET_START_BINDING_REQUIRED', 'Committed target start is not loaded.');
+        const transaction = await partyPool.connect();
+        try {
+          await transaction.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+          const { domain_catalog: verifiedCatalog } = selectedStart.materialization_inputs;
+          const factualContext = selectedStart.initialRule == null
+            ? createTargetCurrentFactualContext({ partyPool, committer, runtime: selectedStart,
+              authoredRuntimeBindingResolver }) : null;
+          const readCurrentEnvironment = factualContext == null ? null
+            : internal == null ? factualContext.readCurrentEnvironment
+              : factualContext.readInitialEnvironment;
+          const currentFacts = await readCurrentNaturalPerceptionFacts({ transaction, partyId, actorId,
+            verifiedCatalog, pin: runtimeCatalogPin, worldBaseReader: selectedStart.worldBaseReader,
+            readCurrentSourceState: selectedStart.initialRule == null
+              ? (request) => readCurrentNaturalSourceState({ ...request, readCurrentEnvironment })
+              : (request) => readInitialCanonicalNaturalSourceState({ ...request,
+                rule_ref: { id: selectedStart.initialRule.rule.id, version: selectedStart.initialRule.rule.version } }) });
+          const input = prepareG4NaturalScenePerceptionInput({ verifiedCatalog, pin: runtimeCatalogPin, currentFacts });
+          const visibility = createSpatialV3CurrentVisibilityProvider({ pool: partyPool,
+            verifiedCatalog, pin: runtimeCatalogPin,
+            readNatural: async () => currentFacts,
+            readTargetConditions: readCurrentTargetConditions,
+            readEntityExterior: readCommittedEntityExterior,
+            readPlayerKnowledge });
+          const entityObservations = await visibility.readEntityObservations({ transaction,
+            partyId, actorId });
+          await transaction.query('COMMIT');
+          return { ...input, entity_observations: entityObservations };
+        } catch (error) {
+          await transaction.query('ROLLBACK');
+          throw error;
+        } finally { transaction.release(); }
+      }
+    })
   });
+}
+
+function assertActorBaseAttributesBinding(binding, release) {
+  const pin = binding?.pin;
+  if (binding?.schema !== 'rus.actor_base_attributes_runtime_binding.v1'
+      || pin?.schema !== 'rus.runtime_catalog_pin.v2'
+      || pin.catalog_scope !== 'actor_base_attributes_v1'
+      || pin.compatible_world_revision_id !== release.world_revision_id
+      || pin.compatible_world_catalog_digest !== release.world_catalog_digest) {
+    fail('ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_INVALID',
+      'Active actor base attribute profile does not match production world.');
+  }
 }
 
 function assertProductionPin(release, pin) {

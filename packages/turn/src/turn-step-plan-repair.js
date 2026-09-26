@@ -83,7 +83,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         plan: await requestAndValidateTurnStepPlan({
           request,
           turnStepModel: async (safeRequest) => {
-            const output = await turnStepModel(modelRequest ?? safeRequest, repairContext);
+            const output = await turnStepModel(modelRequest ?? safeRequest,
+              repairContext);
             repairedOutput = structuredClone(output);
             return output;
           },
@@ -127,6 +128,7 @@ const SEMANTIC_REPAIR_CODES = new Set([
   'continuation_progress',
   'direct_result_kind',
   'domain_owner_unavailable',
+  'elapsed_time_grounding',
   'material_extent_shape',
   'material_transformation_grounding',
   'operation_semantic_grounding',

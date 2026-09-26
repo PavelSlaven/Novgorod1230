@@ -100,6 +100,20 @@ test('inside and attached placement use visible current topology and reject inva
     ...context,
     placement: { relation: 'located_at', target_ref: 'prepared-destination' }
   }).errors[0].code, 'ITEM_RUNTIME_LOCATION_NOT_CURRENT');
+  assert.deepEqual(normalizeRuntimeItemPlacement({
+    ...context, current_position_ref: 'position:arrival',
+    placement: { relation: 'located_at', target_ref: 'position:arrival' }
+  }).placement, { scene_position_id: 'position:arrival' });
+  assert.deepEqual(normalizeRuntimeItemPlacement({
+    ...context, current_position_ref: 'position:arrival',
+    visible_items: [...items, { item_id: 'ground-item',
+      placement: { scene_position_id: 'position:arrival' } }],
+    placement: { relation: 'attached_to', target_ref: 'ground-item' }
+  }).placement, { attached_item_id: 'ground-item' });
+  assert.equal(normalizeRuntimeItemPlacement({
+    ...context, current_position_ref: 'position:arrival',
+    placement: { relation: 'located_at', target_ref: 'position:other' }
+  }).errors[0].code, 'ITEM_RUNTIME_LOCATION_NOT_CURRENT');
 });
 
 test('runtime transition derives nested mass, hands and load from exact snapshots', () => {

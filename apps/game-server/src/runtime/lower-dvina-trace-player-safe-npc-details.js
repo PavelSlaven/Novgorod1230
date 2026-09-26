@@ -165,26 +165,18 @@ function safeConversationEquipment(items, npcIds) {
 }
 
 export function safeVisualProfile(value) {
+  const fields = ['garment_kind', 'equipment_slot', 'neckline', 'sleeve_form',
+    'outer_form', 'visible_fabric', 'trim', 'main_visible_color',
+    'secondary_visible_color', 'headwear_kind'];
   if (!plain(value)
       || value.schema !== 'item_visual_profile_snapshot_v1'
       || value.version !== 1
-      || !['base_garment', 'base', 'outer_garment', 'outer',
-        'headwear'].includes(value.equipment_slot)
-      || !PORTRAIT_SPEC_V1_ENUMS.clothing.neckline.includes(value.neckline)
-      || !PORTRAIT_SPEC_V1_ENUMS.clothing.sleeve.includes(value.sleeve_form)
-      || !PORTRAIT_SPEC_V1_ENUMS.clothing.outer.includes(value.outer_form)
-      || !PORTRAIT_SPEC_V1_ENUMS.clothing.fabric.includes(value.visible_fabric)
-      || !['none', null].includes(value.trim)
-        && !PORTRAIT_SPEC_V1_ENUMS.clothing.trim.includes(value.trim)
-      || !PORTRAIT_SPEC_V1_ENUMS.clothing.main_color.includes(
-        value.main_visible_color)
-      || value.secondary_visible_color != null
-        && !PORTRAIT_SPEC_V1_ENUMS.clothing.secondary_color.includes(
-          value.secondary_visible_color)
-      || !PORTRAIT_SPEC_V1_ENUMS.clothing.headwear.includes(
-        value.headwear_kind)) return null;
+      || fields.some((key) => value[key] != null && !safeText(value[key]))) {
+    return null;
+  }
   return {
     schema: safeText(value.schema), version: Number(value.version),
+    garment_kind: safeText(value.garment_kind),
     equipment_slot: safeText(value.equipment_slot),
     neckline: safeText(value.neckline),
     sleeve_form: safeText(value.sleeve_form),

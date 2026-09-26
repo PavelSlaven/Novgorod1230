@@ -21,6 +21,8 @@ import { projectLowerDvinaTraceF1Capability } from
   '../src/runtime/releases/lower-dvina-trace-f1-production.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { loadApprovedActorBaseAttributesTestBinding } from
+  './support/actor-base-attributes-binding.js';
 import { materializeLocalFireActivation } from
   '../../../packages/materialization/src/lower-dvina-trace-local-fire.js';
 
@@ -52,6 +54,14 @@ test('production-v10 threads the exact A1 profile and resolver into Phase 2',
     const absent = await capturedTraceRuntime(null);
     assert.equal(absent.actionProductionProfile, null);
     assert.equal(absent.createTurnStepActionProductionOwner, null);
+  });
+
+test('production composition uses the fail-closed SQL actor profile loader by default',
+  async () => {
+    await assert.rejects(
+      capturedTraceRuntime(null, null, null),
+      { code: 'ACTOR_BASE_ATTRIBUTES_RUNTIME_PROFILE_DATA_GAP' }
+    );
   });
 
 test('A1 capability marker requires the exact profile and installed resolver',
@@ -358,26 +368,29 @@ test('F1 activation provisions one player-owned whole water portion', async () =
 });
 
 async function capturedTraceRuntime(actionProductionProfile,
-  localFireProfile = null) {
+  localFireProfile = null,
+  actorBaseAttributesBindingLoader =
+    loadApprovedActorBaseAttributesTestBinding) {
   let captured = null;
   const release = {
     release_id: 'spatial-v3-production-v10',
     runtime_catalog_scope: 'item_container_materialization_v2',
-    runtime_catalog_contract_digest: 'runtime-digest',
-    world_revision_id: 'world-revision', world_catalog_digest: 'world-digest',
-    compatible_world_pin_manifest_digest: 'manifest-digest'
+    runtime_catalog_contract_digest: '1'.repeat(64),
+    world_revision_id: 'world-revision', world_catalog_digest: '2'.repeat(64),
+    compatible_world_pin_manifest_digest: '3'.repeat(64)
   };
-  const worldPool = { query: async () => ({ rows: [{
+  const worldPool = { query: async (_sql, parameters = []) => ({ rows:
+    parameters[0] === 'actor_base_attributes_v1' ? [] : [{
     event_id: 'event', catalog_scope: release.runtime_catalog_scope,
-    catalog_revision_id: 'revision', catalog_digest: 'catalog-digest',
-    import_id: 'import', import_audit_digest: 'import-digest',
-    record_registry_digest: 'registry-digest',
+    catalog_revision_id: 'revision', catalog_digest: '4'.repeat(64),
+    import_id: 'import', import_audit_digest: '5'.repeat(64),
+    record_registry_digest: '6'.repeat(64),
     runtime_contract_digest: release.runtime_catalog_contract_digest,
     compatible_world_revision_id: release.world_revision_id,
     compatible_world_catalog_digest: release.world_catalog_digest,
     compatible_world_pin_manifest_digest:
       release.compatible_world_pin_manifest_digest
-  }] }) };
+    }] }) };
   const partyPool = { query: async () => ({ rows: [] }),
     connect: async () => ({ query: async () => ({ rows: [] }),
       release() {} }) };
@@ -389,6 +402,9 @@ async function capturedTraceRuntime(actionProductionProfile,
     spatialSemanticProfile: null
   }, {
     createNpcRuntimePorts: () => ({}),
+    ...(actorBaseAttributesBindingLoader == null ? {} : {
+      actorBaseAttributesBindingLoader
+    }),
     createPhase2RuntimeFactory: (input) => { captured = input; return {}; }
   });
   await bindings.createPublicRuntimeFacade({

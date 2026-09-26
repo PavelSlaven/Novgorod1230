@@ -1,0 +1,19 @@
+{
+  "schema": "rus.m2c_local_edge_presentation_authoring_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "candidate_ref": "novgorod_m2c_local_edge_labels_v1@1",
+  "candidate_sha256": "c00d22382507c1bfc74c88e8b3469439360bf4577208b254872f0dd382538590",
+  "reviewer": "gpt-6-sol/high — independent reviewer; not the candidate author",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "Exact 68 directed internal_passage template edge labels across 17 approved scene templates; DATA_ONLY editorial per-source-position choice ordinals.",
+  "source_pins": {
+    "spatial_v3_scene_movement_edge_templates_sha256": "d6d987f3fe2748f48300d9bf9a285afe8f98619d77677329fbbcd12f6e69a91e",
+    "approved_target_catalog_manifest_sha256": "4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e",
+    "m2c_g4_expansion_import_manifest_sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133"
+  },
+  "checks": "Candidate and source have the same 68 unique exact template id/version/edge slot keys. Source bytes match the approved target catalog dataset and the approved M2c expansion manifest pin. All 17 template refs resolve to approved rows in the same world revision and to approved scene materialization profile/candidate bindings; all directed endpoints resolve to authored position slots. All 68 label IDs are unique, and display labels and ordinals are unique per source position and follow its authored outgoing edges. Each row cites its exact source edge, marks editorial directness with medium confidence, and requires current authoritative visible-or-known exit projection. Template-to-party inheritance is restricted to the exact template and edge slot reference.",
+  "limits": "Approval asserts no destination, compass bearing, distance, physical ordering, safety, hidden topology, visibility, knowledge or movement capability. Exact current exit admission remains mandatory.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

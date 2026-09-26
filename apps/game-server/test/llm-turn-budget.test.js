@@ -162,7 +162,7 @@ test('every role receives the shared timeout and may request a lower token cap',
 test('runtime provider override reaches every registered gameplay and portrait role', async () => {
   const calls = [];
   const runner = createLlmRoleRunnerAdapter({
-    settings: { providerSnapshot: () => ({ mode: 'local',
+    settings: { providerSnapshot: () => ({ mode: 'custom',
       baseUrl: 'http://127.0.0.1:8000/v1', model: 'local-all-roles' }) },
     execute: async (input) => {
       calls.push(input);

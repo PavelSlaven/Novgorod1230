@@ -11,6 +11,7 @@ import {
 import { auditFreshNpcSpeech } from
   './lower-dvina-trace-npc-speech-grounding-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
+import { omitWorldKnowledgeContextText } from '@rus/turn';
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
@@ -53,8 +54,18 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       (candidate) => candidate.contribution_kind === 'speech'
         && candidate.supporting_operations.length === 0
     )) return semanticGroundingFallback(repair.original_output, request);
-    const modelRequest = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'conversation');
+    // Explicit party events from model-call context / exchange wrap (F1).
+    const historicalEvents = Array.isArray(context.historical_events)
+      ? context.historical_events
+      : [];
+    const grounded = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'conversation', {
+        clock: request.requested_at
+          ?? request.player_safe_state?.clock
+          ?? null,
+        historical_events: historicalEvents
+      });
+    const modelRequest = omitWorldKnowledgeContextText(grounded);
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -63,8 +74,8 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: [npcConversationInstructions(repair, modelRequest),
-          ...worldKnowledgeFactualClosure(modelRequest)].join(' ')
+        content: [npcConversationInstructions(repair, grounded),
+          ...worldKnowledgeFactualClosure(grounded)].join(' ')
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {

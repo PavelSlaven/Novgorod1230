@@ -1,0 +1,7 @@
+# M2c v17: generated G5 UI and finite-source probe
+
+- Date: 2026-09-25. Branch `codex/live-world-runtime`, HEAD `21f44fd1`. Evidence: `%TEMP%/novgorod-target-http-smoke-77968.json` (`target_http_browser_smoke_v1`), isolated PostgreSQL, configured real provider, and Chrome via browser-harness.
+- The dry forest opening and ordinary look showed local passages and `Продолжить путь — выход 2`. UI actions committed `Проход 1` to focus, `Проход 2` to departure, then the visible exit to a generated G5 site. Readback reported `site.origin: generated`, two sites, an active connection, 60 units of deadwood, and 200 units of standing wood.
+- In generated G5, the UI showed a person, local passages, and two exits. `Проход 1` committed movement from arrival to focus with the NPC present. This demonstrates the occupied generated-focus route with the current capacity-v2 bindings.
+- The exact UI request `Подобрать одну порцию валежника из доступного запаса.` failed before commit with `TURN_STEP_PLAN_INVALID` / `domain_owner_unavailable` at `$.operations.0`. The finite stock remained 60. A subsequent ordinary look committed, but no finite source was consumed.
+- The bounded target HTTP test ended 0/1 because this manual browser run omitted its required identical HTTP retry. Its route observations are evidence from the saved report, but the fixture is not a passing acceptance run. Finite depletion remains unproved.

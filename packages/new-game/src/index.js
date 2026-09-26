@@ -4,3 +4,21 @@ export * from './orchestrator/index.js';
 export {
   materializeInitialActorEquipment
 } from './stages/stage-16-item-placement/materialize-initial-actor-equipment.js';
+export { buildStage22NarratorInput, runStage22NarratorProse,
+  runStage22SemanticRepairBlock } from
+  './stages/stage-22-narrator-prose/index.js';
+export { SELF_CHECK_FIELDS } from
+  './stages/stage-22-narrator-prose/policy/constants.js';
+export { buildNarratorStartCodePrecheck } from
+  './stages/stage-22-narrator-prose/precheck/build-precheck.js';
+export { validateNarratorStartingProseOutput } from
+  './stages/stage-22-narrator-prose/validation/output-validation.js';
+export { buildStage23AuditInput, runStage23NarratorProseAudit,
+  validateStage23CommitHandoff } from
+  './stages/stage-23-narrator-prose-audit/index.js';
+export { STAGE23_CONCERN_CODES, STAGE23_REQUIRED_CHECKS, STAGE23_ROUTE_SCHEMA } from
+  './stages/stage-23-narrator-prose-audit/policy/constants.js';
+export { buildNarratorProseCodePrecheck } from
+  './stages/stage-23-narrator-prose-audit/precheck/build-precheck.js';
+export { validateNarratorProseAudit } from
+  './stages/stage-23-narrator-prose-audit/validation/audit-validation.js';

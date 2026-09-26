@@ -11,6 +11,8 @@ import { projectLowerDvinaTraceS1Capability } from
   './releases/lower-dvina-trace-s1-production.js';
 import { factPresentationForRef } from
   './lower-dvina-trace-scene-presentation.js';
+import { resolveNpcOrdinarySemanticParticipant } from
+  './releases/lower-dvina-trace-n1-production.js';
 
 export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   admitAmbientOrdinaryPortion,
@@ -18,7 +20,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   createTurnStepActionProductionOwner,
   localFireProfile,
   createTurnStepWorldProcessResolver,
-  createTurnStepSpatialSemanticResolver,
+  createTurnStepSpatialSemanticResolver, spatialSemanticProfile,
   createTurnStepBackgroundNpcResolver,
   npcSemanticRemainderProfile,
   ordinaryDiscoveryEnablementMarker,
@@ -64,6 +66,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     const spatialState = projectLowerDvinaTraceS1Capability({
       playerSafeState, committedState,
       resolverAvailable: typeof createTurnStepSpatialSemanticResolver === 'function'
+        || spatialSemanticProfile?.profile?.status === 'approved'
     });
     const npcState = projectObservedEvidenceInspection({
       playerSafeState: projectLowerDvinaTraceN1Capability({
@@ -145,28 +148,34 @@ function projectObservedEvidenceInspection({ playerSafeState,
 export function projectLowerDvinaTraceTurnStepPlannerState(state) {
   const { npcs: _npcs, visible_npcs: _visibleNpcs,
     scene_npcs: _sceneNpcs, ...safe } = state;
-  return safe;
+  const actorRef = safe.actor_id;
+  const localObjects = [...(safe.visible_objects ?? []),
+    ...(safe.current_visible_context?.visible_objects ?? [])];
+  const localMovement = [...new Map(localObjects
+    .flatMap(({ entity_ref: ref }) => ref?.entity_kind ===
+      'spatial_local_reference' && text(actorRef) && text(ref.entity_id)
+      ? [[ref.entity_id, { op: 'request_movement', actor_ref: actorRef,
+          target_ref: ref.entity_id, movement_kind: 'local' }]]
+      : [])).values()];
+  return localMovement.length === 0 ? safe : { ...safe,
+    available_domain_operations: localMovement };
 }
 
 function projectLowerDvinaTraceN1Capability({ playerSafeState,
   committedState, loadedProfile, resolverAvailable }) {
   if (!resolverAvailable
-      || loadedProfile?.schema !== 'rus.lower_dvina_trace_n1_loaded_profile.v1'
+      || !['rus.lower_dvina_trace_n1_loaded_profile.v1',
+        'rus.live_world_runtime.n1_loaded_profile.v1']
+        .includes(loadedProfile?.schema)
       || loadedProfile.profile?.status !== 'approved') return playerSafeState;
-  const eligible = new Set(loadedProfile.profile.eligible_participant_profiles
-    .map(({ profile_id: id, revision }) => `${id}@${revision}`));
   const visible = new Set((playerSafeState.current_visible_context
     ?.visible_npc ?? []).flatMap((entry) =>
       entry?.entity_ref?.entity_kind === 'npc'
         ? [entry.entity_ref.entity_id] : []));
   const refs = (committedState.npcs ?? []).flatMap((npc) => {
     const id = npc.npc_id ?? npc.instance_id;
-    const profileId = npc.profile_set_id ?? npc.profile_id;
-    const revision = npc.semantic_state?.profile_revision
-      ?? npc.profile_revision;
     return typeof id === 'string' && visible.has(id)
-      && npc.profile_level === 'background'
-      && eligible.has(`${profileId}@${revision}`)
+      && resolveNpcOrdinarySemanticParticipant({ npc, loadedProfile, committedState }) != null
       && npc.semantic_state?.n1_remainder == null ? [id] : [];
   });
   return refs.length === 0 ? playerSafeState : {

@@ -1,0 +1,57 @@
+{
+  "schema": "rus.live_world_runtime.owner_coverage_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": {
+    "agent": "/root/m2c_nonforest_owner_data_approval",
+    "model": "gpt-6-sol",
+    "reasoning_effort": "high",
+    "independent_from_author": true
+  },
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/owner-coverage-candidate-v1.json",
+  "candidate_sha256": "16f9f3479c2fddb2d8af6dfbf18fbb6bb00603ad36afa8146c97e4a0310078f2",
+  "reviewed_source_sha256": {
+    "m2c_npc_g4_compositions": "8fc54aa348c9132b75fe65e742c9c6129cb5254e4c27ab05ba0fc321e8801013",
+    "m2c_acoustic_approved_baselines": "9d7f7a482fd4709813f1930e0abdd3fb029735c16e401566fb323a40f865be01"
+  },
+  "semantic_npc_approval": [
+    {
+      "scenario_id": "novgorod_reed_backwater_entrance_v1",
+      "count_range": [0, 2],
+      "profile_ids": ["m2c_npc_fisher_v1", "m2c_npc_guide_v1"],
+      "position_slot_order": ["focus", "departure"],
+      "basis": "Fisher and route guide may be present at the open approach to the backwater; this does not assert fishing, a vessel, access rights or a historical population count."
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_resource_edge_approach_v1",
+      "count_range": [0, 2],
+      "profile_ids": ["m2c_npc_forest_worker_v1", "m2c_npc_hunter_v1", "m2c_npc_guide_v1"],
+      "position_slot_order": ["focus", "departure"],
+      "basis": "These people may be present at the forested river-edge approach; no active extraction, hunt, resource stock or right of use follows from their presence."
+    },
+    {
+      "scenario_id": "novgorod_zaostrovye_settlement_approach_v1",
+      "count_range": [0, 2],
+      "profile_ids": ["m2c_npc_guide_v1"],
+      "position_slot_order": ["focus", "departure"],
+      "basis": "The profile is a route guide who may pass through the river approach, not a guide to an archaeological site or proof of habitation in 1230."
+    },
+    {
+      "scenario_id": "novgorod_vikhtuy_work_storage_v1",
+      "count_range": [0, 2],
+      "profile_ids": ["m2c_npc_fisher_v1", "m2c_npc_local_trader_v1", "m2c_npc_household_servant_v1"],
+      "position_slot_order": ["focus", "departure"],
+      "basis": "Existing locality profiles can be present at the open work and storage scene; zero remains possible. Presence creates no stock, transaction, workplace owner or work obligation."
+    }
+  ],
+  "semantic_acoustic_approval": {
+    "scenario_id": "novgorod_vikhtuy_work_storage_v1",
+    "g6_scene_slot_key": "main",
+    "ambient_noise": 0,
+    "basis": "No approved persistent masking source for the open work and storage scene. Zero is no baseline masking penalty, not silence; activity and weather remain runtime modifiers."
+  },
+  "scope": "Exact four canonical G5 NPC compositions and one work-storage G6 acoustic main baseline above, with values and source weights pinned by the candidate and reviewed approved source datasets. The riverbank and household NPC bindings and household acoustic binding are mechanical derivations requiring exact owner readback.",
+  "limitations": "Low-confidence editorial presence and masking choices, not historical frequency or acoustic measurements. No NPC is guaranteed because count zero is approved. No new boat, resource stock, property, occupation fact or spatial access is authorized.",
+  "authorized_next_step": "Author exact canonical owner rows from these decisions, then validate and import/read back through the existing NPC and acoustic owners before runtime admission.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

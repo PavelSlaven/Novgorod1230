@@ -49,6 +49,7 @@ export function spatialResult({ consequence, checks, modeResolution,
   const after = movementDestination(consequence);
   const movement = typeof before === 'string' && typeof after === 'string'
     && before !== after ? { movement_committed: true } : {};
+  if (consequence?.status === 'blocked') return { movement_blocked: true };
   const assessment = modeResolution?.decision_trace?.step_traces?.some(
     ({ applied, approved_plan: plan }) => applied === true
       && plan?.resolution === 'direct'

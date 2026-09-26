@@ -33,6 +33,7 @@ function exactVisibleScope(...projections) {
   const refs = new Set();
   for (const projection of projections) {
     addRef(refs, projection?.position?.location_ref);
+    addRef(refs, projection?.position?.position_id);
     const spatial = ownPlainDataRecord(ownDataProperty(projection,
       'spatial_semantic'), ['semantic_grounding_available', 'position_ref']);
     if (spatial?.semantic_grounding_available === true) {

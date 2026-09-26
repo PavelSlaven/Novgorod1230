@@ -137,7 +137,7 @@ merge; не затрагивать активные партии, чужие р�
 | Dice, параметры и outcome | [checks-rng](../../packages/checks-rng/src/index.js), [actor step](../../packages/turn/src/turn-step-actor-step.js), [commit validator](../../packages/turn/src/turn-step-commit-validator.js) |
 | Карточка броска | [public projection](../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js), [game-web MODULE](../../apps/game-web/MODULE.md); проследить до persisted screen, а не остановиться на JSON response |
 | Квалификация | [frozen role requests](../../data/model-evals/llm-runtime/frozen-role-requests-v1.json), [evaluation CLI](../../tools/llm-runtime-eval/src/cli.mjs) |
-| Browser runner / resume | [acceptance runner](../../tools/local-play/local-gemma-acceptance.mjs), [local-play MODULE](../../tools/local-play/MODULE.md) |
+| Browser runner / resume | [acceptance runner](../../tools/local-play/local-provider-acceptance.mjs), [local-play MODULE](../../tools/local-play/MODULE.md) |
 | Полные требования к сценам | План §13 и [situational prose](../../data/knowledge-source/corpus/DOCUMENTS/situational_prose_requirements.md) |
 
 Ссылки указывают существующих owners; точный текущий flow проверить из callers.

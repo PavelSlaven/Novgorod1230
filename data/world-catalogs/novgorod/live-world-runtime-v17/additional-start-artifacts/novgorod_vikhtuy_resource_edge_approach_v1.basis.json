@@ -1,0 +1,165 @@
+{
+  "schema": "rus.target_start_player_basis_candidate.v1",
+  "candidate_id": "novgorod_vikhtuy_resource_edge_approach_v1_player_basis_v1",
+  "version": 1,
+  "status": "pending_independent_data_approval",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "target_start": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_vikhtuy_resource_edge_approach_v1.start.json",
+    "sha256": "e33dcb4297315b4bcdfb57a6508e7ac323138bb06adb294740052c532876a78a",
+    "scenario_id": "novgorod_vikhtuy_resource_edge_approach_v1",
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "player_transfer_sha256": "352436034f648afa93e43585dbec583b550aa50d8da6c38ee1366aac14187d5b"
+  },
+  "applicability": {
+    "actor_kind": "player_character",
+    "actor_slot_ref": "player",
+    "new_game_only": true,
+    "existing_players": "preserve_committed_snapshot"
+  },
+  "appearance": {
+    "owner": "materializeActorBaseAppearance",
+    "identity_intent": {
+      "sex_category": "male",
+      "age_category": "adult"
+    },
+    "demographic_profile_ref": "novgorod_1200_1250_demographic_profile_v1",
+    "appearance_profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+    "source_directory": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/datasets",
+    "source_tables": [
+      {
+        "table": "region_demographic_profiles",
+        "sha256": "9a7fffa8f4e00db21363b2b67c227ca81b460f5803322e32da0a0709bf21c0cd"
+      },
+      {
+        "table": "region_demographic_profile_entries",
+        "sha256": "a5c5a1e24d24222eda9a77bdc0659533b2cd7aea82db9a36fa34b2e82170e5af"
+      },
+      {
+        "table": "region_appearance_profiles",
+        "sha256": "b1d2f8a5129de7f2a7e71cc3f3d4dc33e702eaf301398b6b8df059e302ac5cd1"
+      },
+      {
+        "table": "region_appearance_profile_entries",
+        "sha256": "61230c341f418e386f9213b93cf1f7d43c0bf3751a7aab62300cfadec7fa66b5"
+      },
+      {
+        "table": "region_category_options",
+        "sha256": "777eab954536900c981bc84f5f496a0e7a5ffcd6ad5a34abc9c166433753862d"
+      },
+      {
+        "table": "universal_categories",
+        "sha256": "a48cc78b57789967622776863999fa475703766a11edfcd39d3fdf52fff81006"
+      }
+    ],
+    "selection": "Keep exact source option values, applicability and weights. Use the existing new-game versioned random stream and choice_key_prefix=player:player. Complete every actor_base_appearance_v1 facet; record selected IDs, candidate-set digest, draws and trace. Target import and exact verified membership are required before runtime.",
+    "directness": "explicit_player_applicability_transfer_of_approved_regional_appearance_options",
+    "confidence": "medium_low",
+    "limits": "Weights are authored sampling policy, not measured regional frequencies. Appearance determines neither ethnicity, homeland, language, social status nor competence. No NPC identity, biography or clothing is copied."
+  },
+  "skills": {
+    "directness": "explicit_editorial_gameplay_initial_profile",
+    "source_context": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv#nov_occ_forest_worker",
+    "source_context_sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+    "historical_measurement_claim": false,
+    "values": {
+      "athletics": {
+        "level": "familiar",
+        "bonus": 1,
+        "basis": "Авторское начальное условие: обычная ходьба и переноска небольшого лесного сбора; без специальной силовой подготовки."
+      },
+      "stealth": {
+        "level": "no_experience",
+        "bonus": 0,
+        "absence_basis": "Специальный опыт скрытого передвижения в начальном профиле не задан."
+      },
+      "melee": {
+        "level": "no_experience",
+        "bonus": 0,
+        "absence_basis": "Военная подготовка и опыт оружейного боя в начальном профиле не заданы."
+      },
+      "ranged_combat": {
+        "level": "no_experience",
+        "bonus": 0,
+        "absence_basis": "Навык стрельбы и профессиональной охоты в начальном профиле не задан."
+      },
+      "craft": {
+        "level": "familiar",
+        "bonus": 1,
+        "basis": "Авторское начальное условие: знакомство с простой обработкой собираемого лесного материала; без квалификации мастера и без создания инструмента."
+      },
+      "household": {
+        "level": "familiar",
+        "bonus": 1,
+        "basis": "Авторское начальное условие: обычный уход за личной одеждой и вещами; без утверждения о семье или дворе."
+      },
+      "survival": {
+        "level": "familiar",
+        "bonus": 1,
+        "basis": "Авторское начальное условие: простейший опыт лесного промысла и привала; не знание конкретных маршрутов, мест или съедобности каждого растения."
+      },
+      "riding": {
+        "level": "no_experience",
+        "bonus": 0,
+        "absence_basis": "Опыт верховой езды в начальном профиле не задан; конь и право пользоваться им не создаются."
+      },
+      "healing": {
+        "level": "no_experience",
+        "bonus": 0,
+        "absence_basis": "Специальный опыт лечения в начальном профиле не задан."
+      },
+      "observation": {
+        "level": "familiar",
+        "bonus": 1,
+        "basis": "Авторское начальное условие: внимание к видимому состоянию поверхности и лесного материала; без автоматического обнаружения скрытых предметов или следов."
+      },
+      "communication": {
+        "level": "no_experience",
+        "bonus": 0,
+        "absence_basis": "Специальный навык убеждения или торговли в начальном профиле не задан; обычная речь этим не запрещается."
+      },
+      "custom_and_law": {
+        "level": "no_experience",
+        "bonus": 0,
+        "absence_basis": "Специальное знание права и конкретных местных разрешений в начальном профиле не задано."
+      }
+    },
+    "limits": "A zero bonus means no authored specialized experience for that mechanic, not a claim that the player cannot attempt an action. No old boatman or Lower Dvina protagonist skill array or biography is transferred."
+  },
+  "language": {
+    "source_path": "data/world-catalogs/novgorod/first-playable-v1/catalog.json",
+    "source_sha256": "03b866679392eee2c68605965744a7d1be3e6aeb6ccf2a98132e288cbffa44b3",
+    "source_pointer": "/character_candidate_sets/player_boatman/language_profile_candidates/0",
+    "profile_id": "language_novgorod_russian_common_v1",
+    "speech_scope": "новгородская русская речь",
+    "foreign_language_claims": [],
+    "literacy": "unknown",
+    "directness": "explicit_editorial_player_language_transfer",
+    "limits": "Only ordinary speech is transferred. No boatman role, ethnic identity, place of birth, reading ability or foreign language is inferred."
+  },
+  "knowledge": {
+    "known_facts": [],
+    "rumors": [],
+    "mistakes": [],
+    "unavailable_knowledge": [],
+    "known_places": [],
+    "known_routes": [],
+    "known_people": [],
+    "directness": "explicit_editorial_empty_initial_knowledge",
+    "limits": "Empty lists mean no authored specific facts, routes or persons. They do not erase ordinary competence or claim universal ignorance. Initial visible facts enter only through committed source perception and existing knowledge owner. No known place is inferred from physical placement."
+  },
+  "approval_request": {
+    "reviewer_role": "independent_data_approver",
+    "model": "gpt-6-sol",
+    "reasoning": "high",
+    "scope": "exact_new_player_appearance_applicability_skill_values_language_transfer_and_empty_specific_knowledge",
+    "author_may_approve": false,
+    "approval_attestation": null
+  },
+  "runtime_limits": [
+    "Data approval only; no target import, release activation, existing-player mutation or historical population claim.",
+    "Canonical NPC composition, current scene/source proof, target catalogs and operational approvals remain separate gates."
+  ]
+}

@@ -5,21 +5,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
-import { ensureArtifact, inspectLocalLlmHardware, provisionAndStartGemma } from
+import { ensureArtifact, MANAGED_RUNTIME_PINS } from
   '../managed-runtime.js';
 
-test('hardware gate reports facts and does not hide unsupported machines', async () => {
-  const directory = await mkdtemp(join(tmpdir(), 'novgorod-hw-test-'));
-  try {
-    const result = await inspectLocalLlmHardware({ dataRoot: directory,
-      platform: 'win32', arch: 'x64', ramBytes: 16 * 1024 ** 3,
-      command: () => ({ status: 0,
-        stdout: 'Small GPU, 8192, 999.0, 9.0\n' }) });
-    assert.equal(result.supported, false);
-    assert.equal(result.facts.gpu.name, 'Small GPU');
-    assert.match(result.reasons.join(' '), /24 GiB VRAM/u);
-    assert.match(result.reasons.join(' '), /32 GiB RAM/u);
-  } finally { await rm(directory, { recursive: true, force: true }); }
+test('managed runtime owns Giga only and has no gameplay-model artifacts', () => {
+  assert.equal('giga' in MANAGED_RUNTIME_PINS, true);
+  assert.equal('gemma' in MANAGED_RUNTIME_PINS, false);
+  assert.equal('llama' in MANAGED_RUNTIME_PINS, false);
 });
 
 test('artifact download resumes and verifies the pinned checksum', async () => {
@@ -59,13 +51,4 @@ test('concurrent provisioning downloads one shared artifact once', async () => {
     downloads += 1;
     return new Response(bytes);
   }
-});
-
-test('managed Gemma fails closed before download when its port is occupied', async () => {
-  let fetched = false;
-  await assert.rejects(provisionAndStartGemma({
-    portAvailable: async () => false,
-    fetchImpl: async () => { fetched = true; throw new Error('unexpected'); }
-  }), { code: 'LOCAL_LLM_PORT_UNAVAILABLE' });
-  assert.equal(fetched, false);
 });

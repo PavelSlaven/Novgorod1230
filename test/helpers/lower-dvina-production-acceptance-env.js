@@ -14,12 +14,17 @@ import { createStaticAssetResolver } from
   '../../apps/game-server/src/http/static-assets.js';
 import { createGameHttpServer, listen } from
   '../../apps/game-server/src/http/server.js';
-import { installActivatedRuntimeCatalog } from
+import { ensureActorBaseAttributesRuntimeActive,
+  installActivatedRuntimeCatalog } from
   '../../tools/local-play/production-setup.js';
+import { LOCAL_PLAY_RUNTIME_CAPABILITIES_V1 } from
+  '../../tools/local-play/runtime-capabilities.js';
 import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
 import { createProductionLlmRoleRunner } from
   '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+import { DEFAULT_GAMEPLAY_MODEL } from
+  '../../apps/game-server/src/runtime/llm-settings.js';
 
 const POSTGRES_IMAGE = 'postgres:16-alpine';
 
@@ -57,6 +62,12 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       worldUrl,
       repositoryRoot,
       authorizationRef: 'Phase 11 isolated production acceptance'
+    });
+    assert.deepEqual(activation.runtimeCapabilities,
+      LOCAL_PLAY_RUNTIME_CAPABILITIES_V1);
+    // Production facade fail-closes without exact active actor attributes.
+    await ensureActorBaseAttributesRuntimeActive({
+      worldPool, partyPool, worldUrl, repositoryRoot
     });
     const env = {
       ...process.env,
@@ -172,8 +183,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
 function acceptanceHttpRoot(root, llm) {
   return Object.freeze({ ...root, getLlmSettings: () => ({
     mode: 'custom', compatibility: 'openai_compatible',
-    base_url: llm.baseUrl, model: 'fixture-provider',
-    api_key_present: true
+    base_url: llm.baseUrl, model: DEFAULT_GAMEPLAY_MODEL,
+    api_key_present: true, default_model: DEFAULT_GAMEPLAY_MODEL
   }), getTurnProgress: () => null });
 }
 

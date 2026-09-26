@@ -35,6 +35,7 @@ import {
 import { inventoryItemIsCarried } from '@rus/items-property';
 import { getCommittedInventoryLoad } from
   './lower-dvina-trace-committed-inventory.js';
+import { projectG4NaturalPerception } from './g4-natural-perception.js';
 export { projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
@@ -42,7 +43,8 @@ export function projectLowerDvinaTracePlayerSafeState({
   committed_state: committedState,
   working_projection: workingProjection,
   working_projection_authority: workingProjectionAuthority,
-  actor_id: actorId, scene_presentation: scenePresentation = null
+  actor_id: actorId, scene_presentation: scenePresentation = null,
+  natural_scene_perception_input: naturalScenePerceptionInput = null
 } = {}) {
   assertProjectionInput(committedState, actorId);
   const profile = committedState.player_profile ?? {};
@@ -135,14 +137,24 @@ export function projectLowerDvinaTracePlayerSafeState({
   });
   const { active_interlocutor: _staleActiveInterlocutor,
     ...withoutStaleInterlocutor } = playerSafeState;
+  let currentPlayerSafeState = playerSafeState.position?.location_ref
+    === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor;
+  if (naturalScenePerceptionInput != null) {
+    const natural = projectG4NaturalPerception({ input: naturalScenePerceptionInput,
+      partyId: committedState.party_id, actorId, positionId: playerSafeState.position?.position_id });
+    const context = currentPlayerSafeState.current_visible_context
+      ?? natural.visible_context;
+    currentPlayerSafeState = { ...currentPlayerSafeState, current_visible_context: {
+      ...context, sensory_details: [...new Set([...(context.sensory_details ?? []),
+        ...natural.visible_context.sensory_details])] } };
+  }
   return freezeJson({
     actor: projectActor({
       profile,
       body: committedState.body_state ?? profile.body,
       actorId
     }),
-    player_safe_state: playerSafeState.position?.location_ref
-      === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor
+    player_safe_state: currentPlayerSafeState
   });
 }
 

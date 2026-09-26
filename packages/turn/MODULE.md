@@ -55,7 +55,8 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   code-owned `check_outcome` band; следующий semantic step видит степень уже
   выполненного исхода без roll/DC/audit. Narrator получает safe band/margin и
   action binding, но не RNG internals; механику он не пересчитывает.
-- `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; canonical empty plan self-terminates `RETRIEVE` как `NO_KNOWLEDGE_REQUIRED` без Core. `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner.
+- `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; canonical empty plan self-terminates `RETRIEVE` as `NO_KNOWLEDGE_REQUIRED` without Core. Default-query owner — production grounder в game-server (не дублировать здесь; LW-047). `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner.
+- `worldKnowledgePromptData` / `omitWorldKnowledgeContextText` — один strip `context_text` на private wire всех WK consumers.
 - Internal ordinary hook применяет уже вычисленный pure aggregate result к общей working projection без собственного schema/type; raw ordinary transition остаётся ответственностью `@rus/materialization` reducer. Hook не экспортируется как второй projection owner и не активирует O1.
 - Общий ordinary discovery owner передаёт одну player-safe scene projection
   в seed и presence, включая structural repair; candidate query имеет нулевой
@@ -377,6 +378,12 @@ materials — grounded `minor|half|major|whole`. Числовую долю и ex
 `domain_request` A1 содержит ровно одну operation: direct preparation в том же
 step запрещена, потому что A1 не имеет prepared-direct overlay.
 
+Live-world authored binding v3 включает тот же O1 discovery и A1
+physical-change owner после party-derived initial ordinary provisioning.
+Scenario ID и текст заявки не являются admission gate; exact persisted
+resolution/item identity, access, mechanics, conservation и P16 остаются у
+прежних owners.
+
 Ограничения A1 v1: single-source preserve не моделирует небольшой subtractive mass loss/known waste; outputs одного action однородны; tools не изнашиваются и не расходуются. Дополнительный finite source в preserve допускает только whole-unit consumption. Independent multi-source property требует одинаковую owner/claim basis и выбирает канонический минимальный source ref; mixed basis закрыта.
 
 Active F1 сохраняет единственную actor-step semantic boundary: public
@@ -523,3 +530,12 @@ transient_item_use получает «в течение N … выполняли
 удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
 Narrator переводит evidence wording в естественную речь и конкретное движение,
 не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.
+
+`prepareSpatialV3SiteConnectionTraversal` (`@rus/turn/spatial-v3-execution`)
+собирает proposal перехода по одной сохранённой направленной G5 connection через
+существующие P18/P19 movement owners. Вход содержит approved action-cost
+connection/profile, exact party scene/position/endpoint state, footprint rule и
+capacity. Порты `validateCapability`, `loadCurrentState`, `recheckActivation`
+обязательны: без них admission запрещён. Результат включает dependency pins и
+expected state versions для общего atomic commit; функция сама не меняет БД,
+позицию актёра или время. Action units не преобразуются в минуты.

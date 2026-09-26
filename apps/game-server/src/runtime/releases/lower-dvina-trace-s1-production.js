@@ -63,9 +63,14 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
         worldKnowledge: worldKnowledgeGrounder == null ? null
           : (await worldKnowledgeGrounder.ground(prepared.model_request,
               'materialization_support', {
-                clock: request.player_safe_state?.clock,
+                clock: request.player_safe_state?.clock
+                  ?? value.committed_state?.clock
+                  ?? null,
                 place_refs: [target, preModel.envelope.position_ref,
-                  preModel.envelope.g5_ref]
+                  preModel.envelope.g5_ref],
+                historical_events: Array.isArray(
+                  value.committed_state?.historical_events)
+                  ? value.committed_state.historical_events : []
               })).world_knowledge
       }) });
     const atomic = createSpatialSemanticAtomicWritePlan({
@@ -148,8 +153,9 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   if (!text(position)) return player;
   const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
     resolutions.filter((resolution) => visibleAtPosition(resolution, position)));
-  const next = projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
-    resolutions });
+  const next = projectLocalPositionStatus(
+    projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
+      resolutions }), resolutions, position);
   const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
     capacity_total: total, consumed_count: used }) => status === 'committed'
       && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
@@ -157,6 +163,15 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   return available == null ? next : { ...next, spatial_semantic: {
     semantic_grounding_available: true,
     position_ref: position } };
+}
+function projectLocalPositionStatus(state, resolutions, position) {
+  const inside = new Set(resolutions.filter((resolution) =>
+    resolution.formal_spatial_refs?.position_ref === position)
+    .map(({ local_ref: ref }) => ref));
+  if (inside.size === 0) return state;
+  return { ...state, visible_objects: (state.visible_objects ?? []).map(
+    (object) => inside.has(object.entity_ref?.entity_id)
+      ? { ...object, visible_status: 'внутри' } : object) };
 }
 
 export function projectLowerDvinaTraceNpcS1Capability({ npcSnapshot,
@@ -254,7 +269,8 @@ function visibleLocalReference(value, target) {
       && ['entity_ref', 'display_label', 'recognition', 'visible_status'].every((key) =>
         Object.hasOwn(object, key))
       && text(object.display_label) && object.recognition === 'recognized'
-      && object.visible_status === 'замечен' && Object.keys(object.entity_ref ?? {}).length === 2
+      && ['замечен', 'внутри'].includes(object.visible_status)
+      && Object.keys(object.entity_ref ?? {}).length === 2
       && object.entity_ref?.entity_kind === 'spatial_local_reference'
       && object.entity_ref.entity_id === target);
 }

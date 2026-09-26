@@ -7,7 +7,8 @@ import { lowerDvinaTraceCanonicalG5SceneBindings } from
   '../../../test/fixtures/lower-dvina-trace-v5-world-fixture.js';
 
 export function phase1AInstance(partyId, scenarioBundle,
-  worldBaseReferenceSnapshot = undefined) {
+  worldBaseReferenceSnapshot = undefined, verifiedProceduralCompiledCatalog = null,
+  domainCatalogPin = lowerDvinaTracePhase1ADomainPin(scenarioBundle)) {
   return materializeInitialActorEquipment(
     materializeLowerDvinaTracePartyInstance({
       party_id: partyId,
@@ -16,7 +17,7 @@ export function phase1AInstance(partyId, scenarioBundle,
       scenario_manifest_digest: scenarioBundle.manifest_digest,
       world_revision_id: scenarioBundle.location_topology_set.spatial_source_ref.world_revision_id,
       world_catalog_digest: scenarioBundle.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
-      domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(scenarioBundle),
+      domain_catalog_pin: domainCatalogPin,
       materializer_version: MATERIALIZER_VERSION,
       rng_algorithm_id: RNG_VERSION,
       seed_context: LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
@@ -26,6 +27,8 @@ export function phase1AInstance(partyId, scenarioBundle,
       existing_party_state: { baseline_exists: false },
       scenario_bundle: scenarioBundle,
       world_base_reference_snapshot: worldBaseReferenceSnapshot,
+      ...(verifiedProceduralCompiledCatalog == null ? {} : {
+        verified_procedural_compiled_catalog: verifiedProceduralCompiledCatalog }),
       resolve_timestamp: resolveLowerDvinaTraceStartTimestamp,
     }),
   );

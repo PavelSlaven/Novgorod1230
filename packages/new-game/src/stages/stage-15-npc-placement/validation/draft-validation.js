@@ -1,5 +1,6 @@
 import { STAGE15_DRAFT_SCHEMA, STAGE15_PLACEMENT_STATUSES, STAGE15_PROFILE_LEVELS } from '@rus/contracts';
 import { ACTOR_BASE_APPEARANCE_PATHS, validateActorBaseAppearance } from '@rus/actors';
+import { validateActorBaseAttributes } from '@rus/materialization';
 import { DEFAULT_STAGE15_NPC_PLACEMENT_POLICY, FORBIDDEN_OUTPUT_KEYS } from '../policy/constants.js';
 import { buildStage15AnchorIndex, buildStage15CandidateIndex } from '../references/indexes.js';
 import { anchorAccess, anchorSupportsNpc, anchorVisibility, asArray, candidateAllowsProfile, candidateMatchesSeason, candidateMatchesSelectedPlace, candidateMatchesTime, compareCandidateRef, concern, dedupeConcerns, hasKeySeed, hasText, isObject, nonEmptyArray, normalizeProfileLevel, selectedG4NodeId, selectedPlaceTemplateId } from '../shared/utils.js';
@@ -63,6 +64,13 @@ export function validateStage15NpcPlacementDraft(draft, input) {
       concerns.push(concern('NPC_PLACEMENT_CANDIDATE_NOT_FOUND', 'npc_candidate_id must exist in npc_candidate_set.', { field: `${path}.npc_candidate_id` }));
     }
     const candidateRecord = candidate ?? {};
+
+    if (npc?.attribute_generation_gate === 'active'
+        && !validateActorBaseAttributes(npc.base_attributes)) {
+      concerns.push(concern('NPC_PLACEMENT_ACTOR_ATTRIBUTES_INCOMPLETE',
+        'New NPC requires actor_base_attributes_v1.',
+        { field: `${path}.base_attributes` }));
+    }
 
     const profileLevel = normalizeProfileLevel(npc.profile_level);
     if (!STAGE15_PROFILE_LEVELS.includes(profileLevel)) {

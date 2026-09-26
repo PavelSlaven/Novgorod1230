@@ -1,0 +1,1189 @@
+{
+  "schema": "rus.gate1_parent_world_revision_import_request.v1",
+  "status": "pending_independent_approval",
+  "operation": "import_canonical_parent_and_exact_approved_g4_transitions",
+  "source_snapshot": {
+    "path": "data/world-base-sources/rus13-base-v1.tar.gz",
+    "sha256": "c2aa107250d859d3c2a6f3a49f15f70598b0fc869c6aa416e5b3de6b95c117d9",
+    "archive_member": "nov_region_audit/novgorod_full_graph_g1_g4_v6_game_ready_EXTRACTED/novgorod_full_graph_g1_g4_v6_game_ready/tsv_import/novgorod_g2_g4_70_cells_v6_g4_locations.tsv",
+    "archive_member_sha256": "d06ade60b43e9316767bafd54ead30a59319ad6699d20268126b3636f8ae7ee3",
+    "place_template_member": "place_templates_scientific_v2_fixed.xlsx",
+    "place_template_member_sha256": "e9e098114e4d9dfcfe8951913b4481f6eb2beaf20e9496ea9895cd6826a4c340"
+  },
+  "research_revision_source": {
+    "path": "data/world-catalogs/novgorod/revisions/novgorod_1230_research_revision_001.json",
+    "sha256": "cddab5106c95839297003a306a9c578ac875b25d3a625a3650fd7e026695a831",
+    "map_revision_id": "novgorod_1230_research_revision_001",
+    "source_manifest_digest": "bbae92c4c7616bed73f3c9557be6f31b54556f0953ccf6c29c8c7e94e3d87a93",
+    "graph_digest": "2387882b49095addcb0a8e45746d7ce960f79d197c57b18b8b3ae91a78dda3f2",
+    "source_status": "staging"
+  },
+  "proposed_world_base_rows": [
+    {
+      "id": "novgorod_v6_legacy_baseline",
+      "parent_revision_id": null,
+      "title": "novgorod_v6_legacy_baseline",
+      "effective_from": "1230-01-01",
+      "effective_to": null,
+      "catalog_digest": "bbae92c4c7616bed73f3c9557be6f31b54556f0953ccf6c29c8c7e94e3d87a93",
+      "status": "draft",
+      "source": {
+        "path": "data/world-catalogs/novgorod/manifests/novgorod_v6_legacy_baseline.json",
+        "sha256": "76288d9fee91c78ed29cee721228ea6d41710b10d2641d6f8888b1c5d52b23a1"
+      }
+    },
+    {
+      "id": "novgorod_1230_research_revision_001",
+      "parent_revision_id": "novgorod_v6_legacy_baseline",
+      "title": "novgorod_1230_research_revision_001",
+      "effective_from": "1230-01-01",
+      "effective_to": null,
+      "catalog_digest": "2387882b49095addcb0a8e45746d7ce960f79d197c57b18b8b3ae91a78dda3f2",
+      "status": "draft",
+      "source": {
+        "path": "data/world-catalogs/novgorod/revisions/novgorod_1230_research_revision_001.json",
+        "sha256": "cddab5106c95839297003a306a9c578ac875b25d3a625a3650fd7e026695a831"
+      }
+    }
+  ],
+  "exact_dependencies": {
+    "region": {
+      "source_row": {
+        "id": "region_novgorod_land",
+        "slug": "novgorod_land",
+        "canonical_name": "Новгородская земля",
+        "display_name": "Новгородская земля",
+        "alt_names": [
+          "region_novgorod_land"
+        ],
+        "status": "usable_with_caution",
+        "confidence": "medium"
+      },
+      "requested_status": "approved",
+      "source": {
+        "archive_member": "nov_region_audit/novgorod_region_profile_v1.json",
+        "archive_member_sha256": "c3403e41f5d3a346dda939042685e5f302bfe0bae446b8a13f9831f38ee51c66"
+      }
+    },
+    "place_templates": [
+      {
+        "source_row": {
+          "id": "pt_administrative_court",
+          "slug": "administrative_court",
+          "title": "Административный двор / двор власти",
+          "summary": "Место управления, суда, сбора повинностей или пребывания представителя власти.",
+          "place_kind": "administrative_center",
+          "default_node_type": "place",
+          "can_exist_inside_landscape": true,
+          "requires_water_nearby": false,
+          "requires_route_nearby": true,
+          "requires_land_use": false,
+          "compatible_landscape_template_ids": [
+            "lt_dry_meadow",
+            "lt_mesic_meadow",
+            "lt_wet_meadow",
+            "lt_floodplain_wet_grassland",
+            "lt_gentle_hills",
+            "lt_wooded_hills",
+            "lt_forest_steppe",
+            "lt_alluvial_floodplain",
+            "lt_wooded_floodplain",
+            "lt_seasonally_flooded_forest",
+            "lt_low_alluvial_riverbank",
+            "lt_mediterranean_woodland_scrub",
+            "lt_dry_open_woodland",
+            "lt_sparse_forest_woodland",
+            "lt_tropical_moist_broadleaf_forest",
+            "lt_tropical_dry_broadleaf_forest",
+            "lt_steep_eroding_riverbank",
+            "lt_rocky_riverbank",
+            "lt_riparian_scrub_bank",
+            "lt_sandy_lake_shore",
+            "lt_rocky_lake_shore",
+            "lt_reed_lake_shore",
+            "lt_marsh_lake_margin",
+            "lt_temperate_grass_steppe",
+            "lt_dry_steppe"
+          ],
+          "compatible_water_body_template_ids": [
+            "wb_brook",
+            "wb_small_river",
+            "wb_medium_river",
+            "wb_large_river",
+            "wb_river_channel",
+            "wb_backwater",
+            "wb_oxbow_lake",
+            "wb_small_fresh_lake",
+            "wb_large_fresh_lake",
+            "wb_floodplain_lake",
+            "wb_sea_bay",
+            "wb_sea_strait",
+            "wb_nearshore_sea",
+            "wb_open_sea",
+            "wb_coastal_lagoon",
+            "wb_estuary"
+          ],
+          "compatible_route_template_ids": [
+            "rt_major_road",
+            "rt_local_road",
+            "rt_river_route"
+          ],
+          "compatible_land_use_template_ids": [],
+          "typical_scale_level": "G2",
+          "settlement_density_effect": "raises_control",
+          "access_logic": "Связан с подчинённой округой и путями.",
+          "social_logic": "Власть, челобитчики, сборщики, стража, зависимые люди.",
+          "economic_logic": "Сборы, хранение, учет, наказания, распоряжения.",
+          "defense_logic": "Охрана и контроль; не обязательно крепость.",
+          "game_use": "Для права, суда, сборов и доступа к власти.",
+          "limits": "Форма и название полностью региональны. Не использовать как ландшафт, воду, дорогу или отдельное здание. Конкретное имя, частотность, размер и допустимость задаются через region_place_templates и региональные правила.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": [
+            "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+            "https://vja.ruslang.ru/en/archive/2014-3/67-81"
+          ],
+          "audit_notes": "Черновая научно-историческая типология: перед approved требуется региональная связка region_place_templates, проверка терминологии и частотности для конкретного региона."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "pt_city_major_center",
+          "slug": "city_major_center",
+          "title": "Крупный город / региональный центр",
+          "summary": "Большой городской центр с политической, торговой, религиозной или военной ролью.",
+          "place_kind": "major_urban_center",
+          "default_node_type": "place",
+          "can_exist_inside_landscape": true,
+          "requires_water_nearby": false,
+          "requires_route_nearby": true,
+          "requires_land_use": false,
+          "compatible_landscape_template_ids": [
+            "lt_dry_meadow",
+            "lt_mesic_meadow",
+            "lt_wet_meadow",
+            "lt_floodplain_wet_grassland",
+            "lt_gentle_hills",
+            "lt_wooded_hills",
+            "lt_forest_steppe",
+            "lt_alluvial_floodplain",
+            "lt_wooded_floodplain",
+            "lt_seasonally_flooded_forest",
+            "lt_low_alluvial_riverbank",
+            "lt_mediterranean_woodland_scrub",
+            "lt_dry_open_woodland",
+            "lt_sparse_forest_woodland",
+            "lt_tropical_moist_broadleaf_forest",
+            "lt_tropical_dry_broadleaf_forest",
+            "lt_steep_eroding_riverbank",
+            "lt_rocky_riverbank",
+            "lt_riparian_scrub_bank",
+            "lt_sandy_lake_shore",
+            "lt_rocky_lake_shore",
+            "lt_reed_lake_shore",
+            "lt_marsh_lake_margin",
+            "lt_temperate_grass_steppe",
+            "lt_dry_steppe",
+            "lt_sandy_coast_dune",
+            "lt_shingle_pebble_coast",
+            "lt_rocky_coast_cliff",
+            "lt_tidal_mudflat",
+            "lt_salt_marsh",
+            "lt_mangrove_coast",
+            "lt_steep_hills",
+            "lt_dry_scrub_hills",
+            "lt_karst_hills_limestone",
+            "lt_foothills"
+          ],
+          "compatible_water_body_template_ids": [
+            "wb_brook",
+            "wb_small_river",
+            "wb_medium_river",
+            "wb_large_river",
+            "wb_river_channel",
+            "wb_backwater",
+            "wb_oxbow_lake",
+            "wb_small_fresh_lake",
+            "wb_large_fresh_lake",
+            "wb_floodplain_lake",
+            "wb_sea_bay",
+            "wb_sea_strait",
+            "wb_nearshore_sea",
+            "wb_open_sea",
+            "wb_coastal_lagoon",
+            "wb_estuary"
+          ],
+          "compatible_route_template_ids": [
+            "rt_major_road",
+            "rt_river_route",
+            "rt_sea_route",
+            "rt_border_transition",
+            "rt_corridor_segment"
+          ],
+          "compatible_land_use_template_ids": [],
+          "typical_scale_level": "G2",
+          "settlement_density_effect": "very_high",
+          "access_logic": "Крупный транспортный и политический узел.",
+          "social_logic": "Сложная социальная структура, власть, право, элиты, церкви/мечети/монастыри по региону.",
+          "economic_logic": "Многоотраслевая торговля, ремесло, хранение, дань/налоги, внешние связи.",
+          "defense_logic": "Часто имеет укрепления или защищённые районы, но это уточняется отдельно.",
+          "game_use": "Только как исторически обоснованный канонический узел.",
+          "limits": "Не генерировать процедурно без источника или региональной записи. Не использовать как ландшафт, воду, дорогу или отдельное здание. Конкретное имя, частотность, размер и допустимость задаются через region_place_templates и региональные правила.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": [
+            "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
+            "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
+            "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/"
+          ],
+          "audit_notes": "Черновая научно-историческая типология: перед approved требуется региональная связка region_place_templates, проверка терминологии и частотности для конкретного региона."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "pt_market_place",
+          "slug": "market_place",
+          "title": "Торг / рыночное место",
+          "summary": "Регулярное место обмена товаров, обычно связанное с поселением, дорогой, властью или переправой.",
+          "place_kind": "market",
+          "default_node_type": "place",
+          "can_exist_inside_landscape": true,
+          "requires_water_nearby": false,
+          "requires_route_nearby": true,
+          "requires_land_use": false,
+          "compatible_landscape_template_ids": [
+            "lt_dry_meadow",
+            "lt_mesic_meadow",
+            "lt_wet_meadow",
+            "lt_floodplain_wet_grassland",
+            "lt_gentle_hills",
+            "lt_wooded_hills",
+            "lt_forest_steppe",
+            "lt_alluvial_floodplain",
+            "lt_wooded_floodplain",
+            "lt_seasonally_flooded_forest",
+            "lt_low_alluvial_riverbank",
+            "lt_mediterranean_woodland_scrub",
+            "lt_dry_open_woodland",
+            "lt_sparse_forest_woodland",
+            "lt_tropical_moist_broadleaf_forest",
+            "lt_tropical_dry_broadleaf_forest",
+            "lt_steep_eroding_riverbank",
+            "lt_rocky_riverbank",
+            "lt_riparian_scrub_bank",
+            "lt_sandy_lake_shore",
+            "lt_rocky_lake_shore",
+            "lt_reed_lake_shore",
+            "lt_marsh_lake_margin",
+            "lt_temperate_grass_steppe",
+            "lt_dry_steppe"
+          ],
+          "compatible_water_body_template_ids": [],
+          "compatible_route_template_ids": [
+            "rt_major_road",
+            "rt_local_road",
+            "rt_river_route"
+          ],
+          "compatible_land_use_template_ids": [],
+          "typical_scale_level": "G2",
+          "settlement_density_effect": "raises_density",
+          "access_logic": "Должен иметь устойчивый поток людей и путей.",
+          "social_logic": "Контакт чужих и местных; спор, надзор, пошлины, слухи.",
+          "economic_logic": "Обмен, цены, товары, ремёсла, пошлины.",
+          "defense_logic": "Часто под надзором власти, не обязательно укреплено.",
+          "game_use": "Для торговли и информации; не создавать как меню магазинов.",
+          "limits": "Не всякая деревня имеет торг. Право рынка и частотность задаются регионом. Не использовать как ландшафт, воду, дорогу или отдельное здание. Конкретное имя, частотность, размер и допустимость задаются через region_place_templates и региональные правила.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": [
+            "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
+            "https://doc.ukdataservice.ac.uk/doc/4969/mrdoc/pdf/guide.pdf"
+          ],
+          "audit_notes": "Черновая научно-историческая типология: перед approved требуется региональная связка region_place_templates, проверка терминологии и частотности для конкретного региона."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "pt_monastery",
+          "slug": "monastery",
+          "title": "Монастырь / религиозная обитель",
+          "summary": "Устойчивый религиозный комплекс с общиной, хозяйством, правилами доступа и влиянием на округу.",
+          "place_kind": "religious_complex",
+          "default_node_type": "place",
+          "can_exist_inside_landscape": true,
+          "requires_water_nearby": false,
+          "requires_route_nearby": true,
+          "requires_land_use": true,
+          "compatible_landscape_template_ids": [
+            "lt_dry_meadow",
+            "lt_mesic_meadow",
+            "lt_wet_meadow",
+            "lt_floodplain_wet_grassland",
+            "lt_gentle_hills",
+            "lt_wooded_hills",
+            "lt_forest_steppe",
+            "lt_alluvial_floodplain",
+            "lt_wooded_floodplain",
+            "lt_seasonally_flooded_forest",
+            "lt_low_alluvial_riverbank",
+            "lt_mediterranean_woodland_scrub",
+            "lt_dry_open_woodland",
+            "lt_sparse_forest_woodland",
+            "lt_tropical_moist_broadleaf_forest",
+            "lt_tropical_dry_broadleaf_forest",
+            "lt_steep_eroding_riverbank",
+            "lt_rocky_riverbank",
+            "lt_riparian_scrub_bank",
+            "lt_sandy_lake_shore",
+            "lt_rocky_lake_shore",
+            "lt_reed_lake_shore",
+            "lt_marsh_lake_margin",
+            "lt_temperate_grass_steppe",
+            "lt_dry_steppe",
+            "lt_temperate_broadleaf_mixed_forest",
+            "lt_temperate_coniferous_forest",
+            "lt_boreal_taiga_coniferous_forest",
+            "lt_boreal_mixed_forest",
+            "lt_montane_forest",
+            "lt_dense_coniferous_forest",
+            "lt_wet_lowland_forest",
+            "lt_alpine_meadow",
+            "lt_montane_grassland",
+            "lt_foothills",
+            "lt_rocky_mountain_slope",
+            "lt_scree_talus_slope",
+            "lt_high_alpine_barren",
+            "lt_steep_hills"
+          ],
+          "compatible_water_body_template_ids": [
+            "wb_brook",
+            "wb_small_river",
+            "wb_medium_river",
+            "wb_large_river",
+            "wb_river_channel",
+            "wb_backwater",
+            "wb_oxbow_lake",
+            "wb_small_fresh_lake",
+            "wb_large_fresh_lake",
+            "wb_floodplain_lake",
+            "wb_sea_bay",
+            "wb_sea_strait",
+            "wb_nearshore_sea",
+            "wb_open_sea",
+            "wb_coastal_lagoon",
+            "wb_estuary"
+          ],
+          "compatible_route_template_ids": [
+            "rt_local_road",
+            "rt_path",
+            "rt_offroad_crossing",
+            "rt_river_route"
+          ],
+          "compatible_land_use_template_ids": [
+            "lu_rainfed_arable",
+            "lu_fallow_rotation",
+            "lu_kitchen_garden",
+            "lu_common_pasture",
+            "lu_hay_meadow_cutting",
+            "lu_timber_felling",
+            "lu_fuelwood_gathering",
+            "lu_tree_beekeeping_bortnichestvo",
+            "lu_wild_food_gathering",
+            "lu_hunting_ground",
+            "lu_fur_trapping_ground",
+            "lu_resin_tar_pitch_production",
+            "lu_charcoal_burning",
+            "lu_fishpond_aquaculture"
+          ],
+          "typical_scale_level": "G2",
+          "settlement_density_effect": "medium",
+          "access_logic": "Обычно связан с дорогой, водой, землями или городом.",
+          "social_logic": "Духовная власть, монахи/монахини/служители, паломники, зависимые люди.",
+          "economic_logic": "Земля, пожертвования, ремёсла, запасы, книги, лечение/милостыня по региону.",
+          "defense_logic": "Может иметь ограду; не обязательно крепость.",
+          "game_use": "Религиозный, социальный и хозяйственный узел.",
+          "limits": "Конфессия, устав и статус задаются регионом; не все монастыри одинаковы. Не использовать как ландшафт, воду, дорогу или отдельное здание. Конкретное имя, частотность, размер и допустимость задаются через region_place_templates и региональные правила.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": [
+            "https://www.english-heritage.org.uk/learn/histories/abbeys-and-priories/"
+          ],
+          "audit_notes": "Черновая научно-историческая типология: перед approved требуется региональная связка region_place_templates, проверка терминологии и частотности для конкретного региона."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "pt_posad_suburb",
+          "slug": "posad_suburb",
+          "title": "Посад / торгово-ремесленное предградье",
+          "summary": "Внешняя торгово-ремесленная зона у укреплённого центра или города; термин регионален для Руси, но типологически соответствует suburb/extra-mural settlement.",
+          "place_kind": "urban_suburb",
+          "default_node_type": "place",
+          "can_exist_inside_landscape": true,
+          "requires_water_nearby": false,
+          "requires_route_nearby": true,
+          "requires_land_use": false,
+          "compatible_landscape_template_ids": [
+            "lt_dry_meadow",
+            "lt_mesic_meadow",
+            "lt_wet_meadow",
+            "lt_floodplain_wet_grassland",
+            "lt_gentle_hills",
+            "lt_wooded_hills",
+            "lt_forest_steppe",
+            "lt_alluvial_floodplain",
+            "lt_wooded_floodplain",
+            "lt_seasonally_flooded_forest",
+            "lt_low_alluvial_riverbank",
+            "lt_mediterranean_woodland_scrub",
+            "lt_dry_open_woodland",
+            "lt_sparse_forest_woodland",
+            "lt_tropical_moist_broadleaf_forest",
+            "lt_tropical_dry_broadleaf_forest",
+            "lt_steep_eroding_riverbank",
+            "lt_rocky_riverbank",
+            "lt_riparian_scrub_bank",
+            "lt_sandy_lake_shore",
+            "lt_rocky_lake_shore",
+            "lt_reed_lake_shore",
+            "lt_marsh_lake_margin",
+            "lt_temperate_grass_steppe",
+            "lt_dry_steppe"
+          ],
+          "compatible_water_body_template_ids": [
+            "wb_brook",
+            "wb_small_river",
+            "wb_medium_river",
+            "wb_large_river",
+            "wb_river_channel",
+            "wb_backwater",
+            "wb_oxbow_lake",
+            "wb_small_fresh_lake",
+            "wb_large_fresh_lake",
+            "wb_floodplain_lake",
+            "wb_sea_bay",
+            "wb_sea_strait",
+            "wb_nearshore_sea",
+            "wb_open_sea",
+            "wb_coastal_lagoon",
+            "wb_estuary"
+          ],
+          "compatible_route_template_ids": [
+            "rt_major_road",
+            "rt_local_road",
+            "rt_river_route"
+          ],
+          "compatible_land_use_template_ids": [],
+          "typical_scale_level": "G3",
+          "settlement_density_effect": "high",
+          "access_logic": "Связан с городом, рынком, дорогой и воротами внутреннего подграфа.",
+          "social_logic": "Ремесленники, торговцы, пришлые, зависимость от города.",
+          "economic_logic": "Ремесло, обмен, склады, постоялые дворы.",
+          "defense_logic": "Слабее защищён, чем детинец/крепость; может быть сожжён или оставлен при угрозе.",
+          "game_use": "Как часть городского места G3, не как отдельный региональный ландшафт.",
+          "limits": "Термин “посад” использовать только где исторически уместно; иначе “предградье/пригород”. Не использовать как ландшафт, воду, дорогу или отдельное здание. Конкретное имя, частотность, размер и допустимость задаются через region_place_templates и региональные правила.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": [
+            "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/"
+          ],
+          "audit_notes": "Черновая научно-историческая типология: перед approved требуется региональная связка region_place_templates, проверка терминологии и частотности для конкретного региона."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "pt_river_landing",
+          "slug": "river_landing",
+          "title": "Речная пристань / высадочное место",
+          "summary": "Место посадки, высадки, погрузки и разгрузки на реке или протоке.",
+          "place_kind": "water_access",
+          "default_node_type": "water_segment",
+          "can_exist_inside_landscape": true,
+          "requires_water_nearby": true,
+          "requires_route_nearby": true,
+          "requires_land_use": false,
+          "compatible_landscape_template_ids": [
+            "lt_low_alluvial_riverbank",
+            "lt_steep_eroding_riverbank",
+            "lt_rocky_riverbank",
+            "lt_riparian_scrub_bank",
+            "lt_alluvial_floodplain",
+            "lt_floodplain_wet_grassland",
+            "lt_wooded_floodplain",
+            "lt_seasonally_flooded_forest"
+          ],
+          "compatible_water_body_template_ids": [
+            "wb_brook",
+            "wb_small_river",
+            "wb_medium_river",
+            "wb_large_river",
+            "wb_river_channel",
+            "wb_backwater",
+            "wb_oxbow_lake"
+          ],
+          "compatible_route_template_ids": [
+            "rt_river_route",
+            "rt_local_road",
+            "rt_path"
+          ],
+          "compatible_land_use_template_ids": [
+            "lu_inland_capture_fishing"
+          ],
+          "typical_scale_level": "G2",
+          "settlement_density_effect": "medium",
+          "access_logic": "Должна связывать водный путь с сухопутным подходом.",
+          "social_logic": "Контакт людей, торговцев, перевозчиков и местных жителей.",
+          "economic_logic": "Перевозка, торговля, рыба, пошлины по региону.",
+          "defense_logic": "Может иметь надзор, но не обязательно укреплена.",
+          "game_use": "Связка воды, дороги и места; особенно для речных регионов.",
+          "limits": "Не создавать как здание причала; это place/узел доступа к воде. Не использовать как ландшафт, воду, дорогу или отдельное здание. Конкретное имя, частотность, размер и допустимость задаются через region_place_templates и региональные правила.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": [
+            "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/"
+          ],
+          "audit_notes": "Черновая научно-историческая типология: перед approved требуется региональная связка region_place_templates, проверка терминологии и частотности для конкретного региона."
+        },
+        "requested_status": "approved"
+      }
+    ],
+    "place_template_source": {
+      "path": "infra/world-base/place_templates.seed.json",
+      "sha256": "6b5dec7321a8c2aabcabe948200571658ed1495f6fccebc185541bc669f31b7c",
+      "archive_member": "place_templates_scientific_v2_fixed.xlsx",
+      "archive_member_sha256": "e9e098114e4d9dfcfe8951913b4481f6eb2beaf20e9496ea9895cd6826a4c340"
+    },
+    "region_place_templates": [
+      {
+        "source_row": {
+          "id": "rpt_novgorod_administrative_court",
+          "region_id": "region_novgorod_land",
+          "place_template_id": "pt_administrative_court",
+          "template_title": "Административный двор / двор власти",
+          "is_allowed": "True",
+          "is_common": "True",
+          "is_rare": "False",
+          "generation_weight": "20",
+          "allowed_scale_levels": "[\"G3\"]",
+          "allowed_node_types": "[\"place\"]",
+          "regional_limits": "При городе, погосте, дворе власти; не самостоятельная деревня.",
+          "game_use": "Двор власти/сбора/суда.",
+          "limits": "Разрешает тип места в регионе; не создаёт конкретное место без region_place_generation_rules/graph_nodes.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": "[\"src_novgorod_wider_context\"]",
+          "audit_notes": "Черновая региональная связка; уникальные города и исторические якоря должны быть заведены вручную."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "rpt_novgorod_city_major_center",
+          "region_id": "region_novgorod_land",
+          "place_template_id": "pt_city_major_center",
+          "template_title": "Крупный город / региональный центр",
+          "is_allowed": "True",
+          "is_common": "True",
+          "is_rare": "False",
+          "generation_weight": "5",
+          "allowed_scale_levels": "[\"G3\"]",
+          "allowed_node_types": "[\"place\"]",
+          "regional_limits": "Практически только Великий Новгород как уникальный центр.",
+          "game_use": "Крупный городской центр региона.",
+          "limits": "Разрешает тип места в регионе; не создаёт конкретное место без region_place_generation_rules/graph_nodes.",
+          "status": "draft",
+          "confidence": "medium_high",
+          "sources": "[\"src_novgorod_wider_context\"]",
+          "audit_notes": "Черновая региональная связка; уникальные города и исторические якоря должны быть заведены вручную."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "rpt_novgorod_market_place",
+          "region_id": "region_novgorod_land",
+          "place_template_id": "pt_market_place",
+          "template_title": "Торг / рыночное место",
+          "is_allowed": "True",
+          "is_common": "True",
+          "is_rare": "False",
+          "generation_weight": "45",
+          "allowed_scale_levels": "[\"G3\"]",
+          "allowed_node_types": "[\"place\"]",
+          "regional_limits": "Торг при городе, погосте, переправе или важном пути.",
+          "game_use": "Рыночное место, обмен, новости, пошлины.",
+          "limits": "Разрешает тип места в регионе; не создаёт конкретное место без region_place_generation_rules/graph_nodes.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": "[\"src_novgorod_wider_context\"]",
+          "audit_notes": "Черновая региональная связка; уникальные города и исторические якоря должны быть заведены вручную."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "rpt_novgorod_monastery",
+          "region_id": "region_novgorod_land",
+          "place_template_id": "pt_monastery",
+          "template_title": "Монастырь / религиозная обитель",
+          "is_allowed": "True",
+          "is_common": "True",
+          "is_rare": "False",
+          "generation_weight": "25",
+          "allowed_scale_levels": "[\"G3\"]",
+          "allowed_node_types": "[\"place\"]",
+          "regional_limits": "Монастырь требует конкретной исторической или региональной причины.",
+          "game_use": "Религиозный, хозяйственный и социальный узел.",
+          "limits": "Разрешает тип места в регионе; не создаёт конкретное место без region_place_generation_rules/graph_nodes.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": "[\"src_novgorod_wider_context\"]",
+          "audit_notes": "Черновая региональная связка; уникальные города и исторические якоря должны быть заведены вручную."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "rpt_novgorod_posad_suburb",
+          "region_id": "region_novgorod_land",
+          "place_template_id": "pt_posad_suburb",
+          "template_title": "Посад / торгово-ремесленное предградье",
+          "is_allowed": "True",
+          "is_common": "True",
+          "is_rare": "False",
+          "generation_weight": "25",
+          "allowed_scale_levels": "[\"G3\"]",
+          "allowed_node_types": "[\"place\"]",
+          "regional_limits": "Только внутри/при городе; не отдельный сельский place.",
+          "game_use": "Торгово-ремесленная зона у города.",
+          "limits": "Разрешает тип места в регионе; не создаёт конкретное место без region_place_generation_rules/graph_nodes.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": "[\"src_novgorod_wider_context\"]",
+          "audit_notes": "Черновая региональная связка; уникальные города и исторические якоря должны быть заведены вручную."
+        },
+        "requested_status": "approved"
+      },
+      {
+        "source_row": {
+          "id": "rpt_novgorod_river_landing",
+          "region_id": "region_novgorod_land",
+          "place_template_id": "pt_river_landing",
+          "template_title": "Речная пристань / высадочное место",
+          "is_allowed": "True",
+          "is_common": "True",
+          "is_rare": "False",
+          "generation_weight": "45",
+          "allowed_scale_levels": "[\"G3\"]",
+          "allowed_node_types": "[\"place\"]",
+          "regional_limits": "При судоходной/лодочной реке; не обязательно порт.",
+          "game_use": "Речная пристань, выгрузка, посадка, связь с торгом.",
+          "limits": "Разрешает тип места в регионе; не создаёт конкретное место без region_place_generation_rules/graph_nodes.",
+          "status": "draft",
+          "confidence": "medium",
+          "sources": "[\"src_baltic_route\", \"src_novgorod_wider_context\"]",
+          "audit_notes": "Черновая региональная связка; уникальные города и исторические якоря должны быть заведены вручную."
+        },
+        "requested_status": "approved"
+      }
+    ],
+    "region_place_template_source": {
+      "archive_member": "nov_region_audit/novgorod_region_template_links_v1_full_pack_EXTRACTED/novgorod_region_place_templates.tsv",
+      "archive_member_sha256": "0fefcc2cdcc3be03ba7c45d1c0520460e9119332c5cde20e37aeec853161ec31"
+    },
+    "region_social_roles": [
+      {
+        "source_row": {
+          "role_id": "nov_role_guard",
+          "role_title": "страж",
+          "role_group": "военное",
+          "historical_term": "сторож / страж",
+          "modern_explanation": "Сторож ворот, торга, двора, пристани, брода или склада.",
+          "period": "1230-1250",
+          "region_id": "region_novgorod_land",
+          "social_rank": "low",
+          "freedom_status": "free",
+          "dependency_type": "service",
+          "typical_authority_over_them": "князь, старший дружинник, посадник, тысяцкий или держатель места",
+          "typical_authority_they_have": "обычно только младшие семьи или помощники",
+          "legal_capacity": "может вступать в обычные сделки и споры в пределах статуса и поручительства",
+          "property_rights": "может владеть обычным имуществом статуса; чужое и служебное имущество требует права доступа",
+          "movement_rights": "может перемещаться, но дорога, долг, поручитель и власть создают ограничения",
+          "weapon_rights": "обычно нож, топор, посох или инструмент; боевое оружие подозрительно без причины",
+          "speech_and_testimony_weight": "низкий-средний; сильнее при свидетелях и местной известности",
+          "access_to_places": "ворота; двор власти; дорога; переправа; торг; княжий двор",
+          "typical_places": "ворота; двор власти; дорога; переправа; торг; княжий двор",
+          "typical_g3_place_types": "pt_administrative_court; pt_road_crossroads; pt_ford_place; pt_town",
+          "typical_g4_location_types": "guard_place; outer_gate; road_exit; stable_yard",
+          "economic_basis": "служба, охрана, сопровождение",
+          "common_income_sources": "жалование; корм; добыча только при правовом основании",
+          "common_obligations": "семья; долг; обычай; служба; посты и праздники; дорожный или дворовой порядок по месту",
+          "common_debts": "деньги; хлеб; товар; услуга; поручительство; недоимка; долг хозяину или двору по статусу",
+          "family_pattern": "родня, брак, дети и домочадцы учитываются по статусу; для монахов и сирот заменяется братией, опекуном или хозяином",
+          "household_pattern": "двор, семья, артель, братия или чужой дом задаются только при сценической необходимости",
+          "typical_dependents": "дети; ученики; слуги; животные; младшие работники по статусу",
+          "typical_patrons": "родня; хозяин; боярин; купец; монастырь; владычный двор; княжий человек; община",
+          "typical_conflicts": "долг; чужое имущество; доступ во двор; недовес; оскорбление; насилие; спор о дороге, земле, труде или поручительстве",
+          "typical_fears": "голод; потеря статуса; болезнь; пожар; долг; обвинение; дорога; военная тревога; гнев старшего; позор перед общиной",
+          "typical_knowledge": "знает своё место, ближние слухи, долги, безопасные подходы и порядок своей среды; не всеведущ",
+          "route_knowledge_level": "low_medium",
+          "market_knowledge_level": "low",
+          "law_custom_knowledge_level": "low",
+          "religious_knowledge_level": "low_medium",
+          "literacy_expectation": "низкая по умолчанию; выше у элиты, церкви, писцов и купеческих доверенных",
+          "languages_or_speech_notes": "новгородская русская речь; у чужих гостей возможен немецкий, финно-угорский или иной говор; переводчик требуется по ситуации",
+          "attitude_to_strangers": "сначала оценивает поручителя, одежду, речь, вещи и причину появления",
+          "attitude_to_authority": "боится, уважает или использует власть согласно статусу; открытый спор требует причины",
+          "attitude_to_church": "церковь влияет на клятву, календарь, милостыню, убежище, репутацию и страх греха",
+          "attitude_to_violence": "насилие редко является первым решением; зависит от свидетелей, статуса жертвы, места и права",
+          "npc_generation_depth_default": "scene",
+          "can_be_background_npc": "yes",
+          "can_be_scene_npc": "yes",
+          "can_be_key_npc": "conditional",
+          "player_character_allowed": "conditional",
+          "player_character_limits": "нельзя делать слишком свободным, богатым, всеведущим или вооружённым без причины; требуется связь со стартовой сценой",
+          "llm_generation_rules": "использовать как шаблон статуса, прав, знаний, имущества и рисков; конкретного NPC создавать только при сценической причине и в пределах лимитов",
+          "llm_forbidden_uses": "не превращать роль в класс персонажа; не давать всем одинаковые знания; не создавать скрытые мотивы в player-facing прозе; не создавать текущее состояние партии",
+          "status": "approved",
+          "confidence": "medium_high",
+          "sources": "src_novgorod_first_chronicle; src_russkaya_pravda; src_yanin_novgorod_posadniki; src_birchbark_corpus_context; src_project_region_profile_v1; src_project_map_v6",
+          "source_note": "региональная социальная реконструкция для Новгородской земли XIII века; точные термины и частные права требуют аудита",
+          "audit_notes": "рабочий профиль; не является академической монографией; применять через статус, место, сезон и причинную необходимость",
+          "social_position_archetype_id": "guard_watchman_service",
+          "social_class_id": "free_commoner",
+          "role_archetype_id": "guard_watchman",
+          "legal_status_archetype_id": "dependent",
+          "dependency_archetype_id": "office_service",
+          "mobility_archetype_id": "locally_mobile",
+          "mapping_review_status": "approved",
+          "mapping_confidence": "high",
+          "mapping_notes": "explicit_map"
+        },
+        "requested_status": "approved",
+        "source": {
+          "archive_member": "novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+          "archive_member_sha256": "1d33a4a06f2dd442d2383e903366e4c715b64016d4ba230fe09e344cbac5f96a"
+        }
+      }
+    ]
+  },
+  "graph_node_transitions": [
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+        "slug": "novgorod_yaroslav_court_market_core",
+        "title": "Новгород: Ярославово дворище и торг",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_001_novgorod",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_city_major_center",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'торговое и вечевое ядро' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+        "slug": "novgorodskiy_posad_dense_yards",
+        "title": "Новгородский посад: плотные посадские дворы",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_002_novgorodskiy_posad",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_posad_suburb",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'жильё и свидетели' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+        "slug": "novgorodskiy_posad_craft_yards",
+        "title": "Новгородский посад: ремесленные дворы",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_002_novgorodskiy_posad",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_posad_suburb",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'мастерские и заказы' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+        "slug": "novgorodskiy_torg_trade_rows",
+        "title": "Новгородский торг: торговые ряды и лавочные места",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_003_novgorodskiy_torg",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_market_place",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'торг, цены, товары' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+        "slug": "yurev_monastyr_church",
+        "title": "Юрьев монастырь: монастырский храм",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_005_yurev_monastyr",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_monastery",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'культовое ядро' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+        "slug": "yurev_monastyr_gardens",
+        "title": "Юрьев монастырь: огороды и сад",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_005_yurev_monastyr",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_monastery",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'пища, тихая зона, скрытность' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+        "slug": "novgorodskaya_pristan_na_volhove_boat_shelter",
+        "title": "Новгородская пристань на Волхове: лодочная зона и навес",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_007_novgorodskaya_pristan_na_volhove",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_river_landing",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'лодки, вёсла, ремонт' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+        "slug": "dvor_vlasti_v_novgorode_clerks_corner",
+        "title": "Двор власти в Новгороде: писцовый/счётный угол",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_009_dvor_vlasti_v_novgorode",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_administrative_court",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'память, записи, споры' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    },
+    {
+      "graph_node_id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+      "source_row": {
+        "id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+        "slug": "dvor_vlasti_v_novgorode_guard_place",
+        "title": "Двор власти в Новгороде: сторожевое место",
+        "node_type": "location",
+        "scale_level": "G4",
+        "parent_node_id": "gn_nov_g1_03_04_g3_009_dvor_vlasti_v_novgorode",
+        "region_id": "region_novgorod_land",
+        "region_cell_code": "nov_g1_03_04",
+        "place_template_id": "pt_administrative_court",
+        "status": "usable_with_caution",
+        "confidence": "medium",
+        "sources": [
+          "src_project_g1_g5_rules",
+          "src_project_architecture_g0_g5",
+          "src_master_audit_2026_07_05_v6"
+        ],
+        "audit_notes": "V6 rebuilt G4: функциональная зона 'стража, оружие, риск' вместо шаблонной заглушки; пригодно для G5-сцены."
+      },
+      "requested_status": "approved",
+      "approval_basis": {
+        "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+        "request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+        "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24"
+      }
+    }
+  ],
+  "requested_authoring_promotions": {
+    "world_revisions": [
+      {
+        "id": "novgorod_1230_research_revision_001",
+        "from_status": "draft",
+        "to_status": "approved"
+      }
+    ],
+    "regions": [
+      {
+        "id": "region_novgorod_land",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      }
+    ],
+    "place_templates": [
+      {
+        "id": "pt_administrative_court",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "pt_city_major_center",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "pt_market_place",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "pt_monastery",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "pt_posad_suburb",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "pt_river_landing",
+        "from_status": "draft",
+        "to_status": "approved"
+      }
+    ],
+    "region_place_templates": [
+      {
+        "id": "rpt_novgorod_administrative_court",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "rpt_novgorod_city_major_center",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "rpt_novgorod_market_place",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "rpt_novgorod_monastery",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "rpt_novgorod_posad_suburb",
+        "from_status": "draft",
+        "to_status": "approved"
+      },
+      {
+        "id": "rpt_novgorod_river_landing",
+        "from_status": "draft",
+        "to_status": "approved"
+      }
+    ],
+    "graph_nodes": [
+      {
+        "id": "gn_nov_g1_03_04_g4_001_novgorod_06_yaroslav_court_market_core",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      },
+      {
+        "id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_03_dense_yards",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      },
+      {
+        "id": "gn_nov_g1_03_04_g4_002_novgorodskiy_posad_05_craft_yards",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      },
+      {
+        "id": "gn_nov_g1_03_04_g4_003_novgorodskiy_torg_03_trade_rows",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      },
+      {
+        "id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_03_church",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      },
+      {
+        "id": "gn_nov_g1_03_04_g4_005_yurev_monastyr_09_gardens",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      },
+      {
+        "id": "gn_nov_g1_03_04_g4_007_novgorodskaya_pristan_na_volhove_04_boat_shelter",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      },
+      {
+        "id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_04_clerks_corner",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      },
+      {
+        "id": "gn_nov_g1_03_04_g4_009_dvor_vlasti_v_novgorode_05_guard_place",
+        "from_status": "usable_with_caution",
+        "to_status": "approved"
+      }
+    ],
+    "requires_independent_authoring_approval": true,
+    "requires_transactional_import_and_readback": true,
+    "grants_runtime_activation": false
+  },
+  "requested_import": {
+    "only_after_authoring_promotion_attestation": true,
+    "transactional": true,
+    "exact_readback_required": true,
+    "grants_runtime_activation": false
+  },
+  "existing_approval_evidence": [
+    {
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/G4_DEPENDENCY_APPROVAL_REQUEST.json",
+      "sha256": "1a583ba6be5c66b11baa9d8b799bed446e8d0b2a811d1d2d2573325f868d8350"
+    },
+    {
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_REQUEST.json",
+      "sha256": "c6099d801973dbd5f0e41ca2e8ba10f76d90daf5d5d9e959c9e594ac705df9ac"
+    },
+    {
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+      "sha256": "816509df226b1bab8a91a9b3d2b3afee251f925cb169a90633d5676daeb62859"
+    }
+  ],
+  "required_independent_decision": "approve_authoring_promotions_then_transactional_import_and_readback",
+  "authority": {
+    "approval_attestation_present": false,
+    "import_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "runtime_item_creation_authorized": false
+  },
+  "request_digest": "38ea4275130afc53a4bf0368c01cc0d18e2304c7373bb510432528a9765e1da3"
+}

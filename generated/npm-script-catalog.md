@@ -119,6 +119,14 @@
 - `pr8:vocabularies`
 - `pr8:vocabularies-check`
 
+## procedural-scenes (5)
+
+- `procedural-scenes:generate`
+- `procedural-scenes:import-pack`
+- `procedural-scenes:import-pack-check`
+- `procedural-scenes:v6-overlay`
+- `procedural-scenes:v6-overlay-check`
+
 ## release (1)
 
 - `release:check`

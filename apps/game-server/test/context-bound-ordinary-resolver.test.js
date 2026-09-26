@@ -231,7 +231,9 @@ test('selected finite capability consumes its own committed source row', async (
       prepared_seed_provenance: null, functional_buckets: ['other_ordinary'],
       allowed_admission_classes: ['specialized_or_valuable'],
       permission_refs: permissions, basis_kind: 'finite_source' };
-    return { source_ref: source, candidate_context: { target_ref: source,
+    return { source_ref: source, public_name: `stock-${suffix}`,
+      disclosure_state: 'visible', access_decision: 'allow',
+      candidate_context: { target_ref: source,
       semantic_type: 'prepared_stock', candidate_ref_namespace: `candidate-${suffix}`,
       normalizer_version: 'ordinary-normalizer-v1', candidate_hint: null,
       functional_bucket: 'other_ordinary', admission_class: 'specialized_or_valuable',
@@ -321,6 +323,27 @@ test('selected finite capability consumes its own committed source row', async (
     .item_proposal.semantic_descriptor,
   { semantic_type: 'prepared_stock', name: 'stock-b', facts: [] });
   bindO1(result.ordinary_materialization_atomic_write_plan);
+  const located = request();
+  located.committed_state.position.position_id = 'bench';
+  located.operation = { target_refs: ['bench'], query: '  STOCK-B  ',
+    quantity: { value: 1, unit: 'item' } };
+  located.request.player_safe_state = { current_visible_context: {
+    visible_objects: [{ entity_ref: { entity_kind: 'ordinary_resource_source',
+      entity_id: 'source-b' }, display_label: 'stock-b', visible_status: 'known' }]
+  } };
+  const selected = await resolver(located);
+  assert.equal(selected.ordinary_materialization_atomic_write_plan
+    ?.finite_resource_transition?.source_resource_node_id, 'source-b',
+  JSON.stringify(selected));
+  assert.deepEqual(selected.ordinary_materialization_atomic_write_plan
+    ?.finite_resource_transition?.after_quantity,
+  { numerator: 2, denominator: 1, unit: 'item' });
+  for (const visible_status of ['inaccessible', 'hidden']) {
+    located.request.player_safe_state.current_visible_context
+      .visible_objects[0].visible_status = visible_status;
+    const unavailable = await resolver(located);
+    assert.equal(unavailable.ordinary_materialization_atomic_write_plan, undefined);
+  }
 });
 
 test('missing authority persists candidate-free absence', async () => {

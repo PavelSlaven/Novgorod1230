@@ -1,6 +1,11 @@
 # Tools inventory
 
-Tools are autonomous and are not imported by production runtime.
+REFERENCE. tools с MODULE.md — [MODULE_INDEX](../../MODULE_INDEX.md); граница tools/runtime —
+[`docs/architecture/DEPENDENCY_RULES.md`](../architecture/DEPENDENCY_RULES.md) (+LW-038).
+Запись в БД и operator flows — `MODULE.md` соответствующего tool
+(например [tools/runtime-catalog-activation/MODULE.md](../../tools/runtime-catalog-activation/MODULE.md)).
+
+Числа таблиц/миграций сюда не копируются — [DB_SCHEMA](../context/DB_SCHEMA.md).
 
 | Tool | Responsibility | Runtime side effects |
 |---|---|---|
@@ -20,19 +25,7 @@ Tools are autonomous and are not imported by production runtime.
 
 ## CI contract
 
-`.github/workflows/test.yml` must execute, in order:
-
-1. clean checkout;
-2. Node.js setup;
-3. lockfile registry normalization;
-4. `npm ci`;
-5. static `world-db:schema-check` and deterministic `world-db:schema-doc-check`;
-6. real PostgreSQL 16 DDL execution with table, role and read-only grant checks;
-7. `knowledge:check-corpus`;
-8. deterministic documentation and knowledge generation;
-9. generated-file reproducibility check, including `infra/world-base/SCHEMA_REFERENCE.md`;
-10. full `npm test`.
-
-`test/integration/ci-workflow-contract.test.js` prevents a false-green workflow that omits mandatory gates.
-
-`@rus/finalization` owns `rus.finalization_plan.v1` and `rus.finalization_report.v1`. Missing operator or critic evidence produces a hold, never implicit approval.
+[.github/workflows/test.yml](../../.github/workflows/test.yml) — матрица suite;
+обязательные schema gates на `fast` и `integration`: `world-db:schema-check`,
+`world-db:schema-doc-check`, DDL + table count (см. DB_SCHEMA / TESTING).
+`test/integration/ci-workflow-contract.test.js` ловит выпадение gates.

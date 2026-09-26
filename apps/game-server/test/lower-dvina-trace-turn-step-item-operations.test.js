@@ -240,6 +240,28 @@ test('attached topology rejects cycles and remote prepared destinations', async 
   }, second.working_projection)), { code: 'ITEM_RUNTIME_LOCATION_NOT_CURRENT' });
 });
 
+test('ground placement uses exact current scene position', () => {
+  const handlers = createItemOperationHandlers(initializeRuntimeState(null), {
+    ordinaryResultPolicy
+  });
+  const current = projection({
+    position: { location_ref: 'scene-template', position_id: 'position:arrival' }
+  });
+  const result = handlers.create_entity(execution(createSand({
+    origin: { kind: 'ambient_ordinary', source_refs: ['scene-template'] },
+    placement: { relation: 'located_at', target_ref: 'position:arrival' }
+  }), current));
+  assert.deepEqual(result.working_projection.items.at(-1).placement,
+    { scene_position_id: 'position:arrival' });
+  assert.deepEqual(result.write_fragments[0].value.payload.placement,
+    { scene_position_id: 'position:arrival' });
+  assert.throws(() => handlers.create_entity(execution(createSand({
+    temp_ref: 'new_entity_2',
+    origin: { kind: 'ambient_ordinary', source_refs: ['scene-template'] },
+    placement: { relation: 'located_at', target_ref: 'position:elsewhere' }
+  }), current)), { code: 'TRACE_TURN_STEP_REF_NOT_CURRENT' });
+});
+
 test('retired temp refs remain reserved for the submit-scoped step loop', () => {
   const handlers = createItemOperationHandlers(initializeRuntimeState(null), {
     ordinaryResultPolicy

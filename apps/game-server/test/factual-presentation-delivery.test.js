@@ -64,11 +64,12 @@ function genericFactualScreen() {
     uncertainties: payload.uncertainties, panels: {} });
 }
 
-function narrator({ flow, store, calls = { run: 0 } }) {
+function narrator({ flow, store, calls = { run: 0 }, recordDiagnosticFailure = null }) {
   const client = { async query() { return { rows: [envelope] }; }, release() {} };
   return { calls, service: createLowerDvinaTracePhase2DurableNarrator({
     partyPool: { query: client.query.bind(client), connect(callback) { callback(null, client, () => {}); } },
-    narrationService: { async run() { calls.run += 1; return flow; } }, presentationStore: store
+    narrationService: { async run() { calls.run += 1; return flow; } },
+    presentationStore: store, recordDiagnosticFailure
   }) };
 }
 
@@ -90,11 +91,11 @@ const rejected = { version: 1, schema: 'narration_flow_result', request_id: 'tur
   diagnostics: { phase: 'final_audit_failed', errors: [concern], repairs_used: 1 } };
 
 test('final audited policy rejection terminally delivers one factual screen', async () => {
-  const finalized = [];
+  const finalized = [], diagnostics = [];
   const { service } = narrator({ flow: rejected, store: {
     async claimPresentationAttempt() { return { ok: true, disposition: 'claimed', attempt_id: 'a', claim_token: 'c' }; },
     async finalizeFactualPresentationAttempt(input) { finalized.push(input); return { ok: true, presentation_status: 'factual_delivered' }; }
-  } });
+  }, recordDiagnosticFailure: (failure) => diagnostics.push(failure) });
   const result = await service.run(request);
   assert.equal(result.factual_delivery.schema, 'factual_turn_delivery_screen');
   assert.deepEqual(result.factual_delivery.visible_changes, payload.perceived_changes);
@@ -107,6 +108,17 @@ test('final audited policy rejection terminally delivers one factual screen', as
   assert.equal(result.factual_delivery.panels.route?.data.current_place, 'Берег.');
   assert.equal(finalized.length, 1);
   assert.equal(finalized[0].factual_screen.input_panel.input_contract, 'intent_not_fact');
+  assert.equal(diagnostics.length, 1);
+  assert.equal(diagnostics[0].code, 'TRACE_PHASE_2_NARRATION_REJECTED');
+  assert.deepEqual(diagnostics[0].details.audit_attempts.map(({ ordinal,
+    failed_checks: failedChecks }) => ({ ordinal, failedChecks })), [
+    { ordinal: 1, failedChecks: ['policy'] },
+    { ordinal: 2, failedChecks: ['policy'] }
+  ]);
+  assert.deepEqual(diagnostics[0].details.audit_attempts[1].coverage_refs, [
+    { kind: 'visible_changes', source_index: 0, covered: true },
+    { kind: 'uncertainties', source_index: 0, covered: true }
+  ]);
 });
 
 test('stale delivery turn cannot finalize a factual screen', async () => {

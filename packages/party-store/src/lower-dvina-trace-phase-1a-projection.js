@@ -15,10 +15,11 @@ export function buildActualPersistedProjection({
   run,
   choices,
   includePreparedScenes,
-  includeNpcs
+  includeNpcs,
+  projectionSchema = 'rus.lower_dvina_trace_persisted_projection.v2'
 }) {
   return {
-    schema: 'rus.lower_dvina_trace_persisted_projection.v2',
+    schema: projectionSchema,
     materialization_run: {
       party_id: run.party_id,
       run_id: run.run_id,
@@ -58,6 +59,8 @@ export function buildActualPersistedProjection({
       name_profile_snapshot: player.name_profile_snapshot,
       language_profile_snapshot: player.language_profile_snapshot,
       knowledge_profile_snapshot: player.knowledge_profile_snapshot,
+      ...(player.attribute_profile_snapshot == null ? {} : {
+        attribute_profile_snapshot: structuredClone(player.attribute_profile_snapshot) }),
       profile_candidate_set_digest: player.profile_candidate_set_digest,
       state_version: Number(player.profile_state_version),
       created_change_set_id: player.created_change_set_id,
@@ -130,6 +133,7 @@ export function buildActualPersistedProjection({
         profile_set_id: npc.profile_set_id,
         profile_level: npc.profile_level,
         anchor_id: npc.anchor_id,
+        ...(npc.position_id == null ? {} : { position_id: npc.position_id }),
         identity_state: npc.identity_state,
         machine_state: npc.machine_state,
         semantic_state: npc.semantic_state,

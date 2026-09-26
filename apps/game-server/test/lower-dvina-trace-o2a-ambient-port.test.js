@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { isOrdinaryDiscoveryInScope } from '@rus/turn';
 import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from
   '../src/internal/lower-dvina-trace-ordinary-materialization-profile.js';
 import { createLowerDvinaTraceO2aAmbientPort } from
@@ -15,6 +16,8 @@ import { applyLowerDvinaTraceWorkingProjection,
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { loadApprovedActorBaseAttributesTestBinding } from
+  './support/actor-base-attributes-binding.js';
 import { loadLowerDvinaTraceO2bProfile } from
   '../src/internal/lower-dvina-trace-o2b-profile.js';
 
@@ -189,6 +192,28 @@ test('player-safe discovery exposes committed source, not expected result capabi
   assert.equal(serialized.includes('скрытый запас'), false);
 });
 
+test('committed source in current scene can be inspected by ordinary owner', () => {
+  const projected = projectLowerDvinaTraceO2aDiscoverySources({
+    sources: [{ source_ref: 'source:deadwood', public_name: 'валежник',
+      disclosure_state: 'visible' }],
+    projected: { player_safe_state: {
+      current_visible_context: { visible_objects: [] },
+      ordinary_resolution: { discovery_available: true,
+        container_resolution_available: false, scene_seed_available: false }
+    } }
+  });
+  assert.equal(isOrdinaryDiscoveryInScope({
+    operation: { op: 'request_discovery', discovery_kind: 'inspect',
+      target_refs: ['source:deadwood'], query: 'валежник' },
+    playerSafeState: projected.player_safe_state
+  }), true);
+  assert.equal(isOrdinaryDiscoveryInScope({
+    operation: { op: 'request_discovery', discovery_kind: 'inspect',
+      target_refs: ['source:other'], query: 'валежник' },
+    playerSafeState: projected.player_safe_state
+  }), false);
+});
+
 test('the O2a owner intercepts only its explicit capability ref', async () => {
   const admission = async () => {
     throw new Error('legacy ambient action must not reach O2a admission');
@@ -303,20 +328,20 @@ async function capturedTraceRuntime(ordinaryMaterializationProfile,
   const release = {
     release_id: 'test-release',
     runtime_catalog_scope: 'item_container_materialization_v2',
-    runtime_catalog_contract_digest: 'runtime-digest',
+    runtime_catalog_contract_digest: '1'.repeat(64),
     world_revision_id: 'world-revision',
-    world_catalog_digest: 'world-digest',
-    compatible_world_pin_manifest_digest: 'manifest-digest'
+    world_catalog_digest: '2'.repeat(64),
+    compatible_world_pin_manifest_digest: '3'.repeat(64)
   };
   const worldPool = { query: async () => ({ rows: [{
     event_id: 'event', catalog_scope: 'item_container_materialization_v2',
-    catalog_revision_id: 'revision', catalog_digest: 'catalog-digest',
-    import_id: 'import', import_audit_digest: 'import-digest',
-    record_registry_digest: 'registry-digest',
-    runtime_contract_digest: 'runtime-digest',
+    catalog_revision_id: 'revision', catalog_digest: '4'.repeat(64),
+    import_id: 'import', import_audit_digest: '5'.repeat(64),
+    record_registry_digest: '6'.repeat(64),
+    runtime_contract_digest: release.runtime_catalog_contract_digest,
     compatible_world_revision_id: 'world-revision',
-    compatible_world_catalog_digest: 'world-digest',
-    compatible_world_pin_manifest_digest: 'manifest-digest'
+    compatible_world_catalog_digest: release.world_catalog_digest,
+    compatible_world_pin_manifest_digest: release.compatible_world_pin_manifest_digest
   }] }) };
   const partyPool = {
     query: async () => ({ rows: [] }),
@@ -331,6 +356,8 @@ async function capturedTraceRuntime(ordinaryMaterializationProfile,
     ordinaryMaterializationProfile,ordinaryContainerContentsProfile
   }, {
     createNpcRuntimePorts: () => ({}),
+    actorBaseAttributesBindingLoader:
+      loadApprovedActorBaseAttributesTestBinding,
     createPhase2RuntimeFactory: (input) => {
       captured = input;
       return {};

@@ -86,10 +86,13 @@ test('P16 reader loads approved closure from one exact pinned template header', 
   const ref = { id: 'template', version: 1, world_revision_id: 'revision' };
   const header = { ...ref, canonical_digest: digest };
   const children = {
-    spatial_v3_g6_template_slots: [{ scene_slot_key: 'g6', physical_class_id: 'open', primary_scene_role_id: 'role', vertical_context_id: 'surface', overhead_cover_id: 'none', intra_g6_visibility_mode: 'clear', default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform' }],
-    spatial_v3_scene_position_templates: [{ position_slot_key: 'position', g6_scene_slot_key: 'g6', position_type_id: 'standing', capacity: 1, access_class_id: 'public' }],
+    spatial_v3_g6_template_slots: [{ scene_slot_key: 'g6', physical_class_id: 'open', primary_scene_role_id: 'role', vertical_context_id: 'surface', overhead_cover_id: 'none', intra_g6_visibility_mode: 'clear', default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform', enclosing_structure_slot_key: null }],
+    spatial_v3_scene_position_templates: [{ position_slot_key: 'position', g6_scene_slot_key: 'g6', instance_count: 1, position_type_id: 'standing', capacity: 1, access_class_id: 'public' }],
+    spatial_v3_scene_endpoint_slots: [],
     spatial_v3_scene_movement_edge_templates: [{ edge_slot_key: 'edge', from_position_slot_key: 'position', to_position_slot_key: 'other', reverse_edge_slot_key: 'reverse', passage_type_id: 'passage', transition_environment_profile_id: null, transition_environment_profile_version: null, movement_orientation_profile_id: null, movement_orientation_profile_version: null, cost_kind: 'action', action_units: 1, baseline_movement_method_id: null, movement_method_cost_profile_id: null, movement_method_cost_profile_version: null, base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null, capacity: 1, portal_template_id: null, portal_template_version: null, availability_condition_set_id: null, availability_condition_set_version: null }],
-    spatial_v3_visibility_link_templates: [{ link_slot_key: 'link', from_position_slot_key: 'position', to_position_slot_key: 'other', reverse_link_slot_key: 'reverse', quality: 'clear', distance_band: 'near', portal_template_id: null, portal_template_version: null, condition_profile_id: null, condition_profile_version: null }]
+    spatial_v3_visibility_link_templates: [{ link_slot_key: 'link', from_position_slot_key: 'position', to_position_slot_key: 'other', reverse_link_slot_key: 'reverse', quality: 'clear', distance_band: 'near', portal_template_id: null, portal_template_version: null, condition_profile_id: null, condition_profile_version: null }],
+    spatial_v3_acoustic_edge_templates: [], spatial_v3_portal_templates: [],
+    spatial_v3_portal_state_template_behaviors: [], spatial_v3_stable_structure_templates: []
   };
   const reader = createSpatialV3WorldBaseReader({ query: async (sql, params) => {
     calls.push({ sql, params });
@@ -112,6 +115,9 @@ test('P16 reader loads approved closure from one exact pinned template header', 
   });
   assert.deepEqual(calls[0].params, [ref.id, ref.version, ref.world_revision_id]);
   assert.match(calls[0].sql, /status='approved'/);
+  assert.match(calls[0].sql, /WITH RECURSIVE revision_ancestry/u);
+  assert.match(calls[0].sql, /ancestry\.id=b\.world_revision_id/u);
+  assert.doesNotMatch(calls[0].sql, /av\.canonical_digest=b\.canonical_digest/u);
   assert.ok(calls.slice(1).every(({ sql }) => !/SELECT \*/u.test(sql)));
   assert.ok(calls.slice(1).every(({ params }) =>
     params[0] === ref.id && params[1] === ref.version));
@@ -124,17 +130,41 @@ test('P16 reader resolves one exact canonical G5 scene binding', async () => {
     canonical_digest: digest, parent_id: 'g4', parent_version: 4,
     materialization_profile_id: 'profile', materialization_profile_version: 1,
     materialization_profile_digest: digest, scene_template_id: 'scene',
-    scene_template_version: 1
+    scene_template_version: 1, selection_rule_id: 'select', selection_rule_version: 1,
+    applicability_rule_id: 'apply', applicability_rule_version: 1
   };
+  const scene_rules = [
+    { entity_kind: 'scene_selection_rule', id: 'select', version: 1, status: 'approved', world_revision_id: 'revision', canonical_digest: digest },
+    { entity_kind: 'scene_applicability_rule', id: 'apply', version: 1, status: 'approved', world_revision_id: 'revision', canonical_digest: digest }
+  ];
   const calls = [];
   const reader = createSpatialV3WorldBaseReader({ query: async (sql, params) => {
-    calls.push({ sql, params }); return { rows: [row] };
+    calls.push({ sql, params }); return { rows: sql.includes('AS wanted(entity_kind,id,version)') ? scene_rules : [row] };
   } });
   assert.deepEqual((await reader.readPinnedCanonicalG5SceneBinding({
     id: 'g5', version: 1, world_revision_id: 'revision'
-  })).value, row);
-  assert.deepEqual(calls[0].params, ['g5', 1, 'revision']);
+  })).value, { ...row, scene_rules });
+  assert.deepEqual(calls[0].params, ['g5', 1, 'revision', null, null, null, null]);
   assert.match(calls[0].sql, /source_kind='canonical_g5'/u);
+  assert.match(calls[0].sql, /nav.status='approved'/u);
+  assert.match(calls[0].sql, /candidate.scene_template_version=\$5/u);
+  assert.match(calls[0].sql, /profile.version=\$7/u);
+  assert.doesNotMatch(calls[0].sql, /nav\.canonical_digest=n\.canonical_digest/u);
+  assert.doesNotMatch(calls[0].sql, /scene_materialization_profile' AND pav/u);
+  assert.match(calls[1].sql, /JOIN revision_ancestry ancestry ON ancestry.id=av.world_revision_id/u);
+  assert.match(calls[1].sql, /rule.status='approved'/u);
+  const inheritedRules = scene_rules.map((rule) => ({ ...rule,
+    world_revision_id: 'approved-ancestor' }));
+  const inherited = createSpatialV3WorldBaseReader({ query: async (sql) => ({
+    rows: sql.includes('AS wanted(entity_kind,id,version)') ? inheritedRules : [row]
+  }) });
+  assert.deepEqual((await inherited.readPinnedCanonicalG5SceneBinding({
+    id: 'g5', version: 1, world_revision_id: 'revision'
+  })).value.scene_rules, inheritedRules);
+  const missingRule = createSpatialV3WorldBaseReader({ query: async (sql) => ({
+    rows: sql.includes('AS wanted(entity_kind,id,version)') ? [] : [row]
+  }) });
+  assert.equal((await missingRule.readPinnedCanonicalG5SceneBinding({ id: 'g5', version: 1, world_revision_id: 'revision' })).ok, false);
   const ambiguous = createSpatialV3WorldBaseReader({ query: async () => ({
     rows: [row, row]
   }) });
@@ -438,7 +468,8 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
       record: {
         id: 'g6-new', party_id: 'p', scene_baseline_id: 'baseline-new',
         scene_slot_key: 'entry', host_kind: 'g5_site', host_id: 'g5-new',
-        status: 'active'
+        status: 'active', acoustic_uniformity: 'uniform', state_version: 1,
+        updated_change_set_id: 'cs'
       }
     },
     {
@@ -448,6 +479,11 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
         id: 'position-new', party_id: 'p', g6_instance_id: 'g6-new',
         template_slot_key: 'arrival', status: 'active'
       }
+    },
+    {
+      target_table: 'g6_acoustic_profiles', id: 'g6-new',
+      record: { party_id: 'p', g6_instance_id: 'g6-new', ambient_noise: 0,
+        acoustic_uniformity: 'uniform', state_version: 1, updated_change_set_id: 'cs' }
     }
   ];
   const location = {
@@ -525,7 +561,13 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
     {
       target_table: 'party_g6_instances', id: 'g6-slot',
       record: { id: 'g6-slot', party_id: 'p', scene_baseline_id: 'baseline-new',
-        source_scene_template_ref: sceneTemplate, status: 'active' }
+        source_scene_template_ref: sceneTemplate, status: 'active',
+        acoustic_uniformity: 'uniform', state_version: 1, updated_change_set_id: 'cs' }
+    },
+    {
+      target_table: 'g6_acoustic_profiles', id: 'g6-slot',
+      record: { party_id: 'p', g6_instance_id: 'g6-slot', ambient_noise: 0,
+        acoustic_uniformity: 'uniform', state_version: 1, updated_change_set_id: 'cs' }
     },
     {
       target_table: 'scene_position_nodes', id: 'position-slot',

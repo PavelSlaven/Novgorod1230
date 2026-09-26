@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createGameplayGapExplorer, runGameplayGapCampaign } from '../gameplay-gap-campaign.mjs';
-import { playerDom } from '../local-gemma-acceptance.mjs';
+import { playerDom } from '../local-provider-acceptance.mjs';
 
 async function qualityCampaign({ acceptance, degraded }) {
   const directory = await mkdtemp(join(tmpdir(), 'gameplay-gap-quality-'));

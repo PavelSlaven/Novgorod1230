@@ -44,7 +44,7 @@ function visibleLocalReference(value, target) {
     if (object == null || !exactKeys(object,
       ['entity_ref', 'display_label', 'recognition', 'visible_status'])
       || !text(object.display_label) || object.recognition !== 'recognized'
-      || object.visible_status !== 'замечен') return false;
+      || !['замечен', 'внутри'].includes(object.visible_status)) return false;
     const ref = record(object.entity_ref);
     return ref != null && exactKeys(ref, ['entity_kind', 'entity_id'])
       && ref.entity_kind === 'spatial_local_reference' && ref.entity_id === target;

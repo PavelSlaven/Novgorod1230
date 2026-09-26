@@ -1,30 +1,25 @@
 import { initialNpcRoutineRecords } from './npc-routine-schedules.js';
 import {
   computeMaterializationEnvelopeDigest,
+  computeStage24ArtifactDigest,
   STAGE24_PLAN_SCHEMA,
 } from '@rus/contracts';
 import { sha256 } from '@rus/kernel';
-import { addFirstEntryPreparationBatches } from
-  './lower-dvina-trace-first-entry-preparation.js';
-import {
-  assertMaterializationRuntimeCatalogPins,
-  assertPartyRuntimeCatalogPins,
-  buildMaterializationRunCatalogPinRecord,
-  buildPartyCatalogPinRecord
-} from './runtime-catalog-pins.js';
-import {
-  buildLowerDvinaTracePersistedProjection,
-  normalizeExternalOwnerRef,
-  projectNameProfileSnapshot
-} from './lower-dvina-trace-persisted-projection.js';
-import { assertRevision19CharacterState } from
-  './lower-dvina-trace-revision19-write-boundary.js';
+import { addFirstEntryPreparationBatches } from './lower-dvina-trace-first-entry-preparation.js';
+import { addAuthoredStartSpatialV3Batches, authoredStartSnapshotSchema, isAuthoredStartMaterializationResult } from './authored-start-spatial-v3.js';
+import { assertMaterializationRuntimeCatalogPins, assertActorBaseAttributesCatalogPin, assertPartyRuntimeCatalogPins, buildMaterializationRunCatalogPinRecord, buildPartyCatalogPinRecord } from './runtime-catalog-pins.js';
+import { buildLowerDvinaTracePersistedProjection, normalizeExternalOwnerRef, phase3PreparedInputs, projectNameProfileSnapshot } from './lower-dvina-trace-persisted-projection.js';
+import { assertRevision19CharacterState } from './lower-dvina-trace-revision19-write-boundary.js';
+import { approvedNpcBodyRows, approvedNpcConditionRows, assertNewActorBaseAttributes } from './actor-write-boundary.js';
+import { addBatch, validatedProceduralPackages } from './write-plan-batches.js';
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertInput(input);
   const request_id = input.request_id;
   const party_creation_context = input.party_creation_context;
   const pins = party_creation_context.version_pins;
   const domainPin = party_creation_context.domain_catalog_pin;
+  const actorAttributesPin =
+    party_creation_context.actor_base_attributes_catalog_pin;
   const result = input.approved_pipeline_outputs.materialization_result;
   const semantic_validation = input.approved_pipeline_outputs.player_character_audit;
   const sealedClosure = input.approved_pipeline_outputs.sealed_selection_closure;
@@ -34,14 +29,23 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const runId = result.run_id;
   const { preparedScenes, preparedNpcs, preparedContainers } = phase3PreparedInputs(result);
   const identityNpcs = preparedNpcs;
+  assertNewActorBaseAttributes(player.base_attributes, `player:${playerId}.base_attributes`, player.attribute_generation_gate === 'active');
+  identityNpcs.forEach((npc) => assertNewActorBaseAttributes(npc.base_attributes, `npc:${npc.instance_id}.base_attributes`, npc.attribute_generation_gate === 'active'));
+  assertActorBaseAttributesCatalogPin(party_creation_context, player.base_attributes != null
+    || player.attribute_generation_gate === 'active'
+    || identityNpcs.some((npc) => npc.attribute_generation_gate === 'active'),
+    player.base_attributes == null ? null : result.trace.actor_base_attributes_catalog_pin ?? {});
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
-    source_kind: 'lower_dvina_trace_phase_1a_materialization',
+    source_kind: isAuthoredStartMaterializationResult(result)
+      ? 'approved_authored_start_materialization'
+      : 'lower_dvina_trace_phase_1a_materialization',
     digest: result.trace.result_digest
   }];
   assertPartyRuntimeCatalogPins(party_creation_context);
   assertMaterializationRuntimeCatalogPins({ trace: result.trace, pins, domainPin });
+  const proceduralScenePackages = validatedProceduralPackages(result.trace, result.procedural_scene_packages, domainPin);
   const runRecord = {
     party_id: partyId,
     run_id: runId,
@@ -59,7 +63,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     idempotency_key: result.request_identity.idempotency_key,
     status: 'committed',
     validation_report: { materialization: result.validation_report, semantic: semantic_validation },
-    trace: result.trace,
+    trace: { ...result.trace, ...(proceduralScenePackages == null ? {} : {
+      procedural_scene_packages: proceduralScenePackages }) },
     created_refs: [
       { domain: 'player_character', instance_id: playerId },
       { domain: 'g5_node', instance_id: result.immediate.spatial.node.instance_id },
@@ -70,7 +75,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
       ]),
       ...identityNpcs.map((npc) => ({ domain: 'npc', instance_id: npc.instance_id })),
       ...preparedContainers.map((container) => ({ domain: 'container', instance_id: container.instance_id })),
-      ...result.immediate.items.map((item) => ({ domain: 'item', instance_id: item.instance_id }))
+      ...result.immediate.items.map((item) =>
+        ({ domain: 'item', instance_id: item.instance_id }))
     ]
   };
   const choiceRecords = result.trace.choices.map((choice) => ({
@@ -99,7 +105,10 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   addBatch(
     batches,
     'party_catalog_pins',
-    [buildPartyCatalogPinRecord(partyId, domainPin)],
+    [buildPartyCatalogPinRecord(partyId, domainPin),
+      ...(actorAttributesPin == null ? [] : [
+        buildPartyCatalogPinRecord(partyId, actorAttributesPin)
+      ])],
     ['parties'],
     sourceTrace
   );
@@ -119,7 +128,11 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   addBatch(
     batches,
     'party_materialization_run_catalog_pins',
-    [buildMaterializationRunCatalogPinRecord({ partyId, runId, domainPin })],
+    [buildMaterializationRunCatalogPinRecord({ partyId, runId, domainPin }),
+      ...(actorAttributesPin == null ? [] : [
+        buildMaterializationRunCatalogPinRecord({ partyId, runId,
+          domainPin: actorAttributesPin })
+      ])],
     ['party_catalog_pins', 'party_materialization_runs'],
     sourceTrace
   );
@@ -168,7 +181,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     run_id: runId,
     profile_set_id: npc.profile_id,
     profile_level: npc.profile_level,
-    anchor_id: npc.anchor_id,
+    anchor_id: result.initial_spatial_v3?.canonical_scene_proposal
+      ? result.immediate.spatial.anchor.instance_id : npc.anchor_id,
     identity_state: npc.identity_state,
     machine_state: npc.machine_state,
     semantic_state: {
@@ -229,8 +243,9 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     occupation_ref: { id: player.dossier.social_status.occupation_id, source: 'approved_scenario_profile' },
     skill_profile_snapshot: player.dossier.skills,
     name_profile_snapshot: projectNameProfileSnapshot(player.dossier.identity),
-    language_profile_snapshot: {},
+    language_profile_snapshot: structuredClone(player.dossier.language ?? {}),
     knowledge_profile_snapshot: player.dossier.knowledge,
+    ...(player.base_attributes == null ? {} : { attribute_profile_snapshot: structuredClone(player.base_attributes) }),
     profile_candidate_set_digest: result.trace.choices.find((choice) => choice.choice_key === 'player_profile').candidate_set_digest,
     state_version: 1,
     created_change_set_id: changeSetId,
@@ -241,10 +256,11 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     actor_id: npc.instance_id,
     role_ref: npc.role_ref,
     occupation_ref: npc.occupation_ref,
-    skill_profile_snapshot: {},
+    skill_profile_snapshot: structuredClone(npc.skill_profile_snapshot ?? {}),
     name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
     language_profile_snapshot: {},
     knowledge_profile_snapshot: npc.knowledge_profile_snapshot,
+    attribute_profile_snapshot: structuredClone(npc.base_attributes),
     profile_candidate_set_digest: npc.profile_candidate_set_digest,
     state_version: 1,
     created_change_set_id: changeSetId,
@@ -265,7 +281,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     satiety: result.immediate.body.values.satiety,
     state_version: 1,
     updated_change_set_id: changeSetId
-  }], ['party_player_characters', 'party_v3_change_sets'], sourceTrace);
+  }, ...approvedNpcBodyRows(identityNpcs, partyId, changeSetId)],
+  ['party_player_characters', 'party_npcs', 'party_v3_change_sets'], sourceTrace);
   addBatch(batches, 'party_actor_active_conditions', result.immediate.body.condition_bindings.map((condition) => ({
     party_id: partyId,
     actor_kind: 'player_character',
@@ -276,7 +293,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     state_version: 1,
     created_change_set_id: changeSetId,
     terminal_change_set_id: null
-  })), ['party_actor_body_states', 'party_v3_change_sets'], sourceTrace);
+  })).concat(approvedNpcConditionRows(identityNpcs, partyId, changeSetId)),
+  ['party_actor_body_states', 'party_v3_change_sets'], sourceTrace);
   addBatch(batches, 'party_items', result.immediate.items.map((item) => ({
     party_id: partyId,
     item_id: item.instance_id,
@@ -367,23 +385,30 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     state_version: 1,
     updated_change_set_id: changeSetId
   }], ['parties', 'party_v3_change_sets'], sourceTrace);
+  const authoredInitialSpatial = addAuthoredStartSpatialV3Batches({ batches, result, partyId, playerId, changeSetId, sourceTrace, addBatch });
   const firstEntryPreparation = addFirstEntryPreparationBatches({
     batches, result, partyId, playerId,
     changeSetId, sourceTrace, addBatch });
   addBatch(batches, 'party_npc_spatial_schedules', initialNpcRoutineRecords({
     result, partyId, changeSetId, npcs: identityNpcs }),
-    ['party_npcs', 'preparation_snapshot_members', 'party_g5_anchors'], sourceTrace);
+    ['party_npcs', 'preparation_snapshot_members', 'party_g5_anchors', 'scene_position_nodes'], sourceTrace);
   const persistedProjection = buildLowerDvinaTracePersistedProjection({
     result,
     changeSetId,
     runRecord,
     choiceRecords
   });
+  const authoredSnapshot = authoredStartSnapshotSchema(result);
   const snapshotPayload = {
-    schema: 'rus.lower_dvina_trace_initial_party_snapshot.v2',
-    version: 2,
+    schema: authoredSnapshot
+      ?? 'rus.lower_dvina_trace_initial_party_snapshot.v2',
+    version: authoredSnapshot?.endsWith('.v3') ? 3 : 2,
+    materialization_result_version: result.version,
+    materialization_result_schema: result.schema,
     request_identity: result.request_identity,
     immediate: result.immediate,
+    ...(authoredInitialSpatial == null ? {} : { initial_spatial_v3: result.initial_spatial_v3,
+      initial_spatial_v3_runtime: authoredInitialSpatial }),
     ...(firstEntryPreparation == null ? {} : {
       first_entry_preparation: result.first_entry_preparation,
       first_entry_spatial_v3: firstEntryPreparation.spatial_v3
@@ -438,57 +463,32 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   return plan;
 }
 
-function addBatch(batches, table, records, dependencies, sourceTrace) {
-  if (records.length === 0) return;
-  batches.push({
-    batch_id: `batch-${table}`,
-    order: batches.length + 1,
-    target_table: table,
-    operation_mode: 'insert_only',
-    depends_on_batches: dependencies.filter((dependency) => batches.some((batch) => batch.target_table === dependency)).map((dependency) => `batch-${dependency}`),
-    records,
-    source_trace: sourceTrace
-  });
-}
-
-function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].includes(
-    result.request_identity.scenario_definition_revision
-  )) {
-    return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
-  }
-  const preparedScenes = result.immediate.prepared_scenes;
-  const preparedNpcs = result.immediate.npcs;
-  const preparedContainers = result.immediate.containers ?? [];
-  const phase4 = [10, 11, 12, 13, 14].includes(
-    result.request_identity.scenario_definition_revision
-  );
-  const phase7 = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].includes(
-    result.request_identity.scenario_definition_revision
-  );
-  const firstEntry = result.request_identity.scenario_definition_revision >= 24;
-  if (!Array.isArray(preparedScenes)
-    || preparedScenes.length !== (firstEntry ? 2 : phase7 ? 3 : phase4 ? 2 : 1)
-    || !Array.isArray(preparedNpcs)
-    || preparedNpcs.length !== (firstEntry ? 6 : phase7 ? 6 : phase4 ? 5 : 3)
-    || !Array.isArray(preparedContainers)
-    || preparedContainers.length !== (phase7 ? 1 : 0)) {
-    const error = new Error(
-      `Lower Dvina trace prepared scene and NPC inventory is incomplete: scenes=${preparedScenes?.length}, npcs=${preparedNpcs?.length}, containers=${preparedContainers?.length}.`
-    );
-    error.code = 'LOWER_DVINA_TRACE_PHASE_3_PREPARED_STATE_INVALID';
-    throw error;
-  }
-  return { preparedScenes, preparedNpcs, preparedContainers };
-}
-
 function assertInput(input) {
   const result = input?.approved_pipeline_outputs?.materialization_result;
   const semantic = input?.approved_pipeline_outputs?.player_character_audit;
+  const authored = isAuthoredStartMaterializationResult(result);
+  const authoredAdmission = authored
+    && semantic?.schema === 'rus.live_world_runtime.authored_start_admission.v1'
+    && computeStage24ArtifactDigest(semantic)
+      === computeStage24ArtifactDigest(result.validation_report)
+    && semantic.world_base_reference_digest
+      === input.world_base_reference_digest
+    && semantic.domain_catalog_digest
+      === input.party_creation_context?.domain_catalog_pin?.catalog_digest
+    && semantic.domain_catalog_bundle_digest
+      === result.trace?.catalog_bundle_digest
+    && semantic.actor_catalog_digest === result.trace?.actor_catalog_digest
+    && ['exact_world_closure', 'exact_domain_closure', 'actor_refs',
+      'placements', 'resources', 'player_known']
+      .every((key) => semantic.checks?.[key] === true)
+    && Array.isArray(semantic.resolved_actor_refs)
+    && semantic.resolved_actor_refs.length
+      === (result.immediate?.npcs?.length ?? -1) + 1;
   if (!input?.request_id || !input.party_creation_context?.idempotency_key || result?.validation_report?.pass !== true
     || semantic?.pass !== true || result?.party_id !== input.party_creation_context.party_id
     || result?.trace?.result_digest !== computeMaterializationEnvelopeDigest(result)
-    || input.party_db_write_plan_input_digest == null) {
+    || input.party_db_write_plan_input_digest == null
+    || (authored && !authoredAdmission)) {
     const error = new Error('Lower Dvina trace Phase 1A requires one validated materialization result bound to the party.');
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;

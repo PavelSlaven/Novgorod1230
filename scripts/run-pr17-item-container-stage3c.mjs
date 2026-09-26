@@ -1,6 +1,10 @@
-import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { gunzipSync } from 'node:zlib';
 import pg from 'pg';
+import { checkWorldBaseSchema } from './check-world-base-schema.mjs';
 
 import { normalizeStage13MaterializationPolicy, runStage13G5MaterializationBlock } from '@rus/new-game/stages/stage-13';
 import { normalizeStage14AuditPolicy, runStage14G5AuditBlock, STAGE14_OUTPUT_SCHEMA, STAGE14_REQUIRED_CHECKS } from '@rus/new-game/stages/stage-14/compat';
@@ -9,36 +13,112 @@ import { retrieveApprovedItemProfileCandidates } from '@rus/new-game/stages/stag
 import { enterG4WithMaterialization } from '@rus/turn';
 import { applyRevisionPromotionPlan, buildAllowedG5TemplateSet, buildApprovedItemCatalogSnapshot, digestValue } from '../tools/world-catalog-workflow/src/index.js';
 import { buildPr17Stage3CPromotionPlan } from '../tools/world-catalog-workflow/src/internal/pr17-stage3c.js';
+import { assertCanonicalSeedTableClosure,
+  normalizeGate1GraphAuditNotes,
+  readCanonicalSeedTableClosure } from
+  '../tools/world-catalog-workflow/src/seed-closure-readback.js';
+import { buildGate1OwnerDataArtifacts,
+  validateGate1OwnerDataAuthoringAttestation } from
+  './generate-gate1-owner-data-requests.mjs';
+import { buildGate1SourceReconciliationArtifacts,
+  validateGate1SourceReconciliationAuthoringAttestation } from
+  './generate-gate1-source-reconciliation-request.mjs';
+import { loadGate1SeedClosureArtifacts,
+  validateGate1SeedClosureAttestation } from
+  './generate-gate1-seed-closure-request.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const candidateRoot = resolve(root, 'data/knowledge-source/imports/item-container-120-v5/candidate');
 const evidenceRoot = resolve(root, 'docs/implementation/item-container-120-approval-audit/evidence');
+const gate1Root = resolve(root,
+  'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1');
+const seedClosureAttestationRelative =
+  'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/'
+  + 'seed-closure-v1/authoring-approval-attestation.json';
+const gate1Cache = { seedSql: null };
+assertAllowedArguments();
 const mode = argument('--mode', 'dry-run');
+const expectedDatabase = argument('--expected-database', null);
+if (mode === 'local-play' && !['novgorod_world', 'novgorod_world_v17'].includes(expectedDatabase)) {
+  throw new Error(`PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED:${expectedDatabase}`);
+}
 const attestationPath = resolve(argument('--attestation', resolve(evidenceRoot, 'FINAL_APPROVAL_ATTESTATION.json')));
-const input = loadPromotionInput(attestationPath);
+const gate1Artifacts = await buildGate1OwnerDataArtifacts();
+const gate1Attestation = readJson(resolve(gate1Root,
+  'authoring-approval-attestation.json'));
+validateGate1OwnerDataAuthoringAttestation({ ...gate1Artifacts,
+  attestation: gate1Attestation });
+const reconciliationArtifacts = await buildGate1SourceReconciliationArtifacts();
+const reconciliationAttestation = readJson(resolve(gate1Root,
+  'source-record-reconciliation-v1/authoring-approval-attestation.json'));
+validateGate1SourceReconciliationAuthoringAttestation({
+  ...reconciliationArtifacts, attestation: reconciliationAttestation
+});
+const seedClosureArtifacts = await loadGate1SeedClosureArtifacts();
+const seedClosureAttestationPath = mode === 'lifecycle'
+    && process.env.PR17_TEST_DATA_ROOT
+  ? resolve(process.env.PR17_TEST_DATA_ROOT, seedClosureAttestationRelative)
+  : resolve(root, seedClosureAttestationRelative);
+if (!existsSync(seedClosureAttestationPath)) {
+  throw new Error('GATE1_SEED_CLOSURE_ATTESTATION_REQUIRED');
+}
+const seedClosureAttestation = readJson(seedClosureAttestationPath);
+validateGate1SeedClosureAttestation({ ...seedClosureArtifacts,
+  attestation: seedClosureAttestation });
+const gate1 = buildGate1ImportPlan({ ...gate1Artifacts,
+  attestation: gate1Attestation, reconciliation: reconciliationArtifacts,
+  reconciliationAttestation, seedClosure: seedClosureArtifacts,
+  seedClosureAttestation });
+const input = loadPromotionInput(attestationPath, gate1);
 const plan = buildPr17Stage3CPromotionPlan(input);
 if (plan.status !== 'ready') throw new Error(`PR17_STAGE3C_PLAN_BLOCKED:${plan.errors.map((error) => error.code).join(',')}`);
 
 if (mode === 'dry-run') {
   process.stdout.write(`${JSON.stringify(summary({ mode, plan, applied: false }), null, 2)}\n`);
-} else if (mode === 'lifecycle' || mode === 'local-play') {
+} else if (mode === 'lifecycle' || mode === 'local-play'
+    || mode === 'fixture-bootstrap') {
   const databaseUrl = process.env.PR17_TEST_DATABASE_URL;
   if (!databaseUrl) throw new Error('PR17_TEST_DATABASE_URL_REQUIRED');
   const pool = new pg.Pool({ connectionString: databaseUrl, max: 1 });
   const client = await pool.connect();
   try {
-    const database = await assertDatabaseForMode(client, mode);
-    await initializeSchema(client);
-    await bootstrapExternalReferences(client, input.mappings, input.parent_revision);
-    const rollback = await verifyRollback(plan, client);
-    const first = await applyRevisionPromotionPlan({ plan, adapter: createPostgresAdapter(client) });
-    const firstState = await verifyPromotionState(client, plan, input);
-    const runtimeE2e = await verifyPromotedRuntime(client, plan);
-    await initializeSchema(client);
-    await bootstrapExternalReferences(client, input.mappings, input.parent_revision);
-    const repeated = await applyRevisionPromotionPlan({ plan, adapter: createPostgresAdapter(client) });
-    const repeatedState = await verifyPromotionState(client, plan, input);
-    process.stdout.write(`${JSON.stringify({ ...summary({ mode, plan, applied: first.applied }), database, rollback, repeat_clean_apply: repeated.applied, first_state: firstState, runtime_e2e: runtimeE2e, repeated_state: repeatedState }, null, 2)}\n`);
+    const database = await assertDatabaseForMode(client, mode, expectedDatabase);
+    if (mode === 'local-play') await assertEmptyWorldBase(client);
+    else await initializeSchema(client);
+    if (mode === 'fixture-bootstrap') {
+      const first = await applyRevisionPromotionPlan({ plan,
+        adapter: createPostgresAdapter(client, gate1) });
+      const firstState = await verifyPromotionState(client, plan, input, gate1);
+      process.stdout.write(`${JSON.stringify({
+        ...summary({ mode, plan, applied: first.applied }),
+        first_state: firstState
+      }, null, 2)}\n`);
+    } else {
+      const rollback = await verifyRollback(plan, client, gate1);
+      const first = await applyRevisionPromotionPlan({ plan,
+        adapter: createPostgresAdapter(client, gate1) });
+      const firstState = await verifyPromotionState(client, plan, input, gate1);
+      const runtimeE2e = await verifyPromotedRuntime(client, plan);
+      if (mode !== 'local-play') await initializeSchema(client);
+      const repeated = mode === 'local-play' ? null
+        : await applyRevisionPromotionPlan({ plan,
+          adapter: createPostgresAdapter(client, gate1) });
+      const repeatedState = await verifyPromotionState(client, plan, input, gate1);
+      if (mode === 'local-play') assert.deepEqual(repeatedState, firstState);
+      const result = { ...summary({ mode, plan, applied: first.applied }),
+        database, rollback,
+        ...(mode === 'local-play'
+          ? { repeat_readback_status: 'exact_match',
+            first_state_digest: digestValue(firstState),
+            repeated_state_digest: digestValue(repeatedState) }
+          : { repeat_clean_apply: repeated.applied }),
+        first_state: firstState, runtime_e2e: runtimeE2e,
+        repeated_state: repeatedState };
+      const resultPath = argument('--write-result', null);
+      if (resultPath) writeFileSync(resolve(resultPath),
+        `${JSON.stringify(importReadbackEvidence(result), null, 2)}\n`);
+      process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    }
   } finally {
     client.release();
     await pool.end();
@@ -47,37 +127,49 @@ if (mode === 'dry-run') {
   throw new Error(`PR17_STAGE3C_MODE_INVALID:${mode}`);
 }
 
-function loadPromotionInput(path) {
-  const manifest = readJson(resolve(candidateRoot, 'manifest.json'));
+function loadPromotionInput(path, gate1Plan) {
+  const manifest = gate1Plan.reconciliation.candidate
+    .amended_stage3c_manifest;
   const records = Object.fromEntries(manifest.datasets.map((dataset) => [dataset.table, readJson(resolve(candidateRoot, dataset.path))]));
   const readiness = readJson(resolve(candidateRoot, 'reports/EDITORIAL_READINESS_REPORT.json'));
-  const compilation = readJson(resolve(candidateRoot, 'reports/COMPILATION_REPORT.json'));
+  const compilation = gate1Plan.reconciliation.candidate
+    .amended_compilation_report;
   const mappingRequest = readJson(resolve(evidenceRoot, 'G4_DEPENDENCY_APPROVAL_REQUEST.json'));
   const mappings = mappingRequest.profile_mappings;
   return {
-    approval_request: readJson(resolve(evidenceRoot, 'FINAL_APPROVAL_REQUEST.json')),
+    approval_request: gate1Plan.reconciliation.candidate
+      .amended_stage3c_approval_request,
     approval_attestation: readJson(path),
+    original_approval_request: readJson(resolve(evidenceRoot,
+      'FINAL_APPROVAL_REQUEST.json')),
+    approval_amendment_attestation:
+      gate1Plan.reconciliation_attestation,
     candidate_manifest: manifest,
     editorial_readiness_report: readiness,
     g4_coverage_report: readJson(resolve(candidateRoot, 'reports/G4_COVERAGE_REPORT.json')),
     compilation_report: compilation,
     template_ids: [...records.item_templates, ...records.container_templates].map((record) => record.id),
     legacy_inventory_snapshot: readJson(resolve(evidenceRoot, 'OPERATOR_LEGACY_INVENTORY_SNAPSHOT.json')),
-    parent_revision: { id: 'novgorod_1230_research_revision_001', title: 'PR17 isolated approved parent revision', status: 'approved', catalog_digest: '0'.repeat(64) },
+    parent_revision: gate1Plan.parent_revision,
     target_revision: { id: 'world_revision_novgorod_1230_item_container_approved_001', title: 'Novgorod 1230 approved item/container catalogue', effective_from: '1230-01-01', effective_to: '1250-12-31' },
     source_records_by_table: records,
     approved_record_ids_by_table: Object.fromEntries(manifest.datasets.filter((dataset) => dataset.table !== 'world_revisions').map((dataset) => [dataset.table, records[dataset.table].map((record) => record.id)])),
     external_records_by_table: { graph_nodes: mappings.map((mapping) => ({ id: mapping.graph_node_id, node_type: mapping.node_type, scale_level: 'G4', region_id: 'region_novgorod_land', place_template_id: mapping.place_template_id, building_template_id: mapping.building_template_id ?? null, status: mapping.current_status })) },
-    external_approved_ids: { regions: new Set(['region_novgorod_land']), region_social_roles: new Set(['nov_role_guard']) },
+    external_approved_ids: {
+      regions: new Set(['region_novgorod_land']),
+      region_social_roles: new Set(['nov_role_guard']),
+      source_records: new Set(gate1Plan.source_record_transitions
+        .map(({ id }) => id))
+    },
     mappings
   };
 }
 
-async function assertDatabaseForMode(client, selectedMode) {
+async function assertDatabaseForMode(client, selectedMode, expectedDatabaseName) {
   const result = await client.query('SELECT current_database() AS database');
   const database = result.rows[0]?.database;
   const allowed = selectedMode === 'local-play'
-    ? database === 'novgorod_world'
+    ? database === expectedDatabaseName
     : /^pr17_[a-z0-9_]+$/u.test(String(database ?? ''));
   if (!allowed) throw new Error(`PR17_${selectedMode === 'local-play' ? 'LOCAL_PLAY' : 'ISOLATED'}_DATABASE_REQUIRED:${database}`);
   return database;
@@ -88,22 +180,222 @@ async function initializeSchema(client) {
   await client.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
 }
 
-async function bootstrapExternalReferences(client, mappings, parentRevision) {
-  await client.query("INSERT INTO world_base.regions (id, canonical_name) VALUES ('region_novgorod_land', 'Novgorod Land')");
-  await client.query('INSERT INTO world_base.world_revisions (id, title, catalog_digest, status) VALUES ($1, $2, $3, $4)', [parentRevision.id, parentRevision.title, parentRevision.catalog_digest, parentRevision.status]);
-  await client.query("INSERT INTO world_base.region_social_roles (id, region_id, title, status) VALUES ('nov_role_guard', 'region_novgorod_land', 'Guard', 'approved')");
-  for (const id of [...new Set(mappings.map((mapping) => mapping.place_template_id).filter(Boolean))].sort()) {
-    await client.query('INSERT INTO world_base.place_templates (id, slug, title, place_kind, status) VALUES ($1, $2, $3, $4, $5)', [id, id, id, 'location_context', 'approved']);
-    await client.query(`INSERT INTO world_base.region_place_templates (id, region_id, place_template_id, is_allowed, allowed_scale_levels, allowed_node_types, status, confidence)
-      VALUES ($1, 'region_novgorod_land', $2, true, '["G4"]'::jsonb, '["location"]'::jsonb, 'approved', 'medium')`, [`pr17_region_${id}`, id]);
+async function assertEmptyWorldBase(client) {
+  const schema = await checkWorldBaseSchema({ root });
+  const approvedSchema = readJson(resolve(root,
+    'data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json'))
+    .world_schema;
+  const sourceFiles = [approvedSchema.entrypoint,
+    ...approvedSchema.ordered_parts];
+  if (sourceFiles.length !== schema.part_files.length + 1
+      || sourceFiles[0].path !== schema.entrypoint
+      || sourceFiles.slice(1).some(({ path }, index) =>
+        path !== schema.part_files[index])
+      || sourceFiles.some(({ path, sha256 }) => createHash('sha256')
+        .update(readFileSync(resolve(root, path))).digest('hex') !== sha256)) {
+    throw new Error('PR17_LOCAL_PLAY_SCHEMA_SOURCE_MISMATCH');
   }
-  for (const mapping of mappings) await client.query(`INSERT INTO world_base.graph_nodes (id, slug, title, node_type, scale_level, region_id, place_template_id, status, confidence)
-    VALUES ($1, $2, $3, $4, 'G4', 'region_novgorod_land', $5, $6, $7)`, [mapping.graph_node_id, mapping.graph_node_id, mapping.graph_node_title, mapping.node_type, mapping.place_template_id, mapping.current_status, mapping.confidence]);
+  const actual = (await client.query(`SELECT tablename FROM pg_catalog.pg_tables
+    WHERE schemaname = 'world_base' ORDER BY tablename`)).rows
+    .map(({ tablename }) => tablename);
+  const expected = [...schema.table_names].sort();
+  if (actual.length !== expected.length
+      || actual.some((name, index) => name !== expected[index])) {
+    throw new Error('PR17_LOCAL_PLAY_SCHEMA_MISMATCH');
+  }
+  for (const table of expected) {
+    const occupied = await client.query(`SELECT EXISTS
+      (SELECT 1 FROM world_base.${quoteIdentifier(table)}) AS occupied`);
+    if (occupied.rows[0].occupied) {
+      throw new Error(`PR17_LOCAL_PLAY_DATABASE_NOT_EMPTY:${table}`);
+    }
+  }
 }
 
-function createPostgresAdapter(client) {
+function buildGate1ImportPlan({ parent, activation, attestation,
+  reconciliation, reconciliationAttestation, seedClosure,
+  seedClosureAttestation }) {
+  const revisionRows = parent.proposed_world_base_rows.map(({ source, ...row }) =>
+    ({ ...row }));
+  const research = revisionRows.find(({ id }) =>
+    id === parent.research_revision_source.map_revision_id);
+  const compatibleRows = [2, 3, 4, 5, 6].flatMap((version) => readJson(resolve(root,
+    'data/world-catalogs/novgorod/spatial-v3/candidates',
+    `spatial-v3-production-v${version}/datasets/world_revisions.json`)));
+  const byId = new Map([...revisionRows, ...compatibleRows]
+    .map((row) => [row.id, row]));
+  return Object.freeze({
+    parent_revision: Object.freeze({ ...research, status: 'approved' }),
+    world_revisions: Object.freeze([...byId.values()]),
+    compatible_worlds: activation.compatible_worlds,
+    request_digest: parent.request_digest,
+    attestation_digest: attestation.attestation_digest,
+    reconciliation_attestation_digest:
+      reconciliationAttestation.attestation_digest,
+    source_archive_digest: parent.source_snapshot.sha256,
+    source_seed_digest: createHash('sha256').update(readFileSync(resolve(root,
+      'tools/rus13-world-base-importer/world_base_importer_v1/'
+        + 'world_base_seed_v1.sql.gz'))).digest('hex'),
+    seed_closure: seedClosure.candidate.derived_outputs,
+    seed_closure_attestation_digest: seedClosureAttestation.attestation_digest,
+    promotions: parent.requested_authoring_promotions,
+    exact_dependencies: parent.exact_dependencies,
+    graph_node_transitions: parent.graph_node_transitions,
+    source_record_transitions: reconciliation.candidate.collisions.map(
+      ({ canonical_parent_row: source_row, requested_transition }) => ({
+        source_row, ...requested_transition
+      })),
+    reconciliation,
+    reconciliation_attestation: reconciliationAttestation
+  });
+}
+
+function loadGate1SeedSql() {
+  if (gate1Cache.seedSql) return gate1Cache.seedSql;
+  const sql = gunzipSync(readFileSync(resolve(root,
+    'tools/rus13-world-base-importer/world_base_importer_v1/'
+      + 'world_base_seed_v1.sql.gz'))).toString('utf8');
+  const startMarker = 'SET CONSTRAINTS ALL DEFERRED;';
+  const start = sql.indexOf(startMarker);
+  const end = sql.lastIndexOf('COMMIT;');
+  if (start < 0 || end <= start) throw new Error('GATE1_CANONICAL_SEED_INVALID');
+  gate1Cache.seedSql = sql.slice(start + startMarker.length, end);
+  return gate1Cache.seedSql;
+}
+
+async function importGate1OwnerData(client, gate1Plan) {
+  await client.query('SET CONSTRAINTS ALL DEFERRED');
+  await client.query(loadGate1SeedSql());
+  await assertGate1SeedClosure(client, gate1Plan.seed_closure);
+  for (const row of gate1Plan.world_revisions) {
+    const columns = Object.keys(row);
+    await client.query(`INSERT INTO world_base.world_revisions
+      (${columns.map(quoteIdentifier).join(',')})
+      VALUES (${columns.map((_, index) => `$${index + 1}`).join(',')})`,
+    columns.map((column) => row[column]));
+  }
+  await assertGate1SourceState(client, gate1Plan);
+  for (const [table, transitions] of Object.entries(gate1Plan.promotions)) {
+    if (!Array.isArray(transitions) || table === 'graph_nodes') continue;
+    for (const transition of transitions) {
+      const updated = await client.query(`UPDATE world_base.${quoteIdentifier(table)}
+        SET status=$1 WHERE id=$2 AND status=$3`,
+      [transition.to_status, transition.id, transition.from_status]);
+      if (updated.rowCount !== 1) {
+        throw new Error(`GATE1_AUTHORING_PROMOTION_PRECONDITION_FAILED:${table}:${transition.id}`);
+      }
+    }
+  }
+  for (const transition of gate1Plan.source_record_transitions) {
+    const updated = await client.query(`UPDATE world_base.source_records
+      SET status=$1 WHERE id=$2 AND status=$3`,
+    [transition.to_status, transition.id, transition.from_status]);
+    if (updated.rowCount !== 1) {
+      throw new Error(`GATE1_SOURCE_RECONCILIATION_PRECONDITION_FAILED:${transition.id}`);
+    }
+  }
+}
+
+async function assertGate1SeedClosure(client, closure) {
+  const actual = await readCanonicalSeedTableClosure(client,
+    closure.table_closure.map(({ table }) => table));
+  assertCanonicalSeedTableClosure(actual, closure.table_closure);
+  const total = actual.reduce((sum, table) => sum + table.row_count, 0);
+  if (closure.table_count !== actual.length
+      || total !== closure.total_row_count) {
+    throw new Error('GATE1_SEED_FULL_CLOSURE_READBACK_MISMATCH');
+  }
+}
+
+async function assertGate1SourceState(client, gate1Plan) {
+  const expectedStatuses = {
+    regions: gate1Plan.promotions.regions,
+    place_templates: gate1Plan.promotions.place_templates,
+    region_place_templates: gate1Plan.promotions.region_place_templates,
+    graph_nodes: gate1Plan.promotions.graph_nodes
+  };
+  for (const [table, transitions] of Object.entries(expectedStatuses)) {
+    const rows = (await client.query(`SELECT id,status FROM world_base.${quoteIdentifier(table)}
+      WHERE id=ANY($1::text[]) ORDER BY id`, [transitions.map(({ id }) => id)]))
+      .rows;
+    if (rows.length !== transitions.length || rows.some((row) =>
+      row.status !== transitions.find(({ id }) => id === row.id)?.from_status)) {
+      throw new Error(`GATE1_CANONICAL_SOURCE_STATE_MISMATCH:${table}`);
+    }
+  }
+  const role = gate1Plan.exact_dependencies.region_social_roles[0].source_row;
+  const roleReadback = (await client.query(`SELECT id,region_id,title,slug,
+      social_position_archetype_id,social_class_id,role_archetype_id,
+      legal_status_archetype_id,dependency_archetype_id,mobility_archetype_id,
+      mapping_review_status,mapping_confidence,mapping_notes,status,confidence
+    FROM world_base.region_social_roles WHERE id=$1`, [role.role_id])).rows[0];
+  assertExactRecord(roleReadback, {
+    id: role.role_id, region_id: role.region_id, title: role.role_title,
+    slug: role.role_id,
+    social_position_archetype_id: role.social_position_archetype_id,
+    social_class_id: role.social_class_id,
+    role_archetype_id: role.role_archetype_id,
+    legal_status_archetype_id: role.legal_status_archetype_id,
+    dependency_archetype_id: role.dependency_archetype_id,
+    mobility_archetype_id: role.mobility_archetype_id,
+    mapping_review_status: role.mapping_review_status,
+    mapping_confidence: role.mapping_confidence,
+    mapping_notes: role.mapping_notes,
+    status: role.status, confidence: role.confidence
+  }, 'GATE1_CANONICAL_ROLE_READBACK_MISMATCH');
+  for (const transition of gate1Plan.source_record_transitions) {
+    const source = transition.source_row;
+    const columns = Object.keys(source);
+    const row = (await client.query(`SELECT ${columns.map((column) =>
+      quoteIdentifier(column)).join(',')} FROM world_base.source_records
+      WHERE id=$1`, [source.id])).rows[0];
+    assertExactRecord(row, source,
+      'GATE1_CANONICAL_SOURCE_RECORD_READBACK_MISMATCH');
+  }
+  for (const transition of gate1Plan.graph_node_transitions) {
+    const source = transition.source_row;
+    const row = (await client.query(`SELECT id,slug,title,node_type,scale_level,
+        parent_node_id,region_id,region_cell_code,place_template_id,status,
+        confidence,sources,audit_notes
+      FROM world_base.graph_nodes WHERE id=$1`, [source.id])).rows[0];
+    const { audit_notes: sourceAuditNotes, ...sourceColumns } = source;
+    assertExactRecord(row, sourceColumns,
+      'GATE1_CANONICAL_GRAPH_READBACK_MISMATCH');
+    const actualAuditNotes = normalizeGate1GraphAuditNotes(row.audit_notes);
+    const expectedAuditNotes = normalizeGate1GraphAuditNotes(sourceAuditNotes);
+    if (actualAuditNotes !== expectedAuditNotes
+        && !actualAuditNotes?.startsWith(
+          `${expectedAuditNotes}\nImporter preserved unmapped source fields: `)) {
+      throw new Error(`GATE1_CANONICAL_GRAPH_AUDIT_NOTES_MISMATCH:${source.id}`);
+    }
+  }
+}
+
+function assertExactRecord(actual, expected, code) {
+  if (!actual || Object.entries(expected).some(([key, value]) =>
+    comparable(actual[key]) !== comparable(value))) {
+    const mismatches = Object.fromEntries(Object.entries(expected)
+      .filter(([key, value]) => comparable(actual?.[key])
+        !== comparable(value))
+      .map(([key, value]) => [key, { expected: value,
+        actual: actual?.[key] ?? null }]));
+    throw new Error(`${code}:${JSON.stringify(mismatches)}`);
+  }
+}
+
+function comparable(value) {
+  if (value instanceof Date) {
+    return JSON.stringify(value.toISOString().replace('.000Z', 'Z'));
+  }
+  return JSON.stringify(value ?? null);
+}
+
+function createPostgresAdapter(client, gate1Plan) {
   return {
-    async begin() { await client.query('BEGIN'); },
+    async begin() {
+      await client.query('BEGIN');
+      await importGate1OwnerData(client, gate1Plan);
+    },
     async commit() { await client.query('COMMIT'); },
     async rollback() { await client.query('ROLLBACK'); },
     async transition(table, transition) {
@@ -141,8 +433,8 @@ function createPostgresAdapter(client) {
   };
 }
 
-async function verifyRollback(plan, client) {
-  const adapter = createPostgresAdapter(client);
+async function verifyRollback(plan, client, gate1Plan) {
+  const adapter = createPostgresAdapter(client, gate1Plan);
   let readbacks = 0;
   try {
     await applyRevisionPromotionPlan({ plan, adapter: { ...adapter, async readback(table, records) { readbacks += 1; if (readbacks === 1) return { record_count: 0, payload_digest: digestValue([]) }; return adapter.readback(table, records); } } });
@@ -152,13 +444,21 @@ async function verifyRollback(plan, client) {
   }
   const graph = await client.query('SELECT count(*)::int AS count FROM world_base.graph_nodes WHERE id = ANY($1::text[]) AND status = $2', [plan.status_transitions.map((transition) => transition.id), 'approved']);
   const target = await client.query('SELECT count(*)::int AS count FROM world_base.world_revisions WHERE id = $1', [plan.manifest.world_revision_id]);
+  const parent = await client.query('SELECT count(*)::int AS count FROM world_base.world_revisions WHERE id = $1', [gate1Plan.parent_revision.id]);
+  const reconciledSources = await client.query(`SELECT count(*)::int AS count
+    FROM world_base.source_records WHERE id=ANY($1::text[])`,
+  [gate1Plan.source_record_transitions.map(({ id }) => id)]);
   const first = plan.manifest.datasets[0];
   const rows = await client.query(`SELECT count(*)::int AS count FROM world_base.${quoteIdentifier(first.table)} WHERE id = ANY($1::text[])`, [plan.records_by_table[first.table].map((record) => record.id)]);
-  if (graph.rows[0].count !== 0 || target.rows[0].count !== 0 || rows.rows[0].count !== 0) throw new Error('PR17_STAGE3C_ROLLBACK_RESIDUAL_WRITE');
+  if (graph.rows[0].count !== 0 || target.rows[0].count !== 0
+      || parent.rows[0].count !== 0 || reconciledSources.rows[0].count !== 0
+      || rows.rows[0].count !== 0) {
+    throw new Error('PR17_STAGE3C_ROLLBACK_RESIDUAL_WRITE');
+  }
   return 'pass';
 }
 
-async function verifyPromotionState(client, plan, input) {
+async function verifyPromotionState(client, plan, input, gate1Plan) {
   const target = (await client.query('SELECT id, parent_revision_id, catalog_digest, status FROM world_base.world_revisions WHERE id = $1', [plan.manifest.world_revision_id])).rows[0];
   const parent = (await client.query('SELECT id, catalog_digest, status FROM world_base.world_revisions WHERE id = $1', [plan.manifest.parent_revision_id])).rows[0];
   const graph = await client.query('SELECT count(*)::int AS count FROM world_base.graph_nodes WHERE id = ANY($1::text[]) AND status = $2', [plan.status_transitions.map((transition) => transition.id), 'approved']);
@@ -167,7 +467,106 @@ async function verifyPromotionState(client, plan, input) {
   if (target?.status !== 'approved' || target.catalog_digest !== plan.manifest.catalog_digest || target.parent_revision_id !== input.parent_revision.id) throw new Error('PR17_STAGE3C_TARGET_REVISION_INVALID');
   if (parent?.status !== input.parent_revision.status || parent.catalog_digest !== input.parent_revision.catalog_digest) throw new Error('PR17_STAGE3C_PARENT_CHANGED');
   if (graph.rows[0].count !== 9 || items.rows[0].count !== 102 || containers.rows[0].count !== 18) throw new Error('PR17_STAGE3C_APPROVED_COUNTS_INVALID');
-  return { target_revision_status: target.status, target_catalog_digest: target.catalog_digest, parent_revision_unchanged: true, approved_g4_count: graph.rows[0].count, approved_item_template_count: items.rows[0].count, approved_container_template_count: containers.rows[0].count, activation_performed: false, existing_parties_rematerialized: false };
+  const gate1Readback = await verifyGate1OwnerReadback(client, gate1Plan);
+  return { target_revision_status: target.status, target_catalog_digest: target.catalog_digest, parent_revision_unchanged: true, approved_g4_count: graph.rows[0].count, approved_item_template_count: items.rows[0].count, approved_container_template_count: containers.rows[0].count, gate1_owner_readback: gate1Readback, activation_performed: false, existing_parties_rematerialized: false };
+}
+
+async function verifyGate1OwnerReadback(client, gate1Plan) {
+  const expectedCounts = {
+    place_templates: 64,
+    region_place_templates: 39,
+    region_social_roles: 71,
+    graph_nodes: 11359,
+    graph_edges: 30248
+  };
+  const counts = {};
+  for (const [table, expected] of Object.entries(expectedCounts)) {
+    counts[table] = (await client.query(
+      `SELECT count(*)::int AS count FROM world_base.${quoteIdentifier(table)}`
+    )).rows[0].count;
+    if (counts[table] !== expected) {
+      throw new Error(`GATE1_CANONICAL_IMPORT_COUNT_MISMATCH:${table}`);
+    }
+  }
+  const worlds = (await client.query(`SELECT id,parent_revision_id,title,
+      effective_from::text,effective_to::text,catalog_digest,status
+    FROM world_base.world_revisions WHERE id=ANY($1::text[]) ORDER BY id`,
+  [gate1Plan.world_revisions.map(({ id }) => id)])).rows;
+  const expectedWorlds = [...gate1Plan.world_revisions]
+    .map((row) => row.id === gate1Plan.parent_revision.id
+      ? { ...row, status: 'approved' } : row)
+    .sort((left, right) => left.id.localeCompare(right.id));
+  if (digestValue(worlds) !== digestValue(expectedWorlds)) {
+    throw new Error('GATE1_WORLD_REVISION_READBACK_MISMATCH');
+  }
+  const selected = (await client.query(`SELECT id,parent_node_id,status
+    FROM world_base.graph_nodes WHERE id=ANY($1::text[]) ORDER BY id`,
+  [gate1Plan.graph_node_transitions.map(({ graph_node_id }) =>
+    graph_node_id)])).rows;
+  const expectedSelected = gate1Plan.graph_node_transitions.map(
+    ({ source_row }) => ({ id: source_row.id,
+      parent_node_id: source_row.parent_node_id, status: 'approved' }))
+    .sort((left, right) => left.id.localeCompare(right.id));
+  if (digestValue(selected) !== digestValue(expectedSelected)) {
+    throw new Error('GATE1_GRAPH_TOPOLOGY_READBACK_MISMATCH');
+  }
+  const sourceRows = [];
+  for (const transition of gate1Plan.source_record_transitions) {
+    const { updated_at: sourceUpdatedAt, ...sourceStable } =
+      transition.source_row;
+    const expected = { ...sourceStable, status: 'approved' };
+    const columns = [...Object.keys(expected), 'updated_at'];
+    const actual = (await client.query(`SELECT ${columns.map((column) =>
+      quoteIdentifier(column)).join(',')} FROM world_base.source_records
+      WHERE id=$1`, [transition.id])).rows[0];
+    assertExactRecord(actual, expected,
+      'GATE1_RECONCILED_SOURCE_READBACK_MISMATCH');
+    if (!(actual.updated_at instanceof Date)
+        || actual.updated_at <= new Date(sourceUpdatedAt)) {
+      throw new Error(`GATE1_RECONCILED_SOURCE_UPDATED_AT_INVALID:${transition.id}`);
+    }
+    sourceRows.push(Object.fromEntries(Object.keys(expected).map((column) => [column,
+      actual[column] instanceof Date
+        ? actual[column].toISOString().replace('.000Z', 'Z')
+        : actual[column]])));
+  }
+  const activationTable = (await client.query(`SELECT
+    to_regclass('world_base.runtime_catalog_activation_events') AS name`))
+    .rows[0].name;
+  const activationEventCount = activationTable
+    ? (await client.query(`SELECT count(*)::int AS count
+        FROM world_base.runtime_catalog_activation_events`)).rows[0].count
+    : 0;
+  if (activationEventCount !== 0) {
+    throw new Error('GATE1_RUNTIME_ACTIVATION_FORBIDDEN');
+  }
+  return Object.freeze({
+    request_digest: gate1Plan.request_digest,
+    authoring_attestation_digest: gate1Plan.attestation_digest,
+    source_archive_digest: gate1Plan.source_archive_digest,
+    source_seed_digest: gate1Plan.source_seed_digest,
+    seed_table_count: gate1Plan.seed_closure.table_count,
+    seed_row_count: gate1Plan.seed_closure.total_row_count,
+    seed_table_closure_digest:
+      gate1Plan.seed_closure.table_closure_digest,
+    seed_closure_attestation_digest:
+      gate1Plan.seed_closure_attestation_digest,
+    table_counts: Object.freeze(counts),
+    world_revision_count: worlds.length,
+    world_revisions_digest: digestValue(worlds),
+    approved_g4_topology_digest: digestValue(selected),
+    approved_parent_source_digest: digestValue(sourceRows),
+    approved_parent_source_count: sourceRows.length,
+    reconciliation_attestation_digest:
+      gate1Plan.reconciliation_attestation_digest,
+    compatible_worlds: Object.freeze(gate1Plan.compatible_worlds.map((world) => ({
+      release_id: world.release_id,
+      world_revision_id: world.world_revision_id,
+      world_catalog_digest: world.world_catalog_digest
+    }))),
+    activation_event_count: 0,
+    runtime_item_creation_authorized: false
+  });
 }
 
 async function verifyPromotedRuntime(client, plan) {
@@ -407,8 +806,43 @@ async function materializeRuntimeContext({ requestId, graphNode, selectedStartNo
 }
 
 function summary({ mode: selectedMode, plan, applied }) {
-  return { pass: true, mode: selectedMode, applied, candidate_digest: plan.candidate_digest, approval_request_digest: plan.approval_request_digest, approval_attestation_digest: plan.approval_attestation_digest, promotion_manifest_digest: plan.manifest.manifest_digest, target_revision_id: plan.manifest.world_revision_id, target_catalog_digest: plan.manifest.catalog_digest, dataset_count: plan.manifest.datasets.length, status_transition_count: plan.status_transitions.length, activation_performed: false, existing_parties_rematerialized: false };
+  return { pass: true, mode: selectedMode, applied, candidate_digest: plan.candidate_digest, approval_request_digest: plan.approval_request_digest, approval_attestation_digest: plan.approval_attestation_digest, approval_amendment_attestation_digest: plan.approval_amendment_attestation_digest, promotion_manifest_digest: plan.manifest.manifest_digest, target_revision_id: plan.manifest.world_revision_id, target_catalog_digest: plan.manifest.catalog_digest, dataset_count: plan.manifest.datasets.length, status_transition_count: plan.status_transitions.length, activation_performed: false, existing_parties_rematerialized: false };
+}
+function importReadbackEvidence(result) {
+  return Object.freeze({
+    schema_version: 'rus.pr17.item_container_stage3c_result.v2',
+    status: 'imported_exact_readback_verified',
+    candidate_digest: result.candidate_digest,
+    approval_request_digest: result.approval_request_digest,
+    approval_attestation_digest: result.approval_attestation_digest,
+    approval_amendment_attestation_digest:
+      result.approval_amendment_attestation_digest,
+    promotion_manifest_digest: result.promotion_manifest_digest,
+    target_revision_id: result.target_revision_id,
+    target_catalog_digest: result.target_catalog_digest,
+    rollback: result.rollback,
+    ...(result.mode === 'local-play'
+      ? { repeat_readback_status: result.repeat_readback_status,
+        first_state_digest: result.first_state_digest,
+        repeated_state_digest: result.repeated_state_digest }
+      : { repeat_clean_apply: result.repeat_clean_apply }),
+    first_state: result.first_state,
+    repeated_state: result.repeated_state,
+    activation_performed: false,
+    production_activation: false,
+    existing_parties_rematerialized: false,
+    runtime_item_creation_authorized: false
+  });
 }
 function argument(name, fallback) { const index = process.argv.indexOf(name); return index >= 0 ? process.argv[index + 1] : fallback; }
+function assertAllowedArguments() {
+  const allowed = new Set(['--mode', '--attestation', '--write-result', '--expected-database']);
+  for (let index = 2; index < process.argv.length; index += 2) {
+    const name = process.argv[index];
+    if (!allowed.has(name) || process.argv[index + 1] === undefined) {
+      throw new Error(`PR17_STAGE3C_ARGUMENT_FORBIDDEN:${name}`);
+    }
+  }
+}
 function quoteIdentifier(value) { if (!/^[a-z_][a-z0-9_]*$/u.test(value)) throw new Error(`PR17_SQL_IDENTIFIER_INVALID:${value}`); return `"${value}"`; }
 function readJson(path) { return JSON.parse(readFileSync(path, 'utf8')); }

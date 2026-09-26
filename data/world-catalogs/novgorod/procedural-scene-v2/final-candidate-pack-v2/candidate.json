@@ -1,0 +1,231 @@
+{
+  "schema": "rus.procedural_scene_final_candidate_pack.v2",
+  "pack_id": "novgorod_procedural_scene_final_candidate_002",
+  "version": 2,
+  "status": "sealed_candidate_not_imported",
+  "target_revision_id": "procedural_scene_final_candidate_v2_001",
+  "supersedes_for_future_new_development_parties_only": {
+    "revision_id": "procedural_scene_final_candidate_v1_001",
+    "candidate_digest": "29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1",
+    "existing_party_migration_authorized": false,
+    "old_pin_mutation_authorized": false
+  },
+  "inherited_closure": {
+    "candidate_path": "data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/candidate.json",
+    "candidate_digest": "29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1",
+    "target_catalog_digest": "4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c",
+    "record_operations_count": 40,
+    "records_digest": "ceb7fc4bd4f9a54eb1b5d6ecc1db597db47b6548e383bd8a5dd828ee697921f2",
+    "v5_assert_existing_table_count": 39,
+    "v5_assert_existing_record_count": 3248
+  },
+  "allocation_source": {
+    "candidate_path": "data/world-catalogs/novgorod/procedural-scene-v2/functional-allocation-v1/candidate.json",
+    "candidate_digest": "d081e342e8987ed48b8c7464efe8f1799f3038349c0a364890cf32eac1628c77",
+    "request_digest": "763f7fafe888f2ab7f4a40508d81356780fbf041504b04ecfed3851e4b2e49a0",
+    "approval_attestation_path": "data/world-catalogs/novgorod/procedural-scene-v2/functional-allocation-v1/approval-attestation.json",
+    "approval_attestation_digest": "692960ad7561b60a0793f1f3fb097e757f8975aa91ec42251296edc6213b552a"
+  },
+  "append_only_delta": {
+    "table_name": "procedural_scene_compiled_records",
+    "operation_kind": "insert",
+    "record": {
+      "record_id": "policy:functional-actor-allocation-v1",
+      "version": 1,
+      "record_kind": "mapping",
+      "family_candidate_ref": "novgorod_inland_fishing_worksite_v3@1",
+      "payload": {
+        "schema": "rus.procedural_compiled_allocation_policy.v1",
+        "policy": {
+          "policy_id": "fishing_present_actor_functional_allocation_v1",
+          "family_candidate_ref": "novgorod_inland_fishing_worksite_v3@1",
+          "applicability": {
+            "function_ref": "fishing_worksite",
+            "occupation_ref": "nov_occ_fisher",
+            "role_ref": "nov_role_fisher",
+            "activity_profile_ref": "activity_assist_fishing_net_v1",
+            "actor_presence": "present_committed_scene",
+            "actor_kinds": [
+              "npc",
+              "player_character"
+            ],
+            "stable_unique_actor_instance_id_required": true
+          },
+          "selection_cardinality": "deterministic_one_from_nonempty",
+          "ambiguity_policy": "lowest_unique_stable_actor_instance_id",
+          "actor_selection": "lowest_stable_actor_instance_id",
+          "actor_selection_reason": "Deterministic order-independent selection among equally applicable actors.",
+          "allocations": [
+            {
+              "layer": "tool",
+              "selection_mode": "deterministic_single_approved_candidate",
+              "item_template_ref": "item_tpl_nov_fishing_net_v1",
+              "profile_ref": "profile_fishing_v3",
+              "profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_fishing_net_v1",
+              "quantity_profile_ref": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+              "inventory_profile_ref": "inventory_item_tpl_nov_fishing_net_v1",
+              "object_category_ref": "cat_item_object_fishing_net_v1",
+              "min_quantity": 1,
+              "max_quantity": 1,
+              "source_binding_refs": [
+                "claim_construction_item_tpl_nov_fishing_net_v1",
+                "claim_historical_presence_item_tpl_nov_fishing_net_v1",
+                "claim_material_item_tpl_nov_fishing_net_v1",
+                "claim_physical_parameter_item_tpl_nov_fishing_net_v1"
+              ],
+              "source_refs": [
+                "src_gameplay_physical_policy_v3",
+                "src_novgorod_promysly",
+                "src_project_stage_3b1_physical_parameter_policy"
+              ],
+              "committed_source_required": true,
+              "inventory_record_id": "inventory_item_tpl_nov_fishing_net_v1",
+              "inventory_record_digest": "a568e0238121bb3c002eb81101f4c456a87f35b5efb956b8cae593db86f5155f",
+              "quantity_record_id": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+              "quantity_record_digest": "f69f345e5d694519364c119eb0fcf20353e25db2fa98501e1153c15b7be2118e",
+              "mass_grams": 5000,
+              "external_hand_cost": 2
+            },
+            {
+              "layer": "work_material",
+              "selection_mode": "deterministic_single_approved_candidate",
+              "item_template_ref": "item_tpl_nov_fishing_line_v1",
+              "profile_ref": "profile_fishing_v3",
+              "profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_fishing_line_v1",
+              "quantity_profile_ref": "quantity_item_tpl_nov_fishing_line_v1_count_v5",
+              "inventory_profile_ref": "inventory_item_tpl_nov_fishing_line_v1",
+              "object_category_ref": "cat_item_object_fishing_line_v1",
+              "min_quantity": 1,
+              "max_quantity": 1,
+              "source_binding_refs": [
+                "claim_construction_item_tpl_nov_fishing_line_v1",
+                "claim_historical_presence_item_tpl_nov_fishing_line_v1",
+                "claim_material_item_tpl_nov_fishing_line_v1",
+                "claim_physical_parameter_item_tpl_nov_fishing_line_v1"
+              ],
+              "source_refs": [
+                "src_gameplay_physical_policy_v3",
+                "src_novgorod_promysly",
+                "src_project_stage_3b1_physical_parameter_policy"
+              ],
+              "committed_source_required": true,
+              "inventory_record_id": "inventory_item_tpl_nov_fishing_line_v1",
+              "inventory_record_digest": "cc7e3c84a6de704c9ecca0e521bd5e8c362b4f879a6851317f89cf254cc1ca17",
+              "quantity_record_id": "quantity_item_tpl_nov_fishing_line_v1_count_v5",
+              "quantity_record_digest": "5e22443dd5c4f632b3424d157dbca75f9f6036bb63b5cbc48c44ecc3ec5c7c22",
+              "mass_grams": 200,
+              "external_hand_cost": 0
+            }
+          ],
+          "property_basis": {
+            "profile": {
+              "id": "property_personal_possession_v1",
+              "world_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+              "region_id": "region_novgorod_land",
+              "property_category_id": "cat_item_property_personal_possession_v1",
+              "status": "approved"
+            },
+            "profile_record_digest": "07c72e905e359513ed7402284327f8862702bba60132aed8b2fa86ebc3529dee",
+            "rule": {
+              "id": "rule_property_personal_possession_v1",
+              "property_profile_id": "property_personal_possession_v1",
+              "owner_kind": "person",
+              "holder_kind": "person",
+              "controller_kind": "person",
+              "access_policy": {
+                "mode": "explicit",
+                "version": 1
+              },
+              "claim_conditions": {
+                "mode": "none",
+                "version": 1
+              },
+              "status": "approved"
+            },
+            "rule_record_digest": "6d1ea2f0b7ee6d761466689bfa4b7a1b243cf44f9e1d900629b18af7eb3af78b",
+            "owner_ref": "selected_actor_instance",
+            "holder_ref": "selected_actor_instance",
+            "controller_ref": "selected_actor_instance",
+            "access_policy": "actor_controlled",
+            "assignment_at_materialization": true
+          },
+          "placement": {
+            "mode": "actor_held_physical_position",
+            "allowed_physical_positions": [
+              "hands",
+              "external"
+            ],
+            "required_function_layer": "work_zone",
+            "required_position_state": "committed",
+            "work_zone_role": "causal_scene_basis_only",
+            "garment_slot_authorized": false
+          },
+          "scene_binding": {
+            "family_candidate_ref": "novgorod_inland_fishing_worksite_v3@1",
+            "function_ref": "fishing_worksite",
+            "work_zone_mapping_id": "fishing_work_zone_place_group_v1",
+            "work_zone_mapping_digest": "b2fab6a6bb6fa50ed60bcdfbf163f2134646f3664c8d299906846c102b6f6a5a"
+          },
+          "creation": {
+            "reuse_before_create": true,
+            "create_quantity": 1,
+            "cross_layer_reuse_authorized": false,
+            "deterministic_identity": "policy_id+actor_instance_id+layer+item_template_ref",
+            "idempotency_key_same_as_identity": true
+          },
+          "causal_basis": {
+            "authoring_package_digest": "29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1",
+            "mapping_candidate_digest": "aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588",
+            "property_record_ids": [
+              "property_personal_possession_v1",
+              "rule_property_personal_possession_v1"
+            ],
+            "property_record_digests": [
+              "07c72e905e359513ed7402284327f8862702bba60132aed8b2fa86ebc3529dee",
+              "6d1ea2f0b7ee6d761466689bfa4b7a1b243cf44f9e1d900629b18af7eb3af78b"
+            ],
+            "actor_scene_package_refs_required": true
+          },
+          "creation_authority": {
+            "authority_kind": "actor_allocation_policy_after_independent_attestation",
+            "status": "pending_independent_attestation",
+            "functional_mapping_ids": [
+              "fishing_tool_group_v1",
+              "fishing_work_material_group_v1"
+            ],
+            "activity_profile_ref": "activity_assist_fishing_net_v1",
+            "v5_record_digests": [
+              "07c72e905e359513ed7402284327f8862702bba60132aed8b2fa86ebc3529dee",
+              "6d1ea2f0b7ee6d761466689bfa4b7a1b243cf44f9e1d900629b18af7eb3af78b"
+            ]
+          },
+          "limits": {
+            "site_or_unowned_item_authorized": false,
+            "household_basis_authorized": false,
+            "resource_node_authorized": false,
+            "stock_creation_authorized": false,
+            "quantity_creation_authorized": true
+          }
+        },
+        "approval_attestation_digest": "692960ad7561b60a0793f1f3fb097e757f8975aa91ec42251296edc6213b552a",
+        "authoring_status": "approved",
+        "runtime_status": "pending_runtime_inventory_owner_validation"
+      },
+      "payload_digest": "206bfd1717325dad781cb9ff429f2bae09d39fb6fee63f3029da310ce864a00a",
+      "source_pack_digest": "667d8400e0e02310ede7d97be624194467c95da748f6a7114b934ad6657e930f",
+      "status": "approved_authoring_not_runtime_selectable"
+    },
+    "insert_count": 1,
+    "delete_count": 0,
+    "update_count": 0
+  },
+  "target_catalog_digest": "6fcf5c50d01bd56605a037de3d79cd1aa5e56a1c520db70bd0ab5b6ade6b1361",
+  "import_authorized": false,
+  "runtime_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "production_deploy_authorized": false,
+  "existing_party_migration_authorized": false,
+  "old_save_rematerialization_authorized": false,
+  "candidate_digest": "65d973f8f06ab78a38b5bda7b24cf8661da1b8b9a581742c224cfa8b1c39bdc6"
+}

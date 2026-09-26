@@ -36,7 +36,8 @@ test('misclassified sustained action repairs to non-speech activity', async () =
     assert.match(instructions,
       /proposed utterance failed semantic grounding[\s\S]*Typed first-person action prose is not speech/u);
     return { output: {
-      interpretation: { player_goal: action, grounded_attempt: action,
+      interpretation: { player_goal: action,
+        grounded_attempt: 'Жду под навесом.',
         adaptation: 'literal' },
       resolution: 'direct', goal_result: 'achieved',
       activity: { owner: 'semantic', duration_class: 'extended', effort: 'none',

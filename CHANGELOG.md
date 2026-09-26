@@ -2,13 +2,35 @@
 
 ## Unreleased
 
+- fix(wk): #153 REVIEW-038 — turn historical_events via services 3rd arg; owner clock normalize; MODULE.md services wrap (#153, PR #98)
+- fix(wk): #153 REVIEW-037 — drop request_id event Map; explicit historical_events ports; facet present reject; pack validator messages (#153, PR #98)
+- fix(wk): #153 REVIEW-036 — party historical_events port; O1 clock through exactModelContext; N-1..N-6 started-historical/v3/facet validator; LW-049..051 (#153, PR #98) LW-049 updated LW-050 LW-051 added
+- fix(wk): #153 REVIEW-035 A-01..A-12 — empty started_historical_events; party authoritative factory; O1 clock; facet registry; LF contract; LW-048/049 (#153, PR #98) LW-048 LW-049 added
+- feat(wk): #153 Part A D18 — party calendar year, focus date/access filter, started_historical_events, time-events API, contract §13/§14/§53/§54 (#153, PR #98)
+
+- fix(wk): #152 REVIEW-034 — N1 nested production cues; planner_plan vs effective_plan+default_query; real-Core vector-only PARTIAL (#152, PR #98)
+
+- fix(wk): #152 REVIEW-033 — S1/N1/O1 semantic_input text; default-query capped at PARTIAL; disputes count; shared context_text strip; fail-closed encoder; F5 diagnostic/query; contract/LW-047 (#152, PR #98) LW-047 added
+
+- fix(wk): #152 empty semantic_resolution plan -> default Core query; NPC semantic_input text; sufficiency beside verdict; strip duplicate context_text; cache_hit/miss telemetry; contract §50/§51/§60/§61/§63/§85 (#152, PR #98) LW-046 added
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
+- docs(corpus): #146 шаг 4 REVIEW-031 — F1/F4–F6 + LW-039 (KSP сказуемое; ссылки на источник; candidate_hint; v2 выведен из корпуса; source_basis/REFERENCE долг) (#146, PR #98) LW-039 updated
+- docs(corpus): #146 шаг 4 — вынос архивных приложений v2 из корпуса; MODULE_RULES §6→AI §10; KSP ordinary LLM/code; LW-039 norms closed (#146, PR #98) LW-028 LW-029 LW-039 updated
+- docs(corpus): #146 шаг 3 REVIEW-029 — N1–N4/F13 (немагический мир NPC; полные «не ради…»; combat §40.12; LW-045 уточнён; CR #146 п.11 у «действующий»; INDEX §3) (#146, PR #98) LW-045 updated
+- docs(corpus): #146 шаг 3 REVIEW-028 — восстановлены LLM-инварианты из промптов; conversation/repair→схема+владелец; spatial роли; погода LW-044; D9/D14 LW-045; CONTRACT_INDEX §2 метки; проза owner-acceptance (#146, PR #98) LW-044 LW-045 added
+- docs(corpus): #146 шаг 3 — промпты→схема+владелец кода; spatial specialization H1; «целевой»→«действующий»; погода D7; проза блокирует приёмку этапа; CONTRACT_INDEX §2/§3/§4 WK/§8.1; LW-042 norms closed on branch (#146, PR #98) LW-042 updated LW-043 added
+- docs(corpus): #146 шаг 2 REVIEW-026 — N1–N6/F11 (отслеживаемый в §5/§6/§9; set_entity_mechanics proposal; долг v17 на D9/D14; §17 нейтральный заголовок; D9 в npc §18.1; полная ссылка §3A.7) (#146, PR #98) LW-042 updated
+- docs(corpus): #146 шаг 2 REVIEW-025 — F1–F15 (отслеживаемый ≠ significant/D10; O2b D3; subject_kind seed; D9 в схемах; долг v17; informational; D14; LW-042) (#146, PR #98) LW-042 updated
+- docs(corpus): #146 шаг 2 — O1/O2b, снятие классового запрета оружия/денег/документов, опознавательный текст и владение (D9/D14), обычный NPC (D1/D8), `subject_kind`, combat/NPC mechanics от кода (#146, PR #98) LW-028 LW-042 updated
+- docs(corpus): #146 шаг 1 — политика категорий ACTIVE (восстановлены §10–11.4), нормы наличия в `code_driven` §3A и world-base presence-таблица; CONTRACT_INDEX §4/§5/§8.1; REVIEW-023 (F1/F2/F4: proposed-self-contradiction, меч-в-лесу, facets, LW-008/042) (#146, PR #98) LW-039 updated
 - feat(knowledge-source): lexical-only normative RAG; status/priority_tier from CONTRACT_INDEX; `reference` + `reference_results`; independent norm/reference search; drop semantic CLI/readiness fields; CONTRACT_INDEX §5 label align to `ACTIVE SPECIALIZATION` (owner acceptance pending) (#144, PR #150) LW-008 updated
 - docs(governance): решения владельца 2026-09-26 — PC §9.1 (наличие решается при первом прибытии; typed gap только для вещей по authority-записи; опознавательный текст вещей не от LLM), WR §21.1 (утверждает старшая модель на высоком reasoning; путь и commit; правка снимает утверждение); HOW_WE_WORK и CURRENT_SPRINT по ним; LW-029 уточнён (#149) LW-042 added
 - fix(test): тестовый `docker run` несёт метку pid владельца (`testContainerLabel()`); контейнеры убитых прогонов удаляет следующий Docker-тест; страж #142 требует метку (#147, PR #148)
 - docs(process): обзор HOW_WE_WORK; замысел материализуемого мира (PC §9.1); правила об источниках истины (WR §2), скриптах и имеющихся знаниях (WR §19), утверждении данных (WR §21.1), регрессии плейтеста (WR §22), отчёте gameplay run (WR §24.1 из PR #98) и честности проверок (WR §24.2); поле уровня качества в CR; context dump на ветке этапа; исправлены неверные факты о `legacy/src` (#143) LW-026…LW-039 added
 - fix(test): PostgreSQL-тесты удаляют контейнер вместе с anonymous volume (`docker rm -fv`, GS §26); страж в `test:tools` (#142)
+- feat(spatial): M2c — authoring профилей расширения G4 и основа atomic generation/traversal (#98)
+- docs(context): карты v17, OWNERSHIP/pipelines/plan sync по #145 (#145, PR #98) LW-040 LW-041 added
 - docs(work): CURRENT_SPRINT — Runtime-трек начинается с M2c (#133) по решению владельца (#134)
 - fix(game-web): маркер готовности `data-scene-hydrated` у текущего кадра; browser e2e ждёт его вместо устаревшего кадра (#139, PR #141)
 - fix(tooling): на Windows `tar` вызывается как System32 bsdtar в p10/p12-инструментах, тестах и staging-скриптах (#126, PR #140)

@@ -1,0 +1,52 @@
+{
+  "schema": "rus.gate1_stage3c_source_reconciliation_request.v1",
+  "status": "pending_independent_authoring_approval",
+  "decision_requested": "approve_exact_parent_source_externalization_and_status_promotions",
+  "reconciliation_candidate_digest": "48c005a29f7cf59cbcab551239ecebbc0917037b13cc44c0b6aabe8f777ecda3",
+  "amended_stage3c_candidate_digest": "7367a2f46cb3e9ea8efe1f0be48e56284a1db26b0e1f0f00e86f743334300e28",
+  "amended_stage3c_approval_request_digest": "06acf781d0a2c7eb3deba1884f4d1d004e50676ff1d95cd089498d87a79557d9",
+  "requested_source_status_transitions": [
+    {
+      "id": "src_novgorod_agriculture",
+      "from_status": "usable_with_caution",
+      "to_status": "approved"
+    },
+    {
+      "id": "src_novgorod_promysly",
+      "from_status": "usable_with_caution",
+      "to_status": "approved"
+    }
+  ],
+  "requested_import_effect": {
+    "exclude_from_stage3c_inserts": [
+      "src_novgorod_agriculture",
+      "src_novgorod_promysly"
+    ],
+    "require_exact_parent_rows": [
+      "src_novgorod_agriculture",
+      "src_novgorod_promysly"
+    ],
+    "require_transactional_transition_and_readback": true,
+    "original_stage3c_attestation_does_not_authorize_amendment": true,
+    "grants_runtime_activation": false
+  },
+  "forbidden_scope": [
+    "source row aliasing",
+    "source row overwrite",
+    "source row downgrade",
+    "runtime catalog activation",
+    "production activation",
+    "existing-party migration",
+    "runtime item creation"
+  ],
+  "authority": {
+    "approval_attestation_present": false,
+    "import_authorized": false,
+    "source_status_promotion_authorized": false,
+    "activation_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "runtime_item_creation_authorized": false
+  },
+  "request_digest": "3bc1e64ac5f52d42ed72f58c62468f61f40039360816c343c53f759ede9f950c"
+}

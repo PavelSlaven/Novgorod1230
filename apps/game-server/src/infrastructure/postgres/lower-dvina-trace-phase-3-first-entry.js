@@ -136,6 +136,9 @@ export function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {
       || !target.canonical_g5_ref || !target.materialization_trace_id) {
     fail('TRACE_PHASE_3_FIRST_ENTRY_PREPARATION_MISSING');
   }
+  if (baseStatic.g6.enclosing_structure_slot_key != null) {
+    fail('TRACE_PHASE_3_FIRST_ENTRY_PREPARATION_MISSING');
+  }
   const templateRef = baseStatic.scene_template_ref;
   const s1Writes = target.s1_physical_writes.map((row) =>
     write(row.target_table, row.id, null, {
@@ -145,7 +148,16 @@ export function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {
   const primaryG6 = write('party_g6_instances', target.g6_instance_id, null, {
     id: target.g6_instance_id, party_id: partyId,
     scene_baseline_id: target.scene_baseline_id,
-    ...baseStatic.g6,
+    source_scene_template_ref: baseStatic.g6.source_scene_template_ref,
+    scene_slot_key: baseStatic.g6.scene_slot_key,
+    enclosing_stable_structure_id: null,
+    physical_class_id: baseStatic.g6.physical_class_id,
+    primary_scene_role_id: baseStatic.g6.primary_scene_role_id,
+    vertical_context_id: baseStatic.g6.vertical_context_id,
+    overhead_cover_id: baseStatic.g6.overhead_cover_id,
+    intra_g6_visibility_mode: baseStatic.g6.intra_g6_visibility_mode,
+    default_visibility_distance_band: baseStatic.g6.default_visibility_distance_band,
+    acoustic_uniformity: baseStatic.g6.acoustic_uniformity,
     host_kind: 'g5_site', host_id: target.g5_site_id,
     status: 'active', state_version: 1, created_change_set_id: changeSetId,
     updated_change_set_id: changeSetId
@@ -174,7 +186,11 @@ export function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {
     primaryG6,
     write('scene_position_nodes', target.position_id, null, {
       id: target.position_id, party_id: partyId,
-      g6_instance_id: target.g6_instance_id, ...baseStatic.position,
+      g6_instance_id: target.g6_instance_id,
+      template_slot_key: baseStatic.position.template_slot_key,
+      position_type_id: baseStatic.position.position_type_id,
+      capacity: baseStatic.position.capacity,
+      access_class_id: baseStatic.position.access_class_id,
       template_instance_ordinal: 0, status: 'active',
       state_version: 1, created_change_set_id: changeSetId,
       updated_change_set_id: changeSetId

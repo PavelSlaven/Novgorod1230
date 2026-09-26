@@ -6,6 +6,7 @@ export function createTraceRouteBodyEffect({ phase2BodyEffect, phase3Contracts, 
   return Object.freeze({
     apply(input) {
       const effect = input.consequence?.phase3_kind === 'movement'
+          && input.consequence.position_transition == null
         ? phase3Contracts?.routeBodyEffect
         : input.consequence?.phase4_kind === 'movement'
           ? phase4Contracts?.routeBodyEffect : null;

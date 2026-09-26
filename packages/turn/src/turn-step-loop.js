@@ -62,6 +62,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     ports.preparedEffectContext);
   let preparedFollowup = null;
   let pendingDiscovery = null;
+  let blockedPlan = false;
   const seen = new Set();
 
   while (stepIndex <= identity.maxInternalSteps) {
@@ -134,6 +135,15 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         request,
         plan
       });
+    }
+    if (typeof ports.blockPlan === 'function' && await ports.blockPlan(deepFreeze({
+      plan: structuredClone(plan), request: structuredClone(request)
+    })) === true) {
+      blockedPlan = true;
+      stopReason = 'terminal';
+      remainingIntent = '';
+      stepTraces.push(traceFor({ plan, request, repaired, applied: false }));
+      break;
     }
     const preparedContinuationAllowed = preparedPlan != null
       || preparedEffects.length === 0
@@ -323,7 +333,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     spatial_semantic_atomic_write_plan: spatialSemanticPlans[0] ?? null,
     background_npc_semantic_atomic_write_plan:
       backgroundNpcSemanticPlans[0] ?? null,
-    clarification
+    clarification,
+    blocked_plan: blockedPlan
   });
 }
 

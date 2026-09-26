@@ -21,7 +21,7 @@ contract set: `4.4.0-target.1`
 
 ## 0. Нормативная сила и модель активации
 
-Этот документ задаёт целевое поведение механики времени после её реализации и
+Этот документ задаёт действующее поведение механики времени после её реализации и
 активации. P28 exact-head evidence прежнего кандидата принято как immutable
 historical evidence и не выполняло production write либо composition switch.
 Исторически применялись два разных утверждения:
@@ -189,7 +189,7 @@ Narration:
 | Perception, knowledge, memory, player-safe package | `@rus/visibility-knowledge-memory` |
 | NPC schedule/runtime/reaction semantics | один явно назначенный NPC runtime owner; выбор package фиксируется ADR после inventory |
 | Place/access dynamic state and transition semantics | один явно назначенный spatial/place runtime owner, зафиксированный ADR после inventory; `@rus/turn` не владеет portal/access state |
-| Weather state transitions | один явно назначенный environment/weather owner; `@rus/contracts/weather-state` остаётся только contract layer |
+| Weather state transitions | следующее состояние выбирает `@rus/turn` детерминированным RandomSource по (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154) D7); `@rus/environment-state` проверяет и применяет погоду и свет и считает моменты смены; начальное состояние выбирает `@rus/materialization`; `@rus/contracts/weather-state` — только contract layer. Выбор следующего состояния в turn и инерция профиля — долг CR реализации M2c (LW-044; код v17 ещё не делает) |
 | Propagation lifecycle и remote aggregate catch-up | один явно назначенный world-process runtime owner; semantic effects остаются у соответствующих domains |
 | Historical phase activation | historical/time contract owner применяет только source-backed records; содержательные effects принадлежат соответствующим domains |
 | Orchestration, decision boundary, proposal merge, combined plan | `@rus/turn` |
@@ -768,7 +768,7 @@ validate request, pins, clock and execution
 → commit atomically
 ```
 
-`@rus/turn` не вычисляет body, traversal, weather или NPC formulas. Оно передаёт snapshots соответствующим owners и объединяет proposals.
+`@rus/turn` не вычисляет body, traversal или NPC formulas и не вычисляет weather formulas. Следующее состояние погоды выбирает `@rus/turn` детерминированным RandomSource (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов; `@rus/environment-state` проверяет и применяет погоду и свет. Snapshots остальных owners передаются им, proposals объединяет `@rus/turn`. Выбор следующего состояния погоды в turn — долг CR реализации M2c (LW-044; код v17 ещё не делает).
 
 ### 11.3. Результат
 
@@ -885,6 +885,15 @@ Boundaries включают portal state, opening/closing schedule, blocker, cap
 
 ### 14.2. Weather
 
+Погода по D7 ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154), поправка п.10):
+
+1. **Начальное состояние** выбирает `@rus/materialization` (как сейчас при старте).
+2. **Следующее состояние** выбирает `@rus/turn` детерминированным RandomSource по (seed партии, G0-зона, номер 6-часового интервала) из утверждённого профиля переходов (преемник `weather_transition_profiles_processes.json` / novgorod v2: инерция, держащееся отклонение температуры, осадки от температуры; утверждение по WR §21.1).
+3. **`@rus/environment-state`** проверяет и применяет погоду и свет и считает моменты смены. `npc_combat_and_trigger_contract.md` §5.8 и ADR-005 не меняются этим разделом.
+4. Каждое наступившее состояние — **факт партии**; следующее выбирается от предыдущего сохранённого.
+5. Одна цепочка на G0 с местными поправками по ландшафту.
+6. Историческая фаза ограничивает погоду только по утверждённой источниковой записи.
+
 Weather transition существует только из approved weather profile/process. Runtime не генерирует случайную погоду без profile, seed policy, applicable candidates и owner.
 
 Weather может влиять на:
@@ -897,6 +906,8 @@ Weather может влиять на:
 - access.
 
 Отсутствующий required weather catalog — readiness blocker.
+
+Действующая норма; выбор следующего состояния в turn и инерция профиля — долг CR реализации M2c (LW-044; код v17 ещё не делает).
 
 ### 14.3. Исторические фазы
 

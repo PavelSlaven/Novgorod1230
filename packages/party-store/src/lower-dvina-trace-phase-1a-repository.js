@@ -1,9 +1,13 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
-import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
+import { validateActorBaseAttributes } from '@rus/materialization';
+import { computeMaterializationEnvelopeDigest,
+  computeStage24ArtifactDigest } from '@rus/contracts';
 import { normalizedContainer } from
   './lower-dvina-trace-phase-1a-read-assets.js';
 import { buildActualPersistedProjection } from
   './lower-dvina-trace-phase-1a-projection.js';
+import { projectPlayerSafeScenePackages } from
+  './player-safe-scene-packages.js';
 
 export function createLowerDvinaTracePhase1ARepository({query}={}) {
   if (typeof query !== 'function') throw new TypeError('query function is required.');
@@ -22,7 +26,8 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       const player = await one(
         `SELECT pc.character_id,pc.profile,apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
                 apb.name_profile_snapshot,apb.language_profile_snapshot,apb.knowledge_profile_snapshot,
-                apb.profile_candidate_set_digest,apb.state_version AS profile_state_version,
+                apb.profile_candidate_set_digest,apb.attribute_profile_snapshot,
+                apb.state_version AS profile_state_version,
                 apb.created_change_set_id,apb.updated_change_set_id,
                 b.body_profile_ref,b.health,b.energy,b.satiety,b.state_version AS body_state_version,
                 b.updated_change_set_id AS body_updated_change_set_id
@@ -103,14 +108,19 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       )).rows;
       const npcs = (await query(
         `SELECT n.npc_id,n.run_id,n.profile_set_id,n.profile_level,n.anchor_id,
+                placement.position_node_id AS position_id,
                 n.identity_state,n.machine_state,n.semantic_state,
                 apb.role_ref,apb.occupation_ref,apb.skill_profile_snapshot,
                 apb.name_profile_snapshot,apb.language_profile_snapshot,
                 apb.knowledge_profile_snapshot,apb.profile_candidate_set_digest,
+                apb.attribute_profile_snapshot,
                 apb.state_version,apb.created_change_set_id,apb.updated_change_set_id
            FROM party_runtime.party_npcs n
            JOIN party_runtime.party_actor_profile_bindings apb
              ON apb.party_id=n.party_id AND apb.actor_kind='npc' AND apb.actor_id=n.npc_id
+           LEFT JOIN party_runtime.entity_placements placement ON placement.party_id=n.party_id
+             AND placement.entity_kind='npc' AND placement.entity_id=n.npc_id
+             AND placement.placement_kind='scene_position'
           WHERE n.party_id=$1
           ORDER BY n.npc_id`,
         [partyId]
@@ -176,6 +186,24 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         counts,
         payload
       });
+      let physicalPosition = {};
+      if (payload.initial_spatial_v3?.canonical_scene_proposal != null) {
+        const physical = (await query(`SELECT p.id AS position_id,p.g6_instance_id,
+            g.host_kind,g.host_id,g.scene_baseline_id
+          FROM party_runtime.party_journey_locations l
+          JOIN party_runtime.scene_position_nodes p ON p.party_id=l.party_id AND p.id=l.scene_position_id
+          JOIN party_runtime.party_g6_instances g ON g.party_id=p.party_id AND g.id=p.g6_instance_id
+          WHERE l.party_id=$1 AND l.owner_kind='actor' AND l.owner_id=$2 AND l.location_kind='scene'
+            AND p.status='active' AND g.status='active'`, [partyId, player.character_id])).rows;
+        const scene = payload.initial_spatial_v3.canonical_scene_proposal;
+        if (physical.length !== 1 || physical[0].position_id !== payload.initial_spatial_v3.selected_position_id
+          || physical[0].host_kind !== 'g5_site' || physical[0].host_id !== scene.site_id
+          || physical[0].scene_baseline_id !== scene.baseline_id) {
+          throw Object.assign(new Error('Committed canonical start physical position differs from the approved snapshot.'),
+            { code: 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE' });
+        }
+        physicalPosition = { position_id: physical[0].position_id, g6_instance_id: physical[0].g6_instance_id };
+      }
       const normalizedItems = items.map((item) => ({
         item_id: item.item_id,
         run_id: item.run_id,
@@ -210,6 +238,12 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         }
       }));
       const normalizedContainers = containers.map(normalizedContainer);
+      const hydratedNpcs = (payload.immediate.npcs ?? []).map((npc) => {
+        const row = npcs.find(({ npc_id: id }) => id === npc.instance_id);
+        return { ...structuredClone(npc), anchor_id: row.anchor_id,
+          ...(row?.position_id == null ? {} : { position_id: row.position_id }), base_attributes:
+          structuredClone(row?.attribute_profile_snapshot ?? null) };
+      });
       const normalizedObligations = obligations.map((obligation) => {
         const sealed = (payload.immediate.promise_instances ?? []).find(
           ({ instance_id: id }) => id === obligation.obligation_id
@@ -243,10 +277,12 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
           dossier: player.profile,
           role_ref: player.role_ref,
           occupation_ref: player.occupation_ref,
-          skills: player.skill_profile_snapshot
+          skills: player.skill_profile_snapshot,
+          ...(player.attribute_profile_snapshot == null ? {} : {
+            base_attributes: structuredClone(player.attribute_profile_snapshot) })
         },
         body: { profile_ref: player.body_profile_ref, health: Number(player.health), energy: Number(player.energy), satiety: Number(player.satiety) },
-        position: { ...position, location_ref: startSpatial.node_state.location_profile_ref },
+        position: { ...position, ...physicalPosition, location_ref: startSpatial.node_state.location_profile_ref },
         prepared_scenes: payload.immediate.prepared_scenes ?? [],
         ...(payload.first_entry_preparation == null ? {} : {
           first_entry_preparation: {
@@ -254,7 +290,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
             spatial_v3: payload.first_entry_spatial_v3
           }
         }),
-        npcs: payload.immediate.npcs ?? [],
+        npcs: hydratedNpcs,
         timestamp: { whole_minutes: clock.whole_minutes, subminute_numerator: clock.subminute_numerator, subminute_denominator: clock.subminute_denominator },
         environment_snapshot: payload.immediate.environment_snapshot,
         hidden_truth: payload.hidden_truth,
@@ -296,6 +332,28 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       });
     },
 
+    async loadPlayerSafeScenePackages(partyId) {
+      const state = await this.loadInternal(partyId);
+      const source = state?.materialization_trace?.procedural_scene_packages;
+      if (source == null) return Object.freeze([]);
+      if (source.schema !== 'rus.procedural_scene_party_packages.v1'
+          || !Array.isArray(source.packages)
+          || source.pin?.catalog_revision_id
+            !== 'procedural_scene_final_candidate_v2_001'
+          || source.pin?.catalog_digest !== state.materialization_trace.catalog_digest
+          || source.digest !== computeStage24ArtifactDigest(source.packages)
+          || source.packages.length === 0
+          || source.packages.some((entry) => entry.party_id !== partyId
+            || entry.run_id !== state.materialization_trace.run_id
+            || entry.pin?.catalog_digest !== source.pin.catalog_digest
+            || entry.scene_package_digest !== computeStage24ArtifactDigest({
+              ...entry, scene_package_digest: undefined }))) {
+        throw Object.assign(new Error('PROCEDURAL_SCENE_PACKAGES_TAMPERED'), {
+          code: 'PROCEDURAL_SCENE_PACKAGES_TAMPERED' });
+      }
+      return projectPlayerSafeScenePackages(source.packages, state.items);
+    },
+
     async loadIdempotency(idempotencyKey) {
       return one('SELECT idempotency_key,request_id,payload_hash,physical_plan_digest,status,committed_result FROM party_runtime.commit_idempotency WHERE idempotency_key=$1', [idempotencyKey]);
     }
@@ -324,25 +382,42 @@ function assertRoundTrip({
   const expectedPreparedScenes = payload?.immediate?.prepared_scenes ?? [];
   const expectedNpcs = payload?.immediate?.npcs ?? [];
   const materializationEnvelope = payload ? {
-    version: 1,
-    schema: 'rus.lower_dvina_trace_party_materialization_result.v1',
+    version: payload.materialization_result_version ?? 1,
+    schema: payload.materialization_result_schema
+      ?? 'rus.lower_dvina_trace_party_materialization_result.v1',
     status: 'materialized',
     party_id: snapshot.party_id,
     run_id: run?.run_id,
     request_identity: payload.request_identity,
     immediate: payload.immediate,
+    ...(payload.initial_spatial_v3 == null ? {} : {
+      initial_spatial_v3: payload.initial_spatial_v3
+    }),
     ...(payload.first_entry_preparation == null ? {} : {
       first_entry_preparation: payload.first_entry_preparation
+    }),
+    ...(run?.trace?.procedural_scene_packages == null ? {} : {
+      procedural_scene_packages: run.trace.procedural_scene_packages
     }),
     hidden_truth: payload.hidden_truth,
     sealed_selections: payload.sealed_selections,
     policy_profile_pins: payload.policy_profile_pins,
     validation_report: run?.validation_report?.materialization,
-    trace: run?.trace
+    trace: run?.trace == null ? run?.trace : (() => {
+      const trace = structuredClone(run.trace);
+      delete trace.procedural_scene_packages;
+      return trace;
+    })()
   } : null;
-  if (!payload || payload.schema !== 'rus.lower_dvina_trace_initial_party_snapshot.v2'
+  if (!payload || !['rus.lower_dvina_trace_initial_party_snapshot.v2',
+    'rus.authored_start_initial_party_snapshot.v1',
+    'rus.authored_start_initial_party_snapshot.v3'].includes(payload.schema)
     || !player || !position || !startSpatial || !clock || !run || !counts || choices.length === 0 || items.length === 0
     || payload.immediate.player.instance_id !== player.character_id
+    || computeStage24ArtifactDigest(player.attribute_profile_snapshot ?? null)
+      !== computeStage24ArtifactDigest(payload.immediate.player.base_attributes ?? null)
+    || (payload.immediate.player.attribute_generation_gate === 'active'
+      && !validateActorBaseAttributes(player.attribute_profile_snapshot))
     || payload.immediate.spatial.position.g4_id !== position.g4_id
     || payload.immediate.spatial.node.instance_id !== startSpatial.g5_node_id
     || payload.immediate.spatial.anchor.instance_id !== startSpatial.anchor_id
@@ -358,6 +433,16 @@ function assertRoundTrip({
     || counts.edge_count !== 0
     || counts.npc_count !== expectedNpcs.length
     || npcs.length !== expectedNpcs.length
+    || (payload.initial_spatial_v3?.canonical_scene_proposal != null && npcs.some((npc) =>
+      npc.position_id !== expectedNpcs.find(({ instance_id }) => instance_id === npc.npc_id)?.position_id))
+    || npcs.some((npc) => JSON.stringify(npc.attribute_profile_snapshot ?? null)
+      !== JSON.stringify(expectedNpcs.find(({ instance_id }) => instance_id
+        === npc.npc_id)?.base_attributes ?? null))
+    || expectedNpcs.some((npc) => npc.attribute_generation_gate === 'active'
+      && !validateActorBaseAttributes(npc.base_attributes))
+    || npcs.some((npc) => expectedNpcs.find(({ instance_id }) => instance_id
+      === npc.npc_id)?.attribute_generation_gate === 'active'
+      && !validateActorBaseAttributes(npc.attribute_profile_snapshot))
     || counts.profile_binding_count !== 1 + expectedNpcs.length
     || counts.container_count !== payload.immediate.containers.length
     || counts.obligation_count !== (payload.immediate.promise_instances ?? []).length
@@ -379,7 +464,8 @@ function assertRoundTrip({
     || npcs.some((value) => !expectedNpcIds.has(value.npc_id))
     || conditions.some((value) => value.status !== 'active'
       || !expectedConditions.some((expected) => expected.state === value.condition_profile_ref?.state))
-    || sha256(run.trace) !== sha256(payload.materialization_trace)
+    || sha256(originalMaterializationTrace(run.trace))
+      !== sha256(payload.materialization_trace)
     || JSON.stringify(run.trace?.policy_profile_pins) !== JSON.stringify(payload.policy_profile_pins)) {
     const error = new Error('Committed Lower Dvina trace normalized rows do not match the sealed snapshot.');
     error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
@@ -406,15 +492,23 @@ function assertRoundTrip({
     run,
     choices,
     includePreparedScenes: Object.hasOwn(expectedProjection?.spatial ?? {}, 'prepared_scenes'),
-    includeNpcs: Object.hasOwn(expectedProjection ?? {}, 'npcs')
+    includeNpcs: Object.hasOwn(expectedProjection ?? {}, 'npcs'),
+    projectionSchema: expectedProjection?.schema
   });
   if (npcSpatialSchedules != null) actualProjection.npc_spatial_schedules = npcSpatialSchedules;
   const expectedDigest = sha256(expectedProjection);
-  if (expectedProjection?.schema !== 'rus.lower_dvina_trace_persisted_projection.v2'
+  if (!['rus.lower_dvina_trace_persisted_projection.v2',
+    'rus.authored_start_persisted_projection.v1'].includes(expectedProjection?.schema)
     || payload.persisted_projection_digest !== expectedDigest
     || sha256(actualProjection) !== expectedDigest) {
     const error = new Error('Committed Lower Dvina trace normalized projection differs from the approved snapshot.');
     error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
     throw error;
   }
+}
+
+function originalMaterializationTrace(trace) {
+  const original = structuredClone(trace);
+  delete original.procedural_scene_packages;
+  return original;
 }

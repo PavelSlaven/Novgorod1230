@@ -27,8 +27,6 @@ import { loadLowerDvinaTraceMaterializationBundle } from
   '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
 import { npcSpeechPlan, playerPlan } from
   '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
-import { lowerDvinaTracePhase1ADomainPin } from
-  '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
@@ -53,7 +51,7 @@ test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically'
     const started = docker([
       'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
       '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase9',
-      '-e', 'POSTGRES_DB=phase9', 'postgres:16-alpine'
+      '-e', 'POSTGRES_DB=pr17_phase9', 'postgres:16-alpine'
     ]);
     assert.equal(started.status, 0, started.stderr);
     await waitForPostgres(name);
@@ -61,18 +59,13 @@ test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically'
     const port = Number(docker(['port', name, '5432']).stdout
       .match(/:(\d+)\s*$/u)?.[1]);
     pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase9',
-      password: 'local_only', database: 'phase9', max: 8 });
+      password: 'local_only', database: 'pr17_phase9', max: 8 });
     await installSchemas(pool);
-    await installLowerDvinaTraceV5World(pool);
+    const { runtimeCatalogPin } = await installLowerDvinaTraceV5World(pool);
     const bundle = await loadLowerDvinaTraceMaterializationBundle({
       scenarioDefinitionRevision: 24
     });
     assert.equal(bundle.definition_revision, 24);
-    const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
-    const runtimeCatalogPin = Object.freeze({ ...sourcePin,
-      compatible_world_revision_id: world.revision,
-      compatible_world_catalog_digest: world.digest,
-      compatible_world_pin_manifest_digest: world.manifest });
     const release = Object.freeze({ release_id: 'phase-9-postgres-release',
       world_revision_id: world.revision, world_catalog_digest: world.digest,
       compatible_world_pin_manifest_digest: world.manifest });

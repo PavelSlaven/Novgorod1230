@@ -9,6 +9,13 @@ import {
   TRACE_SCENARIO_ID,
   validateLowerDvinaTraceSessionRead
 } from './lower-dvina-trace-session.js';
+import { buildAuthoredOpeningVisibleContext } from
+  './lower-dvina-trace-opening.js';
+import { buildVisibleContextAuditApproval,
+  computeVisibleContextPackageDigest } from '@rus/contracts';
+import { projectG4NaturalPerception } from './g4-natural-perception.js';
+import { buildCanonicalOpeningVisibleContext } from './canonical-opening-context.js';
+import { projectSpatialV3CurrentVisibleContext } from './spatial-v3-current-visible-context.js';
 
 export async function startLowerDvinaTrace({
   requestId,
@@ -19,6 +26,8 @@ export async function startLowerDvinaTrace({
   traceStartAdapter,
   publicationLoader,
   traceOpeningProjector,
+  authoredOpeningNarration = null,
+  validateSession = validateLowerDvinaTraceSessionRead,
   activePhase1AManifestDigest = null,
   activeScenarioDefinitionRevision = null
 }) {
@@ -39,6 +48,8 @@ export async function startLowerDvinaTrace({
     ? loadedBeforeStart
     : null;
   const publication = await publicationLoader({
+    scenarioId: committedBeforeStart?.request_identity?.scenario_id
+      ?? creationIdentity.scenario_id,
     phase1AManifestDigest:
       committedBeforeStart?.request_identity?.scenario_manifest_digest
         ?? activePhase1AManifestDigest,
@@ -94,10 +105,16 @@ export async function startLowerDvinaTrace({
       { status: 409 }
     );
   }
-  const internal = committedBeforeStart
+  let internal = committedBeforeStart
     ?? await traceStartAdapter.loadInternal(partyId);
-  if (typeof traceStartAdapter.provisionInitialOrdinary === 'function') {
+  const ordinaryProvisioningCompatible = binding.runtime_binding == null
+    || Number(binding.runtime_binding.revision) >= 5;
+  if (ordinaryProvisioningCompatible
+      && typeof traceStartAdapter.provisionInitialOrdinary === 'function') {
     await traceStartAdapter.provisionInitialOrdinary(partyId);
+    if (binding.runtime_binding != null) {
+      internal = await traceStartAdapter.loadInternal(partyId);
+    }
   }
   const visible = await traceStartAdapter.loadVisible(partyId);
   if (!internal || !visible
@@ -110,8 +127,54 @@ export async function startLowerDvinaTrace({
       { status: 409 }
     );
   }
-  const initialScreen = traceOpeningProjector({
-    visible, approvedProjection: publication.public_projection
+  let openingProse = null;
+  let openingNarrationResult = null;
+  if (binding.runtime_binding != null) {
+    if (typeof authoredOpeningNarration?.run !== 'function') {
+      throw serverError('AUTHORED_OPENING_NARRATOR_MISSING',
+        'Authored opening narration is unavailable.', { status: 503 });
+    }
+    let naturalScenePerception = null;
+    let canonicalSourceBinding = null;
+    if (typeof traceStartAdapter.loadNaturalScenePerceptionInput === 'function') {
+      const perceptionInput = await traceStartAdapter.loadNaturalScenePerceptionInput({
+        partyId, actorId: internal.player.instance_id, internal, visible });
+      const natural = projectG4NaturalPerception({ input: perceptionInput,
+        partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id });
+      naturalScenePerception = { ...natural,
+        visible_context: projectSpatialV3CurrentVisibleContext({ naturalInput: perceptionInput,
+          partyId, actorId: internal.player.instance_id, positionId: internal.position?.position_id,
+          entityObservations: perceptionInput.entity_observations,
+          localEdges: [], directionalExits: [] }) };
+      canonicalSourceBinding = perceptionInput.canonical_source_binding ?? null;
+    }
+    const buildOpeningContext = canonicalSourceBinding == null
+      ? buildAuthoredOpeningVisibleContext : buildCanonicalOpeningVisibleContext;
+    const openingPackage = buildOpeningContext({
+      requestId: requestId, visible, internal,
+      approvedProjection: publication.public_projection, naturalScenePerception, canonicalSourceBinding
+    });
+    if (openingPackage.opening_reader_control?.pass !== true) {
+      throw serverError('AUTHORED_OPENING_CONTEXT_INCOMPLETE',
+        'Opening reader control must pass before narrator approval.', { status: 409 });
+    }
+    const openingDigest = computeVisibleContextPackageDigest(openingPackage);
+    const approval = buildVisibleContextAuditApproval({
+      request_id: requestId, pass: true,
+      visible_context_package_digest: openingDigest,
+      visible_context_audit: { request_id: requestId, pass: true,
+        visible_context_package_digest: openingDigest },
+      commit_permission: { can_send_to_narrator: true,
+        can_write_visible_context_snapshot: true,
+        can_generate_player_facing_prose: true }
+    });
+    openingNarrationResult = await authoredOpeningNarration.run({ partyId, requestId,
+      visibleContextPackage: openingPackage,
+      visibleContextApproval: approval });
+    openingProse = openingNarrationResult.prose;
+  }
+  const initialScreen = await traceOpeningProjector({
+    visible, approvedProjection: publication.public_projection, openingProse
   });
   const payload = { ...internal, party_id: partyId,
     actor_id: internal.player.instance_id,
@@ -120,8 +183,10 @@ export async function startLowerDvinaTrace({
     position: internal.position,
     container_placements: (internal.containers ?? []).map(container => ({
       ...container, container_id: container.container_id })) };
-  const screen = projectLowerDvinaTraceScreenPanels({ payload, screen: initialScreen,
-    presentation: await loadLowerDvinaTraceScreenPresentation(payload) });
+  const screen = binding.runtime_binding == null
+    ? projectLowerDvinaTraceScreenPanels({ payload, screen: initialScreen,
+      presentation: await loadLowerDvinaTraceScreenPresentation(payload) })
+    : initialScreen;
   const screenValidation = validateFirstGameScreen(screen);
   if (!screenValidation.ok || detectHiddenLeaks(screen).length > 0) {
     throw serverError(
@@ -133,7 +198,9 @@ export async function startLowerDvinaTrace({
   const screenDigest = canonicalDigest(screen);
   const sessionIdentity = {
     version: 1,
-    schema: 'rus.lower_dvina_trace_phase_1b_session_identity.v1',
+    schema: binding.runtime_binding == null
+      ? 'rus.lower_dvina_trace_phase_1b_session_identity.v1'
+      : 'rus.live_world_runtime.authored_start_session_identity.v1',
     scenario_id: binding.scenario_id,
     creation_identity: structuredClone(creationIdentity),
     request_id: requestId,
@@ -153,6 +220,12 @@ export async function startLowerDvinaTrace({
       binding.execution_identity.materializer_version,
     rng_algorithm_id:
       binding.execution_identity.rng_algorithm_id,
+    ...(binding.runtime_binding == null ? {} : {
+      runtime_binding: structuredClone(binding.runtime_binding),
+      opening_narration_flow: structuredClone(openingNarrationResult.flow),
+      opening_stage23_original_audit: structuredClone(
+        openingNarrationResult.original_stage23_audit)
+    }),
     opening_screen_digest: screenDigest
   };
   const deliveryAttempt = {
@@ -173,7 +246,7 @@ export async function startLowerDvinaTrace({
     screen
   });
   const persisted = await repository.loadSession(partyId);
-  await validateLowerDvinaTraceSessionRead({ partyId, session: persisted });
+  await validateSession({ partyId, session: persisted });
   return {
     request_id: requestId,
     party_id: partyId,

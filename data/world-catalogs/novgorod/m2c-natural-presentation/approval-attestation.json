@@ -1,0 +1,25 @@
+{
+  "schema": "rus.m2c_natural_presentation_authoring_approval.v1",
+  "decision": "APPROVE_M2C_NATURAL_PRESENTATION_AUTHORING_V1",
+  "candidate_ref": "novgorod_m2c_natural_presentation_g4_v1@1",
+  "candidate_sha256": "b06baae3f8befa4468dfeef24c6bb5639f2d21a8c777aae67423a1ae2ee49e5c",
+  "approved_by": "gpt-6-astra/high — independent reviewer /root/m2c_data_approval",
+  "approval_scope": "natural_presentation_authoring_data_only",
+  "source_issue": "Issue #133 M2c",
+  "approved_on": "2026-09-24",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "validation_summary": {
+    "exact_profiles": 32,
+    "exact_natural_payload_pins": 32,
+    "layers": 416,
+    "visual": 271,
+    "acoustic": 29,
+    "none": 116
+  },
+  "limits": [
+    "Approval covers descriptor authoring data only; candidate bytes remain immutable.",
+    "Current causal source admission, exact source-position binding and P22 visibility/acoustics remain mandatory runtime gates.",
+    "Import, compiled catalog membership and production activation require their existing separate workflow."
+  ]
+}

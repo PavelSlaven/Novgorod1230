@@ -113,6 +113,14 @@ test('creates factual delivery screen from exact committed public fields without
   assert.equal(validateLowerDvinaFactualTurnDeliveryScreen(screen).ok, true);
 });
 
+test('creates the same factual recovery carrier for a live-world authored turn', () => {
+  const screen = createFactualTurnDeliveryScreenReadModel(factualScreenInput({
+    scenarioId: 'vikhtuy_fishing_camp_v1', screenKind: 'live_world_turn'
+  }));
+  assert.equal(validateLowerDvinaFactualTurnDeliveryScreen(screen).ok, true);
+  assert.equal(screen.scenario_id, 'vikhtuy_fishing_camp_v1');
+});
+
 test('creates generic degraded factual delivery without a scenario carrier', () => {
   const screen = createFactualTurnDeliveryScreenReadModel(
     genericFactualScreenInput()

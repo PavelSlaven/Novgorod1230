@@ -10,7 +10,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 454
+        "line_end": 526
       }
     },
     {
@@ -34,7 +34,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 211
+        "line_end": 226
       }
     },
     {
@@ -46,7 +46,7 @@
       "source_location": {
         "file": "items_and_property.txt",
         "line_start": 1,
-        "line_end": 405
+        "line_end": 420
       }
     },
     {
@@ -58,7 +58,7 @@
       "source_location": {
         "file": "npc_autonomous_decision_contract.md",
         "line_start": 1,
-        "line_end": 2408
+        "line_end": 2041
       }
     },
     {
@@ -70,7 +70,7 @@
       "source_location": {
         "file": "npc_combat_and_trigger_contract.md",
         "line_start": 1,
-        "line_end": 2973
+        "line_end": 2850
       }
     },
     {
@@ -82,7 +82,7 @@
       "source_location": {
         "file": "npc_conversation_mode_contract.md",
         "line_start": 1,
-        "line_end": 3123
+        "line_end": 2802
       }
     },
     {
@@ -94,7 +94,7 @@
       "source_location": {
         "file": "situational_prose_requirements.md",
         "line_start": 1,
-        "line_end": 439
+        "line_end": 463
       }
     },
     {
@@ -118,7 +118,7 @@
       "source_location": {
         "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 90
+        "line_end": 92
       }
     },
     {
@@ -142,7 +142,7 @@
       "source_location": {
         "file": "spatial_v3_target_read_only_database_and_graph_architecture.md",
         "line_start": 1,
-        "line_end": 59
+        "line_end": 58
       }
     },
     {
@@ -166,7 +166,7 @@
       "source_location": {
         "file": "temporal_world_and_interruptible_activities.md",
         "line_start": 1,
-        "line_end": 3083
+        "line_end": 3094
       }
     },
     {
@@ -178,7 +178,19 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1910
+        "line_end": 1732
+      }
+    },
+    {
+      "id": "canonical-document:universal-category-classification-policy",
+      "type": "canonical_document",
+      "label": "universal_category_classification_policy.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/universal_category_classification_policy.md",
+      "source_location": {
+        "file": "universal_category_classification_policy.md",
+        "line_start": 1,
+        "line_end": 1274
       }
     },
     {
@@ -190,7 +202,7 @@
       "source_location": {
         "file": "world_base_materialization_table_requirements.md",
         "line_start": 1,
-        "line_end": 378
+        "line_end": 406
       }
     },
     {
@@ -202,7 +214,7 @@
       "source_location": {
         "file": "world_knowledge_platform_implementation_contract.md",
         "line_start": 1,
-        "line_end": 3928
+        "line_end": 3993
       }
     }
   ],

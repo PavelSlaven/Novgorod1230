@@ -6,6 +6,35 @@ import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvin
 import { createPorts, execution, preparedOrdinary, semanticOwners } from './lower-dvina-trace-turn-step-runtime-ports-fixture.js';
 import { createActionProductionVisibleConsequence } from '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 
+test('committed local movement is a required current beat for narration', async () => {
+  const base = committedState().current_visible_context;
+  const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => structuredClone(base) }
+  }).project({ retrieved_state: committedState(), consequence: {
+    position_transition: { owner: '@rus/movement-routes' }, visible_seed: {}
+  }, mode_resolution: { decision_trace: { remaining_intent: null,
+    step_traces: [{ step_index: 1, applied: true, approved_plan: {
+      resolution: 'domain_request', operations: [{ op: 'request_movement',
+        actor_ref: 'mikula', target_ref: 'local:shelter',
+        movement_kind: 'local' }] } }] } } });
+  assert.deepEqual(visible.visible_changes,
+    ['Вы переместились в пределах текущего места.']);
+  const narrator = createLowerDvinaTraceNarrationService({ roleRunner: {
+    async run(call) {
+      const wire = JSON.parse(call.messages[1].content);
+      assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text),
+        visible.visible_changes);
+      if (call.role_id === 'gameplay_narrator') return { output: {
+        prose: 'Вы переместились в пределах текущего места.' } };
+      return { output: reviewedNarration(wire.segments, {
+        visible_change_1: ['s1'] }) };
+    }
+  } });
+  assert.equal((await narrator.run({ version: 1, schema: 'narration_request',
+    request_id: 'local-movement-beat', surface: 'turn',
+    visible_context: visible, context: {} })).status, 'approved');
+});
+
 for (const [query, name, spoken, pending] of [
   ['доска', 'длинная доска', 'Постойте у берега.', false],
   ['шнур', 'короткий шнур', 'Не подходите к стене.', true]
@@ -54,7 +83,8 @@ for (const [query, name, spoken, pending] of [
     assert.deepEqual(wire.required_current_beat.changes.map(({ ref }) => ref), expected.map((_, index) => `visible_change_${index + 1}`));
     assert.deepEqual(wire.required_current_beat.uncertainties, []);
     assert.match(call.messages[0].content, /Turn duration is code-owned UI metadata/u);
-    assert.deepEqual(wire.optional_support, { visible_scene: projected.visible_scene, sensory_details: projected.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: projected.visible_scene });
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: `Вы произнесли: «${spoken}» Поиск принёс находку — ${name}. ${pending ? '' : physical + ' '}Можно продолжить задуманное или выбрать другое действие.`,
       action_options: [], used_references: [] } };
@@ -207,7 +237,8 @@ for (const domainFallback of [false, true]) test(`materialized O1 precedes physi
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visible.visible_scene });
     const changes = wire.required_current_beat.changes.map(({ text }) => text);
     assert.ok(changes.includes(found)); assert.ok(changes.includes(physical));
     return { output: call.role_id === 'gameplay_narrator'

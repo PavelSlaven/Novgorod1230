@@ -62,6 +62,9 @@ export async function validateAuthoringBundle({ root = ROOT, manifestPath = DEFA
   validateRouteTopology(datasets, errors);
   validateControlledVocabularyBindings(datasets, errors);
   validateCapacityProof(datasets, errors);
+  validateSceneCandidateApplicability(datasets, errors);
+  validateExternalDependencyClosure(datasets, errors);
+  validateExpansionRuleClosure(datasets, errors);
   return Object.freeze({ ok: errors.length === 0 && gaps.length === 0, manifest: relative(projectRoot, manifestFile).replaceAll('\\', '/'), errors: Object.freeze(errors), data_gaps: Object.freeze(gaps), dataset_counts: Object.freeze(Object.fromEntries([...datasets].map(([table, rows]) => [table, rows.length]))), source_approval: sourceApproval, target_approval: targetApproval });
 }
 
@@ -132,8 +135,11 @@ function validateStrictRow(row, schema, table, errors) {
   for (const key of Object.keys(row)) if (!columns.has(key)) errors.push(issue('UNKNOWN_ROW_FIELD', `${table}.${key}`));
   for (const column of schema.columns) if (!column.nullable && column.default === null && !Object.hasOwn(row, column.name)) errors.push(issue('MISSING_REQUIRED_FIELD', `${table}.${column.name}`));
   for (const column of schema.columns) if (column.name.endsWith('_id') && columns.has(`${column.name.slice(0, -3)}_version`) && Object.hasOwn(row, column.name)) {
-    const versionValue = row[`${column.name.slice(0, -3)}_version`];
-    if ((row[column.name] === null) !== (versionValue === null) || (row[column.name] !== null && !Number.isInteger(versionValue))) errors.push(issue('UNPINNED_VERSIONED_REFERENCE', `${table}.${column.name}`));
+    const versionColumn = columns.get(`${column.name.slice(0, -3)}_version`);
+    const versionValue = row[versionColumn.name];
+    const validVersion = /^(?:text|varchar|character varying)$/iu.test(versionColumn.type)
+      ? text(versionValue) : Number.isInteger(versionValue);
+    if ((row[column.name] === null) !== (versionValue === null) || (row[column.name] !== null && !validVersion)) errors.push(issue('UNPINNED_VERSIONED_REFERENCE', `${table}.${column.name}`));
   }
   if (Object.hasOwn(row, 'provenance_ref') && !text(row.provenance_ref)) errors.push(issue('INVALID_PROVENANCE', table));
   if (Object.hasOwn(row, 'references') || Object.hasOwn(row, 'children') || Object.hasOwn(row, 'candidates')) errors.push(issue('NON_NORMALIZED_REFERENCE', table));
@@ -145,7 +151,7 @@ function validateReadiness(datasets, gaps, errors, bundleKind) {
   for (const [table, rows] of datasets) {
     if (table === 'spatial_v3_scene_endpoint_slots') unique(rows, (row) => `${row.scene_template_id}:${row.scene_template_version}:${row.slot_key}`, 'SCENE_SLOT_DUPLICATE', errors);
     if (table === 'spatial_v3_world_route_points') contiguous(rows, 'world_route_id', 'ordinal', 'ROUTE_CONTINUITY_GAP', errors);
-    if (table === 'spatial_v3_expansion_profile_template_limits') for (const row of rows) if (!Number.isInteger(row.max_instances) || row.max_instances < 1) errors.push(issue('CAPACITY_PROOF_FAILED', `${table}:${row.id}`));
+    if (table === 'spatial_v3_expansion_profile_template_limits') for (const row of rows) if (!Number.isInteger(row.max_count) || row.max_count < 1) errors.push(issue('CAPACITY_PROOF_FAILED', `${table}:${row.profile_id}:${row.template_id}`));
     if (table === 'spatial_v3_controlled_vocabulary_bindings') for (const row of rows) if (!/^[a-f0-9]{64}$/u.test(row.registry_digest ?? '')) errors.push(issue('CONTROLLED_VOCABULARY_GAP', `${table}:${row.id}`));
   }
   const required = bundleKind === 'dependency_closure'
@@ -164,9 +170,90 @@ function validateControlledVocabularyBindings(datasets, errors) {
 function validateCapacityProof(datasets, errors) {
   const slots = datasets.get('spatial_v3_expansion_slots') ?? []; const limits = datasets.get('spatial_v3_expansion_profile_template_limits') ?? []; const candidates = datasets.get('spatial_v3_expansion_slot_templates') ?? [];
   if (!slots.length && !limits.length && !candidates.length) return;
-  const allowed = new Map(slots.map((slot) => [`${slot.id}:${slot.version}`, candidates.filter((candidate) => candidate.slot_id === slot.id && candidate.slot_version === slot.version).map((candidate) => `${candidate.template_id}:${candidate.template_version}`)]));
-  const proof = proveExpansionCapacity({ slots: slots.map((slot) => ({ id: `${slot.id}:${slot.version}`, maxInstances: slot.max_instances })), limits: limits.map((limit) => ({ template: `${limit.template_id}:${limit.template_version}`, maxCount: limit.max_instances })), allowed });
-  if (!proof.ok) errors.push(issue('CAPACITY_PROOF_FAILED', proof.reason ?? 'expansion'));
+  const profiles = new Set([...slots, ...limits].map((row) => `${row.profile_id}:${row.profile_version}`));
+  for (const profile of profiles) {
+    const profileSlots = slots.filter((row) => `${row.profile_id}:${row.profile_version}` === profile);
+    const profileLimits = limits.filter((row) => `${row.profile_id}:${row.profile_version}` === profile);
+    const allowed = new Map(profileSlots.map((slot) => [`${slot.id}:${slot.version}`, candidates.filter((candidate) => candidate.slot_id === slot.id && candidate.slot_version === slot.version).map((candidate) => `${candidate.template_id}:${candidate.template_version}`)]));
+    const proof = proveExpansionCapacity({ slots: profileSlots.map((slot) => ({ id: `${slot.id}:${slot.version}`, maxInstances: slot.max_instances })), limits: profileLimits.map((limit) => ({ template: `${limit.template_id}:${limit.template_version}`, maxCount: limit.max_count })), allowed });
+    if (!proof.ok) errors.push(issue('CAPACITY_PROOF_FAILED', `${profile}:${proof.reason ?? proof.code}`));
+  }
+}
+
+function validateExternalDependencyClosure(datasets, errors) {
+  const dependencies = datasets.get('spatial_v3_external_dependency_versions');
+  if (!dependencies) return;
+  const approved = new Set(dependencies.filter((row) => row.status === 'approved').map((row) => [
+    row.registry_type, row.registry_id, row.registry_version, row.registry_digest,
+    row.dependency_id, row.dependency_version, row.dependency_digest
+  ].join('|')));
+  for (const edge of datasets.get('spatial_v3_authoring_dependency_edges') ?? []) {
+    if (edge.target_entity_kind !== 'external_dependency') continue;
+    const key = [edge.target_registry_type, edge.target_registry_id,
+      edge.target_registry_version, edge.target_registry_digest,
+      edge.target_entity_id, edge.target_version, edge.target_dependency_digest].join('|');
+    if (!approved.has(key)) errors.push(issue('EXTERNAL_DEPENDENCY_PIN_MISSING', `${edge.source_entity_id}:${edge.dependency_role}`));
+  }
+}
+
+function validateSceneCandidateApplicability(datasets, errors) {
+  const candidates = datasets.get('spatial_v3_scene_materialization_candidates') ?? [];
+  if (!candidates.length) return;
+  const profiles = datasets.get('spatial_v3_scene_materialization_profiles') ?? [];
+  const rules = datasets.get('spatial_v3_scene_applicability_rules') ?? [];
+  const versions = datasets.get('spatial_v3_authoring_versions') ?? [];
+  for (const profile of profiles) {
+    if (!versions.some((row) => row.entity_kind === 'scene_materialization_profile'
+      && row.entity_id === profile.id && row.version === profile.version
+      && row.world_revision_id === profile.world_revision_id
+      && row.canonical_digest === profile.canonical_digest && row.status === 'approved')) {
+      errors.push(issue('SCENE_PROFILE_AUTHORING_VERSION_MISSING', profile.id));
+    }
+  }
+  for (const candidate of candidates) {
+    const profile = profiles.find((row) => row.id === candidate.profile_id && row.version === candidate.profile_version);
+    if (!profile || !rules.some((rule) => rule.id === candidate.applicability_rule_id
+      && rule.version === candidate.applicability_rule_version
+      && rule.world_revision_id === profile.world_revision_id && rule.status === 'approved'
+      && rule.rule_kind === 'exact_source_ref')) {
+      errors.push(issue('SCENE_CANDIDATE_APPLICABILITY_RULE_MISSING', `${candidate.profile_id}:${candidate.scene_template_id}`));
+    }
+  }
+}
+
+function validateExpansionRuleClosure(datasets, errors) {
+  const profiles = datasets.get('spatial_v3_g4_expansion_profiles') ?? [];
+  const templates = datasets.get('spatial_v3_g5_generation_templates') ?? [];
+  if (!profiles.length && !templates.length) return;
+  const rules = datasets.get('spatial_v3_expansion_rule_sets') ?? [];
+  const versions = datasets.get('spatial_v3_authoring_versions') ?? [];
+  const regionalBases = datasets.get('spatial_v3_regional_scene_template_bases') ?? [];
+  for (const profile of profiles) {
+    for (const [field, kind, strategy] of [
+      ['adjacency_rule_set', 'adjacency', 'through_same_exit'],
+      ['connectivity_rule_set', 'connectivity', 'existing_exit_reachable'],
+      ['seed_policy', 'seed', 'mulberry32_v1']
+    ]) {
+      const matches = rules.filter((rule) => rule.id === profile[`${field}_id`]
+        && rule.version === profile[`${field}_version`]
+        && rule.world_revision_id === profile.world_revision_id
+        && rule.rule_kind === kind && rule.strategy === strategy);
+      if (matches.length !== 1 || !versions.some((version) => version.entity_kind === 'expansion_rule_set'
+        && version.entity_id === matches[0].id && version.version === matches[0].version
+        && version.world_revision_id === profile.world_revision_id
+        && version.canonical_digest === matches[0].canonical_digest)) {
+        errors.push(issue('EXPANSION_RULE_CLOSURE_MISSING', `${profile.id}:${field}`));
+      }
+    }
+  }
+  for (const template of templates) {
+    if (!regionalBases.some((basis) => basis.id === template.regional_template_id
+      && basis.version === template.regional_template_version
+      && basis.world_revision_id === template.world_revision_id
+      && basis.status === 'approved')) {
+      errors.push(issue('REGIONAL_TEMPLATE_BASIS_MISSING', template.id));
+    }
+  }
 }
 
 function validateRouteTopology(datasets, errors) {

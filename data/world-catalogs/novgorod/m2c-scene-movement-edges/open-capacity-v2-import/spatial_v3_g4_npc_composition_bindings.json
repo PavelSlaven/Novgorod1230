@@ -1,0 +1,2552 @@
+[
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "88f636c2e3aca54d13eda04f3d7dded2dc9bf8a341b9f4d10456ce734f2d1101"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "03af48ed59355eab1e85ed0c7af99ad2028f37aaf284f028e38bc16c8e5b97a2"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_local_trader_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_foreign_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "b18ddfbf43b5e856683e49a7b2e6fdeeaec933787e6646e3e233f42663c28a20"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "770548f774cf7377082e635dac0ce455b1ba2857d213c36050200fa85670f3c0"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "61d79d637e1c2cf852d86c2f5eb5fbd26aa6e99ddc89a1cbdf919f5f61b81f2e"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "b013856f8181789f23fcb32d2dec751371a6d72bd2b5c6930f6e1b851f49863c"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_estuary__waterway_access__outer_exposed",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "86d65623532488e1d5ae34bfcba3a1d61458bd79b9bc46e022fc48f1cd3104b9"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "3a1ec6452a73b560c192b1228ad89b3ec0a1062fcf00bb337639159767e2a399"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "7e6f915f5f90f96ecdca65faa286dd2c40ec726449e2288213696c5576a71ae3"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_forest__forest_resource_use__forest_tract",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_forest_worker_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_hunter_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "c2a000e6377299c1b98f0aa767aecce2da301637da6aaaaa0dc505b1a860dcbe"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_forest_worker_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_hunter_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "3165d884ee5881c826a1838b9489228cd5aa06493dc8457dd55f1db8d4e73faa"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "88ba577afba8709337b6a7894710b4b6f33356b018a4e3ce574d1dd32147abd4"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "a3739a26e7f208a85ba665c715c15d21ea058a58c5a2e63ae55bb6cb66c4274d"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "8f78215bef5666eb1445718f3bcbea83237dc204b57615e6f5d9b230b26952b8"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_ridge__waterway_access__landing_terrace",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_local_trader_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_foreign_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "52b7f436b6807bed930bf042999af555497dc5356cfd62021777c7dbaa275f49"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_forest_worker_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "8a181e6292c6cd734a8774056feae07dd1dee3f7f1bb3b5bc63b5c4f4a93cfd7"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "a31edc95dc98881e1f588de4275e07cb8affe15a115c152f8352fcf67de400fa"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__channel_split",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "d3fba74df7579cdde4d01b9b1c9e6d206471d91b3e6554e0a74ed4a61d2fae94"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_foreign_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "e7178275ea5c1f1f098c4a6321d47a8642c1aa436901d859b54a972c1f4283ed"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_foreign_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "adf971b3b2ad0883f9d26d26042ff6b9093a26f865dcd4abcee14032f5a58912"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_foreign_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "e124855e41ed5fc9211f78b9e2011ddd64794f9b1a2c59f2b6bcd54324931bd0"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_foreign_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "50447fce669b5ae6331a4652cad6d3a8a448ce3f9824a0874d0f2b8f61e8e6d2"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_foreign_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "756ebc9186667cdf88aa2ba252cf317c6d24b79bfaf4a6ee8756df634c846eee"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "891d13d937e6fc48a7b79b2700b23d11991c7d39124f266a157a9233e71af119"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "fe8fe2c4ed75bc0ae81a3af47f600539b6f1150ad696cf21eb95b7d88d0856cb"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "9d3c91db7c5b63e6e727d70bdaefd911f7eb3ced29b5ec718b85191cde4b8fa8"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "88efd3f6fe176516181788c9e629078d02c768160f234b15be4801a52f54873f"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_forest_worker_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_hunter_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "b3338d90ad4bd147d9d8c39ecfe79d948da28313e0b0f1bfd7f491d035d516b4"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_local_trader_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_household_servant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "94df10d4682ca111ecb21ba7dde9effc2d158e57d848dda4264cec9233ff7afd"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_boatman_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_local_trader_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_visiting_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_foreign_merchant_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "d1372224297179500beb302b7c5a44e7d5444b95781d511a299944d4ec3eb648"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "8cba643aa967c312bf6eba9ef9535a7932e179e957b29dcc7352091027a44c07"
+  },
+  {
+    "entity_kind": "g4_npc_composition_binding",
+    "id": "m2c_g4_npc_composition_g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "version": 2,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+    "g4_version": 1,
+    "generation_template_id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+    "generation_template_version": 2,
+    "min_count": 0,
+    "max_count": 2,
+    "payload": {
+      "count_weights": [
+        1,
+        1,
+        1
+      ],
+      "weighted_profile_refs": [
+        {
+          "profile_ref": {
+            "id": "m2c_npc_fisher_v1",
+            "version": 2
+          },
+          "weight": 1
+        },
+        {
+          "profile_ref": {
+            "id": "m2c_npc_guide_v1",
+            "version": 2
+          },
+          "weight": 1
+        }
+      ],
+      "placement_policy": {
+        "id": "m2c_npc_scene_positions_v1",
+        "version": 1,
+        "status": "approved",
+        "position_slot_order": [
+          "focus",
+          "departure"
+        ],
+        "reserved_position_slots": [
+          "arrival"
+        ],
+        "allowed_physical_class_ids": [
+          "spatial.g6.open"
+        ],
+        "empty_context_rules": [
+          {
+            "physical_class_id": "spatial.g6.water",
+            "condition": "no_existing_carrier_supported_position",
+            "count": 0,
+            "carrier_creation": "forbidden"
+          }
+        ],
+        "count_over_capacity": "data_gap",
+        "unsupported_placement_context": "data_gap",
+        "provenance_ref": "m2c_npc_editorial_001",
+        "directness": "explicit_user_authorized_gameplay_authoring",
+        "confidence": "high",
+        "historical_claim": false,
+        "source_refs": [
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_g6_template_slots.json",
+          "data/world-catalogs/novgorod/spatial-v3/candidates/m2c-g4-expansion-v1/datasets/spatial_v3_scene_position_templates.json"
+        ],
+        "authoring_note": "Reserve arrival for the entering player. Place at most one ordinary NPC at each approved focus/departure position. A water G6 without an existing carrier-supported position has an explicitly empty initial NPC baseline. No boat or carrier is inferred or created. Existing carrier placement requires its own admitted exact position binding before use."
+      }
+    },
+    "status": "approved",
+    "provenance_ref": "m2c_npc_editorial_001",
+    "directness": "analogical",
+    "confidence": "low",
+    "canonical_digest": "5f0b294ac1c299db00c74d8c9113efe1991faced8a4c2553abb55cfcb74c70de"
+  }
+]

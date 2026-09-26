@@ -55,11 +55,24 @@ test('first entry creates one quiet baseline profile for every G6', () => {
       materializer_version: 'v1', catalog_digest: 'digest',
       base_static_template: {
         scene_template_ref: {},
-        g6: { acoustic_uniformity: 'uniform' },
-        position: {}
+        g6: { source_scene_template_ref: {}, scene_slot_key: 'main',
+          enclosing_structure_slot_key: null, physical_class_id: 'open',
+          primary_scene_role_id: 'local', vertical_context_id: 'surface',
+          overhead_cover_id: 'none', intra_g6_visibility_mode: 'default_clear',
+          default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform' },
+        position: { template_slot_key: 'arrival', position_type_id: 'central',
+          capacity: 1, access_class_id: 'public', instance_count: 1 }
       },
       s1_physical_writes: [g6('g6:interior', 0)]
     } });
+  const primaryG6 = rows.find(({ target_table: table, id }) =>
+    table === 'party_g6_instances' && id === 'g6:main');
+  assert.equal(primaryG6.record.enclosing_stable_structure_id, null);
+  assert.equal(Object.hasOwn(primaryG6.record, 'enclosing_structure_slot_key'), false);
+  const primaryPosition = rows.find(({ target_table: table }) =>
+    table === 'scene_position_nodes');
+  assert.equal(primaryPosition.record.template_slot_key, 'arrival');
+  assert.equal(Object.hasOwn(primaryPosition.record, 'instance_count'), false);
   const profiles = rows.filter(({ target_table: table }) =>
     table === 'g6_acoustic_profiles');
   assert.deepEqual(profiles.map(({ id, record }) => ({ id,
@@ -71,6 +84,18 @@ test('first entry creates one quiet baseline profile for every G6', () => {
     { id: 'g6:interior', ambient_noise: 0,
       acoustic_uniformity: 'uniform', state_version: 0 }
   ]);
+});
+
+test('first entry rejects an unmaterialized enclosing-structure slot', () => {
+  assert.throws(() => firstEntryPhysicalWrites({ partyId: 'party',
+    changeSetId: 'change', target: {
+      g4_id: 'g4', g5_site_id: 'g5', scene_baseline_id: 'baseline',
+      g6_instance_id: 'g6', position_id: 'position', canonical_g5_ref: {},
+      materialization_trace_id: 'trace', materializer_version: 'v1',
+      catalog_digest: 'digest', s1_physical_writes: [],
+      base_static_template: { scene_template_ref: {},
+        g6: { enclosing_structure_slot_key: 'unmaterialized' }, position: {} }
+    } }), (error) => error.code === 'TRACE_PHASE_3_FIRST_ENTRY_PREPARATION_MISSING');
 });
 
 test('revision 35 admits the prepared fishing-camp first-entry lifecycle', () => {

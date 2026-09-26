@@ -38,8 +38,15 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
       ok: false,
       request_id: requestId,
       error: Object.freeze({ code, message,
-        ...(error?.turn_commit_status === 'not_started'
-          ? { turn_commit_status: 'not_started' } : {}) })
+        ...(code === 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED'
+          && error?.details?.topology_status === 'topology_committed'
+          && error?.details?.movement_status === 'movement_denied'
+          ? { turn_commit_status: 'topology_committed',
+              topology_status: 'topology_committed',
+              movement_status: 'movement_denied',
+              actor_moved: false, time_advanced: false }
+          : error?.turn_commit_status === 'not_started'
+            ? { turn_commit_status: 'not_started' } : {}) })
     })
   });
 }

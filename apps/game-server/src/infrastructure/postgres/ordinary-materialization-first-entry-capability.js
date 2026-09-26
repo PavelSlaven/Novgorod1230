@@ -87,8 +87,8 @@ export async function insertFirstEntryFiniteSource({
     partyId, JSON.stringify({ entity_kind: 'ordinary_finite_source',
       entity_id: source.source_resource_node_id }), source.position_ref,
     source.initial_quantity, JSON.stringify(source.quantity_unit_ref),
-    JSON.stringify({ kind: 'ordinary_material_quality', id: 'prepared' }),
-    JSON.stringify({ kind: 'ordinary_resource_access', id: 'context_bound' }),
+    JSON.stringify(source.quality_ref ?? { kind: 'ordinary_material_quality', id: 'prepared' }),
+    JSON.stringify(source.access_policy_ref ?? { kind: 'ordinary_resource_access', id: 'context_bound' }),
     changeSetId, JSON.stringify(source.initial_amount_bounds),
     source.property_basis_ref]);
 }

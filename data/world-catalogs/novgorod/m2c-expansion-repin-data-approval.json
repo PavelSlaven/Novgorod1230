@@ -1,0 +1,37 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent exact-data review",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "expansion_manifest_sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133",
+  "target_start_proposal_approval": {
+    "candidate_sha256": "fd448da3e194aa8563fffacdcfa870be4eb5e004c2da61a4bdc9e0dd767d3412",
+    "scope": "Exact canonical entry and initial-state authoring proposal with the independently approved M2c nonportal availability expansion-manifest pin; all other candidate fields unchanged",
+    "excludes": "Player body, attribute and clothing transfer; import, canonical start runtime and release activation"
+  },
+  "target_player_transfer_approval": {
+    "candidate_sha256": "e01496e772e9eb8b624491b181c915441da8930c87521723d9c4e3a7b5042c37",
+    "scope": "Exact new-player body, actor forest_hunting and three owned equipped summer garments; only the target-start SHA pin changed",
+    "excludes": "Historical party snapshots, appearance, skills, language, knowledge, import, runtime pins and release activation"
+  },
+  "target_player_basis_approval": {
+    "candidate_sha256": "7a5c9f76a28e9aa6a5820ff83a60a17ebb467a3b48841d0798d3588e3c3e65e1",
+    "scope": "Exact new-player appearance, twelve editorial skills, common Novgorod speech and empty specific knowledge; only start and transfer SHA pins changed",
+    "excludes": "Historical frequency, historical party snapshots, import and release activation"
+  },
+  "target_runtime_profiles_candidate_approval": {
+    "candidate_sha256": "b92313c0bf625f7413ef09e62df9960e76aed09c82bd8c4d9534e8e3c99b7506",
+    "scope": "Exact 32 G4, 25 generated families and one canonical start applicability; unchanged generic turn/A1 mechanics, eight N1 occupations and twelve approved NPC bindings; only the target-start source SHA pin changed",
+    "excludes": "S1, O2a, O2b and F1 authority gaps; A1 and N1 consumer admission, mapped import, runtime activation and historical claims"
+  },
+  "target_runtime_profiles_mapped_approval": {
+    "source_candidate_sha256": "b92313c0bf625f7413ef09e62df9960e76aed09c82bd8c4d9534e8e3c99b7506",
+    "dataset_sha256": "ed1f27c48bdf4c496c4c70588701ac13f9ae340b16e7cb1a61a50489111eccdb",
+    "manifest_sha256": "8a0b2881e63cd0a87f67ac347748cf9aab5f5d514c8893f83b473a41e039b2ae",
+    "scope": "Exact deterministic approved-status mapping of the reviewed candidate; six status fields and the approved flag only, 33 applicability scopes, unchanged mechanical payloads and explicit null S1/O2a/O2b/F1 gaps",
+    "excludes": "PostgreSQL import/readback, A1 and N1 consumer admission, runtime activation, historical claims and full release approval"
+  },
+  "historical_approval_path": "data/world-catalogs/novgorod/m2c-sol-data-approval.json",
+  "activation_authorized": false
+}

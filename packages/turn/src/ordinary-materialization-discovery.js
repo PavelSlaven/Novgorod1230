@@ -1,5 +1,6 @@
 import { ordinaryNoop, knownResolutionResult } from './ordinary-materialization-discovery-result.js';
-import { candidateForDiscovery, knownMaterializedItemName } from
+import { candidateForDiscovery, equivalentVisibleItem,
+  knownMaterializedItemName } from
   './ordinary-materialization-discovery-identity.js';
 import {
   applyOrdinaryAggregateTransition,
@@ -53,6 +54,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     }
     const objective = { ...enabled.objective_context,
       request_id: `${rootId}:ordinary:seed` };
+    const partyClock = request.committed_state?.clock ?? null;
+    const historicalEvents = Array.isArray(request.committed_state?.historical_events)
+      ? request.committed_state.historical_events : [];
     let projection = Object.freeze({ ordinary_materialization_aggregate:
       structuredClone(enabled.ordinary_aggregate) });
     const transitions = [];
@@ -64,6 +68,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
             objective: enabled.objective_context,
             scopeRef: enabled.ordinary_aggregate.scope_ref }) }),
         semanticContext: enabled.semantic_context ?? null,
+        partyClock,
+        historicalEvents,
         ordinaryMaterializationModel: modelBudget.invoke,
         repairAvailable: modelBudget.hasRemaining,
         workingProjection: projection,
@@ -135,6 +141,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       semanticContext: enabled.semantic_context ?? null,
       requiredQuantity: request.operation.quantity ?? null,
+      partyClock,
+      historicalEvents,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
       workingProjection: projection,
@@ -164,6 +172,12 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       ?? null;
     if (presence.status === 'pending_items_property_admission') {
       const proposed = presence.pending_items_property_admission.proposed_item;
+      const equivalent = equivalentVisibleItem(request, proposed);
+      if (equivalent != null) {
+        return knownResolutionResult(request, { resolution: 'materialize' }, {
+          displayName: equivalent.name
+        });
+      }
       if (proposed.property_basis_ref
           !== envelope.request.context_refs.property_context_ref) {
         return ordinaryNoop(request);

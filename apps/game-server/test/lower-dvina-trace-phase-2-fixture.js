@@ -55,6 +55,8 @@ function fixture({
   createTurnStepWorldProcessResolver = null,
   worldBaseReferenceSnapshot = undefined,
   llmDiagnostics = null,
+  authoredTurnProfile = null,
+  spatialExpansionRuntime = null,
   beforeSemanticResolve = null,
   beforeRandomSource = null,
   afterCommittedVisibleRead = null,
@@ -528,10 +530,11 @@ function fixture({
     },
     ...(turnStepModel
       ? {
-          turnStepModel: async (input, repairContext) => {
+          // Forward 3rd arg (services historical_events wrap); do not swallow.
+          turnStepModel: async (input, repairContext, modelCallContext) => {
             turnStepCount += 1;
             turnStepInput = structuredClone(input);
-            return turnStepModel(input, repairContext);
+            return turnStepModel(input, repairContext, modelCallContext);
           },
         }
       : {}),
@@ -602,6 +605,8 @@ function fixture({
       },
     },
     ...(llmDiagnostics ? { llmDiagnostics } : {}),
+    ...(authoredTurnProfile ? { authoredTurnProfile } : {}),
+    ...(spatialExpansionRuntime ? { spatialExpansionRuntime } : {}),
   });
   return {
     bodyUpdateCount: () => bodyUpdateCount,

@@ -1,0 +1,101 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import test from 'node:test';
+import { generateProceduralFinalCandidateV2 } from
+  '../../../scripts/generate-procedural-final-candidate-v2.mjs';
+import { buildProceduralFinalV2ImportLedger } from
+  '../src/procedural-v6-import.js';
+
+const root = new URL('../../../', import.meta.url).pathname.replace(/^\/(.:)/u,
+  '$1');
+
+test('v2 is append-only, attested and inactive', async () => {
+  const candidate = await generateProceduralFinalCandidateV2(root);
+  const tracked = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+      + 'final-candidate-pack-v2/candidate.json', import.meta.url), 'utf8'));
+  assert.deepEqual(candidate, tracked);
+  assert.equal(candidate.allocation_source.approval_attestation_digest,
+    '692960ad7561b60a0793f1f3fb097e757f8975aa91ec42251296edc6213b552a');
+  assert.equal(candidate.append_only_delta.insert_count, 1);
+  assert.equal(candidate.append_only_delta.delete_count, 0);
+  assert.equal(candidate.import_authorized, false);
+  assert.equal(candidate.activation_authorized, false);
+  assert.equal(candidate.existing_party_migration_authorized, false);
+  assert.equal(candidate.inherited_closure.v5_assert_existing_record_count, 3248);
+  assert.equal(candidate.append_only_delta.record.payload.policy.policy_id,
+    'fishing_present_actor_functional_allocation_v1');
+  const approval = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+      + 'final-candidate-pack-v2/approval-attestation.json', import.meta.url),
+  'utf8'));
+  assert.equal(approval.attestation_digest,
+    '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772');
+});
+
+test('activated v1 stays immutable and non-migrated', async () => {
+  const before = await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+      + 'final-candidate-pack-v1/candidate.json', import.meta.url), 'utf8');
+  await generateProceduralFinalCandidateV2(root);
+  const after = await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+      + 'final-candidate-pack-v1/candidate.json', import.meta.url), 'utf8');
+  assert.equal(after, before);
+});
+
+test('stale top digest cannot hide a v1 canonical record mutation', async () => {
+  const path = 'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/candidate.json';
+  const v1 = JSON.parse(await readFile(new URL(`../../../${path}`,
+    import.meta.url), 'utf8'));
+  v1.record_operations_by_table[0].records[0]
+    .canonical_payload.canonical_fields.status = 'draft';
+  await assert.rejects(() => generateProceduralFinalCandidateV2(root, {
+    [path]: v1
+  }), { code: 'FINAL_PACK_DIGEST_MISMATCH' });
+});
+
+test('stale allocation digest cannot hide role predicate mutation', async () => {
+  const path = 'data/world-catalogs/novgorod/procedural-scene-v2/functional-allocation-v1/candidate.json';
+  const allocation = JSON.parse(await readFile(new URL(`../../../${path}`,
+    import.meta.url), 'utf8'));
+  allocation.policies[0].applicability.role_ref = 'nov_role_boatman';
+  await assert.rejects(() => generateProceduralFinalCandidateV2(root, {
+    [path]: allocation
+  }), { code: 'FINAL_V2_ALLOCATION_GENERATED_MISMATCH' });
+});
+
+test('v2 importer rejects role tamper and zero target digest', async () => {
+  const [v1, v2, attestation] = await Promise.all([
+    'final-candidate-pack-v1/candidate.json',
+    'final-candidate-pack-v2/candidate.json',
+    'final-candidate-pack-v2/approval-attestation.json'
+  ].map((path) => readFile(new URL(
+    `../../../data/world-catalogs/novgorod/procedural-scene-v2/${path}`,
+    import.meta.url), 'utf8').then(JSON.parse)));
+  const baseline = { request: { parent_revision_id: 'baseline',
+    parent_catalog_digest: '1'.repeat(64),
+    parent_snapshot_manifest_digest: '2'.repeat(64) } };
+  const roleTamper = structuredClone(v2);
+  roleTamper.append_only_delta.record.payload.policy.applicability.role_ref =
+    'nov_role_boatman';
+  assert.throws(() => buildProceduralFinalV2ImportLedger({ baseline, v1Pack: v1,
+    v2Pack: roleTamper, attestation }),
+  { code: 'PROCEDURAL_FINAL_V2_PACK_INVALID' });
+  assert.throws(() => buildProceduralFinalV2ImportLedger({ baseline, v1Pack: v1,
+    v2Pack: { ...v2, target_catalog_digest: '0'.repeat(64) }, attestation }),
+  { code: 'PROCEDURAL_FINAL_V2_PACK_INVALID' });
+});
+
+test('v2 evidence records measured catalog-import-record rollback cleanup',
+  async () => {
+    const result = JSON.parse(await readFile(new URL(
+      '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+        + 'final-candidate-pack-v2/disposable-import-result.json',
+      import.meta.url), 'utf8'));
+  assert.equal(result.v2_import.rollback_probe, 'pass');
+  assert.equal(result.v2_import.import_audit_digest,
+    '6ad18c6f40185fa540bf7e3ec3bbb5d5b96e95c370b5e70c657a0db73c29f3b2');
+    assert.equal(result.v2_import
+      .catalog_import_records_zero_residual_after_probe, true);
+  });

@@ -1,0 +1,13 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent data review",
+  "reviewed_on": "2026-09-24",
+  "reviewed_repository_head": "11e56ee9d9de7e98a761debf09d624d298a1bd53",
+  "candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-basis-review-candidate.json",
+  "candidate_sha256": "19584e1620ee6d0b96c3c539693ba394f6531c5dc086ac1f161f1fcb2247b3b7",
+  "scope": "Exact new-player applicability for riverbank boatman, reed-backwater fisher and Zaostrovye boatman basis candidates. The approved occupation rows and reviewed occupation-to-archetype mappings support survival primary +2 in all three; the other 11 player skills retain neutral baseline. Secondary +1 is withheld without biography. travel_transport is not riding and remains the typed player_watercraft_skill_missing gap. The pinned regional male/adult appearance option sets, ordinary Novgorod speech transfer and empty authored specific knowledge are approved for these three new players only.",
+  "exclusions": "No boat or ferry capability, equipment, route knowledge, biography, historical population claim, body/attribute/clothing transfer approval, existing-player mutation, target import, runtime approval or release activation.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

@@ -1,0 +1,679 @@
+{
+  "schema": "rus.procedural_scene_authoring_overlay.v3",
+  "revision": 3,
+  "overlay_id": "novgorod_procedural_v6_route_free_overlay_001",
+  "status": "partially_authoring_approved",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "compatible_world_pin": {
+    "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+    "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+  },
+  "candidates": [
+    {
+      "schema": "rus.procedural_scene_authoring_candidate.v1",
+      "candidate_id": "novgorod_natural_shore_v3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "family": "natural_shore",
+      "authority": "evidence_bounded_natural_profile",
+      "confidence": "medium",
+      "region_id": "region_novgorod_land",
+      "route_required": false,
+      "spatial_closure_ref": {
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "scene_template_id": "trace_ld_v1_tpl_wreck_shore",
+        "scene_template_version": 1,
+        "scene_template_digest": "9eed3de184c60bcd4b0caee3f81fc7f642acd38c74518237aa5b69dda08fd032",
+        "g5_id": "trace_ld_v1_g5_wreck_shore",
+        "g5_version": 1,
+        "g5_digest": "b7ace289584fad2c96417fbb005a445bd578fb1d4531fc73ffd58a95393f2888",
+        "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "parent_version": 4,
+        "g6_slots": [
+          {
+            "scene_slot_key": "open_shore",
+            "physical_class_id": "spatial.g6.open",
+            "primary_scene_role_id": "open_shore",
+            "vertical_context_id": "surface",
+            "overhead_cover_id": "none"
+          }
+        ]
+      },
+      "allowed_semantics": [
+        "generic_substrate",
+        "generic_riparian_ecology",
+        "water_adjacency"
+      ],
+      "requirements": {
+        "water_adjacent": true,
+        "mandatory_context_refs": []
+      },
+      "forbidden_implications": [
+        "landing",
+        "access",
+        "safety",
+        "stock",
+        "wreck",
+        "local_taxon_assertion"
+      ],
+      "materialization_limits": [
+        "no_local_willow",
+        "no_local_tree",
+        "no_local_stand",
+        "no_local_stock",
+        "no_local_entity",
+        "no_outcome"
+      ],
+      "global_claim_refs": [
+        "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
+        "claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
+        "claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+        "claim:white-willow-depends-on-moist-lit-riparian-habitat"
+      ],
+      "regional_claim_refs": [],
+      "evidence_claims": [
+        {
+          "claim_ref": "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
+          "source_id": "nature:final-nature-gap-closure-v1.json",
+          "source_locator": 35,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:final-nature-freeze-thaw-bank"
+          ],
+          "source_refs": [
+            "source:final-nature-usgs-freeze-thaw-bank"
+          ],
+          "applicability": {
+            "context_scope": "universal"
+          },
+          "qualifiers": {
+            "typicality": "unknown",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
+          "limits": {
+            "source_claim_object": {
+              "kind": "literal",
+              "value": "repeated freezing and thawing can break apart bank soil and leave it more vulnerable to erosion after thaw without establishing a particular bank collapse route safety or load limit"
+            },
+            "knowledge_access": {
+              "class": "domain_internal_only",
+              "required_facets": []
+            },
+            "hard_exclusion": null
+          }
+        },
+        {
+          "claim_ref": "claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy",
+          "source_id": "nature:final-nature-gap-closure-v1.json",
+          "source_locator": 37,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:final-nature-riparian-flow"
+          ],
+          "source_refs": [
+            "source:final-nature-usgs-riparian-flow"
+          ],
+          "applicability": {
+            "context_scope": "universal"
+          },
+          "qualifiers": {
+            "typicality": "unknown",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
+          "limits": {
+            "source_claim_object": {
+              "kind": "literal",
+              "value": "riparian vegetation and organic debris can slow floodwater and dissipate stream energy without proving that a particular bank is stable passable or protected"
+            },
+            "knowledge_access": {
+              "class": "domain_internal_only",
+              "required_facets": []
+            },
+            "hard_exclusion": null
+          }
+        },
+        {
+          "claim_ref": "claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition",
+          "source_id": "nature:final-nature-gap-closure-v1.json",
+          "source_locator": 38,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:final-nature-riparian-flow"
+          ],
+          "source_refs": [
+            "source:final-nature-usgs-riparian-flow"
+          ],
+          "applicability": {
+            "context_scope": "universal"
+          },
+          "qualifiers": {
+            "typicality": "unknown",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
+          "limits": {
+            "source_claim_object": {
+              "kind": "literal",
+              "value": "where vegetation or organic debris slows floodwater sediment can be deposited without establishing the material depth age contamination or footing at a particular place"
+            },
+            "knowledge_access": {
+              "class": "domain_internal_only",
+              "required_facets": []
+            },
+            "hard_exclusion": null
+          }
+        },
+        {
+          "claim_ref": "claim:white-willow-depends-on-moist-lit-riparian-habitat",
+          "source_id": "biology:environment-biology.json",
+          "source_locator": 44,
+          "use_scope": "ecology_only",
+          "local_presence_authorized": false,
+          "resource_materialization_authorized": false,
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:euforgen-salix-alba"
+          ],
+          "source_refs": [
+            "source:euforgen-salix-alba"
+          ],
+          "applicability": {
+            "context_scope": "universal"
+          },
+          "qualifiers": {
+            "typicality": "attested",
+            "confidence": "high",
+            "directness": "direct"
+          },
+          "verification_ref": "wk-verification:production-white-willow-depends-on-moist-lit-riparian-habitat",
+          "review_ref": "research/verification-population-environment-biology.md#final-replacement-source-check--root-2026-09-03",
+          "limits": "Качественная универсальная/видоспецифичная связь; не доказывает местный водоём, заросли, глину, зерно, погоду, запас или исход. Review mapping: candidate=ENV-13."
+        }
+      ],
+      "data_gap_codes": [],
+      "candidate_digest": "3a8a1b71b22d139f3df7e9c133bd46754ff1038d23c54a06b57f4582111e8abc",
+      "authoring_approval": "pending_independent_review"
+    },
+    {
+      "schema": "rus.procedural_scene_authoring_candidate.v1",
+      "candidate_id": "novgorod_inland_fishing_worksite_v3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "family": "inland_fishing_worksite",
+      "authority": "historical_compatibility_profile",
+      "confidence": "medium",
+      "region_id": "region_novgorod_land",
+      "route_required": false,
+      "spatial_closure_ref": {
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "scene_template_id": "trace_ld_v1_tpl_fishing_camp",
+        "scene_template_version": 1,
+        "scene_template_digest": "6f68fc0225dfbccf12705e1c0636c3b1b97fff343a6c9ca53376fa6e4c81dfb4",
+        "g5_id": "trace_ld_v1_g5_fishing_camp",
+        "g5_version": 1,
+        "g5_digest": "0e5d543516e2055c7dd5a0879addef8293cfc2f76107cdf3c338beabc24fb621",
+        "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "parent_version": 4,
+        "g6_slots": [
+          {
+            "scene_slot_key": "s1_open_one_space",
+            "physical_class_id": "spatial.g6.semi_enclosed",
+            "primary_scene_role_id": "ordinary_local",
+            "vertical_context_id": "surface",
+            "overhead_cover_id": "partial"
+          },
+          {
+            "scene_slot_key": "working_camp",
+            "physical_class_id": "spatial.g6.open",
+            "primary_scene_role_id": "working_camp",
+            "vertical_context_id": "surface",
+            "overhead_cover_id": "none"
+          }
+        ]
+      },
+      "allowed_semantics": [
+        "water_adjacency",
+        "fishing_land_use_compatibility",
+        "workspace_compatibility"
+      ],
+      "requirements": {
+        "water_adjacent": true,
+        "mandatory_context_refs": [
+          "claim:medieval-novgorod-fishing-attests-major-occupation-food-context"
+        ]
+      },
+      "forbidden_implications": [
+        "station",
+        "storage",
+        "catch",
+        "route"
+      ],
+      "global_claim_refs": [],
+      "regional_claim_refs": [
+        "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
+        "claim:population-net-work",
+        "claim:population-boat-work",
+        "claim:population-fish-dried-form",
+        "claim:population-fishing-workspace"
+      ],
+      "evidence_claims": [
+        {
+          "claim_ref": "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
+          "source_id": "ecology:environment-ecology.json",
+          "source_locator": 56,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:novgorod-fishing"
+          ],
+          "source_refs": [
+            "source:novgorod-museum-fishing"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1100,
+              "to": 1300,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "attested",
+            "confidence": "medium",
+            "directness": "direct"
+          },
+          "verification_ref": "wk-verification:production-medieval-novgorod-fishing-attests-major-occupation-food-context",
+          "review_ref": "research/verification-environment-ecology.md",
+          "limits": "Candidate ECO-13 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:environment-ecology.json#claim:medieval-novgorod-fishing-attests-major-occupation-food-context). Approved only within report conditions: no local entity, inventory, ownership, access, exact date, weather or outcome. No fresh reopening is claimed."
+        },
+        {
+          "claim_ref": "claim:population-net-work",
+          "source_id": "population:historical-population.json",
+          "source_locator": 1649,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:population-fishing-221"
+          ],
+          "source_refs": [
+            "source:rybina-fishing-2015"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1000,
+              "to": 1400,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "attested",
+            "confidence": "medium",
+            "directness": "direct"
+          },
+          "verification_ref": null,
+          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+          "limits": "candidate PHC-01; regional practice, not individual skill."
+        },
+        {
+          "claim_ref": "claim:population-boat-work",
+          "source_id": "population:historical-population.json",
+          "source_locator": 1689,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:population-fishing-222"
+          ],
+          "source_refs": [
+            "source:rybina-fishing-2015"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1000,
+              "to": 1400,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "unknown",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+          "limits": "candidate PHC-09; shore/boat handling only, not route/right."
+        },
+        {
+          "claim_ref": "claim:population-fish-dried-form",
+          "source_id": "population:historical-population.json",
+          "source_locator": 1769,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:population-fishing-221"
+          ],
+          "source_refs": [
+            "source:rybina-fishing-2015"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1150,
+              "to": 1350,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "attested",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+          "limits": "candidate PHC-08; historical compatibility only, no recipe, shed, or shelf-life."
+        },
+        {
+          "claim_ref": "claim:population-fishing-workspace",
+          "source_id": "population:historical-population.json",
+          "source_locator": 1850,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:population-fishing-221"
+          ],
+          "source_refs": [
+            "source:rybina-fishing-2015"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1000,
+              "to": 1400,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "unknown",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+          "limits": "candidate PHC-10; no asserted specific camp/building."
+        }
+      ],
+      "data_gap_codes": [
+        "FUNCTIONAL_TOOL_MAPPING_MISSING",
+        "FUNCTIONAL_STORAGE_MAPPING_MISSING",
+        "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING",
+        "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
+      ],
+      "candidate_digest": "049e5ecce5310d7f3d85874e9e1bd919f2be723eb681e9f67d8a2d4be957235c",
+      "authoring_approval": "pending_independent_review"
+    },
+    {
+      "schema": "rus.procedural_scene_authoring_candidate.v1",
+      "candidate_id": "novgorod_drying_storage_workspace_v3",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "family": "drying_storage_workspace",
+      "authority": "editorial_reconstruction",
+      "confidence": "medium",
+      "region_id": "region_novgorod_land",
+      "route_required": false,
+      "spatial_closure_ref": {
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "scene_template_id": "trace_ld_v1_tpl_old_drying_shed",
+        "scene_template_version": 1,
+        "scene_template_digest": "8e5019e07de39dc1eb3d07f996bca38f2af8ef25f927cc30a729bd3edd297679",
+        "g5_id": "trace_ld_v1_g5_old_drying_shed",
+        "g5_version": 1,
+        "g5_digest": "32b6e5db1bffb825d6d9da2a4805f9d045a766c9b04a33ab834d615ec0112832",
+        "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "parent_version": 4,
+        "g6_slots": [
+          {
+            "scene_slot_key": "s1_enclosed_space",
+            "physical_class_id": "spatial.g6.enclosed",
+            "primary_scene_role_id": "ordinary_local",
+            "vertical_context_id": "surface",
+            "overhead_cover_id": "full"
+          },
+          {
+            "scene_slot_key": "shed_approach",
+            "physical_class_id": "spatial.g6.open",
+            "primary_scene_role_id": "working_camp",
+            "vertical_context_id": "surface",
+            "overhead_cover_id": "none"
+          }
+        ]
+      },
+      "allowed_semantics": [
+        "workspace_compatibility",
+        "drying_compatibility",
+        "storage_compatibility"
+      ],
+      "requirements": {
+        "water_adjacent": false,
+        "mandatory_context_refs": []
+      },
+      "forbidden_implications": [
+        "water",
+        "heat",
+        "fire",
+        "fuel",
+        "container",
+        "tool",
+        "material",
+        "npc"
+      ],
+      "variants": [
+        {
+          "id": "dormant",
+          "process_owned_requirements": []
+        },
+        {
+          "id": "active",
+          "process_owned_requirements": [
+            "material_ref",
+            "tool_ref"
+          ]
+        }
+      ],
+      "global_claim_refs": [],
+      "regional_claim_refs": [
+        "claim:population-fish-dried-form",
+        "claim:population-drying-workspace",
+        "claim:population-household-storage",
+        "claim:population-storage-vessels"
+      ],
+      "evidence_claims": [
+        {
+          "claim_ref": "claim:population-fish-dried-form",
+          "source_id": "population:historical-population.json",
+          "source_locator": 1769,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:population-fishing-221"
+          ],
+          "source_refs": [
+            "source:rybina-fishing-2015"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1150,
+              "to": 1350,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "attested",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+          "limits": "candidate PHC-08; historical compatibility only, no recipe, shed, or shelf-life."
+        },
+        {
+          "claim_ref": "claim:population-drying-workspace",
+          "source_id": "population:historical-population.json",
+          "source_locator": 1890,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:population-fishing-221"
+          ],
+          "source_refs": [
+            "source:rybina-fishing-2015"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1000,
+              "to": 1400,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "unknown",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+          "limits": "candidate PHC-10; no asserted building/heating/content."
+        },
+        {
+          "claim_ref": "claim:population-household-storage",
+          "source_id": "population:historical-population.json",
+          "source_locator": 1930,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:population-things-overview"
+          ],
+          "source_refs": [
+            "source:rybina-things-2006"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1000,
+              "to": 1400,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "unknown",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+          "limits": "candidate PHC-19; inferred ordinary compatibility only; no stocks/layout."
+        },
+        {
+          "claim_ref": "claim:population-storage-vessels",
+          "source_id": "population:historical-population.json",
+          "source_locator": 1970,
+          "use_scope": "evidence_bound",
+          "review_status": "approved",
+          "evidence_refs": [
+            "evidence:population-things-overview"
+          ],
+          "source_refs": [
+            "source:rybina-things-2006"
+          ],
+          "applicability": {
+            "time": {
+              "from": 1000,
+              "to": 1400,
+              "precision": "range"
+            },
+            "places": [
+              {
+                "place_ref": "region_novgorod_land",
+                "relation": "used_in"
+              }
+            ]
+          },
+          "qualifiers": {
+            "typicality": "unknown",
+            "confidence": "medium",
+            "directness": "inferred"
+          },
+          "verification_ref": null,
+          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+          "limits": "candidate PHC-19; inferred ordinary compatibility only; no contents/capacity."
+        }
+      ],
+      "data_gap_codes": [
+        "FUNCTIONAL_TOOL_MAPPING_MISSING",
+        "FUNCTIONAL_STORAGE_MAPPING_MISSING",
+        "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING",
+        "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
+      ],
+      "candidate_digest": "49a3eb3582a9b28493fb573742c44d4e41e7c2f29f93f7bb6eabb4cb59034b2d",
+      "authoring_approval": "approved_row_scoped"
+    }
+  ],
+  "candidate_data_gaps": [],
+  "overlay_digest": "52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3"
+}

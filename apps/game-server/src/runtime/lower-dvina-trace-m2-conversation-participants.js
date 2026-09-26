@@ -65,7 +65,8 @@ export function npcConversationDecisionCapability(context) {
 }
 
 export function npcPresentationContext(context, latestContribution) {
-  if (context.phase !== 'phase_3'
+  if (context.contracts.neutral_conversation === true
+      || context.phase !== 'phase_3'
       || context.targetActor?.ref !== context.contracts.ids?.eremeyRef) {
     return {};
   }

@@ -34,13 +34,22 @@ test('P07 canonical serialization is order independent', () => {
 test('P07 controlled vocabularies are exact, approved, versioned, digest-pinned and fail closed for unknown values', () => {
   assert.equal(controlledVocabularyDefinitions.length, 21);
   for (const definition of controlledVocabularyDefinitions) {
-    assert.match(definition.registry_path, /^data\/contracts\/spatial-v3\/controlled-vocabularies\.v3\.json#\/vocabularies\/\d+$/);
+    assert.match(definition.registry_path, /^data\/contracts\/spatial-v3\/controlled-vocabularies\.v4\.json#\/vocabularies\/\d+$/);
     assert.match(definition.digest, /^[a-f0-9]{64}$/);
     assert.equal(definition.status, 'approved');
     assert.ok(definition.values.length > 0);
   }
   assert.deepEqual(validateControlledVocabulary('controlled_entity_kind', 'access_class'), []);
   assert.deepEqual(validateControlledVocabulary('controlled_entity_kind', 'decision_command'), []);
+  for (const entity_kind of ['expansion_rule_set', 'g6_acoustic_baseline']) {
+    assert.deepEqual(validateControlledVocabulary('controlled_entity_kind', entity_kind), []);
+    const pins = [{ dependency_role: 'source_authoring', entity_ref: { entity_kind, entity_id: 'exact-row' },
+      version_pin: { pin_kind: 'authoring_version', authoring_version: '1' } }];
+    assert.equal(createSpatialV3TypedError('authoring_dependency_pin_missing', {
+      subject_ref: { entity_kind, entity_id: 'exact-row' }, dependency_pins: {
+        pins, canonical_digest: computeSpatialV3CanonicalDigest(pins).slice(7) }
+    }).code, 'authoring_dependency_pin_missing');
+  }
   assert.deepEqual(validateControlledVocabulary('controlled_entity_kind', 'invented').map(({ code }) => code), ['controlled_vocabulary_gap']);
 });
 

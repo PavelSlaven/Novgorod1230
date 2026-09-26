@@ -23,6 +23,19 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 
 ## Public API
 
+`validateApprovedActorItemTransitionProfile` проверяет общий class-scoped
+профиль смены holder/controller; `planApprovedActorItemTransition` строит
+fail-closed proposal, а `applyApprovedActorItemTransitionProposal` применяет
+только заново подтверждённый exact proposal к pure working state. Все три
+сохраняют owner и не выполняют persistence. Для нового общего профиля planner
+до RNG проверяет actor-relative attempt admission: actor участвует в переходе,
+совпадает committed scope, предмет действительно воспринят и его исходное
+physical position входит в разрешённый класс. Consent и legal owner этой
+физической проверкой не подменяются. Access projection строится
+`projectApprovedActorItemAttemptAccess` из полного owner-produced
+`perception_request + perception_result`: exact perceiver, event, item source и
+source scope нельзя заменить отдельным caller ref.
+
 - `normalizeItem`
 - `validateItem`
 - `runtimeItemIsAccessibleInPlace` — current actor control либо current-visible
@@ -52,6 +65,7 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
   видимости остаётся результатом item owner, а не входным semantic write-state
 - `validateInventoryArchetypes` / `resolveInventoryProfile` — разворачивают переданный authoring archetype в точный immutable inventory-профиль до runtime
 - `createRuntimeInstanceMechanicsSnapshot` — строго валидирует и отделённо замораживает exact mechanics/provenance обычного direct-action экземпляра
+- Ordinary world admission принимает optional approved `mechanics_policy.mass_grams_per_quantity_unit`: total `mass_grams` должен равняться целому `quantity.value` × массе единицы. Без этого поля сохраняются прежние bounds; property precedence не меняется. P16 повторяет проверку по сохранённой policy выбранного source capability до списания конечного ресурса.
 - `createOrdinaryWorldRuntimeInstanceMechanicsSnapshot` — отдельный строгий reader committed O1 v2 snapshot с provenance `ordinary_world_materialization`; direct-action v1 contract не расширяет
 - `admitOrdinaryWorldMaterialization` — общий items-property owner для O1/O2a:
   принимает Phase 3 handoff и server-owned evidence; authority-sensitive O2a

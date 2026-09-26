@@ -1,5 +1,4 @@
 import { FAILURE_KINDS, narrationCoverage, narrationSources,
-  normalizeNarrationAuditChoices as normalizeChoices,
   validNarrationAuditModelOutput } from
   './lower-dvina-trace-narration-audit-values.js';
 
@@ -25,6 +24,10 @@ when it adds no atomic proposition. Labels, IDs, categories, names and plausible
 implications add no sensory trait, causality, time, result, execution or certainty.
 Plausibility is never evidence. An object or place never supports an unstated sound,
 smell, touch, motion, reaction or persistence.
+current_light_phase is only the committed calendar phase of daylight. It does not
+establish local brightness, darkness, dimness, shadows or visibility. Reject any
+such unsupported local-light proposition as unsupported_world_state or
+unsupported_sensory, even when its phrasing sounds plausible for that phase.
 Treat a required_current_beat uncertainty with status unperformed_result_unknown
 as evidence only that the second-person player's named continuation is not yet
 performed and has no result. Never attribute it to an NPC. An explicitly open
@@ -157,22 +160,7 @@ Segment choices: ${JSON.stringify(choices)}.`;
 }
 
 export function assembleNarrationAuditOutput(output, request) {
-  const normalized = normalizeChoices(output, request);
-  const clean = Array.isArray(normalized?.source_reviews)
-    && normalized.source_reviews.every(({ segment_choices }) =>
-      Array.isArray(segment_choices) && segment_choices.length > 0)
-    && Array.isArray(normalized.unsupported)
-    && normalized.unsupported.length === 0
-    && Array.isArray(normalized.literary_failures)
-    && normalized.literary_failures.length === 0;
-  const modelOutput = {
-    ...normalized,
-    reviewed_segments: request.segments.map(({ segment_id }) => segment_id),
-    ...(clean && Array.isArray(normalized.evidence)
-      && normalized.evidence.length === 0
-      ? { evidence: ['All required sources are covered and no audit failures were reported.'] }
-      : {})
-  };
+  const modelOutput = structuredClone(output);
   if (!validNarrationAuditModelOutput(modelOutput, request)) {
     return {
       version: 1, schema: 'narration_audit', pass: undefined,
@@ -182,13 +170,12 @@ export function assembleNarrationAuditOutput(output, request) {
     };
   }
   const concerns = [];
-  const firstSegment = request.segments[0].segment_id;
   const hasMissingSource = modelOutput.source_reviews.some(
     ({ segment_choices }) => segment_choices.length === 0);
   for (const source of modelOutput.source_reviews) {
     if (source.segment_choices.length === 0) {
       concerns.push({
-        segment_id: firstSegment,
+        segment_id: null,
         kind: 'missing_visible_change',
         reason: `Required source ${source.ref} is not fully conveyed.`
       });
@@ -211,7 +198,7 @@ export function assembleNarrationAuditOutput(output, request) {
         : 'unsupported_event',
     reason: finding.reason
   })));
-  const pass = concerns.length === 0;
+  const pass = concerns.every(({ kind }) => kind === 'literary_quality');
   return {
     version: 1,
     schema: 'narration_audit',

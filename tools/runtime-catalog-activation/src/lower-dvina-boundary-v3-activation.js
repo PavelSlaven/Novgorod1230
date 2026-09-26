@@ -2,6 +2,7 @@ import {
   applyFirstPlayableV2ActivationBundle,
   buildFirstPlayableV2ActivationBundle
 } from './first-playable-v2-activation.js';
+import { WORLD_RUNTIME_CATALOG_MIGRATION_V3 } from './forward-migrations.js';
 
 export const LOWER_DVINA_BOUNDARY_V3_RELEASE = Object.freeze({
   releaseId: 'spatial-v3-production-v3',
@@ -26,6 +27,13 @@ export const LOWER_DVINA_BOUNDARY_V3_RELEASE = Object.freeze({
     'APPROVE_LOWER_DVINA_BOUNDARY_AUTHORING_V1; user authorized deletion of the exact obsolete v2 party before first v3 launch'
 });
 
+export const LOWER_DVINA_BOUNDARY_V3_CURRENT_SCHEMA_RELEASE = Object.freeze({
+  ...LOWER_DVINA_BOUNDARY_V3_RELEASE,
+  worldSchemaFingerprint:
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
+  worldSchemaMigration: WORLD_RUNTIME_CATALOG_MIGRATION_V3
+});
+
 export function buildLowerDvinaBoundaryV3ActivationBundle(options) {
   return buildFirstPlayableV2ActivationBundle({
     ...options,
@@ -37,5 +45,19 @@ export function applyLowerDvinaBoundaryV3ActivationBundle(options) {
   return applyFirstPlayableV2ActivationBundle({
     ...options,
     release: LOWER_DVINA_BOUNDARY_V3_RELEASE
+  });
+}
+
+export function buildLowerDvinaBoundaryV3CurrentSchemaActivationBundle(options) {
+  return buildFirstPlayableV2ActivationBundle({
+    ...options,
+    release: LOWER_DVINA_BOUNDARY_V3_CURRENT_SCHEMA_RELEASE
+  });
+}
+
+export function applyLowerDvinaBoundaryV3CurrentSchemaActivationBundle(options) {
+  return applyFirstPlayableV2ActivationBundle({
+    ...options,
+    release: LOWER_DVINA_BOUNDARY_V3_CURRENT_SCHEMA_RELEASE
   });
 }

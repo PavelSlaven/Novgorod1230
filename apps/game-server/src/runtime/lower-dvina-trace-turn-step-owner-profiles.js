@@ -3,27 +3,49 @@ import {
   plain,
   text
 } from './lower-dvina-trace-turn-step-runtime-common.js';
+import { canonicalDigest } from '@rus/materialization';
 
 const DURATION_CLASSES = ['moment', 'brief', 'short', 'extended'];
 const EFFORTS = ['none', 'light', 'moderate', 'heavy', 'extreme'];
 const BODY_METRICS = ['health', 'satiety', 'energy'];
 
-export function admitTurnStepOwnerProfiles(profiles, artifactPin) {
+export function admitTurnStepOwnerProfiles(profiles, artifactPin, selectedProfilePin) {
   const keys = [
     'schema', 'profile_set_id', 'revision', 'status', 'fallback_policy',
+    ...(profiles?.schema ===
+      'rus.live_world_runtime.turn_step_owner_profiles.v1'
+      ? ['neutral_conversation_profile'] : []),
     'semantic_activity_profile_namespace', 'semantic_duration_profiles',
     'semantic_effort_profiles', 'direct_body_effect_profile_namespace',
     'direct_body_mechanism_profiles', 'direct_body_severity_profiles',
     'direct_body_part_policy', 'generic_check_modifier_policy',
     'ordinary_result_policy'
   ];
+  const selected = selectedProfilePin !== undefined;
+  const selectedMatches = selected && validArtifactPin(selectedProfilePin)
+    && text(selectedProfilePin.artifact_id)
+    && Number.isSafeInteger(selectedProfilePin.revision) && selectedProfilePin.revision > 0
+    && selectedProfilePin.artifact_id === profiles?.profile_set_id
+    && selectedProfilePin.revision === profiles?.revision
+    && selectedProfilePin.digest === canonicalDigest(profiles)
+    && plain(artifactPin) && samePin(selectedProfilePin, artifactPin);
+  const liveWorld = profiles?.schema
+    === 'rus.live_world_runtime.turn_step_owner_profiles.v1'
+    && (selected ? selectedMatches : profiles?.profile_set_id
+      === 'novgorod_live_world_turn_step_owner_profiles_v1' && profiles?.revision === 2);
+  const historical = profiles?.schema
+    === 'rus.lower_dvina_trace_turn_step_owner_profiles.v1'
+    && profiles?.profile_set_id === 'trace_ld_v1_turn_step_owner_profiles';
   if (!plain(profiles) || !exactKeys(profiles, keys)
-      || profiles.schema !== 'rus.lower_dvina_trace_turn_step_owner_profiles.v1'
-      || profiles.profile_set_id !== 'trace_ld_v1_turn_step_owner_profiles'
-      || profiles.revision !== 1 || profiles.status !== 'approved'
+      || (!liveWorld && !historical)
+      || (selected && !selectedMatches)
+      || (historical && profiles.revision !== 1)
+      || profiles.status !== 'approved'
       || profiles.fallback_policy !== 'forbidden'
       || !validArtifactPin(artifactPin)
-      || !profilesValid(profiles)) {
+      || !profilesValid(profiles, { allowEmptyOrdinary: liveWorld })
+      || (liveWorld && !validNeutralConversationProfile(
+        profiles.neutral_conversation_profile))) {
     ownerFail('TRACE_TURN_STEP_OWNER_PROFILES_INVALID');
   }
   return deepFreeze({
@@ -34,6 +56,22 @@ export function admitTurnStepOwnerProfiles(profiles, artifactPin) {
       digest: artifactPin.digest
     }
   });
+}
+
+function validNeutralConversationProfile(value) {
+  const kinds = ['speech', 'gesture', 'offer', 'request', 'threat', 'aid',
+    'other'];
+  return plain(value) && exactKeys(value, ['status', 'activity_profile_id',
+    'duration_minutes', 'access_policy_id',
+    'max_contributions_per_exchange', 'interaction_kinds'])
+    && value.status === 'approved'
+    && text(value.activity_profile_id) && text(value.access_policy_id)
+    && Number.isSafeInteger(value.duration_minutes)
+    && value.duration_minutes > 0
+    && value.max_contributions_per_exchange === 8
+    && Array.isArray(value.interaction_kinds)
+    && value.interaction_kinds.length === kinds.length
+    && kinds.every((kind) => value.interaction_kinds.includes(kind));
 }
 
 export function expandActivityProfiles(profiles) {
@@ -125,7 +163,7 @@ export function ownerFail(code, details = {}) {
   });
 }
 
-function profilesValid(profiles) {
+function profilesValid(profiles, { allowEmptyOrdinary = false } = {}) {
   const durations = profiles.semantic_duration_profiles;
   const efforts = profiles.semantic_effort_profiles;
   const mechanisms = profiles.direct_body_mechanism_profiles;
@@ -151,7 +189,8 @@ function profilesValid(profiles) {
     && mechanisms.every(validMechanismProfile)
     && severities.every(validSeverityProfile)
     && validModifierPolicy(profiles.generic_check_modifier_policy)
-    && validOrdinaryResultPolicy(profiles.ordinary_result_policy);
+    && validOrdinaryResultPolicy(profiles.ordinary_result_policy,
+      allowEmptyOrdinary);
 }
 
 function validDurationProfile(profile) {
@@ -200,12 +239,13 @@ function validVersionedPolicyRef(value, entityKind) {
   ]) && value.entity_kind === entityKind && text(value.entity_id)
     && text(value.authoring_version);
 }
-function validOrdinaryResultPolicy(policy) {
+function validOrdinaryResultPolicy(policy, allowEmpty) {
   return plain(policy) && exactKeys(policy,
     ['schema', 'version', 'status', 'candidates'])
     && policy.schema === 'rus.items.ordinary_result_admission_policy.v1'
     && policy.version === 1 && policy.status === 'approved'
-    && Array.isArray(policy.candidates) && policy.candidates.length > 0
+    && Array.isArray(policy.candidates)
+    && (allowEmpty || policy.candidates.length > 0)
     && unique(policy.candidates.map(({ semantic_type: type, name }) =>
       `${type}:${name}`))
     && policy.candidates.every((candidate) => plain(candidate)

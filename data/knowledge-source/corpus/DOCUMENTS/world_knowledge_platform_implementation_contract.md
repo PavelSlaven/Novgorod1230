@@ -561,28 +561,24 @@ Narrator не может:
 Текущий пользовательский выбор:
 
 ```text
-Managed local Gemma (default)
-Произвольный OpenAI-compatible endpoint
+Unconfigured (до явной настройки)
+OpenAI-compatible vLLM endpoint
 ```
 
 Semantics:
 
 ```text
-Local/default:
-  installer → pinned Gemma Q4_K_P + pinned CUDA llama.cpp
-  все production gameplay, narrator, planner, auditor и repair roles
-  → managed local OpenAI-compatible chat/completions
-
 Custom:
-  те же roles → один явно выбранный baseUrl/model/optional key
+  все production gameplay, narrator, planner, auditor и repair roles
+  → один явно выбранный baseUrl/exact default model/optional key
 ```
 
-Local preset — `HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced` exact
-revision через pinned `llama.cpp`. `play:local` проверяет hardware/disk,
-resumable скачивает и сверяет checksum, запускает и останавливает owned
-inference. После provisioning runtime offline. Custom endpoint обязан
-реализовать `chat/completions`. Readiness проверяется до партии/Apply.
-Local/custom не допускает fallback на DeepSeek, другую model или provider:
+Default gameplay model — exact `qwen3.8-27b-uncensored-w4a16-tp2` через
+OpenAI-compatible vLLM. Endpoint и optional key задаёт пользователь; launcher
+не provisions, не скачивает и не запускает gameplay model. До настройки UI
+остаётся честно unconfigured. Custom endpoint обязан реализовать
+`chat/completions`; readiness проверяется при Apply. Режим не допускает
+fallback на DeepSeek, managed model или другой provider:
 connection/auth/model/timeout/invalid response возвращают typed failure,
 незавершённый ход не фиксируется.
 
@@ -889,7 +885,9 @@ knowledge access
 conditions
 ```
 
-Общие физические/химические факты могут иметь явно объявленный `context_scope: universal` либо другое строгое pack-defined значение. Пустая applicability не должна неявно означать «истинно везде».
+`conditions` — pack-specific facet map. Для event/state-change semantics (не путать с годовым периодом применимости нормы) используется facet `started_historical_events` со значением `event_id`: claim видим только если authoritative context несёт это событие среди уже начавшихся к дате партии. Годовой `applicability.time` остаётся периодом действия нормы; дата события/смены состояния не кодируется месяцем/днём в WK.
+
+Общие физические/химические факты могут иметь явно объявленный `context_scope: universal` либо другое строгое pack-defined значение. Пустая applicability не должна неявно означать «истинно везде». Событийный claim задаётся через `applicability.conditions` с facet `started_historical_events` (без `context_scope: universal` в том же объекте applicability: universal остаётся единственным ключом; смешение universal с time/places/actors/conditions невалидно). Условие `started_historical_events` при этом проверяется для любого claim, у которого оно объявлено в conditions.
 
 Для технического pack возможны:
 
@@ -928,6 +926,14 @@ knowledge_access
 classes facet values не задают. Runtime применяет value-match только к actor-facing
 `npc_decision`/`conversation`/`narration`; historical applicability и
 materialization-support от него не зависят.
+
+Зарегистрированный condition facet для event semantics:
+
+```text
+started_historical_events
+```
+
+Runtime передаёт `context.conditions.started_historical_events` как массив `event_id`, начавшихся к дате партии (источник — `@rus/time-events-history.startedHistoricalEventIds`, не WK).
 
 Temporal precision:
 
@@ -2149,10 +2155,21 @@ RETRIEVE
 
 Для raw free-text boundary, где code-owned call site не может доказать `NONE`
 до понимания текста, уже существующий query planner может завершить собственную
-работу каноническим пустым six-field plan. Это означает
-`NO_KNOWLEDGE_REQUIRED`, а не отсутствие coverage: такой план допустим только
-когда semantic step полностью разрешается supplied current state без внешней
-factual premise. Второй classifier или planner не создаётся.
+работу каноническим пустым six-field plan. Для purpose `semantic_resolution`
+пустой план **не** завершает grounding сразу как `NO_KNOWLEDGE_REQUIRED`:
+orchestrator (production grounder в game-server) строит детерминированный
+default-запрос (`domains` = все purpose-allowed из coverage profiles,
+`focus_refs: []`, `requested_predicates: []`, `search_hints` = `semantic_input`
+целиком) и вызывает Core. `NO_KNOWLEDGE_REQUIRED` пишется только если этот
+запрос не допустил ни одного факта, hard constraint и dispute
+(`facts.length === 0 && hard_constraints.length === 0 && disputes.length === 0`).
+Пустой план по-прежнему означает «планировщик не увидел factual need», а не
+отсутствие coverage; второй classifier или planner не создаётся. (CR #152)
+
+Отказ Giga/encoder или vector scan на любом WK-запросе, включая default-
+запрос §50, — fail-closed `WORLD_KNOWLEDGE_UNAVAILABLE`. Лексического runtime
+fallback нет: контракт запрещает lexical-only запасной путь при недоступности
+required Giga semantic retrieval. (REVIEW-033 / CR #152)
 
 ---
 
@@ -2174,11 +2191,20 @@ query_locale
 
 Для purpose `semantic_resolution` `domains: []` вместе с пустыми
 `focus_refs`, `requested_predicates` и
-`search_hints` является единственной planner-формой
-`NO_KNOWLEDGE_REQUIRED`. Любая factual need требует хотя бы одного allowed
-domain, даже если подходящий ref отсутствует или ожидается gap. Непустые refs,
-predicates либо hints при пустом `domains` invalid. Другие purposes сохраняют
-непустой domain и собственный grounding contract.
+`search_hints` является единственной planner-формой «нет factual need».
+Runtime не принимает её как финальный `NO_KNOWLEDGE_REQUIRED` без default-
+запроса Core (см. §50). Любая factual need в плане требует хотя бы одного
+allowed domain, даже если подходящий ref отсутствует или ожидается gap. Непустые
+refs, predicates либо hints при пустом `domains` invalid. Другие purposes
+сохраняют непустой domain и собственный grounding contract.
+
+`semantic_input` для каждой схемы, которая вызывает grounding, — текст,
+собранный из полей этой схемы (turn step / O1 / S1 / N1 / NPC autonomous /
+conversation). Для S1 — `semantic_context` и `approved_envelope.kind`/
+`structural_variant`; для N1 — `observable_context.display_label`,
+`scene_details` и `observable_cues`. Сырой `JSON.stringify(request)` как
+fallback запрещён: отсутствие текстового входа — typed error
+`WORLD_KNOWLEDGE_SEMANTIC_INPUT_UNAVAILABLE`. (CR #152 / REVIEW-033)
 
 Planner не может:
 
@@ -2270,6 +2296,8 @@ catalog revision
 
 После planner orchestrator добавляет authoritative context из committed/working state и actor-safe projections.
 
+Authoritative context merge включает `year` (календарь партии), `place_refs`, `actor_facets` и `conditions` (в том числе `started_historical_events`). `request.historical_context.year` не перекрывает календарную проекцию партии.
+
 ---
 
 # 54. Runtime query
@@ -2288,7 +2316,8 @@ catalog revision
   "context": {
     "time": {"year": 1230},
     "place_refs": ["region_novgorod_land"],
-    "actor_facets": {}
+    "actor_facets": {},
+    "conditions": {"started_historical_events": []}
   },
   "budget": {
     "max_facts": 24,
@@ -2417,6 +2446,11 @@ Applicability и actor access остаются обязательными фил
 
 `context_text` — deterministic compact projection returned records, не LLM summary.
 
+`search_hint_hits` — не model-facing поле среза: массив bool длиной
+`search_hints`, `true` если hint нашёл допущенный claim (`strongest > 0` по
+применимым claims). Orchestrator читает его для §63; private model wire его
+не передаёт. (CR #152 / REVIEW-033)
+
 ---
 
 # 60. Context packing
@@ -2437,6 +2471,12 @@ hard constraints
 ```
 
 Slice не растёт пропорционально corpus.
+
+`context_text` — deterministic compact projection тех же structured records.
+Один helper `@rus/turn` `worldKnowledgePromptData` /
+`omitWorldKnowledgeContextText` всегда опускает `context_text` на private wire
+всех шести потребителей (turn step, O1, S1, N1, NPC autonomous, conversation);
+structured-поля несут то же содержание. (CR #152 / REVIEW-033)
 
 ---
 
@@ -2483,11 +2523,32 @@ OUT_OF_SCOPE
 KNOWLEDGE_UNAVAILABLE
 ```
 
+Найденный slice несёт `sufficiency` рядом с `verdict`; sufficiency не заменяет
+verdict. Правила (CR #152 / REVIEW-033):
+
+- `SUFFICIENT_KNOWLEDGE` — все явные search hints нашли допущенный claim
+  (`search_hint_hits` / `strongest > 0`) и все запрошенные домены `covered`;
+  срез, полученный **default-запросом** §50 (планировщик вернул пустой план),
+  никогда не получает `SUFFICIENT_KNOWLEDGE` — максимум `PARTIAL_KNOWLEDGE`
+  (лексическое попадание ≠ относимость; калибровка порога — #153 шаг 8,
+  LW-047);
+- `PARTIAL_KNOWLEDGE` — есть факты, hard constraints или disputes, но хотя бы
+  один hint не нашёл допущенный claim (`strongest === 0`), coverage хотя бы
+  одного домена `partial` / не `covered`, либо срез пришёл из default-запроса;
+- `UNRESOLVED_KNOWLEDGE` / `OUT_OF_SCOPE` — нет допущенного содержимого
+  (facts/hard_constraints/disputes пусты); choice по coverage (`out_of_scope`
+  vs иное);
+- `NO_KNOWLEDGE_REQUIRED` — после пустого planner-плана `semantic_resolution` и
+  пустого результата default-запроса Core (нет facts, hard constraints и
+  disputes).
+
 Для `PARTIAL/UNRESOLVED/OUT_OF_SCOPE/UNAVAILABLE` model не получает право «дополнить факт по памяти».
 
-Для planner-resolved `NO_KNOWLEDGE_REQUIRED` retrieval/Core не вызываются;
-consumer получает явный sufficiency marker и не добавляет factual premises из
-model memory.
+Для финального `NO_KNOWLEDGE_REQUIRED` consumer получает явный sufficiency
+marker и не добавляет factual premises из model memory. Default-запрос §50
+может вызвать retrieval/Core до этой записи; diagnostic/trace сохраняют
+domains/coverage/retrieval_observability и сам default query, чтобы пустой
+план без поиска отличался от пустого результата поиска.
 
 Она может:
 
@@ -3043,6 +3104,12 @@ slice size
 coverage/gaps
 cache hit/miss
 ```
+
+Runtime diagnostic `world_knowledge_grounding_diagnostic_v1` несёт
+`cache_hit` / `cache_miss` из WeakMap-кэша grounder. `lexical_ms` остаётся
+`null` с `lexical_status: included_in_core_resolution`, пока Core не отдаёт
+отдельный lexical timing без смены публичной сигнатуры
+`resolveWorldKnowledge` (см. LW-046). (CR #152)
 
 ---
 
@@ -3780,9 +3847,8 @@ LLM fixture, canned response и network interception запрещены. Private
 
 `play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL
 и pinned Giga, запускает production server и owned processes, а runner
-гарантированно закрывает их. По умолчанию он также provisions local Gemma.
-Для явно назначенного владельцем acceptance endpoint/model допустим внешний
-OpenAI-compatible provider; runner не запускает второй gameplay/generative
+гарантированно закрывает их. Gameplay provider — явно настроенный внешний
+OpenAI-compatible vLLM endpoint; runner не запускает gameplay/generative
 inference process на текущем ПК. Development explorer и все production roles используют один явно
 зафиксированный endpoint/model без fallback. Отдельный post-turn NLI-аудитор
 может быть размещён на той же GPU0 или CPU только вне runtime и после trace;
@@ -3791,8 +3857,7 @@ evidence фиксирует model/revision, backend, размещение, laten
 границу timeout 120 с; поздний вызов ограничивается остатком общего safety
 deadline владельца хода.
 
-Evidence фиксирует exact HEAD, default Gemma model и revision/checksum либо
-точный selected served model identity для внешнего endpoint, inference
+Evidence фиксирует exact HEAD, exact selected served model identity, inference
 version/backend, Giga
 revision, provider config identity, hardware/runtime metadata,
 campaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет

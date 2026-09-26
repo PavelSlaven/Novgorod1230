@@ -4,6 +4,7 @@ import test from 'node:test';
 import {
   RuntimeCatalogArtifactError,
   buildActivationEvent,
+  buildActivationPartyPreflight,
   buildActivationRequest,
   buildBaseWorldCompatibilityManifest,
   buildBaselineRegistrationId,
@@ -15,8 +16,40 @@ import {
 } from '../src/artifact-contracts.js';
 import { comparePr17OverlaySemantics } from '../src/semantic-equivalence.js';
 import { runRuntimeCatalogOperatorCli } from '../src/cli.js';
+import { RECORD_ADAPTERS } from '../src/record-adapters.generated.js';
 
 const sha = (letter) => letter.repeat(64);
+
+test('production successor preflight preserves every existing party pin', () => {
+  const counts = { activationScope: 'new_production_parties_only',
+    partyCount: 2, pinnedPartyCount: 2, missingDomainPinCount: 0,
+    inflightStage24Stage25Count: 0,
+    runtimeReleaseId: sha('a'), runtimeContractDigest: sha('b') };
+  assert.equal(buildActivationPartyPreflight(counts).party_count, 2);
+  for (const change of [{ missingDomainPinCount: 1 }, { pinnedPartyCount: 1 },
+    { inflightStage24Stage25Count: 1 }, { activationScope: 'initial_empty_party_database' }]) {
+    assert.throws(() => buildActivationPartyPreflight({ ...counts, ...change }),
+      { code: 'ACTIVATION_PARTY_PREFLIGHT_BLOCKED' });
+  }
+  assert.throws(() => buildActivationPartyPreflight({ ...counts,
+    activationScope: 'unknown' }), { code: 'ACTIVATION_SCOPE_INVALID' });
+});
+
+test('generated INSERT adapters use raw identifiers, never SELECT casts', () => {
+  for (const adapter of Object.values(RECORD_ADAPTERS)) {
+    if (adapter.insert_sql == null) continue;
+    const columnList = adapter.insert_sql.match(/\(([^)]+)\) VALUES/u)?.[1];
+    assert.ok(columnList, adapter.table_name);
+    assert.doesNotMatch(columnList, /::|\sAS\s/iu, adapter.table_name);
+    assert.deepEqual(columnList.split(', ').map((column) =>
+      column.replaceAll('"', '')), adapter.canonical_columns,
+    adapter.table_name);
+  }
+  assert.match(RECORD_ADAPTERS.building_layout_templates.select_all_sql,
+    /"valid_from"::text AS "valid_from"/u);
+  assert.doesNotMatch(RECORD_ADAPTERS.building_layout_templates.insert_sql,
+    /::text|\sAS\s/iu);
+});
 
 test('runtime catalog JSON Schema covers every persisted/operator envelope and resolves local refs', async () => {
   const schema = JSON.parse(await readFile(

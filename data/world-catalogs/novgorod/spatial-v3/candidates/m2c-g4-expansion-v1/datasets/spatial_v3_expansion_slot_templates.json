@@ -1,0 +1,776 @@
+[
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_02",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__channel_split",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_06",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__channel_split",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__channel_split",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_01",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_12",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_central_main_channel_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_03",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_24",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_02",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_13",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_north_main_channel_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_01",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_04",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_05",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_south_main_channel_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__river_reach",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_09",
+    "slot_version": 1,
+    "template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_06",
+    "slot_version": 1,
+    "template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_07",
+    "slot_version": 1,
+    "template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_08",
+    "slot_version": 1,
+    "template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_island_head_mosaic_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_island__low_intensity_natural_use__island_head",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_12",
+    "slot_version": 1,
+    "template_id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_13",
+    "slot_version": 1,
+    "template_id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_09",
+    "slot_version": 1,
+    "template_id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_23",
+    "slot_version": 1,
+    "template_id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_20",
+    "slot_version": 1,
+    "template_id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_08",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_23",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_05",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_east_distributary_belt_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_04",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__side_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_10",
+    "slot_version": 1,
+    "template_id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_11",
+    "slot_version": 1,
+    "template_id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_inner_floodplain_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_11",
+    "slot_version": 1,
+    "template_id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_03",
+    "slot_version": 1,
+    "template_id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_14",
+    "slot_version": 1,
+    "template_id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_21",
+    "slot_version": 1,
+    "template_id": "m2c_g5_estuary__waterway_access__outer_exposed",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_river_sea_transition_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_estuary__waterway_access__outer_exposed",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_10",
+    "slot_version": 1,
+    "template_id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_22",
+    "slot_version": 1,
+    "template_id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_backwater_wetlands_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_15",
+    "slot_version": 1,
+    "template_id": "m2c_g5_ridge__waterway_access__landing_terrace",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_16",
+    "slot_version": 1,
+    "template_id": "m2c_g5_ridge__waterway_access__landing_terrace",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_dry_ridge_belt_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_ridge__waterway_access__landing_terrace",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_21",
+    "slot_version": 1,
+    "template_id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_24",
+    "slot_version": 1,
+    "template_id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_shoal_bar_field_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_14",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_18",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_20",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_small_stream_network_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_15",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_17",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_18",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_cycle",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area_2",
+    "slot_version": 1,
+    "template_id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_07",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_22",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_west_distributary_belt_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_19",
+    "slot_version": 1,
+    "template_id": "m2c_g5_forest__forest_resource_use__forest_tract",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_forest_hinterland_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_forest__forest_resource_use__forest_tract",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__cross_g4_19",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_2",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_16",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__cross_g4_17",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3f__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_1",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  },
+  {
+    "slot_id": "m2c_slot_g4exitv3__g4dirv3r__g3route_gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area_cycle",
+    "slot_version": 1,
+    "template_id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+    "template_version": 1,
+    "selection_weight": 1,
+    "compatibility_rule_id": null,
+    "compatibility_rule_version": null
+  }
+]

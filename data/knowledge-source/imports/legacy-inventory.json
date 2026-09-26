@@ -19,22 +19,22 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/character_parameters.txt",
       "relative_path": "corpus/DOCUMENTS/character_parameters.txt",
-      "bytes": 21167,
-      "sha256": "7a84abd27da7898c20abf8e493342fb0a6c5dca1852098063e8ffaffa9a29b30",
+      "bytes": 21668,
+      "sha256": "6d00bddbf69a619d237eda400496e0f74ab85aabaf97d7196299b57cec838238",
       "classification": "canonical_source"
     },
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/combat_system.md",
       "relative_path": "corpus/DOCUMENTS/combat_system.md",
-      "bytes": 58749,
-      "sha256": "a5b566d638e7e0666dc80e32805a89aedc7dcaaad305db978bc46c77eefad8a3",
+      "bytes": 61388,
+      "sha256": "8542f205b0d78139b57ae6a17d970dbc73aa24a452e75e1b428cf91474139e9a",
       "classification": "canonical_source"
     },
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/formulas.md",
       "relative_path": "corpus/DOCUMENTS/formulas.md",
-      "bytes": 108044,
-      "sha256": "6a077a511b198351c8dd39eedb223cdeb4f69659b0457c3bda9d14677b6dcbaa",
+      "bytes": 4329,
+      "sha256": "e9ad4ef7e03831452e1f44bedd49e7ca8e1f3e6bef3f681ddb5b50f6cc642760",
       "classification": "canonical_source"
     },
     {
@@ -54,15 +54,15 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/interface_ux.md",
       "relative_path": "corpus/DOCUMENTS/interface_ux.md",
-      "bytes": 64507,
-      "sha256": "5d1c25a77db458f83a1f678d80fd7c6ac4f48470910be12317a3b3ce4ded6728",
+      "bytes": 6268,
+      "sha256": "d1b289e90f3cef0565cc25023f6ad397154d0dd6f205c544aac2b6cb625ee77f",
       "classification": "canonical_source"
     },
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/items_and_property.txt",
       "relative_path": "corpus/DOCUMENTS/items_and_property.txt",
-      "bytes": 33159,
-      "sha256": "adedfc10485108516f6c48a76ffde0a179e334bd3618fb1f7e55a2f19ab6537d",
+      "bytes": 50945,
+      "sha256": "6b3a5a5f4bbb9b959ae5864be54cfe0c5eefb637e9f1814d8afb9eb7072e4dc6",
       "classification": "canonical_source"
     },
     {
@@ -82,15 +82,15 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/movement_locations_regions.txt",
       "relative_path": "corpus/DOCUMENTS/movement_locations_regions.txt",
-      "bytes": 52411,
-      "sha256": "30f0cc88277c827d7480ebb2b9bd421db73d83254f5c10056d520b7e12fe789a",
+      "bytes": 7971,
+      "sha256": "a5aec3401d30358468324154ff27741ebe6e9b1c397b5f98948f11f15a16a855",
       "classification": "canonical_source"
     },
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/npc_generation_profiles.txt",
       "relative_path": "corpus/DOCUMENTS/npc_generation_profiles.txt",
-      "bytes": 21177,
-      "sha256": "ca906167838b4faa6b3c27dc43f7a22c7ad5c04df07c5518403fcf9f572dbde2",
+      "bytes": 27985,
+      "sha256": "62ecc33808421e9e6d7a27185c6017d1b144cbe34c556fc7dda8c94b8a06c3c6",
       "classification": "canonical_source"
     },
     {
@@ -117,8 +117,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/time_system.txt",
       "relative_path": "corpus/DOCUMENTS/time_system.txt",
-      "bytes": 16226,
-      "sha256": "cf94af950566ba0f79f6b90c3761a624ac14d5d3a339b631b5c30c4770b65323",
+      "bytes": 5722,
+      "sha256": "220c77e73b522e3d85107e8ae4c05ba8c086b062e4400bc68783abff32d42643",
       "classification": "canonical_source"
     },
     {
@@ -131,8 +131,8 @@
     {
       "legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/world_generation_and_turns.txt",
       "relative_path": "corpus/DOCUMENTS/world_generation_and_turns.txt",
-      "bytes": 71231,
-      "sha256": "b1fbf6343d479a2f5c9296b7c5dc2f35f0b93e2eb15fab867d23b9201bd01b3e",
+      "bytes": 7881,
+      "sha256": "c7396a11c51ba1500ea935c9966c485be5955d7f931cd86c09ec6afd38077fab",
       "classification": "canonical_source"
     },
     {

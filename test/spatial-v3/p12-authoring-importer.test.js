@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -54,6 +54,99 @@ test('P12 rejects permissive rows, omitted DDL fields and embedded relations', a
   const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1', bundle_id: 'strict', world_revision_id: 'r', status: 'draft', provenance_ref: 'catalog', delete_policy: 'forbid', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP'), gap('DIRECTIONAL_EXIT_READINESS_DATA_GAP'), gap('ROUTE_BINDING_DATA_GAP'), gap('APPROVED_PROFILE_DATA_GAP')], datasets: [{ table: 'spatial_v3_world_revisions', file: 'datasets/revisions.json', sha256: createHash('sha256').update(rows).digest('hex'), status: 'draft', provenance_ref: 'catalog', delete_policy: 'forbid', depends_on: [] }] };
   const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest)); const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
   for (const code of ['UNKNOWN_ROW_FIELD', 'MISSING_REQUIRED_FIELD', 'NON_NORMALIZED_REFERENCE']) assert.ok(result.errors.some((error) => error.code === code), code);
+});
+
+test('P12 proves expansion capacity per profile using the DDL max_count field', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-expansion-')); await mkdir(join(dir, 'datasets'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const revision = 'novgorod_spatial_v3_target_contract_approval_001';
+  const limits = ['a', 'b'].map((profile) => ({ profile_id: profile, profile_version: 1, template_id: 'shared', template_version: 1, max_count: 1 }));
+  const slots = ['a', 'b'].map((profile) => ({ id: `slot-${profile}`, version: 1, world_revision_id: revision, profile_id: profile, profile_version: 1, g4_id: `g4-${profile}`, g4_version: 1, continuation_role: 'branch', direction_context_id: null, directional_exit_id: null, directional_exit_version: null, max_instances: 1, continuation_length_rule_id: null, continuation_length_rule_version: null, terminal_policy_id: 'boundary', terminal_policy_version: 1, status: 'approved', provenance_ref: 'source', canonical_digest: 'a'.repeat(64) }));
+  const candidates = slots.map((slot) => ({ slot_id: slot.id, slot_version: 1, template_id: 'shared', template_version: 1, selection_weight: 1, compatibility_rule_id: null, compatibility_rule_version: null }));
+  const datasets = [];
+  for (const [table, rows] of [['spatial_v3_expansion_profile_template_limits', limits], ['spatial_v3_expansion_slots', slots], ['spatial_v3_expansion_slot_templates', candidates]]) {
+    const file = `datasets/${table}.json`; const content = JSON.stringify(rows);
+    await writeFile(join(dir, file), content);
+    datasets.push({ table, file, sha256: createHash('sha256').update(content).digest('hex'), status: 'approved', provenance_ref: 'source', delete_policy: 'forbid', depends_on: [] });
+  }
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1', bundle_id: 'expansion', world_revision_id: revision, status: 'approved', provenance_ref: 'source', delete_policy: 'forbid', bundle_kind: 'dependency_closure', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP')], datasets };
+  const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.deepEqual(result.errors, []);
+  slots[0].max_instances = 2;
+  const changed = JSON.stringify(slots);
+  await writeFile(join(dir, datasets[1].file), changed);
+  datasets[1].sha256 = createHash('sha256').update(changed).digest('hex');
+  await writeFile(file, JSON.stringify(manifest));
+  const overCapacity = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.ok(overCapacity.errors.some((error) => error.code === 'CAPACITY_PROOF_FAILED'));
+});
+
+test('P12 rejects expansion profiles without executable rule closure', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-rules-')); await mkdir(join(dir, 'datasets'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const revision = 'novgorod_spatial_v3_target_contract_approval_001';
+  const rows = [{ id: 'profile', version: 1, world_revision_id: revision,
+    adjacency_rule_set_id: 'missing', adjacency_rule_set_version: 1,
+    connectivity_rule_set_id: 'missing', connectivity_rule_set_version: 1,
+    seed_policy_id: 'missing', seed_policy_version: 1 }];
+  const content = JSON.stringify(rows);
+  await writeFile(join(dir, 'datasets/profiles.json'), content);
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_id: 'rules', world_revision_id: revision, status: 'draft', provenance_ref: 'source',
+    delete_policy: 'forbid', bundle_kind: 'dependency_closure', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP')],
+    datasets: [{ table: 'spatial_v3_g4_expansion_profiles', file: 'datasets/profiles.json',
+      sha256: createHash('sha256').update(content).digest('hex'), status: 'draft',
+      provenance_ref: 'source', delete_policy: 'forbid', depends_on: [] }] };
+  const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.equal(result.errors.filter((error) => error.code === 'EXPANSION_RULE_CLOSURE_MISSING').length, 3);
+});
+
+test('P12 rejects a scene candidate without the schema-15 applicability pin', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-scene-rule-')); await mkdir(join(dir, 'datasets'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const rows = [{ profile_id: 'profile', profile_version: 1, scene_template_id: 'scene',
+    scene_template_version: 1, weight: 1, applicability_rule_id: null, applicability_rule_version: null }];
+  const content = JSON.stringify(rows);
+  await writeFile(join(dir, 'datasets/candidates.json'), content);
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_id: 'scene-rule', world_revision_id: 'r', status: 'draft', provenance_ref: 'source',
+    delete_policy: 'forbid', bundle_kind: 'dependency_closure', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP')],
+    datasets: [{ table: 'spatial_v3_scene_materialization_candidates', file: 'datasets/candidates.json',
+      sha256: createHash('sha256').update(content).digest('hex'), status: 'draft',
+      provenance_ref: 'source', delete_policy: 'forbid', depends_on: [] }] };
+  const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.ok(result.errors.some((error) => error.code === 'SCENE_CANDIDATE_APPLICABILITY_RULE_MISSING'));
+});
+
+test('P12 rejects an external edge without its exact approved registry pin', async (t) => {
+  const dir = await mkdtemp(join(tmpdir(), 'p12-external-')); await mkdir(join(dir, 'datasets'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const entries = [
+    ['spatial_v3_external_dependency_versions', [{ registry_type: 'spatial_materialization',
+      registry_id: 'registry', registry_version: '1', registry_digest: 'a'.repeat(64),
+      dependency_id: 'wood', dependency_version: 1, dependency_digest: 'b'.repeat(64), status: 'approved' }]],
+    ['spatial_v3_authoring_dependency_edges', [{ source_entity_kind: 'spatial_node',
+      source_entity_id: 'g5', source_version: 1, world_revision_id: 'r', dependency_role: 'function',
+      target_entity_kind: 'external_dependency', target_entity_id: 'wood', target_version: 1,
+      target_registry_type: 'spatial_materialization', target_registry_id: 'registry',
+      target_registry_version: '1', target_registry_digest: 'a'.repeat(64),
+      target_dependency_digest: 'c'.repeat(64), canonical_ordinal: 0 }]]];
+  const datasets = [];
+  for (const [table, rows] of entries) {
+    const file = `datasets/${table}.json`; const content = JSON.stringify(rows);
+    await writeFile(join(dir, file), content);
+    datasets.push({ table, file, sha256: createHash('sha256').update(content).digest('hex'),
+      status: 'approved', provenance_ref: 'source', delete_policy: 'forbid', depends_on: [] });
+  }
+  const manifest = { schema_version: 'rus.spatial-v3.world-base-authoring-bundle.v1',
+    bundle_id: 'external', world_revision_id: 'r', status: 'draft', provenance_ref: 'source',
+    delete_policy: 'forbid', bundle_kind: 'dependency_closure', data_gaps: [gap('CANONICAL_G5_INVENTORY_DATA_GAP')], datasets };
+  const file = join(dir, 'manifest.json'); await writeFile(file, JSON.stringify(manifest));
+  const result = await validateAuthoringBundle({ root: process.cwd(), manifestPath: file, validateTargetApproval: approvedTarget });
+  assert.ok(result.errors.some((error) => error.code === 'EXTERNAL_DEPENDENCY_PIN_MISSING'));
 });
 test('P12 emits domain readiness failures for route endpoints without canonical G5 or directional-exit compatibility', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'p12-domain-')); await mkdir(join(dir, 'datasets'));

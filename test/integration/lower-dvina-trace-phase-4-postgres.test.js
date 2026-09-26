@@ -41,12 +41,6 @@ import {
   firstPlayableCommitRecheck
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
 import {
-  loadLowerDvinaTraceMaterializationBundle
-} from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
-import {
-  lowerDvinaTracePhase1ADomainPin
-} from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
-import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import {
@@ -74,7 +68,7 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   const started = docker([
     'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only', '-e', 'POSTGRES_USER=phase4',
-    '-e', 'POSTGRES_DB=phase4', 'postgres:16-alpine'
+    '-e', 'POSTGRES_DB=pr17_phase4', 'postgres:16-alpine'
   ]);
   assert.equal(started.status, 0, started.stderr);
   await waitForPostgres(name);
@@ -82,19 +76,9 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   const port = Number(docker(['port', name, '5432']).stdout
     .match(/:(\d+)\s*$/u)?.[1]);
   pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase4',
-    password: 'local_only', database: 'phase4', max: 8 });
+    password: 'local_only', database: 'pr17_phase4', max: 8 });
   await installSchemas(pool);
-  await installLowerDvinaTraceV5World(pool);
-  const bundle = await loadLowerDvinaTraceMaterializationBundle({
-    scenarioDefinitionRevision: 10
-  });
-  const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
-  const runtimeCatalogPin = Object.freeze({
-    ...sourcePin,
-    compatible_world_revision_id: world.revision,
-    compatible_world_catalog_digest: world.digest,
-    compatible_world_pin_manifest_digest: world.manifest
-  });
+  const { runtimeCatalogPin } = await installLowerDvinaTraceV5World(pool);
   const release = Object.freeze({
     release_id: 'phase-4-postgres-release',
     world_revision_id: world.revision,

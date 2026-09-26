@@ -1,0 +1,24 @@
+{
+  "schema": "rus.m2c_supplemental_data_approval.v1",
+  "decision": "APPROVE_DATA_ONLY",
+  "reviewer": "gpt-6-sol/high independent data reviewer; did not author or modify candidate bytes",
+  "reviewed_on": "2026-09-24",
+  "source_issue": "PavelSlaven/Novgorod1230#133",
+  "scope": "Exact repin of 68 local movement eligibility records across 17 scene templates. Only the source SHA-256 of the freshly approved scene movement edge candidate changed; all records, other source refs, provenance, runtime requirements, exclusions and authority flags remain unchanged.",
+  "exact_candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-scene-movement-edges/local-movement-eligibility-candidate.json",
+    "sha256": "e893a85d73c21a0384d63b57d279dfe7325c2d2b35e39a941ed21a9bda9f8f4e",
+    "previous_sha256": "a86de4fc70b0aaf02dbd0d8a6d9006dc3a4f9f489d601a59d97d5b09abac0dbb"
+  },
+  "source_pins": {
+    "scene_movement_edge_candidate_sha256": "c4742a5b9642638b7e2ca3c440ffe344e724549abfa788ed39b8627314957356",
+    "scene_movement_edge_repin_data_approval_sha256": "e8e2eba89abf166d4c8b5dd3f91f0bf7b3c36869f4b00f719f581e2b386a4f16",
+    "approved_m2c_expansion_manifest_sha256": "2779a279227b206e5a5f268e2c670f9c2b18a105288cfd29f2ab343592427133"
+  },
+  "provenance_and_applicability": "Each record maps one independently approved authored directed edge to a distinct authored opposing edge with swapped endpoints. The one-root transition limit is editorial mechanics; original null reverse references and null edge capacity remain unchanged, and destination position capacity remains one. Current edge state, visibility and locked occupancy remain runtime admission requirements.",
+  "checks": "All five candidate source SHA-256 values match current bytes; all 48 expansion manifest dataset SHA-256 values match. Exact candidate equals deterministic buildLocalMovementEligibilityCandidate output. The 68 distinct records cover all 68 authored directed edges in 17 templates, with reciprocal endpoints and unchanged capacity boundaries. Git diff shows only the scene candidate source pin changed.",
+  "next_mapped_dependency": "Repin mapped source_records.json to this exact candidate SHA-256, recompute its dataset and manifest SHA-256 values, then issue a separate independent mapped-data approval. Earlier approvals remain bound to earlier bytes.",
+  "excludes": "Mapped-data approval or import, runtime movement or release activation, current visibility or occupancy admission, original edge or position mutation, and historical party migration.",
+  "import_authorized": false,
+  "activation_authorized": false
+}

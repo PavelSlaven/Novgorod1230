@@ -1,0 +1,157 @@
+[
+  {
+    "id": "SRC_G1R2_SCHAPOV_1976_CHARTER",
+    "title": "Щапов Я. Н. (подг.). Древнерусские княжеские уставы XI–XV вв. М.: Наука, 1976. Уставная грамота новгородского князя Святослава Ольговича 1136/37 г., с. 146–148.",
+    "source_type": "chronicle",
+    "url": "https://archive.org/stream/ustavi1976/ustavi1976_djvu.txt",
+    "file_reference": null,
+    "summary": "critical_edition_primary_text; access=complete_online_text; use=binding",
+    "limitations": "Текст дошёл в более поздних списках. Форма «оу Вихтоуга» подтверждает название и фискальную связь, но не точную геометрию поселения.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "SRC_G1R2_BRISBANE_MAKAROV_NOSOV",
+    "title": "Brisbane, M. A.; Makarov, N. A.; Nosov, E. N. Medieval Novgorod in Its Wider Context.",
+    "source_type": "book",
+    "url": "https://eprints.bournemouth.ac.uk/23438/1/01%20Novgorod%20IV.pdf",
+    "file_reference": null,
+    "summary": "academic_historical_archaeology; access=complete_pdf; use=binding_context",
+    "limitations": "Письменные данные о северной администрации XI–XIII вв. разрежены. Не задаёт точную местную границу или структуру поселения.",
+    "status": "usable_with_caution",
+    "confidence": "high"
+  },
+  {
+    "id": "SRC_G1R2_ARKHANGELSK_HOARD_1992",
+    "title": "Nosov E. N.; Ovsyannikov O. V.; Potin V. M. The Arkhangelsk Hoard // Fennoscandia Archaeologica IX. Helsinki, 1992. P. 3–21.",
+    "source_type": "archaeology",
+    "url": null,
+    "file_reference": null,
+    "summary": "archaeological_publication; access=bibliographic_verified_corroborated; use=corroborative_with_access_limit",
+    "limitations": "Полный текст публикации в текущем окружении не получен. Клад подтверждает присутствие и обмен, но не доказывает город, порт или точную структуру поселения.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_EDOVIN_ZAOSTROVYE_2019",
+    "title": "Едовин А. Е. Заостровье — средневековый поселенческий центр дельты Северной Двины // Беломорские чтения. Вып. II. Архангельск, 2019. С. 62–73.",
+    "source_type": "archaeology",
+    "url": null,
+    "file_reference": null,
+    "summary": "regional_archaeology; access=bibliographic_verified_secondary_summary; use=corroborative_with_access_limit",
+    "limitations": "Полный текст не получен. Используется только для локально ограниченной модели археологического поселенческого и погребального участка, без точного плана.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_EDOVIN_ZAVOLOCHYE_2001",
+    "title": "Едовин А. Заволочье в средневековой русской истории, X–XIII вв. Архангельск, 2001.",
+    "source_type": "book",
+    "url": null,
+    "file_reference": null,
+    "summary": "regional_historical_archaeology; access=bibliographic_verified; use=contextual",
+    "limitations": "Не используется для точной геометрии объектов.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_MAKAROV_2003",
+    "title": "Макаров Н. А. «Заволоцкие топонимы» новгородских берестяных грамот и деревянных цилиндров на археологической карте // Берестяные грамоты: 50 лет открытия и изучения. М.: Индрик, 2003. С. 149–164.",
+    "source_type": "article",
+    "url": null,
+    "file_reference": null,
+    "summary": "archaeology_toponymy; access=bibliographic_verified; use=contextual",
+    "limitations": "Полный текст не получен; не является единственным основанием конкретного узла.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_CHALOV_DVINA_2012",
+    "title": "Русловые процессы и водные пути на реках бассейна Северной Двины / под ред. Р. С. Чалова. М., 2012. 492 с.",
+    "source_type": "book",
+    "url": null,
+    "file_reference": null,
+    "summary": "scientific_hydromorphology; access=bibliographic_verified; use=technical_typology",
+    "limitations": "Современная гидроморфология используется только как типологическое основание разветвлённого русла, поймы, островов и меняющихся мелей. Не реконструирует конкретную геометрию 1230 г.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_GSHHS",
+    "title": "GSHHS/GSHHG shoreline geometry used in map revision 002.",
+    "source_type": "map",
+    "url": null,
+    "file_reference": "novgorod_1230_candidate_g1_mask.json",
+    "summary": "modern_technical_geography; access=complete_project_derivative; use=technical_proxy_only",
+    "limitations": "Современная береговая линия и доли суши/воды не являются картой 1230 г.",
+    "status": "usable_with_caution",
+    "confidence": "medium"
+  },
+  {
+    "id": "SRC_G1R2_MASK_REV002",
+    "title": "RUS13 project. Novgorod 1230 G1 mask revision 002.",
+    "source_type": "project_note",
+    "url": null,
+    "file_reference": "novgorod_1230_candidate_g1_mask.json",
+    "summary": "approved_project_derivative; access=complete_local; use=binding_technical",
+    "limitations": "Определяет активность и координатную ячейку, но не заменяет исторические источники.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "SRC_G1R2_GRID",
+    "title": "RUS13 project. WGS84 / local AEQD 32 km grid definition.",
+    "source_type": "project_note",
+    "url": null,
+    "file_reference": "grid_definition.json",
+    "summary": "technical_method; access=complete_local; use=binding_technical",
+    "limitations": "Сетка не имеет исторического пограничного смысла.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "SRC_G1R2_MAP_RULES",
+    "title": "RUS13. Инструкция-памятка по работе с картой G0–G4.",
+    "source_type": "project_note",
+    "url": null,
+    "file_reference": "Работа с картой G0-G4.txt",
+    "summary": "project_normative; access=complete_local; use=binding_methodological",
+    "limitations": "Норматив проекта, не исторический источник.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "prov_p12_g1_r2_r3_v1",
+    "title": "P12 repository provenance for approved G1 revisions 002/003",
+    "source_type": "project_note",
+    "file_reference": "source-approval/p12_novgorod_source_approval_001",
+    "summary": "Repository provenance pointer; not a historical source.",
+    "limitations": "This record is not a historical source and does not expand approved facts.",
+    "status": "approved",
+    "confidence": "high"
+  },
+  {
+    "id": "m2c_acoustic_editorial_001",
+    "title": "M2c editorial generated-scene acoustic baseline",
+    "source_type": "project_note",
+    "file_reference": "data/world-catalogs/novgorod/m2c-acoustic/candidate.json",
+    "summary": "Editorial persistent baseline uses contract scale 0..2, not physical decibels. 0 is no persistent masking penalty, not a claim of silence. Moving river channels and exposed estuary families use 1 for ordinary persistent water masking. Backwaters and other families use 0. Weather, transient water events, human activity and animal calls are runtime events/modifiers and must not overwrite this baseline. No family is assigned persistent level 2 without stronger local evidence.",
+    "limitations": "The family tuple and scene/G6 identities are copied from the exact expansion catalog; landscape/land-use/scene applicability retain the directness and confidence recorded in authoring-evidence.json. Numeric ambient values are explicit low-confidence analogical authoring judgments, never historical measurements.",
+    "checked_by": "independent gpt-6-astra high data approval",
+    "status": "approved",
+    "confidence": "low",
+    "audit_notes": "Approval: data/world-catalogs/novgorod/m2c-acoustic/approval.json; raw SHA256 bca819aa73e5d8d9186f71bd4a030c1873196295622f7944247890a5085a86dd; directness=analogical."
+  },
+  {
+    "id": "m2c_canonical_acoustic_editorial_001",
+    "title": "M2c canonical terminal editorial acoustic baseline",
+    "source_type": "project_note",
+    "file_reference": "data/world-catalogs/novgorod/m2c-acoustic/canonical-terminal/candidate.json",
+    "summary": "For each exact canonical terminal G5/scene/G6 slot reached by the 86 approved directional exits, copy the persistent acoustic scale value of its exact G4 generated-family profiles. All families within each G4 agree. This is a new low-confidence editorial applicability judgment for the canonical scene, not automatic inheritance or a historical measurement. Values 0 and 1 retain the independently approved family policy: 0 means no persistent masking penalty, not silence; 1 ordinary moving-water masking. Temporary events and weather remain separate; no level 2 is authored.",
+    "limitations": "Exact canonical G5, source profile, scene and slot identities are direct catalog copies. Landscape/land-use/function classifications keep the evidence directness and confidence below. Numeric values and their applicability to canonical endpoints are analogical/low editorial authoring, requiring this separate approval.",
+    "checked_by": "independent gpt-6-astra high data approval",
+    "status": "approved",
+    "confidence": "low",
+    "audit_notes": "Decision APPROVE_M2C_CANONICAL_TERMINAL_ACOUSTIC_AUTHORING_V1; raw rows SHA256 6adf1111615c12659d9338549d68af3dad349bdda9ea78486614762fb525709c; directness=analogical."
+  }
+]

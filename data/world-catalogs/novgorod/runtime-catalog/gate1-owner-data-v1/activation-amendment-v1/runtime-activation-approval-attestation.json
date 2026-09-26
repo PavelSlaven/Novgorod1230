@@ -1,0 +1,123 @@
+{
+  "schema": "rus.gate1_v5_v6_runtime_activation_approval_attestation.v1",
+  "status": "approved_new_development_parties_only_not_executed",
+  "decision": "approve_exact_new_development_runtime_activation",
+  "subject_commit_sha": "e5de7f3e6ae11c6c03cfd065209d7cce697d61a7",
+  "auditor_ref": "/root/m3_chain_auditor",
+  "independence_basis": "Independent runtime audit separate from activation request authoring; approval added only after exact request regeneration and a managed PostgreSQL restart/readback pass on the subject commit.",
+  "reviewed_at": "2026-09-21",
+  "activation_amendment_request_digest": "04282a4269116f46f0c6e36511af4fca0732054152de5e864cfdfab874d1e310",
+  "activation_scope": "new_development_parties_only",
+  "approved_permissions": {
+    "activate_for_new_development_parties_only": true,
+    "import_approved_item_container_catalog": false,
+    "production_activation": false,
+    "existing_party_migration": false,
+    "old_save_rematerialization": false,
+    "authoring_only_functional_allocation_runtime_selection": false,
+    "runtime_item_creation": false
+  },
+  "approved_bindings": {
+    "predecessor_request_digest": "81435027867fdc0060c117c0afaa4b20ed6cb3650a4f6067855c15e299457f29",
+    "import_readback": {
+      "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/import-readback-result.json",
+      "sha256": "45287a72231589b5b257c5e0f129b6213893660a285ee57207dc87dbb16dc2f1",
+      "canonical_digest": "8fd919db006f54cb74e997be7d800b884f1743e54a2df9bfa3efd29230ac29e5",
+      "status": "imported_exact_readback_verified",
+      "rollback": "pass",
+      "repeat_clean_apply": true,
+      "restart_verified": true,
+      "restart_verification": {
+        "path": "test/integration/gate1-owner-data-import-postgres.test.js",
+        "sha256": "698dcbeb221fb0dbc81c541324854cd8e237ca11347600c2ac4006f885a12e80"
+      },
+      "import_completed": true,
+      "requests_new_import_authority": false
+    },
+    "reconciled_stage3c": {
+      "candidate": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1/candidate.json",
+        "sha256": "96b1e3e65faf4bbf9de5b88215044d4dd9ecd1ab306544f6f81e53e8db0e9103",
+        "reconciliation_candidate_digest": "48c005a29f7cf59cbcab551239ecebbc0917037b13cc44c0b6aabe8f777ecda3",
+        "amended_stage3c_candidate_digest": "7367a2f46cb3e9ea8efe1f0be48e56284a1db26b0e1f0f00e86f743334300e28"
+      },
+      "request": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1/request.json",
+        "sha256": "54ad01310ad227f6b1a6cac17455683a47c5c368c707dbc60e5a4b59ab832ee9",
+        "reconciliation_request_digest": "3bc1e64ac5f52d42ed72f58c62468f61f40039360816c343c53f759ede9f950c",
+        "amended_stage3c_candidate_digest": "7367a2f46cb3e9ea8efe1f0be48e56284a1db26b0e1f0f00e86f743334300e28",
+        "amended_stage3c_approval_request_digest": "06acf781d0a2c7eb3deba1884f4d1d004e50676ff1d95cd089498d87a79557d9"
+      }
+    },
+    "target_catalog": {
+      "revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+      "catalog_digest": "1d5fd4cd3c7dd9946d68276011cd3264e6e2ccd12f67486171928e18b56451f5",
+      "status": "approved"
+    },
+    "approval_chain": {
+      "parent": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/authoring-approval-attestation.json",
+        "sha256": "21ef98e8ebbc4c28b3f1d4dcb32566a54258d66bf4c226b66491822ecd5b9b7c",
+        "attestation_digest": "ab153b6e20c1bb9cac7e276e8dd8776b38d554a1cfbfa4d9b9d2f85350c05061"
+      },
+      "reconciliation": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/source-record-reconciliation-v1/authoring-approval-attestation.json",
+        "sha256": "9910353d273a97163472a8e203cba3e85871813d300065ae9f3bc4e08f194d15",
+        "attestation_digest": "d8fa62d4b7783c95ce3c6ebfede7f7e80ef1902fd8de57b1aee83adb3080d1f7"
+      },
+      "seed_closure": {
+        "path": "data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/seed-closure-v1/authoring-approval-attestation.json",
+        "sha256": "054212eb613b4718948c7a87984007aada6eefd97bf42b888126bc5ef0440230",
+        "attestation_digest": "19fa5e4ee8f7663bfc354b7d67498366f9d111021fb8d9b235645e7bfb474d89"
+      }
+    },
+    "compatible_world_pins": [
+      {
+        "release_id": "spatial-v3-production-v5",
+        "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+        "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad",
+        "world_manifest": {
+          "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
+          "sha256": "6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c"
+        },
+        "current_release_status": "validated_candidate_not_active",
+        "current_production_activation": false
+      },
+      {
+        "release_id": "spatial-v3-production-v6",
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+        "world_manifest": {
+          "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json",
+          "sha256": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb"
+        },
+        "current_release_status": "validated_candidate_not_active",
+        "current_production_activation": false
+      }
+    ],
+    "world_revisions_digest": "539c7191d85397403566e3562c9ce6ff7086a685dc291d93507512cb8c61b932"
+  },
+  "restart_evidence": {
+    "verified": true,
+    "verification": {
+      "path": "test/integration/gate1-owner-data-import-postgres.test.js",
+      "sha256": "698dcbeb221fb0dbc81c541324854cd8e237ca11347600c2ac4006f885a12e80"
+    },
+    "managed_postgresql_result": "pass"
+  },
+  "authority": {
+    "approval_attestation_present": true,
+    "activation_authorized": true,
+    "new_development_party_activation_authorized": true,
+    "import_authorized": false,
+    "production_authorized": false,
+    "existing_party_migration_authorized": false,
+    "old_save_rematerialization_authorized": false,
+    "authoring_only_functional_allocation_runtime_selection": false,
+    "runtime_item_creation_authorized": false
+  },
+  "activation_executed": false,
+  "database_mutated": false,
+  "limits": "Approval authorizes only a future activation operation for new development parties against the exact request and immutable imported catalogue bindings. It does not authorize import, production activation, existing-party migration, old-save rematerialization, authoring-only functional allocation for runtime selection, runtime item creation, or execution by this attestation step.",
+  "attestation_digest": "4ac93d5af58176cbbcf198c71197a589f53944f62a83758f1201a140b477adcd"
+}

@@ -24,7 +24,10 @@ export async function runAndPersistTracePhase2Turn({ workflowInput, services,
   } catch (error) {
     if (isExpectedPostCommitPresentationFailure(error)
         && services.committedPublicResult() != null) return services.committedPublicResult();
-    if (services.turnCommitStatus() === 'not_started') {
+    if (error?.code === 'LIVE_WORLD_TOPOLOGY_COMMITTED_MOVEMENT_DENIED'
+        && error.details?.topology_status === 'topology_committed') {
+      error.turn_commit_status = 'topology_committed';
+    } else if (services.turnCommitStatus() === 'not_started') {
       error.turn_commit_status = 'not_started';
     }
     throw error;

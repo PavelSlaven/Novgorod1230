@@ -19,6 +19,8 @@ import { createSpatialSemanticAtomicWritePlan } from
   '../src/infrastructure/postgres/spatial-semantic-atomic-write-plan.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { loadApprovedActorBaseAttributesTestBinding } from
+  './support/actor-base-attributes-binding.js';
 
 test('S1 profile loads revision 24 bundle', async () => {
   const loaded = await loadLowerDvinaTraceSpatialSemanticProfile();
@@ -142,9 +144,15 @@ test('production binding activates S1 only for exact loaded revision 24 profile'
     const active = await capturedTraceRuntime(loadedProfile);
     assert.equal(typeof active.createTurnStepSpatialSemanticResolver, 'function');
     assert.equal(active.spatialSemanticProfile, loadedProfile);
+    assert.equal(typeof active.createTurnStepAuthoredSpatialSemanticResolver,
+      'function');
+    assert.equal(active.authoredSpatialSemanticProfile?.schema,
+      'rus.live_world_runtime.s1_loaded_profile.v1');
     const absent = await capturedTraceRuntime(null);
     assert.equal(absent.createTurnStepSpatialSemanticResolver, null);
     assert.equal(absent.spatialSemanticProfile, null);
+    assert.equal(typeof absent.createTurnStepAuthoredSpatialSemanticResolver,
+      'function');
     const historical = structuredClone(loadedProfile);
     historical.profile.revision = 1;
     historical.profile.scenario_definition_revision = 23;
@@ -214,6 +222,7 @@ test('S1 local ref stays visible inside open one-space without a creation marker
       }]
     } });
   assert.equal(projected.visible_objects[0].entity_ref.entity_id, 's1-local:structure');
+  assert.equal(projected.visible_objects[0].visible_status, 'внутри');
   assert.equal(projected.spatial_semantic, undefined);
   assert.equal(JSON.stringify(projected).includes('position:inside'), false);
 });
@@ -348,15 +357,15 @@ async function capturedTraceRuntime(spatialSemanticProfile = null) {
   const release = {
     release_id: 'spatial-v3-production-v10',
     runtime_catalog_scope: 'item_container_materialization_v2',
-    runtime_catalog_contract_digest: 'runtime-digest',
-    world_revision_id: 'world-revision', world_catalog_digest: 'world-digest',
-    compatible_world_pin_manifest_digest: 'manifest-digest'
+    runtime_catalog_contract_digest: '1'.repeat(64),
+    world_revision_id: 'world-revision', world_catalog_digest: '2'.repeat(64),
+    compatible_world_pin_manifest_digest: '3'.repeat(64)
   };
   const worldPool = { query: async () => ({ rows: [{
     event_id: 'event', catalog_scope: release.runtime_catalog_scope,
-    catalog_revision_id: 'revision', catalog_digest: 'catalog-digest',
-    import_id: 'import', import_audit_digest: 'import-digest',
-    record_registry_digest: 'registry-digest',
+    catalog_revision_id: 'revision', catalog_digest: '4'.repeat(64),
+    import_id: 'import', import_audit_digest: '5'.repeat(64),
+    record_registry_digest: '6'.repeat(64),
     runtime_contract_digest: release.runtime_catalog_contract_digest,
     compatible_world_revision_id: release.world_revision_id,
     compatible_world_catalog_digest: release.world_catalog_digest,
@@ -374,6 +383,8 @@ async function capturedTraceRuntime(spatialSemanticProfile = null) {
     spatialSemanticProfile
   }, {
     createNpcRuntimePorts: () => ({}),
+    actorBaseAttributesBindingLoader:
+      loadApprovedActorBaseAttributesTestBinding,
     createPhase2RuntimeFactory: (input) => { captured = input; return {}; }
   });
   await bindings.createPublicRuntimeFacade({

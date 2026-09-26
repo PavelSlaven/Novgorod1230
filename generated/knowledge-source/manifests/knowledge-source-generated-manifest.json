@@ -5,37 +5,37 @@
   "files": [
     {
       "path": "generated/knowledge-source/graph/GRAPH_REPORT.md",
-      "sha256": "db77121f7229ab94ab2bc35f594d834cfdf5a3c075ec06e03e717ba83c28fb2a",
+      "sha256": "523b3e0265302fb1644a02b665ce20e2078d89eff3f558b70911f4acf45e3bab",
       "bytes": 367
     },
     {
       "path": "generated/knowledge-source/graph/graph.html",
-      "sha256": "5854339c16ad758444b5afc3b6debd574d93dcaca39e840eeaaaa9234a9653d2",
+      "sha256": "a10ade3ee5990d0f2af99fe02d32d1dd2d99f83d01fa763b717b462194d19997",
       "bytes": 219
     },
     {
       "path": "generated/knowledge-source/graph/graph.json",
-      "sha256": "3901eea0916491f6d46cb06a25681d7a6d93541426a6d28bfed6c8ec63b29129",
-      "bytes": 7421
+      "sha256": "faabf58c637f0d6b6111d20a8bf1920363b399aeefe7d743e6e66e217a15fbec",
+      "bytes": 7864
     },
     {
       "path": "generated/knowledge-source/graph/manifest.json",
-      "sha256": "27172e61c8aa0b4380b285b74add02fd964c1904a80245e5a5c05654f8a5eadb",
+      "sha256": "0c5b3c7ca350b2366381224233886e99cc5cbd0990bc33f45e5f295136b70980",
       "bytes": 591
     },
     {
       "path": "generated/knowledge-source/manifests/inventory.json",
-      "sha256": "7213a340d842c69be926d8ea90c31364461cf59030b1e6d3b0c9380192d1e5fc",
-      "bytes": 9212
+      "sha256": "c35d5de42cac71c3f0b93fae737afc6ed0d93bcc9ecd201b75aec5907d589818",
+      "bytes": 9206
     },
     {
       "path": "generated/knowledge-source/rag/lexical-index.json",
-      "sha256": "a454ffc12d50b3d610325c3f80330dfb39eb380a484be7cd06d9b5094e90673f",
-      "bytes": 3394351
+      "sha256": "b878d5c4495eb2d532f3dc818a0cca56933ea8ffb70feb4b2cdbb780302cfce6",
+      "bytes": 3423356
     },
     {
       "path": "generated/knowledge-source/rag/manifest.json",
-      "sha256": "1b3c563c4a8d8f853dfaa9adffae5d393cfc243a2d512aaf34751472a718b28e",
+      "sha256": "def2ba005f1c33f8e4419c1d1259f4d32e34ba7ba0b24d0f9bc583131be13e57",
       "bytes": 7543
     }
   ]

@@ -8,7 +8,8 @@ const QUERY_SCHEMA = 'world_knowledge_query_v1';
 const SLICE_SCHEMA = 'world_knowledge_slice_v1';
 const PURPOSES = new Set(['semantic_resolution', 'materialization_support', 'source_grounded_qa', 'npc_decision', 'conversation', 'narration']);
 const ACTOR_FACETS = new Set(['occupation_ref', 'role_ref', 'specialist_domain', 'social_status', 'sex_category', 'age_category']);
-const CONDITION_FACETS = new Set(['season', 'climate', 'location_type', 'material_state', 'temperature_state', 'moisture_state', 'process_ref']);
+/** Single owner registry for claim/context condition facets (also imported by pack compiler). */
+export const CONDITION_FACETS = new Set(['season', 'climate', 'location_type', 'material_state', 'temperature_state', 'moisture_state', 'process_ref', 'started_historical_events']);
 const HARD_EXCLUSION_BASES = new Set(['introduced_after_context', 'ceased_before_context', 'not_available_in_region', 'institution_not_existing', 'explicit_domain_incompatibility']);
 const ACCESS_CLASSES = new Set(['general_physical', 'common_cultural', 'occupation_bound', 'role_bound', 'specialist_bound', 'domain_internal_only']);
 const ACCESS_FACETS = Object.freeze({
@@ -165,6 +166,8 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
   for (const conflict_group_ref of omittedConflictGroups) gaps.push({ domain: query.domains.join(','), status: 'conflict_group_exceeds_candidate_budget', conflict_group_ref });
   if (verdict === 'unresolved' && gaps.length === 0) gaps.push({ domain: query.domains.join(','), status: 'unresolved' });
   const contextText = packContext({ coverage, hardConstraints: selectedHard, facts: selectedFacts, disputes, gaps }, query.budget.max_context_chars);
+  // Orchestrator maps these hits into §63 sufficiency; not a model-facing field.
+  const search_hint_hits = Object.freeze(hintScores.map(({ strongest }) => strongest > 0));
   return deepFreeze({
     schema: SLICE_SCHEMA,
     pack_ref: bundle.manifest.pack_ref,
@@ -180,6 +183,7 @@ function resolve(bundle, claimMap, profiles, query, vectorScores) {
     gaps,
     evidence_fragments: [],
     context_text: contextText,
+    search_hint_hits,
   });
 }
 
@@ -304,9 +308,21 @@ function validFacetMap(value) {
 function validCondition(value) {
   if (!plainObject(value) || !onlyKeys(value, ['facet', 'operator', 'value']) || !CONDITION_FACETS.has(value.facet)
     || !['equals', 'includes', 'present'].includes(value.operator)) return false;
+  // Event gate before present early-return: present+started_historical_events
+  // would always match an array factory value (F4 / contract: event_id required).
+  if (value.facet === 'started_historical_events') {
+    return value.operator === 'includes'
+      && typeof value.value === 'string' && value.value.trim() === value.value
+      && value.value.length > 0;
+  }
   if (value.operator === 'present') return value.value == null;
   return typeof value.value === 'boolean' || Number.isFinite(value.value) || (typeof value.value === 'string' && value.value.trim())
     || (Array.isArray(value.value) && value.value.length > 0 && value.value.every((item) => typeof item === 'string' && item.trim()));
+}
+
+/** Shared condition validator for Core load and pack compiler (N-3). */
+export function isValidCondition(value) {
+  return validCondition(value);
 }
 
 function onlyKeys(value, allowed) { const keys = new Set(allowed); return Object.keys(value).every((key) => keys.has(key)); }
@@ -334,8 +350,11 @@ function validateContext(value, errors) {
   if (value.conditions != null && !plainObject(value.conditions)) errors.push('query.context.conditions must be an object');
   else if (value.conditions != null) for (const [key, condition] of Object.entries(value.conditions)) {
     if (!CONDITION_FACETS.has(key)) errors.push(`query.context.conditions: unknown field ${key}`);
+    // Empty started_historical_events means "nothing has begun yet" (A-01).
+    const allowEmpty = key === 'started_historical_events';
     const valid = typeof condition === 'boolean' || Number.isFinite(condition) || (typeof condition === 'string' && condition.trim())
-      || (Array.isArray(condition) && condition.length > 0 && condition.every((item) => typeof item === 'string' && item.trim()));
+      || (Array.isArray(condition) && (allowEmpty || condition.length > 0)
+        && condition.every((item) => typeof item === 'string' && item.trim()));
     if (!valid) errors.push(`query.context.conditions.${key} is invalid`);
   }
 }

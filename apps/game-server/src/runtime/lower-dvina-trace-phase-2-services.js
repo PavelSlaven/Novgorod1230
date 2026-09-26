@@ -12,9 +12,11 @@ import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
   './lower-dvina-trace-phase-2-player-safe.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { createLowerDvinaTracePhase2StateReader } from './lower-dvina-trace-phase-2-state-reader.js';
+import { actorMovementBlocked } from './lower-dvina-trace-phase-3-command-shared.js';
+import { partyHistoricalEventsOf } from './world-knowledge-request-context.js';
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
-    partyId, requestId, idempotencyKey, inputDigest, issuedAt,
+    partyId, requestId, idempotencyKey, inputDigest, issuedAt, scenarioId,
     state, contracts, registry, repository, semanticResolver,
     turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
     locationProfiles, scenePresentation,
@@ -29,6 +31,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createTurnStepWorldProcessResolver,
     localFireProfile,
     createTurnStepSpatialSemanticResolver,
+    spatialSemanticProfile,
     createTurnStepBackgroundNpcResolver,
     npcSemanticRemainderProfile,
     admitAmbientOrdinaryPortion,
@@ -102,6 +105,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       localFireProfile,
       createTurnStepWorldProcessResolver,
       createTurnStepSpatialSemanticResolver,
+      spatialSemanticProfile,
       createTurnStepBackgroundNpcResolver,
       npcSemanticRemainderProfile,
       ordinaryDiscoveryEnablementMarker,
@@ -125,7 +129,18 @@ export function buildLowerDvinaTracePhase2Services(context) {
     stateReader: createLowerDvinaTracePhase2StateReader({ repository, partyId,
       idempotencyKey, state, projectCurrentScene, turnBudget }),
     semanticResolver,
-    ...(turnStepModel ? { turnStepModel } : {}),
+    // N1: per-request wrap binds committed events; no mutable model property.
+    ...(turnStepModel ? {
+      turnStepModel: (req, repair) => turnStepModel(req, repair, {
+        historical_events: partyHistoricalEventsOf(state)
+      })
+    } : {}),
+    turnStepBlockPlan: ({ plan, request }) => request.step_index === 1
+      && actorMovementBlocked(state)
+      && plan.resolution === 'direct'
+      && plan.goal_result === 'not_achieved'
+      && plan.reason_code === 'actor_movement_blocked'
+      && plan.operations.length === 0,
     ...(turnStepSemanticGroundingValidator ? {
       turnStepSemanticGroundingValidator
     } : {}),
@@ -237,8 +252,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
             committedPublicResult?.screen?.checks ?? []
           ),
           delivery_state: { ...defaultScreen.delivery_state, generated_at: issuedAt },
-          scenario_id: 'lower_dvina_trace_v1',
-          screen_kind: 'trace_turn',
+          scenario_id: scenarioId ?? 'lower_dvina_trace_v1',
+          screen_kind: scenarioId === 'lower_dvina_trace_v1'
+            ? 'trace_turn' : 'live_world_turn',
           opening_screen_digest: state.opening_identity.opening_screen_digest
         };
         turnBudget?.assertWithinDeadline();

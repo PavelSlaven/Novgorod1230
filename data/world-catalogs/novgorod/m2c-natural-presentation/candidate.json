@@ -1,0 +1,2915 @@
+{
+  "artifact_type": "natural_presentation_authoring_candidate",
+  "candidate_id": "novgorod_m2c_natural_presentation_g4_v1",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "approved": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "source_natural_candidate": {
+    "path": "data/world-catalogs/novgorod/m2c-natural/candidate.json",
+    "sha256": "d07eaf5abfa684c31c6493c553ae53404b3ed49658ceddcb6f2826db95f89f93",
+    "approval": "data/world-catalogs/novgorod/m2c-natural/approval-attestation.json"
+  },
+  "authoring_policy": {
+    "directness": "editorial_analogical",
+    "confidence": "low",
+    "basis": "Each descriptor is a Russian-language projection of its exact approved natural layer value; source_profile_ref pins the original provenance and limitations.",
+    "limits": [
+      "No local species, quantities, harvestability, rights, stability, depth, safety or precise geographic extent are added.",
+      "Machine baseline readiness never authorizes perception. Every non-none descriptor requires an exact independently admitted source_position_id and P22 conditions.",
+      "A source position must be resolved from the generated scene's approved arrival endpoint slot and committed endpoint-position binding; no actor-position or missing-binding fallback. Applicability to that source location requires scene owner admission.",
+      "P22 ordinal loudness 1 is an editorial low-intensity moving-water source, not a decibel measurement. Its audience requires the committed target ambient-noise baseline and approved propagation losses.",
+      "Wind, dynamic weather, season and light are not asserted by static descriptions. Temporal and causal sound owners retain their authority.",
+      "Partial visual visibility may suppress a descriptor when no partial_text exists; partial acoustic text does not identify the source.",
+      "No candidate authoring file is runtime authority before independent Astra approval, compiled catalog membership and release activation."
+    ]
+  },
+  "presentation_profiles": [
+    {
+      "id": "m2c_natural_g4_central_current_split_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_central_current_split",
+        "version": 1,
+        "payload_digest": "8f64bc8e4f276054c0697368a9e478b5bdcb3d3105d0bc1c9975e2e9ada36908"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_central_navigation_reach_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_central_navigation_reach",
+        "version": 1,
+        "payload_digest": "4193641857dd655b9a98fbca4ed674bce08c6a9ffd76814a7c123c0d579114f4"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_channel_split_islet_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_channel_split_islet",
+        "version": 1,
+        "payload_digest": "ffec1cb88cc2b5d27672161b5f2fd0a0e4402df478c1aff1b10ea7d78a7562a2"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_driftwood_bar_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_driftwood_bar",
+        "version": 1,
+        "payload_digest": "7de8dc3c4a6488eb95ac77d423237fb883bf9c2d8a945bce6aae4deb48a72e6c"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности виден плавник."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_dry_island_ridge_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_island_ridge",
+        "version": 1,
+        "payload_digest": "fa0a359c6f84e41b59f0a60dd7d063628f25abd46bbf3001f1c92f6930e5f9ae"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта плотным грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Рельеф холмистый."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и кустарника, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_dry_pine_ridge_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_dry_pine_ridge",
+        "version": 1,
+        "payload_digest": "962219e66537c5a1de17880bd2686c78d053787b86442aa12938e958eed8e6a3"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На земле лежит хвойная подстилка, проступают корни."
+        },
+        {
+          "layer": "relief",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "The approved class leaves the local relief unresolved; no definite shape is asserted."
+        },
+        {
+          "layer": "water_body",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны древесные кроны.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "На земле лежит хвойная подстилка."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны хвоя, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Seasonal floodwater does not establish current water presence or movement; no sound is asserted."
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_east_flood_bypass_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_east_flood_bypass",
+        "version": 1,
+        "payload_digest": "8c25e953319292e2c4304aa731bdac8d5342347fe54a66ba291dbd21369fcd94"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_east_side_channel_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_east_side_channel",
+        "version": 1,
+        "payload_digest": "ab430442a29dbf24d24f3e7cbba6445be4149e87bf47af7ba37c823585c42fe5"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_flooded_interior_basin_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_flooded_interior_basin",
+        "version": 1,
+        "payload_digest": "224969c529d1196019476b125c9d8f411dbafd25e4b63a04cbac3dfcfc27b6d3"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "The seasonal water class does not establish current visible water."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "Видна растительность влажных мест."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Seasonal floodwater does not establish current water presence or movement; no sound is asserted."
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_floodplain_ridge_route_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_floodplain_ridge_route",
+        "version": 1,
+        "payload_digest": "db40f711d005cb9e1d1e6090ceb76b09bbf4162e69b65632f16ab6889533342a"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта плотным грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Рельеф холмистый."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и кустарника, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_forest_stream_route_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_forest_stream_route",
+        "version": 1,
+        "payload_digest": "abe1a3f36c1b2099bf82151f28f6e35def82b38f30b53299a37031b65e1c8627"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Среди корней видна мокрая грязь."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден ручей.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны древесные кроны.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны влажный лесной подлесок и подстилка."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_large_island_head_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_large_island_head",
+        "version": 1,
+        "payload_digest": "ca72a61deea50064219fb6505b5557aa88e511cdb4cfb5fe63e953535922d282"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_mixing_reach_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_mixing_reach",
+        "version": 1,
+        "payload_digest": "94485c9fbd659ffea9a072dd5644b10666d68d5abeb9cf57ea18c904f17ed5d9"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна вода речного устья.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_north_exposed_turn_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_north_exposed_turn",
+        "version": 1,
+        "payload_digest": "b5a3d99073286597e2c2eb8ac1e2f297d731d72a0cfa3af82eb82638320f0d8e"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_north_outflow_reach_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_north_outflow_reach",
+        "version": 1,
+        "payload_digest": "c96df30934c831f8a04aa49f0167c237256d0439498429ad75075dd7827a3640"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_old_channel_pool_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_old_channel_pool",
+        "version": 1,
+        "payload_digest": "39e804258b34723dafd10ed7271461d4c10e9df481f23e02a575aa995f8cbb70"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности видны грязь и ил."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна заводь.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны осоки, тростниковая и болотная растительность."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки осок и тростника, остатки болотных трав."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_outer_exposed_approach_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_outer_exposed_approach",
+        "version": 1,
+        "payload_digest": "59c2a14289f722e5c101b3cca7ba0110c7287bc04a9b371115f613cf5711628e"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна морская вода.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_reed_backwater_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_reed_backwater",
+        "version": 1,
+        "payload_digest": "6d441c65185f7e12e15114ef384194de08c27fc8d065a1ec2d6b0dff99a329e7"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности видны грязь и ил."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна заводь.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны осоки, тростниковая и болотная растительность."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки осок и тростника, остатки болотных трав."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_sheltered_inner_reach_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_sheltered_inner_reach",
+        "version": 1,
+        "payload_digest": "41c862e0b918808808b6e241ee283fc12e90200d5839c08c71459bc4d576c375"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_sheltered_landing_terrace_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_sheltered_landing_terrace",
+        "version": 1,
+        "payload_digest": "62051c409eb0dd8290fbd60d2d5f952df85f3d674b9ff58812b9092f888006a2"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта плотным грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Рельеф холмистый."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и кустарника, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_shifting_shoal_field_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_shifting_shoal_field",
+        "version": 1,
+        "payload_digest": "41594aef505cb9c155ce9dfc8b1d4d2b0e050199112ffa3556011aef8dba0cd0"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны наносы."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_south_entry_reach_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_south_entry_reach",
+        "version": 1,
+        "payload_digest": "0aea66edab59f063d8828c813e8f9a643ae8da70af7547a9d19212b3d4fe19f0"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_tributary_mouth_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_tributary_mouth",
+        "version": 1,
+        "payload_digest": "66cebf50f88bd27b3e739bc15dbf5d8c0c9a5fe94a71c296ef9be3191b74d1db"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден ручей.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_locality_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_locality",
+        "version": 1,
+        "payload_digest": "d00bb41965ec4a68f9603c5a1f47656ba0b95bcbd3c2750ad1e4c38e82dc0fab"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Поверхность покрыта илистым и глинистым грунтом."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, обломки кустарниковых ветвей."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_resource_edge_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_resource_edge",
+        "version": 1,
+        "payload_digest": "c0db3e62b2f7b5b3433de961304cbaa96b1b49040efc90f95c64f30099912a1d"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Среди корней видна мокрая грязь."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны древесные кроны.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны влажный лесной подлесок и подстилка."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_vikhtuy_river_approach_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_vikhtuy_river_approach",
+        "version": 1,
+        "payload_digest": "e4618fb83dac6f30b29b1accd63882c747b40da4ae9839b21f6d8f524b6ec913"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_west_hidden_backwater_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_west_hidden_backwater",
+        "version": 1,
+        "payload_digest": "196e85434a7dbacbd0efddb799eb916125900511da7bbe1000fd4f4bcdd4139b"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Видна заводь.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_west_side_channel_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_west_side_channel",
+        "version": 1,
+        "payload_digest": "4da6e0833d51cf481626cdc9dae47daf11a444b17168f46f9effc907e04de538"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_wet_conifer_tract_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_wet_conifer_tract",
+        "version": 1,
+        "payload_digest": "9e16e498389601986db79533a1219a41e6862b587fbb6a1679daa1054ed73998"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "Среди корней видна мокрая грязь."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны древесные кроны.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Видны влажный лесной подлесок и подстилка."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_zaostrovye_burial_area_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_burial_area",
+        "version": 1,
+        "payload_digest": "b1681620d252f218fb05badae740fef9f78202a8acb7827b0a4929e354445622"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "В илистом грунте проступают корни."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Natural baseline explicitly marks this layer not applicable."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Под кустами видна листовая подстилка."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "По влажному краю растёт растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Seasonal floodwater does not establish current water presence or movement; no sound is asserted."
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_zaostrovye_landing_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_landing",
+        "version": 1,
+        "payload_digest": "093729367bdf84ada559b3949f43e13efe8382b7735a96134dafcb01ddf7e4bc"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "На поверхности лежит илистый грунт."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Берег низкий."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Землю покрывают трава, осоки и кустарник."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны остатки трав и осок, небольшие древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    },
+    {
+      "id": "m2c_natural_g4_zaostrovye_settlement_center_presentation",
+      "version": 1,
+      "status": "candidate_approval_pending",
+      "natural_profile_ref": {
+        "id": "m2c_natural_g4_zaostrovye_settlement_center",
+        "version": 1,
+        "payload_digest": "3b191c91c10c7372e4b5531109e03fe02d53ac890f96bec2a68b31c3e8e01d6b"
+      },
+      "g4_ref": {
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+        "version": 1
+      },
+      "layers": [
+        {
+          "layer": "surface",
+          "channel": "visual",
+          "clear_text": "В илистом грунте проступают корни."
+        },
+        {
+          "layer": "relief",
+          "channel": "visual",
+          "clear_text": "Местность низкая и ровная."
+        },
+        {
+          "layer": "water_body",
+          "channel": "visual",
+          "clear_text": "Виден речной проток.",
+          "partial_text": "Различима вода."
+        },
+        {
+          "layer": "bank_structure",
+          "channel": "visual",
+          "clear_text": "Видна кромка берега.",
+          "partial_text": "Различима кромка берега."
+        },
+        {
+          "layer": "tree_layer",
+          "channel": "visual",
+          "clear_text": "Видны отдельные деревья.",
+          "partial_text": "Различимы очертания деревьев."
+        },
+        {
+          "layer": "shrub_layer",
+          "channel": "visual",
+          "clear_text": "Виден нижний ярус растительности."
+        },
+        {
+          "layer": "ground_cover",
+          "channel": "visual",
+          "clear_text": "Под кустами видна листовая подстилка."
+        },
+        {
+          "layer": "riparian_vegetation",
+          "channel": "visual",
+          "clear_text": "У воды видна растительность."
+        },
+        {
+          "layer": "natural_materials",
+          "channel": "visual",
+          "clear_text": "На поверхности видны опавшая листва, древесные обломки."
+        },
+        {
+          "layer": "seasonal_state",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "light",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "weather",
+          "channel": "none",
+          "clear_text": null,
+          "non_projection_reason": "Current Temporal state remains with its existing presentation owner; no static seasonal or weather claim."
+        },
+        {
+          "layer": "audible_context",
+          "channel": "acoustic",
+          "clear_text": "Слышны звуки движущейся воды.",
+          "partial_text": "Доносится неясный шум.",
+          "loudness": 1
+        }
+      ]
+    }
+  ]
+}

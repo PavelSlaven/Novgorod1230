@@ -1,6 +1,6 @@
 import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
-import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { createOrdinaryMaterializationFirstEntryProvisioner, createTargetFiniteFirstEntryPorts } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { loadLowerDvinaTraceScenePresentation } from
   '../internal/lower-dvina-trace-scene-presentation.js';
 import { ordinaryBackgroundSeedForLocation } from
@@ -28,10 +28,43 @@ import {
 import { createPostgresPools, probePostgresPool } from '../infrastructure/postgres/pools.js';
 import {
   loadSpatialV3RuntimeBindings, resolveSpatialV3ProductionBindingsModule,
-  validateSpatialV3RuntimeBindings
+  validateSpatialV3RuntimeBindings, SPATIAL_V3_TARGET_BINDINGS_MODULE
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
+import { loadSpatialV3TargetProductionRelease, loadTargetCatalogActivationApprovals } from './production-spatial-v3-release-v17.js';
+import { loadTargetRuntimeProfiles } from '../internal/target-runtime-profiles.js';
+import { createSpatialV3LocalSceneRuntime } from '../runtime/spatial-v3-local-scene-runtime.js';
+import { createSpatialV3LocalMovementEligibilityReader,
+  loadApprovedLocalMovementEligibilityPins } from
+  '../infrastructure/postgres/spatial-v3-local-movement-eligibility.js';
+import { createSpatialV3CurrentMovementCapability } from
+  '../infrastructure/postgres/spatial-v3-current-movement-capability.js';
+import { createSpatialV3CurrentVisibilityProvider } from
+  '../infrastructure/postgres/spatial-v3-current-visibility-provider.js';
+import { createSpatialV3ExpansionContextReader } from
+  '../infrastructure/postgres/spatial-v3-expansion-context.js';
+import { createSpatialV3ExpansionRuntime } from
+  '../runtime/spatial-v3-expansion-runtime.js';
+import { createSpatialV3SiteTraversalRuntime } from
+  '../runtime/spatial-v3-site-traversal-runtime.js';
+import { createSpatialV3GeneratedExpansionAdapter } from
+  '../infrastructure/postgres/spatial-v3-generated-expansion-adapter.js';
+import { createSpatialV3GenerationAdmission } from
+  '../infrastructure/postgres/spatial-v3-generation-admission.js';
+import { createTargetGeneratedFirstEntry } from
+  '../infrastructure/postgres/target-generated-first-entry.js';
+import { projectSpatialV3CurrentVisibleContext,
+  SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF } from
+  '../runtime/spatial-v3-current-visible-context.js';
+import { buildPlayerSafeVisiblePackageEnvelope } from '@rus/visibility-knowledge-memory';
+import { readCurrentNaturalSourceState } from
+  '../infrastructure/postgres/g4-current-natural-source-state.js';
+import { readCurrentTargetConditions, readCommittedEntityExterior, readPlayerKnowledge } from
+  '../infrastructure/postgres/spatial-v3-current-visibility-inputs.js';
+import { createTargetCurrentFactualContext } from
+  '../infrastructure/postgres/target-current-factual-context.js';
+import { createTargetAuthoredStartCatalog } from '../internal/target-authored-start-catalog.js';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
   SPATIAL_V3_PRODUCTION_RELEASE,
@@ -54,10 +87,20 @@ export async function createSpatialV3ProductionCompositionRoot({
 } = {}) {
   const pools = suppliedPools ?? createPostgresPools({ env, PoolClass });
   try {
-    const release = createSpatialV3ProductionRelease(
+    const selectedModule = resolveSpatialV3ProductionBindingsModule(config, env);
+    const targetContext = selectedModule === SPATIAL_V3_TARGET_BINDINGS_MODULE
+      ? await loadSpatialV3TargetProductionRelease({ worldPool: pools.worldPool,
+          ...await loadTargetCatalogActivationApprovals({ config, env }), rootDir: config.rootDir ?? process.cwd() }) : null;
+    const release = targetContext?.release ?? createSpatialV3ProductionRelease(
       config.runtimeCatalogPinManifestDigest
         ?? env.RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST
     );
+    if (targetContext != null && (config.runtimeCatalogPinManifestDigest
+        ?? env.RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST)
+      !== release.compatible_world_pin_manifest_digest) {
+      throw serverError('SPATIAL_V3_TARGET_RUNTIME_PIN_REQUIRED',
+        'Configured compatibility digest must match the issued target activation request.');
+    }
     if (SPATIAL_V3_TARGET_MIGRATIONS.length
         !== release.target_migration_count
       || SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST
@@ -69,30 +112,123 @@ export async function createSpatialV3ProductionCompositionRoot({
     }
     const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
+    const targetProfiles = targetContext == null ? null : await loadTargetRuntimeProfiles({
+      rootDir: config.rootDir ?? process.cwd(), worldRevisionId: release.world_revision_id,
+      verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog });
     const [profiles, spatialSemanticProfile, scenePresentation,
       npcSemanticRemainderProfile, loadedWorldKnowledge,
       scenarioBundle] = await Promise.all([
-      loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
-      loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }),
-      loadLowerDvinaTraceScenePresentation({
+      targetProfiles?.materialization_profiles ?? loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
+      targetContext == null ? loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }) : null,
+      targetContext == null ? loadLowerDvinaTraceScenePresentation({
         rootDir: config.rootDir ?? process.cwd(),
         scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
-      }),
-      loadLowerDvinaTraceN1Profile({
+      }) : null,
+      targetContext == null ? loadLowerDvinaTraceN1Profile({
         rootDir: config.rootDir ?? process.cwd()
-      }),
+      }) : null,
       loadProductionWorldKnowledge({ rootDir: config.rootDir ?? process.cwd(),
         python: env.RUS_WORLD_KNOWLEDGE_PYTHON ?? 'python',
         requireEncoderReady: true,
         ...(worldKnowledgeEncoderFactory == null ? {}
           : { encoderFactory: worldKnowledgeEncoderFactory }) }),
-      loadLowerDvinaTraceMaterializationBundle({
+      targetContext == null ? loadLowerDvinaTraceMaterializationBundle({
         rootDir: config.rootDir ?? process.cwd(),
         scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
-      })
+      }) : { calendar_profile: targetContext.runtime.materialization_inputs.calendar_profile }
     ]);
     const worldKnowledge = Object.freeze({ ...loadedWorldKnowledge,
       calendar_profile: scenarioBundle.calendar_profile });
+    const targetFiniteFirstEntry = targetProfiles == null ? null
+      : createTargetFiniteFirstEntryPorts(targetProfiles.finite_first_entry);
+    const authoredStartCatalog = targetContext == null ? null
+      : createTargetAuthoredStartCatalog({ runtime: targetContext.runtime, release });
+    const authoredRuntimeBindingResolver = authoredStartCatalog?.resolveRuntimeBinding ?? null;
+    const targetStartPublication = authoredStartCatalog == null ? null
+      : await authoredStartCatalog.loadPublication(release.scenario_binding_id);
+    let committer;
+    const factualContext = targetContext == null ? null : createTargetCurrentFactualContext({
+      partyPool: pools.partyPool,
+      committer: { commit: (...args) => committer.commit(...args) },
+      runtime: targetContext.runtime,
+      authoredRuntimeBindingResolver
+    });
+    const currentVisibility = targetContext == null ? null
+      : createSpatialV3CurrentVisibilityProvider({
+        pool: pools.partyPool,
+        verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
+        pin: targetContext.runtime.itemPin,
+        worldBaseReader: targetContext.runtime.worldBaseReader,
+        readCurrentEnvironment: factualContext.readCurrentEnvironment,
+        readCurrentSourceState: (args) => readCurrentNaturalSourceState({
+          ...args, readCurrentEnvironment: factualContext.readCurrentEnvironment }),
+        readTargetConditions: readCurrentTargetConditions,
+        readEntityExterior: readCommittedEntityExterior,
+        readPlayerKnowledge
+      });
+    const siteTraversalCapability = targetContext == null ? null
+      : createSpatialV3CurrentMovementCapability({ pool: pools.partyPool });
+    const readLocalMovementEligibility = targetContext == null ? null
+      : createSpatialV3LocalMovementEligibilityReader({ worldPool: pools.worldPool,
+        pins: loadApprovedLocalMovementEligibilityPins(release.world_revision_id) });
+    const projectDestination = targetContext == null ? null : async ({ transaction,
+      partyId, actorId, context, destinationPosition, destinationSite,
+      destinationPositionId, destinationSiteId, current } = {}) => {
+      const positionId = destinationPosition?.id ?? destinationPositionId;
+      const siteId = destinationSite?.id ?? destinationSiteId;
+      const directionalExits = await readDestinationDirectionalExits({
+        context, current, worldBaseReader: targetContext.runtime.worldBaseReader,
+        worldRevisionId: release.world_revision_id });
+      if (!positionId || !siteId || !Array.isArray(directionalExits)) {
+        throw serverError('SPATIAL_V3_SITE_TRAVERSAL_DATA_GAP',
+          'Approved destination visibility sources are required.', { status: 409 });
+      }
+      const client = transaction ?? await pools.partyPool.connect();
+      try {
+        if (!transaction) await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+        const state = { party_id: partyId, actor_id: actorId,
+          journey_location: { scene_position_id: positionId } };
+        const sources = await currentVisibility.readCurrentSources({ transaction: client,
+          partyId, actorId, positionId, observedPositionId: positionId, siteId,
+          state, directionalExits });
+        const visible_context = projectSpatialV3CurrentVisibleContext({ ...sources,
+          partyId, actorId, positionId });
+        if (!transaction) await client.query('COMMIT');
+        return { ok: true, position_id: positionId, site_id: siteId,
+          visible_context };
+      } catch (error) {
+        if (!transaction) await client.query('ROLLBACK');
+        throw error;
+      } finally { if (!transaction) client.release(); }
+    };
+    const spatialExpansionRuntime = targetContext == null ? null
+      : createSpatialV3ExpansionRuntime({
+        readContext: createSpatialV3ExpansionContextReader({
+          partyPool: pools.partyPool, worldBaseReader: targetContext.runtime.worldBaseReader,
+          release }),
+        readExitDisclosure: currentVisibility.readExitDisclosure,
+        prepareSiteTraversal: createSpatialV3SiteTraversalRuntime({
+          pool: pools.partyPool, ...siteTraversalCapability, projectDestination }),
+        materializerVersion: targetStartPublication.binding.execution_identity.materializer_version,
+        generatedExpansionAdapter: createSpatialV3GeneratedExpansionAdapter({
+          worldBaseReader: targetContext.runtime.worldBaseReader,
+          committer: { prepareExpansion: (...args) => committer.prepareExpansion(...args) },
+          admitGeneration: createSpatialV3GenerationAdmission({
+            worldBaseReader: targetContext.runtime.worldBaseReader,
+            verifiedCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
+            pin: targetContext.runtime.itemPin,
+            readCurrentEnvironment: factualContext.readCurrentEnvironment }),
+          prepareFirstEntry: createTargetGeneratedFirstEntry({
+            worldBaseReader: targetContext.runtime.worldBaseReader,
+            verifiedItemCatalog: targetContext.runtime.materialization_inputs.domain_catalog,
+            actorBaseAttributesBinding: targetContext.runtime.actorBinding,
+            approvedActorTemporalBundle: targetContext.runtime.materialization_inputs.approved_actor_temporal_bundle,
+            prepareNaturalFirstEntry: targetFiniteFirstEntry.prepareFirstEntry,
+            readFactualContext: factualContext.readFactualContext }),
+          projectVisible: (input) => projectSpatialV3GeneratedExpansionVisiblePackage({
+            ...input, readCurrentSources: currentVisibility.readCurrentSources })
+        })
+      });
     const bindingContext = Object.freeze({ env, config,
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
@@ -100,6 +236,14 @@ export async function createSpatialV3ProductionCompositionRoot({
       spatialSemanticProfile,
       npcSemanticRemainderProfile,
       worldKnowledge,
+      ...(targetContext == null ? {} : { targetStartRuntime: targetContext.runtime, targetRuntimeProfiles: targetProfiles,
+        spatialExpansionRuntime,
+        spatialLocalSceneRuntime: createSpatialV3LocalSceneRuntime({ pool: pools.partyPool,
+          readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
+          readLocalMovementEligibility }),
+        readLocalEdgeDisclosure: currentVisibility.readLocalEdgeDisclosure,
+        readCurrentExitDisclosure: currentVisibility.readCurrentExitDisclosure,
+        readCurrentSources: currentVisibility.readCurrentSources, targetFiniteFirstEntry }),
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });
@@ -109,29 +253,39 @@ export async function createSpatialV3ProductionCompositionRoot({
           release
         )
       : await loadSpatialV3RuntimeBindings(
-          resolveSpatialV3ProductionBindingsModule(config, env),
+          selectedModule,
           bindingContext
         );
-    const ordinaryFirstEntryProvisioner = createOrdinaryMaterializationFirstEntryProvisioner({
+    const ordinaryFirstEntryProvisioner = targetContext == null ? createOrdinaryMaterializationFirstEntryProvisioner({
       profile: profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile
-    });
+    }) : null;
     const initialOrdinaryProvisioner =
-      createOrdinaryMaterializationFirstEntryProvisioner({
+      targetContext == null ? createOrdinaryMaterializationFirstEntryProvisioner({
         profile: profiles.ordinaryMaterializationProfile,
         includeContextBoundCapabilities: false,
         initialSceneSeed: ordinaryBackgroundSeedForLocation({ scenePresentation,
           locationRef: profiles.ordinaryMaterializationProfile
             .o2a_ambient.scope_binding.position_ref })
-      });
-    const spatialSemanticFirstEntryProvisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile });
-    const committer = createSpatialV3PostgresCombinedAtomicCommitter({
-      pool: pools.partyPool, recheck: bindings.commitRecheck,
-      ordinaryFirstEntryProvisioner: { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }, now });
-    const target = targetRootFactory({ ...bindings.targetCompositionPorts, committer });
+      }) : null;
+    const spatialSemanticFirstEntryProvisioner = targetContext == null
+      ? createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile }) : null;
+    committer = createSpatialV3PostgresCombinedAtomicCommitter({
+      pool: pools.partyPool, recheck: siteTraversalCapability == null
+        ? bindings.commitRecheck
+        : (input) => bindings.commitRecheck({ ...input, ...siteTraversalCapability,
+          projectDestination, readLocalMovementEligibility,
+          recheckLocalMovementVisibility: currentVisibility.recheckLocalMovementVisibility }),
+      readNaturalSourceProperty: targetFiniteFirstEntry?.readNaturalSourceProperty ?? null,
+      ordinaryFirstEntryProvisioner: targetContext == null
+        ? { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }
+        : null, now });
+    const target = targetRootFactory({ ...bindings.targetCompositionPorts, committer,
+      ...(currentVisibility == null ? {} : { readCurrentSources: currentVisibility.readCurrentSources }) });
     const activatedRelease = deriveActivatedReleaseFromReadback(
       release,
-      bindings.runtimeCatalogPin
+      targetContext?.readback.item_pin ?? bindings.runtimeCatalogPin,
+      targetContext?.readback ?? null
     );
     const publicRuntime = await bindings.createPublicRuntimeFacade({
       technicalCore: target,
@@ -206,7 +360,7 @@ export async function createSpatialV3ProductionCompositionRoot({
         status: 'ok',
         composition: 'spatial_v3_production',
         activation: 'sole_owner',
-        release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
+        release_id: release.release_id,
         release_status: activatedRelease.release_status,
         production_activation: activatedRelease.production_activation,
         runtime_selectable_in_canonical_production:
@@ -214,33 +368,34 @@ export async function createSpatialV3ProductionCompositionRoot({
         authoritative_reads: 'spatial_v3_only',
         authoritative_writes: 'spatial_v3_only',
         runtime_fallback: 'forbidden',
-        npc_conversation_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_conversation_capability,
-        npc_autonomous_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_autonomous_capability,
-        npc_combat_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_combat_capability,
+        npc_conversation_capability: release.npc_conversation_capability,
+        npc_autonomous_capability: release.npc_autonomous_capability,
+        npc_combat_capability: release.npc_combat_capability,
         temporal_contract_id:
-          SPATIAL_V3_PRODUCTION_RELEASE.temporal_contract_id,
+          release.temporal_contract_id,
         world_revision_id:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
+          release.world_revision_id,
         world_knowledge_pack_ref:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_ref,
+          release.world_knowledge_pack_ref,
         world_knowledge_pack_revision:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_revision,
+          release.world_knowledge_pack_revision,
         world_catalog_digest:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
+          release.world_catalog_digest,
         world_catalog_manifest_sha256:
-          SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_manifest_sha256,
+          release.world_catalog_manifest_sha256,
         dependency_pin_mode:
-          SPATIAL_V3_PRODUCTION_RELEASE.dependency_pin_mode,
+          release.dependency_pin_mode,
         runtime_catalog_pin_schema:
-          SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_pin_schema,
+          release.runtime_catalog_pin_schema,
         runtime_catalog_scope:
-          SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_scope,
+          release.runtime_catalog_scope,
         runtime_catalog_resolution:
-          SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_resolution,
+          release.runtime_catalog_resolution,
         compatible_world_pin_manifest_digest:
           release.compatible_world_pin_manifest_digest,
         runtime_catalog_pin:
           structuredClone(bindings.runtimeCatalogPin),
+        ...(targetProfiles == null ? {} : { target_capability_gaps: structuredClone(targetProfiles.capability_gaps) }),
         party_schema_version: release.party_schema_version,
         migration_count: migration.applied,
         migration_chain_digest: migration.chain_digest,
@@ -254,6 +409,41 @@ export async function createSpatialV3ProductionCompositionRoot({
     await pools.close().catch(() => {});
     throw error;
   }
+}
+
+export async function readDestinationDirectionalExits({ context, current, worldBaseReader,
+  worldRevisionId } = {}) {
+  if (context?.closure) return context.closure.directional_exits;
+  const binding = await worldBaseReader.readG4ExpansionBinding({
+    g4_id: current?.destination_g4_id, world_revision_id: worldRevisionId });
+  if (!binding?.ok) return null;
+  const exits = await worldBaseReader.readApprovedG4DirectionalExits(binding.value);
+  return exits?.ok ? exits.value : null;
+}
+
+/** Expansion changes topology while the actor stays at the committed source position. */
+export async function projectSpatialV3GeneratedExpansionVisiblePackage({ transaction, request,
+  closure, envelopeInput, readCurrentSources } = {}) {
+  const partyId = request.party_id; const actorId = request.actor_id;
+  const positionId = request.source_position_id;
+  const sources = await readCurrentSources({ transaction, partyId, actorId, positionId,
+    state: { party_id: partyId, actor_id: actorId,
+      journey_location: { scene_position_id: positionId } },
+    directionalExits: closure.directional_exits });
+  const visible = projectSpatialV3CurrentVisibleContext({ ...sources,
+    partyId, actorId, positionId });
+  const visible_payload = { schema: 'temporal_visible_package.v1',
+    perceived_scene: visible.visible_scene,
+    perceived_changes: visible.visible_changes ?? [],
+    sensory_details: visible.sensory_details ?? [],
+    visible_npcs: visible.visible_npc ?? [],
+    visible_objects: visible.visible_objects ?? [],
+    known_context: visible.known_context ?? [],
+    uncertainties: visible.uncertainties ?? [], hypotheses: [],
+    player_safe_interruption: null, allowed_action_affordances: [] };
+  return buildPlayerSafeVisiblePackageEnvelope({ ...envelopeInput,
+    projection_policy_ref: SPATIAL_V3_CURRENT_VISIBLE_PROJECTION_POLICY_REF,
+    visible_payload });
 }
 
 export async function assertSpatialV3WorldReleaseReadiness(

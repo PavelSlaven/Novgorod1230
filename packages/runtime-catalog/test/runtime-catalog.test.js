@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 import {
   RUNTIME_CATALOG_SCOPE,
   RuntimeCatalogError,
   assertCompatibleWorldPin,
   createRuntimeCatalogLoader,
+  loadApprovedProceduralCompiledCatalog,
   selectApplicableItemCatalog
 } from '../src/index.js';
 import { loadCommonCatalogLookupRecords } from '../src/common-catalog-lookups.js';
@@ -568,3 +570,90 @@ test('applicable projection is pure, immutable and filters only verified records
   assert.equal(Object.isFrozen(projected), true);
   assert.equal(verifiedCatalog.records_by_table.item_profile_candidates.length, 2);
 });
+
+test('procedural compiled catalog requires exact final activation pin', async () => {
+  const pin = { schema: 'rus.runtime_catalog_pin.v2',
+    catalog_revision_id: 'procedural_scene_final_candidate_v1_001',
+    catalog_digest:
+      '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c' };
+  const source = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+      + 'final-candidate-pack-v1/candidate.json', import.meta.url), 'utf8'));
+  const records = source.candidate_rows_by_table
+    .procedural_scene_compiled_records.map((record) => ({ ...record,
+      version: String(record.version) }));
+  const verifiedCatalog = { schema: 'rus.verified_item_catalog.v2',
+    verified: true, pin: structuredClone(pin), import_audit: {
+      approval_attestation_digest:
+        '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c',
+      import_audit_digest: '9'.repeat(64)
+    }, records_by_table: {
+      procedural_scene_compiled_records: records,
+      universal_categories: [{ id: 'category' }]
+    } };
+  pin.import_audit_digest = '9'.repeat(64);
+  verifiedCatalog.pin.import_audit_digest = pin.import_audit_digest;
+  const loaded = loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
+    pin });
+  assert.equal(loaded.profiles.length, 13);
+  assert.equal(loaded.mappings.length, 7);
+  assert.equal(loaded.approval_metadata.record_kind, 'approval_metadata');
+  assert.throws(() => loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
+    pin: { ...pin, catalog_digest: digest('f') } }),
+  { code: 'PROCEDURAL_COMPILED_CATALOG_PIN_MISMATCH' });
+  assert.throws(() => loadApprovedProceduralCompiledCatalog({
+    verifiedCatalog: { ...verifiedCatalog, records_by_table: {} }, pin }),
+  { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
+  const fake = structuredClone(verifiedCatalog);
+  fake.records_by_table.procedural_scene_compiled_records[0].record_id =
+    'approval:substitution';
+  fake.records_by_table.procedural_scene_compiled_records[0].payload_digest =
+    createHash('sha256').update(canonicalStringify(
+      fake.records_by_table.procedural_scene_compiled_records[0].payload))
+      .digest('hex');
+  assert.throws(() => loadApprovedProceduralCompiledCatalog({
+    verifiedCatalog: fake, pin }),
+  { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
+});
+
+test('v2 compiled catalog exposes gated allocation policy and rejects fake 22',
+  async () => {
+    const [v1, v2] = await Promise.all([
+      'final-candidate-pack-v1/candidate.json',
+      'final-candidate-pack-v2/candidate.json'
+    ].map((path) => readFile(new URL(
+      `../../../data/world-catalogs/novgorod/procedural-scene-v2/${path}`,
+      import.meta.url), 'utf8').then(JSON.parse)));
+    const rows = [...v1.candidate_rows_by_table
+      .procedural_scene_compiled_records.map((row) => ({ ...row,
+        version: String(row.version) })),
+    { ...v2.append_only_delta.record,
+      version: String(v2.append_only_delta.record.version) }];
+    const pin = { schema: 'rus.runtime_catalog_pin.v2',
+      catalog_revision_id: v2.target_revision_id,
+      catalog_digest: v2.target_catalog_digest,
+      import_audit_digest: 'a'.repeat(64) };
+    const catalog = { schema: 'rus.verified_item_catalog.v2', verified: true,
+      pin: structuredClone(pin), import_audit: {
+        approval_attestation_digest:
+          '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772',
+        import_audit_digest: pin.import_audit_digest }, records_by_table: {
+        procedural_scene_compiled_records: rows, universal_categories: [] } };
+    const loaded = loadApprovedProceduralCompiledCatalog({
+      verifiedCatalog: catalog, pin });
+    assert.equal(loaded.allocation_policy.record_id,
+      'policy:functional-actor-allocation-v1');
+    assert.equal(loaded.runtime_item_creation_authorized, false);
+    const fake = structuredClone(catalog);
+    fake.records_by_table.procedural_scene_compiled_records[21].record_id =
+      'policy:fake';
+    assert.throws(() => loadApprovedProceduralCompiledCatalog({
+      verifiedCatalog: fake, pin }),
+    { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
+    const payloadTamper = structuredClone(catalog);
+    payloadTamper.records_by_table.procedural_scene_compiled_records[21]
+      .payload.policy.applicability.role_ref = 'nov_role_boatman';
+    assert.throws(() => loadApprovedProceduralCompiledCatalog({
+      verifiedCatalog: payloadTamper, pin }),
+    { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
+  });

@@ -59,21 +59,37 @@
       "spatial_v3_scene_movement_edge_templates"
     ],
     [
+      "spatial_v3_expansion_rule_sets"
+    ],
+    [
+      "spatial_v3_terminal_policies",
+      "spatial_v3_continuation_length_rules",
+      "spatial_v3_continuation_length_candidates"
+    ],
+    [
       "spatial_v3_g4_expansion_profiles",
       "spatial_v3_g5_generation_templates",
       "spatial_v3_expansion_profile_template_limits",
       "spatial_v3_expansion_slots",
       "spatial_v3_expansion_slot_templates",
-      "spatial_v3_g5_successor_frontier_rules"
+      "spatial_v3_g5_successor_frontier_rules",
+      "spatial_v3_g4_npc_composition_bindings",
+      "spatial_v3_npc_runtime_profiles",
+      "spatial_v3_npc_regional_context_profiles"
     ],
+    ["spatial_v3_g6_acoustic_baselines"],
+    ["spatial_v3_local_movement_eligibility_profiles"],
     ["record_sources"]
   ],
   "allowlist": [
+    "spatial_v3_local_movement_eligibility_profiles",
     "source_records",
     "record_sources",
     "universal_categories",
     "spatial_v3_world_revisions",
     "spatial_v3_authoring_versions",
+    "spatial_v3_external_dependency_versions",
+    "spatial_v3_expansion_rule_sets",
     "spatial_v3_nodes",
     "spatial_v3_node_parents",
     "spatial_v3_node_classes",
@@ -108,6 +124,9 @@
     "spatial_v3_continuation_length_candidates",
     "spatial_v3_g4_expansion_profiles",
     "spatial_v3_g5_generation_templates",
+    "spatial_v3_g4_npc_composition_bindings",
+    "spatial_v3_npc_runtime_profiles",
+    "spatial_v3_npc_regional_context_profiles",
     "spatial_v3_expansion_profile_template_limits",
     "spatial_v3_expansion_slots",
     "spatial_v3_expansion_slot_templates",
@@ -118,6 +137,7 @@
     "spatial_v3_scene_materialization_profiles",
     "spatial_v3_scene_materialization_candidates",
     "spatial_v3_g6_template_slots",
+    "spatial_v3_g6_acoustic_baselines",
     "spatial_v3_scene_position_templates",
     "spatial_v3_scene_endpoint_slots",
     "spatial_v3_portal_templates",

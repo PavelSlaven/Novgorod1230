@@ -1,0 +1,37 @@
+{
+  "schema": "rus.live_world_runtime_v17_fresh_schema_approval.v1",
+  "verdict": "APPROVE_CONDITIONAL",
+  "auditor_ref": "/root/v17_schema_approval",
+  "independence_basis": "Independent Sol high review; auditor did not author the request, SQL, migration runner, or operation plan and performed no database write.",
+  "reviewed_repository_head": "5403397a5439114806f7cfd54de3eaf96e2ea98e",
+  "source_commit": "09119f4307f8ffcc5ca96722cb3f6aa516e5f2a2",
+  "request_path": "data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json",
+  "request_digest": "b4c1f994a95ae3d50f0c3b410079b484011bebef364caacb7cce7824345529d6",
+  "scope": {
+    "cluster": "existing_managed_local_play_postgresql_16_14_0",
+    "world_database": "novgorod_world_v17",
+    "world_owner": "world_operator",
+    "party_database": "novgorod_party_v17",
+    "party_owner": "party_operator",
+    "world_schema": "infra/world-base/schema.sql and its ordered 01.sql-26.sql parts, exactly as hashed in the request",
+    "party_schema": "runSpatialV3TargetMigrations and its ordered 001-036 SQL files, exactly as hashed in the request",
+    "party_chain_digest": "4ed4f87066f2d9cd724cc51054e740bd2a388d685c0fc8bd1b72f3c66a8684a3"
+  },
+  "approval": "Fresh schema creation only, after all execution preconditions pass; no existing database may be reused, dropped, or modified.",
+  "execution_preconditions": [
+    "Verify the actual PostgreSQL cluster identity, version, current backup, and existing database row counts before any write.",
+    "Verify both v17 database names are absent; stop if either exists.",
+    "Verify world_operator, party_operator, and world_reader roles already exist. The world DDL otherwise creates the cluster-wide world_reader role.",
+    "Verify the source file hashes, ordered files, request digest, and party chain digest again at execution time.",
+    "Complete a dry run of the exact schema sources against disposable empty databases before the managed local-play write.",
+    "Verify both newly created databases are empty, correctly owned, and selected explicitly before applying either schema. Apply the world entrypoint in one transaction with ON_ERROR_STOP; apply the party chain through its existing transactional runner without exactAppliedMigration.",
+    "Read back 208 world_base tables, world_reader privileges, party applied/newly_applied counts of 36 and execution_mode applied, empty party state, and unchanged row counts in novgorod_world and novgorod_party. Record actual results in a separate execution attestation."
+  ],
+  "excludes": [
+    "P12 import",
+    "catalog registration or activation",
+    "runtime or default startup cutover",
+    "migration or mutation of existing databases"
+  ],
+  "database_mutated_by_review": false
+}

@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery } from '../src/index.js';
+import { WorldKnowledgeError, createWorldKnowledgeCore, validateWorldKnowledgeQuery,
+  isValidCondition } from '../src/index.js';
 
 const bundlePath = new URL('../../../data/world-catalogs/novgorod/world-knowledge/pilot-v1/runtime-bundle.json', import.meta.url);
 const baseBundle = JSON.parse(await readFile(bundlePath, 'utf8'));
@@ -178,12 +179,31 @@ test('independent search hints retain their matches when another hint is rarer',
   const input = query({ domains: [support.domain], query_locale: 'en',
     search_hints: ['coppersmith', 'grain storage'],
     budget: { max_facts: 30, max_candidates: 30, max_context_chars: 10000 } });
-  const refs = core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref);
+  const slice = core.resolveWorldKnowledge(input);
+  const refs = slice.facts.map(({ claim_ref }) => claim_ref);
   assert.ok(refs.includes(rareRef));
   assert.ok(commonRefs.every((ref) => refs.includes(ref)));
+  assert.deepEqual(slice.search_hint_hits, [true, true]);
   // Incidental words within one phrase still face the relative admission gate.
   input.search_hints = ['grain storage coppersmith'];
   assert.deepEqual(core.resolveWorldKnowledge(input).facts.map(({ claim_ref }) => claim_ref), [rareRef]);
+});
+
+test('search_hint_hits is one bool per hint for orchestrator sufficiency', () => {
+  const bundle = structuredClone(baseBundle);
+  const support = bundle.claims[0];
+  const hitRef = 'claim:test:hint-hit';
+  bundle.claims.push({
+    ...structuredClone(support), claim_ref: hitRef,
+    applicability: { context_scope: 'universal' }
+  });
+  bundle.lexical_indexes.en.coppersmith = [hitRef];
+  const slice = createWorldKnowledgeCore(bundle).resolveWorldKnowledge(query({
+    domains: [support.domain], query_locale: 'en',
+    search_hints: ['coppersmith', 'zzzz-nonexistent-token']
+  }));
+  assert.deepEqual(slice.search_hint_hits, [true, false]);
+  assert.ok(slice.facts.some((fact) => fact.claim_ref === hitRef));
 });
 
 test('vector recall does not tighten lexical admission when candidate budget has room', () => {
@@ -388,4 +408,51 @@ test('production hard exclusion rejects anachronistic legal backport', () => {
   assert.equal(slice.verdict, 'excluded');
   assert.equal(slice.hard_constraints[0].claim_ref,
     'claim:later-novgorod-judicial-charter');
+});
+
+test('empty started_historical_events means nothing begun yet (A-01)', () => {
+  const ok = validateWorldKnowledgeQuery(query({
+    context: { time: { year: 1230 }, place_refs: [], actor_facets: {},
+      conditions: { started_historical_events: [] } }
+  }), baseBundle);
+  assert.equal(ok.ok, true, ok.errors);
+  const slice = createWorldKnowledgeCore(baseBundle).resolveWorldKnowledge(query({
+    context: { time: { year: 1230 }, place_refs: [], actor_facets: {},
+      conditions: { started_historical_events: [] } }
+  }));
+  assert.ok(Array.isArray(slice.facts));
+});
+
+test('started_historical_events claim condition requires includes + string (A-09)', () => {
+  const bundle = structuredClone(baseBundle);
+  const source = bundle.claims[0];
+  const bad = { ...structuredClone(source), claim_ref: 'claim:test:bad-event',
+    applicability: { conditions: [{ facet: 'started_historical_events',
+      operator: 'equals', value: ['event:x'] }] } };
+  bundle.claims.push(bad);
+  assert.throws(() => createWorldKnowledgeCore(bundle));
+});
+
+test('isValidCondition rejects padded started_historical_events value (N-3)', () => {
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'includes', value: 'event:x'
+  }), true);
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'includes', value: ' event:x '
+  }), false);
+});
+
+test('started_historical_events forbids present operator (F4)', () => {
+  assert.equal(isValidCondition({
+    facet: 'started_historical_events', operator: 'present', value: null
+  }), false);
+  const bundle = structuredClone(baseBundle);
+  const source = bundle.claims[0];
+  bundle.claims.push({
+    ...structuredClone(source),
+    claim_ref: 'claim:test:present-event',
+    applicability: { conditions: [{ facet: 'started_historical_events',
+      operator: 'present', value: null }] }
+  });
+  assert.throws(() => createWorldKnowledgeCore(bundle));
 });

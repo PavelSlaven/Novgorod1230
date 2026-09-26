@@ -1,0 +1,22 @@
+{
+  "schema": "rus.regional_environment_validation_report.v1",
+  "revision_id": "novgorod_regional_environment_1230_1250_v1",
+  "verdict": "PASS",
+  "checks": [
+    "exact_selectors_and_counts",
+    "universal_and_regional_status",
+    "conditional_context_guards",
+    "explicit_exclusions",
+    "source_and_provenance",
+    "region_and_period",
+    "no_weight_scale_node_or_commonness_drift",
+    "new_place_process_boundary",
+    "no_import_or_activation"
+  ],
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a",
+  "approval_request_digest": "cf56d748a391ad23bcc876c3cde9ef499e3a8a8e9e6ee9abd0a42326ce4ab74f",
+  "manifest_digest": "05acb07d066ff349a5b5ff965a73e325b730c5e14e5c6b018f4e882fbacbf2ed",
+  "rows_requiring_second_audit": [
+    "lt_sparse_forest_woodland"
+  ]
+}

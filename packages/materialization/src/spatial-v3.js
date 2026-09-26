@@ -4,6 +4,9 @@ import { copy, digest, endpoint, exactSlots, failure, freeze, same, sameVersione
 // remains independently fail-closed until a caller deliberately uses P20 APIs.
 export { createTopologyProposalValidator } from './spatial-v3-ports.js';
 export { materializeS1FormalSpatialProposal, materializeS1OpenOneSpaceTopology } from './spatial-v3-s1-first-entry.js';
+export { deriveSpatialV3ExpansionCapacity } from './spatial-v3-expansion-capacity.js';
+export { selectSpatialV3Expansion } from './spatial-v3-expansion-selection.js';
+export { materializeSpatialV3GeneratedScene, materializeSpatialV3Expansion } from './spatial-v3-generated-scene.js';
 
 
 /**

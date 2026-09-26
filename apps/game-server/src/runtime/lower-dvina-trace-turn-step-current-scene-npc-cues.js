@@ -37,9 +37,6 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
   ]));
   const observedTransitions = transitions.filter(({ npc_id: id }) =>
     visibleBefore.has(id) && visibleAfter.has(id));
-  const latestActivity = new Map((projectedState.npcs ?? []).map((npc) => [
-    npc.instance_id, npc.machine_state?.current_activity?.summary
-  ]));
   const beforeContext = currentActorContext(committedState?.body_state, committedState?.clock, calendarProfile);
   const afterContext = currentActorContext(bodyAfter ?? committedState?.body_state,
     clockAfter ?? committedState?.clock, calendarProfile);
@@ -77,10 +74,8 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
           || detail.ordinary_remainder != null
           || Object.keys(detail.identity_state).some((key) =>
             key !== 'display_name'));
-      const status = latestActivity.get(npc?.entity_ref?.entity_id);
-      return !informative && !text(status) ? structuredClone(npc) : {
+      return !informative ? structuredClone(npc) : {
         ...structuredClone(npc),
-        ...(text(status) ? { visible_status: status } : {}),
         observable_cues: {
           identity: structuredClone(detail.identity_state),
           equipment: structuredClone(detail.visible_equipment),

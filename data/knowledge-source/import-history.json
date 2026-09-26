@@ -20,6 +20,66 @@
       "document_count": 19,
       "inventory_sha256": "7213a340d842c69be926d8ea90c31364461cf59030b1e6d3b0c9380192d1e5fc",
       "status": "verified"
+    },
+    {
+      "migration_id": "knowledge-source-0.23.0-c3948d9f96c1",
+      "imported_at": "2026-07-12T00:00:00.000Z",
+      "source_release": "0.22.0-migration.22",
+      "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
+      "target_root": "data/knowledge-source/corpus/DOCUMENTS",
+      "document_count": 19,
+      "inventory_sha256": "c3948d9f96c17d4eeee046947b297d8ea20aafbb8b6f4cae7ae2b2954adbd425",
+      "status": "verified"
+    },
+    {
+      "migration_id": "knowledge-source-0.23.0-a52b9d0b80dd",
+      "imported_at": "2026-09-26T08:27:25.728Z",
+      "source_release": "0.22.0-migration.22",
+      "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
+      "target_root": "data/knowledge-source/corpus/DOCUMENTS",
+      "document_count": 19,
+      "inventory_sha256": "a52b9d0b80dd984cadaf5611b8d46a1559127a6714598d9fa8aa0166f0e8b4a2",
+      "status": "verified"
+    },
+    {
+      "migration_id": "knowledge-source-0.23.0-8ef4912aa150",
+      "imported_at": "2026-09-26T08:52:55.744Z",
+      "source_release": "0.22.0-migration.22",
+      "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
+      "target_root": "data/knowledge-source/corpus/DOCUMENTS",
+      "document_count": 19,
+      "inventory_sha256": "8ef4912aa15038c1f6415c9670a5b0f780d802d464c0508b957ea82ff2df3aa5",
+      "status": "verified"
+    },
+    {
+      "migration_id": "knowledge-source-0.23.0-6c333f75825b",
+      "imported_at": "2026-09-26T10:22:09.650Z",
+      "source_release": "0.22.0-migration.22",
+      "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
+      "target_root": "data/knowledge-source/corpus/DOCUMENTS",
+      "document_count": 19,
+      "inventory_sha256": "6c333f75825b90fa3b47dda5cfae06fa1e726b80207830de11c204817b25ae8e",
+      "status": "verified"
+    },
+    {
+      "migration_id": "knowledge-source-0.23.0-d40bdb118564",
+      "imported_at": "2026-09-26T12:11:32.249Z",
+      "source_release": "0.22.0-migration.22",
+      "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
+      "target_root": "data/knowledge-source/corpus/DOCUMENTS",
+      "document_count": 19,
+      "inventory_sha256": "d40bdb118564b0a6f65ca0e317de2cc9aaa0f0478b6c0554fdd4a22b95d9873f",
+      "status": "verified"
+    },
+    {
+      "migration_id": "knowledge-source-0.23.0-c35d5de42cac",
+      "imported_at": "2026-09-26T13:00:30.453Z",
+      "source_release": "0.22.0-migration.22",
+      "source_root": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS",
+      "target_root": "data/knowledge-source/corpus/DOCUMENTS",
+      "document_count": 19,
+      "inventory_sha256": "c35d5de42cac71c3f0b93fae737afc6ed0d93bcc9ecd201b75aec5907d589818",
+      "status": "verified"
     }
   ]
 }

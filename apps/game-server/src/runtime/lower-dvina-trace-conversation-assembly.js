@@ -1,11 +1,13 @@
 import { npcConversationCandidates, requiredNpcConversationCandidate,
   requiredPlayerConversationCandidate } from
   './lower-dvina-trace-phase-2-llm-prompts.js';
+import { isDeepStrictEqual } from 'node:util';
 
 const INVALID_OPERATION_CHOICE = Symbol('invalid operation choice');
 
 export function assemblePlayerConversationPlan(choice, request) {
-  let assembled = assembleConversationPlan(choice,
+  let assembled = assembleConversationPlan(
+    canonicalPlayerOperationChoice(choice, request),
     requiredPlayerConversationCandidate(request), {
       schema: 'player_conversation_contribution_plan_v1',
       request_id: request.request_id,
@@ -13,6 +15,18 @@ export function assemblePlayerConversationPlan(choice, request) {
       state_version: request.state_version,
       speaker_ref: structuredClone(request.speaker_ref)
     });
+  if (assembled.contribution_kind === 'leave_conversation') return {
+    ...assembled,
+    primary_addressee_ref: null,
+    intended_addressee_refs: [],
+    affected_actor_refs: [],
+    speech: null,
+    resolution: 'automatic',
+    activity: { duration_class: 'domain_owned', effort: 'none' },
+    supporting_operations: [],
+    check: null,
+    handoff: null
+  };
   if (assembled.contribution_kind !== 'speech') return assembled;
   if (assembled.input_mode === 'verbatim'
     && typeof request.player_safe_context?.verbatim_utterance_text === 'string') {
@@ -31,6 +45,16 @@ export function assemblePlayerConversationPlan(choice, request) {
     ? assembled.primary_addressee_ref : intended[0];
   return { ...assembled, primary_addressee_ref: structuredClone(primary),
     intended_addressee_refs: intended };
+}
+
+function canonicalPlayerOperationChoice(choice, request) {
+  const operations = choice?.supporting_operations;
+  if (!Array.isArray(operations) || operations.length !== 1
+      || operations[0]?.op != null) return choice;
+  const matches = Object.entries(request?.operation_contract ?? {})
+    .filter(([, contract]) => isDeepStrictEqual(contract, operations[0]));
+  if (matches.length !== 1) return choice;
+  return { ...choice, supporting_operations: [{ op: matches[0][0] }] };
 }
 
 export function assembleNpcConversationPlan(choice, request) {

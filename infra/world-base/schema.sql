@@ -20,5 +20,10 @@
 \ir schema/19.sql
 \ir schema/20.sql
 \ir schema/21.sql
+\ir schema/22.sql
+\ir schema/23.sql
+\ir schema/24.sql
+\ir schema/25.sql
+\ir schema/26.sql
 
 REVOKE CREATE ON SCHEMA world_base FROM PUBLIC;

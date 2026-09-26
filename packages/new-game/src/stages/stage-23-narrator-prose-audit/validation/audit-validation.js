@@ -4,6 +4,9 @@ import { AUDIT_TOP_LEVEL_KEYS, COMMIT_PERMISSION_KEYS, FORBIDDEN_AUDIT_KEYS, STA
 import { computeNarratorStartingProseDigest } from '../input/input-boundary.js';
 import { array, canonicalJson, dedupe, findForbiddenKeys, isObject, issue, safeClone, text } from '../shared/utils.js';
 
+const LITERARY_CHECK = 'literary_composition_check';
+const LITERARY_CONCERN = 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION';
+
 export function validateNarratorProseAudit(output, input, { allowRouteMissing = false } = {}) {
   const concerns = [];
   if (!isObject(output)) return [issue('STAGE23_AUDIT_INVALID', 'Narrator prose audit must be an object.', 'root')];
@@ -31,18 +34,27 @@ export function validateNarratorProseAudit(output, input, { allowRouteMissing = 
   else output.evidence.forEach((item, index) => { if (!text(item)) concerns.push(issue('STAGE23_AUDIT_EVIDENCE_INVALID', 'Every evidence entry must be a non-empty string.', `evidence[${index}]`)); });
 
   if (!isObject(output.commit_permission)) concerns.push(issue('STAGE23_AUDIT_PERMISSION_MISSING', 'commit_permission is required.', 'commit_permission'));
+  const reportedConcerns = array(output.concerns);
+  const blockingConcerns = reportedConcerns.filter(({ code } = {}) => code !== LITERARY_CONCERN);
+  const blockingChecks = STAGE23_REQUIRED_CHECKS.filter((key) => key !== LITERARY_CHECK);
+  const literaryFailed = output.checks?.[LITERARY_CHECK]?.pass === false;
+  const literaryReported = reportedConcerns.some(({ code } = {}) => code === LITERARY_CONCERN);
+  if (literaryFailed !== literaryReported) concerns.push(issue(
+    'STAGE23_AUDIT_INTERNAL_INCONSISTENCY',
+    'literary_composition_check and literary concern must agree.',
+    `checks.${LITERARY_CHECK}`));
   if (allowRouteMissing && output.pass === false && output.repair_route != null) {
     concerns.push(issue('STAGE23_AUDITOR_ROUTE_FORBIDDEN', 'Semantic auditor must return findings without selecting repair_route; the Router owns routing.', 'repair_route'));
   }
 
   if (output.pass === true) {
-    if (array(output.concerns).length > 0) concerns.push(issue('STAGE23_AUDIT_CONCERNS_ON_PASS', 'Successful audit must not contain concerns.', 'concerns'));
+    if (blockingConcerns.length > 0) concerns.push(issue('STAGE23_AUDIT_CONCERNS_ON_PASS', 'Successful delivery audit must not contain factual or technical concerns.', 'concerns'));
     if (output.repair_route != null) concerns.push(issue('STAGE23_AUDIT_ROUTE_ON_PASS', 'Successful audit must have repair_route=null.', 'repair_route'));
     for (const key of COMMIT_PERMISSION_KEYS) if (output.commit_permission?.[key] !== true) concerns.push(issue('STAGE23_AUDIT_PERMISSION_DENIED', `commit_permission.${key} must be true on pass.`, `commit_permission.${key}`));
-    for (const key of STAGE23_REQUIRED_CHECKS) if (output.checks?.[key]?.pass !== true) concerns.push(issue('STAGE23_AUDIT_CHECK_FAILED_ON_PASS', `checks.${key}.pass must be true on successful audit.`, `checks.${key}.pass`));
+    for (const key of blockingChecks) if (output.checks?.[key]?.pass !== true) concerns.push(issue('STAGE23_AUDIT_CHECK_FAILED_ON_PASS', `checks.${key}.pass must be true on successful delivery audit.`, `checks.${key}.pass`));
   } else if (output.pass === false) {
-    if (array(output.concerns).length === 0) concerns.push(issue('STAGE23_AUDIT_CONCERNS_MISSING', 'Failed audit requires concerns.', 'concerns'));
-    if (!STAGE23_REQUIRED_CHECKS.some((key) => output.checks?.[key]?.pass === false)) concerns.push(issue('STAGE23_AUDIT_NO_FAILED_CHECK', 'Failed audit requires at least one failed check.', 'checks'));
+    if (blockingConcerns.length === 0) concerns.push(issue('STAGE23_AUDIT_CONCERNS_MISSING', 'Failed delivery audit requires a factual or technical concern.', 'concerns'));
+    if (!blockingChecks.some((key) => output.checks?.[key]?.pass === false)) concerns.push(issue('STAGE23_AUDIT_NO_FAILED_CHECK', 'Failed delivery audit requires at least one failed factual or technical check.', 'checks'));
     if (!allowRouteMissing && !isObject(output.repair_route)) concerns.push(issue('STAGE23_AUDIT_ROUTE_MISSING', 'Failed audit requires a router-validated repair route.', 'repair_route'));
     for (const key of COMMIT_PERMISSION_KEYS) if (output.commit_permission?.[key] !== false) concerns.push(issue('STAGE23_AUDIT_FAIL_PERMISSION_INVALID', `commit_permission.${key} must be false on failure.`, `commit_permission.${key}`));
   }

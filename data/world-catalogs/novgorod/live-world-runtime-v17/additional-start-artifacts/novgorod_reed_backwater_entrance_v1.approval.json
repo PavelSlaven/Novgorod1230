@@ -1,0 +1,22 @@
+{
+  "schema": "rus.m2c_start_approval_binding.v1",
+  "decision": "DERIVED_FROM_APPROVED_SCOPES",
+  "basis_approval": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-basis-data-approval.json",
+    "sha256": "ba20c685ef9b7c83d00c4aec6e10b96987af2c587ef0e9c160a24a069bb5a022"
+  },
+  "applicability_approval": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/nonforest-applicability-data-approval.json",
+    "sha256": "92d86db31d0a72f0503c52c064ebe7f1f32b24ede81f380fbc1a5123b4441391"
+  },
+  "target_player_basis_approval": {
+    "candidate_sha256": "5f44b2427bac1021052e26e54e33790ab798af0b1effe9b3a86f2005c4ef4812"
+  },
+  "target_start_proposal_approval": {
+    "candidate_sha256": "d979887c5e8a49e8eb793aaf690702d02f89d457d5643edb61bc37d7fcf8818f"
+  },
+  "target_player_transfer_approval": {
+    "candidate_sha256": "e9bd6b6d144b51c587dde5e1ad439c4146e1f8af8c171aa5a9c53d80674d67fc"
+  },
+  "activation_authorized": false
+}

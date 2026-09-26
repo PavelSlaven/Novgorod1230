@@ -1,0 +1,95 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v2",
+  "bundle_id": "novgorod-target-actor-appearance-transfer-v3",
+  "status": "approved",
+  "release_status": "validated_candidate_not_active",
+  "production_activation": false,
+  "canonical_head_changed": false,
+  "operator_db_touched": false,
+  "runtime_selectable_in_canonical_production": false,
+  "delete_policy": "forbid",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+  "source_candidate_path": "data/world-catalogs/novgorod/live-world-runtime-v17/appearance-transfer-v3-candidate.json",
+  "source_candidate_sha256": "ec6e9386c0fdc1b4108bd932d4225c641e5164f9a7c06bae0bde2fca94723d56",
+  "datasets": [
+    {
+      "table": "world_revisions",
+      "file": "appearance-transfer-v3-datasets/world_revisions.json",
+      "sha256": "2220761b2b747037ebfc123c730bd9b9b1869e133b928671668fcc9a9df8fa63",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "universal_categories",
+      "file": "appearance-transfer-v3-datasets/universal_categories.json",
+      "sha256": "539b555f9b1e025fa69d2816ec4f4171c7814862321a75c7ec8ca5e60a9f29cc",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "world_revisions"
+      ]
+    },
+    {
+      "table": "region_demographic_profiles",
+      "file": "appearance-transfer-v3-datasets/region_demographic_profiles.json",
+      "sha256": "9a7fffa8f4e00db21363b2b67c227ca81b460f5803322e32da0a0709bf21c0cd",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "world_revisions"
+      ]
+    },
+    {
+      "table": "region_appearance_profiles",
+      "file": "appearance-transfer-v3-datasets/region_appearance_profiles.json",
+      "sha256": "b1d2f8a5129de7f2a7e71cc3f3d4dc33e702eaf301398b6b8df059e302ac5cd1",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "world_revisions"
+      ]
+    },
+    {
+      "table": "region_category_options",
+      "file": "appearance-transfer-v3-datasets/region_category_options.json",
+      "sha256": "6d1fc6a1b7d90964b02be20a3613d5cffb122fadda40dd6aa485bcb3d3d6ace2",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "universal_categories",
+        "region_demographic_profiles",
+        "region_appearance_profiles"
+      ]
+    },
+    {
+      "table": "region_demographic_profile_entries",
+      "file": "appearance-transfer-v3-datasets/region_demographic_profile_entries.json",
+      "sha256": "8084b217c608f956c3c7b40e543ebe4b889c9e6fb19eddc282891be3aba03cce",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "region_demographic_profiles",
+        "region_category_options"
+      ]
+    },
+    {
+      "table": "region_appearance_profile_entries",
+      "file": "appearance-transfer-v3-datasets/region_appearance_profile_entries.json",
+      "sha256": "969af82c61a7c1d5a7d2588571a051328949c82a0479b1c3556326cac0df4f8f",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "region_appearance_profiles",
+        "region_category_options"
+      ]
+    }
+  ],
+  "existing_dependencies": {},
+  "authority": {
+    "data_mapping_only": true,
+    "import_approval_required": true,
+    "activation_authorized": false
+  }
+}

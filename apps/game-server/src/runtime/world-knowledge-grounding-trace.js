@@ -1,7 +1,10 @@
-export function modelSlice(slice) {
+import { groundingSufficiencyOf } from './world-knowledge-sufficiency.js';
+
+export function modelSlice(slice, { fromDefaultQuery = false } = {}) {
   return Object.freeze({ schema: slice.schema, pack_ref: slice.pack_ref,
     pack_revision: slice.pack_revision, purpose: slice.purpose,
     coverage: slice.coverage, verdict: slice.verdict,
+    sufficiency: groundingSufficiencyOf(slice, { fromDefaultQuery }),
     hard_constraints: slice.hard_constraints, facts: slice.facts,
     disputes: slice.disputes, gaps: slice.gaps,
     context_text: slice.context_text });
@@ -11,7 +14,7 @@ export function modelSlice(slice) {
 // request. The latter can still carry private state unrelated to retrieval.
 export function worldKnowledgeTrace({ request, purpose, semanticInput,
   plannerRequest, plannerPlan, plannerCalls, questionClasses, query, slice,
-  retrievalObservability }) {
+  retrievalObservability, defaultQuery = false, effectivePlan = null }) {
   const worldKnowledge = traceWorldKnowledgeSlice(slice);
   return Object.freeze({ schema: 'world_knowledge_boundary_trace_v1',
     event: 'world_knowledge_resolved', purpose,
@@ -27,11 +30,12 @@ export function worldKnowledgeTrace({ request, purpose, semanticInput,
       allowed_domains: [...plannerRequest.allowed_domains],
       available_knowledge_refs: [...plannerRequest.available_knowledge_refs],
       planner_limits: { ...plannerRequest.planner_limits } }),
-    planner_plan: Object.freeze({ schema: plannerPlan.schema,
-      query_locale: plannerPlan.query_locale, domains: [...plannerPlan.domains],
-      focus_refs: [...plannerPlan.focus_refs],
-      requested_predicates: [...plannerPlan.requested_predicates],
-      search_hints: [...plannerPlan.search_hints] }),
+    // planner_plan = raw planner answer; effective_plan only when default_query.
+    planner_plan: freezePlan(plannerPlan),
+    ...(defaultQuery ? {
+      default_query: true,
+      effective_plan: freezePlan(effectivePlan ?? plannerPlan)
+    } : {}),
     query: Object.freeze({ schema: query.schema, pack_ref: query.pack_ref,
       pack_revision: query.pack_revision, purpose: query.purpose,
       query_locale: query.query_locale, domains: [...query.domains],
@@ -45,7 +49,9 @@ export function worldKnowledgeTrace({ request, purpose, semanticInput,
     retrieval_observability: retrievalObservability });
 }
 export function worldKnowledgeNoNeedTrace({ request, purpose, semanticInput,
-  plannerRequest, plannerPlan, plannerCalls, questionClasses, worldKnowledge }) {
+  plannerRequest, plannerPlan, plannerCalls, questionClasses, worldKnowledge,
+  query = null, retrievalObservability = null, defaultQuery = false,
+  effectivePlan = null }) {
   const safe = safeNeed(request, semanticInput);
   return Object.freeze({ schema: 'world_knowledge_boundary_trace_v1',
     event: 'world_knowledge_not_required', purpose,
@@ -60,14 +66,34 @@ export function worldKnowledgeNoNeedTrace({ request, purpose, semanticInput,
       allowed_domains: [...plannerRequest.allowed_domains],
       available_knowledge_refs: [...plannerRequest.available_knowledge_refs],
       planner_limits: { ...plannerRequest.planner_limits } }),
-    planner_plan: Object.freeze({ schema: plannerPlan.schema,
-      query_locale: plannerPlan.query_locale, domains: [], focus_refs: [],
-      requested_predicates: [], search_hints: [] }),
-    query: null, core_result: null,
+    planner_plan: freezePlan(plannerPlan),
+    ...(defaultQuery ? {
+      default_query: true,
+      effective_plan: freezePlan(effectivePlan ?? plannerPlan)
+    } : {}),
+    query: query == null ? null : Object.freeze({
+      schema: query.schema, pack_ref: query.pack_ref,
+      pack_revision: query.pack_revision, purpose: query.purpose,
+      query_locale: query.query_locale, domains: [...query.domains],
+      focus_refs: [...query.focus_refs],
+      requested_predicates: [...query.requested_predicates],
+      search_hints: [...query.search_hints],
+      context: structuredClone(query.context),
+      budget: { ...query.budget } }),
+    core_result: null,
     consumer: Object.freeze({ purpose, input: Object.freeze({
       request_schema: text(request.schema),
       request_identity: text(request.request_id), safe_need: safe,
-      world_knowledge: worldKnowledge }) }), retrieval_observability: null });
+      world_knowledge: worldKnowledge }) }),
+    retrieval_observability: retrievalObservability });
+}
+function freezePlan(plan) {
+  return Object.freeze({ schema: plan.schema,
+    query_locale: plan.query_locale,
+    domains: [...(plan.domains ?? [])],
+    focus_refs: [...(plan.focus_refs ?? [])],
+    requested_predicates: [...(plan.requested_predicates ?? [])],
+    search_hints: [...(plan.search_hints ?? [])] });
 }
 export function noKnowledgeRequirement(bundle, purpose) {
   return Object.freeze({ schema: 'world_knowledge_requirement_v1',

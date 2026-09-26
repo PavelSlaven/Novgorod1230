@@ -11,8 +11,10 @@ import {
 import {
   buildBaselineRegistrationId,
   buildActivationEvent,
+  buildActivationEventFromVerifiedAttestation,
+  buildActivationPartyPreflight,
+  buildDevelopmentPartyPreflight,
   buildOperatorBaselineSnapshotManifest,
-  buildPartyPreflight,
   digestEnvelope,
   verifyDecisionAttestation
 } from './artifact-contracts.js';
@@ -23,6 +25,7 @@ const IMPORT_LOCK = '742019261002';
 
 export async function registerCatalogBaseline({
   pool,
+  client = null,
   request,
   attestation,
   baselineManifest,
@@ -63,7 +66,7 @@ export async function registerCatalogBaseline({
       action: 'register_baseline'
     }
   });
-  return transaction(pool, async (client) => {
+  return inTransaction(pool, client, async (client) => {
     await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [BASELINE_LOCK]);
     await verifyBaseWorldCompatibility({
       reader: client,
@@ -183,7 +186,8 @@ export async function verifyBaseWorldCompatibility({
     compatible_world_pin_manifest_digest: claimedDigest,
     ...manifestPayload
   } = manifest ?? {};
-  if (manifestPayload.schema !== 'rus.base_world_compatibility_manifest.v1'
+  if (!['rus.base_world_compatibility_manifest.v1',
+    'rus.base_world_compatibility_manifest.v2'].includes(manifestPayload.schema)
       || claimedDigest !== digestEnvelope(manifestPayload)
       || runtimeConfigurationTuple?.compatible_world_revision_id
         !== manifestPayload.compatible_world_revision_id
@@ -215,21 +219,29 @@ export async function verifyBaseWorldCompatibility({
 
 export async function importApprovedCatalog({
   pool,
+  client = null,
   ledger,
   domainRevision,
-  approvalAttestation
+  approvalAttestation,
+  approvalContract = {
+    schema: 'rus.item_container_overlay_approval_attestation.v2',
+    request_digest_field: 'approval_request_digest',
+    decision: 'approve_overlay_import'
+  }
 }) {
   verifyDecisionAttestation({
     attestation: approvalAttestation,
-    expectedSchema: 'rus.item_container_overlay_approval_attestation.v2',
-    requestDigestField: 'approval_request_digest',
+    expectedSchema: approvalContract.schema,
+    requestDigestField: approvalContract.request_digest_field,
     expectedRequestDigest: ledger.root.approval_request_digest,
-    expectedDecision: 'approve_overlay_import'
+    expectedDecision: approvalContract.decision,
+    decisionField: approvalContract.decision_field ?? 'decision'
   });
-  if (approvalAttestation.activation_authorized !== false) {
+  if ((approvalAttestation.activation_authorized
+      ?? approvalAttestation.authority?.activation_authorized) !== false) {
     fail('OVERLAY_APPROVAL_INVALID', 'Overlay import approval must not authorize activation.');
   }
-  return transaction(pool, async (client) => {
+  return inTransaction(pool, client, async (client) => {
     await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [IMPORT_LOCK]);
     const existing = await client.query(
       `SELECT import_id, import_audit_digest
@@ -241,11 +253,8 @@ export async function importApprovedCatalog({
       if (existing.rows[0].import_audit_digest !== ledger.root.import_audit_digest) {
         fail('CATALOG_IMPORT_CONFLICT', 'Existing import id has another audit digest.');
       }
-      await verifyImportedCatalog(
-        client,
-        ledger.root,
-        domainRevision.runtime_contract_digest
-      );
+      await verifyImportReadback(client, ledger,
+        domainRevision.runtime_contract_digest, domainRevision.readback_mode);
       return Object.freeze({ status: 'already_applied', import_id: ledger.root.import_id });
     }
     const target = await client.query(
@@ -309,36 +318,70 @@ export async function importApprovedCatalog({
       });
     }
     await insertImportLedger(client, ledger);
-    await verifyImportedCatalog(
-      client,
-      ledger.root,
-      domainRevision.runtime_contract_digest
-    );
+    await verifyImportReadback(client, ledger,
+      domainRevision.runtime_contract_digest, domainRevision.readback_mode);
     return Object.freeze({ status: 'applied', import_id: ledger.root.import_id });
   });
 }
 
+async function verifyImportReadback(client, ledger, runtimeContractDigest,
+  mode) {
+  if (mode !== 'authoring_only_no_runtime_projection')
+    return verifyImportedCatalog(client, ledger.root, runtimeContractDigest);
+  for (const record of orderedRecords(ledger))
+    await assertCanonicalRecord(client, record);
+  const row = (await client.query(
+    `SELECT i.id AS import_id,i.import_audit_digest,
+            (SELECT count(*)::int FROM world_base.catalog_import_records r
+              WHERE r.import_id=i.id) AS record_count,
+            (SELECT count(*)::int
+               FROM world_base.runtime_catalog_activation_events a
+              WHERE a.catalog_revision_id=i.world_revision_id)
+              AS activation_event_count
+       FROM world_base.catalog_imports i WHERE i.id=$1`,
+    [ledger.root.import_id])).rows[0];
+  assertExact(row, { import_id: ledger.root.import_id,
+    import_audit_digest: ledger.root.import_audit_digest,
+    record_count: ledger.records.length,
+    activation_event_count: 0 }, 'CATALOG_IMPORT_AUTHORING_READBACK_MISMATCH');
+}
+
 export async function activateApprovedCatalog({
   worldPool,
+  client = null,
   partyPool,
   request,
-  attestation
+  attestation,
+  activationScope = request?.activation_scope ?? 'initial_empty_party_database'
 }) {
-  return transaction(worldPool, async (client) => {
+  if ((request.activation_scope != null
+      && activationScope !== request.activation_scope)
+      || (activationScope === 'new_production_parties_only'
+        && request.activation_scope !== activationScope)) {
+    fail('ACTIVATION_SCOPE_INVALID',
+      'Production successor scope must be bound by the approved request.');
+  }
+  return inTransaction(worldPool, client, async (client) => {
     await client.query(
       'SELECT pg_advisory_xact_lock($1::bigint)',
       [RUNTIME_CATALOG_ACTIVATION_LOCK_KEY]
     );
-    const latest = await client.query(
-      `SELECT event_id, event_sequence, request_digest
+    const latestResult = await client.query(
+      `SELECT event_id,event_sequence,event_type,catalog_scope,
+              catalog_revision_id,catalog_digest,import_id,import_audit_digest,
+              record_registry_digest,runtime_contract_digest,
+              compatible_world_revision_id,compatible_world_catalog_digest,
+              compatible_world_pin_manifest_digest,request_digest,
+              attestation_digest,expected_previous_event_id,runtime_release_id,
+              operator_principal,event_digest
        FROM world_base.runtime_catalog_activation_events
        WHERE catalog_scope = 'item_container_materialization_v2'
        ORDER BY event_sequence DESC
        LIMIT 1`
     );
-    if (latest.rows[0]?.request_digest === request.activation_request_digest) {
-      return Object.freeze({ status: 'already_active', event_id: latest.rows[0].event_id });
-    }
+    const latest = latestResult.rows[0] ?? null;
+    const replayCandidate = latest?.request_digest ===
+      request.activation_request_digest;
     const counts = await partyPool.query(
       `SELECT
          (SELECT count(*)::int FROM party_runtime.parties) AS party_count,
@@ -356,7 +399,8 @@ export async function activateApprovedCatalog({
            WHERE status IN ('reserved','transaction_committed')) AS inflight_count`
     );
     const row = counts.rows[0];
-    const preflight = buildPartyPreflight({
+    const preflight = buildActivationPartyPreflight({
+      activationScope,
       partyCount: Number(row.party_count),
       pinnedPartyCount: Number(row.pinned_party_count),
       missingDomainPinCount: Number(row.missing_domain_pin_count),
@@ -368,12 +412,29 @@ export async function activateApprovedCatalog({
       fail('ACTIVATION_PARTY_PREFLIGHT_STALE', 'Party preflight changed after activation request.');
     }
     const principal = (await client.query('SELECT current_user AS principal')).rows[0].principal;
+    const predecessor = replayCandidate
+      ? request.expected_previous_event_id == null
+        ? null
+        : (await client.query(
+          `SELECT event_id,event_sequence
+             FROM world_base.runtime_catalog_activation_events
+            WHERE event_id=$1`,
+          [request.expected_previous_event_id])).rows[0] ?? null
+      : latest;
     const event = buildActivationEvent({
       request,
       attestation,
-      previousEvent: latest.rows[0] ?? null,
+      previousEvent: predecessor,
       operatorPrincipal: principal
     });
+    if (replayCandidate) {
+      const persisted = { ...latest,
+        event_sequence: Number(latest.event_sequence) };
+      assertExact(persisted, activationEventRow(event),
+        'ACTIVATION_EVENT_COLLISION');
+      return Object.freeze({ status: 'already_active',
+        event_id: event.event_id, event_sequence: event.event_sequence });
+    }
     await client.query(
       `INSERT INTO world_base.runtime_catalog_activation_events
          (event_id,event_sequence,event_type,catalog_scope,catalog_revision_id,
@@ -395,6 +456,249 @@ export async function activateApprovedCatalog({
     );
     return Object.freeze({ status: 'activated', event_id: event.event_id, event_sequence: event.event_sequence });
   });
+}
+
+export async function registerAlreadyImportedCatalogAndActivate({
+  worldPool,
+  partyPool,
+  ledger,
+  domainRevision,
+  baselineRegistration,
+  activationRequest,
+  activationAttestation,
+  activationAmendmentRequest,
+  registrationProvenance,
+  activateRuntime = true
+}) {
+  verifyDecisionAttestation({
+    attestation: activationAttestation,
+    expectedSchema: 'rus.gate1_v5_v6_runtime_activation_approval_attestation.v1',
+    requestDigestField: 'activation_amendment_request_digest',
+    expectedRequestDigest: activationAmendmentRequest.request_digest,
+    expectedDecision: 'approve_exact_new_development_runtime_activation',
+    expectedBindings: { approved_bindings: {
+      predecessor_request_digest:
+        activationAmendmentRequest.predecessor.request_digest,
+      import_readback: activationAmendmentRequest.completed_import_readback,
+      reconciled_stage3c: activationAmendmentRequest.reconciled_stage3c,
+      target_catalog: activationAmendmentRequest.target_catalog,
+      approval_chain: activationAmendmentRequest.approval_chain,
+      compatible_world_pins: activationAmendmentRequest.compatible_world_pins,
+      world_revisions_digest: activationAmendmentRequest.world_revisions_digest
+    } }
+  });
+  if (activationAttestation.activation_scope !== 'new_development_parties_only'
+      || activationAttestation.authority?.activation_authorized !== true
+      || activationAttestation.authority?.new_development_party_activation_authorized !== true
+      || ['import_authorized', 'production_authorized',
+        'existing_party_migration_authorized',
+        'old_save_rematerialization_authorized',
+        'authoring_only_functional_allocation_runtime_selection',
+        'runtime_item_creation_authorized'].some((field) =>
+        activationAttestation.authority?.[field] !== false)) {
+    fail('ACTIVATION_ATTESTATION_SCOPE_INVALID',
+      'Gate1 approval does not authorize this exact development activation.');
+  }
+  return transaction(worldPool, async (client) => {
+    await client.query('SELECT pg_advisory_xact_lock($1::bigint)', [IMPORT_LOCK]);
+    await client.query('SELECT pg_advisory_xact_lock($1::bigint)',
+      [RUNTIME_CATALOG_ACTIVATION_LOCK_KEY]);
+    for (const record of orderedRecords(ledger)) await assertCanonicalRecord(client, record);
+    for (const assertion of ledger.dependency_assertions) {
+      await assertCanonicalRecord(client, {
+        table_name: assertion.target_table,
+        canonical_payload: assertion.expected_base_canonical_payload,
+        record_digest: assertion.expected_base_record_digest
+      });
+    }
+    const target = (await client.query(
+      `SELECT id,parent_revision_id,catalog_digest,status
+         FROM world_base.world_revisions WHERE id=$1`,
+      [ledger.root.target_revision_id])).rows[0];
+    assertExact(target, {
+      id: ledger.root.target_revision_id,
+      parent_revision_id: ledger.root.parent_revision_id,
+      catalog_digest: ledger.root.target_catalog_digest,
+      status: 'approved'
+    }, 'CATALOG_IMPORT_ALREADY_IMPORTED_TARGET_MISMATCH');
+
+    const existingBaseline = (await client.query(
+      `SELECT registration_id,parent_revision_id,parent_catalog_digest,
+              parent_snapshot_manifest_digest,schema_fingerprint,
+              record_registry_digest,compatible_world_revision_id,
+              compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+              registration_request_digest,registration_attestation_digest
+         FROM world_base.catalog_baseline_registrations
+        WHERE parent_revision_id=$1`, [ledger.root.parent_revision_id])).rows[0];
+    if (existingBaseline) {
+      assertExact(existingBaseline, baselineRegistration,
+        'BASELINE_REGISTRATION_CONFLICT');
+    } else {
+      await client.query(
+        `INSERT INTO world_base.catalog_baseline_registrations
+          (registration_id,parent_revision_id,parent_catalog_digest,
+           parent_snapshot_manifest_digest,schema_fingerprint,
+           record_registry_digest,compatible_world_revision_id,
+           compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+           registration_request_digest,registration_attestation_digest,
+           registered_by)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,current_user)`,
+        Object.values(baselineRegistration));
+    }
+
+    const existingRevision = (await client.query(
+      `SELECT catalog_revision_id,catalog_scope,parent_registration_id,
+              target_catalog_digest,compatible_world_revision_id,
+              compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+              record_registry_digest,runtime_contract_digest,status
+         FROM world_base.domain_catalog_revisions WHERE catalog_revision_id=$1`,
+      [ledger.root.target_revision_id])).rows[0];
+    if (existingRevision) {
+      assertExact(existingRevision, domainRevision, 'CATALOG_IMPORT_CONFLICT');
+    } else {
+      await client.query(
+        `INSERT INTO world_base.domain_catalog_revisions
+          (catalog_revision_id,catalog_scope,parent_registration_id,
+           target_catalog_digest,compatible_world_revision_id,
+           compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+           record_registry_digest,runtime_contract_digest,status)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+        Object.values(domainRevision));
+    }
+
+    const existingImport = (await client.query(
+      'SELECT import_audit_digest FROM world_base.catalog_imports WHERE id=$1',
+      [ledger.root.import_id])).rows[0];
+    if (existingImport) {
+      assertExact(existingImport, { import_audit_digest: ledger.root.import_audit_digest },
+        'CATALOG_IMPORT_CONFLICT');
+    } else {
+      await insertImportLedger(client, ledger, registrationProvenance);
+    }
+    await verifyImportedCatalog(client, ledger.root,
+      domainRevision.runtime_contract_digest);
+
+    // Registration alone satisfies actor-import parent lookup; skip pin write.
+    if (activateRuntime === false) {
+      return Object.freeze({
+        status: 'registered',
+        catalog_revision_id: domainRevision.catalog_revision_id,
+        parent_registration_id: domainRevision.parent_registration_id
+      });
+    }
+
+    const latest = (await client.query(
+      `SELECT event_id,event_sequence,event_type,catalog_scope,
+              catalog_revision_id,catalog_digest,import_id,import_audit_digest,
+              record_registry_digest,runtime_contract_digest,
+              compatible_world_revision_id,compatible_world_catalog_digest,
+              compatible_world_pin_manifest_digest,request_digest,
+              attestation_digest,expected_previous_event_id,runtime_release_id,
+              operator_principal,event_digest
+         FROM world_base.runtime_catalog_activation_events
+        WHERE catalog_scope='item_container_materialization_v2'
+        ORDER BY event_sequence DESC LIMIT 1`)).rows[0] ?? null;
+    const replayCandidate = latest
+        && latest.catalog_revision_id === activationRequest.target_revision_id
+        && latest.catalog_digest === activationRequest.target_catalog_digest
+        && latest.import_id === activationRequest.import_id
+        && latest.import_audit_digest === activationRequest.import_audit_digest
+        && latest.attestation_digest === activationAttestation.attestation_digest;
+    const counts = (await partyPool.query(
+      `SELECT
+        (SELECT count(*)::int FROM party_runtime.parties) AS party_count,
+        (SELECT count(DISTINCT party_id)::int FROM party_runtime.party_catalog_pins
+          WHERE catalog_scope='item_container_materialization_v2') AS pinned_party_count,
+        (SELECT count(*)::int FROM party_runtime.parties p
+          LEFT JOIN party_runtime.party_catalog_pins c ON c.party_id=p.party_id
+           AND c.catalog_scope='item_container_materialization_v2'
+          WHERE c.party_id IS NULL) AS missing_domain_pin_count,
+        (SELECT count(*)::int FROM party_runtime.commit_idempotency
+          WHERE status IN ('reserved','transaction_committed')) AS inflight_count`)).rows[0];
+    const preflight = buildDevelopmentPartyPreflight({
+      partyCount: Number(counts.party_count),
+      pinnedPartyCount: Number(counts.pinned_party_count),
+      missingDomainPinCount: Number(counts.missing_domain_pin_count),
+      inflightStage24Stage25Count: Number(counts.inflight_count),
+      runtimeReleaseId: activationRequest.runtime_release_id,
+      runtimeContractDigest: activationRequest.runtime_contract_digest
+    });
+    if (preflight.party_preflight_digest !== activationRequest.party_preflight_digest) {
+      fail('ACTIVATION_PARTY_PREFLIGHT_STALE',
+        'Party preflight changed after activation request.');
+    }
+    const principal = (await client.query('SELECT current_user AS principal')).rows[0].principal;
+    const predecessor = replayCandidate
+      ? activationRequest.expected_previous_event_id == null
+        ? null
+        : (await client.query(
+          `SELECT event_id,event_sequence
+             FROM world_base.runtime_catalog_activation_events WHERE event_id=$1`,
+          [activationRequest.expected_previous_event_id])).rows[0] ?? null
+      : latest;
+    const event = buildActivationEventFromVerifiedAttestation({
+      request: activationRequest,
+      attestationDigest: activationAttestation.attestation_digest,
+      previousEvent: predecessor,
+      operatorPrincipal: principal
+    });
+    if (replayCandidate) {
+      const persisted = { ...latest, event_sequence: Number(latest.event_sequence) };
+      const expected = activationEventRow(event);
+      if (Object.entries(expected).some(([field, value]) =>
+        persisted[field] !== value)) {
+        fail('ACTIVATION_EVENT_COLLISION',
+          'Existing activation identity has a different deterministic event.', {
+            expected, actual: persisted
+          });
+      }
+      return Object.freeze({ status: 'already_active', event_id: event.event_id });
+    }
+    await client.query(
+      `INSERT INTO world_base.runtime_catalog_activation_events
+        (event_id,event_sequence,event_type,catalog_scope,catalog_revision_id,
+         catalog_digest,import_id,import_audit_digest,record_registry_digest,
+         runtime_contract_digest,compatible_world_revision_id,
+         compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+         request_digest,attestation_digest,expected_previous_event_id,
+         runtime_release_id,operator_principal,event_digest)
+       VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)`,
+      [event.event_id,event.event_sequence,event.event_type,event.catalog_scope,
+        event.catalog_revision_id,event.catalog_digest,event.import_id,
+        event.import_audit_digest,event.record_registry_digest,
+        event.runtime_contract_digest,event.compatible_world_revision_id,
+        event.compatible_world_catalog_digest,
+        event.compatible_world_pin_manifest_digest,event.request_digest,
+        event.attestation_digest,event.expected_previous_event_id,
+        event.runtime_release_id,event.operator_principal,event.event_digest]);
+    return Object.freeze({ status: 'activated', event_id: event.event_id,
+      event_sequence: event.event_sequence });
+  });
+}
+
+function activationEventRow(event) {
+  return {
+    event_id: event.event_id,
+    event_sequence: event.event_sequence,
+    event_type: event.event_type,
+    catalog_scope: event.catalog_scope,
+    catalog_revision_id: event.catalog_revision_id,
+    catalog_digest: event.catalog_digest,
+    import_id: event.import_id,
+    import_audit_digest: event.import_audit_digest,
+    record_registry_digest: event.record_registry_digest,
+    runtime_contract_digest: event.runtime_contract_digest,
+    compatible_world_revision_id: event.compatible_world_revision_id,
+    compatible_world_catalog_digest: event.compatible_world_catalog_digest,
+    compatible_world_pin_manifest_digest:
+      event.compatible_world_pin_manifest_digest,
+    request_digest: event.request_digest,
+    attestation_digest: event.attestation_digest,
+    expected_previous_event_id: event.expected_previous_event_id,
+    runtime_release_id: event.runtime_release_id,
+    operator_principal: event.operator_principal,
+    event_digest: event.event_digest
+  };
 }
 
 async function applyMembershipRecord(client, record) {
@@ -426,12 +730,19 @@ async function assertCanonicalRecord(client, record) {
     fail('CATALOG_IMPORT_ASSERT_EXISTING_MISSING', 'Asserted canonical row is absent.');
   }
   const projection = projectCanonicalRecord({ registryEntry: entry, row: result.rows[0] });
-  if (computeCanonicalRecordDigest(projection) !== record.record_digest) {
-    fail('CATALOG_IMPORT_ASSERT_EXISTING_MISMATCH', 'Asserted canonical row digest differs.');
+  const actualDigest = computeCanonicalRecordDigest(projection);
+  if (actualDigest !== record.record_digest) {
+    fail('CATALOG_IMPORT_ASSERT_EXISTING_MISMATCH',
+      'Asserted canonical row digest differs.', {
+        table_name: record.table_name,
+        record_key: record.record_key,
+        expected_digest: record.record_digest,
+        actual_digest: actualDigest
+      });
   }
 }
 
-async function insertImportLedger(client, ledger) {
+async function insertImportLedger(client, ledger, registrationProvenance = {}) {
   const root = ledger.root;
   await client.query(
     `INSERT INTO world_base.catalog_imports
@@ -449,7 +760,11 @@ async function insertImportLedger(client, ledger) {
              $17,$18,$19,$20,$21,$22,$23)`,
     [
       root.import_id, root.target_revision_id, root.promotion_manifest_digest,
-      JSON.stringify({ approval_request_digest: root.approval_request_digest }),
+      JSON.stringify({ approval_request_digest: root.approval_request_digest,
+        ...registrationProvenance,
+        ...(root.development_activation_policy == null ? {} : {
+          development_activation_policy:
+            root.development_activation_policy }) }),
       root.catalog_scope, root.parent_revision_id, root.parent_catalog_digest,
       root.parent_snapshot_manifest_digest, root.compatible_world_revision_id,
       root.compatible_world_catalog_digest, root.compatible_world_pin_manifest_digest,
@@ -573,6 +888,10 @@ async function transaction(pool, operation) {
   } finally {
     client.release();
   }
+}
+
+function inTransaction(pool, client, operation) {
+  return client ? operation(client) : transaction(pool, operation);
 }
 
 function assertExact(actual, expected, code) {

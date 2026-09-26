@@ -44,7 +44,18 @@
 | 037 | `data/world-catalogs/novgorod/` | утверждения данных разбросаны | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
 | 038 | `tools/world-catalog-workflow/` | tool импортируется runtime | — |
 | 039 | `universal_category_classification_policy.md` и ещё 3 | обрезанные документы корпуса | [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133) |
+| 040 | `infra/world-base/README.md` | README пишет 201 таблиц при 208 в схеме | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
+| 041 | `first-playable-party-migration.test.js` | тест ожидает 35 миграций при 36 | [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145) |
 | 042 | `code_driven_world_materialization_architecture.md`, `items_and_property.txt`, `turn_step_llm_contract.md` (+ гайд `npc_generation_profiles.txt`) | ACTIVE-нормы main против PC §9.1 до #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 043 | `scripts/m2c-capacity-successor.mjs`, `spatial_architecture_standard_g0_g6.md` | pin sha spatial_architecture после шага 3 #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 044 | `temporal_world…`, CONTRACT_INDEX v17 note | погода D7: next-state в turn + inertia profile | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 045 | `turn_step`/`items`/`npc` D9/D14 + финальные числа | D9/D14 и финальные числа от кода — долг кода v17 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 046 | `packages/world-knowledge` Core resolve | `lexical_ms` внутри Core без return-канала | [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152) |
+| 047 | default-query / `resolveTurnStepWorldKnowledge` | SUFFICIENT = лексика, не относимость; калибровка #153 | [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152) → [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 048 | `npc-safe-request-projector` / `state.historical_context` | norms/customs пусты в v17 — отсутствие данных | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 049 | `frozen-role-requests` / `turn-step-generic-owners` / `temporal-world-v1` | pre-#152 app/domain fails вне WK diff | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 050 | NPC `knowledge_snapshot` / memory/rumors | actor-visible knowledge — `@rus/visibility-knowledge-memory` / npc-runtime, не #154 WK | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 051 | `authored-opening-narration` | opening narration без WK date-gate — owner рассказчика | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 
 ## Записи
 
@@ -74,7 +85,7 @@
 
 ### LW-008 — три системы статусов
 - **Что.** Метки CONTRACT_INDEX §2, поле `status` / `priority_tier` записей `data/knowledge-source/corpus-manifest.json` (фильтр RAG — `default_statuses` только в `retrieval-policy.json`; `priority_tier` для ранжирования — только из manifest; оба пишет `knowledge:repin` из CONTRACT_INDEX, #144) и строки «Status:» в шапках документов корпуса и ADR. Retrieval-статусы: `active`, `proposed`, `reference`, `deprecated`.
-- **Ловушки.** (1) Шапки документов и ADR по-прежнему могут расходиться с индексом — статус для RAG брать из manifest после repin, нормативную роль — только из CONTRACT_INDEX. (2) PROPOSED-документы (`universal_category_classification_policy.md`, `semantic_world_actions_…`) механизмы в коде могут уже работать; запрос по умолчанию их не видит. (3) ACTIVE-документы называют себя «целевыми», версии вида `4.4.0-target.1` — идентификаторы, а не статус. (4) UNDECLARED / REFERENCE guide → `reference` (в `reference_results` по умолчанию); REFERENCE/LEGACY, REDIRECT, SUPERSEDED, MIGRATION → `deprecated` (не в default search).
+- **Ловушки.** (1) Шапки документов и ADR по-прежнему могут расходиться с индексом — статус для RAG брать из manifest после repin, нормативную роль — только из CONTRACT_INDEX. (2) `universal_category_classification_policy.md` с #146 / PR #98 — `ACTIVE` (видна в default `results`); `semantic_world_actions_…` остаётся `PROPOSED` и по умолчанию не видна. (3) ACTIVE-документы называют себя «целевыми», версии вида `4.4.0-target.1` — идентификаторы, а не статус. (4) UNDECLARED / REFERENCE guide → `reference` (в `reference_results` по умолчанию); REFERENCE/LEGACY, REDIRECT, SUPERSEDED, MIGRATION → `deprecated` (не в default search).
 - **Как жить.** Нормативный статус — только CONTRACT_INDEX; `knowledge:repin` выводит retrieval-статус и priority_tier в manifest и канонический `default_statuses`; `knowledge:check` ловит расхождение с индексом, неизвестную метку, дубли строк с разными метками, ручную правку `priority_tier`/`default_statuses` в policy и отсутствие строки индекса. Поиск корпуса лексический: нормы в `results`, справочники в `reference_results`. Для proposed — `npm run knowledge:query -- --statuses active,proposed --query "…"`, затем чтение исходника.
 - **Issue.** [#112](https://github.com/PavelSlaven/Novgorod1230/issues/112), [#144](https://github.com/PavelSlaven/Novgorod1230/issues/144)
 
@@ -128,14 +139,14 @@
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-028 — классовый блок оружия, денег и документов (ветка PR #98)
-- **Что.** `packages/turn/src/ordinary-materialization-presence.js` (набор RESTRICTED: `weapon_or_armament`, `currency_or_precious`, `document_like`, `specialized_or_valuable`, `other_restricted`) и `apps/game-server/src/runtime/context-bound-ordinary-policy.js` пропускают эти классы только при авторском scope-профиле, иначе `absent` или `authority_required`; eval-фикстуры Stage B закрепляют «меча нет». Решение владельца 2026-09-25: найти (малая вероятность) и изготовить (ресурсы, инструмент, навык) можно; typed gap — только уникальные и квестовые вещи.
-- **Как жить.** Блок новыми тестами не закреплять; снятие — через CR норм M2c.
-- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
+- **Что.** Нормы корпуса (#146 шаги 1–4) закрыли классовый запрет: находка через presence, изготовление через A1; `authority_required` — только вещи по authority-записи. Код ещё держит блок: `packages/turn/src/ordinary-materialization-presence.js` (RESTRICTED: `weapon_or_armament`, `currency_or_precious`, `document_like`, …) и `apps/game-server/src/runtime/context-bound-ordinary-policy.js`; eval-фикстуры Stage B закрепляют «меча нет».
+- **Как жить.** Нормы на ветке закрыты. Блок новыми тестами не закреплять; снятие в коде — CR реализации M2c. При конфликте норма > код до cutover.
+- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133), [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
 
 ### LW-029 — ordinary-профили v17 выключены (ветка PR #98)
-- **Что.** `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 загружены только профиль конечных природных источников при первом входе (`finite_first_entry`), A1 (`actionProductionProfile`) и N1 (`ordinary_profiles.n1`). `items_and_property.txt` и `code_driven_world_materialization_architecture.md` описывают эти профили как active: они действуют только на пути v16 / Lower Dvina Trace.
-- **Как жить.** Не «подключать существующий профиль» к v17 и не подгонять тесты под фикстуры v16. Обобщение профилей на все классы — M2c.
-- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
+- **Что.** Нормы (#146 шаги 1–4) описывают O1/O2b/S1/A1 как active. Код: `apps/game-server/src/internal/target-runtime-profiles.js` задаёт `null` для `ordinaryMaterializationProfile` (O1 и O2a ambient), `ordinaryContainerContentsProfile` (O2b), `localFireProfile` (F1) и `ordinary_profiles.s1` (S1). У v17 загружены только профиль конечных природных источников при первом входе (`finite_first_entry`), A1 (`actionProductionProfile`) и N1 (`ordinary_profiles.n1`); профили на пути v16 / Lower Dvina Trace.
+- **Как жить.** Нормы на ветке закрыты. Не «подключать существующий профиль» к v17 и не подгонять тесты под фикстуры v16. Обобщение профилей на все классы — CR реализации M2c.
+- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133), [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
 
 ### LW-030 — typed gap показывается как «ничего не нашли» (ветка PR #98)
 - **Что.** `apps/game-server/src/runtime/lower-dvina-trace-turn-step-current-scene.js` выводит `authority_required` и отсутствие профиля так же, как законный пустой поиск. AI §10.1 запрещает выдавать дефект реализации как отсутствие вещи в мире.
@@ -178,15 +189,71 @@
 - **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
 
 ### LW-038 — `tools/world-catalog-workflow` в runtime
-- **Что.** Стадии 7, 8, 13 и 16 `packages/new-game` импортируют `tools/world-catalog-workflow`, хотя `docs/architecture/DEPENDENCY_RULES.md` и `docs/modules/TOOLS_INVENTORY.md` утверждают, что production runtime не импортирует tools; `check-boundaries.mjs` это не проверяет. `docs/context/ARCHITECTURE.md` фиксирует исключение.
+- **Что.** Стадии 7, 8, 13 и 16 `packages/new-game` импортируют `tools/world-catalog-workflow`, хотя `docs/architecture/DEPENDENCY_RULES.md` утверждает, что production runtime не импортирует tools; `check-boundaries.mjs` это не проверяет. `docs/context/ARCHITECTURE.md` и `TOOLS_INVENTORY` фиксируют исключение LW-038; расхождение остаётся с DEPENDENCY_RULES.
 - **Как жить.** Правка этого tool меняет new-game: кандидаты NPC и предметов, шаблоны G5, упаковку снаряжения. Гонять `test:domain` и профильные тесты стадий 7, 8, 13, 16.
 
 ### LW-039 — обрезанные документы корпуса
-- **Что.** 4 документа нормативного корпуса содержат буквальный маркер «…tokens truncated…»: в `universal_category_classification_policy.md` потеряны разделы 10–11.4 (ландшафт, вода, землепользование, животные); в `formulas.md`, `base_turn_orchestration.txt` и `movement_locations_regions.txt` повреждены архивные приложения v2. Целая копия политики — `data/knowledge-source/imports/universal-category-classification-2026-07-15/`.
-- **Как жить.** До восстановления разделы 10–11.4 политики читать из импорта только как справку: не как норму и не как вход materializer. Восстановление — CR норм M2c через CORPUS_EDIT.
-- **Issue.** [#133](https://github.com/PavelSlaven/Novgorod1230/issues/133)
+- **Что.** В `universal_category_classification_policy.md` разделы 10–11.4 восстановлены (#146 шаг 1). Архивные приложения v2 с маркерами «…tokens truncated…» вынесены из корпуса (#146 шаг 4) у `formulas.md`, `base_turn_orchestration.txt`, `movement_locations_regions.txt`, `world_generation_and_turns.txt`, `interface_ux.md`, `time_system.txt`. После #146 зеркала canonicalized-документов совпадают с корпусом; исходный legacy-текст v2 есть только в истории git (≤ `97644bae`). `source_basis` схемы party DB v1 (`infra/party-db/party_database_tables_v1.csv:10`, `party_database_validation_rules_v1.csv:4`, `schema/party_database_schema_v1.json:74, 5048`) и source map rus13 (`tools/rus13-start-g5-materialization/…source_map_v1.csv:3`, `tools/rus13-new-party-generator/…source_map_v1.csv:2-3`) ещё ссылаются на удалённые разделы v2. REFERENCE-документы (`interface_ux.md:8`, `time_system.txt:63`, `movement_locations_regions.txt:88`) ещё содержат устаревшее «active production остаётся materialization v2». `docs/work/temporal-world-v4/README.md:71` упоминает маркеры обрезки, которые уже сняты (исторический отчёт).
+- **Как жить.** Нормы корпуса: закрыто на ветке PR #98. Политику категорий читать из корпуса (ACTIVE). Не восстанавливать архивные приложения v2 в корпус. Ссылки source_basis/source map и REFERENCE-фразы про v2 — исправить при чистке #127 или в CR реализации M2c; temporal README не править как исторический отчёт.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+### LW-040 — README world_base пишет 201 таблиц (ветка PR #98)
+- **Что.** `infra/world-base/README.md` всё ещё говорит «201 таблиц»; фактические `EXPECTED_TABLE_COUNT`, CI `table_count` и `SCHEMA_REFERENCE` — **208** (`01.sql`–`26.sql`).
+- **Как жить.** Счёт брать из `scripts/check-world-base-schema.mjs` / DB_SCHEMA / CI, не из README. Правка README — вместе с docs-sync схемы.
+- **Issue.** [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145)
+
+### LW-041 — стейл-тест длины миграций party (ветка PR #98)
+- **Что.** `test/spatial-v3/first-playable-party-migration.test.js` ожидает `SPATIAL_V3_TARGET_MIGRATIONS.length === 35`, тогда как манифест и диск — **36** (до `036_party_runtime_visibility_modifiers.sql`).
+- **Как жить.** Не чинить в docs-задаче карт; починить в CR реализации M2c вместе с обновлением ожидания теста.
+- **Issue.** [#145](https://github.com/PavelSlaven/Novgorod1230/issues/145)
 
 ### LW-042 — ACTIVE-нормы main против PC §9.1 до CR норм M2c
-- **Что.** На main ACTIVE D-005 и строка 176 `code_driven_world_materialization_architecture.md`, `items_and_property.txt:10` и UNDECLARED-гайд `npc_generation_profiles.txt:7` («LLM не создаёт NPC») (direct action не создаёт «ценные» предметы) расходятся с буквой PC §9.1:240 (по решению D8 LLM лишь сопоставляет запрос с ролью, а экземпляр создаёт код) и с классовым запретом, который PC §9.1 снял; сильнее всего с ним расходятся `code_driven_world_materialization_architecture.md:180` (restricted weapon/currency/document → `authority_required`), D-014 и `turn_step_llm_contract.md:1706` (полный список — #146 шаг 2). Решения владельца: [5836830425](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5836830425), [5839745154](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154). Обычного NPC по запросу игрока создаёт код по сохранённому броску и лимиту места, изготовить можно всё реалистичное, typed gap — только для вещей по authority-записи. `knowledge:query` на main выдаёт старые формулировки. Нормы правит #146 на ветке PR #98; на main они придут с merge PR #98.
-- **Как жить.** При конфликте действуют PC §9.1 и решения #133. Эти формулировки не закреплять новыми тестами и не цитировать в CR как норму.
+- **Что.** На ветке PR #98 шаги 1–3 #146 закрыли расхождение норм с PC §9.1 / D1–D10 / D14 (presence §3A, O1/O2b, классовый запрет, D-005/D8, опознавательный текст, промпты→схема+владелец кода, погода D7). Классовый запрет в §20 `turn_step` / §25 `npc_autonomous` на ветке снят шагом 3. На main до merge #98 ACTIVE-корпус ещё старый: D-005, `items_and_property.txt:10`, гайд `npc_generation_profiles.txt:7`, старые «канонические промпты». `knowledge:query` на main выдаёт старые формулировки.
+- **Как жить.** При конфликте — PC §9.1 и #133; на ветке #98 — корпус после шагов #146. Старые формулировки main не закреплять новыми тестами. Запись держится до merge #98 в main.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+### LW-043 — pin `spatial_architecture_standard` в `m2c-capacity-successor.mjs`
+- **Что.** `scripts/m2c-capacity-successor.mjs:14` закрепляет sha256 `data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md`. После шага 3 #146 («целевой»→«действующий» в §0.1) pin расходится; проверка не gate. Перепинивать в docs-задаче нельзя (повторное утверждение данных).
+- **Как жить.** Не чинить в #146; обновить pin в CR данных/реализации M2c вместе с утверждением по WR §21.1.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+### LW-044 — погода D7: выбор следующего состояния и инерция профиля
+- **Что.** Норма D7 ([#133](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5839745154)): следующее состояние погоды выбирает `@rus/turn` детерминированным RandomSource (seed партии, G0-зона, 6-часовой интервал) из утверждённого профиля v2 с инерцией; `@rus/environment-state` применяет. Код v17 ещё не делает выбор следующего состояния и инерцию.
+- **Как жить.** Не имитировать живую смену погоды в тестах/доках как текущее поведение; реализация — CR M2c.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+### LW-045 — D9/D14 и финальные числа от кода (долг кода v17)
+- **Что.** Нормы D9/D14 ACTIVE в корпусе (#146 шаг 2–3), но код v17 ещё расходится: `action-produced-output-semantics.js` принимает любой `inscription_text`; узнавания владельцем при восприятии нет. Отдельно: финальные числа пишет код (`mass_grams` и пр.), а `plan-schema.js` всё ещё требует `mass_grams` от модели.
+- **Как жить.** В нормах помечать «действующая норма; код v17 — долг CR реализации M2c (LW-045)»; не ослаблять норму под текущий код.
+- **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+
+### LW-046 — `lexical_ms` внутри Core resolveWorldKnowledge
+- **Что.** §85 требует lexical latency в telemetry. Сейчас lexical scoring идёт внутри `packages/world-knowledge` `resolveWorldKnowledge` без отдельного return-канала; public signature `(query, { vectorScores })` не отдаёт `lexical_ms`. Diagnostic ставит `lexical_ms: null`, `lexical_status: included_in_core_resolution`.
+- **Как жить.** Не менять публичную сигнатуру Core в #152; добавить отдельный timing channel в CR Core/telemetry, затем убрать LW.
+- **Issue.** [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152)
+
+### LW-047 — SUFFICIENT = лексическое попадание, не относимость; калибровка в #153
+- **Что.** `search_hint_hits` / `strongest > 0` проверяет лексическое совпадение hint с допущенным claim, а не topical relevance. Default-запрос §50 поэтому никогда не получает `SUFFICIENT_KNOWLEDGE` (максимум `PARTIAL`). `resolveTurnStepWorldKnowledge` в `@rus/turn` не дублирует default-query (owner — game-server grounder); у helper нет production-вызова — кандидат на удаление при чистке #127.
+- **Как жить.** Не поднимать default-query slice до SUFFICIENT; калибровку порога относимости на наборе аудита — #153 шаг 8.
+- **Issue.** [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152) → [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
+
+### LW-048 — `historical_context.applicable_norms` / `known_local_customs` пусты в v17
+- **Где.** `npc-safe-request-projector` читает `state.historical_context`; v17 не заполняет norms/customs.
+- **Как жить.** Сейчас закрыто отсутствием данных (не механизмом фильтра). Пересмотреть при CR данных/реализации M2c или #154, когда контекст начнёт нести нормы; до того не трактовать пустоту как «норм нет в мире».
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
+
+### LW-049 — pre-#152 app/domain test failures: frozen-role, generic-owners, temporal-world
+- **Где.** `apps/game-server/test/frozen-role-requests.test.js`, `apps/game-server/test/lower-dvina-trace-turn-step-generic-owners.test.js`, `packages/contracts/test/temporal-world-v1.test.js` (`Factual visible envelope:` / line ~94).
+- **Как жить.** Падают уже на `73a69dda` (до #152) и на `c40c18b3`; diff части A (#153) их не трогает. `test:apps` baseline 2 fail; `test:domain` baseline 1 fail. Не чинить попутно в WK-задачах; owner — turn/NPC routine / frozen role / temporal contracts (отдельный CR).
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) (зафиксировано при A-04 / N-6)
+
+### LW-050 — NPC knowledge_snapshot / memory/rumors вне WK date-gate #153
+- **Где.** NPC `knowledge_snapshot` (known_facts/beliefs/hypotheses), memory/rumors; owners — `@rus/visibility-knowledge-memory` / npc-runtime. #154 прямо исключает социальные группы и слухи из текущего этапа.
+- **Как жить.** Не маршрутизировать в #154 WK actor-visible filter. Пересмотреть, когда visibility/npc-runtime CR явно подключит date-gated historical events к actor knowledge.
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
+
+### LW-051 — opening narration без WK date-gate
+- **Где.** `authored-opening-narration.js` / narration owner.
+- **Как жить.** Не закрывать «narration owner» без issue; отдельный CR владельца рассказчика, если opening должен учитывать started historical events.
+- **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)

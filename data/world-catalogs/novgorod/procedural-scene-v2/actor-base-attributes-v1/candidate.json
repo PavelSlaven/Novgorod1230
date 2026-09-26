@@ -1,0 +1,471 @@
+{
+  "schema": "rus.actor_base_attributes_candidate.v1",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "runtime_authorized": false,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "subject_commit": "6428097ed150cb6c6e66248669a53d3803d4213e",
+  "profile": {
+    "schema": "rus.actor_base_attributes_profile.v1",
+    "version": 1,
+    "profile_id": "novgorod_ordinary_actor_base_attributes_v1",
+    "algorithm_version": "actor_base_attributes_v1",
+    "rng_version": "mulberry32_v1",
+    "ordinary_array": [
+      13,
+      12,
+      11,
+      10,
+      9,
+      8
+    ],
+    "occupation_archetype_priorities": [
+      {
+        "mapping_id": "agriculture",
+        "occupation_archetype_id": "agriculture",
+        "priority_tiers": [
+          [
+            "endurance"
+          ],
+          [
+            "strength"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "reason"
+          ],
+          [
+            "influence"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "animal_husbandry",
+        "occupation_archetype_id": "animal_husbandry",
+        "priority_tiers": [
+          [
+            "endurance"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "strength"
+          ],
+          [
+            "influence"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "reason"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "craft_production",
+        "occupation_archetype_id": "craft_production",
+        "priority_tiers": [
+          [
+            "dexterity"
+          ],
+          [
+            "reason"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "endurance"
+          ],
+          [
+            "strength"
+          ],
+          [
+            "influence"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "domestic_service",
+        "occupation_archetype_id": "domestic_service",
+        "priority_tiers": [
+          [
+            "attention"
+          ],
+          [
+            "endurance"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "influence"
+          ],
+          [
+            "reason"
+          ],
+          [
+            "strength"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "fishing_water",
+        "occupation_archetype_id": "fishing_water",
+        "priority_tiers": [
+          [
+            "strength"
+          ],
+          [
+            "endurance"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "reason"
+          ],
+          [
+            "influence"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "forest_hunting",
+        "occupation_archetype_id": "forest_hunting",
+        "priority_tiers": [
+          [
+            "attention"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "endurance"
+          ],
+          [
+            "strength"
+          ],
+          [
+            "reason"
+          ],
+          [
+            "influence"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "illicit_marginal",
+        "occupation_archetype_id": "illicit_marginal",
+        "priority_tiers": [
+          [
+            "dexterity"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "influence"
+          ],
+          [
+            "reason"
+          ],
+          [
+            "endurance"
+          ],
+          [
+            "strength"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "military_security",
+        "occupation_archetype_id": "military_security",
+        "priority_tiers": [
+          [
+            "strength"
+          ],
+          [
+            "endurance"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "influence"
+          ],
+          [
+            "reason"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "religious_literate",
+        "occupation_archetype_id": "religious_literate",
+        "priority_tiers": [
+          [
+            "reason"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "influence"
+          ],
+          [
+            "endurance"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "strength"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "trade_exchange",
+        "occupation_archetype_id": "trade_exchange",
+        "priority_tiers": [
+          [
+            "influence"
+          ],
+          [
+            "reason"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "endurance"
+          ],
+          [
+            "strength"
+          ]
+        ]
+      },
+      {
+        "mapping_id": "transport_guiding",
+        "occupation_archetype_id": "transport_guiding",
+        "priority_tiers": [
+          [
+            "endurance"
+          ],
+          [
+            "attention"
+          ],
+          [
+            "strength"
+          ],
+          [
+            "dexterity"
+          ],
+          [
+            "reason"
+          ],
+          [
+            "influence"
+          ]
+        ]
+      }
+    ]
+  },
+  "profile_digest": "5643edda6b0993cfe100bee8c1366928167b3b487d6c51d91a70e546644965b7",
+  "candidate_digest": "7c0916640715c9c48bd023676b3268deccdc0c83a66c980835ae25173f04d309",
+  "source_provenance": {
+    "standard_array": {
+      "directness": "direct_task_audit",
+      "confidence": "high",
+      "sources": [
+        {
+          "locator": "C:/Users/Slaven/.codex/attachments/78555d5e-af97-4544-bfc3-784d82a3aa5d/Вставленный текст.txt",
+          "sha256": "671f6b94d857fe492de213ff116d841567e5ebc3cc0830a7866d5a94591aff2d"
+        },
+        {
+          "locator": "data/knowledge-source/corpus/DOCUMENTS/character_parameters.txt",
+          "sha256": "cf8bc8f515e6c6758886e1532ae60a8dccf01f3804f52728cf3a89f609e728c8"
+        }
+      ]
+    },
+    "invariant": {
+      "directness": "direct_task_audit",
+      "confidence": "high",
+      "sources": [
+        {
+          "locator": "C:/Users/Slaven/.codex/attachments/78555d5e-af97-4544-bfc3-784d82a3aa5d/Вставленный текст.txt",
+          "sha256": "671f6b94d857fe492de213ff116d841567e5ebc3cc0830a7866d5a94591aff2d"
+        },
+        {
+          "locator": "data/knowledge-source/corpus/DOCUMENTS/character_parameters.txt",
+          "sha256": "cf8bc8f515e6c6758886e1532ae60a8dccf01f3804f52728cf3a89f609e728c8"
+        }
+      ]
+    },
+    "priority_mappings": [
+      {
+        "occupation_archetype_id": "agriculture",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_haymaker",
+          "nov_occ_ploughman"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "animal_husbandry",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_cattle_keeper",
+          "nov_occ_herder"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "craft_production",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_blacksmith",
+          "nov_occ_carpenter",
+          "nov_occ_cook_baker",
+          "nov_occ_leatherworker",
+          "nov_occ_potter",
+          "nov_occ_shoemaker"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "domestic_service",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_household_servant",
+          "nov_occ_stable_worker"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "fishing_water",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_fisher"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "forest_hunting",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_bortnik",
+          "nov_occ_forest_worker",
+          "nov_occ_hunter_trapper"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "illicit_marginal",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_beggar_alms"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "military_security",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_druzhina_warrior",
+          "nov_occ_gate_guard",
+          "nov_occ_market_guard",
+          "nov_occ_princely_service_agent"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "religious_literate",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_bishop_court_service",
+          "nov_occ_church_guard",
+          "nov_occ_deacon_service",
+          "nov_occ_monastic_laborer",
+          "nov_occ_monk_service",
+          "nov_occ_novice_work",
+          "nov_occ_parish_priest_service"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "trade_exchange",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_local_trader",
+          "nov_occ_long_distance_merchant",
+          "nov_occ_storehouse_keeper"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      },
+      {
+        "occupation_archetype_id": "transport_guiding",
+        "directness": "editorial_inference",
+        "confidence": "medium",
+        "occupation_ids": [
+          "nov_occ_boatman",
+          "nov_occ_cart_driver",
+          "nov_occ_ferryman",
+          "nov_occ_landing_worker",
+          "nov_occ_porter",
+          "nov_occ_route_guide"
+        ],
+        "occupation_tsv_digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
+        "applicability": "approved regional occupations sharing this archetype",
+        "limits": "ordered priorities are editorial, not direct source claims"
+      }
+    ]
+  }
+}

@@ -13,6 +13,14 @@ import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import { enabled, group, verifyStageBCutover } from
   './lower-dvina-trace-o1-fixture.js';
+import LIVE_WORLD_TURN_PROFILE from
+  '../../../data/world-catalogs/novgorod/live-world-runtime-v1/turn-profiles.json'
+  with { type: 'json' };
+import { canonicalDigest } from '@rus/materialization';
+import { liveWorldConversationCommands } from
+  '../src/runtime/lower-dvina-trace-phase-2.js';
+import { conversationTemporalOwner, createM2ConversationModels } from
+  './lower-dvina-trace-m2-conversation-fixture.js';
 
 const [bundle12, bundle13, bundle15, bundle25] = await Promise.all([
   loadScenarioBundle(12),
@@ -39,6 +47,36 @@ test('revision 12 free input stays on the historical bounded path', async () => 
   assert.equal(f.commitCount(), 1);
 });
 
+test('authored live-world turn uses neutral profile and common workflow',
+  async () => {
+    const seed = fixture({ scenarioBundle: bundle13,
+      materializationBundle: bundle13 });
+    const state = structuredClone(seed.state);
+    state.scenario_id = 'vikhtuy_fishing_camp_v1';
+    state.position.location_ref = 'trace_ld_v1_smp_fishing_camp';
+    state.current_visible_context = {
+      version: 1, schema: 'visible_context_package',
+      visible_scene: 'рыбацкий стан у Вихтуя', visible_changes: [],
+      sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: ['рыбацкий стан у Вихтуя'], uncertainties: [],
+      allowed_tensions: [], do_not_imply: ['hidden_fact']
+    };
+    const f = fixture({ committedState: state,
+      authoredTurnProfile: { profile: LIVE_WORLD_TURN_PROFILE, pin: {
+        artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
+        revision: LIVE_WORLD_TURN_PROFILE.revision,
+        digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
+      } }, turnStepModel: observationPlan });
+
+    const result = await submit(f, turn('live-world-observe', 'Осматриваюсь.'));
+
+    assert.equal(f.turnStepCount(), 1);
+    assert.equal(f.commitCount(), 1);
+    assert.equal(f.bundleRequests.length, 0);
+    assert.equal(result.screen.scenario_id, 'vikhtuy_fishing_camp_v1');
+    assert.equal(result.screen.screen_kind, 'live_world_turn');
+  });
+
 test('revision 15 early turns carry the Phase 7 action policy pin', async () => {
   const f = fixture({
     scenarioBundle: bundle15,
@@ -55,6 +93,80 @@ test('revision 15 early turns carry the Phase 7 action policy pin', async () => 
   assert.equal(f.turnStepCount(), 0);
   assert.equal(f.commitCount(), 1);
 });
+
+test('authored background NPC uses the common persisted conversation owner',
+  async () => {
+    const seed = fixture({ scenarioBundle: bundle13,
+      materializationBundle: bundle13 });
+    const state = structuredClone(seed.state);
+    state.scenario_id = 'vikhtuy_fishing_camp_v1';
+    state.position.location_ref = 'trace_ld_v1_smp_fishing_camp';
+    const npc = state.npcs[0];
+    npc.anchor_id = state.position.g5_anchor_id;
+    npc.location_profile_ref = state.position.location_ref;
+    const conversation = createM2ConversationModels();
+    const profile = { profile: LIVE_WORLD_TURN_PROFILE, pin: {
+      artifact_id: LIVE_WORLD_TURN_PROFILE.profile_set_id,
+      revision: LIVE_WORLD_TURN_PROFILE.revision,
+      digest: canonicalDigest(LIVE_WORLD_TURN_PROFILE)
+    } };
+    const commands = liveWorldConversationCommands({ state,
+      inputDigest: 'a'.repeat(64), authoredTurnProfile: profile,
+      playerConversationModel: conversation.playerConversationModel,
+      npcSemanticModel: conversation.npcSemanticModel,
+      temporalAdvanceOwner: null, revalidateStateVersion: async () => 1 });
+    assert.equal(commands.length > 0, true);
+    assert.equal((await commands[0].availability({ committed_state: state,
+      action_set_evaluation: true })).can_attempt, true,
+    JSON.stringify(commands[0].preconditions));
+    const f = fixture({ committedState: state,
+      authoredTurnProfile: profile,
+      playerConversationModel: conversation.playerConversationModel,
+      npcSemanticModel: conversation.npcSemanticModel,
+      temporalAdvanceOwner: conversationTemporalOwner(state),
+      turnStepModel: async (request) => {
+        const interaction = request.available_domain_operations.find(
+          ({ op }) => op === 'emit_interaction');
+        assert.ok(interaction, JSON.stringify(request.player_safe_state));
+        return ({
+        schema: 'turn_step_plan_v1', request_id: request.request_id,
+        committed_state_version: request.committed_state_version,
+        working_revision: request.working_revision,
+        step_index: request.step_index,
+        interpretation: { player_goal: request.root_player_action,
+          grounded_attempt: request.root_player_action,
+          adaptation: 'literal' }, resolution: 'domain_request',
+        goal_result: 'pending', activity: { owner: 'domain',
+          duration_class: null, effort: null }, operations: [
+          interaction], check: null, continuation: null,
+        clarification: null, direct_result_kind: null,
+        reason_code: 'visible_npc_conversation',
+        reason: 'The visible NPC owns the response boundary.'
+      }); } });
+
+    await submit(f, turn('live-world-talk',
+      'Спрашиваю незнакомого рыбака, как сегодня идёт работа.'));
+
+    assert.equal(f.playerConversationCount(), 1);
+    assert.equal(f.npcSemanticCount() > 0, true);
+    assert.equal(f.commitCount(), 1);
+    assert.equal(f.state.conversation_statements.length > 0, true);
+    const firstNpcStatements = f.state.conversation_statements.filter(
+      ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc');
+    assert.equal(firstNpcStatements.some(({ speaker_ref: speaker }) =>
+      speaker.entity_id === npc.instance_id), true);
+
+    await submit(f, turn('live-world-talk-paraphrase',
+      'Иначе спрашиваю того же человека, что изменилось в работе после нашего разговора.'));
+
+    assert.equal(f.playerConversationCount(), 2);
+    assert.equal(f.commitCount(), 2);
+    const npcStatements = f.state.conversation_statements.filter(
+      ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc');
+    assert.equal(npcStatements.length > firstNpcStatements.length, true);
+    assert.equal(npcStatements.every(({ speaker_ref: speaker }) =>
+      speaker.entity_id === npc.instance_id), true);
+  });
 
 test('revision 13 discovery delegates to the unchanged Phase 2 mechanics',
   async () => {
@@ -463,6 +575,23 @@ function domainPlan(request, operation) {
     direct_result_kind: null,
     reason_code: 'delegate_existing_lower_dvina_owner',
     reason: 'Действие передаётся существующему владельцу механики.'
+  };
+}
+
+function observationPlan(request) {
+  return {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: 'осмотреть доступную обстановку',
+      adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: 'player_safe_observation',
+    reason_code: 'observe_current_scene',
+    reason: 'Наблюдение использует только player-safe состояние.'
   };
 }
 

@@ -71,6 +71,11 @@ import { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate,
 import { spatialResult } from './stages/narration.js';
 import { requestWorldKnowledgeQueryPlan, resolveTurnStepWorldKnowledge } from
   './world-knowledge-grounding.js';
+import {
+  omitWorldKnowledgeContextText,
+  worldKnowledgePromptData,
+  worldKnowledgePromptInstructions
+} from './world-knowledge-prompt.js';
 import { createSpatialV3PerceptionBoundaryParticipant } from
   './spatial-v3-perception-boundary-participant.js';
 
@@ -118,6 +123,9 @@ export {
   isOrdinaryDiscoveryInScope,
   requestWorldKnowledgeQueryPlan,
   resolveTurnStepWorldKnowledge,
+  omitWorldKnowledgeContextText,
+  worldKnowledgePromptData,
+  worldKnowledgePromptInstructions,
   createSpatialV3PerceptionBoundaryParticipant
 };
 export {

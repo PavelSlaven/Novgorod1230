@@ -292,11 +292,15 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   if (!outputDirectory || !focus) throw new Error('Usage: node gameplay-gap-campaign.mjs <output-directory> <exploration-focus> [turn-count]');
   const { createProductionLlmRoleRunner } = await import(
     '../../apps/game-server/src/infrastructure/provider/deepseek.js');
-  const { LOCAL_LLM_PRESET } = await import(
+  const { DEFAULT_GAMEPLAY_MODEL } = await import(
     '../../apps/game-server/src/runtime/llm-settings.js');
-  const settings = { providerSnapshot: () => ({ mode: 'local',
-    compatibility: 'openai_compatible', baseUrl: LOCAL_LLM_PRESET.base_url,
-    model: LOCAL_LLM_PRESET.model, apiKey: null }) };
+  const baseUrl = text(process.env.RUS_ACCEPTANCE_LLM_BASE_URL);
+  const model = text(process.env.RUS_ACCEPTANCE_LLM_MODEL)
+    || DEFAULT_GAMEPLAY_MODEL;
+  if (!baseUrl || model !== DEFAULT_GAMEPLAY_MODEL) throw new Error(
+    `Configure RUS_ACCEPTANCE_LLM_BASE_URL and exact model ${DEFAULT_GAMEPLAY_MODEL}.`);
+  const settings = { providerSnapshot: () => ({ mode: 'custom',
+    compatibility: 'openai_compatible', baseUrl, model, apiKey: null }) };
   const campaignId = `gameplay-gap-${randomUUID()}`;
   try {
     const report = await runGameplayGapCampaign({ outputDirectory, campaignId,

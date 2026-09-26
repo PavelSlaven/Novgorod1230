@@ -33,7 +33,9 @@ export function projectLowerDvinaTraceO2aDiscoverySources({ projected,
       && typeof value.source_ref === 'string'
       && typeof value.public_name === 'string'
       && value.disclosure_state === 'visible') : [];
-  const visible = projected?.player_safe_state?.visible_context;
+  const contextKey = projected?.player_safe_state?.current_visible_context == null
+    ? 'visible_context' : 'current_visible_context';
+  const visible = projected?.player_safe_state?.[contextKey];
   const existing = Array.isArray(visible?.visible_objects)
     ? visible.visible_objects.filter((entry) =>
       ![SOURCE_KIND, LEGACY_DISCOVERY_KIND].includes(
@@ -41,7 +43,7 @@ export function projectLowerDvinaTraceO2aDiscoverySources({ projected,
   if (entries.length === 0 && existing.length
       === (visible?.visible_objects?.length ?? 0)) return projected;
   return { ...projected, player_safe_state: { ...projected.player_safe_state,
-    visible_context: { ...(visible ?? {}), visible_objects: [
+    [contextKey]: { ...(visible ?? {}), visible_objects: [
       ...existing, ...entries.map((entry) => ({ entity_ref: {
         entity_kind: SOURCE_KIND, entity_id: entry.source_ref },
       display_label: entry.public_name,

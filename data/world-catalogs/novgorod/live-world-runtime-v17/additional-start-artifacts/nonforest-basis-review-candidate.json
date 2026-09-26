@@ -1,0 +1,80 @@
+{
+  "schema": "rus.m2c_additional_start_nonforest_basis_review_candidate.v1",
+  "status": "pending_independent_data_approval",
+  "required_review": "Independently approve occupation-to-archetype mapping and exact new-player applicability for three boatman/fisher starts. Proposed 12-skill basis maps only approved survival primary +2; secondary +1 needs biography. travel_transport is unmapped (player_watercraft_skill_missing), never riding.",
+  "source_pins": [
+    {
+      "path": "data/world-base-seeds/occupation_skill_defaults_v1.csv",
+      "sha256": "6f4901f6519f33b80b7f0eef87c63b1e3ee229b40af4b7764abf5ebdc639f1c0"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-candidate.json",
+      "sha256": "d6ba8f795f5a84434bc682b23122c77188596bda3e0e3714832c5000c3571dfd"
+    },
+    {
+      "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-starts-data-approval.json",
+      "sha256": "dfc1f300c20b25bc6234ab084dc29ca9300f0a2216d298f7a1b12b5b06e1d496"
+    }
+  ],
+  "approved_skill_default_source_rows": {
+    "transport_guiding": "transport_guiding,\"[\"\"travel_transport\"\", \"\"survival\"\"]\",\"[\"\"observation\"\", \"\"communication_trade\"\"]\",[],[],\"primary +2 typical, secondary +1 if biography supports\",approved,high,\"[\"\"seed:universal_social_layer_v1\"\"]\",\"Universal social layer seed v1; explicit data, not procedural.\",2026-07-08T00:00:00Z,2026-07-08T00:00:00Z",
+    "fishing_water": "fishing_water,\"[\"\"survival\"\"]\",\"[\"\"craft\"\", \"\"household\"\"]\",[],[],\"primary +2 typical, secondary +1 if biography supports\",approved,high,\"[\"\"seed:universal_social_layer_v1\"\"]\",\"Universal social layer seed v1; explicit data, not procedural.\",2026-07-08T00:00:00Z,2026-07-08T00:00:00Z"
+  },
+  "starts": [
+    {
+      "scenario_id": "novgorod_riverbank_approach_v1",
+      "role_ref": "nov_role_boatman",
+      "occupation_ref": "nov_occ_boatman",
+      "occupation_archetype_id": "transport_guiding",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.start.json",
+        "sha256": "175ad4805b6a1dcf601626fb786a8ab6205f8618366bb41f2199fd3d17f060ce"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.transfer.json",
+        "sha256": "aa54810cf17a81ffd4e15ab22f3d7cd93bb0273d7dca0e996e105fa1b0c2d93a"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_riverbank_approach_v1.basis.json",
+        "sha256": "a24d51b96dc7b432a10d19207a942ff106b35a744e72c87bacb4e578cce55b84"
+      }
+    },
+    {
+      "scenario_id": "novgorod_reed_backwater_entrance_v1",
+      "role_ref": "nov_role_fisher",
+      "occupation_ref": "nov_occ_fisher",
+      "occupation_archetype_id": "fishing_water",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.start.json",
+        "sha256": "d979887c5e8a49e8eb793aaf690702d02f89d457d5643edb61bc37d7fcf8818f"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.transfer.json",
+        "sha256": "e9bd6b6d144b51c587dde5e1ad439c4146e1f8af8c171aa5a9c53d80674d67fc"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_reed_backwater_entrance_v1.basis.json",
+        "sha256": "5f44b2427bac1021052e26e54e33790ab798af0b1effe9b3a86f2005c4ef4812"
+      }
+    },
+    {
+      "scenario_id": "novgorod_zaostrovye_settlement_approach_v1",
+      "role_ref": "nov_role_boatman",
+      "occupation_ref": "nov_occ_boatman",
+      "occupation_archetype_id": "transport_guiding",
+      "start": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.start.json",
+        "sha256": "ee9ba3079a3ef4dde548d3670518598c9ce0ec09e4f24f420144ed1f8d9659ad"
+      },
+      "transfer": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.transfer.json",
+        "sha256": "91668c256b9b41a43c0cde8d7163b0397356a4ac97bc8e8fcf8b6e711fbde506"
+      },
+      "basis": {
+        "path": "data/world-catalogs/novgorod/live-world-runtime-v17/additional-start-artifacts/novgorod_zaostrovye_settlement_approach_v1.basis.json",
+        "sha256": "2d0b9c0f95435c03d5e99042e1cdd5cd649b08deb9245c1d0058abd6b4000060"
+      }
+    }
+  ],
+  "activation_authorized": false
+}

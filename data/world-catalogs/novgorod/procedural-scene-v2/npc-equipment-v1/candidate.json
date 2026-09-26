@@ -1,0 +1,571 @@
+{
+  "schema": "rus.npc_equipment_profile_candidate.v1",
+  "candidate_id": "novgorod_npc_equipment_profiles_candidate_001",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "authoring_approval": "pending_independent_review",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "runtime_instances_created": false,
+  "profile_levels": [
+    "social_basic_clothing",
+    "occupation_equipment"
+  ],
+  "provenance": {
+    "authoring_ref": "novgorod_npc_equipment_profiles_001@1",
+    "authoring_digest": "e34434d9e68b09d068c06c68ef1b9471180ad0d6fb78ae9c9548508d361acf5b",
+    "v5_bundle_id": "novgorod_1230_item_container_v5_candidate_001",
+    "v5_candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
+    "v5_approval_request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+    "v5_approval_attestation_digest": "67baf3e92a2aacde2566a60c13e5a3a2410e3544549f096684d473d8588f18f8",
+    "v5_target_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+    "v5_target_catalog_digest": "a24fe55497a8aca018fa28a43ab1f54e26e2f30a5c74931ed2570ab69bc07a87",
+    "equipment_slot_authority": {
+      "source_path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
+      "source_sha256": "1dffc2cd2d80576146090daaaf0cf2b0cab436d761b4309de75949f87b9f3533",
+      "schema": "rus.actor_appearance_carry_forward_candidate.v1",
+      "candidate_id": "novgorod-spatial-v3-production-v6-actor-appearance-carry-forward-001",
+      "source_projection_sha256": "0a65cfaacca68e75e6756ef62062a844e62d09a2c45d390471157cae27fa0286",
+      "candidate_rows_sha256": "cfdd5d0688bcde4fd9445e194e2fe327c36138578d860c36e2b146f249aac9b3",
+      "target_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+      "target_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+      "source_status": "authoring_approved_pending_import_authorization",
+      "approval_status": "authoring_approved",
+      "authoring_approved": true,
+      "authoring_attestation_digest": "5fa3693fcc4ba52b67411dc512dc5c6d988ba53263ee4814efa84e7c97cbb5df",
+      "import_activation": false,
+      "runtime_status": "typed_data_gap"
+    },
+    "temporal_season_authority": {
+      "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json",
+      "dataset_path": "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json",
+      "dataset_sha256": "b8a66008bf3830f5353b325ad913c2a2a95c085303ae5d8950f5a72265a38922",
+      "approval_status": "approved",
+      "record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+      "record_version": "1",
+      "seasons": [
+        "autumn",
+        "spring",
+        "summer",
+        "winter"
+      ]
+    },
+    "source_paths": [
+      "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+      "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+      "data/world-base-seeds/novgorod_role_position_map_v1.csv",
+      "data/world-base-seeds/social_position_archetypes_v1.csv",
+      "data/world-base-seeds/social_classes_v1.csv",
+      "data/knowledge-source/imports/item-container-120-v5/candidate/manifest.json",
+      "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_REQUEST.json",
+      "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+      "docs/implementation/item-container-120-approval-audit/evidence/STAGE3C_PROMOTION_RESULT.json",
+      "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
+      "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json",
+      "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json",
+      "data/world-catalogs/novgorod/first-playable-v1/catalog.json"
+    ]
+  },
+  "limits": {
+    "profile_is_authoring_handoff_only": true,
+    "creates_item_or_container_instances": false,
+    "assigns_owner_holder_or_controller": false,
+    "exact_property_basis_required_at_materialization": true,
+    "no_display_name_matching": true,
+    "no_npc_specific_profile": true,
+    "no_personality_or_name_fields": true
+  },
+  "social_clothing_profiles": [
+    {
+      "level": "social_basic_clothing",
+      "profile_id": "novgorod_commoner_male_basic_clothing_v1",
+      "profile_status": "resolved",
+      "executable": false,
+      "applicability": {
+        "role_refs": [
+          "nov_role_boatman",
+          "nov_role_fisher"
+        ],
+        "social_class_ref": "free_commoner",
+        "legal_status_ref": "free",
+        "status_band": "low-middle",
+        "sex": [
+          "male"
+        ],
+        "body_stage": [
+          "adult"
+        ],
+        "seasons": [
+          "spring",
+          "summer",
+          "autumn",
+          "winter"
+        ]
+      },
+      "required_equipment_slot_category_refs": [
+        "garment.equipment_slot.base_garment",
+        "garment.equipment_slot.outer_garment"
+      ],
+      "property_basis": {
+        "property_profile_ref": "property_context_household_personal_v1",
+        "property_rule_ref": "rule_property_context_household_personal_v1",
+        "owner_kind": "household",
+        "holder_kind": "household",
+        "controller_kind": "household",
+        "access_policy": {
+          "version": 1,
+          "mode": "explicit_owner_holder_controller",
+          "context_domain": "household_personal"
+        },
+        "claim_conditions": {
+          "version": 1,
+          "causal_basis_required": true
+        },
+        "assignment_at_authoring": false,
+        "effective_status": "approved_by_exact_promotion"
+      },
+      "role_evidence": [
+        {
+          "owner": "approved_social_roles",
+          "id": "nov_role_boatman",
+          "role_archetype_ref": "traveler_outsider",
+          "social_position_ref": "transport_worker_itinerant",
+          "social_class_ref": "free_commoner",
+          "legal_status_ref": "free",
+          "source_status": "approved",
+          "mapping_review_status": "approved"
+        },
+        {
+          "owner": "approved_social_roles",
+          "id": "nov_role_fisher",
+          "role_archetype_ref": "forest_or_water_producer",
+          "social_position_ref": "forest_water_producer_commoner",
+          "social_class_ref": "free_commoner",
+          "legal_status_ref": "free",
+          "source_status": "approved",
+          "mapping_review_status": "approved"
+        }
+      ],
+      "slot_authority": {
+        "source_path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
+        "source_sha256": "1dffc2cd2d80576146090daaaf0cf2b0cab436d761b4309de75949f87b9f3533",
+        "schema": "rus.actor_appearance_carry_forward_candidate.v1",
+        "candidate_id": "novgorod-spatial-v3-production-v6-actor-appearance-carry-forward-001",
+        "source_projection_sha256": "0a65cfaacca68e75e6756ef62062a844e62d09a2c45d390471157cae27fa0286",
+        "candidate_rows_sha256": "cfdd5d0688bcde4fd9445e194e2fe327c36138578d860c36e2b146f249aac9b3",
+        "target_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "target_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+        "source_status": "authoring_approved_pending_import_authorization",
+        "approval_status": "authoring_approved",
+        "authoring_approved": true,
+        "authoring_attestation_digest": "5fa3693fcc4ba52b67411dc512dc5c6d988ba53263ee4814efa84e7c97cbb5df",
+        "import_activation": false,
+        "runtime_status": "typed_data_gap"
+      },
+      "entries": [
+        {
+          "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+          "object_category_ref": "cat_item_object_linen_shirt_v1",
+          "source_profile_ref": "profile_household_personal_v3",
+          "source_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_linen_shirt_v1",
+          "source_slot_key": "item_household_personal",
+          "source_entry_required": false,
+          "source_selection_weight": 70,
+          "source_quantity_bounds": {
+            "min": 1,
+            "max": 1
+          },
+          "inventory_profile_ref": "inventory_item_tpl_nov_linen_shirt_v1",
+          "inventory_mechanics": {
+            "mass_grams": 600,
+            "carry_form": "regular",
+            "external_hand_cost": 0
+          },
+          "quantity_profile_ref": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+          "quantity_mechanics": {
+            "quantity_unit_ref": "piece",
+            "quantity_dimension": "count",
+            "minimum_quantity": 1,
+            "maximum_quantity": 1,
+            "default_quantity_policy": {
+              "version": 1,
+              "mode": "explicit_only"
+            },
+            "mass_grams_per_unit": 600,
+            "stackable": false,
+            "partial_consumption_allowed": false
+          },
+          "source_binding_refs": [
+            "claim_construction_item_tpl_nov_linen_shirt_v1",
+            "claim_historical_presence_item_tpl_nov_linen_shirt_v1",
+            "claim_material_item_tpl_nov_linen_shirt_v1",
+            "claim_physical_parameter_item_tpl_nov_linen_shirt_v1"
+          ],
+          "source_refs": [
+            "src_gameplay_physical_policy_v3",
+            "src_stage3b2_drevnyaya_rus_byt_1997"
+          ],
+          "source_scopes": [
+            "construction",
+            "historical_presence",
+            "material",
+            "physical_parameter"
+          ],
+          "source_row_status": "draft",
+          "effective_status": "approved_by_exact_promotion",
+          "equipment_slot_category_ref": "garment.equipment_slot.base_garment",
+          "equipment_slot_binding_ref": "item_tpl_nov_linen_shirt_v1:equipment_slot",
+          "normalized_equipment_slot": "base_garment",
+          "applicable_seasons": [
+            "spring",
+            "summer",
+            "autumn",
+            "winter"
+          ],
+          "required_seasons": [
+            "spring",
+            "summer",
+            "autumn",
+            "winter"
+          ]
+        },
+        {
+          "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+          "object_category_ref": "cat_item_object_wool_outer_garment_v1",
+          "source_profile_ref": "profile_household_personal_v3",
+          "source_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_wool_outer_garment_v1",
+          "source_slot_key": "item_household_personal",
+          "source_entry_required": false,
+          "source_selection_weight": 70,
+          "source_quantity_bounds": {
+            "min": 1,
+            "max": 1
+          },
+          "inventory_profile_ref": "inventory_item_tpl_nov_wool_outer_garment_v1",
+          "inventory_mechanics": {
+            "mass_grams": 1800,
+            "carry_form": "regular",
+            "external_hand_cost": 0
+          },
+          "quantity_profile_ref": "quantity_item_tpl_nov_wool_outer_garment_v1_count_v5",
+          "quantity_mechanics": {
+            "quantity_unit_ref": "piece",
+            "quantity_dimension": "count",
+            "minimum_quantity": 1,
+            "maximum_quantity": 1,
+            "default_quantity_policy": {
+              "version": 1,
+              "mode": "explicit_only"
+            },
+            "mass_grams_per_unit": 1800,
+            "stackable": false,
+            "partial_consumption_allowed": false
+          },
+          "source_binding_refs": [
+            "claim_construction_item_tpl_nov_wool_outer_garment_v1",
+            "claim_historical_presence_item_tpl_nov_wool_outer_garment_v1",
+            "claim_material_item_tpl_nov_wool_outer_garment_v1",
+            "claim_physical_parameter_item_tpl_nov_wool_outer_garment_v1"
+          ],
+          "source_refs": [
+            "src_gameplay_physical_policy_v3",
+            "src_stage3b2_drevnyaya_rus_byt_1997"
+          ],
+          "source_scopes": [
+            "construction",
+            "historical_presence",
+            "material",
+            "physical_parameter"
+          ],
+          "source_row_status": "draft",
+          "effective_status": "approved_by_exact_promotion",
+          "equipment_slot_category_ref": "garment.equipment_slot.outer_garment",
+          "equipment_slot_binding_ref": "item_tpl_nov_wool_outer_garment_v1:equipment_slot",
+          "normalized_equipment_slot": "outer_garment",
+          "applicable_seasons": [
+            "spring",
+            "summer",
+            "autumn",
+            "winter"
+          ],
+          "required_seasons": [
+            "spring",
+            "autumn",
+            "winter"
+          ]
+        }
+      ],
+      "pending_entries": [],
+      "excluded_expensive_or_status_items": [
+        "item_tpl_nov_boots_v1",
+        "item_tpl_nov_fur_outerwear_v1"
+      ],
+      "typed_gaps": [
+        {
+          "code": "FOOTWEAR_SLOT_NOT_ACTIVE",
+          "status": "not_applicable",
+          "reason": "Approved footwear template exists, but current Stage 16 actor-equipment contract has no active footwear slot."
+        },
+        {
+          "code": "FEMALE_BASIC_CLOTHING_PROFILE_NOT_AUTHORED",
+          "status": "not_applicable",
+          "reason": "No exact sex-compatible lower-body clothing profile is approved in this bounded source set."
+        }
+      ]
+    }
+  ],
+  "occupation_equipment_profiles": [
+    {
+      "level": "occupation_equipment",
+      "profile_id": "novgorod_fishing_water_equipment_v1",
+      "applicability": {
+        "occupation_ref": "nov_occ_fisher",
+        "occupation_archetype_ref": "fishing_water",
+        "role_ref": "nov_role_fisher"
+      },
+      "occupation_evidence": {
+        "owner": "approved_occupations",
+        "id": "nov_occ_fisher",
+        "status": "approved",
+        "mapping_review_status": "accepted_with_caution",
+        "typical_tools_source_field": "typical_tools",
+        "typical_containers_source_field": "typical_containers"
+      },
+      "role_evidence": {
+        "owner": "approved_social_roles",
+        "id": "nov_role_fisher",
+        "role_archetype_ref": "forest_or_water_producer",
+        "social_position_ref": "forest_water_producer_commoner",
+        "social_class_ref": "free_commoner",
+        "legal_status_ref": "free",
+        "source_status": "approved",
+        "mapping_review_status": "approved"
+      },
+      "property_basis": {
+        "property_profile_ref": "property_context_fishing_v1",
+        "property_rule_ref": "rule_property_context_fishing_v1",
+        "owner_kind": "household",
+        "holder_kind": "household",
+        "controller_kind": "household",
+        "access_policy": {
+          "version": 1,
+          "mode": "explicit_owner_holder_controller",
+          "context_domain": "fishing"
+        },
+        "claim_conditions": {
+          "version": 1,
+          "causal_basis_required": true
+        },
+        "assignment_at_authoring": false,
+        "effective_status": "approved_by_exact_promotion"
+      },
+      "tools": [
+        {
+          "item_template_ref": "item_tpl_nov_fishing_net_v1",
+          "object_category_ref": "cat_item_object_fishing_net_v1",
+          "source_profile_ref": "profile_fishing_v3",
+          "source_profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_fishing_net_v1",
+          "source_slot_key": "item_fishing",
+          "source_entry_required": false,
+          "source_selection_weight": 55,
+          "source_quantity_bounds": {
+            "min": 1,
+            "max": 1
+          },
+          "inventory_profile_ref": "inventory_item_tpl_nov_fishing_net_v1",
+          "inventory_mechanics": {
+            "mass_grams": 5000,
+            "carry_form": "regular",
+            "external_hand_cost": 2
+          },
+          "quantity_profile_ref": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+          "quantity_mechanics": {
+            "quantity_unit_ref": "piece",
+            "quantity_dimension": "count",
+            "minimum_quantity": 1,
+            "maximum_quantity": 1,
+            "default_quantity_policy": {
+              "version": 1,
+              "mode": "explicit_only"
+            },
+            "mass_grams_per_unit": 5000,
+            "stackable": false,
+            "partial_consumption_allowed": false
+          },
+          "source_binding_refs": [
+            "claim_construction_item_tpl_nov_fishing_net_v1",
+            "claim_historical_presence_item_tpl_nov_fishing_net_v1",
+            "claim_material_item_tpl_nov_fishing_net_v1",
+            "claim_physical_parameter_item_tpl_nov_fishing_net_v1"
+          ],
+          "source_refs": [
+            "src_gameplay_physical_policy_v3",
+            "src_novgorod_promysly"
+          ],
+          "source_scopes": [
+            "construction",
+            "historical_presence",
+            "material",
+            "physical_parameter"
+          ],
+          "source_row_status": "draft",
+          "effective_status": "approved_by_exact_promotion",
+          "semantics": "required_for_bound_activity",
+          "activity_profile_ref": "activity_assist_fishing_net_v1",
+          "activity_support": {
+            "category": "perform_simple_work",
+            "completion_model": "fixed_exact",
+            "fixed_duration_minutes": 30
+          }
+        }
+      ],
+      "containers": [
+        {
+          "container_template_ref": "container_tpl_nov_carrying_basket_v1",
+          "container_form_ref": "cat_container_form_carrying_basket_v1",
+          "compatibility_relation_ref": "compat_cat_container_form_carrying_basket_v1_content_fish_allowed",
+          "content_category_ref": "content_fish",
+          "compatibility": "allowed",
+          "semantics": "optional_if_committed_fish_holder_basis_exists",
+          "inventory_profile_ref": "inventory_container_tpl_nov_carrying_basket_v1",
+          "inventory_mechanics": {
+            "mass_grams": 1200,
+            "carry_form": "regular",
+            "external_hand_cost": 1,
+            "inventory_role": "primary_container"
+          },
+          "count": null,
+          "source_binding_refs": [
+            "claim_construction_container_tpl_nov_carrying_basket_v1",
+            "claim_historical_presence_container_tpl_nov_carrying_basket_v1",
+            "claim_material_container_tpl_nov_carrying_basket_v1",
+            "claim_physical_parameter_container_tpl_nov_carrying_basket_v1"
+          ],
+          "source_refs": [
+            "src_gameplay_physical_policy_v3",
+            "src_stage3b2_kolchin_wooden_1968"
+          ],
+          "source_row_status": "draft",
+          "effective_status": "approved_by_exact_promotion"
+        }
+      ],
+      "typed_gaps": []
+    },
+    {
+      "level": "occupation_equipment",
+      "profile_id": "novgorod_transport_guiding_equipment_v1",
+      "applicability": {
+        "occupation_ref": "nov_occ_boatman",
+        "occupation_archetype_ref": "transport_guiding",
+        "role_ref": "nov_role_boatman"
+      },
+      "occupation_evidence": {
+        "owner": "approved_occupations",
+        "id": "nov_occ_boatman",
+        "status": "approved",
+        "mapping_review_status": "accepted_with_caution",
+        "typical_tools_source_field": "typical_tools",
+        "typical_containers_source_field": "typical_containers"
+      },
+      "role_evidence": {
+        "owner": "approved_social_roles",
+        "id": "nov_role_boatman",
+        "role_archetype_ref": "traveler_outsider",
+        "social_position_ref": "transport_worker_itinerant",
+        "social_class_ref": "free_commoner",
+        "legal_status_ref": "free",
+        "source_status": "approved",
+        "mapping_review_status": "approved"
+      },
+      "property_basis": {
+        "property_profile_ref": "property_context_household_personal_v1",
+        "property_rule_ref": "rule_property_context_household_personal_v1",
+        "owner_kind": "household",
+        "holder_kind": "household",
+        "controller_kind": "household",
+        "access_policy": {
+          "version": 1,
+          "mode": "explicit_owner_holder_controller",
+          "context_domain": "household_personal"
+        },
+        "claim_conditions": {
+          "version": 1,
+          "causal_basis_required": true
+        },
+        "assignment_at_authoring": false,
+        "effective_status": "approved_by_exact_promotion"
+      },
+      "tools": [
+        {
+          "item_template_ref": "item_tpl_nov_rope_v1",
+          "object_category_ref": "cat_item_object_rope_v1",
+          "source_profile_ref": "profile_household_personal_v3",
+          "source_profile_entry_ref": "entry_profile_household_personal_v3_item_tpl_nov_rope_v1",
+          "source_slot_key": "item_household_personal",
+          "source_entry_required": false,
+          "source_selection_weight": 70,
+          "source_quantity_bounds": {
+            "min": 1,
+            "max": 1
+          },
+          "inventory_profile_ref": "inventory_item_tpl_nov_rope_v1",
+          "inventory_mechanics": {
+            "mass_grams": 3000,
+            "carry_form": "regular",
+            "external_hand_cost": 1
+          },
+          "quantity_profile_ref": "quantity_item_tpl_nov_rope_v1_count_v5",
+          "quantity_mechanics": {
+            "quantity_unit_ref": "piece",
+            "quantity_dimension": "count",
+            "minimum_quantity": 1,
+            "maximum_quantity": 1,
+            "default_quantity_policy": {
+              "version": 1,
+              "mode": "explicit_only"
+            },
+            "mass_grams_per_unit": 3000,
+            "stackable": false,
+            "partial_consumption_allowed": false
+          },
+          "source_binding_refs": [
+            "claim_construction_item_tpl_nov_rope_v1",
+            "claim_historical_presence_item_tpl_nov_rope_v1",
+            "claim_material_item_tpl_nov_rope_v1",
+            "claim_physical_parameter_item_tpl_nov_rope_v1"
+          ],
+          "source_refs": [
+            "src_gameplay_physical_policy_v3",
+            "src_stage3b2_drevnyaya_rus_byt_1997"
+          ],
+          "source_scopes": [
+            "construction",
+            "historical_presence",
+            "material",
+            "physical_parameter"
+          ],
+          "source_row_status": "draft",
+          "effective_status": "approved_by_exact_promotion",
+          "semantics": "optional_occupation_tool",
+          "activity_profile_ref": null,
+          "activity_support": null
+        }
+      ],
+      "containers": [],
+      "typed_gaps": [
+        {
+          "code": "BOATMAN_CONTAINER_COMPATIBILITY_NOT_APPLICABLE",
+          "status": "not_applicable",
+          "reason": "No exact carried-content domain is required by the bounded occupation profile."
+        },
+        {
+          "code": "BOATMAN_PROPULSION_TOOL_MAPPING_MISSING",
+          "status": "not_applicable",
+          "reason": "Approved V5 rows contain no exact oar or pole item with an active activity binding."
+        }
+      ]
+    }
+  ],
+  "candidate_digest": "0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181"
+}

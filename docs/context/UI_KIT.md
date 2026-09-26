@@ -1,6 +1,6 @@
 # UI kit: устройство game-web
 
-> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-22, commit c5501419.
+> status: REFERENCE / DOMAIN GUIDE; при конфликте действует governing-корпус (AGENTS.md) или профильный контракт. Проверено: 2026-09-25, commit 59c1a33c.
 
 Карта browser-клиента `apps/game-web`. Владелец и инварианты — [apps/game-web/MODULE.md](../../apps/game-web/MODULE.md);
 read models для экрана — [packages/presentation/MODULE.md](../../packages/presentation/MODULE.md) (`@rus/presentation`);
@@ -57,9 +57,10 @@ read models для экрана — [packages/presentation/MODULE.md](../../pack
 Состав панелей задаёт `@rus/presentation` (Character, Inventory, People, Route, Map, Journal, Diagnostic —
 [presentation MODULE.md](../../packages/presentation/MODULE.md)); game-web новые панели не выдумывает.
 
-⚠ PR #98 меняет: overlay «LLM» и стартовый экран (вместо режима локальной Gemma — только OpenAI-compatible vLLM
-endpoint, без настройки кнопка «Новая игра» заблокирована), добавляет `app/pending-new-game.js`; `@rus/presentation`
-начинает принимать `screen_kind` `live_world_turn`.
+Overlay «LLM» и стартовый экран на этой ветке: OpenAI-compatible vLLM endpoint
+([llm-settings](../../apps/game-web/src/app/llm-settings.js)); без настройки кнопка «Новая игра» блокируется;
+`app/pending-new-game.js` — очередь new-game. `@rus/presentation` принимает `screen_kind` `live_world_turn`
+([presentation MODULE.md](../../packages/presentation/MODULE.md)).
 
 ## 4. Хелперы, которые нельзя писать заново
 
@@ -82,7 +83,7 @@ endpoint, без настройки кнопка «Новая игра» заб�
 | В `apps/game-web/src/features/**` запрещены `document.`, `querySelector`, `innerHTML =` | check-boundaries: «feature renderer may not mutate DOM directly» |
 | Во всём `apps/game-web/src` запрещены строка `@rus/`, `legacy/`, `pg`, SQL, `Math.random(`; внешние импорты кроме `node:` не одобрены (пустой allowlist) | check-boundaries, блок `game-web` |
 | Game-web не импортирует `game-server` | check-boundaries; [DEPENDENCY_RULES](../architecture/DEPENDENCY_RULES.md) |
-| Файл в `apps/*/src` — не более 300 строк и 25 КБ | check-boundaries (⚠ PR #98 меняет: становятся warnings) |
+| Файл в `apps/` и `packages/` > 25 КБ → warning; лимиты строк — `tools/architecture/check-boundaries.mjs:758` (300 для `apps/*/src`) и `:496` (500 для доменных модулей); оркестраторы стадий new-game — свои лимиты строк в том же файле | check-boundaries: превышение размера → `warnings`, не hard fail ([check-boundaries.mjs](../../tools/architecture/check-boundaries.mjs)) |
 | Hidden/private/write-plan/audit поле в payload блокирует обновление UI | [MODULE.md](../../apps/game-web/MODULE.md); [CONTRACT_POLICY](../architecture/CONTRACT_POLICY.md) «Hidden/visible boundary» |
 | Ввод игрока отправляется как intent (`intent_not_fact`), не как факт | MODULE.md; check-boundaries проверяет `bootstrap.js` и `contracts.js` |
 | Браузер не бросает кубик и не считает total/outcome | MODULE.md, «Инварианты» |

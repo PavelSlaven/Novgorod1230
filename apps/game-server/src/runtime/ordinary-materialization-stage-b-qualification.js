@@ -1,4 +1,6 @@
 import { serverError } from '../errors.js';
+import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { evaluateLowerDvinaTraceOrdinaryStageBModelOutputs,
   lowerDvinaTraceOrdinaryStageBQualificationCases } from
   '../internal/lower-dvina-trace-ordinary-stage-b-eval.js';
@@ -10,6 +12,7 @@ import { buildOrdinaryMaterializationMessages, ordinaryMaterializationResponseOf
   './ordinary-materialization-llm.js';
 import { bindOrdinaryMaterializationPlan } from
   './ordinary-materialization-plan.js';
+import { resolveFiniteSourceAvailability } from './finite-source-effects.js';
 
 export function createOrdinaryMaterializationStageBQualifier({ roleRunner,
   evalContract } = {}) {
@@ -32,12 +35,20 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
   try {
     const probes = lowerDvinaTraceOrdinaryStageBQualificationCases(evalContract);
     if (probes == null) throw new Error('eval contract');
+    const finiteSources = evalContract.version === 2 ? await qualificationSources(probes) : null;
     const outputs = [];
     for (const probe of probes) {
       try {
-        const request = presenceRequest(probe);
+        const source = finiteSources?.get(probe.id) ?? null;
+        if (finiteSources != null && source?.resolution != null) {
+          outputs.push({ id: probe.id,
+            resolution: source.resolution, entities: [] });
+          continue;
+        }
+        const request = presenceRequest(probe, source);
         const output = await qualifiedOutput({ roleRunner, invocation, identity,
-          request });
+          request, mechanicsPolicy: qualificationMechanicsPolicy(source),
+          outputMechanics: source?.profile.output_mechanics ?? null });
         outputs.push({ id: probe.id,
           resolution: validateOrdinaryMaterializationPlanV1(output,
             contractRequest(request)).length === 0
@@ -60,33 +71,78 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
   }
 }
 
-async function qualifiedOutput({ roleRunner, invocation, identity, request }) {
+async function qualifiedOutput({ roleRunner, invocation, identity, request,
+  mechanicsPolicy, outputMechanics }) {
   const first = await invoke({ roleRunner, invocation, identity, request,
-    repair: null, mechanicsPolicy: qualificationMechanicsPolicy() });
+    repair: null, mechanicsPolicy, outputMechanics });
   const errors = validateOrdinaryMaterializationPlanV1(first,
     contractRequest(request));
   if (errors.length === 0) return first;
   return invoke({ roleRunner, invocation, identity, request,
-    mechanicsPolicy: qualificationMechanicsPolicy(), repair: {
+    mechanicsPolicy, outputMechanics, repair: {
     schema: 'ordinary_materialization_repair_context_v1', original_output: null,
     validation_errors: errors
   } });
 }
 
 async function invoke({ roleRunner, invocation, identity, request, repair,
-  mechanicsPolicy }) {
+  mechanicsPolicy, outputMechanics }) {
+  const messages = buildOrdinaryMaterializationMessages(request, { repair,
+    mechanicsPolicy });
+  if (outputMechanics != null) messages[0].content +=
+    ` The committed finite-source output policy fixes packing_slot_cost at ${outputMechanics.packing_slot_cost}.`;
   const response = await roleRunner.run({ ...invocation, repair: repair !== null,
-    messages: buildOrdinaryMaterializationMessages(request, { repair,
-      mechanicsPolicy }) });
+    messages });
   const outputResponse = ordinaryMaterializationResponseOf(response);
   if (!sameIdentity(identity, outputResponse.provider_record)) throw new Error('identity');
   return bindOrdinaryMaterializationPlan(request, outputResponse.output);
 }
-function qualificationMechanicsPolicy() {
+function qualificationMechanicsPolicy(source) {
+  if (source?.profile != null) {
+    const { mechanics_policy: policy, output_mechanics: output } = source.profile;
+    return { ...policy, policy_ref: 'stage-b', max_mass_grams: output.mass_grams_per_unit,
+      max_quantity: 1, mass_grams_per_quantity_unit: output.mass_grams_per_unit };
+  }
   return { policy_ref: 'stage-b', max_mass_grams: 20_000,
     allowed_external_hand_costs: [0, 1, 2],
     allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
     max_packing_slot_cost: 16, max_quantity: 16 };
+}
+
+async function qualificationSources(probes) {
+  const base = new URL('../../../../data/world-catalogs/novgorod/live-world-runtime-v17/',
+    import.meta.url);
+  const fixture = JSON.parse(await readFile(new URL('m2c-stage-b-source-access-probes.json',
+    base), 'utf8'));
+  const profileBytes = await readFile(new URL('m2c-finite-source-capability-candidate.json',
+    base));
+  if (fixture.schema !== 'rus.live_world_runtime.m2c_stage_b_source_access_probes.v1'
+      || createHash('sha256').update(profileBytes).digest('hex')
+        !== fixture.source_profile_sha256
+      || !Array.isArray(fixture.cases) || fixture.cases.length !== probes.length) {
+    throw new Error('Stage B source fixture is not pinned to its profile');
+  }
+  const profiles = JSON.parse(profileBytes).finite_source_profiles;
+  const byClass = new Map(profiles.map((profile) => [profile.resource_class, profile]));
+  const byId = new Map();
+  for (const entry of fixture.cases) {
+    if (byId.has(entry.id) || typeof entry.source_class_ref !== 'string'
+        || !['allow', 'deny'].includes(entry.access_decision)
+        || !(entry.source_quantity === null || Number.isInteger(entry.source_quantity)
+          && entry.source_quantity >= 0)) throw new Error('Invalid Stage B source fixture');
+    const profile = byClass.get(entry.source_class_ref) ?? null;
+    if (profile == null && entry.source_quantity !== null
+        || profile != null && (entry.source_quantity === null
+          || entry.source_quantity > profile.initial_quantity)) {
+      throw new Error('Invalid Stage B committed source');
+    }
+    byId.set(entry.id, { profile,
+      resolution: resolveFiniteSourceAvailability({ source: profile == null ? null
+        : { quantity: entry.source_quantity },
+      access_decision: entry.access_decision }) });
+  }
+  if (probes.some(({ id }) => !byId.has(id))) throw new Error('Missing Stage B source');
+  return byId;
 }
 
 function qualificationError(failedCaseIds) {
@@ -103,8 +159,9 @@ function contractRequest(request) {
   const { world_knowledge: _, ...contract } = request;
   return contract;
 }
-function presenceRequest(probe) {
+function presenceRequest(probe, source = null) {
   const { id, query } = probe;
+  const finite = source != null;
   const scope_ref = { entity_kind: 'g6', entity_id: 'stage-b-qualification' };
   const request = buildOrdinaryMaterializationPresenceRequest({ objective_context: {
     request_id: `llm-settings:ordinary-stage-b:${id}`, scope_ref: { ...scope_ref },
@@ -119,7 +176,8 @@ function presenceRequest(probe) {
       background_groups: [], presence_resolutions: [], closed_observation_scopes: [] },
     technical_limits: { max_new_entities: 1, max_new_background_groups: 1,
       max_resolution_records: 4 }, ordinary_state_version: 1,
-    property_placement_context: { scope_ref: { ...scope_ref }, item_kind: 'man_made',
+    property_placement_context: { scope_ref: { ...scope_ref }, item_kind: finite
+      ? 'natural_resource_portion' : 'man_made',
       property_catalog_version_ref: 'stage-b', placement_catalog_version_ref: 'stage-b',
       personal_communal_refs: [], occupied_site_refs: ['stage-b'], unowned_cause_refs: [],
       placement_context_refs: ['stage-b'], property_catalog: [{ property_basis_ref: 'stage-b',
@@ -128,10 +186,12 @@ function presenceRequest(probe) {
         position_ref: 'stage-b', state: 'committed', scope_ref: { ...scope_ref }, g6_ref: 'stage-b',
         containment_depth: 1, placement_context_ref: 'stage-b' }] }
   }, candidate_context: { normalized_candidate_ref: `stage-b-qualification:${id}`,
-    normalizer_version: 'stage-b', semantic_type: 'ordinary_object_candidate',
+    normalizer_version: 'stage-b', semantic_type: source?.profile.semantic_type
+      ?? 'ordinary_object_candidate',
     candidate_hint: query, functional_bucket: 'other_ordinary',
     admission_class: 'common_mundane', availability_class: 'common',
-    coverage_kind: 'visible_surface', coverage_ref: `stage-b:${id}`, policy_version: 'stage-b' },
+    coverage_kind: finite ? 'finite_source' : 'visible_surface',
+    coverage_ref: `stage-b:${id}`, policy_version: 'stage-b' },
   selected_supporting_basis_ref: 'stage-b' }).request;
   if (typeof probe.risk_class !== 'string') return request;
   const claimRef = `stage-b-hard-constraint:${id}`;

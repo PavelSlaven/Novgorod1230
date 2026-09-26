@@ -9,10 +9,15 @@ import {
   runForwardMigration
 } from '../src/forward-migration.js';
 import {
+  ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION,
+  ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+  ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
   PARTY_RUNTIME_CATALOG_MIGRATION,
   buildWorldRuntimeCatalogMigrationPreflight,
   WORLD_LEGACY_SCHEMA_BRIDGE,
-  WORLD_RUNTIME_CATALOG_MIGRATION
+  WORLD_LEGACY_SCHEMA_BRIDGE_V2,
+  WORLD_RUNTIME_CATALOG_MIGRATION,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3
 } from '../src/forward-migrations.js';
 
 const migration = createForwardMigration({
@@ -31,7 +36,11 @@ test('published migration contracts exactly match executable security-aware migr
   const executableById = new Map([
     WORLD_LEGACY_SCHEMA_BRIDGE,
     WORLD_RUNTIME_CATALOG_MIGRATION,
-    PARTY_RUNTIME_CATALOG_MIGRATION
+    WORLD_LEGACY_SCHEMA_BRIDGE_V2,
+    WORLD_RUNTIME_CATALOG_MIGRATION_V3,
+    PARTY_RUNTIME_CATALOG_MIGRATION,
+    ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION,
+    ACTOR_BASE_ATTRIBUTES_PARTY_MIGRATION
   ].map((entry) => [entry.migration_id, entry]));
   for (const published of migrationContracts.migrations) {
     const executable = executableById.get(published.migration_id);
@@ -132,6 +141,21 @@ test('forward migration state matrix hard-blocks unknown, partial and conflictin
   }
 });
 
+test('forward migration rejects changed SQL before opening a transaction', async () => {
+  await assert.rejects(() => runForwardMigration({
+    pool: { connect() { throw new Error('database must not be touched'); } },
+    migration: { ...migration, sql: `${migration.sql}\nSELECT 1;` }
+  }), { code: 'MIGRATION_DESCRIPTOR_TAMPERED' });
+});
+
+test('v17 bootstrap owner migration rejects another schema fingerprint', () => {
+  assert.throws(() => classifyForwardMigrationState({
+    migration: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION_V17_BOOTSTRAP,
+    actualSchemaFingerprint: ACTOR_BASE_ATTRIBUTES_WORLD_MIGRATION.target_schema_fingerprint,
+    ledgerRow: null
+  }), { code: 'MIGRATION_SCHEMA_FINGERPRINT_UNKNOWN' });
+});
+
 test('forward migration applies DDL and ledger row in one transaction with exact target readback', async () => {
   const calls = [];
   const fingerprints = [
@@ -159,6 +183,9 @@ test('forward migration applies DDL and ledger row in one transaction with exact
   });
 
   assert.equal(result.status, 'applied');
+  assert.equal(result.migration_digest, migration.migration_digest);
+  assert.equal(result.target_schema_fingerprint,
+    migration.target_schema_fingerprint);
   assert.equal(calls[0].sql, 'BEGIN');
   assert.ok(calls.some(({ sql }) => sql === migration.sql));
   assert.ok(calls.some(({ sql }) => sql.includes('INSERT INTO world_base.schema_migrations')));
@@ -230,7 +257,7 @@ test('forward migration rolls back bridge and target DDL in one transaction', as
 
 test('world migration preflight exposes the exact bridge and runtime chain', () => {
   const legacy = buildWorldRuntimeCatalogMigrationPreflight({
-    actualSchemaFingerprint: WORLD_LEGACY_SCHEMA_BRIDGE.source_schema_fingerprint,
+    actualSchemaFingerprint: WORLD_LEGACY_SCHEMA_BRIDGE_V2.source_schema_fingerprint,
     ledgerRow: null
   });
   assert.deepEqual(legacy.checks.map(({ migration_id, state }) => ({
@@ -238,18 +265,19 @@ test('world migration preflight exposes the exact bridge and runtime chain', () 
     state
   })), [
     {
-      migration_id: WORLD_LEGACY_SCHEMA_BRIDGE.migration_id,
+      migration_id: WORLD_LEGACY_SCHEMA_BRIDGE_V2.migration_id,
       state: 'ready'
     },
     {
-      migration_id: WORLD_RUNTIME_CATALOG_MIGRATION.migration_id,
+      migration_id: WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_id,
       state: 'ready_after_prerequisite'
     }
   ]);
   assert.equal(legacy.status, 'ready');
 
   const canonicalSource = buildWorldRuntimeCatalogMigrationPreflight({
-    actualSchemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.source_schema_fingerprint,
+    actualSchemaFingerprint:
+      WORLD_RUNTIME_CATALOG_MIGRATION_V3.source_schema_fingerprint,
     ledgerRow: null
   });
   assert.deepEqual(
@@ -258,12 +286,28 @@ test('world migration preflight exposes the exact bridge and runtime chain', () 
   );
 
   const final = buildWorldRuntimeCatalogMigrationPreflight({
-    actualSchemaFingerprint: WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
-    ledgerRow: WORLD_RUNTIME_CATALOG_MIGRATION
+    actualSchemaFingerprint:
+      WORLD_RUNTIME_CATALOG_MIGRATION_V3.target_schema_fingerprint,
+    ledgerRow: null,
+    successorLedgerRow: WORLD_RUNTIME_CATALOG_MIGRATION_V3
   });
   assert.deepEqual(
     final.checks.map(({ state }) => state),
     ['already_applied', 'already_applied']
   );
   assert.equal(final.status, 'ready');
+
+  const historical = buildWorldRuntimeCatalogMigrationPreflight({
+    actualSchemaFingerprint:
+      WORLD_RUNTIME_CATALOG_MIGRATION.target_schema_fingerprint,
+    ledgerRow: WORLD_RUNTIME_CATALOG_MIGRATION
+  });
+  assert.deepEqual(historical.checks.map(({ migration_id, state }) => ({
+    migration_id,
+    state
+  })), [{
+    migration_id: WORLD_RUNTIME_CATALOG_MIGRATION.migration_id,
+    state: 'already_applied'
+  }]);
+  assert.equal(historical.status, 'ready');
 });

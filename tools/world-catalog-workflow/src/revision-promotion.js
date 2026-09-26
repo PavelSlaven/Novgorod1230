@@ -26,6 +26,7 @@ export function buildRevisionPromotionPlan({
   source_records_by_table: sourceRecords = {},
   approved_record_ids_by_table: approvedIds = {},
   approval_attestation: approvalAttestation = null,
+  approval_chain: approvalChain = null,
   external_approved_ids: externalApprovedIds = {},
   external_records_by_table: externalRecords = {},
   graph_node_status_transitions: graphNodeStatusTransitions = []
@@ -34,7 +35,12 @@ export function buildRevisionPromotionPlan({
   const gaps = [];
   if (!parentRevision?.id || parentRevision.status !== 'approved') errors.push(issue('PARENT_REVISION_NOT_APPROVED', 'Parent revision must exist and be approved.'));
   if (!targetRevision?.id || targetRevision.id === parentRevision?.id || !targetRevision?.title) errors.push(issue('TARGET_REVISION_INVALID', 'Target revision requires a new ID and title.'));
-  if (approvalAttestation?.decision !== 'approve_subset' || !approvalAttestation.approved_by || !approvalAttestation.approved_at) errors.push(issue('PROMOTION_APPROVAL_ATTESTATION_MISSING', 'Exact approved subset requires explicit approval attestation.'));
+  const directApproval = approvalAttestation?.decision === 'approve_subset'
+    && approvalAttestation.approved_by && approvalAttestation.approved_at;
+  if (!directApproval && !validExactCandidateApprovalChain(approvalChain)) {
+    errors.push(issue('PROMOTION_APPROVAL_ATTESTATION_MISSING',
+      'Exact approved subset requires explicit approval attestation or exact immutable amendment chain.'));
+  }
 
   const records = selectApprovedRecords({ sourceRecords, approvedIds, targetRevision, errors });
   if ((records.item_templates?.length ?? 0) + (records.container_templates?.length ?? 0) === 0) gaps.push(issue('APPROVED_SUBSET_EMPTY', 'No item or container template passed approval.', { severity: 'hard_block' }));
@@ -104,6 +110,26 @@ export function buildRevisionPromotionPlan({
     rollback_plan: buildRevisionRollbackPlan({ parent_revision: parentRevision, target_revision: revision, datasets, status_transitions: effectiveTransitions }),
     activation: { requested: false, performed: false, runtime_loader_changed: false, existing_parties_changed: false }
   });
+}
+
+function validExactCandidateApprovalChain(chain) {
+  const original = chain?.original_attestation;
+  const amendment = chain?.amendment_attestation;
+  return chain?.schema === 'rus.exact_candidate_approval_chain.v1'
+    && original?.decision === 'approve_all_120'
+    && original?.candidate_digest === chain.original_candidate_digest
+    && original?.approved_by && original?.approved_at
+    && amendment?.original_stage3c_candidate_digest ===
+      chain.original_candidate_digest
+    && amendment?.amended_stage3c_candidate_digest ===
+      chain.amended_candidate_digest
+    && amendment?.amended_stage3c_approval_request_digest ===
+      chain.amended_request_digest
+    && amendment?.original_stage3c_attestation_transfer_authorized === false
+    && amendment?.authority?.authoring_reconciliation_authorized === true
+    && amendment?.authority?.import_authorized === true
+    && amendment?.authority?.activation_authorized === false
+    && amendment?.authority?.runtime_item_creation_authorized === false;
 }
 
 export function validateApprovedDependencyClosure({ target_revision_id: targetRevisionId, records_by_table: records = {}, external_approved_ids: externalApprovedIds = {} } = {}) {

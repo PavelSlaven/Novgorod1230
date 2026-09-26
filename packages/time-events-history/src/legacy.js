@@ -1,4 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
+import { startedHistoricalEventsAndPhases } from './started-historical.js';
 
 /**
  * Frozen v2 compatibility surface.
@@ -50,15 +51,9 @@ export function dueTimers(clock = {}, timers = []) {
   return deepFreeze((Array.isArray(timers) ? timers : []).map(normalizeDelayedEvent).filter((event) => event.status === 'scheduled' && event.due_at_minutes != null && event.due_at_minutes <= now));
 }
 
+/** Legacy alias — delegates to main API startedHistoricalEventsAndPhases (A-07). */
 export function activeHistoricalPhases(clock = {}, events = []) {
-  const now = normalizeClock(clock).total_minutes;
-  return deepFreeze((Array.isArray(events) ? events : []).map((event) => {
-    const phases = Array.isArray(event.phases) ? event.phases : [];
-    const eligible = phases.filter((phase) => finite(phase.start_at_minutes) != null && finite(phase.start_at_minutes) <= now)
-      .sort((a, b) => finite(a.start_at_minutes) - finite(b.start_at_minutes));
-    const phase = eligible.at(-1) ?? null;
-    return phase ? { event_id: text(event.id) || null, phase: structuredClone(phase) } : null;
-  }).filter(Boolean));
+  return startedHistoricalEventsAndPhases(normalizeClock(clock), events);
 }
 
 export function buildTimeDrivenUpdateRequest(previousClock = {}, durationMinutes = 0, state = {}) {

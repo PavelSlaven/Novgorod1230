@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { assertCurrentSceneSelfIdentity } from './lower-dvina-trace-current-scene-self-identity.js';
 import {
+  projectDirectSeedChanges,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
   withLowerDvinaTraceCurrentScene
@@ -19,6 +20,62 @@ import { lowerDvinaTraceDirectResultChanges } from
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
   economic_basis: 'Пустая сушильня.' }];
+
+test('current scene carries disclosed local edge into turn visible package', () => {
+  const state = committedState();
+  state.current_visible_context.visible_objects.push({
+    entity_ref: { entity_kind: 'scene_movement_edge', entity_id: 'edge' },
+    display_label: 'Проход 1', recognition: 'known' });
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.equal(current.current_visible_context.visible_objects.some((row) =>
+    row.entity_ref?.entity_kind === 'scene_movement_edge'
+      && row.entity_ref.entity_id === 'edge'), true);
+});
+
+test('current scene carries approved directional exit after first turn', () => {
+  const state = committedState();
+  state.current_visible_context.visible_objects.push({
+    entity_ref: { entity_kind: 'g4_directional_exit', entity_id: 'pine-exit' },
+    display_label: 'Продолжить путь — выход 2', recognition: 'known' });
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.equal(current.current_visible_context.visible_objects.some((row) =>
+    row.entity_ref?.entity_kind === 'g4_directional_exit'
+      && row.entity_ref.entity_id === 'pine-exit'), true);
+});
+
+test('direct sustained activity exposes the performed attempt without elapsed-time prose', () => {
+  const changes = projectDirectSeedChanges({
+    input: { consequence: { visible_seed: { turn_step_1: {
+      kind: 'semantic_activity', duration_minutes: 60
+    } } }, time_update: { semantic_activity_resolutions: [{
+      execution: { status: 'completed' }
+    }] } },
+    directSeedKeys: ['turn_step_1'],
+    appliedPlan: { resolution: 'direct', direct_result_kind: null,
+      activity: { requested_duration_minutes: 60 },
+      interpretation: { grounded_attempt: 'Жду здесь.' } }
+  });
+
+  assert.deepEqual(changes, ['Жду здесь.']);
+  assert.equal(JSON.stringify(changes).includes('один час'), false);
+});
+
+test('N1 visible seed makes the committed observation a required current beat', () => {
+  const key = 'turn_step_background_npc_observation_1';
+  const seed = { kind: 'background_npc_observation', npc_ref: 'npc:ordinary',
+    display_label: 'незнакомого рыбака',
+    ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.' };
+  assert.deepEqual(projectDirectSeedChanges({
+    input: { consequence: { visible_seed: { [key]: seed } } },
+    directSeedKeys: [key]
+  }), ['Вы рассмотрели незнакомого рыбака: Коренастый мужчина в мокрой рубахе.']);
+  assert.throws(() => projectDirectSeedChanges({
+    input: { consequence: { visible_seed: { [key]: {
+      ...seed, ordinary_descriptor: '' } } } }, directSeedKeys: [key]
+  }), { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID' });
+});
 
 test('current scene keeps prior player-safe co-located NPC observations only', () => {
   const state = committedState();
@@ -81,7 +138,8 @@ test('current scene never promotes an authored NPC name into player knowledge', 
   const state = committedState();
   state.npcs.push({
     instance_id: 'unknown', location_ref: 'shed', anchor_id: 'shed-anchor',
-    zone_ref: 'yard', identity_state: { display_name: 'Незнакомое имя' }
+    zone_ref: 'yard', role_ref: 'fisher', occupation_ref: 'fisher',
+    identity_state: { display_name: 'Незнакомое имя' }
   });
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
@@ -103,19 +161,23 @@ test('current scene maps actor age into the player-safe portrait vocabulary', ()
     .observable_cues.identity.age_category, 'young');
 });
 
-test('current scene exposes the visible NPC current activity', () => {
+test('current scene keeps private NPC schedule summaries out of observations', () => {
   const state = committedState();
   state.npcs[0].machine_state.current_activity = {
     status: 'active', can_continue_automatically: true,
-    activity_ref: 'unseen-routine', summary: 'Чинит рыболовную сеть.'
+    activity_ref: 'unseen-routine', summary: 'Private schedule instruction.'
   };
 
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
   });
 
-  assert.equal(current.current_visible_context.visible_npc[0].visible_status,
-    'Чинит рыболовную сеть.');
+  const npc = current.current_visible_context.visible_npc[0];
+  assert.equal(Object.hasOwn(npc, 'visible_status'), false);
+  assert.equal(npc.observable_cues.identity.appearance.build, 'stocky');
+  assert.equal(npc.observable_cues.equipment.length, 1);
+  assert.equal(JSON.stringify(current.current_visible_context)
+    .includes('Private schedule instruction.'), false);
 });
 
 test('version zero scene retains safe labels and gains observable cues', () => {

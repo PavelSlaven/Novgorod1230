@@ -123,7 +123,11 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Spatial architecture v3: scene dependency closure (target only)',
-    tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules']
+    tables: ['spatial_v3_regional_scene_template_bases', 'spatial_v3_scene_selection_rules', 'spatial_v3_scene_applicability_rules', 'spatial_v3_g6_acoustic_baselines']
+  },
+  {
+    title: 'Spatial architecture v3: NPC composition authoring (target only)',
+    tables: ['spatial_v3_g4_npc_composition_bindings', 'spatial_v3_npc_runtime_profiles', 'spatial_v3_npc_regional_context_profiles']
   },
   {
     title: 'Materialization v2: NPC-профили',
@@ -139,7 +143,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: решения и импорт',
-    tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables']
+    tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables', 'procedural_scene_compiled_records']
   },
   {
     title: 'Temporal World v4: утверждённые авторские данные',
@@ -219,6 +223,10 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_regional_scene_template_bases: 'Утверждённые региональные основы scene templates с topological-only geometry claim.',
   spatial_v3_scene_selection_rules: 'Закрытые versioned правила выбора scene template; P12 поддерживает только single_candidate.',
   spatial_v3_scene_applicability_rules: 'Закрытые versioned правила применимости scene candidate к точному source reference.',
+  spatial_v3_g6_acoustic_baselines: 'Утверждённый ambient-noise baseline каждой G6 scene slot для точного canonical G5 либо G5 generation template и scene template.',
+  spatial_v3_g4_npc_composition_bindings: 'Точное approved авторское решение о составе NPC для G4 и ровно одного G5 generation template либо canonical G5; запись не создаёт NPC.',
+  spatial_v3_npc_runtime_profiles: 'Переиспользуемые утверждённые target NPC/runtime bindings с точными role, occupation, body, activity, routine, clothing и item refs.',
+  spatial_v3_npc_regional_context_profiles: 'Утверждённый региональный контекст NPC с exact applicability по G4 и одному из G5 target refs.',
   spatial_v3_graph_node_migration_inventory: 'Review-only deterministic mapping legacy graph_nodes to v3 canonical entities; ambiguity/unreviewed row остаётся gap.',
   spatial_v3_orientation_reference_frames: 'Версионированные orientation frames с детерминированным millidegree offset и запрещёнными циклами.',
   spatial_v3_movement_orientation_profiles: 'Fixed/curved profiles движения и только явная reciprocal reverse relation.',
@@ -295,6 +303,7 @@ export const TABLE_PURPOSE_FALLBACK = {
   g4_container_materialization_rules: 'G4-specific правила контейнеров, содержимого и доступа.',
   catalog_imports: 'Проверяемые импорты versioned authoring manifest.',
   catalog_import_tables: 'Digests, counts и dependency order таблиц одного импорта.',
+  procedural_scene_compiled_records: 'Неизменяемый generated cache нормализованных procedural-scene profiles, mappings и approval metadata; authoring sources и runtime instances здесь не хранятся.',
   temporal_source_history: 'Точные источники утверждённых Temporal World v4 записей и контрольные суммы их байтов.',
   temporal_provenance: 'Утверждённая трассировка происхождения каждой семьи Temporal World v4.',
   temporal_authoring_records: 'Нормализованные утверждённые авторские записи Temporal World v4; runtime читает их без права изменения.',
@@ -314,6 +323,12 @@ export const common = {
   audit_notes: 'Заметки редактора: споры, TODO, ссылки на проверку.',
   created_at: 'Время создания записи (UTC).',
   updated_at: 'Время последнего изменения (обновляется триггером).',
+  record_id: 'Стабильный идентификатор скомпилированной записи.',
+  record_kind: 'Тип скомпилированной записи: profile, mapping или approval_metadata.',
+  family_candidate_ref: 'Версионированная ссылка на утверждённую procedural-scene family.',
+  payload: 'Нормализованный compiler output без исходного authoring descriptor.',
+  payload_digest: 'SHA-256 канонического payload.',
+  source_pack_digest: 'SHA-256 полного набора утверждённых входов compiler.',
   region_id: 'FK → regions(id): регион, к которому относится запись.',
   place_id: 'FK → places(id): конкретное место, если применимо.',
   location_id: 'FK → place_locations(id): локация внутри места.',
@@ -555,6 +570,41 @@ export const fields = {
     dependency_role: 'Controlled dependency role из digest-pinned registry; не free text.',
     canonical_ordinal: 'Контрактный порядок dependency edge внутри source и role.',
     provenance_ref: 'FK → source_records(id): evidence dependency edge.'
+  },
+  spatial_v3_g6_acoustic_baselines: {
+    entity_kind: 'Константный discriminator g6_acoustic_baseline для exact authoring version.',
+    world_revision_id: 'Ревизия, к которой одновременно привязаны G5 source и scene template.',
+    g5_template_id: 'Один из двух точных источников baseline: G5 generation template; взаимно исключает canonical_g5_id.',
+    canonical_g5_id: 'Один из двух точных источников baseline: canonical G5 node; взаимно исключает g5_template_id.',
+    g5_template_version: 'Точная версия G5 generation template; парная с g5_template_id.',
+    canonical_g5_version: 'Точная версия canonical G5 node; парная с canonical_g5_id.',
+    scene_template_id: 'FK → scene template: физическая сцена для выбранного G5 source.',
+    scene_template_version: 'Точная версия scene template.',
+    g6_scene_slot_key: 'Точный G6 slot в выбранном scene template.',
+    ambient_noise: 'Постоянный акустический baseline G6: 0, 1 или 2; временный шум сюда не записывается.',
+    directness: 'Связь авторского утверждения с исходными данными.',
+    confidence: 'Уверенность в утверждении baseline.',
+    provenance_ref: 'FK → source_records(id): источник авторского baseline.',
+    canonical_digest: 'SHA-256 canonical aggregate representation.'
+  },
+  spatial_v3_g4_npc_composition_bindings: {
+    g4_id: 'Точный G4 node ID в той же Spatial v3 revision.',
+    generation_template_id: 'Nullable exact G5 generation template ID; задан ровно один G5 target selector.',
+    generation_template_version: 'Nullable точная версия generation template; парная с generation_template_id.',
+    canonical_g5_id: 'Nullable exact canonical G5 node ID; задан ровно один G5 target selector.',
+    canonical_g5_version: 'Nullable точная версия canonical G5 node; парная с canonical_g5_id.',
+    min_count: 'Нижняя граница авторского количества NPC.',
+    max_count: 'Верхняя граница авторского количества NPC.',
+    payload: 'JSON: count weights и взвешенные exact refs переиспользуемых NPC bindings.'
+  },
+  spatial_v3_npc_runtime_profiles: {
+    profile_kind: 'Тип reusable NPC/runtime profile.',
+    role_ref: 'Опциональный exact source role ID.',
+    occupation_ref: 'Опциональный exact source occupation ID.',
+    payload: 'JSON: source-backed runtime bindings and explicit exact profile refs.'
+  },
+  spatial_v3_npc_regional_context_profiles: {
+    payload: 'JSON: regional origin/language claims and exact G4 plus one generation-template or canonical-G5 applicability tuple.'
   },
   spatial_v3_graph_node_migration_inventory: {
     legacy_graph_node_id: 'FK → legacy graph_nodes(id); mapping только по explicit source ID.',

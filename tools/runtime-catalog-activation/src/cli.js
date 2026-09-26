@@ -5,10 +5,12 @@ import pg from 'pg';
 import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
 import {
   buildActivationRequest,
-  buildPartyPreflight,
+  buildActivationPartyPreflight,
   digestEnvelope
 } from './artifact-contracts.js';
 import { compileOverlaySemanticPayload } from './overlay-compiler.js';
+import { prepareSpatialV3TargetItemCatalog, buildSpatialV3TargetItemImport } from
+  './first-playable-v2-activation.js';
 import {
   classifyForwardMigrationState,
   readPostgresSchemaFingerprint
@@ -18,6 +20,8 @@ import {
   buildWorldRuntimeCatalogMigrationPreflight,
   WORLD_LEGACY_SCHEMA_BRIDGE,
   WORLD_RUNTIME_CATALOG_MIGRATION,
+  WORLD_LEGACY_SCHEMA_BRIDGE_V2,
+  WORLD_RUNTIME_CATALOG_MIGRATION_V3,
   runPartyRuntimeCatalogMigration,
   runWorldRuntimeCatalogMigration
 } from './forward-migrations.js';
@@ -30,7 +34,8 @@ import {
 const WRITE_MODES = new Set(['migrate', 'register-baseline', 'import', 'activate']);
 const MODES = new Set([
   'preflight', 'migrate', 'register-baseline', 'compile-overlay',
-  'import', 'readback', 'activation-request', 'activate'
+  'import', 'readback', 'activation-request', 'activate',
+  'prepare-target-item', 'build-target-item-import'
 ]);
 
 export async function runRuntimeCatalogOperatorCli(argv = process.argv.slice(2), dependencies = {}) {
@@ -75,6 +80,19 @@ export async function runRuntimeCatalogOperatorCli(argv = process.argv.slice(2),
 }
 
 async function executeMode({ mode, values, input, pools }) {
+  if (mode === 'prepare-target-item') {
+    requireInput(input, ['subject_commit']);
+    return prepareSpatialV3TargetItemCatalog({
+      worldPool: requiredPool(pools.worldPool, 'world'),
+      repositoryRoot: process.cwd(), gitCommitSha: input.subject_commit
+    });
+  }
+  if (mode === 'build-target-item-import') {
+    requireInput(input, ['preparation', 'baseline_attestation', 'overlay_attestation']);
+    return buildSpatialV3TargetItemImport({ preparation: input.preparation,
+      baselineAttestation: input.baseline_attestation,
+      overlayAttestation: input.overlay_attestation });
+  }
   if (mode === 'preflight') return migrationPreflight(pools);
   if (mode === 'migrate') {
     if (!values.confirm) return { status: 'dry_run', preflight: await migrationPreflight(pools) };
@@ -135,8 +153,9 @@ async function executeMode({ mode, values, input, pools }) {
   if (mode === 'activation-request') {
     requireInput(input, ['fields']);
     const counts = await readPartyPreflightCounts(requiredPool(pools.partyPool, 'party'));
-    const preflight = buildPartyPreflight({
+    const preflight = buildActivationPartyPreflight({
       ...counts,
+      activationScope: input.fields.activation_scope,
       runtimeReleaseId: input.fields.runtime_release_id,
       runtimeContractDigest: input.fields.runtime_contract_digest
     });
@@ -165,9 +184,13 @@ async function migrationPreflight({ worldPool, partyPool }) {
   const world = requiredPool(worldPool, 'world');
   const worldFingerprint = await readPostgresSchemaFingerprint(world, 'world_base');
   const worldLedger = await readMigrationLedger(world, WORLD_RUNTIME_CATALOG_MIGRATION);
+  const worldSuccessorLedger = await readMigrationLedger(
+    world, WORLD_RUNTIME_CATALOG_MIGRATION_V3
+  );
   const worldPreflight = buildWorldRuntimeCatalogMigrationPreflight({
     actualSchemaFingerprint: worldFingerprint,
-    ledgerRow: worldLedger
+    ledgerRow: worldLedger,
+    successorLedgerRow: worldSuccessorLedger
   });
 
   const party = requiredPool(partyPool, 'party');
@@ -247,6 +270,8 @@ function assertExpectedRequestDigest(mode, input, expected) {
       migrations: [
         WORLD_LEGACY_SCHEMA_BRIDGE.migration_digest,
         WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest,
+        WORLD_LEGACY_SCHEMA_BRIDGE_V2.migration_digest,
+        WORLD_RUNTIME_CATALOG_MIGRATION_V3.migration_digest,
         PARTY_RUNTIME_CATALOG_MIGRATION.migration_digest
       ]
     })

@@ -1,0 +1,469 @@
+{
+  "schema_version": "rus.onomastics.record_sources.v1",
+  "records": [
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_ivan_v1",
+      "source_id": "onom_src_gramota_729",
+      "source_record_id": "novgorod/729",
+      "page_or_record": "record 729",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_ivan_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/ivanко",
+      "page_or_record": "с. 276–277",
+      "section": "Иванко Тимощинич"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_kirill_v1",
+      "source_id": "onom_src_gramota_729",
+      "source_record_id": "novgorod/729",
+      "page_or_record": "record 729",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_zhirko_v1",
+      "source_id": "onom_src_gramota_729",
+      "source_record_id": "novgorod/729",
+      "page_or_record": "record 729",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_filipp_v1",
+      "source_id": "onom_src_gramota_729",
+      "source_record_id": "novgorod/729",
+      "page_or_record": "record 729",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_dmitr_v1",
+      "source_id": "onom_src_gramota_729",
+      "source_record_id": "novgorod/729",
+      "page_or_record": "record 729",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_zhiadok_v1",
+      "source_id": "onom_src_gramota_729",
+      "source_record_id": "novgorod/729",
+      "page_or_record": "record 729",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_foma_v1",
+      "source_id": "onom_src_gramota_1091",
+      "source_record_id": "novgorod/1091",
+      "page_or_record": "record 1091",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_yana_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/yana",
+      "page_or_record": "с. 34",
+      "section": "Календарные женские имена; Янка №731"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_yakim_v1",
+      "source_id": "onom_src_gramota_1091",
+      "source_record_id": "novgorod/1091",
+      "page_or_record": "record 1091",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_yakim_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/yakim",
+      "page_or_record": "с. 276–277",
+      "section": "Яким Влункович"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_mikula_v1",
+      "source_id": "onom_src_gramota_1091",
+      "source_record_id": "novgorod/1091",
+      "page_or_record": "record 1091",
+      "section": "Содержание: список имён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_miroslav_v1",
+      "source_id": "onom_src_gramota_334",
+      "source_record_id": "novgorod/334",
+      "page_or_record": "record 334",
+      "section": "Содержание: личные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_ratmir_v1",
+      "source_id": "onom_src_gramota_334",
+      "source_record_id": "novgorod/334",
+      "page_or_record": "record 334",
+      "section": "Содержание: личные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_fedot_v1",
+      "source_id": "onom_src_gramota_334",
+      "source_record_id": "novgorod/334",
+      "page_or_record": "record 334",
+      "section": "Содержание: личные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_drach_v1",
+      "source_id": "onom_src_gramota_334",
+      "source_record_id": "novgorod/334",
+      "page_or_record": "record 334",
+      "section": "Содержание: личные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_mikhail_v1",
+      "source_id": "onom_src_gramota_404",
+      "source_record_id": "novgorod/404",
+      "page_or_record": "record 404",
+      "section": "Содержание: Михаль"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_mikhail_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/mikhail",
+      "page_or_record": "с. 276",
+      "section": "князь Михаил"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_semyon_v1",
+      "source_id": "onom_src_gramota_73",
+      "source_record_id": "novgorod/73",
+      "page_or_record": "record 73",
+      "section": "Содержание: Семён"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_semyon_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/semyon",
+      "page_or_record": "с. 276–277",
+      "section": "Смен Борисович"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_spiridon_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/spiridon",
+      "page_or_record": "с. 276",
+      "section": "архиепископ Спиридон"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_rostislav_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/rostislav",
+      "page_or_record": "с. 276",
+      "section": "сын Михаила Ростислав, посажен на столе"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_stefan_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/stefan",
+      "page_or_record": "с. 276",
+      "section": "Стефан Твердиславич"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_proksha_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/proksha",
+      "page_or_record": "с. 277",
+      "section": "Прокша Лашнев"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_volos_v1",
+      "source_id": "onom_src_npl_1230",
+      "source_record_id": "npl/1230/volos",
+      "page_or_record": "с. 277",
+      "section": "Волос Блудкинич"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_anastasia_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/anastasia",
+      "page_or_record": "с. 34–35",
+      "section": "Женские календарные имена и варианты"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_maria_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/maria",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_khristina_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/khristina",
+      "page_or_record": "с. 34–35",
+      "section": "Женские календарные имена и фонетические варианты"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_efimya_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/efimya",
+      "page_or_record": "с. 34–35",
+      "section": "Женские календарные имена и варианты"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_sofia_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/sofia",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_evdokia_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/evdokia",
+      "page_or_record": "с. 34–35",
+      "section": "Женские календарные имена и фонетические варианты"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_uliana_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/uliana",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_fedosya_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/fedosya",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_fevronia_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/fevronia",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_marfa_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/marfa",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_maremyana_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/maremyana",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_domna_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/domna",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_anna_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/anna",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_fekla_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/fekla",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_marina_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/marina",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_mirofa_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/mirofa",
+      "page_or_record": "с. 34",
+      "section": "Женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_katerina_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/katerina",
+      "page_or_record": "с. 34–35",
+      "section": "Женские календарные имена; №551/555"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_efrosinya_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/efrosinya",
+      "page_or_record": "с. 34–35",
+      "section": "Единичные имена и фонетические варианты"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_ulita_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/ulita",
+      "page_or_record": "с. 34",
+      "section": "Единичные женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_antonina_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/antonina",
+      "page_or_record": "с. 34–35",
+      "section": "Единичные имена; Онтонина №541"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_irinia_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/irinia",
+      "page_or_record": "с. 34",
+      "section": "Единичные имена; Ириния №545"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_fedora_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/fedora",
+      "page_or_record": "с. 34",
+      "section": "Единичные женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_aksinya_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/aksinya",
+      "page_or_record": "с. 34–35",
+      "section": "Оксинья №411"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_akulina_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/akulina",
+      "page_or_record": "с. 34–35",
+      "section": "Окулина №560"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_evgenia_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/evgenia",
+      "page_or_record": "с. 34",
+      "section": "Единичные имена; Евгения №62"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_gravria_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/gravria",
+      "page_or_record": "с. 34",
+      "section": "Единичные женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_olisava_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/olisava",
+      "page_or_record": "с. 34–35",
+      "section": "Олисава №503"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_fetinya_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/fetinya",
+      "page_or_record": "с. 34",
+      "section": "Единичные женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_kharitonia_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/kharitonia",
+      "page_or_record": "с. 34–35",
+      "section": "Харитания №682"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_anisya_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/anisya",
+      "page_or_record": "с. 34",
+      "section": "Единичные женские календарные имена"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_peredslava_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/peredslava",
+      "page_or_record": "с. 34",
+      "section": "Некалендарные женские имена; №328"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_milyana_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/milyana",
+      "page_or_record": "с. 34",
+      "section": "Некалендарные женские имена; №541"
+    },
+    {
+      "record_kind": "onomastic_name",
+      "record_id": "nov_name_nezhka_v1",
+      "source_id": "onom_src_chaykina_2006",
+      "source_record_id": "chaykina/2006/nezhka",
+      "page_or_record": "с. 34",
+      "section": "Некалендарные женские имена; №644"
+    }
+  ]
+}

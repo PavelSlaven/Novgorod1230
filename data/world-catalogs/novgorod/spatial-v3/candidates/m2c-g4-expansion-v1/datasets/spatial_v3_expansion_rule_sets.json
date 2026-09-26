@@ -1,0 +1,35 @@
+[
+  {
+    "entity_kind": "expansion_rule_set",
+    "id": "m2c_through_only_adjacency",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "rule_kind": "adjacency",
+    "strategy": "through_same_exit",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "661fbfb2ad639e359edbd650d2cdf93e54125cda2b6bf3e5140f5463ecbad15b"
+  },
+  {
+    "entity_kind": "expansion_rule_set",
+    "id": "m2c_exit_reachable_connectivity",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "rule_kind": "connectivity",
+    "strategy": "existing_exit_reachable",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "07c015e7d00b83a39deabaf6e996b0c326afeab065483d516cd0c56cc5aba31a"
+  },
+  {
+    "entity_kind": "expansion_rule_set",
+    "id": "m2c_g4_exit_deterministic_seed",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "rule_kind": "seed",
+    "strategy": "mulberry32_v1",
+    "status": "approved",
+    "provenance_ref": "prov_p12_g1_r2_r3_v1",
+    "canonical_digest": "864f82087fb3e9353b0e3f73e24517033c9ecf4ec1920893b00f396cbfbd651f"
+  }
+]

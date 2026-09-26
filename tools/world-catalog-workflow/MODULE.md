@@ -16,7 +16,7 @@
 - `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback.
 - Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation.
 - `buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set.
-- internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay;
+- internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay; condition facets валидирует через `@rus/world-knowledge` (`CONDITION_FACETS`, `isValidCondition`);
 - production authoring approval: один независимый `APPROVE` на claim, exact
   digest проверенного claim/localizations/concepts/predicate/evidence/sources,
   evidence set и reviewer/candidate/limits metadata; runtime получает только
@@ -57,6 +57,7 @@ PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan`
 ## Внешние зависимости и побочные эффекты
 
 - exported validators и calculators чисты: не читают сеть, БД, часы, случайность или глобальное состояние;
+- World Knowledge pack compiler зависит от `@rus/world-knowledge` (`CONDITION_FACETS`, `isValidCondition`);
 - approved runtime projections также чисты и детерминированы: PostgreSQL readback и формирование `records_by_table` выполняет caller, модуль не открывает connection и не читает БД;
 - общий `inventory_archetypes` подключается как неперсистентный lookup через `loadCommonCatalogLookupRecords`, а item/container validation работает с уже разрешёнными точными профилями;
 - JSON Schema и DDL-derived rules являются входной нормативной зависимостью validator-а;

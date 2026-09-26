@@ -17,6 +17,13 @@
   после NPC и prepared scope. До first entry exact position nullable; causal
   placement ссылается на существующий prepared member или legacy anchor.
   Legacy `party_npc_schedules` для этих NPC не дублирует canonical состояние.
+- Для current authored result v3 атомарно пишет approved initial G6/position,
+  reciprocal local movement/visibility topology и snapshot v3. Historical
+  authored result v1 остаётся отдельным exact read contract; Stage 24 не
+  повышает его версию и не выводит latest binding.
+- Approved procedural NPC uses the same actor profile, body, NPC, schedule,
+  item/equipment and snapshot batches. NPC skill/body rows are written in the
+  same atomic plan; no secondary persistence path is introduced.
 
 ## Не делает
 
@@ -56,6 +63,9 @@
 - builder требует полный набор version pins и сохраняет materialization run/choices/trace;
 - новый actor/player с marker `actor_base_appearance_v1` проходит повторную
   строгую проверку; если marker есть у одного нового actor, он обязателен у всех;
+- сериализует уже materialized `actor_base_attributes_v1` в existing actor
+  profile binding и сохраняет exact actor attribute catalog pin для party/run;
+  не вычисляет характеристики, inventory или item identity;
 - `portrait_spec_v1` рекурсивно запрещён во входных outputs и во всех write
   batches: это только read projection;
 - Stage 25 отклоняет v1 и любые physical targets вне `party_runtime_v2`.

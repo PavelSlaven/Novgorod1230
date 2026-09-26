@@ -20,6 +20,10 @@ test('regional-context retriever selects role_group for display only', async () 
   assert.doesNotMatch(whereBlock, /role_group\s*=/iu);
   assert.doesNotMatch(whereBlock, /role_group\s+IN/iu);
   assert.match(source, /rsr\.role_group/iu);
+  assert.match(source,
+    /SELECT id, region_id, title, slug, occupation_group,\s+occupation_archetype_id/iu);
+  assert.match(source,
+    /occupation_archetype_id:\s*row\.occupation_archetype_id/iu);
 });
 
 test('world-base-db social role query does not filter on role_group', async () => {

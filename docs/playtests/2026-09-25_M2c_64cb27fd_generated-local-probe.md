@@ -1,0 +1,9 @@
+# M2c v17: generated G5 local movement probe
+
+- Date: 2026-09-25. Branch: `codex/live-world-runtime`; run began at HEAD `64cb27fd`. Evidence: local `%TEMP%/novgorod-target-http-smoke-45684.json` (`target_http_browser_smoke_v1`). This file is local run evidence, not a committed artifact.
+- Interface: Chrome via browser-harness against isolated target HTTP fixture, using the configured real provider. `node --test tools/runtime-catalog-activation/test/target-catalog-successor-postgres.test.js` with `RUS_TARGET_HTTP_BROWSER_SMOKE=true` and `RUS_TARGET_HTTP_BROWSER_SMOKE_PROVIDER=real`: 1/1 PASS. The browser finished the fixture explicitly.
+- A forest party reached generated G5 through the visible local passages and `Продолжить путь — выход 2`. Readback showed `site.origin: generated`, two sites, two materialization runs, one active connection, deadwood `60/1`, and standing wood `200/1`.
+- At generated `arrival`, the UI showed `Проход 1`. Submitting that exact label failed before commit with `TURN_STEP_PLAN_INVALID` (`operation_semantic_grounding`) after planner repair. The model said no movement operation was available. Position remained `arrival`, party state version 6, deadwood `60/1`.
+- A second input accidentally appended to the failed text (`Проход 1Иду по Проходу 1 к середине этого места.`). It committed a direct semantic response without movement; it is not evidence for local passage behavior. A subsequent fresh `Осматриваюсь вокруг, оставаясь на месте.` also committed a direct pending response without moving. Final position stayed `arrival`, deadwood stayed `60/1`, and no decrement was recorded.
+
+The bounded route smoke passed. The local generated passage and finite depletion remain unverified. The first failed `Проход 1` turn is the reproducible case for the generated-site movement investigation.

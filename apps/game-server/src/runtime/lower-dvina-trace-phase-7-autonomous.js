@@ -3,6 +3,7 @@ import {
 } from '@rus/npc-runtime';
 import { requestNpcSemanticDecision } from '@rus/turn';
 import { validateTracePhase7Plan } from './lower-dvina-trace-phase-7-plan-validation.js';
+import { withPartyHistoricalEvents } from './world-knowledge-request-context.js';
 
 export async function resolveTracePhase7AutonomousDecision({
   state,
@@ -27,7 +28,7 @@ export async function resolveTracePhase7AutonomousDecision({
   const proposal = await requestNpcSemanticDecision({
     boundary,
     request,
-    semanticModel: npcAutonomousModel,
+    semanticModel: withPartyHistoricalEvents(npcAutonomousModel, () => state),
     persistedTrace,
     persistedInput,
     orderedSignals,

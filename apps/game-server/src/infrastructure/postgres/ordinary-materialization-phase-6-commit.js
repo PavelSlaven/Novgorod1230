@@ -133,11 +133,12 @@ function validateFiniteResourceInitialization(value, transition,
   return initialization;
 }
 
-export function createPostgresOrdinaryMaterializationAtomicCommitter({ pool } = {}) {
+export function createPostgresOrdinaryMaterializationAtomicCommitter({ pool,
+  readNaturalSourceProperty = null } = {}) {
   if (!pool?.connect) fail('ORDINARY_PHASE6_POOL_REQUIRED');
   return Object.freeze({ async commit(input) { const client = await pool.connect(); try { await client.query('BEGIN');
     const result = await applyOrdinaryMaterializationAtomicWritePlanInTransaction({
-      client, input, updatePartyState: true
+      client, input, updatePartyState: true, readNaturalSourceProperty
     });
     await client.query('COMMIT'); return result;
   } catch(error) { await client.query('ROLLBACK').catch(()=>{}); throw error; } finally { client.release(); } }});
@@ -146,7 +147,7 @@ export function createPostgresOrdinaryMaterializationAtomicCommitter({ pool } = 
 /** Applies only the sealed 022 write set. The caller owns transaction and party bump. */
 export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
   client, input, partyStateVersionAfter = null, updatePartyState = false,
-  requireEnablementPin = false, p16ChangeSetId = null
+  requireEnablementPin = false, p16ChangeSetId = null, readNaturalSourceProperty = null
 } = {}) {
   if (!client?.query) fail('ORDINARY_PHASE6_TRANSACTION_REQUIRED');
   const plan = createOrdinaryMaterializationAtomicWritePlan(input);
@@ -157,13 +158,66 @@ export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
     fail('ORDINARY_PHASE6_ENABLEMENT_PIN_REQUIRED');
   }
   if (plan.enablement_pin != null) {
-    const enabled = await client.query(`SELECT objective_digest,enabled
+    const enabled = await client.query(`SELECT objective_digest,enabled,objective_snapshot
       FROM party_runtime.party_ordinary_materialization_enablements
       WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3 FOR UPDATE`,
     [plan.party_id, plan.scope_ref.entity_kind, plan.scope_ref.entity_id]);
     if (enabled.rowCount !== 1 || enabled.rows[0].enabled !== true
         || enabled.rows[0].objective_digest !== plan.enablement_pin.objective_digest) {
       fail('ORDINARY_PHASE6_ENABLEMENT_STALE');
+    }
+    const execution = enabled.rows[0].objective_snapshot?.execution_context;
+    const sourceRef = plan.finite_resource_transition?.source_resource_node_id
+      ?? plan.item?.supporting_basis_ref;
+    const capabilities = (execution?.context_bound_capabilities ?? []).filter(
+      (entry) => entry.source_ref === sourceRef);
+    if (capabilities.length > 1) fail('ORDINARY_PHASE6_MECHANICS_POLICY_INVALID');
+    if (plan.finite_resource_transition != null && execution?.scope_presence_enabled === false
+        && (capabilities.length !== 1 || !capabilities[0].natural_property_context_ref)) {
+      fail('ORDINARY_PHASE6_SOURCE_ACCESS_UNRESOLVED');
+    }
+    if (plan.finite_resource_transition != null && capabilities[0]?.access_decision != null
+        && capabilities[0].access_decision !== 'allow') {
+      fail(capabilities[0].access_decision === 'deny'
+        ? 'ORDINARY_PHASE6_SOURCE_ACCESS_DENIED' : 'ORDINARY_PHASE6_SOURCE_ACCESS_UNRESOLVED');
+    }
+    if (plan.finite_resource_transition != null && capabilities[0]?.natural_property_context_ref != null) {
+      if (typeof readNaturalSourceProperty !== 'function') fail('ORDINARY_PHASE6_SOURCE_ACCESS_UNRESOLVED');
+      const source = await client.query(`SELECT property_basis_ref,access_policy_ref
+        FROM party_runtime.party_resource_nodes WHERE party_id=$1 AND resource_node_id=$2 FOR UPDATE`,
+      [plan.party_id, sourceRef]);
+      if (source.rowCount !== 1 || capabilities[0].access_decision !== 'allow'
+          || source.rows[0].property_basis_ref !== capabilities[0].context_refs?.property_context_ref
+          || source.rows[0].access_policy_ref?.id !== capabilities[0].access_policy_ref) {
+        fail('ORDINARY_PHASE6_SOURCE_ACCESS_UNRESOLVED');
+      }
+      const scope = await client.query(`SELECT s.id,s.parent_g4_id FROM party_runtime.party_g6_instances g
+        JOIN party_runtime.party_g5_sites s ON s.party_id=g.party_id AND g.host_kind='g5_site'
+          AND g.host_id=s.id WHERE g.party_id=$1 AND g.id=$2 AND g.status='active' AND s.status='active'`,
+      [plan.party_id, plan.scope_ref.entity_id]);
+      if (scope.rowCount !== 1) fail('ORDINARY_PHASE6_SOURCE_ACCESS_UNRESOLVED');
+      const rights = await readNaturalSourceProperty({ transaction: client, partyId: plan.party_id,
+        g5Id: scope.rows[0].id, g4Id: scope.rows[0].parent_g4_id, sourceRef,
+        profileId: capabilities[0].capability_ref, operation: capabilities[0].operation });
+      if (rights?.lookup_state !== 'complete' || rights.explicit_rule?.decision !== 'allow'
+          || rights.context_ref !== capabilities[0].natural_property_context_ref
+          || rights.context_sha256 !== capabilities[0].natural_property_context_sha256) {
+        fail(rights?.explicit_rule?.decision === 'deny'
+          ? 'ORDINARY_PHASE6_SOURCE_ACCESS_DENIED' : 'ORDINARY_PHASE6_SOURCE_ACCESS_UNRESOLVED');
+      }
+    }
+    const policy = capabilities[0]?.execution_context?.mechanics_policy
+      ?? execution?.mechanics_policy;
+    if (plan.item != null && Object.hasOwn(policy ?? {}, 'mass_grams_per_quantity_unit')) {
+      const mechanics = plan.item.mechanics_snapshot.mechanics;
+      if (policy.policy_ref !== plan.item.mechanics_policy_ref
+          || !Number.isSafeInteger(policy.mass_grams_per_quantity_unit)
+          || policy.mass_grams_per_quantity_unit < 1
+          || policy.mass_grams_per_quantity_unit > policy.max_mass_grams
+          || mechanics.mass_grams !== mechanics.quantity.value
+            * policy.mass_grams_per_quantity_unit) {
+        fail('ORDINARY_PHASE6_MECHANICS_POLICY_INVALID');
+      }
     }
   }
   const current = await locked(client, plan), old = await client.query(`SELECT input_digest,transition_digest,write_plan_digest,to_ordinary_state_version FROM party_runtime.party_ordinary_materialization_commits WHERE party_id=$1 AND request_identity=$2 FOR UPDATE`, [plan.party_id,plan.request_identity]);

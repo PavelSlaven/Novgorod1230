@@ -29,6 +29,8 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
   query relevance, context specificity, qualifiers, stable claim reference;
 - relative lexical admission per independent search hint; aggregate lexical
   relevance ranks the admitted candidates without suppressing common topics;
+- `search_hint_hits` on the Core slice: one bool per hint (`strongest > 0` on
+  applicable claims); orchestrator-facing only, not model wire;
 - actor-safe filtering только по уже переданным caller facets.
   `knowledge_access.required_values` опционально ограничивает значение
   разрешённого facet только для actor-facing purposes; materialization и другие
@@ -40,7 +42,11 @@ LLM calls, filesystem/network/DB, party state, presence/materialization, actor d
 
 ## API
 
-- `candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit)`;
+- `CONDITION_FACETS` — single owner registry (incl. `started_historical_events`); pack compiler imports it. Empty `context.conditions.started_historical_events` means nothing has begun yet. Claim conditions for that facet allow only `includes` + string `event_id`. Focus filter skips claims missing `applicability` / `knowledge_access` (§13, no fail-open).
+- `isValidCondition` — shared condition validator; pack compiler must call it (no second rule copy).
+- `candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit|options)`;
+  optional `options.{limit,purpose,context}` applies the same `isApplicable` /
+  `canAccess` date/access gate as Core before offering concepts to the planner;
 - `createWorldKnowledgeCore(bundle)` → frozen `{ resolveWorldKnowledge(query) }`;
 - `createWorldKnowledgeFlatVectorIndex(metadata, bytes,
   { conceptToClaimRefs? })` → frozen `{ search(vector, options) }`; optional

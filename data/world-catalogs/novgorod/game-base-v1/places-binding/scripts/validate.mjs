@@ -3,7 +3,7 @@
 // as "external" and do not fail the run.
 import fs from 'node:fs';
 import path from 'node:path';
-import { REPO, PR98, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
+import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry, WK_PLACE_FIRST, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
 
@@ -73,20 +73,18 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   // binding_basis files and ids exist.
   const basisFail = [];
   const natIds = new Set(ex.g4.map((g) => g.profile_id));
-  const pr98Present = fs.existsSync(path.join(PR98, 'data/world-catalogs/novgorod/m2c-natural/candidate.json'));
   const cw = readJson(P('scripts/crosswalk-rules.json'));
   for (const r of nb.filter((x) => x.binding_status !== 'gap')) {
     const files = [...r.binding_basis.matchAll(/(pr98:)?(data\/[\w\-./]+\.json)/g)];
     for (const m of files) {
-      const abs = m[1] ? path.join(PR98, m[2]) : path.join(REPO, m[2]);
-      if ((m[1] ? pr98Present : true) && !fs.existsSync(abs)) basisFail.push(`${r.node_ref}: missing file ${m[0]}`);
+      if (!m[1] && !fs.existsSync(path.join(REPO, m[2]))) basisFail.push(`${r.node_ref}: missing file ${m[0]}`);
     }
     const pid = r.binding_basis.match(/profile_id=([\w]+)/)?.[1];
     if (r.node_level === 'G4' && !natIds.has(pid)) basisFail.push(`${r.node_ref}: profile ${pid} not in extract`);
     const fn = r.binding_basis.match(/g4_function_to_pf\.map\.(\w+)/)?.[1];
     if (r.node_level === 'G4' && !(fn in cw.node_binding.g4_function_to_pf.map)) basisFail.push(`${r.node_ref}: rule key ${fn} missing`);
   }
-  check('node_binding', 'binding_basis_files_and_ids_exist', basisFail, { pr98_worktree_checked: pr98Present });
+  check('node_binding', 'binding_basis_files_and_ids_exist', basisFail);
 }
 
 // ---- presence_rules

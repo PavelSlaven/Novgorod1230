@@ -70,7 +70,7 @@ FIXED_FEASTS = [
     ("cal_feast_preobrazhenie", "08-06", "Преображение (Спас, праздник первых плодов)", "church,food"),
     ("cal_feast_zazhinki", "08-07", "Зажинки (окончание жатвы)", "work"),
     ("cal_feast_uspenie", "08-15", "Успение Богородицы", "church"),
-    ("cal_feast_semenov_den", "09-01", "Семёнов день (начало сентябрьского года)", "church"),
+    ("cal_feast_semenov_den", "09-01", "Семёнов день", "church"),
     ("cal_feast_rozhdestvo_bogorod", "09-08", "Рождество Богородицы", "church"),
     ("cal_feast_pokrov", "10-01", "Покров Богородицы (установлен во Владимирской земле при Андрее Боголюбском)", "church,folk"),
     ("cal_feast_vvedenie", "11-21", "Введение", "church"),
@@ -87,10 +87,10 @@ for cal_id, md, name_ru, effects in FIXED_FEASTS:
         "cal_feast_pokrov": "book:378072 §Нашествие иноземцев ¶596",
     }
     source = sources.get(cal_id, f"{BOOK_356156} ¶1321")
-    analogy = cal_id in {"cal_feast_boris_gleb", "cal_feast_kupala", "cal_feast_preobrazhenie", "cal_feast_zazhinki"}
+    analogy = cal_id in {"cal_feast_boris_gleb", "cal_feast_kupala", "cal_feast_preobrazhenie", "cal_feast_zazhinki", "cal_feast_pokrov"}
     add(cal_id, f"julian:{md}", None, "feast", name_ru, effects,
         "fixed_rule", source, "C" if analogy else "B",
-        note="Южнорусская реконструкция Рыбакова; для Новгорода 1230 г. только аналогия." if analogy else "")
+        note=("Распространение Покрова в Новгороде около 1230 года неясно." if cal_id == "cal_feast_pokrov" else "Южнорусская реконструкция Рыбакова; для Новгорода 1230 г. только аналогия.") if analogy else "")
 
 add("cal_feast_intercession_omen", "julian:10-01", None, "belief",
     "Народная примета Покрова", "belief_only",
@@ -177,11 +177,12 @@ for y in years:
 
     add(f"cal_mv_petrov_start_{year}", f"julian:{y['peter_fast_start']}", year, "fast",
         "Петров пост, начало (понедельник после Всех святых)", "food,church",
-        computation_ref, f"{BOOK_122328} ¶3714 (Петровки: начало через неделю после Троицы)", "B")
+        computation_ref, f"{BOOK_122328} ¶3714 (Петровки: начало через неделю после Троицы)", "C",
+        note="Средневековая общая аналогия для Новгорода около 1230 года.")
     add(f"cal_mv_petrov_end_{year}", "julian:06-28", year, "fast",
         "Петров пост, конец (канун Петрова дня)", "food,church",
-        "fixed_rule", f"{BOOK_122328} ¶3714 (конец -- Петров день, 29 июня)", "B",
-        note=f"Длина в этом году: {y['peter_fast_length_days']} дн. (варьируется 1-6 недель в зависимости от Пасхи, как и утверждает источник).")
+        "fixed_rule", f"{BOOK_122328} ¶3714 (конец -- Петров день, 29 июня)", "C",
+        note=f"Средневековая общая аналогия для Новгорода около 1230 года. Длина в этом году: {y['peter_fast_length_days']} дн. (варьируется 1-6 недель в зависимости от Пасхи, как и утверждает источник).")
 
 # ---------------------------------------------------------------------------
 # 4. Trade days and annual work cycle (agriculture / fishing / hunting /

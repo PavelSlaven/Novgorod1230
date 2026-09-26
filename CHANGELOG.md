@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(wk): #152 empty semantic_resolution plan -> default Core query; NPC semantic_input text; sufficiency beside verdict; strip duplicate context_text; cache_hit/miss telemetry; contract §50/§51/§60/§61/§63/§85 (#152, PR #98) LW-046 added
 Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 - docs(corpus): #146 шаг 4 REVIEW-031 — F1/F4–F6 + LW-039 (KSP сказуемое; ссылки на источник; candidate_hint; v2 выведен из корпуса; source_basis/REFERENCE долг) (#146, PR #98) LW-039 updated

@@ -50,6 +50,7 @@
 | 043 | `scripts/m2c-capacity-successor.mjs`, `spatial_architecture_standard_g0_g6.md` | pin sha spatial_architecture после шага 3 #146 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 | 044 | `temporal_world…`, CONTRACT_INDEX v17 note | погода D7: next-state в turn + inertia profile | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
 | 045 | `turn_step`/`items`/`npc` D9/D14 + финальные числа | D9/D14 и финальные числа от кода — долг кода v17 | [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) |
+| 046 | `packages/world-knowledge` Core resolve | `lexical_ms` внутри Core без return-канала | [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152) |
 
 ## Записи
 
@@ -220,3 +221,9 @@
 - **Что.** Нормы D9/D14 ACTIVE в корпусе (#146 шаг 2–3), но код v17 ещё расходится: `action-produced-output-semantics.js` принимает любой `inscription_text`; узнавания владельцем при восприятии нет. Отдельно: финальные числа пишет код (`mass_grams` и пр.), а `plan-schema.js` всё ещё требует `mass_grams` от модели.
 - **Как жить.** В нормах помечать «действующая норма; код v17 — долг CR реализации M2c (LW-045)»; не ослаблять норму под текущий код.
 - **Issue.** [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146)
+
+
+### LW-046 — `lexical_ms` внутри Core resolveWorldKnowledge
+- **Что.** §85 требует lexical latency в telemetry. Сейчас lexical scoring идёт внутри `packages/world-knowledge` `resolveWorldKnowledge` без отдельного return-канала; public signature `(query, { vectorScores })` не отдаёт `lexical_ms`. Diagnostic ставит `lexical_ms: null`, `lexical_status: included_in_core_resolution`.
+- **Как жить.** Не менять публичную сигнатуру Core в #152; добавить отдельный timing channel в CR Core/telemetry, затем убрать LW.
+- **Issue.** [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152)

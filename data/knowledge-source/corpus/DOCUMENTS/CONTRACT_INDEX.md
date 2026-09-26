@@ -178,7 +178,7 @@ An undeclared guide may still be relevant, but it must not silently override an 
 | Time/activities/processes | `temporal_world_and_interruptible_activities.md` (в т.ч. погода D7), `code_driven_world_materialization_architecture.md` §3A.5 (люди по времени суток и расписания мест), relevant time/world-process MODULEs, persistence contract/schema |
 | DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |
 | Historical/knowledge grounding | `universal_category_classification_policy.md`, active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |
-| World Knowledge | `world_knowledge_platform_implementation_contract.md`, active WK pack/profile/bindings, `@rus/world-knowledge` and affected consumer MODULEs |
+| World Knowledge | `world_knowledge_platform_implementation_contract.md` (в т.ч. §50/§51 need/planner + default query; §60/§61 packing без дубля `context_text`; §63 sufficiency рядом с verdict; §85 cache hit/miss), active WK pack/profile/bindings, `@rus/world-knowledge` and affected consumer MODULEs |
 | Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |
 
 ## 9. Audited conflict register

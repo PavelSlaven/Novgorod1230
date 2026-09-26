@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "5f2dcea480c96ddac7f7ebdf8b94d3e52fc2aefc1391ee1abc990ac1bdf68825",
-      "bytes": 29674,
+      "sha256": "cadc872d12dcce0ef64f6d74cb36c37dbe2a6dc8565a0b380fd9c6cbea3d627a",
+      "bytes": 29838,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -480,8 +480,8 @@
       "document_id": "world-knowledge-platform-implementation-contract",
       "canonical_path": "corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md",
       "file_name": "world_knowledge_platform_implementation_contract.md",
-      "sha256": "dbd8010d6575cef4b073148a0390ee5b5f21793237f6169c6bb7cd71834dbae1",
-      "bytes": 152301,
+      "sha256": "39150dd9de948a1de21807eb6b5adeeb60d91833867f9d7e04f88d10ac48f71b",
+      "bytes": 155176,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

@@ -2145,10 +2145,16 @@ RETRIEVE
 
 Для raw free-text boundary, где code-owned call site не может доказать `NONE`
 до понимания текста, уже существующий query planner может завершить собственную
-работу каноническим пустым six-field plan. Это означает
-`NO_KNOWLEDGE_REQUIRED`, а не отсутствие coverage: такой план допустим только
-когда semantic step полностью разрешается supplied current state без внешней
-factual premise. Второй classifier или planner не создаётся.
+работу каноническим пустым six-field plan. Для purpose `semantic_resolution`
+пустой план **не** завершает grounding сразу как `NO_KNOWLEDGE_REQUIRED`:
+orchestrator строит детерминированный default-запрос
+(`domains` = все purpose-allowed из coverage profiles, `focus_refs: []`,
+`requested_predicates: []`, `search_hints` = `semantic_input` целиком) и
+вызывает Core. `NO_KNOWLEDGE_REQUIRED` пишется только если этот запрос не
+допустил ни одного факта и ни одного hard constraint
+(`facts.length === 0 && hard_constraints.length === 0`). Пустой план по-прежнему
+означает «планировщик не увидел factual need», а не отсутствие coverage; второй
+classifier или planner не создаётся. (CR #152)
 
 ---
 
@@ -2170,11 +2176,17 @@ query_locale
 
 Для purpose `semantic_resolution` `domains: []` вместе с пустыми
 `focus_refs`, `requested_predicates` и
-`search_hints` является единственной planner-формой
-`NO_KNOWLEDGE_REQUIRED`. Любая factual need требует хотя бы одного allowed
-domain, даже если подходящий ref отсутствует или ожидается gap. Непустые refs,
-predicates либо hints при пустом `domains` invalid. Другие purposes сохраняют
-непустой domain и собственный grounding contract.
+`search_hints` является единственной planner-формой «нет factual need».
+Runtime не принимает её как финальный `NO_KNOWLEDGE_REQUIRED` без default-
+запроса Core (см. §50). Любая factual need в плане требует хотя бы одного
+allowed domain, даже если подходящий ref отсутствует или ожидается gap. Непустые
+refs, predicates либо hints при пустом `domains` invalid. Другие purposes
+сохраняют непустой domain и собственный grounding contract.
+
+`semantic_input` для каждой схемы, которая вызывает grounding, — текст,
+собранный из полей этой схемы. Сырой `JSON.stringify(request)` как fallback
+запрещён: отсутствие текстового входа — typed error
+`WORLD_KNOWLEDGE_SEMANTIC_INPUT_UNAVAILABLE`. (CR #152)
 
 Planner не может:
 
@@ -2434,6 +2446,11 @@ hard constraints
 
 Slice не растёт пропорционально corpus.
 
+`context_text` — deterministic compact projection тех же structured records.
+Если consumer уже передаёт в тот же model call structured
+`hard_constraints`/`facts`, дублирующий `context_text` на private wire
+опускается (S1, N1, turn step, O1, NPC autonomous, conversation). (CR #152)
+
 ---
 
 # 61. Runtime summarizer запрещён
@@ -2479,11 +2496,26 @@ OUT_OF_SCOPE
 KNOWLEDGE_UNAVAILABLE
 ```
 
+Найденный slice несёт `sufficiency` рядом с `verdict`; sufficiency не заменяет
+verdict. Правила (CR #152):
+
+- `SUFFICIENT_KNOWLEDGE` — все явные search hints (или default-запрос) нашли
+  допущенный claim (`search_hint_hits` / `strongest > 0`) и все запрошенные
+  домены `covered`;
+- `PARTIAL_KNOWLEDGE` — есть факты или hard constraints, но хотя бы один hint
+  не нашёл допущенный claim (`strongest === 0`) или coverage хотя бы одного
+  домена `partial` / не `covered`;
+- `UNRESOLVED_KNOWLEDGE` / `OUT_OF_SCOPE` — нет допущенного содержимого; choice
+  по coverage (`out_of_scope` vs иное);
+- `NO_KNOWLEDGE_REQUIRED` — после пустого planner-плана `semantic_resolution` и
+  пустого результата default-запроса Core, либо для purposes, где пустой план
+  допустим иным contract path.
+
 Для `PARTIAL/UNRESOLVED/OUT_OF_SCOPE/UNAVAILABLE` model не получает право «дополнить факт по памяти».
 
-Для planner-resolved `NO_KNOWLEDGE_REQUIRED` retrieval/Core не вызываются;
-consumer получает явный sufficiency marker и не добавляет factual premises из
-model memory.
+Для финального `NO_KNOWLEDGE_REQUIRED` consumer получает явный sufficiency
+marker и не добавляет factual premises из model memory. Default-запрос §50
+может вызвать retrieval/Core до этой записи.
 
 Она может:
 
@@ -3039,6 +3071,12 @@ slice size
 coverage/gaps
 cache hit/miss
 ```
+
+Runtime diagnostic `world_knowledge_grounding_diagnostic_v1` несёт
+`cache_hit` / `cache_miss` из WeakMap-кэша grounder. `lexical_ms` остаётся
+`null` с `lexical_status: included_in_core_resolution`, пока Core не отдаёт
+отдельный lexical timing без смены публичной сигнатуры
+`resolveWorldKnowledge` (см. LW-046). (CR #152)
 
 ---
 

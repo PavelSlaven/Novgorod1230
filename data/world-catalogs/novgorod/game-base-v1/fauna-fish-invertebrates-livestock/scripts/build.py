@@ -30,10 +30,10 @@ def rel(*p):
     return os.path.join(REPO, *p)
 
 
-def write_csv(name, header, rows):
+def write_csv(name, header, rows, lineterminator="\r\n"):
     path = os.path.join(FAUNA, name) if not name.startswith("/") else name
     with open(path, "w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator=lineterminator)
         w.writerow(header)
         for r in rows:
             w.writerow([r.get(h, "") for h in header])
@@ -475,7 +475,7 @@ counts["livestock_identification_marks.csv"] = write_csv("livestock_identificati
 counts["herd_composition.csv"] = write_csv("herd_composition.csv", list(herd_rows[0].keys()), herd_rows)
 counts["household_type_crosswalk.csv"] = write_csv("household_type_crosswalk.csv", list(xw_rows[0].keys()), xw_rows)
 counts["place_type_livestock.csv"] = write_csv("place_type_livestock.csv", list(pt_rows[0].keys()), pt_rows)
-counts["rpgr_pf_crosswalk.csv"] = write_csv("rpgr_pf_crosswalk.csv", ["rule_ref", "pf_id", "source_refs", "mapping_rule", "no_source", "status"], rpgr_pf_rows)
+counts["rpgr_pf_crosswalk.csv"] = write_csv("rpgr_pf_crosswalk.csv", ["rule_ref", "pf_id", "source_refs", "mapping_rule", "no_source", "status"], rpgr_pf_rows, "\n")
 counts["anachronism_denylist_fauna.csv"] = write_csv("anachronism_denylist_fauna.csv", list(deny_rows[0].keys()), deny_rows)
 
 src_rows = []
@@ -566,7 +566,8 @@ report = dict(generated_by="scripts/build.py", status=STATUS, counts=counts, che
               confidence_counts=conf_counts,
               informational=dict(v6_household_tokens=len(tok_counter), v6_tokens_unmapped=len(problems.get("v6_household_token_unmapped", []))),
               problems={k: v for k, v in problems.items()})
-json.dump(report, open(os.path.join(OUT, "validation_report.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+with open(os.path.join(OUT, "validation_report.json"), "w", encoding="utf-8", newline="\n") as f:
+    json.dump(report, f, ensure_ascii=False, indent=1)
 print(json.dumps(dict(counts=counts, checks=checks, per_pf=per_pf), ensure_ascii=False, indent=1))
 hard = [k for k, v in checks.items() if not v]
 if hard:

@@ -45,10 +45,10 @@ def jl(x):
     return "|".join(x) if isinstance(x, (list, tuple)) else ("" if x is None else str(x))
 
 
-def write_csv(path, rows, cols):
+def write_csv(path, rows, cols, lineterminator="\r\n"):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols, extrasaction="raise")
+        w = csv.DictWriter(f, fieldnames=cols, extrasaction="raise", lineterminator=lineterminator)
         w.writeheader()
         for r in rows:
             w.writerow({c: jl(r.get(c, "")) for c in cols})
@@ -69,7 +69,7 @@ _BARE = {"required_items", "allowed_items", "furniture", "matcult", "example_ite
 _ID = re.compile(r"^[A-Z]{3}\d{4}$")
 
 
-def out(rel, rows, cols):
+def out(rel, rows, cols, lineterminator="\r\n"):
     for r in rows:
         for k, v in r.items():
             vals = v if isinstance(v, (list, tuple)) else [v]
@@ -78,7 +78,7 @@ def out(rel, rows, cols):
                     REFD.update(_TOK.findall(x))
                     if k in _BARE:
                         REFD.update(y for y in x.split("|") if _ID.match(y))
-    COUNTS[rel] = write_csv(os.path.join(GROUP, rel), rows, cols)
+    COUNTS[rel] = write_csv(os.path.join(GROUP, rel), rows, cols, lineterminator)
 
 
 def cap_band(slots):
@@ -139,7 +139,7 @@ def main():
     for pf in sorted(crosswalk_pf_ids - {r["pf_id"] for r in sf_pf_rows}):
         sf_pf_rows.append(dict(sf_id="", pf_id=pf, source_refs="", rule_ref="", no_source="no settlement_form source for this PF", status=STATUS))
     out("buildings/sf_pf_crosswalk.csv", sorted(sf_pf_rows, key=lambda r: (r["pf_id"], r["sf_id"])),
-        ["sf_id", "pf_id", "source_refs", "rule_ref", "no_source", "status"])
+        ["sf_id", "pf_id", "source_refs", "rule_ref", "no_source", "status"], "\n")
 
     # ---------------- interiors ----------------
     sc_rows, item_rows = [], []
@@ -432,7 +432,8 @@ def main():
               dimensions=matcult.get(i, {}).get("dimensions", ""), source_ids=matcult.get(i, {}).get("source_ids", "")) for i in sorted(refd)],
         ["item_id", "exists", "name_ru", "category", "historical_confidence", "generation_policy", "dimensions", "source_ids"])
 
-    json.dump(COUNTS, open(os.path.join(GROUP, "scripts", "build_counts.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    with open(os.path.join(GROUP, "scripts", "build_counts.json"), "w", encoding="utf-8", newline="\n") as f:
+        json.dump(COUNTS, f, ensure_ascii=False, indent=1)
     for k, v in COUNTS.items():
         print("%6d  %s" % (v, k))
 

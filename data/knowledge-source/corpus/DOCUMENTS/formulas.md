@@ -5,7 +5,7 @@
 Этот справочник описывает production v3 formulas. Принятое историческое P28
 evidence само не активировало runtime; последующий
 `versioned production activation cutover` завершён release
-`spatial-v3-production-v1`. Архивный v2-источник не является production-правилом
+`spatial-v3-production-v1`. v2 выведен из корпуса (#146 шаг 4) и не является production-правилом
 и не смешан с v3. Профильные документы владеют назначением формул;
 этот файл — единственный источник их записи и owner mapping.
 

@@ -4,7 +4,7 @@
 
 Этот документ задаёт active materialization v3 для генерации мира и ходов.
 Завершённый `versioned production activation cutover` сделал Spatial v3 sole
-production owner; v2 сохранён только как explicit migration/rollback source.
+production owner; v2 выведен из корпуса (#146 шаг 4) и не является production-правилом.
 Lower Dvina Trace revision 13
 дополнительно активировал единственную player semantic boundary
 `turn_step_request_v1` → `turn_step_plan_v1`. Partial activation, dual write,

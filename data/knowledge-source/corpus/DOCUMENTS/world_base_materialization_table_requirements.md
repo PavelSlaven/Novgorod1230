@@ -403,4 +403,4 @@ Runtime loader восстанавливает только membership данно
 
 ## 15. Статус документа
 
-Этот документ уже `ACTIVE` (общий authoring/readiness слой; production table-purpose — Spatial v3 specialization, см. C-006). Устаревший «критерий повышения в active» удалён: повышение статуса не повторяется. Новые таблицы presence-правил входят через DDL/importer CR реализации M2c и Contract Auditor.
+Этот документ уже `ACTIVE` (общий authoring/readiness слой; production table-purpose — Spatial v3 specialization, см. C-006). Устаревший «критерий повышения в active» удалён: повышение статуса не повторяется. Новые таблицы presence-правил входят через DDL/importer CR реализации M2c и Contract Auditor (CR #146 шаг 1).

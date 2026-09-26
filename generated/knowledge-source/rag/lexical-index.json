@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "95df82242b4cd2037dba4aaefd1d33d899e529a3727a155642a6c6bd1cf6050c",
+  "corpus_hash": "162d6d3544a34542344d20ae669057de958598911a1bac931af4f2fdd5ed7402",
   "chunk_count": 2852,
   "chunks": [
     {
@@ -882,8 +882,8 @@
       "section": "4.4. LLM",
       "line_start": 255,
       "line_end": 291,
-      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nет код при первом открытии (D3/D9); LLM может описать уже выбранное. Visible factual projection формирует код; narrator читает её только после commit.\n\nO1 — discovery уже существующего через `request_discovery` / поиск / осмотр (PC §9.1; D3; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029). Поиск и `request_discovery` находят только то, что уже существует после сохранённого броска кода при первом прибытии (место) или первом открытии контейнера (O2b). Они не создают нового. О наличии решает только сохранённый бросок кода; из плана LLM убраны `presence_resolutions` и `density_band_proposal`. `density_band` код выводит из сохранённых исходов; `identity_budget` равен сумме сохранённых чисел экземпляров (или отсутствует как отдельное поле плана). Meaningful gate и code-first short circuit предшествуют model call. Stage A/B могут описывать уже выбранный экземпляр с опорой на WK; код строит identity/classification/policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`; это не noun/recipe gate и не authority. Exact normalized retry использует persisted resolution без reroll. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution и item при positive. Player-safe projection — через `@rus/visibility-knowledge-memory`. O1 не включает A1, F1, S1, N1 и template-less runtime containers как путь создания; finite sources и fabrication — у своих owners.",
-      "char_count": 1696
+      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nет код при первом открытии (D3/D9); LLM может описать уже выбранное. Visible factual projection формирует код; narrator читает её только после commit.\n\nO1 — discovery уже существующего через `request_discovery` / поиск / осмотр (PC §9.1; D3; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029). Поиск и `request_discovery` находят только то, что уже существует после сохранённого броска кода при первом прибытии (место) или первом открытии контейнера (O2b). Они не создают нового. О наличии решает только сохранённый бросок кода; из плана LLM убраны `presence_resolutions` и `density_band_proposal`. `density_band` код выводит из сохранённых исходов; `identity_budget` равен сумме сохранённых чисел экземпляров (или отсутствует как отдельное поле плана). Meaningful gate и code-first short circuit предшествуют model call. Stage A/B могут описывать уже выбранный экземпляр с опорой на WK; код строит identity/classification/policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) — только `candidate_hint` для сопоставления с уже решённым исходом; identity выводится кодом из экземпляра scope и subject-правил (не noun/recipe gate и не authority; долг кода v17 — LW-028, если иначе). Exact normalized retry использует persisted resolution без reroll. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution и item при positive. Player-safe projection — через `@rus/visibility-knowledge-memory`. O1 не включает A1, F1, S1, N1 и template-less runtime containers как путь создания; finite sources и fabrication — у своих owners.",
+      "char_count": 1752
     },
     {
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:2",
@@ -1098,8 +1098,8 @@
       "section": "2. Что нужно определить перед боем",
       "line_start": 40,
       "line_end": 64,
-      "text": "## combat_system.md — 2. Что нужно определить перед боем\n### 2. Что нужно определить перед боем\n\nПеред боевым действием нужно определить:\n\n1. кто участвует;\n2. кто кого видит;\n3. кто готов к бою;\n4. кто застигнут врасплох;\n5. дистанцию;\n6. оружие и предметы в руках;\n7. броню или защиту;\n8. состояние тела;\n9. нагрузку и занятые руки;\n10. свидетелей;\n11. право и последствия насилия;\n12. возможность отступить, спрятаться, позвать помощь или сдаться.\n\nКороткая формула:\n\n`бой = участники + дистанция + оружие + защита + состояние + место + свидетели + риск`\n\nЕсли один из элементов неизвестен, доминирующий модификатор и недостающие факты выбирает код из committed state; LLM не подбирает наиболее удобный вариант.\n\n---",
-      "char_count": 719
+      "text": "## combat_system.md — 2. Что нужно определить перед боем\n### 2. Что нужно определить перед боем\n\nПеред боевым действием нужно определить:\n\n1. кто участвует;\n2. кто кого видит;\n3. кто готов к бою;\n4. кто застигнут врасплох;\n5. дистанцию;\n6. оружие и предметы в руках;\n7. броню или защиту;\n8. состояние тела;\n9. нагрузку и занятые руки;\n10. свидетелей;\n11. право и последствия насилия;\n12. возможность отступить, спрятаться, позвать помощь или сдаться.\n\nКороткая формула:\n\n`бой = участники + дистанция + оружие + защита + состояние + место + свидетели + риск`\n\nЕсли один из элементов неизвестен, доминирующий модификатор и недостающие факты выбирает код из committed state; LLM не подбирает наиболее удобный вариант (#133 D1/D9; CR #146 п.8).\n\n---",
+      "char_count": 745
     },
     {
       "id": "combat_system.md:3. Combat intent, technical step и exchange:0",
@@ -1332,8 +1332,8 @@
       "section": "23. Модификаторы и пределы расчёта",
       "line_start": 766,
       "line_end": 802,
-      "text": "## combat_system.md — 23. Модификаторы и пределы расчёта\n### 23. Модификаторы и пределы расчёта\n\nЧтобы бой не разваливался от десятков мелких бонусов, используется ограничение:\n\n`один главный бонус + один главный штраф + состояние`\n\nОбычные пределы:\n\n| Источник | Диапазон |\n| --- | ---: |\n| снаряжение | `−2…+2` |\n| состояние | `0…−4` |\n| обстоятельства | `−4…+4` |\n| численное давление | `−2…+2` |\n| активная защита | `+2` или `+4` к защите цели |\n\nПримеры модификаторов снаряжения:\n\n| Ситуация | Модификатор |\n| --- | ---: |\n| подходящее снаряжение | +1 |\n| хорошее или точное снаряжение | +2 |\n| плохое состояние | −1 или −2 |\n| неподходящий тип | −1 или невозможно |\n| тяжёлое снаряжение мешает | −1 или −2 |\n| нет нужного предмета | действие невозможно или сложнее |\n\nЕсли обстоятельств много, доминирующий модификатор выбирает код из committed state; LLM не суммирует всё подряд.\n\nПример:\n\nПерсонаж атакует в темноте, по грязи, с хорошим оружием, но уставший. Не нужно считать пять отдельных поправок. Достаточно:\n\n`снаряжение +1, обстоятельства −2, состояние −1`\n\n---",
-      "char_count": 1075
+      "text": "## combat_system.md — 23. Модификаторы и пределы расчёта\n### 23. Модификаторы и пределы расчёта\n\nЧтобы бой не разваливался от десятков мелких бонусов, используется ограничение:\n\n`один главный бонус + один главный штраф + состояние`\n\nОбычные пределы:\n\n| Источник | Диапазон |\n| --- | ---: |\n| снаряжение | `−2…+2` |\n| состояние | `0…−4` |\n| обстоятельства | `−4…+4` |\n| численное давление | `−2…+2` |\n| активная защита | `+2` или `+4` к защите цели |\n\nПримеры модификаторов снаряжения:\n\n| Ситуация | Модификатор |\n| --- | ---: |\n| подходящее снаряжение | +1 |\n| хорошее или точное снаряжение | +2 |\n| плохое состояние | −1 или −2 |\n| неподходящий тип | −1 или невозможно |\n| тяжёлое снаряжение мешает | −1 или −2 |\n| нет нужного предмета | действие невозможно или сложнее |\n\nЕсли обстоятельств много, доминирующий модификатор выбирает код из committed state; LLM не суммирует всё подряд (#133 D1/D9; CR #146 п.8).\n\nПример:\n\nПерсонаж атакует в темноте, по грязи, с хорошим оружием, но уставший. Не нужно считать пять отдельных поправок. Достаточно:\n\n`снаряжение +1, обстоятельства −2, состояние −1`\n\n---",
+      "char_count": 1101
     },
     {
       "id": "combat_system.md:24. Бой с несколькими участниками:0",
@@ -1800,8 +1800,8 @@
       "section": "Статус",
       "line_start": 3,
       "line_end": 16,
-      "text": "## formulas.md — Статус\n## Статус\n\nЭтот справочник описывает production v3 formulas. Принятое историческое P28\nevidence само не активировало runtime; последующий\n`versioned production activation cutover` завершён release\n`spatial-v3-production-v1`. Архивный v2-источник не является production-правилом\nи не смешан с v3. Профильные документы владеют назначением формул;\nэтот файл — единственный источник их записи и owner mapping.\n\nДля Temporal World v4 профильным active target-нормативом является\n`temporal_world_and_interruptible_activities.md`. Формулы ниже используют\ndecimal-string rational DTO и exact `BigInt` core; ни один consumer не\nокругляет duration и не переносит domain effects в time owner.",
-      "char_count": 705
+      "text": "## formulas.md — Статус\n## Статус\n\nЭтот справочник описывает production v3 formulas. Принятое историческое P28\nevidence само не активировало runtime; последующий\n`versioned production activation cutover` завершён release\n`spatial-v3-production-v1`. v2 выведен из корпуса (#146 шаг 4) и не является production-правилом\nи не смешан с v3. Профильные документы владеют назначением формул;\nэтот файл — единственный источник их записи и owner mapping.\n\nДля Temporal World v4 профильным active target-нормативом является\n`temporal_world_and_interruptible_activities.md`. Формулы ниже используют\ndecimal-string rational DTO и exact `BigInt` core; ни один consumer не\nокругляет duration и не переносит domain effects в time owner.",
+      "char_count": 721
     },
     {
       "id": "formulas.md:1. Движение: positive rational factor model:0",
@@ -6111,8 +6111,8 @@
       "section": "18.4. `set_entity_mechanics`",
       "line_start": 1197,
       "line_end": 1218,
-      "text": "## npc_autonomous_decision_contract.md — 18.4. `set_entity_mechanics`\n### 18.4. `set_entity_mechanics`\n\nИспользуется только после фактического физического изменения сущности. LLM может предложить qualitative изменение через необязательный `mechanics_proposal`; числовые mechanics пишет код.\n\n```json\n{\n  \"op\": \"set_entity_mechanics\",\n  \"entity_ref\": \"item-pole\",\n  \"mechanics_proposal\": {\n    \"qualitative_mass\": \"легче прежнего\",\n    \"external_hand_cost\": 1,\n    \"carry_form\": \"long\",\n    \"packing_slot_cost\": 3,\n    \"quantity\": null,\n    \"container\": null\n  },\n  \"reason\": \"древко было укорочено\"\n}\n```\n\nПолный новый mechanics profile собирает код, а не LLM. Дельта от модели не заменяет финальные числа.",
-      "char_count": 706
+      "text": "## npc_autonomous_decision_contract.md — 18.4. `set_entity_mechanics`\n### 18.4. `set_entity_mechanics`\n\nИспользуется только после фактического физического изменения сущности. LLM может предложить qualitative изменение через необязательный `mechanics_proposal`; числовые mechanics пишет код (CR #146 п.8; REVIEW-028).\n\n```json\n{\n  \"op\": \"set_entity_mechanics\",\n  \"entity_ref\": \"item-pole\",\n  \"mechanics_proposal\": {\n    \"qualitative_mass\": \"легче прежнего\",\n    \"external_hand_cost\": 1,\n    \"carry_form\": \"long\",\n    \"packing_slot_cost\": 3,\n    \"quantity\": null,\n    \"container\": null\n  },\n  \"reason\": \"древко было укорочено\"\n}\n```\n\nПолный новый mechanics profile собирает код, а не LLM. Дельта от модели не заменяет финальные числа (CR #146 п.8; REVIEW-028).",
+      "char_count": 758
     },
     {
       "id": "npc_autonomous_decision_contract.md:18.5. `retire_entity`:0",
@@ -21258,8 +21258,8 @@
       "section": "11.1. `create_entity`",
       "line_start": 722,
       "line_end": 833,
-      "text": "## turn_step_llm_contract.md — 11.1. `create_entity`\nкрытому состоянию (D10). Ценность, редкость и класс (монета, оружие, документ) сами по себе не делают объект significant.\n\nПримеры significant/hidden:\n\n- сюжетная улика по authority-записи;\n- уникальный или квестовый предмет;\n- содержимое тайника по authority или причинному событию;\n- человеческие останки как informational fact, если так назначено authority-записью (`code_driven_world_materialization_architecture.md` §3A.7: обычный документ/письмо informational не являются).\n\nОбычные оружие, монета, письмо, обработанный наконечник или чужой кошель могут существовать через presence (`code_driven_world_materialization_architecture.md` §3A) или A1; поиск через `request_discovery` находит только уже существующее. Содержимое сундука — бросок кода при первом открытии (O2b).\n\n#### Механика нового экземпляра\n\nФинальные числа (`mass_grams`, `external_hand_cost`, packing) пишет код. `mechanics_proposal` необязателен и даёт только qualitative оценку или предложение; LLM не оценивает финальную массу как authoritative число.\n\n`mass_grams` — собственная масса конкретного экземпляра без массы вложенного contents.\n\nМасса (финальное значение пишет код; LLM — только qualitative proposal):",
-      "char_count": 1242
+      "text": "## turn_step_llm_contract.md — 11.1. `create_entity`\nкрытому состоянию (D10). Ценность, редкость и класс (монета, оружие, документ) сами по себе не делают объект significant.\n\nПримеры significant/hidden:\n\n- сюжетная улика по authority-записи;\n- уникальный или квестовый предмет;\n- содержимое тайника по authority или причинному событию;\n- человеческие останки как informational fact, если так назначено authority-записью (`code_driven_world_materialization_architecture.md` §3A.7: обычный документ/письмо informational не являются).\n\nОбычные оружие, монета, письмо, обработанный наконечник или чужой кошель могут существовать через presence (`code_driven_world_materialization_architecture.md` §3A) или A1; поиск через `request_discovery` находит только уже существующее. Содержимое сундука — бросок кода при первом открытии (O2b).\n\n#### Механика нового экземпляра\n\nФинальные числа (`mass_grams`, `external_hand_cost`, packing) пишет код (CR #146 п.8; REVIEW-028). `mechanics_proposal` необязателен и даёт только qualitative оценку или предложение; LLM не оценивает финальную массу как authoritative число.\n\n`mass_grams` — собственная масса конкретного экземпляра без массы вложенного contents.",
+      "char_count": 1194
     },
     {
       "id": "turn_step_llm_contract.md:11.1. `create_entity`:5",
@@ -21267,8 +21267,8 @@
       "section": "11.1. `create_entity`",
       "line_start": 722,
       "line_end": 833,
-      "text": "## turn_step_llm_contract.md — 11.1. `create_entity`\ns` — собственная масса конкретного экземпляра без массы вложенного contents.\n\nМасса (финальное значение пишет код; LLM — только qualitative proposal):\n\n- является целым неотрицательным числом;\n- задаётся одним правдоподобным округлённым значением;\n- учитывает размер, материал, влажность и наполненность;\n- оценивается отдельно для каждого нового экземпляра.\n\nДругая горсть песка получает новую отдельную оценку массы.\n\nПосле сохранения механику пересчитывает код, только при физическом изменении экземпляра; LLM может лишь предложить качественное изменение.\n\n`external_hand_cost` принимает только `0`, `1` или `2` (финал — код).\n\n`carry_form` принимает только:\n\n- `compact`;\n- `regular`;\n- `long`;\n- `bulky`.",
-      "char_count": 762
+      "text": "## turn_step_llm_contract.md — 11.1. `create_entity`\nние; LLM не оценивает финальную массу как authoritative число.\n\n`mass_grams` — собственная масса конкретного экземпляра без массы вложенного contents.\n\nМасса (финальное значение пишет код; LLM — только qualitative proposal) (CR #146 п.8; REVIEW-028):\n\n- является целым неотрицательным числом;\n- задаётся одним правдоподобным округлённым значением;\n- учитывает размер, материал, влажность и наполненность;\n- оценивается отдельно для каждого нового экземпляра.\n\nДругая горсть песка получает новую отдельную оценку массы.\n\nПосле сохранения механику пересчитывает код, только при физическом изменении экземпляра; LLM может лишь предложить качественное изменение (CR #146 п.8; REVIEW-028).\n\n`external_hand_cost` принимает только `0`, `1` или `2` (финал — код) (CR #146 п.8; REVIEW-028).\n\n`carry_form` принимает только:\n\n- `compact`;\n- `regular`;\n- `long`;\n- `bulky`.",
+      "char_count": 914
     },
     {
       "id": "turn_step_llm_contract.md:11.2. `move_entity`:0",
@@ -21294,8 +21294,8 @@
       "section": "11.4. `set_entity_mechanics`",
       "line_start": 889,
       "line_end": 910,
-      "text": "## turn_step_llm_contract.md — 11.4. `set_entity_mechanics`\n### 11.4. `set_entity_mechanics`\n\nИспользуется только после физического изменения существующей сущности. LLM может предложить qualitative изменение через необязательный `mechanics_proposal`; числовые mechanics пишет код.\n\n```json\n{\n  \"op\": \"set_entity_mechanics\",\n  \"entity_ref\": \"entity_1\",\n  \"mechanics_proposal\": {\n    \"qualitative_mass\": \"тяжелее прежнего\",\n    \"external_hand_cost\": 2,\n    \"carry_form\": \"bulky\",\n    \"packing_slot_cost\": 4,\n    \"quantity\": null,\n    \"container\": null\n  },\n  \"reason\": \"объект физически расколот или преобразован\"\n}\n```\n\nПолный новый mechanics profile собирает код, а не LLM. Дельта от модели не заменяет финальные числа.",
-      "char_count": 719
+      "text": "## turn_step_llm_contract.md — 11.4. `set_entity_mechanics`\n### 11.4. `set_entity_mechanics`\n\nИспользуется только после физического изменения существующей сущности. LLM может предложить qualitative изменение через необязательный `mechanics_proposal`; числовые mechanics пишет код (CR #146 п.8; REVIEW-028).\n\n```json\n{\n  \"op\": \"set_entity_mechanics\",\n  \"entity_ref\": \"entity_1\",\n  \"mechanics_proposal\": {\n    \"qualitative_mass\": \"тяжелее прежнего\",\n    \"external_hand_cost\": 2,\n    \"carry_form\": \"bulky\",\n    \"packing_slot_cost\": 4,\n    \"quantity\": null,\n    \"container\": null\n  },\n  \"reason\": \"объект физически расколот или преобразован\"\n}\n```\n\nПолный новый mechanics profile собирает код, а не LLM. Дельта от модели не заменяет финальные числа (CR #146 п.8; REVIEW-028).",
+      "char_count": 771
     },
     {
       "id": "turn_step_llm_contract.md:11.5. `retire_entity`:0",
@@ -21348,8 +21348,8 @@
       "section": "12.1. `request_discovery`",
       "line_start": 951,
       "line_end": 997,
-      "text": "## turn_step_llm_contract.md — 12.1. `request_discovery`\nsponse boundary завершает текущий root;\nнеобработанный остаток остаётся в approved continuation и не проталкивается\nчерез второй ordinary atomic plan.\n\nДля O1 этот же существующий request — единственный public путь discovery ordinary detail; `request_ordinary_detail` не существует (PC §9.1; D3; CR #146 шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029). Поиск и `request_discovery` находят только уже существующее после сохранённого броска кода при первом прибытии; нового не создают. Из плана LLM убраны `presence_resolutions` и `density_band_proposal`; `density_band` код выводит из сохранённых исходов; `identity_budget` — сумма сохранённых чисел. После authored/committed discovery и exact persisted resolution ordinary resolver вызывается только при meaningful engagement. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A/B могут описать уже выбранный экземпляр с опорой на WK; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`. Exact normalized retry использует persisted resolution без reroll. Positive replay возвращает exact committed visible item без нового model call. `authority_required` — только для вещей по authority-записи (D10), не классовый запрет оружия/денег/документов. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution. Planner и narrator видят только capability marker и approved visible concrete result.",
-      "char_count": 1644
+      "text": "## turn_step_llm_contract.md — 12.1. `request_discovery`\nsponse boundary завершает текущий root;\nнеобработанный остаток остаётся в approved continuation и не проталкивается\nчерез второй ordinary atomic plan.\n\nДля O1 этот же существующий request — единственный public путь discovery ordinary detail; `request_ordinary_detail` не существует (PC §9.1; D3; CR #146 шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029). Поиск и `request_discovery` находят только уже существующее после сохранённого броска кода при первом прибытии; нового не создают. Из плана LLM убраны `presence_resolutions` и `density_band_proposal`; `density_band` код выводит из сохранённых исходов; `identity_budget` — сумма сохранённых чисел. После authored/committed discovery и exact persisted resolution ordinary resolver вызывается только при meaningful engagement. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A/B могут описать уже выбранный экземпляр с опорой на WK; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query — только `candidate_hint` для сопоставления с уже решённым исходом; identity выводится кодом из экземпляра scope и subject-правил (долг кода v17 — LW-028, если иначе). Exact normalized retry использует persisted resolution без reroll. Positive replay возвращает exact committed visible item без нового model call. `authority_required` — только для вещей по authority-записи (D10), не классовый запрет оружия/денег/документов. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution. Planner и narrator видят только capability marker и approved visible concrete result.",
+      "char_count": 1704
     },
     {
       "id": "turn_step_llm_contract.md:12.1. `request_discovery`:3",
@@ -23634,8 +23634,8 @@
       "section": "15. Статус документа",
       "line_start": 404,
       "line_end": 406,
-      "text": "## world_base_materialization_table_requirements.md — 15. Статус документа\n## 15. Статус документа\n\nЭтот документ уже `ACTIVE` (общий authoring/readiness слой; production table-purpose — Spatial v3 specialization, см. C-006). Устаревший «критерий повышения в active» удалён: повышение статуса не повторяется. Новые таблицы presence-правил входят через DDL/importer CR реализации M2c и Contract Auditor.",
-      "char_count": 402
+      "text": "## world_base_materialization_table_requirements.md — 15. Статус документа\n## 15. Статус документа\n\nЭтот документ уже `ACTIVE` (общий authoring/readiness слой; production table-purpose — Spatial v3 specialization, см. C-006). Устаревший «критерий повышения в active» удалён: повышение статуса не повторяется. Новые таблицы presence-правил входят через DDL/importer CR реализации M2c и Contract Auditor (CR #146 шаг 1).",
+      "char_count": 418
     },
     {
       "id": "world_generation_and_turns.txt:Генерация мира и ходы:0",
@@ -23652,8 +23652,8 @@
       "section": "Статус и граница миграции",
       "line_start": 3,
       "line_end": 18,
-      "text": "## world_generation_and_turns.txt — Статус и граница миграции\n## Статус и граница миграции\n\nЭтот документ задаёт active materialization v3 для генерации мира и ходов.\nЗавершённый `versioned production activation cutover` сделал Spatial v3 sole\nproduction owner; v2 сохранён только как explicit migration/rollback source.\nLower Dvina Trace revision 13\nдополнительно активировал единственную player semantic boundary\n`turn_step_request_v1` → `turn_step_plan_v1`. Partial activation, dual write,\nscenario-local player planner и v3→v2 runtime fallback запрещены.\n\nTemporal execution дополнительно регулирует active target-норматив\n`temporal_world_and_interruptible_activities.md`. Ход применяет event-driven\nearliest boundary, deterministic same-time cascade и ровно одного clock owner.\nFactual visible package сохраняется вместе с change set; художественная проза\nсоздаётся только после успешного commit.",
-      "char_count": 901
+      "text": "## world_generation_and_turns.txt — Статус и граница миграции\n## Статус и граница миграции\n\nЭтот документ задаёт active materialization v3 для генерации мира и ходов.\nЗавершённый `versioned production activation cutover` сделал Spatial v3 sole\nproduction owner; v2 выведен из корпуса (#146 шаг 4) и не является production-правилом.\nLower Dvina Trace revision 13\nдополнительно активировал единственную player semantic boundary\n`turn_step_request_v1` → `turn_step_plan_v1`. Partial activation, dual write,\nscenario-local player planner и v3→v2 runtime fallback запрещены.\n\nTemporal execution дополнительно регулирует active target-норматив\n`temporal_world_and_interruptible_activities.md`. Ход применяет event-driven\nearliest boundary, deterministic same-time cascade и ровно одного clock owner.\nFactual visible package сохраняется вместе с change set; художественная проза\nсоздаётся только после успешного commit.",
+      "char_count": 912
     },
     {
       "id": "world_generation_and_turns.txt:1. Target spatial vocabulary and player projection:0",

@@ -807,11 +807,11 @@ Significant / hidden — только по authority-записи или сох�
 
 #### Механика нового экземпляра
 
-Финальные числа (`mass_grams`, `external_hand_cost`, packing) пишет код. `mechanics_proposal` необязателен и даёт только qualitative оценку или предложение; LLM не оценивает финальную массу как authoritative число.
+Финальные числа (`mass_grams`, `external_hand_cost`, packing) пишет код (CR #146 п.8; REVIEW-028). `mechanics_proposal` необязателен и даёт только qualitative оценку или предложение; LLM не оценивает финальную массу как authoritative число.
 
 `mass_grams` — собственная масса конкретного экземпляра без массы вложенного contents.
 
-Масса (финальное значение пишет код; LLM — только qualitative proposal):
+Масса (финальное значение пишет код; LLM — только qualitative proposal) (CR #146 п.8; REVIEW-028):
 
 - является целым неотрицательным числом;
 - задаётся одним правдоподобным округлённым значением;
@@ -820,9 +820,9 @@ Significant / hidden — только по authority-записи или сох�
 
 Другая горсть песка получает новую отдельную оценку массы.
 
-После сохранения механику пересчитывает код, только при физическом изменении экземпляра; LLM может лишь предложить качественное изменение.
+После сохранения механику пересчитывает код, только при физическом изменении экземпляра; LLM может лишь предложить качественное изменение (CR #146 п.8; REVIEW-028).
 
-`external_hand_cost` принимает только `0`, `1` или `2` (финал — код).
+`external_hand_cost` принимает только `0`, `1` или `2` (финал — код) (CR #146 п.8; REVIEW-028).
 
 `carry_form` принимает только:
 
@@ -888,7 +888,7 @@ Significant / hidden — только по authority-записи или сох�
 
 ### 11.4. `set_entity_mechanics`
 
-Используется только после физического изменения существующей сущности. LLM может предложить qualitative изменение через необязательный `mechanics_proposal`; числовые mechanics пишет код.
+Используется только после физического изменения существующей сущности. LLM может предложить qualitative изменение через необязательный `mechanics_proposal`; числовые mechanics пишет код (CR #146 п.8; REVIEW-028).
 
 ```json
 {
@@ -906,7 +906,7 @@ Significant / hidden — только по authority-записи или сох�
 }
 ```
 
-Полный новый mechanics profile собирает код, а не LLM. Дельта от модели не заменяет финальные числа.
+Полный новый mechanics profile собирает код, а не LLM. Дельта от модели не заменяет финальные числа (CR #146 п.8; REVIEW-028).
 
 ### 11.5. `retire_entity`
 
@@ -985,7 +985,7 @@ Step loop исполняет очередь по одному target без но
 необработанный остаток остаётся в approved continuation и не проталкивается
 через второй ordinary atomic plan.
 
-Для O1 этот же существующий request — единственный public путь discovery ordinary detail; `request_ordinary_detail` не существует (PC §9.1; D3; CR #146 шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029). Поиск и `request_discovery` находят только уже существующее после сохранённого броска кода при первом прибытии; нового не создают. Из плана LLM убраны `presence_resolutions` и `density_band_proposal`; `density_band` код выводит из сохранённых исходов; `identity_budget` — сумма сохранённых чисел. После authored/committed discovery и exact persisted resolution ordinary resolver вызывается только при meaningful engagement. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A/B могут описать уже выбранный экземпляр с опорой на WK; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`. Exact normalized retry использует persisted resolution без reroll. Positive replay возвращает exact committed visible item без нового model call. `authority_required` — только для вещей по authority-записи (D10), не классовый запрет оружия/денег/документов. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution. Planner и narrator видят только capability marker и approved visible concrete result.
+Для O1 этот же существующий request — единственный public путь discovery ordinary detail; `request_ordinary_detail` не существует (PC §9.1; D3; CR #146 шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029). Поиск и `request_discovery` находят только уже существующее после сохранённого броска кода при первом прибытии; нового не создают. Из плана LLM убраны `presence_resolutions` и `density_band_proposal`; `density_band` код выводит из сохранённых исходов; `identity_budget` — сумма сохранённых чисел. После authored/committed discovery и exact persisted resolution ordinary resolver вызывается только при meaningful engagement. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A/B могут описать уже выбранный экземпляр с опорой на WK; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query — только `candidate_hint` для сопоставления с уже решённым исходом; identity выводится кодом из экземпляра scope и subject-правил (долг кода v17 — LW-028, если иначе). Exact normalized retry использует persisted resolution без reroll. Positive replay возвращает exact committed visible item без нового model call. `authority_required` — только для вещей по authority-записи (D10), не классовый запрет оружия/денег/документов. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution. Planner и narrator видят только capability marker и approved visible concrete result.
 
 Для `common_mundane` World Knowledge не является positive whitelist: causal
 scene basis и обычной физической/исторической правдоподобности достаточно при

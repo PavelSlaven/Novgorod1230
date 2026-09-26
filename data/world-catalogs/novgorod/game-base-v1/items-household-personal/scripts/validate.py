@@ -87,6 +87,8 @@ def main():
             fail.append(f"{r['ipf_id']}: composed place must stay rare/C")
         if r["ref_kind"] == "it" and residue_refs.intersection(split(r["source_refs"])):
             fail.append(f"{r['ipf_id']}: residue used as whole-item evidence")
+        if r["item_or_category_ref"] == "it_hh_oven_peel" and r["pf_id"] in {"road", "bridge_crossing", "town_wall_edge"}:
+            fail.append(f"{r['ipf_id']}: oven peel leaked from 'походный быт' into a public route")
         per_pf[r["pf_id"]].add(r["item_or_category_ref"])
         if r["ref_kind"] == "it":
             per_pf_it[r["pf_id"]].add(r["item_or_category_ref"])

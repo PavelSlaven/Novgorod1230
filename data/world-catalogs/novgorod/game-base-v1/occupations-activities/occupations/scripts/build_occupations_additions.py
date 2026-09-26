@@ -474,7 +474,7 @@ ROWS = [
         llm_adaptation_rules="сюжет и извод — из известной новгородской иконографической традиции 13 века; техника — яичная темпера по левкасу",
         llm_forbidden_uses="не изображать масляную живопись западного типа, не придумывать неканонические изводы как исторически бытовавшие без пометки confidence C",
         status="candidate",
-        confidence="B",
+        confidence="C",
         source_refs="gb:sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv#PRO0077(Иконописец,conf=A,SRC017|SRC018|SRC020|SRC021|SRC022|SRC023|SRC031|SRC055|SRC064|SRC101)",
         notes="Закрывает явный gap критика ('церковь/religion' недопредставлена в M2c).",
     ),

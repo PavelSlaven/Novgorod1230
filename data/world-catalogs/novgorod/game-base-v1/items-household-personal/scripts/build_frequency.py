@@ -18,7 +18,7 @@ WHERE_KW = [
     (r"торг|рын|лавк", ["market_square"], None), (r"пристан|причал|мостк", ["river_wharf"], None),
     (r"церк|храм", ["church_interior"], None), (r"монаст", ["monastery_yard"], None), (r"мастерск", ["ordinary_workshop"], None),
     (r"кузн", ["smithy"], None), (r"бан[яи]", ["bathhouse"], None), (r"амбар|клет|кладов|погреб|склад", ["cellar_granary"], None),
-    (r"огород", ["orchard_garden"], None), (r"пол[ея]|пашн", ["arable_field"], None), (r"дорог|путь|поход", ["road"], None),
+    (r"огород", ["orchard_garden"], None), (r"пол[ея]|пашн", ["arable_field"], None), (r"дорог|путь|поход(?!н)", ["road"], None),
     (r"рыбац|лов|берег", ["fishing_camp", "riverbank"], r"ткац|прял|тканьё|дощечк"),
     (r"улиц|мостов", ["town_street"], None),
 ]

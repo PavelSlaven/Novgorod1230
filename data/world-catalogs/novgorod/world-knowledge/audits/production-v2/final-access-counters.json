@@ -48,38 +48,38 @@
   }
  },
  "v2": {
-  "claims": 1758,
+  "claims": 1760,
   "byClass": {
-   "general_physical": 149,
-   "domain_internal_only": 1164,
-   "common_cultural": 319,
-   "role_bound": 126
+   "domain_internal_only": 1213,
+   "common_cultural": 296,
+   "general_physical": 132,
+   "role_bound": 119
   },
-  "internal_share": 0.662,
+  "internal_share": 0.689,
   "reach": {
    "npc_decision": {
-    "no_facets": 468,
-    "nov_role_fisher": 498,
-    "nov_role_trader": 469,
-    "nov_role_boatman": 480,
-    "nov_role_hunter": 478,
-    "nov_role_craftsman_master": 505
+    "no_facets": 428,
+    "nov_role_fisher": 451,
+    "nov_role_trader": 429,
+    "nov_role_boatman": 440,
+    "nov_role_hunter": 438,
+    "nov_role_craftsman_master": 465
    },
    "conversation": {
-    "no_facets": 468,
-    "nov_role_fisher": 498,
-    "nov_role_trader": 469,
-    "nov_role_boatman": 480,
-    "nov_role_hunter": 478,
-    "nov_role_craftsman_master": 505
+    "no_facets": 428,
+    "nov_role_fisher": 451,
+    "nov_role_trader": 429,
+    "nov_role_boatman": 440,
+    "nov_role_hunter": 438,
+    "nov_role_craftsman_master": 465
    },
    "narration": {
-    "no_facets": 408,
-    "nov_role_fisher": 416,
-    "nov_role_trader": 409,
-    "nov_role_boatman": 412,
-    "nov_role_hunter": 418,
-    "nov_role_craftsman_master": 416
+    "no_facets": 369,
+    "nov_role_fisher": 377,
+    "nov_role_trader": 370,
+    "nov_role_boatman": 373,
+    "nov_role_hunter": 379,
+    "nov_role_craftsman_master": 377
    }
   },
   "criterion_v": {

@@ -44628,11 +44628,7 @@
             "мяч",
             "волчок",
             "коньки",
-            "кораблик",
-            "кубарь",
-            "свистулька",
-            "кукла",
-            "деревянный конь"
+            "кораблик"
           ]
         },
         "en": {
@@ -60627,7 +60623,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-activity-fluid-balance"
+      "verification_ref": "wk-verification:v2-activity-fluid-balance"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -60674,7 +60670,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-acute-sleep-loss-performance"
+      "verification_ref": "wk-verification:v2-acute-sleep-loss-performance"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -61546,7 +61542,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-animal-pollination-affects-flowering-plant-reproduction"
+      "verification_ref": "wk-verification:v2-animal-pollination-affects-flowering-plant-reproduction"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -66946,7 +66942,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:v2-candidate-v7-museum-bone-skates-xii-xiii"
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-bone-skates-xii-xiii"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -67013,7 +67009,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:v2-candidate-v7-museum-individual-toy-types"
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-individual-toy-types"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -67078,7 +67074,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:v2-candidate-v7-museum-leather-balls-and-wooden-spinning-tops"
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-leather-balls-and-wooden-spinning-tops"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -67208,7 +67204,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:v2-candidate-v7-museum-toy-vessel-sail-xi-xii"
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-toy-vessel-sail-xi-xii"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -67275,7 +67271,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:v2-candidate-v7-museum-x-xvii-novgorod-archaeological-collection"
+      "verification_ref": "wk-verification:macro-historical-p1-closure-v7-museum-x-xvii-novgorod-archaeological-collection"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -71454,7 +71450,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-common-reed-rhizome-produces-stems-in-wetland-habitat"
+      "verification_ref": "wk-verification:v2-common-reed-rhizome-produces-stems-in-wetland-habitat"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -73829,7 +73825,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-exercise-heat-dissipation"
+      "verification_ref": "wk-verification:v2-exercise-heat-dissipation"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -84993,7 +84989,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-food-energy-nutrients"
+      "verification_ref": "wk-verification:v2-food-energy-nutrients"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -97274,7 +97270,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-household-apple-orchard"
+      "verification_ref": "wk-verification:v2-household-apple-orchard"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -98118,7 +98114,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-household-riverside-storage"
+      "verification_ref": "wk-verification:v2-household-riverside-storage"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -106235,7 +106231,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-medieval-novgorod-fishing-attests-major-occupation-food-context"
+      "verification_ref": "wk-verification:v2-medieval-novgorod-fishing-attests-major-occupation-food-context"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -106292,7 +106288,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-medieval-novgorod-food-base-attests-domestic-animals-and-crops"
+      "verification_ref": "wk-verification:v2-medieval-novgorod-food-base-attests-domestic-animals-and-crops"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -106349,7 +106345,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context"
+      "verification_ref": "wk-verification:v2-medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -109629,7 +109625,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-occupation-smith-iron-input"
+      "verification_ref": "wk-verification:v2-occupation-smith-iron-input"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -111590,7 +111586,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-pain-nociception-distinct"
+      "verification_ref": "wk-verification:v2-pain-nociception-distinct"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -116060,7 +116056,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-bark-bast"
+      "verification_ref": "wk-verification:v2-population-bark-bast"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -116123,7 +116119,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-bark-cut"
+      "verification_ref": "wk-verification:v2-population-bark-cut"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -116771,7 +116767,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-drying-workspace"
+      "verification_ref": "wk-verification:v2-population-drying-workspace"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -116897,7 +116893,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-fish-dried-form"
+      "verification_ref": "wk-verification:v2-population-fish-dried-form"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -117023,7 +117019,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-fishing-workspace"
+      "verification_ref": "wk-verification:v2-population-fishing-workspace"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -117251,7 +117247,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-household-storage"
+      "verification_ref": "wk-verification:v2-population-household-storage"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -119172,7 +119168,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-net-cord"
+      "verification_ref": "wk-verification:v2-population-net-cord"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -119235,7 +119231,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-net-floats"
+      "verification_ref": "wk-verification:v2-population-net-floats"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -119298,7 +119294,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-net-weights"
+      "verification_ref": "wk-verification:v2-population-net-weights"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -120832,7 +120828,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-river-work"
+      "verification_ref": "wk-verification:v2-population-river-work"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -120963,7 +120959,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-rod-input"
+      "verification_ref": "wk-verification:v2-population-rod-input"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -121341,7 +121337,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-population-storage-vessels"
+      "verification_ref": "wk-verification:v2-population-storage-vessels"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -124609,7 +124605,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence"
+      "verification_ref": "wk-verification:v2-pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -136492,7 +136488,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:gov-law-v1-offices"
+      "verification_ref": "wk-verification:v2-residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -136560,7 +136556,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:gov-law-v1-veche-oath"
+      "verification_ref": "wk-verification:v2-residual-government-law-v1-1230-records-veche-and-princely-oath-episode"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -136935,7 +136931,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:gov-law-v2-1230-hundreds"
+      "verification_ref": "wk-verification:v2-residual-government-law-v2-1230-source-uses-hundred-term-for-property-division"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -141532,7 +141528,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-river-flow-affects-sediment-transport-deposition"
+      "verification_ref": "wk-verification:v2-river-flow-affects-sediment-transport-deposition"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -142430,7 +142426,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-seasonal-bird-migration-affects-seasonal-food-climate-exposure"
+      "verification_ref": "wk-verification:v2-seasonal-bird-migration-affects-seasonal-food-climate-exposure"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -142524,7 +142520,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-secondary-clay-forms-through-water-transport-deposition"
+      "verification_ref": "wk-verification:v2-secondary-clay-forms-through-water-transport-deposition"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -142585,7 +142581,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-cart-transport"
+      "verification_ref": "wk-verification:v2-settlement-cart-transport"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -142768,7 +142764,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-log-building-form"
+      "verification_ref": "wk-verification:v2-settlement-log-building-form"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -142829,7 +142825,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-oak-shingle-roof"
+      "verification_ref": "wk-verification:v2-settlement-oak-shingle-roof"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -142890,7 +142886,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-oven-cooking"
+      "verification_ref": "wk-verification:v2-settlement-oven-cooking"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -142951,7 +142947,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-oven-heating"
+      "verification_ref": "wk-verification:v2-settlement-oven-heating"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -143012,7 +143008,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-pine-spruce-log"
+      "verification_ref": "wk-verification:v2-settlement-pine-spruce-log"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -143073,7 +143069,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-post-fence-yard"
+      "verification_ref": "wk-verification:v2-settlement-post-fence-yard"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -143256,7 +143252,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-underfloor-storage"
+      "verification_ref": "wk-verification:v2-settlement-underfloor-storage"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -143317,7 +143313,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-underfloor-utility"
+      "verification_ref": "wk-verification:v2-settlement-underfloor-utility"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -143378,7 +143374,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-vestibule-log"
+      "verification_ref": "wk-verification:v2-settlement-vestibule-log"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -143439,7 +143435,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-wood-building"
+      "verification_ref": "wk-verification:v2-settlement-wood-building"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -143500,7 +143496,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-wooden-paving"
+      "verification_ref": "wk-verification:v2-settlement-wooden-paving"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -143561,7 +143557,7 @@
           ]
         }
       },
-      "verification_ref": "wk-verification:production-settlement-workshop-street"
+      "verification_ref": "wk-verification:v2-settlement-workshop-street"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -145355,7 +145351,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-soil-texture-affects-infiltration-rate"
+      "verification_ref": "wk-verification:v2-soil-texture-affects-infiltration-rate"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -150038,7 +150034,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-stored-grain-condition-depends-on-temperature-moisture"
+      "verification_ref": "wk-verification:v2-stored-grain-condition-depends-on-temperature-moisture"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -156303,7 +156299,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-water-temperature-affects-aquatic-organism-range"
+      "verification_ref": "wk-verification:v2-water-temperature-affects-aquatic-organism-range"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -156456,7 +156452,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-wetland-hydric-soil-depends-on-saturation"
+      "verification_ref": "wk-verification:v2-wetland-hydric-soil-depends-on-saturation"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -156503,7 +156499,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-white-willow-depends-on-moist-lit-riparian-habitat"
+      "verification_ref": "wk-verification:v2-white-willow-depends-on-moist-lit-riparian-habitat"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -156909,7 +156905,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-work-intensity-duration"
+      "verification_ref": "wk-verification:v2-work-intensity-duration"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -157014,7 +157010,7 @@
           "search_aliases": []
         }
       },
-      "verification_ref": "wk-verification:production-wound-healing-time-dependent"
+      "verification_ref": "wk-verification:v2-wound-healing-time-dependent"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -157225,6 +157221,7 @@
         "semantic_resolution",
         "materialization_support",
         "source_grounded_qa",
+        "npc_decision",
         "conversation"
       ],
       "question_classes": [
@@ -188265,7 +188262,6 @@
         "wk:architecture_settlement:polygonal-log-crib",
         "wk:architecture_settlement:timber-dwelling",
         "wk:architecture_settlement:wooden-bridge",
-        "wk:material_culture:candidate-v7-novgorod-play-artefacts",
         "wk:material_culture:wooden-nail",
         "wk:material_culture:wooden-peg"
       ],
@@ -201338,8 +201334,7 @@
         "claim:public-world-foot-and-mounted-service-have-different-needs",
         "claim:residual-law-unauthorized-horse-use",
         "claim:transport-horse-sledge-equipment",
-        "claim:v2-g1-princely-horse-worth-more-than-smerd-horse",
-        "wk:material_culture:candidate-v7-novgorod-play-artefacts"
+        "claim:v2-g1-princely-horse-worth-more-than-smerd-horse"
       ],
       "конька": [
         "claim:population-processes-bone-skate-output",
@@ -202663,9 +202658,6 @@
       "кубари": [
         "claim:candidate-v7-museum-leather-balls-and-wooden-spinning-tops"
       ],
-      "кубарь": [
-        "wk:material_culture:candidate-v7-novgorod-play-artefacts"
-      ],
       "кувалда": [
         "wk:material_culture:smith-hammer"
       ],
@@ -202755,9 +202747,6 @@
       ],
       "кузьмодемьянскую": [
         "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends"
-      ],
-      "кукла": [
-        "wk:material_culture:candidate-v7-novgorod-play-artefacts"
       ],
       "куколки": [
         "claim:fauna-culex-life-cycle",
@@ -233353,8 +233342,7 @@
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
       ],
       "свистулька": [
-        "claim:candidate-v7-museum-individual-toy-types",
-        "wk:material_culture:candidate-v7-novgorod-play-artefacts"
+        "claim:candidate-v7-museum-individual-toy-types"
       ],
       "свита": [
         "claim:clothing-svita-outer-garment",

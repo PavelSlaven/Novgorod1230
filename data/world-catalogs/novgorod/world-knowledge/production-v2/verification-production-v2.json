@@ -3,6 +3,51 @@
   "verifications": [
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-activity-fluid-balance",
+      "claim_ref": "claim:activity-fluid-balance",
+      "claim_digest": "2a6cfe85b6cf7f841315fa06a94be587ecbe2fc4b131f69781eb5b4046f7df8d",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:activity-fluid-balance",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:fluid"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только разбор хода и механика тела; в речь после переписки языком эпохи («в работе пить надо»)."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-acute-sleep-loss-performance",
+      "claim_ref": "claim:acute-sleep-loss-performance",
+      "claim_digest": "0fd6dd3a28a41850f8f949b8810a20b9550ae46a520d8b12157ccdcbfb0d55e8",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:acute-sleep-loss-performance",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:sleep"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только внутреннее обоснование усталости; не состояние конкретного персонажа."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-animal-pollination-affects-flowering-plant-reproduction",
+      "claim_ref": "claim:animal-pollination-affects-flowering-plant-reproduction",
+      "claim_digest": "bc602ac076f28abaf1da0b1ade4be4083bc5ca3545300d3304e7375f68e9a24b",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:animal-pollination-affects-flowering-plant-reproduction",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:pollination"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только экология мира для разбора хода; не наличие цветов, пчёл или урожая."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-bearberry-lingonberry-resemblance-not-identification",
       "claim_ref": "claim:bearberry-lingonberry-resemblance-not-identification",
       "claim_digest": "fc8959e51292b1fdb60474981e7bbba573591231ade10a8cf03b018f4825117c",
@@ -273,6 +318,21 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-common-reed-rhizome-produces-stems-in-wetland-habitat",
+      "claim_ref": "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+      "claim_digest": "41be2fbe1d0bc7dd2a314a6512c35dbc81338fa6265599394af8dcc1f0c587a2",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:uconn-common-reed"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только ботаника для материализации; не наличие тростника в месте."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-construction-rjaz-polygonal-form",
       "claim_ref": "claim:construction-rjaz-polygonal-form",
       "claim_digest": "6ad39305a6d73bcc3781f7b67df7d1ca88f341ef5439b667a1edd35e75364971",
@@ -315,6 +375,21 @@
       "review_ref": "verification/verification-production-v2-A-01.md#A-01",
       "verdict": "APPROVE",
       "limits": "Внутреннее устройство мира для механик; не открывается в речи."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-exercise-heat-dissipation",
+      "claim_ref": "claim:exercise-heat-dissipation",
+      "claim_digest": "2ac7e99bc3d49d04f1de45bbddd55b13fe15a8f4b472a4207c700e4d3ae31637",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:exercise-heat-dissipation",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:heat"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только механика тела при нагрузке и жаре; без порогов и исходов."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -1371,6 +1446,21 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-food-energy-nutrients",
+      "claim_ref": "claim:food-energy-nutrients",
+      "claim_digest": "dee2bf97dec93e0d431d598f41e9568a5b13bc11fbe9011e2814f0c245cccb36",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:food-energy-nutrients",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:diet"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только внутренняя модель питания; не вывод состояния из пропущенной еды."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-food-preservation-qualitative",
       "claim_ref": "claim:food-preservation-qualitative",
       "claim_digest": "ee49a4ab98b1b94f867e4086b04794e80d0c47751bec9ae9ec8b6b2e7f07b630",
@@ -1551,6 +1641,21 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-household-apple-orchard",
+      "claim_ref": "claim:household-apple-orchard",
+      "claim_digest": "8316a4492b771d3c81b5e6363231d94bab3a2b61e51c1e2e029c1b7f8d596413",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:household-apple-orchard",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость садов в городе; не наличие яблонь на участке сцены."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-household-clay-drying-and-incompatible-movement",
       "claim_ref": "claim:household-clay-drying-and-incompatible-movement",
       "claim_digest": "0aa9436a4b23d5515b07694d53a7e191a3ef9bb9ac4367e8b82f190f3c58e3ba",
@@ -1578,6 +1683,21 @@
       "review_ref": "verification/verification-production-v2-A-02.md#A-02",
       "verdict": "APPROVE",
       "limits": "Только знание мастера; долговечность починки не гарантирует."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-household-riverside-storage",
+      "claim_ref": "claim:household-riverside-storage",
+      "claim_digest": "71d976107cc2f35ffbdbb9a8c4b41a012102ff04b288d43cde64a6350311a3d7",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:household-riverside-storage",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:ha-winter"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость складов у Волхова; содержимое и наличие не заданы."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -2452,6 +2572,51 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-medieval-novgorod-fishing-attests-major-occupation-food-context",
+      "claim_ref": "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
+      "claim_digest": "05006a54d10fadb8f2ab1fe1e840076071ca940615385ae1f93b33c84dbca166",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:novgorod-fishing"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только фон занятий Новгородской земли; не улов, рыба или доступ к воде."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-medieval-novgorod-food-base-attests-domestic-animals-and-crops",
+      "claim_ref": "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
+      "claim_digest": "1f59b6092f5e6534e3abc1ef04efef7be6306898013a2f98c5ddc24a4dbda2d0",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:novgorod-landscape"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только фон пищевой базы; не скот, поле или запас в сцене."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+      "claim_ref": "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+      "claim_digest": "b818bab7a7a5ecd4374ac61cc277110849c3f315a3d97434b1d4f9ac609e2b58",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:novgorod-landscape"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только региональный фон ландшафта; место рядом не материализует."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-metal-classes-composition",
       "claim_ref": "claim:metal-classes-composition",
       "claim_digest": "33346201ecece31b7fb6f9e742133359df565f3964df3ef87d3408c99003ca73",
@@ -2939,6 +3104,21 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-occupation-smith-iron-input",
+      "claim_ref": "claim:occupation-smith-iron-input",
+      "claim_digest": "89248d78b2501df04dbacfd782c174cb130be03ebc4d80b9da0013b8336969fa",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:occupation-smith-iron-input",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:occupation-kolchin-craft"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость городской кузницы с привозным железом; не запас железа."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-ordinary-life-carpenter-works-wood-with-tools",
       "claim_ref": "claim:ordinary-life-carpenter-works-wood-with-tools",
       "claim_digest": "f2a9bfe01cf32533ec63253a4da420cfc8396b8f4a79f164a714bdb2863f93bd",
@@ -3131,6 +3311,21 @@
       "review_ref": "verification/verification-production-v2-A-04.md#A-04",
       "verdict": "APPROVE",
       "limits": "Только общая защитная роль рабочей одежды; не задаёт одежду конкретного человека."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-pain-nociception-distinct",
+      "claim_ref": "claim:pain-nociception-distinct",
+      "claim_digest": "8838d04a1d6c63eb1cfbabc173b50645e2a8a269581fc25672a16d0496b99c1e",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:pain-nociception-distinct",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:pain"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только внутренняя модель боли; не шкала повреждения персонажа."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -3392,6 +3587,36 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-bark-bast",
+      "claim_ref": "claim:population-bark-bast",
+      "claim_digest": "c4622ae74dd56efe7b17a4f72188d3c7fbfc9b6fa2f7a2572e90e602e1dd5efc",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-bark-bast",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-223"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только рыбацкое ремесло для материализации; в речь после удаления служебного хвоста."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-bark-cut",
+      "claim_ref": "claim:population-bark-cut",
+      "claim_digest": "c826fc62f94a383646a84aa4119163bb3f02527dd70f6ae34e9ae791d19111bd",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-bark-cut",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-223"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость резки бересты ножом; не наличие ножа."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-population-ceramic-water",
       "claim_ref": "claim:population-ceramic-water",
       "claim_digest": "8856802f070230dc5d6fd52679216d6b316a701a9375b9e524a990d8fbf2f3fe",
@@ -3404,6 +3629,66 @@
       "review_ref": "verification/verification-production-v2-A-04.md#A-04",
       "verdict": "APPROVE",
       "limits": "Только для решений NPC как устройство мира; в речь и рассказ не выводить."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-drying-workspace",
+      "claim_ref": "claim:population-drying-workspace",
+      "claim_digest": "8a0a510efa6bc9a2881d2c50f88f9e419f3f2c57492b5f7198204f9c508626ac",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-drying-workspace",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-221"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость места сушки рыбы; постройка и содержимое не заданы."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-fish-dried-form",
+      "claim_ref": "claim:population-fish-dried-form",
+      "claim_digest": "cc19fa7a07e9b22c89b2ed19d1d3bfe9657922f9a23209cfedb5f3bc15df5d87",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-fish-dried-form",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-221"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только историческое основание процесса сушки рыбы; не рецептура и не срок."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-fishing-workspace",
+      "claim_ref": "claim:population-fishing-workspace",
+      "claim_digest": "414e6e9aded8d11ca8a1e3e74030faaa128234f3aac2a81b8ef6f3e2be2687b6",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-fishing-workspace",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-221"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость рыболовного стана с сетями; конкретный стан авторский."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-household-storage",
+      "claim_ref": "claim:population-household-storage",
+      "claim_digest": "0a6ca4617200c404e5f4f2fd6499de9d064e5d579793511bbc6bf8d9fa8af46e",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-household-storage",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только ограниченная реконструкция хозяйственного хранения; запасы и планировка не заданы."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -3585,6 +3870,51 @@
       "review_ref": "verification/verification-production-v2-A-04.md#A-04",
       "verdict": "APPROVE",
       "limits": "Только для решений NPC; в речь не выводить."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-net-cord",
+      "claim_ref": "claim:population-net-cord",
+      "claim_digest": "37bcf2d28a8efc2579c91548daf399a606369dbaa6eea9831e672173654459b1",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-net-cord",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только крепление поплавков к сети верёвкой; не наличие снасти."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-net-floats",
+      "claim_ref": "claim:population-net-floats",
+      "claim_digest": "87ac7a1fea5f0c5f78a219dfc05fab8f087648ec84d12f6a730d1970bfed882c",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-net-floats",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только устройство сетей с поплавками; не все способы ловли."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-net-weights",
+      "claim_ref": "claim:population-net-weights",
+      "claim_digest": "e3ec4ca1bea5d9e00ba2f7772b5d934a093f38fc224f81cd324282fa14f50269",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-net-weights",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только устройство сетей с грузилами; не гарантия улова."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -3780,6 +4110,51 @@
       "review_ref": "verification/verification-production-v2-A-04.md#A-04",
       "verdict": "APPROVE",
       "limits": "Только для решений NPC; в речь не выводить."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-river-work",
+      "claim_ref": "claim:population-river-work",
+      "claim_digest": "f56df6e6d034a42f5a21c28526eba8e05e160d4e85e87524f9b0f7be9dbd3780",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-river-work",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-222"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только берег как контекст сетной ловли; берег и доступ задаёт карта."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-rod-input",
+      "claim_ref": "claim:population-rod-input",
+      "claim_digest": "6b5b293c68af538bf76ef7df505bcb5ff01ba40b15185297b6d73633cf53c1b5",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-rod-input",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-fishing-224"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только требование гибкости прута для материализации; в речь после удаления хвоста."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-population-storage-vessels",
+      "claim_ref": "claim:population-storage-vessels",
+      "claim_digest": "35eafd1aae29eec9850faaf33373afe2bd8c9650e6fb0542c1be3b7135a1a169",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:population-storage-vessels",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:population-things-overview"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только категории совместимой тары; ёмкость и содержимое выбирает владелец."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -4215,6 +4590,21 @@
       "review_ref": "verification/verification-production-v2-A-05.md#A-05",
       "verdict": "APPROVE",
       "limits": "Только общее знание о нехватке времени и рук; не задаёт приоритеты конкретного хозяйства."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
+      "claim_ref": "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
+      "claim_digest": "25bf44b3291fa668136564e03e2a27e7bd15c61aa77a7901aa38ec3a08feb42b",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:helama-climate"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только климатический фон до 1300 года; не прогноз погоды или урожая."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -5877,6 +6267,51 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
+      "claim_ref": "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
+      "claim_digest": "20f17357147dac65efec1a5f9414632ba176e84d262e3f2ad3e1772d31af4aa3",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-gated",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v1-1230-offices"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-gated.md#F13-gated",
+      "verdict": "APPROVE",
+      "limits": "Закрыт до заведения события novgorod_upheaval_december_1230 с датой начала по источнику; эпизод Водовика «в городской мобилизации» мог быть раньше декабря, гейт по декабрю только позже открывает, утечки нет."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
+      "claim_ref": "claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
+      "claim_digest": "07ae25f9e72b1b6a2e3aa942ae97bfe6c94321f8ed715665782dee725fe668d0",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:residual-government-law-v1-1230-records-veche-and-princely-oath-episode",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-gated",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v1-1230-veche-prince-oath"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-gated.md#F13-gated",
+      "verdict": "APPROVE",
+      "limits": "Крестное целование Ярослава на грамотах — позже начала смуты; при заведении события начало фазы не раньше прихода Ярослава, иначе дать эпизоду отдельное событие, чтобы не открыть его на дни раньше."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
+      "claim_ref": "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
+      "claim_digest": "069dc7955b420675a283c5b2139412c88efe2ea7655cb38b4b8b9a7c54ffb53b",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-gated",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:residual-government-law-v2-1230-hundreds"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-gated.md#F13-gated",
+      "verdict": "APPROVE",
+      "limits": "Раздел имущества Водовика «по стом» — после бегства посадника и смены должностных лиц; начало события не раньше этого эпизода."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-residual-law-arson-remedy-and-sanction",
       "claim_ref": "claim:residual-law-arson-remedy-and-sanction",
       "claim_digest": "48ec0177f958463b8c80dd1df833fec87e2215a23a34ae450a11db0e471e8777",
@@ -6294,6 +6729,21 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-river-flow-affects-sediment-transport-deposition",
+      "claim_ref": "claim:river-flow-affects-sediment-transport-deposition",
+      "claim_digest": "a6f3310a7a2110fd1857a2370545df7bf5ee9e6efa028e9572ccc287a2261a8f",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:river-flow-affects-sediment-transport-deposition",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:sediment"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только гидрология мира; доступный материал не подразумевается."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-river-landing-category",
       "claim_ref": "claim:river-landing-category",
       "claim_digest": "e35ad5a386b82d1134edeedc0e12fc2c643e81e793df800fab4864ce38d23d43",
@@ -6352,6 +6802,246 @@
       "review_ref": "verification/verification-production-v2-B-02.md#B-02",
       "verdict": "APPROVE",
       "limits": "Общее знание покупателя о подтверждении покупки на торгу; не правило достаточности доказательств и не исход спора."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-seasonal-bird-migration-affects-seasonal-food-climate-exposure",
+      "claim_ref": "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
+      "claim_digest": "7bd44b5b73d1787241d2eeba6bd7e48d308bfe84ed7f8c1ec2d6af0b08408930",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:migration"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только экология сезонов; вид и дата перелёта не заданы."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-secondary-clay-forms-through-water-transport-deposition",
+      "claim_ref": "claim:secondary-clay-forms-through-water-transport-deposition",
+      "claim_digest": "d650999fef085ea589bf9644ee4eedc362b53ec1aa4f6b2c1441b0dbdaa4e47b",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:secondary-clay-forms-through-water-transport-deposition",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:uaf-stoneware"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только геология глины; местная глина не подразумевается."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-cart-transport",
+      "claim_ref": "claim:settlement-cart-transport",
+      "claim_digest": "d3c66083423b4a5916f75157f496f0e00f50edd35fc1bc3656311eaad2398f4b",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-cart-transport",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только городская совместимость телег; не наличие телеги и не план двора."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-log-building-form",
+      "claim_ref": "claim:settlement-log-building-form",
+      "claim_digest": "98eb99d0377238108d8cd9a61f0d8c89a2e6753575418fea2eab12f06dec9a70",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-log-building-form",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только городская совместимость срубных домов; не наличие постройки."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-oak-shingle-roof",
+      "claim_ref": "claim:settlement-oak-shingle-roof",
+      "claim_digest": "b312faad52fac7d62b5b7e4772c54a827442ac61922199374a672185f6fba41c",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-oak-shingle-roof",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость кровель из дубовой драни; не кровля конкретного дома."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-oven-cooking",
+      "claim_ref": "claim:settlement-oven-cooking",
+      "claim_digest": "6898d3575f1402480a30ae0b7ec239be3fd1dfc9caa1e9be8410e0ac2ec9c383",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-oven-cooking",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость готовки в домашней печи; не наличие печи."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-oven-heating",
+      "claim_ref": "claim:settlement-oven-heating",
+      "claim_digest": "681852a3df1ab06c4d42b03bc9d7569eb28a6b369fd5a2595ed513d8bc8c263f",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-oven-heating",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость отопления печью; не наличие печи."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-pine-spruce-log",
+      "claim_ref": "claim:settlement-pine-spruce-log",
+      "claim_digest": "b7688f556fd502525bb08b7b395dafed78106dc61b32d28276f281aed9c41429",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-pine-spruce-log",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость сосновых и еловых срубов; не материал конкретного дома."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-post-fence-yard",
+      "claim_ref": "claim:settlement-post-fence-yard",
+      "claim_digest": "c1c433fed0acce0f479676905217073dec49c71e4b88dfb33ea7fbe9797700ae",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-post-fence-yard",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только возможность частокола у городского двора; не ограда конкретного двора."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-underfloor-storage",
+      "claim_ref": "claim:settlement-underfloor-storage",
+      "claim_digest": "b8ffffb1b51c9f33eb9ac4f812f0a1d64b5f9d33a4b0041b28b5b6db5412b281",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-underfloor-storage",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость хранения в подклете; не содержимое подклета."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-underfloor-utility",
+      "claim_ref": "claim:settlement-underfloor-utility",
+      "claim_digest": "d8c5863492d03b51166863e6034676b4ad9b0a65efe65936659395edc8e3d9b4",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-underfloor-utility",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость подклета как холодного помещения; не наличие подклета."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-vestibule-log",
+      "claim_ref": "claim:settlement-vestibule-log",
+      "claim_digest": "ee0d1da37d8e365cb304b97d2744b05c9b235fdcefea26eaf0bd72a93b739907",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-vestibule-log",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость дощатых сеней; не наличие сеней у дома."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-wood-building",
+      "claim_ref": "claim:settlement-wood-building",
+      "claim_digest": "249b7ec71518a6dc55ecd6bf507ce89ed174bd03ffc81e614c07a955beadac93",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-wood-building",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только городская совместимость деревянной застройки; не план двора."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-wooden-paving",
+      "claim_ref": "claim:settlement-wooden-paving",
+      "claim_digest": "ca54ccd4f357b82652b6a6d16ca3da23571eb27160d0e022bf5825c3d6bd4759",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-wooden-paving",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость деревянных мостовых; не мостовая конкретной улицы."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-settlement-workshop-street",
+      "claim_ref": "claim:settlement-workshop-street",
+      "claim_digest": "26e5df10ea11cfc7a4d682b7b768855364c40436e12e2848261f305281607ae9",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/settlement-craft.json#claim:settlement-workshop-street",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:kolchin-settlement"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только совместимость мастерских на улице; не наличие мастерской."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-soil-texture-affects-infiltration-rate",
+      "claim_ref": "claim:soil-texture-affects-infiltration-rate",
+      "claim_digest": "d04223c6c471876ed3c0d3695af2f28492b7c0ff9894bbd62a2a7d52fdee3635",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:soil-texture-affects-infiltration-rate",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:infiltration"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только гидрология почвы; точная скорость на месте не задана."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -6595,6 +7285,21 @@
       "review_ref": "verification/verification-production-v2-A-06.md#A-06",
       "verdict": "APPROVE",
       "limits": "Только для пряхи и мастера; не задаёт прочность конкретной нити."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-stored-grain-condition-depends-on-temperature-moisture",
+      "claim_ref": "claim:stored-grain-condition-depends-on-temperature-moisture",
+      "claim_digest": "57095956e655deb5c2434b16cdd003921b5babda6ed4236e5fb21857990bb7fe",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:stored-grain-condition-depends-on-temperature-moisture",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:purdue-grain-storage"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только модель хранения зерна; запас и срок не заданы."
     },
     {
       "schema": "world_knowledge_verification_v1",
@@ -7283,6 +7988,51 @@
     },
     {
       "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-water-temperature-affects-aquatic-organism-range",
+      "claim_ref": "claim:water-temperature-affects-aquatic-organism-range",
+      "claim_digest": "9e47b6fd8ddae21c68992af82c830e1b2fd13ea7040f003159779933c13af1d1",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:water-temperature-affects-aquatic-organism-range",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:usgs-temperature-water"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только экология воды; не измерение конкретного водоёма."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-wetland-hydric-soil-depends-on-saturation",
+      "claim_ref": "claim:wetland-hydric-soil-depends-on-saturation",
+      "claim_digest": "eca54e42f98c4d5764d29bfeb70f2c410cf8caf91a7b8772f8267eb2cb8fdfd2",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:wetland-hydric-soil-depends-on-saturation",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:hydric"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только почвоведение; болото в месте не подразумевается."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-white-willow-depends-on-moist-lit-riparian-habitat",
+      "claim_ref": "claim:white-willow-depends-on-moist-lit-riparian-habitat",
+      "claim_digest": "b7215708b9985fbf9689e8705e2629871badf40446ec42bd853c234b664ac2a5",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:white-willow-depends-on-moist-lit-riparian-habitat",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:euforgen-salix-alba"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только экология ивы; местное дерево не подразумевается."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
       "verification_ref": "wk-verification:v2-wild-mushroom-resemblance-not-edibility",
       "claim_ref": "claim:wild-mushroom-resemblance-not-edibility",
       "claim_digest": "9e0f751291034bd96c0a58d6cb7ea7a54c116ce954572401c0445f4205166b79",
@@ -7310,6 +8060,36 @@
       "review_ref": "verification/verification-production-v2-A-06.md#A-06",
       "verdict": "APPROVE",
       "limits": "Только устройство мира; в речь и рассказ не идёт."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-work-intensity-duration",
+      "claim_ref": "claim:work-intensity-duration",
+      "claim_digest": "a28484b568a50f9247a48a85826ba590bb1e9ff81cf916273ddb18ab62167042",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:work-intensity-duration",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:load"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только механика утомления; универсального максимума нет."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:v2-wound-healing-time-dependent",
+      "claim_ref": "claim:wound-healing-time-dependent",
+      "claim_digest": "6c001c98fabdfee4f889359e80105f5290ee76813daf665b08a197a3b1eb6682",
+      "candidate_ref": "git:6e59b2834f8ea9ebf6459e97db251482b799f7d0:data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json#claim:wound-healing-time-dependent",
+      "auditor_ref": "claude-opus-5-5/wk-v2-final-approval/F13-narrowed",
+      "independence_basis": "Separate Opus approval run; candidates were authored or classified by Sonnet runs and the reviewer did not author them. Claim, localizations, evidence notes and matched book rows were read per claim.",
+      "evidence_checked": [
+        "evidence:wound"
+      ],
+      "review_ref": "verification/verification-production-v2-F13-narrowed.md#F13-narrowed",
+      "verdict": "APPROVE",
+      "limits": "Только модель заживления; срок и диагноз не следуют."
     }
   ]
 }

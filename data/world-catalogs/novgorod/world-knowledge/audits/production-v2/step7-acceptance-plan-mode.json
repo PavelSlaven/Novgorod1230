@@ -1,6 +1,6 @@
 {
   "schema": "wk_v2_acceptance_summary_v1",
-  "generated_at": "2026-09-26T19:30:04.163Z",
+  "generated_at": "2026-09-26T20:56:49.475Z",
   "inputs": {
     "v1_plan_records": 120,
     "v2_plan_records": 120,
@@ -114,7 +114,7 @@
   },
   "new_claims_in_v2_slices": {
     "unique_new_claim_refs_surfaced": 36,
-    "total_new_claim_appearances": 213,
+    "total_new_claim_appearances": 212,
     "situations_with_new_claims": 82,
     "refs": [
       "claim:v2-famine-frost-vozdvizhenie-damaged-grain",

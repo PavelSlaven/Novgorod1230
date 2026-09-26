@@ -56,6 +56,12 @@
 | 049 | `frozen-role-requests` / `turn-step-generic-owners` / `temporal-world-v1` | pre-#152 app/domain fails вне WK diff | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 050 | NPC `knowledge_snapshot` / memory/rumors | actor-visible knowledge — `@rus/visibility-knowledge-memory` / npc-runtime, не #154 WK | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 051 | `authored-opening-narration` | opening narration без WK date-gate — owner рассказчика | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 060 | `world-knowledge/production-v2` claims `domain_internal_only` | знание эпохи скрыто из-за формулировки (служебные обороты, историография, наука) — нужна переписка языком 1230 года и повторное утверждение | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
+| 061 | `audits/production-v2/step4-*-coverage.json`, `category-cartography.json` | пробелы аудита WK не закрыты: 37 must отклонены на утверждении, 22 без источника; `missing_families` (шаг 4.8) не делались | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
+| 062 | WK `applicability.conditions.started_historical_events`, история событий | события с датой внутри года — только через условие события; события `novgorod_famine_1230` (фазы), `novgorod_upheaval_december_1230` и поздние события голода должны быть заведены при импорте истории; компилятор не проверяет существование event id | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
+| 063 | `knowledge_access` `role_bound` | роли NPC v17 покрывают малую часть `role_bound`; `nov_role_craftsman_master` покрывает все ремёсла — перевести в `occupation_bound`, когда запросы NPC понесут `occupation_ref` | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
+| 064 | `search_aliases` production-v2, `benchmarks/retrieval-v1.json` | промахи поиска аудита закрыты 3/91 (синонимы отклонены на утверждении); лексический hard-constraint кейс судной грамоты вне top-10 | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
+| 065 | `applicability.time` production-v2 | 65 claims с диапазоном 500+ лет не сужены (источники точнее не дают) | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 
 ## Записи
 
@@ -257,3 +263,33 @@
 - **Где.** `authored-opening-narration.js` / narration owner.
 - **Как жить.** Не закрывать «narration owner» без issue; отдельный CR владельца рассказчика, если opening должен учитывать started historical events.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
+
+### LW-060 — знание эпохи скрыто из-за формулировки
+- **Где.** `data/world-catalogs/novgorod/world-knowledge/production-v2` — claims класса `domain_internal_only` с суть-знанием 1230 года (около 800 после #154: служебные хвосты «не устанавливает…», «в описанном…», научные термины).
+- **Как жить.** В речь NPC и рассказчику не открывать без переписки. Переписка — отдельная ревизия: текст языком эпохи, повторное утверждение WR §21.1 по каждому claim.
+- **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)
+
+### LW-061 — пробелы аудита WK после production-v2
+- **Где.** `audits/production-v2/step4-*-coverage.json` (`final_status`), `category-cartography.json`.
+- **Как жить.** Must-потребности со статусом `rejected_at_approval`/`no_source` — очередь следующей ревизии: целевой поиск по книжному индексу, авторинг, утверждение. `missing_families` (14, BOUNDED P2) — решение владельца по объёму.
+- **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)
+
+### LW-062 — событийная точность WK только через условия событий
+- **Где.** `applicability.conditions.started_historical_events` в WK; события — `@rus/time-events-history` / импорт истории.
+- **Как жить.** WK не несёт день и месяц. Claim о событии внутри года закрывать условием события. При импорте истории завести `novgorod_famine_1230` (с 14.09.1230 по D19/D22), `novgorod_upheaval_december_1230` и поздние события голода отдельными id. Добавить скриптовую проверку, что event id из WK существует.
+- **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)
+
+### LW-063 — role_bound почти недостижим
+- **Где.** `knowledge_access.class: role_bound` в production-v2.
+- **Как жить.** NPC v17 используют 9 ролей; рассказчику нужен `role_ref` игрока (#153 часть B). Ремёсла под `nov_role_craftsman_master` перевести в `occupation_bound`, когда запросы NPC понесут `occupation_ref`.
+- **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)
+
+### LW-064 — поиск по синонимам не доработан
+- **Где.** `search_aliases` production-v2; `benchmarks/retrieval-v1.json` кейс `social_later_charter_hard_exclusion_ru`.
+- **Как жить.** Синонимы добавлять только с утверждением; кейс судной грамоты держится гибридным поиском. Если появится чисто лексический путь — проверить этот кейс.
+- **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)
+
+### LW-065 — широкие диапазоны времени
+- **Где.** `applicability.time` production-v2 (65 claims с диапазоном 500+ лет, максимум 700).
+- **Как жить.** Не сужены: источники не дают большей точности. Сужать только по новому источнику.
+- **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)

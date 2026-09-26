@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- data(wk): World Knowledge pack revision production-v2 — D15 access reclassification with strict review, book-sourced claims, in-world law rewrites, 1230 famine claims gated by the event (D19/D22), final WR §21.1 approval of every changed claim, Giga vectors and benchmark; runtime still pins production-v1 until #153 step 7 (#154)
+- data(wk): World Knowledge pack revision production-v2 — D15 access reclassification with strict review, book-sourced claims, in-world law rewrites, 1230 famine claims gated by the event (D19/D22), final WR §21.1 approval of every changed claim, Giga vectors and benchmark; runtime still pins production-v1 until #153 step 7 (#154) LW-060..LW-065 added
 - data(temporal-v4): 1230 famine rule re-issued 14.09.1230–31.12.1231 with book 667380 source (D19/D22, #154)
 - fix(wk): #153 REVIEW-038 — turn historical_events via services 3rd arg; owner clock normalize; MODULE.md services wrap (#153, PR #98)
 - fix(wk): #153 REVIEW-037 — drop request_id event Map; explicit historical_events ports; facet present reject; pack validator messages (#153, PR #98)

@@ -368,3 +368,19 @@ SHA-256 среза `923ca588a34f8944792e5863daadc0ca6bac750edc4a8c469e43811553c0
   - 9 M2c-профилей и 12 их наборов годны как кандидаты.
   - 51 набор новых занятий годен как кандидат без присутствия. Конкретный G4, шаблон и мировая ревизия — `no_source`, NPC появляется только по основанию сцены.
   - Имущество (D14) не создано.
+
+## Уточнение ревьюера: область поздних вердиктов (Claude, 2026-09-27)
+
+Ранние разделы «npc_runtime_profiles/ — rework (не произведено)» и «skills_competences/ — rework (не произведено)» означали, что данных ещё нет. Позже данные произведены и проверены независимыми проходами. Ниже названа явная область поздних вердиктов, чтобы ранний вердикт каталога не переносился на вспомогательные файлы.
+
+### npc_runtime_profiles/README.md, npc_runtime_profiles/build.py, npc_runtime_profiles/export_pr98.py, npc_runtime_profiles/pr98_extract.json — approve_with_limits
+
+- Область: независимая проверка C003 (коммит 9db968c2). В её задание прямо входили `build.py`, `validate.py`, `pr98_extract.json` и экспортёр. Вердикт — раздел «npc_runtime_profiles/npc_runtime_profiles.json — approve_with_limits».
+- Пересборка того же прохода: `export_pr98.py --check` OK, `build.py` даёт побайтно тот же `npc_runtime_profiles.json`.
+- Ограничения — те же, что в указанном разделе.
+
+### skills_competences/README.md, skills_competences/build.py — approve_with_limits
+
+- Область: независимая проверка C001 (коммит 5ec3e1f9), раздел «skills_competences/skills_competences.json — approve_with_limits».
+- Пересборки C001 и C001b: `skills_competences/build.py` даёт побайтно тот же `skills_competences.json`.
+- Ограничения — те же, что в указанном разделе.

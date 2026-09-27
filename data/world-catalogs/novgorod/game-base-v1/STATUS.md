@@ -20,12 +20,12 @@
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 8 | 22 | 0 |
-| [occupations-activities](occupations-activities/VERIFICATION.md) | rework | 0 | 5 | 6 |
+| [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 0 | 11 | 0 |
 | [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 4 | 18 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **52** | **191** | **6** |
+| **Итого** | | **52** | **197** | **0** |
 
 ## Вердикты по файлам
 
@@ -312,14 +312,14 @@
 |---|---|
 | [`activities_observable/activities_new_occupations.csv`](occupations-activities/activities_observable/activities_new_occupations.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#activities_observableactivities_new_occupationscsv--approve_with_limits) |
 | [`carried_inventories/carried_inventories.csv`](occupations-activities/carried_inventories/carried_inventories.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#carried_inventoriescarried_inventoriescsv--approve_with_limits) |
-| [`npc_runtime_profiles/build.py`](occupations-activities/npc_runtime_profiles/build.py) | [rework](occupations-activities/VERIFICATION.md#npc_runtime_profiles--rework-не-произведено) |
-| [`npc_runtime_profiles/export_pr98.py`](occupations-activities/npc_runtime_profiles/export_pr98.py) | [rework](occupations-activities/VERIFICATION.md#npc_runtime_profiles--rework-не-произведено) |
+| [`npc_runtime_profiles/build.py`](occupations-activities/npc_runtime_profiles/build.py) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
+| [`npc_runtime_profiles/export_pr98.py`](occupations-activities/npc_runtime_profiles/export_pr98.py) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
 | [`npc_runtime_profiles/npc_runtime_profiles.json`](occupations-activities/npc_runtime_profiles/npc_runtime_profiles.json) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesnpc_runtime_profilesjson--approve_with_limits) |
-| [`npc_runtime_profiles/pr98_extract.json`](occupations-activities/npc_runtime_profiles/pr98_extract.json) | [rework](occupations-activities/VERIFICATION.md#npc_runtime_profiles--rework-не-произведено) |
-| [`npc_runtime_profiles/README.md`](occupations-activities/npc_runtime_profiles/README.md) | [rework](occupations-activities/VERIFICATION.md#npc_runtime_profiles--rework-не-произведено) |
+| [`npc_runtime_profiles/pr98_extract.json`](occupations-activities/npc_runtime_profiles/pr98_extract.json) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
+| [`npc_runtime_profiles/README.md`](occupations-activities/npc_runtime_profiles/README.md) | [approve_with_limits](occupations-activities/VERIFICATION.md#npc_runtime_profilesreadmemd-npc_runtime_profilesbuildpy-npc_runtime_profilesexport_pr98py-npc_runtime_profilespr98_extractjson--approve_with_limits) |
 | [`occupations/occupations_additions.csv`](occupations-activities/occupations/occupations_additions.csv) | [approve_with_limits](occupations-activities/VERIFICATION.md#occupationsoccupations_additionscsv--approve_with_limits) |
-| [`skills_competences/build.py`](occupations-activities/skills_competences/build.py) | [rework](occupations-activities/VERIFICATION.md#skills_competences--rework-не-произведено) |
-| [`skills_competences/README.md`](occupations-activities/skills_competences/README.md) | [rework](occupations-activities/VERIFICATION.md#skills_competences--rework-не-произведено) |
+| [`skills_competences/build.py`](occupations-activities/skills_competences/build.py) | [approve_with_limits](occupations-activities/VERIFICATION.md#skills_competencesreadmemd-skills_competencesbuildpy--approve_with_limits) |
+| [`skills_competences/README.md`](occupations-activities/skills_competences/README.md) | [approve_with_limits](occupations-activities/VERIFICATION.md#skills_competencesreadmemd-skills_competencesbuildpy--approve_with_limits) |
 | [`skills_competences/skills_competences.json`](occupations-activities/skills_competences/skills_competences.json) | [approve_with_limits](occupations-activities/VERIFICATION.md#skills_competencesskills_competencesjson--approve_with_limits) |
 
 ### places-binding

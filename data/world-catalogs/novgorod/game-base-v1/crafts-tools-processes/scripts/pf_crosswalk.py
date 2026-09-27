@@ -64,11 +64,14 @@ for row in read(GROUP / 'workshops/workshops.csv'):
 g4_pf = {
     'ferry_mooring': 'ferry_landing', 'church': 'church_interior',
     'church_yard': 'churchyard', 'road_exit': 'road',
+    'outer_gate': 'town_wall_edge', 'church_gate': 'churchyard',
     'market_square': 'market_square', 'craft_street': 'town_street',
     'work_sheds': 'ordinary_workshop', 'merchant_yards': 'town_courtyard',
-    'storehouses': 'cellar_granary', 'stable_yard': 'outbuildings',
+    'storehouses': 'cellar_granary', 'storage_klet': 'cellar_granary',
+    'stable_yard': 'outbuildings', 'cattle_yard': 'outbuildings',
     'river_landings': 'river_wharf', 'dwelling_yard': 'rural_yard',
-    'field_edge': 'field_margin',
+    'field_edge': 'field_margin', 'threshing_floor': 'threshing_barn',
+    'gardens': 'orchard_garden',
 }
 for occupation, record in occupations.items():
     for term in record['typical_g4_location_types'].split(';'):
@@ -77,6 +80,12 @@ for occupation, record in occupations.items():
             add(occupation, 'pf_' + g4_pf[term], 'source',
                 tsv_confidence[record['confidence']],
                 f'tsv:occ:{occupation}#typical_g4_location_types')
+    for term in record['where_work_happens'].split(';'):
+        pf = {'зимник': 'winter_ice_crossing', 'погост': 'churchyard'}.get(term.strip())
+        if pf:
+            add(occupation, 'pf_' + pf, 'source',
+                tsv_confidence[record['confidence']],
+                f'tsv:occ:{occupation}#where_work_happens')
 
 # These work sites are named in the occupation, rather than inferred from its kit.
 direct = {
@@ -87,12 +96,18 @@ direct = {
     'nov_occ_haymaker': [('hay_meadow', 'where_work_happens', 'покос')],
     'nov_occ_fisher': [('fishing_camp', 'where_work_happens', 'рыболовный стан')],
     'nov_occ_fish_weir_keeper': [('fishing_camp', 'where_work_happens', 'рыболовный стан')],
+    'nov_occ_market_guard': [('market_square', 'where_work_happens', 'торг')],
+    'nov_occ_beggar_alms': [('churchyard', 'where_work_happens', 'церковный двор'),
+                             ('market_square', 'where_work_happens', 'торг')],
 }
 for occupation, sites in direct.items():
     for pf, field, phrase in sites:
         assert phrase in occupations[occupation][field], occupation
         add(occupation, 'pf_' + pf, 'source', tsv_confidence[occupations[occupation]['confidence']],
             f'tsv:occ:{occupation}#{field}')
+assert 'охотник' in occupations['nov_occ_hunter_trapper']['occupation_title']
+add('nov_occ_hunter_trapper', 'pf_hunting_ground', 'rule', 'C',
+    'tsv:occ:nov_occ_hunter_trapper#occupation_title')
 rows = []
 for (occupation, pf), link in sorted(links.items()):
     rows.append((occupation, pf, pf_kind[pf], 'source' if 'source' in link['basis'] else 'rule',
@@ -120,6 +135,31 @@ if '--check' in sys.argv:
     actual = read(TARGET)
     assert all(row['basis'] != 'no_source' for row in actual if row['occupation_id'] and row['pf_id'])
     assert {(row['occupation_id'], row['pf_id']) for row in actual if row['basis'] != 'no_source'} == set(links)
+    # Independently require the named sites reported missing by the C003a review.
+    named_g4 = {
+        'outer_gate': 'town_wall_edge', 'cattle_yard': 'outbuildings',
+        'threshing_floor': 'threshing_barn', 'gardens': 'orchard_garden',
+        'storage_klet': 'cellar_granary', 'church_yard': 'churchyard',
+    }
+    linked = {(row['occupation_id'], row['pf_id']) for row in actual if row['basis'] != 'no_source'}
+    for occupation, record in occupations.items():
+        named = set(record['typical_g4_location_types'].split(';'))
+        for term, pf in named_g4.items():
+            if term in {value.strip() for value in named}:
+                assert (occupation, 'pf_' + pf) in linked, (occupation, term, pf)
+        for term, pf in {'зимник': 'winter_ice_crossing', 'погост': 'churchyard'}.items():
+            if term in {value.strip() for value in record['where_work_happens'].split(';')}:
+                assert (occupation, 'pf_' + pf) in linked, (occupation, term, pf)
+    named_direct = {
+        'nov_occ_market_guard': ('where_work_happens', 'торг', 'market_square'),
+        'nov_occ_beggar_alms': ('where_work_happens', 'церковный двор', 'churchyard'),
+    }
+    for occupation, (field, phrase, pf) in named_direct.items():
+        assert phrase in occupations[occupation][field], (occupation, field, phrase)
+        assert (occupation, 'pf_' + pf) in linked, (occupation, pf)
+    hunter = next(row for row in actual if row['occupation_id'] == 'nov_occ_hunter_trapper'
+                  and row['pf_id'] == 'pf_hunting_ground')
+    assert hunter['basis'] == 'rule' and hunter['confidence'] == 'C'
 else:
     TARGET.write_bytes(expected)
 print(f'PASS tools occupation crosswalk: {len(rows)} rows, {len(links)} linked pairs, '

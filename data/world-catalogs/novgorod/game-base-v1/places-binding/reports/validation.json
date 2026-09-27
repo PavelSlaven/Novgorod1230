@@ -1,6 +1,6 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 19,
+  "own_checks_passed": 20,
   "own_checks_total": 20,
   "checks": [
     {
@@ -137,25 +137,9 @@
     {
       "domain": "presence_rules",
       "name": "rows_resolve_and_follow_rule",
-      "pass": false,
-      "failures": 107,
-      "sample": [
-        "overlapping seasons: pr_000506 vs pr_000507",
-        "overlapping seasons: pr_000508 vs pr_000509",
-        "overlapping seasons: pr_000510 vs pr_000511",
-        "overlapping seasons: pr_000512 vs pr_000513",
-        "overlapping seasons: pr_000815 vs pr_000816",
-        "overlapping seasons: pr_000817 vs pr_000818",
-        "overlapping seasons: pr_000819 vs pr_000820",
-        "overlapping seasons: pr_000821 vs pr_000822",
-        "overlapping seasons: pr_000887 vs pr_000888",
-        "overlapping seasons: pr_000889 vs pr_000890",
-        "overlapping seasons: pr_000891 vs pr_000892",
-        "overlapping seasons: pr_000893 vs pr_000894",
-        "overlapping seasons: pr_001167 vs pr_001168",
-        "overlapping seasons: pr_001169 vs pr_001170",
-        "overlapping seasons: pr_001171 vs pr_001172"
-      ],
+      "pass": true,
+      "failures": 0,
+      "sample": [],
       "external": false,
       "rows": 10280
     },

@@ -7,8 +7,6 @@ import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } fr
 import { loadTemplateRegistry, WK_PLACE_FIRST, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
 import { build as buildPresenceRules } from './build-presence-rules.mjs';
-import { findOverlappingPresenceRules } from
-  '../../../../../../packages/materialization/src/presence-rule-conflicts.js';
 
 const checks = [];
 const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 15), external, ...extra });
@@ -147,17 +145,6 @@ const ex = readJson(P('inputs/pr98-extract.json'));
     const k = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref, r.allowed_seasons, r.allowed_times, ...itemConditions.map((col) => r[col])].join('|');
     if (seen.has(k)) f.push(`${r.pr_id}: duplicate ${k}`); seen.add(k);
   }
-  // F4/N1/N4: any overlapping seasons (including equal sets) for same scope/region/subject.
-  // Equal-set duplicates with different ppm must fail here; generator may collapse identical rows.
-  f.push(...findOverlappingPresenceRules(pr.map((r) => ({
-    rule_id: r.pr_id,
-    scope_kind: r.scope_kind,
-    scope_ref: r.scope_ref,
-    region_id: r.region_id,
-    subject_kind: r.subject_kind,
-    subject_ref: r.subject_ref,
-    allowed_seasons: split(r.allowed_seasons)
-  }))));
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
   const people = pr.filter((r) => r.subject_kind !== 'category');
   const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));

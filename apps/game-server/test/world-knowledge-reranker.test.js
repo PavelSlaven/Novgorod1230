@@ -195,7 +195,8 @@ test('production loader rejects invalid sufficiency profile', async () => {
       JSON.stringify({ schema: 'not_a_sufficiency_profile', min_hint_relevance: 0.28 }));
     await assert.rejects(
       () => loadProductionWorldKnowledge({ rootDir: tempRoot }),
-      /sufficiency profile is invalid/);
+      (err) => err instanceof TypeError
+        && /sufficiency profile is invalid/.test(err.message));
   } finally {
     rmSync(tempRoot, { recursive: true, force: true });
   }
@@ -213,6 +214,85 @@ test('sufficiency_profile min_hint_relevance changes SUFFICIENT marker', () => {
     'SUFFICIENT_KNOWLEDGE');
   assert.equal(groundingSufficiencyOf(slice, { minHintRelevance: 0.35 }),
     'PARTIAL_KNOWLEDGE');
+});
+
+test('grounding applies sufficiency_profile threshold, not DEFAULT fallback', async () => {
+  // Mutation kill: if grounding ignores sufficiency_profile and falls back to
+  // DEFAULT_MIN_HINT_RELEVANCE (0.28), relevance 0.30 would stay SUFFICIENT.
+  const loaded = await loadProductionWorldKnowledge({ rootDir: ROOT });
+  const profileThreshold = 0.50;
+  assert.notEqual(profileThreshold, DEFAULT_MIN_HINT_RELEVANCE);
+  const worldKnowledge = {
+    ...loaded,
+    sufficiency_profile: Object.freeze({
+      ...loaded.sufficiency_profile,
+      min_hint_relevance: profileThreshold
+    }),
+    encoder: { encode: async () => new Float32Array(1024) },
+    vector_index: {
+      search: () => new Map([['claim:regional-fish-exploitation', 0.9]])
+    },
+    core: {
+      resolveWorldKnowledge() {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'environment', status: 'covered' }],
+          verdict: 'supported',
+          hard_constraints: [],
+          facts: [{ claim_ref: 'claim:regional-fish-exploitation',
+            runtime_text: 'fish' }],
+          disputes: [],
+          gaps: [],
+          context_text: 'fish',
+          search_hint_hits: [true],
+          search_hint_relevance: [0.30]
+        };
+      }
+    }
+  };
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge,
+    year: 1230,
+    placeRefs: ['region_novgorod_land'],
+    roleRunner: {
+      async run() {
+        return {
+          output: {
+            schema: 'world_knowledge_query_plan_v1',
+            query_locale: 'ru',
+            domains: ['environment'],
+            focus_refs: ['wk:environment:regional-fish-exploitation'],
+            requested_predicates: [],
+            search_hints: ['рыбные ресурсы']
+          },
+          provider_record: {
+            scope: 'turn_runtime', role_id: 'world_knowledge_query_planner',
+            provider: 'test', model: 'test'
+          }
+        };
+      }
+    }
+  });
+  const grounded = await grounder.ground({
+    request_id: 'turn:sufficiency-profile',
+    remaining_intent: 'Можно ли здесь добыть рыбу?'
+  }, 'semantic_resolution');
+  assert.equal(grounded.world_knowledge.sufficiency, 'PARTIAL_KNOWLEDGE');
+  assert.equal(
+    groundingSufficiencyOf({
+      facts: grounded.world_knowledge.facts,
+      hard_constraints: [],
+      disputes: [],
+      coverage: [{ domain: 'environment', status: 'covered' }],
+      search_hint_hits: [true],
+      search_hint_relevance: [0.30]
+    }, { minHintRelevance: DEFAULT_MIN_HINT_RELEVANCE }),
+    'SUFFICIENT_KNOWLEDGE',
+    'control: same relevance is SUFFICIENT under DEFAULT 0.28');
+  await loaded.encoder?.close?.();
 });
 
 test('grounding passes rerankScores into Core when D21 gate open', async () => {

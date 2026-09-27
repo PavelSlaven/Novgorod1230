@@ -267,8 +267,8 @@
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-053 — D17 reranker за гейтом D21 (production OFF)
-- **Что.** Core принимает `rerankScores` (all-or-nothing + min-max), pin `wk-reranker:bge-v2-m3:v1` (revision sha + file digests), `provisionReranker` и production loader читают профиль, но `production_enabled=false`. Бенчмарк 2026-09-17 (REPORT.md T1): B1 Giga cosine recall@10 0.9825 / MRR 0.9579 не хуже bge (0.9795 / 0.9512); bge CPU p95 ≈ 6523 мс ≫ 150 мс; GPU p95 71.6 мс на бенчмарк-машине; owner-server p95 и 120-situation audit с rerank ON/OFF ещё не пересданы (REVIEW-046 R5).
-- **Как жить.** Не включать rerank в production path без нового замера на сервере владельца, который проходит D21 (меньше retrieval_miss **и** шума на audit set **и** p95 ≤ 150 мс). При будущем enable — только локальный snapshot (`HF_HUB_OFFLINE`), деградация к гибриду с telemetry-событием на каждый отказ.
+- **Что.** Core принимает `rerankScores` (all-or-nothing + min-max), pin `wk-reranker:bge-v2-m3:v1` (revision sha + file digests), `provisionReranker` и production loader читают профиль, но `production_enabled=false`. Бенчмарк 2026-09-17 (REPORT.md T1): B1 Giga cosine recall@10 0.9825 / MRR 0.9579 не хуже bge (0.9795 / 0.9512). Owner-server remeasure 2026-09-27 (`Novgorod-wk-audit/run-partc/p95.json` + `r5-compare.json`): GPU p95 ≈ 59.6 мс ≤ 150 мс; CPU p95 ≈ 925 мс > 150 мс; plan-mode 120 ситуаций rerank ON/OFF — retrieval_miss_like_rate и mean_noise_ratio без улучшения (119/120 срезов с тем же порядком claim_refs).
+- **Как жить.** Не включать rerank в production path, пока D21 не выполнен целиком (меньше retrieval_miss **и** шума на audit set **и** p95 ≤ 150 мс на пути обслуживания). При будущем enable — только локальный snapshot (`HF_HUB_OFFLINE`), деградация к гибриду с telemetry-событием на каждый отказ.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-054 — SUFFICIENT relevance threshold provisional

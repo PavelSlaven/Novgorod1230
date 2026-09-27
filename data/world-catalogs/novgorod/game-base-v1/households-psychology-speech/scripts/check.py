@@ -85,7 +85,7 @@ if missing_role:
 # Candidate relations and address forms: exact schemas, resolvable references,
 # one evidence channel per row, and a mapped address or explicit gap per rule.
 rel_fields = ["rel_rule_id", "scope_kind", "scope_ref", "subject_role_ref", "object_role_ref", "relationship_kind", "direction", "materialization_guard", "source_refs", "rule_ref", "no_source", "confidence", "status"]
-form_fields = ["sp_id", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
+form_fields = ["sp_id", "channel", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
 
 
 def checked_rows(path, fields, key):
@@ -120,28 +120,45 @@ crosswalk = os.path.join(os.path.dirname(ROOT), "places-binding", "places", "cro
 for row in read_csv(crosswalk):
     pf_ids.update(row["pf_ids"].split(";"))
 relation_kinds = {r["relationship_kind"] for r in rel_rows}
-allowed_relationship_kinds = {"master_servant", "co_resident", "unspecified"}
+allowed_relationship_kinds = {"master_servant", "co_resident", "unspecified", "kin_parent_child", "kin_siblings", "kin_uncle_nephew", "spouse", "community_member", "joint_work", "dependent_patron"}
 known_rules = {r["term_id"] for r in read_csv(os.path.join(ROOT, "households_kinship", "kinship_terms.csv"))}
 known_rules.update(r["mi_id"] for r in read_csv(os.path.join(ROOT, "households_kinship", "marriage_inheritance_rules.csv")))
 known_rules.update(r["rel_rule_id"] for r in rel_rows)
-evidence_path = os.path.join(os.path.dirname(os.path.dirname(ROOT)), "sources", "books-evidence-v1", "households-psychology-speech.csv")
-known_books = {(r["book_id"], r["para_no"]) for r in read_csv(evidence_path)}
+evidence_dir = os.path.join(os.path.dirname(os.path.dirname(ROOT)), "sources", "books-evidence-v1")
+book_evidence = {}
+for file in os.listdir(evidence_dir):
+    if file.endswith(".csv"):
+        for row in read_csv(os.path.join(evidence_dir, file)):
+            book_evidence.setdefault((row["book_id"], row["para_no"]), []).append(row)
+wk_dir = os.path.join(os.path.dirname(os.path.dirname(ROOT)), "world-knowledge", "production-v1")
+known_wk = set()
+for file in os.listdir(wk_dir):
+    if file.endswith(".json"):
+        with open(os.path.join(wk_dir, file), encoding="utf-8") as f:
+            known_wk.update((file, claim["claim_ref"]) for claim in json.load(f).get("claims", []))
+editorial_rules = {"editorial_joint_work_acquaintance_c": "Only named actors assigned to work together at the same place and time may be acquainted; no kinship, debt or enmity follows."}
 
 
 def check_evidence(r, prefix):
-    if r["rule_ref"] and r["rule_ref"] not in known_rules:
+    if r["rule_ref"] and r["rule_ref"] not in known_rules | set(editorial_rules):
         errors.append(f"{prefix}: unknown rule_ref")
     if r["source_refs"]:
-        match = re.fullmatch(r"book:(\d+) §(\d+)", r["source_refs"])
-        if not match or match.groups() not in known_books:
-            errors.append(f"{prefix}: source_refs not in book evidence")
+        for ref in r["source_refs"].split(";"):
+            ref = ref.strip()
+            book = re.fullmatch(r"book:(\d+) §(\d+)", ref)
+            wk = re.fullmatch(r"wk:([^#]+\.json)#(.+)", ref)
+            if not ((book and book.groups() in book_evidence) or (wk and wk.groups() in known_wk)):
+                errors.append(f"{prefix}: unresolved source_ref {ref}")
+            if book and book.groups() in book_evidence and r["confidence"] != "C":
+                if all(row["period"] in {"medieval_general", "ethnographic_late"} for row in book_evidence[book.groups()]):
+                    errors.append(f"{prefix}: book period requires confidence C: {ref}")
 
 for i, r in enumerate(rel_rows):
     prefix = f"relationship_rules row {i}"
     check_evidence(r, prefix)
     if r["relationship_kind"] not in allowed_relationship_kinds:
         errors.append(f"{prefix}: invalid relationship_kind")
-    if r["scope_kind"] not in {"role_pair", "household", "neighborhood"} or r["direction"] not in {"symmetric", "directed"}:
+    if r["scope_kind"] not in {"role_pair", "household", "neighborhood", "work_assignment"} or r["direction"] not in {"symmetric", "directed"}:
         errors.append(f"{prefix}: invalid scope_kind/direction")
     if r["scope_kind"] == "role_pair" and (r["scope_ref"] or not r["subject_role_ref"] or not r["object_role_ref"]):
         errors.append(f"{prefix}: role_pair needs two roles and no scope_ref")
@@ -151,26 +168,80 @@ for i, r in enumerate(rel_rows):
         errors.append(f"{prefix}: unknown household")
     if r["scope_kind"] == "neighborhood" and r["scope_ref"] not in pf_ids:
         errors.append(f"{prefix}: unknown place feature")
-    if any(r[x] and r[x] not in all_role for x in ("subject_role_ref", "object_role_ref")):
-        errors.append(f"{prefix}: unknown role")
+    if r["scope_kind"] == "work_assignment" and (r["scope_ref"] or r["relationship_kind"] != "joint_work"):
+        errors.append(f"{prefix}: work assignment must be generic joint_work")
+    if any(r[x] and r[x] not in all_role | all_occ for x in ("subject_role_ref", "object_role_ref")):
+        errors.append(f"{prefix}: unknown role or occupation")
     if not r["materialization_guard"] or (r["no_source"] and r["relationship_kind"] != "unspecified"):
         errors.append(f"{prefix}: missing guard or unsupported assertion")
-    if not any(f["relationship_kind"] == r["relationship_kind"] and (f["form_ru"] or f["no_source"]) for f in af_rows):
-        errors.append(f"{prefix}: no address mapping or explicit gap")
+    if r["rule_ref"] in editorial_rules and (r["relationship_kind"] != "joint_work" or r["confidence"] != "C"):
+        errors.append(f"{prefix}: editorial rule can only assert joint-work acquaintance at C")
 
 for i, r in enumerate(af_rows):
     prefix = f"address_forms row {i}"
     check_evidence(r, prefix)
-    if r["relationship_kind"] not in relation_kinds or (r["register_ref"] and r["register_ref"] not in registers):
+    if r["relationship_kind"] not in relation_kinds | {"written_letter"} or (r["register_ref"] and r["register_ref"] not in registers):
         errors.append(f"{prefix}: unknown relationship kind or register")
-    if any(r[x] and r[x] not in all_role for x in ("speaker_role_ref", "addressee_role_ref")):
-        errors.append(f"{prefix}: unknown role")
+    if r["channel"] not in {"oral", "written"} or (r["relationship_kind"] == "written_letter") != (r["channel"] == "written"):
+        errors.append(f"{prefix}: invalid oral/written channel")
+    if any(r[x] and r[x] not in all_role | all_occ for x in ("speaker_role_ref", "addressee_role_ref")):
+        errors.append(f"{prefix}: unknown role or occupation")
     if r["source_refs"] and (not r["form_ru"] or not r["attestation"]):
         errors.append(f"{prefix}: sourced form needs text and attestation")
     if r["no_source"] and (r["form_ru"] or r["attestation"] or r["confidence"] != "C"):
         errors.append(f"{prefix}: gap must have no form or attestation and confidence C")
     if "поклон от" in r["form_ru"].lower() and "письмо" not in r["situation"].lower():
         errors.append(f"{prefix}: epistolary opening used as oral address")
+
+# Bound G5 PFs are scene candidates, not proof that either actor exists or knows the other.
+# Every co-present authored pair needs an exact relation row and an oral option/gap in each direction.
+from itertools import combinations
+presence = read_csv(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_presence_authoring.csv"))
+bindings = read_csv(os.path.join(os.path.dirname(ROOT), "places-binding", "places", "node_binding.csv"))
+by_pf = {}
+for row in presence:
+    if row["scope_kind"] == "place_family":
+        by_pf.setdefault(row["scope_ref"], []).append(row)
+start_pairs = set()
+for node in bindings:
+    if node["node_level"] != "G5":
+        continue
+    pf_refs = {node["pf_id"], *filter(None, node["pf_secondary"].split(";"))}
+    people = [person for pf in pf_refs for person in by_pf.get(pf, [])]
+    for a, b in combinations(people, 2):
+        if a["subject_ref"] == b["subject_ref"]:
+            continue
+        if not set(a["allowed_seasons"].split(";")) & set(b["allowed_seasons"].split(";")):
+            continue
+        if a["allowed_times"] != b["allowed_times"] and "all" not in (a["allowed_times"], b["allowed_times"]):
+            continue
+        start_pairs.add(tuple(sorted((a["subject_ref"], b["subject_ref"]))))
+
+
+def coverage_failures(relations, forms):
+    missing = []
+    for a, b in sorted(start_pairs):
+        if not any({r["subject_role_ref"], r["object_role_ref"]} == {a, b} for r in relations if r["scope_kind"] == "role_pair"):
+            missing.append(f"starting pair {a}/{b}: no exact relationship rule or gap")
+        for speaker, addressee in ((a, b), (b, a)):
+            if not any(f["channel"] == "oral" and f["speaker_role_ref"] == speaker and f["addressee_role_ref"] == addressee and (f["form_ru"] or f["no_source"]) for f in forms):
+                missing.append(f"starting pair {speaker}->{addressee}: no exact oral form or gap")
+    return missing
+
+
+errors.extend(coverage_failures(rel_rows, af_rows))
+if "--probe" in sys.argv and start_pairs:
+    a, b = sorted(start_pairs)[0]
+    reduced = [f for f in af_rows if not (f["channel"] == "oral" and f["speaker_role_ref"] == a and f["addressee_role_ref"] == b)]
+    if not coverage_failures(rel_rows, reduced):
+        errors.append("negative coverage probe failed to detect removed oral pair")
+    else:
+        print("OK: negative coverage probe detected missing oral pair")
+    reduced_rel = [r for r in rel_rows if not (r["scope_kind"] == "role_pair" and {r["subject_role_ref"], r["object_role_ref"]} == {a, b})]
+    if not coverage_failures(reduced_rel, af_rows):
+        errors.append("negative coverage probe failed to detect removed relationship pair")
+    else:
+        print("OK: negative coverage probe detected missing relationship pair")
 
 # social_norms: every norm with legal_weight_ref resolves (non-empty string); confidence in A/B/C
 sn_rows = read_csv(os.path.join(ROOT, "social_norms_honour_hospitality", "norms.csv"))

@@ -8,7 +8,7 @@ WK production-v1 `family-social-context.json`) плюс курированный
 книжными `source_refs`. Проверено `scripts/check.py` (все проверки проходят
 на текущий момент, см. вывод ниже).
 
-**D-3.** Добавлены `households_kinship/relationship_rules.csv` и адресные формы с проверяемыми ссылками на роли, регистры, двор и PF. Это кандидаты правил, а не готовые отношения произвольных NPC. Неподтверждённые пары, соседство и устные обращения обозначены `no_source`; письменный «поклон» ограничен письмом. Генерация и проверка — `scripts/build.py` и `scripts/check.py`.
+**D-3 rework.** Связи и обращения покрывают 22 потенциальные пары из 11 субъектов в 16 стартовых PF (в пары входят 10 субъектов): пары вычисляются из `people_presence_authoring.csv` и привязок PF к G5 в `node_binding.csv`, с пересечением сезонов и времени суток. Общая сцена даёт возможность встречи, но не создаёт отношение или знакомство конкретных NPC. Для пары есть точное правило или `no_source`, а для каждого направления — устная форма или `no_source`. Письменные формулы отделены полем `channel`; `scripts/check.py --probe` проверяет, что удаление покрытия обнаруживается.
 
 **Rework 2026-09-26.** Независимый verifier (см. `VERIFICATION.md`) вернул
 5 из 7 таблиц группы на переработку: `household_composition_profiles.csv`,
@@ -24,9 +24,9 @@ WK production-v1 `family-social-context.json`) плюс курированный
 
 | Домен | Файлы | Строк | Приоритет брифа | Статус покрытия |
 |---|---|---|---|---|
-| households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv, relationship_rules.csv | 139 / 8 / 32 / 5 | M2c | состав и связи — кандидаты; конкретные отношения устанавливаются только при материализации |
+| households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv, relationship_rules.csv | 139 / 8 / 32 / 34 | M2c | 22 стартовые пары; конкретные отношения устанавливаются только при материализации |
 | npc_psychology | psychology_profiles.csv | 139 | M2c | покрытие 68 occupation + 71 role; контекстные мотивы и страхи привязаны только к применимым свидетельствам; шкала ценностей не утверждена владельцем |
-| speech_address | speech_registers.csv, address_forms.csv | 71 / 7 | M3 | 3 построчно подтверждённые формы и 4 явных пробела; полного покрытия устной речи нет |
+| speech_address | speech_registers.csv, address_forms.csv | 71 / 64 | M3 | 44 направленные стартовые пары покрыты устной формой или явным пробелом; 46 строк `no_source` всего |
 | social_norms_honour_hospitality | norms.csv | 19 | M3 | 4 из 5 ранее пустых norm_kind закрыты book evidence; gift всё ещё 0 строк |
 
 Подробности, правила вывода и гэпы — в README.md каждого домена.
@@ -37,6 +37,7 @@ WK production-v1 `family-social-context.json`) плюс курированный
 cd scripts
 python build.py   # генерирует все CSV, пишет build_report.json
 python check.py    # OK: all checks passed — на момент сдачи
+python check.py --probe  # удаляет одну устную форму только в памяти и проверяет обнаружение пробела
 ```
 
 ## Что НЕ сделано (общие ограничения, оставшиеся после rework 2026-09-26)

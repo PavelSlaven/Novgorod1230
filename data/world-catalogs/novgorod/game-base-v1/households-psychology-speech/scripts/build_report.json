@@ -7,7 +7,36 @@
     "household_composition_profiles.csv": 139,
     "marriage_inheritance_rules.csv": 8,
     "kinship_terms.csv": 32,
-    "relationship_rules.csv": 5
+    "relationship_rules.csv": 34,
+    "start_place_families": 16,
+    "start_subjects": 11,
+    "start_subjects_in_pairs": 10,
+    "start_role_pairs": 22,
+    "no_source_rows": 24,
+    "start_pair_scene_counts": {
+      "nov_occ_boatman|nov_occ_cart_driver": 5,
+      "nov_occ_boatman|nov_occ_fisher": 10,
+      "nov_occ_boatman|nov_occ_hunter_trapper": 9,
+      "nov_occ_boatman|nov_occ_route_guide": 7,
+      "nov_occ_boatman|nov_role_smerd_householder": 5,
+      "nov_occ_cart_driver|nov_occ_fisher": 38,
+      "nov_occ_cart_driver|nov_occ_route_guide": 52,
+      "nov_occ_cart_driver|nov_role_smerd_householder": 16,
+      "nov_occ_ferryman|nov_occ_fisher": 8,
+      "nov_occ_ferryman|nov_occ_household_servant": 1,
+      "nov_occ_ferryman|nov_occ_hunter_trapper": 3,
+      "nov_occ_ferryman|nov_role_smerd_householder": 1,
+      "nov_occ_fisher|nov_occ_forest_worker": 3,
+      "nov_occ_fisher|nov_occ_hunter_trapper": 31,
+      "nov_occ_fisher|nov_occ_route_guide": 44,
+      "nov_occ_fisher|nov_role_smerd_householder": 2,
+      "nov_occ_forest_worker|nov_occ_hunter_trapper": 5,
+      "nov_occ_herder|nov_occ_hunter_trapper": 3,
+      "nov_occ_herder|nov_occ_route_guide": 3,
+      "nov_occ_household_servant|nov_role_smerd_householder": 5,
+      "nov_occ_hunter_trapper|nov_occ_route_guide": 11,
+      "nov_occ_route_guide|nov_role_smerd_householder": 16
+    }
   },
   "npc_psychology": {
     "psychology_profiles.csv": 139,
@@ -16,8 +45,9 @@
   },
   "speech_address": {
     "speech_registers.csv": 71,
-    "address_forms.csv": 7,
-    "gap": "candidate forms are limited to cited cases; other oral and role-pair forms are explicit no_source gaps"
+    "address_forms.csv": 64,
+    "no_source_rows": 46,
+    "start_directed_pairs": 44
   },
   "social_norms_honour_hospitality": {
     "norms.csv": 19,

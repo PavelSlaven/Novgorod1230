@@ -1104,6 +1104,12 @@
       "type": "sql"
     },
     {
+      "bytes": 4087,
+      "path": "schemas/party-db/037_party_runtime_m2c_presence_routines.sql",
+      "sha256": "450a8dcc2360e0db360c8d4caf60fc67609d53e6c17556d20d7977ad76776c45",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

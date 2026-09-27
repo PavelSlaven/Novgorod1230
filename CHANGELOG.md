@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- feat(r1): CR #158 DONE-065 — CORPUS_EDIT §3A.1/`place_family` + §8.1 presence columns + D25 prose; DDL `27.sql` (9 tables) + party `037` (candidate_profile_refs, g5 CHECK, weather log); `g5` in ORDINARY_MATERIALIZATION enums; fresh-schema 217/37; LW-066..068 (#158) LW-066 LW-067 LW-068 added
 - data(world-catalog): игровая база game-base-v1 (кандидаты, 21 группа, STATUS.md) и книжные факты books-evidence-v1 (#155)
 - fix(wk): #153 REVIEW-063 — WK loader selects pack by `packRevision` (v1|v2 closed list); composition passes `release.world_knowledge_pack_revision` so v16 keeps production-v1 (#153)
 - feat(wk): #153 step 7 — v17 pins World Knowledge `revision:production-v2` (loader bundle/vectors); v16 keeps `production-v1`; embedding profile unchanged; retrieval benchmark pass (#153)

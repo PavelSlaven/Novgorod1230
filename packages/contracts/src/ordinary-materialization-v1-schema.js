@@ -19,7 +19,7 @@ export const ORDINARY_MATERIALIZATION_V1_ENUMS = deepFreeze({
   admission_class: ['common_mundane', 'specialized_or_valuable', 'weapon_or_armament', 'currency_or_precious', 'document_like', 'container_capable', 'other_restricted'],
   functional_bucket: ['household', 'work', 'storage', 'stock', 'furnishing_textile', 'maintenance_material', 'waste_scrap', 'personal_effect', 'arms', 'other_ordinary'],
   density_band: ['sparse', 'ordinary', 'dense'], basis_state: ['committed', 'prepared_seed'],
-  scope_kind: ['g6', 'scene_position', 'container', 'source'], presence_expectation: ['routine', 'plausible', 'exceptional']
+  scope_kind: ['g5', 'g6', 'scene_position', 'container', 'source'], presence_expectation: ['routine', 'plausible', 'exceptional']
 });
 
 export const ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA = deepFreeze({

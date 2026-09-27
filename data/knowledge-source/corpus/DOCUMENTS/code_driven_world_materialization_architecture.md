@@ -168,7 +168,7 @@ Repair/migration обязана указать причину, прежний и
 
 ### 3A.1. Бросок и его ключ
 
-Вероятность наличия и `count_limit` задаются authoring-правилом с ключом `(scope_kind, scope_ref)` и региональным переопределением (`region_id` NULL = общемировое значение по умолчанию). `scope_kind` использует существующие шаблоны экземпляра: `landscape_template`, `place_template`, `scene_template`, `container_template` (O2b). Новых справочников типов мест нет.
+Вероятность наличия и `count_limit` задаются authoring-правилом с ключом `(scope_kind, scope_ref)` и региональным переопределением (`region_id` NULL = общемировое значение по умолчанию). Для presence, routines, water facets и slot variants единственный слой типов мест — `scope_kind=place_family` со `scope_ref=pf_id` из справочника `world_base.place_families` и привязок `world_base.spatial_node_place_family_bindings` (D26 / CR #158). Для контейнеров сохраняется `container_template` (O2b). Legacy-ключи `landscape_template` / `place_template` / `scene_template` не являются ключом presence-правил M2c.
 
 Правило ставится только на категорию одного иерархического фасета домена: у предметов — `object_type`, у контейнеров — `container_form`; у новых доменов — фасет из `universal_category_classification_policy.md`. Правило на иных фасетах того же домена — ошибка валидации импорта. Наследование — только по `parent_category_id` внутри фасета; рёбра `universal_category_relations` для наличия не используются.
 
@@ -177,10 +177,10 @@ Repair/migration обязана указать причину, прежний и
 Порядок выбора применимого правила:
 
 1. ближайшая категория вверх по `parent_category_id` (сама или предок), у которой есть правило, применимое к экземпляру;
-2. среди правил на одной категории — более конкретный scope: `scene_template` > `place_template` > `landscape_template` (для контейнера — `container_template`);
+2. среди правил на одной категории — более конкретный scope: для места — `place_family` по привязкам узла; для контейнера — `container_template`;
 3. региональное правило побеждает общемировое.
 
-У экземпляра по одной ссылке на каждый `scope_kind`. Два применимых правила на одной категории с одинаковыми `scope_kind` и регионом — ошибка валидации. Категория без правила на всех уровнях = отсутствует (0 ppm), не ошибка runtime.
+У экземпляра по одной primary-ссылке `place_family` на узел (`binding_role='primary'`). Presence / routines / water / slots читают `primary ∪ утверждённые secondary` из таблицы привязок одним путём кода; до утверждения смысла `pf_secondary` таблица содержит только primary (REVIEW-064c / C3). Два применимых правила на одной категории с одинаковыми `scope_kind`, `scope_ref`, регионом и `allowed_seasons` — ошибка валидации. Категория без правила на всех уровнях = отсутствует (0 ppm), не ошибка runtime.
 
 Бросок один и сохраняется; переброса нет. Seed: `{ party_id, scope_instance_ref, subject_kind, subject_ref, rng_algorithm_id: mulberry32_v1 }`; для сезонного правила добавляется номер периода. `rule_id`, `rule_version` и `world_revision_id` в seed не входят. Исход хранится по ключу (партия, экземпляр scope, `subject_kind`, `subject_ref` правила) в существующем агрегате ordinary-материализации (`presence_resolutions` / `closed_observation_scopes`). Новая версия правил уже решённую пару не перебрасывает; `rule_id@rule_version` хранится в записи как причинное основание. Если предок уже решён, правила на потомках в этом экземпляре не бросаются.
 

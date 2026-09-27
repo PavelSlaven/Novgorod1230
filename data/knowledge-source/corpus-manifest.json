@@ -54,8 +54,8 @@
       "document_id": "code-driven-world-materialization-architecture",
       "canonical_path": "corpus/DOCUMENTS/code_driven_world_materialization_architecture.md",
       "file_name": "code_driven_world_materialization_architecture.md",
-      "sha256": "183884619c9f68c63ee3f658ee8fab8781345c37713631bcf12f0d34c180691d",
-      "bytes": 59936,
+      "sha256": "0a7b9a7beda6c5f91ea82f2ce89b64b5c1a93c4988e6881fb94ba0514cbc03c6",
+      "bytes": 60586,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"
@@ -77,8 +77,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "415f4b987d97b9c9ed7a64fe30540f7684ae5e05be2b88a7e488a82be1df81a7",
-      "bytes": 30019,
+      "sha256": "bcd5b3310d8c925eb6af3b33ffc3a353a1889f75c0644271eaa57c960fac9d1c",
+      "bytes": 29228,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "navigation"
@@ -335,8 +335,8 @@
       "file_name": "situational_prose_requirements.md",
       "status": "active",
       "provenance_mode": "native",
-      "sha256": "2cfc88969ff911a6d8fd4462cbd8b2f72a260ca55a7e81e81971e182f011a29f",
-      "bytes": 66690,
+      "sha256": "2fc326cc67ad9bbca7c82864d16c1004aacdf1684839816e93fa62cd5804411e",
+      "bytes": 68183,
       "priority_tier": "highest_materialization_normative"
     },
     {
@@ -457,8 +457,8 @@
       "document_id": "world-base-materialization-table-requirements",
       "canonical_path": "corpus/DOCUMENTS/world_base_materialization_table_requirements.md",
       "file_name": "world_base_materialization_table_requirements.md",
-      "sha256": "1b190c0144c0d5f58a0d31e51e899d8477664e3f85e36a641e76d3280e1c15cc",
-      "bytes": 28925,
+      "sha256": "dd6707a3371b97d1a13e36dbc71ab5d3d3084bc2759f8740cacb4ddbe5880383",
+      "bytes": 30219,
       "status": "active",
       "provenance_mode": "native",
       "priority_tier": "technical_contract"

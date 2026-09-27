@@ -29,6 +29,10 @@ Native `narration_request` и `runNarrationFlow` принимают только
 Narrator использует только confirmed player-safe факты; недостающую полноту
 сцены обеспечивают upstream owners. Аудитор оценивает цельность всей сцены,
 затем фактическую точность; структурные тесты не заменяют model acceptance.
+Первый приход во время игры идёт тем же turn-путем (`surface: turn` / Strategy B),
+не отдельным opening-режимом (D25). Strategy D: auditor + ≤1 repair + code checks;
+второго model «revise» нет. Порог выдумок разделён: 0 изобретённых токенов в коде
+и прозаический порог CR (§3.1 ситуационной нормы).
 
 ## Не делает
 

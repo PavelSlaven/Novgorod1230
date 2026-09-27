@@ -199,16 +199,16 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 
 ### 8.1. Таблица правил наличия (M2c authoring)
 
-§8.1 — действующее требование M2c к authoring `world_base` (C-006 / ACTIVE specialization Spatial v3 table-purpose). Таблица ещё не в DDL: входит через CR реализации M2c; отсутствие строк DDL не отменяет норму.
+§8.1 — действующее требование M2c к authoring `world_base` (C-006 / ACTIVE specialization Spatial v3 table-purpose). Физическая таблица — `world_base.presence_rules` (`infra/world-base/schema/27.sql`, CR #158).
 
-Требуется тонкая authoring-таблица у materialization owner (имя — DDL CR реализации) со столбцами:
+Требуется тонкая authoring-таблица у materialization owner со столбцами:
 
 | Поле | Смысл |
 |---|---|
-| `rule_id` | стабильный id правила; в исходе броска хранится как `rule_id@rule_version` (§3A.1) |
+| `rule_id` | стабильный id правила (`pr_id` authoring); в исходе броска хранится как `rule_id@rule_version` (§3A.1) |
 | `world_revision_id` | ревизия authoring |
-| `scope_kind` | `landscape_template` / `place_template` / `scene_template` / `container_template` |
-| `scope_ref` | id шаблона scope |
+| `scope_kind` | для M2c presence/routines/water/slots — `place_family`; для контейнеров — `container_template` |
+| `scope_ref` | `pf_id` или id контейнерного шаблона |
 | `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |
 | `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |
 | `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |
@@ -216,8 +216,14 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 | `presence_probability_ppm` | целое 0…1_000_000 |
 | `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |
 | `allowed_seasons` | закрытый словарь сезонов календаря |
+| `allowed_times` | authoring provenance; для людей **не импортировать** (время суток решают распорядки, §3A.5); для природы/вещей — хранить, не исполнять как гейт часа прихода |
+| `guards` | text[] provenance; **не исполнять** (словаря evaluator нет; LW) |
+| `entry_visible_if` / `search_only_if` | режимы обнаружения (exposed / concealed); без колонки `visibility_class` |
+| `entry_exposed_weight` / `search_concealed_weight` | INT NULL; веса weighted draw; пустые веса при обоих режимах = 1/1 (редакционное правило + LW) |
+| `wild_arrival_cause_required` | хранить; **не гейтит** presence-бросок (§3A.6: причина — само сохранённое правило) |
 | `refresh_class` | `none` (default) или `by_year_season` |
-| `rule_version` / `status` | версия и approval status правила |
+| `confidence` | словарь соседей `unknown \| low \| medium_low \| medium \| medium_high \| high`; при импорте authoring `A→high`, `B→medium`, `C→low`, пусто/`no_source`→`unknown`; readback presence_rules — только `low` |
+| `rule_version` / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |
 
 Семантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.
 

@@ -130,6 +130,20 @@ export const TABLE_GROUPS = [
     tables: ['spatial_v3_g4_npc_composition_bindings', 'spatial_v3_npc_runtime_profiles', 'spatial_v3_npc_regional_context_profiles']
   },
   {
+    title: 'M2c place families and presence authoring (CR #158)',
+    tables: [
+      'place_families',
+      'spatial_node_place_family_bindings',
+      'presence_rules',
+      'npc_relationship_materialization_rules',
+      'speech_address_forms',
+      'household_composition_profiles',
+      'slot_instance_variants',
+      'water_body_presence_facets',
+      'fauna_phase_activity_rules'
+    ]
+  },
+  {
     title: 'Materialization v2: NPC-профили',
     tables: ['region_npc_archetypes', 'region_demographic_profiles', 'region_name_pools', 'region_name_pool_entries', 'region_appearance_profiles', 'region_clothing_profiles', 'region_equipment_profiles', 'region_equipment_profile_entries', 'region_knowledge_profiles', 'region_behavior_profiles', 'region_relationship_profiles', 'region_activity_profiles', 'region_schedule_profiles', 'region_npc_profile_sets']
   },
@@ -225,6 +239,15 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_scene_applicability_rules: 'Закрытые versioned правила применимости scene candidate к точному source reference.',
   spatial_v3_g6_acoustic_baselines: 'Утверждённый ambient-noise baseline каждой G6 scene slot для точного canonical G5 либо G5 generation template и scene template.',
   spatial_v3_g4_npc_composition_bindings: 'Точное approved авторское решение о составе NPC для G4 и ровно одного G5 generation template либо canonical G5; запись не создаёт NPC.',
+  place_families: 'Справочник типов мест (pf_*); единственный слой scope для presence/routines/water/slots (D26). Без per-row canonical_digest.',
+  spatial_node_place_family_bindings: 'Привязка узла G4/G5 к place_family: primary (ровно одна approved) и опциональные secondary после утверждения смысла.',
+  presence_rules: 'Единый носитель правил наличия вещей, природы и людей (§3A.1 / §8.1); scope_kind=place_family|container_template.',
+  npc_relationship_materialization_rules: 'Правила материализации отношений NPC (D-3); без per-row digest.',
+  speech_address_forms: 'Формы обращения (D-3); без per-row digest.',
+  household_composition_profiles: 'Профили состава двора (D-3); без per-row digest.',
+  slot_instance_variants: 'Варианты слотов материализации (D-4); без per-row digest.',
+  water_body_presence_facets: 'Фасеты воды по place_family/сезону (D-4); no_source допускается.',
+  fauna_phase_activity_rules: 'Фильтр видимости/голоса фауны по фазе суток (D-5); не отдельная fauna_presence таблица.',
   spatial_v3_npc_runtime_profiles: 'Переиспользуемые утверждённые target NPC/runtime bindings с точными role, occupation, body, activity, routine, clothing и item refs.',
   spatial_v3_npc_regional_context_profiles: 'Утверждённый региональный контекст NPC с exact applicability по G4 и одному из G5 target refs.',
   spatial_v3_graph_node_migration_inventory: 'Review-only deterministic mapping legacy graph_nodes to v3 canonical entities; ambiguity/unreviewed row остаётся gap.',

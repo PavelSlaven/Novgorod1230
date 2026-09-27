@@ -66,6 +66,9 @@
 | 063 | `knowledge_access` `role_bound` | роли NPC v17 покрывают малую часть `role_bound`; `nov_role_craftsman_master` покрывает все ремёсла — перевести в `occupation_bound`, когда запросы NPC понесут `occupation_ref` | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 | 064 | `search_aliases` production-v2, `benchmarks/retrieval-v1.json` | промахи поиска аудита закрыты 3/91 (синонимы отклонены на утверждении); лексический hard-constraint кейс судной грамоты вне top-10 | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 | 065 | `applicability.time` production-v2 | 65 claims с диапазоном 500+ лет не сужены (источники точнее не дают) | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
+| 066 | `spatial_node_place_family_bindings`, presence/routines/water/slots | до утверждения `pf_secondary` — только primary | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 067 | `presence_rules.guards` | guards хранятся, не исполняются | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 068 | `presence_rules` discovery weights | пустые веса при обоих режимах = 1/1 | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 
 ## Записи
 
@@ -317,3 +320,18 @@
 - **Где.** `applicability.time` production-v2 (65 claims с диапазоном 500+ лет, максимум 700).
 - **Как жить.** Не сужены: источники не дают большей точности. Сужать только по новому источнику.
 - **Issue.** [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154)
+
+### LW-066 — place_family secondary ещё не утверждены
+- **Где.** `world_base.spatial_node_place_family_bindings`; lookup presence/routines/water/slots.
+- **Как жить.** До решения Codex по смыслу `pf_secondary` и проверки 227 узлов импортировать только `binding_role='primary'`. Один путь кода `resolveNodePlaceFamilies` = primary ∪ утверждённые secondary; флагов нет. Тест: `pf_river_wharf` вне secondary не даёт правил пристани.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
+
+### LW-067 — presence guards не исполняются
+- **Где.** `world_base.presence_rules.guards` (text[]); импорт §8.1.
+- **Как жить.** Хранить для provenance. Не строить evaluator и не гейтить бросок по guards. `allowed_times` людей не импортировать; `wild_arrival_cause_required` не гейтит бросок.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
+
+### LW-068 — пустые веса discovery = 1/1
+- **Где.** `presence_rules.entry_exposed_weight` / `search_concealed_weight` при обоих режимах.
+- **Как жить.** Редакционное правило: NULL+NULL при обоих режимах → вес 1 и 1. Одна сторона пустая → только другая. Строки без режимов не проходят draw.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

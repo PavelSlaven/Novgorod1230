@@ -15,8 +15,8 @@
   "world_schema": {
     "entrypoint": {
       "path": "infra/world-base/schema.sql",
-      "bytes": 577,
-      "sha256": "7eb012ad743a9be9c5b0f1f1f6e4908e8d700b57b1071b38e5d9cefdef5d15ba"
+      "bytes": 595,
+      "sha256": "121931bc5b3379ae8376d5dcae6f86a263cda8e826f0c3c8ee1262f9754f9d6a"
     },
     "ordered_parts": [
       {
@@ -148,15 +148,20 @@
         "path": "infra/world-base/schema/26.sql",
         "bytes": 431,
         "sha256": "9ba49fee1b39831b0df2d67a4ea65919b8462dd536262090fb7eea74e6bac29b"
+      },
+      {
+        "path": "infra/world-base/schema/27.sql",
+        "bytes": 9992,
+        "sha256": "9d85b58ad4136d1e3c80981cd376c885e06f34599b3c3d4991d65b1ca8a7eb26"
       }
     ],
-    "expected_world_base_tables": 208
+    "expected_world_base_tables": 217
   },
   "party_schema": {
     "owner_migration_module": {
       "path": "apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js",
-      "bytes": 5361,
-      "sha256": "305733a491e736483cb40abbdb9bbe7c10fd2038dd84c7949341496f360d6204"
+      "bytes": 5408,
+      "sha256": "040e374e669d58ad539af756335915623632b4d33019e14fd40f97d609e694d5"
     },
     "ordered_migrations": [
       {
@@ -338,6 +343,11 @@
         "path": "schemas/party-db/036_party_runtime_visibility_modifiers.sql",
         "bytes": 1576,
         "sha256": "61a0324e9e2328a87997f98007373674fcfa2c2403ad7559be3c32de9ac8b223"
+      },
+      {
+        "path": "schemas/party-db/037_party_runtime_m2c_presence_routines.sql",
+        "bytes": 4087,
+        "sha256": "450a8dcc2360e0db360c8d4caf60fc67609d53e6c17556d20d7977ad76776c45"
       }
     ],
     "chain_digest": "4ed4f87066f2d9cd724cc51054e740bd2a388d685c0fc8bd1b72f3c66a8684a3"
@@ -353,13 +363,13 @@
     "Create novgorod_world_v17 with owner world_operator and novgorod_party_v17 with owner party_operator; CREATE DATABASE is outside a transaction.",
     "Verify both new databases are empty and owned by their requested roles.",
     "Execute the complete world schema through psql -X -v ON_ERROR_STOP=1 -1 -f infra/world-base/schema.sql against novgorod_world_v17 only. The entrypoint includes part 01 DROP SCHEMA IF EXISTS world_base CASCADE; fresh-empty target proof is mandatory.",
-    "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-036 inside one transaction."
+    "Execute runSpatialV3TargetMigrations against novgorod_party_v17 only; its existing implementation applies ordered party migrations 001-037 inside one transaction."
   ],
   "expected_readback": {
-    "world_base_table_count": 208,
+    "world_base_table_count": 217,
     "world_schema": "world_base",
     "party_schema": "party_runtime",
-    "party_migrations_applied": 36,
+    "party_migrations_applied": 37,
     "old_database_row_counts_unchanged": true,
     "world_data_rows": 0,
     "party_parties": 0

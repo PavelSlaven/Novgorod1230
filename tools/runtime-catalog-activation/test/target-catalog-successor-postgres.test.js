@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFile, readdir } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
 import { buildCharacterAppearanceV1ImportSql, buildTargetAppearanceTransferImportSql } from '../../spatial-v3/character-appearance-v1-importer.mjs';
@@ -40,6 +40,9 @@ import { activateActorBaseAttributes, validateActorBaseAttributesActivationResul
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const subject = '821a1e10230fcedd6c846599868bf55521ad0233';
 const json = async (path) => JSON.parse(await readFile(path, 'utf8'));
+const GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2 =
+  'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/'
+  + 'activation-amendment-v2/runtime-activation-approval-attestation.json';
 // These attestations exist only in this isolated test. They never authorize deployment.
 const fixtureApproval = (payload) => {
   const value = { ...payload, attested_by: 'isolated-postgres-test-fixture' };
@@ -49,6 +52,11 @@ const fixtureApproval = (payload) => {
 test('target item and actor successors preserve v6 parties through real PostgreSQL import, activation and replay',
   async (t) => {
     if (docker(['version']).status !== 0) return t.skip('Docker required');
+    try {
+      await access(GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2);
+    } catch {
+      return t.skip('Gate1 activation-amendment attestation v2 pending');
+    }
     const name = `m2c-catalog-successor-${process.pid}`;
     let pool, importer, activator;
     t.after(async () => {

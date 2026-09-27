@@ -37,9 +37,18 @@ export async function activateGate1RuntimeCatalog({
 }) {
   const root = resolve(repositoryRoot);
   const request = await readBoundJson(root,
-    `${GATE1_ROOT}/activation-amendment-v1/request.json`);
-  const attestation = await readBoundJson(root,
-    `${GATE1_ROOT}/activation-amendment-v1/runtime-activation-approval-attestation.json`);
+    `${GATE1_ROOT}/activation-amendment-v2/request.json`);
+  let attestation;
+  try {
+    attestation = await readBoundJson(root,
+      `${GATE1_ROOT}/activation-amendment-v2/`
+      + 'runtime-activation-approval-attestation.json');
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      fail('GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2_REQUIRED');
+    }
+    throw error;
+  }
   const result = await readBoundJson(root, `${GATE1_ROOT}/import-readback-result.json`);
   await assertFileBinding(root, request.completed_import_readback, result);
   await assertFileBinding(root, request.reconciled_stage3c.candidate);
@@ -300,6 +309,10 @@ async function readCandidateRows({ root, reconciliation, result, allRowsByTable 
 
 function assertGate1Authority({ request, attestation, result, worldReleaseId }) {
   if (request.schema !== 'rus.gate1_v5_v6_activation_request_amendment.v1'
+      || request.supersedes?.path !==
+        `${GATE1_ROOT}/activation-amendment-v1/request.json`
+      || request.supersedes?.request_digest !==
+        '04282a4269116f46f0c6e36511af4fca0732054152de5e864cfdfab874d1e310'
       || request.request_digest !== digestWithout(request, 'request_digest')
       || attestation.attestation_digest !== digestWithout(attestation, 'attestation_digest')
       || attestation.activation_amendment_request_digest !== request.request_digest

@@ -2,14 +2,23 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-import { buildGate1ActivationAmendmentRequest,
+import { activateGate1RuntimeCatalog } from
+  '../../runtime-catalog-activation/src/gate1-runtime-activation.js';
+import {
+  assertGate1ActivationAmendmentV2Attestation,
+  buildGate1ActivationAmendmentRequest,
+  GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_DIGEST,
+  GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_PATH,
   validateGate1RuntimeActivationAttestation,
-  validatePendingGate1ActivationAmendment } from
+  validatePendingGate1ActivationAmendment
+} from
   '../../../scripts/generate-gate1-activation-amendment-request.mjs';
 
 const requestPath = 'data/world-catalogs/novgorod/runtime-catalog/'
+  + 'gate1-owner-data-v1/activation-amendment-v2/request.json';
+const v1RequestPath = 'data/world-catalogs/novgorod/runtime-catalog/'
   + 'gate1-owner-data-v1/activation-amendment-v1/request.json';
-const attestationPath = 'data/world-catalogs/novgorod/runtime-catalog/'
+const v1AttestationPath = 'data/world-catalogs/novgorod/runtime-catalog/'
   + 'gate1-owner-data-v1/activation-amendment-v1/'
   + 'runtime-activation-approval-attestation.json';
 
@@ -24,6 +33,13 @@ test('Gate1 activation amendment reproduces exact checked pending request',
     assert.equal(generated.completed_import_readback.restart_verified, true);
     assert.equal(generated.completed_import_readback
       .requests_new_import_authority, false);
+    assert.equal(generated.supersedes.path,
+      GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_PATH);
+    assert.equal(generated.supersedes.request_digest,
+      GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_DIGEST);
+    assert.equal(generated.completed_import_readback.restart_verification
+      .sha256,
+      '1235aa3108555fcabf9622436e8651b1eb7ea77abde7f4e31f4b3bc8f6b57074');
   });
 
 test('pending amendment requests only new-development activation authority',
@@ -52,6 +68,9 @@ test('activation amendment validation fails closed on scope or chain widening',
       (value) => {
         value.requested_permissions.import_approved_item_container_catalog =
           true;
+      },
+      (value) => {
+        value.supersedes.request_digest = '0'.repeat(64);
       }
     ];
     for (const mutate of cases) {
@@ -66,12 +85,14 @@ test('activation amendment validation fails closed on scope or chain widening',
       /GATE1_ACTIVATION_AMENDMENT_AUTHORITY_FORBIDDEN/u);
   });
 
-test('runtime attestation approves only exact new-development activation',
+test('sealed v1 runtime attestation remains exact historical archive',
   async () => {
-    const request = await buildGate1ActivationAmendmentRequest();
-    const attestation = JSON.parse(await readFile(attestationPath, 'utf8'));
+    const request = JSON.parse(await readFile(v1RequestPath, 'utf8'));
+    const attestation = JSON.parse(await readFile(v1AttestationPath, 'utf8'));
     assert.equal(validateGate1RuntimeActivationAttestation({ request,
       attestation }), true);
+    assert.equal(request.request_digest,
+      GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_DIGEST);
     assert.equal(attestation.activation_executed, false);
     assert.equal(attestation.database_mutated, false);
     assert.equal(attestation.authority.activation_authorized, true);
@@ -104,4 +125,22 @@ test('runtime attestation approves only exact new-development activation',
         attestation: tampered }),
       /GATE1_RUNTIME_ACTIVATION_ATTESTATION_INVALID/u);
     }
+  });
+
+test('Gate1 activation amendment v2 refuses missing attestation',
+  async () => {
+    const request = await buildGate1ActivationAmendmentRequest();
+    assert.throws(() => assertGate1ActivationAmendmentV2Attestation(request,
+      null),
+    /GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2_REQUIRED/u);
+    await assert.rejects(() => activateGate1RuntimeCatalog({
+      worldPool: {},
+      partyPool: {},
+      repositoryRoot: process.cwd(),
+      worldReleaseId: 'spatial-v3-production-v5'
+    }), (error) => {
+      assert.equal(error.code,
+        'GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2_REQUIRED');
+      return true;
+    });
   });

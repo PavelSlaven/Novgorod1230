@@ -8,6 +8,12 @@ import { canonicalDigest } from '@rus/materialization';
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const gate1Root =
   'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
+const V1_AMENDMENT_REQUEST_PATH =
+  `${gate1Root}/activation-amendment-v1/request.json`;
+const V1_AMENDMENT_REQUEST_DIGEST =
+  '04282a4269116f46f0c6e36511af4fca0732054152de5e864cfdfab874d1e310';
+const V2_AMENDMENT_ATTESTATION_PATH =
+  `${gate1Root}/activation-amendment-v2/runtime-activation-approval-attestation.json`;
 const paths = Object.freeze({
   predecessor: `${gate1Root}/activation-request.json`,
   result: `${gate1Root}/import-readback-result.json`,
@@ -20,9 +26,18 @@ const paths = Object.freeze({
     `${gate1Root}/source-record-reconciliation-v1/authoring-approval-attestation.json`,
   seedAttestation:
     `${gate1Root}/seed-closure-v1/authoring-approval-attestation.json`,
-  output: `${gate1Root}/activation-amendment-v1/request.json`,
+  v1Output: V1_AMENDMENT_REQUEST_PATH,
+  output: `${gate1Root}/activation-amendment-v2/request.json`,
+  attestationV2: V2_AMENDMENT_ATTESTATION_PATH,
   restartTest: 'test/integration/gate1-owner-data-import-postgres.test.js'
 });
+export const GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_PATH =
+  V1_AMENDMENT_REQUEST_PATH;
+export const GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_DIGEST =
+  V1_AMENDMENT_REQUEST_DIGEST;
+export const GATE1_ACTIVATION_AMENDMENT_V2_REQUEST_PATH = paths.output;
+export const GATE1_ACTIVATION_AMENDMENT_V2_ATTESTATION_PATH =
+  paths.attestationV2;
 
 const readJson = async (path) => JSON.parse(await readFile(
   resolve(repositoryRoot, path), 'utf8'));
@@ -145,6 +160,11 @@ export async function buildGate1ActivationAmendmentRequest() {
     }),
     required_independent_decision:
       'approve_exact_new_development_runtime_activation_amendment',
+    supersedes: Object.freeze({
+      path: paths.v1Output,
+      request_digest: V1_AMENDMENT_REQUEST_DIGEST,
+      reason: 'restart_verification test sha drifted after intentional edits'
+    }),
     authority: noAuthority()
   };
   const request = Object.freeze({ ...payload,
@@ -216,7 +236,13 @@ export function validatePendingGate1ActivationAmendment(request) {
       || permissions.old_save_rematerialization !== false
       || permissions.authoring_only_functional_allocation_runtime_selection
         !== false
-      || permissions.runtime_item_creation !== false) {
+      || permissions.runtime_item_creation !== false
+      || (request.supersedes != null
+        && (request.supersedes.path !== paths.v1Output
+          || request.supersedes.request_digest !==
+            V1_AMENDMENT_REQUEST_DIGEST
+          || typeof request.supersedes.reason !== 'string'
+          || request.supersedes.reason.length < 1))) {
     throw new Error('GATE1_ACTIVATION_AMENDMENT_INVALID');
   }
   if (Object.values(request.authority ?? {}).some((value) => value !== false)) {
@@ -227,6 +253,14 @@ export function validatePendingGate1ActivationAmendment(request) {
     throw new Error('GATE1_ACTIVATION_AMENDMENT_DIGEST_INVALID');
   }
   return true;
+}
+
+export function assertGate1ActivationAmendmentV2Attestation(request,
+  attestation) {
+  if (attestation == null) {
+    throw new Error('GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2_REQUIRED');
+  }
+  return validateGate1RuntimeActivationAttestation({ request, attestation });
 }
 
 export function validateGate1RuntimeActivationAttestation({ request,

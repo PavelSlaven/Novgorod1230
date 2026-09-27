@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import test from 'node:test';
 import pg from 'pg';
 
@@ -219,8 +219,9 @@ test('Gate1 v17-local-play preserves the fresh v17 schema and its import on repe
       await managed.close();
       await rm(dataRoot, { recursive: true, force: true });
     });
-    for (let part = 1; part <= 26; part += 1) {
-      await pool.query(await readFile(new URL(`../../infra/world-base/schema/${String(part).padStart(2, '0')}.sql`, import.meta.url), 'utf8'));
+    const worldBaseSchema = await inspectWorldBaseSchema({ root: process.cwd() });
+    for (const partPath of worldBaseSchema.part_files) {
+      await pool.query(await readFile(resolve(process.cwd(), partPath), 'utf8'));
     }
     const resultPath = join(dataRoot, 'v17-import-readback-result.json');
     const run = () => spawnSync(process.execPath,

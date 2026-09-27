@@ -18,7 +18,7 @@
     "restart_verified": true,
     "restart_verification": {
       "path": "test/integration/gate1-owner-data-import-postgres.test.js",
-      "sha256": "b5d4709eadea2c9d347d3662514da3d25cf4bc7a00a792b9fdfacea9979c6107"
+      "sha256": "67c08266fd5bf8a225f6aad1cf2b0227433b03f026f6d14c7484d37422c28601"
     },
     "import_completed": true,
     "requests_new_import_authority": false
@@ -110,5 +110,5 @@
     "authoring_only_functional_allocation_runtime_selection": false,
     "runtime_item_creation_authorized": false
   },
-  "request_digest": "4e14586969a47239bc6988e470c0948dee6870988b8e728877f7af48cd4ca0a7"
+  "request_digest": "8c78faf72900bc6bb67f7f8e0cff7cb54c138ca41aea2388956b7f036b0e0691"
 }

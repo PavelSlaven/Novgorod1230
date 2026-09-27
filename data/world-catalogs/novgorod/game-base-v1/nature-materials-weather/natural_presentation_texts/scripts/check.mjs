@@ -6,16 +6,18 @@
 //  - acoustic rows carry loudness 1..3; ids unique; every member in use has 4 seasons of visual phrases.
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readCsv, readJson, fail, SEASONS, SHARED, denyRegex } from '../../_shared/scripts/lib.mjs';
+import { readCsv, readJson, fail, SEASONS, SHARED, GROUP_DIR, denyRegex } from '../../_shared/scripts/lib.mjs';
 import MEMBERS, { EXTRA_MEMBERS } from '../authoring/members.mjs';
 
 const DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const E = [];
 const rows = readCsv(path.join(DIR, 'presentation_texts.csv'));
+const coverage = readCsv(path.join(DIR, 'sensory_coverage.csv'));
 const mrows = readCsv(path.join(DIR, 'member_phrases.csv'));
 const allow = readCsv(path.join(DIR, 'habitat_allowlist.csv'));
 const g4index = readJson(path.join(SHARED, 'g4_nature_index.json'));
 const bindings = readCsv(path.resolve(DIR, '../../places-binding/places/node_binding.csv'));
+const ground = new Map(readCsv(path.join(GROUP_DIR, 'natural_materials_soils', 'ground_types.csv')).map((g) => [g.soil_ground_type, g]));
 const deny = readJson(path.join(SHARED, 'anachronism_denylist.json'));
 const denyRe = denyRegex(deny.terms_ru.concat(deny.terms_en));
 const ALL = { ...MEMBERS, ...EXTRA_MEMBERS };
@@ -37,6 +39,10 @@ for (const r of rows) {
   const sd = SEASON_DENY[r.season_period]; if (sd) { const h = text.match(sd); if (h) E.push(`season contradiction "${h[0]}" in ${r.npt_id}`); }
   if (r.channel === 'acoustic' && !['1', '2', '3'].includes(r.loudness)) E.push(`acoustic without loudness ${r.npt_id}`);
   if (r.channel === 'visual' && r.loudness) E.push(`visual with loudness ${r.npt_id}`);
+  if (r.channel === 'olfactory') {
+    if (r.layer !== 'ground_scent' || r.loudness || r.season_period === 'winter' || !r.source_refs.includes(`ground_types.csv#soil_ground_type=${r.layer_class}`) || !ground.get(r.layer_class)?.perceptual_cues.includes('запах:')) E.push(`unsupported scent ${r.npt_id}`);
+    if (/люд|челов|дым|кост[её]р|печ[ьи]|скот|навоз/i.test(text)) E.push(`human ambience in natural scent ${r.npt_id}`);
+  }
   const snowText = text.replace(/бесснеж\p{L}*/giu, '');
   if (snowWordRe.test(snowText) && (!r.requires || r.requires.includes('ground_state!=snow') || !/ground_state=snow|weather_state=|water_condition=/.test(r.requires))) E.push(`snow word without snow condition: ${r.npt_id}`);
 }
@@ -48,12 +54,35 @@ for (const g of g4index.g4) for (const s of SEASONS) for (const layer of LAYERS)
   if (s === 'winter' && layer === 'tree_layer' && !rows.some((r) => r.g4_ref === g.g4_id && r.season_period === s && r.layer === layer && ['default', 'no_snow'].includes(r.condition))) E.push(`missing no-snow trees ${g.g4_short}`);
 }
 const TARGET_PF = ['bog', 'conifer_woodland', 'ferry_landing', 'floodplain_meadow', 'forest_edge', 'forest_track', 'hunting_ground', 'marshy_stream', 'outbuildings', 'peasant_homestead', 'river_channel', 'riverbank', 'road', 'rural_yard', 'village_lane', 'winter_ice_crossing'];
+const SCENT_GROUND = {
+  bog: ['mineral_mud_silt'], conifer_woodland: ['needle_litter_roots', 'wet_roots_mud'],
+  floodplain_meadow: ['alluvial_silt_clay'], forest_edge: ['needle_litter_roots', 'wet_roots_mud'],
+  forest_track: ['needle_litter_roots', 'wet_roots_mud'], hunting_ground: ['needle_litter_roots', 'wet_roots_mud'],
+  marshy_stream: ['wet_roots_mud', 'mineral_mud_silt'], river_channel: ['alluvial_silt_mud', 'alluvial_silt_clay'],
+  riverbank: ['alluvial_silt_mud', 'alluvial_silt_clay', 'alluvial_mud_roots'],
+};
 const indexedG4 = new Set(g4index.g4.map((g) => g.g4_id));
+const matrix = { visual: { sourced: 0, no_source: 0 }, acoustic: { sourced: 0, no_source: 0 }, olfactory: { sourced: 0, no_source: 0 } };
+const coverageKeys = new Set();
+for (const c of coverage) {
+  const key = `${c.pf_id}/${c.season_period}/${c.aspect}`;
+  if (coverageKeys.has(key)) E.push(`duplicate sensory coverage ${key}`);
+  coverageKeys.add(key);
+  if (!TARGET_PF.includes(c.pf_id) || !SEASONS.includes(c.season_period) || !matrix[c.aspect] || (c.pf_id === 'winter_ice_crossing' && c.season_period !== 'winter')) E.push(`invalid sensory scope ${key}`);
+  if (!['sourced', 'no_source'].includes(c.coverage) || c.status !== 'candidate') E.push(`invalid sensory coverage ${key}`);
+  if (matrix[c.aspect]?.[c.coverage] !== undefined) matrix[c.aspect][c.coverage]++;
+}
 for (const pf of TARGET_PF) {
   const g4refs = bindings.filter((b) => b.node_level === 'G4' && [b.pf_id, ...b.pf_secondary.split(';')].includes(`pf_${pf}`))
     .map((b) => b.node_ref.replace(/@1$/, ''));
   if (!g4refs.some((ref) => indexedG4.has(ref))) E.push(`no natural G4 binding for ${pf}`);
-  for (const s of SEASONS) if (!g4refs.some((ref) => indexedG4.has(ref) && rows.some((r) => r.g4_ref === ref && r.season_period === s && r.clear_text && r.partial_text && r.source_refs))) E.push(`no natural text for ${pf}/${s}`);
+  for (const s of (pf === 'winter_ice_crossing' ? ['winter'] : SEASONS)) for (const aspect of Object.keys(matrix)) {
+    const key = `${pf}/${s}/${aspect}`;
+    const evidence = rows.find((r) => g4refs.includes(r.g4_ref) && r.season_period === s && r.channel === aspect && (!SCENT_GROUND[pf] || aspect !== 'olfactory' || SCENT_GROUND[pf].includes(r.layer_class)) && r.clear_text && r.partial_text && r.source_refs);
+    const c = coverage.find((x) => x.pf_id === pf && x.season_period === s && x.aspect === aspect);
+    if (!c) E.push(`missing sensory coverage ${key}`);
+    else if (evidence ? c.coverage !== 'sourced' || c.basis_ref !== evidence.npt_id : c.coverage !== 'no_source' || c.basis_ref !== `no_source:${aspect}_pf_season`) E.push(`sensory coverage mismatch ${key}`);
+  }
 }
 const used = new Set(allow.map((a) => a.member_ref));
 for (const g of g4index.g4) for (const m of g.members) used.add(m.ref);
@@ -64,5 +93,5 @@ for (const m of mrows) {
   const h = `${m.clear_text} ${m.partial_text}`.match(denyRe); if (h) E.push(`anachronism in member ${m.npm_id}`); const sd = SEASON_DENY[m.season_period]; if (sd && sd.test(`${m.clear_text} ${m.partial_text}`)) E.push(`season contradiction member ${m.npm_id}`); if (m.channel === 'acoustic' && !['1', '2', '3'].includes(m.loudness)) E.push(`member acoustic loudness ${m.npm_id}`);
 }
 console.log(`checked: ${rows.length} texts, ${cells} G4 x season x layer cells, ${mrows.length} member phrases, ${allow.length} allowlist rows, ${dict.length} taxon words`);
-console.log(`checked: ${TARGET_PF.length * SEASONS.length} target PF x season natural cells`);
+console.log(`checked: ${coverage.length} target PF x season x aspect cells (winter crossing only winter): ${JSON.stringify(matrix)}`);
 fail(E, 'natural_presentation_texts check');

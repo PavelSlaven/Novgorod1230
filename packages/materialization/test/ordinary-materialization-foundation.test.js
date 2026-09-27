@@ -201,7 +201,7 @@ test('resolve_presence_rule stores §5.5 outcome, replays by §3A.1 key, and coe
       transition: presenceRule('rule-reroll', {
         expected_state_version: 2,
         rule_ref: 'pr_ferryman@2',
-        count: 0
+        count: 3
       })
     }),
     (error) => error.code === 'ORDINARY_RESOLUTION_REPLAY'
@@ -253,10 +253,74 @@ test('resolve_presence_rule stores §5.5 outcome, replays by §3A.1 key, and coe
       subject_kind: 'social_role',
       subject_ref: 'nov_role_watch',
       discovery_mode: 'concealed',
-      count: 0,
+      count: 1,
       rule_ref: 'pr_watch@1'
     })
   });
   assert.equal(otherSubject.state_version, 5);
   assert.equal(otherSubject.presence_resolutions.length, 4);
+});
+
+test('resolve_presence_rule rejects invalid subject/count/refs/discovery/period and mixed reload', () => {
+  const g5Scope = { entity_kind: 'g5', entity_id: 'wharf-site-b' };
+  const seeded = applyOrdinaryAggregateTransition({
+    aggregate: createOrdinaryAggregate({ scope_ref: g5Scope, resolution_record_cap: 8 }),
+    transition: transition('seed', 'seed-neg', { density_band: 'ordinary', identity_budget: 2 })
+  });
+  const base = {
+    expected_state_version: 1,
+    subject_kind: 'occupation',
+    subject_ref: 'nov_occ_ferryman',
+    subcategory_ref: null,
+    count: 1,
+    rule_ref: 'pr_ferryman@1',
+    discovery_mode: 'exposed',
+    scope_instance_ref: 'g5:wharf-b',
+    period_number: null
+  };
+  const bad = (extra) => transition('resolve_presence_rule', 'bad', { ...base, ...extra });
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ subject_kind: 'npc' }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ count: 0 }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ count: -1 }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ scope_instance_ref: '' }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ subject_ref: '' }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ period_number: 0 }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ period_number: 1.5 }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ discovery_mode: 'hidden' }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  for (const rule_ref of ['@', 'x@', '@y', 'a@b@c', 'noid']) {
+    assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: bad({ rule_ref }) }), (e) => e.code === 'ORDINARY_AGGREGATE_TRANSITION_INVALID');
+  }
+  const ok = applyOrdinaryAggregateTransition({
+    aggregate: seeded,
+    transition: presenceRule('ok-a', { expected_state_version: 1, scope_instance_ref: 'g5:wharf-b' })
+  });
+  const cloned = structuredClone(ok);
+  cloned.presence_resolutions.push({
+    request_identity: 'dup',
+    subject_kind: 'occupation',
+    subject_ref: 'nov_occ_ferryman',
+    subcategory_ref: null,
+    count: 1,
+    rule_ref: 'pr_ferryman@9',
+    discovery_mode: 'exposed',
+    scope_instance_ref: 'g5:wharf-b',
+    period_number: null
+  });
+  assert.throws(() => applyOrdinaryAggregateTransition({
+    aggregate: cloned,
+    transition: presenceRule('after-dup', { expected_state_version: 3, scope_instance_ref: 'g5:wharf-b', subject_ref: 'nov_occ_other' })
+  }), (e) => e.code === 'ORDINARY_AGGREGATE_INVALID');
+  const mixed = structuredClone(ok);
+  mixed.presence_resolutions[0] = {
+    ...mixed.presence_resolutions[0],
+    candidate_key: 'o1-leak'
+  };
+  assert.throws(() => applyOrdinaryAggregateTransition({
+    aggregate: mixed,
+    transition: presenceRule('after-mix', {
+      expected_state_version: 2,
+      scope_instance_ref: 'g5:wharf-b',
+      subject_ref: 'nov_occ_other'
+    })
+  }), (e) => e.code === 'ORDINARY_AGGREGATE_INVALID');
 });

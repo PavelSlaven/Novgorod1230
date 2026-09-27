@@ -345,3 +345,8 @@
 - **Где.** `schemas/party-db/037_party_runtime_m2c_presence_routines.sql`; runner `runSpatialV3TargetMigrations`.
 - **Как жить.** Миграции 012–037 применяются к существующим party-БД при старте. `037` только добавляет (candidate_profile_refs, g5 CHECK, weather log). До зелёного PostgreSQL-теста на цепочке 001–036 **не запускать game-server на живых БД**. D27 rename/bootstrap — отдельный шаг.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
+
+### LW-071 — правило «предок уже решён — потомки не бросаются» вне resolve_presence_rule
+- **Где.** Выбор presence-правил / R-2 consumer; не `applyOrdinaryAggregateTransition`/`resolve_presence_rule`.
+- **Как жить.** Примитив агрегата хранит и повторяет исход по ключу §3A.1. Запрет броска потомков при решённом предке — у движка выбора правил (R-2). Тест — там же, не в foundation transition.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

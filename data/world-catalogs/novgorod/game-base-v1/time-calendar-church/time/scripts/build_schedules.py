@@ -4,6 +4,7 @@ import argparse
 import csv
 import io
 import json
+import re
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -73,14 +74,16 @@ def daylight(season):
     return int(value["sunrise_minute_of_day"]), int(value["sunset_minute_of_day"])
 
 
-def routine_blocks(origin, work, season, action, *, household=False, sleep_location="", early_service=False, baker=False, night=False, until_sunset=False):
+def routine_blocks(origin, work, season, action, *, household=False, sleep_location="", early_service=False, baker=False, night=False, market=False, until_sunset=False):
     sunrise, sunset = daylight(season)
+    wake = min(sunrise, 270 if season == "winter" else 330) if season in {"winter", "autumn"} else sunrise
+    bedtime = max(sunset + 60, 1260) if season != "summer" else max(sunset + 60, 1320)
     parts = []
 
     def add(state, start, end, summary, location, presence=None):
         if end <= start:
             return
-        presence = presence or ("on_site" if location == origin else "away")
+        presence = presence or ("on_site" if location else "away")
         reason = (f"занятие у {location}" if location else
                   ("ночлег требует индивидуальной привязки" if "sleep" in state else
                    "место вне службы требует индивидуальной привязки")) if presence == "away" else ""
@@ -95,21 +98,23 @@ def routine_blocks(origin, work, season, action, *, household=False, sleep_locat
         add("early_service", bell, sunrise, "Заутреня; пономарь подаёт сигнал к службе.", work)
         add("morning_work", sunrise, 720, action, work)
     elif night:
-        add("night_work", 0, sunrise, action, work)
-        add("morning_rest", sunrise, 720, "Отдых после ночной работы.", origin)
+        start = max(sunset, 1080)
+        add("night_work", 0, 120, action, work)
+        add("day_rest", 120, start, "Отдых между ночными сменами; место ночлега не установлено.", "", "away")
+        add("night_work_after_dusk", start, 1440, action, work)
+        assert sum(p["duration_minutes"] for p in parts) == 1440
+        return parts
     else:
-        add("sleep_before_dawn", 0, sunrise, "Сон в своём дворе." if household else "Ночной сон; место неизвестно.", sleep_location if household else "", "on_site" if household and sleep_location == origin else "away")
-        add("preparation", sunrise, min(720, sunrise + 60), "Утренние дела после восхода.", origin)
-        add("morning_work", min(720, sunrise + 60), 720, action, work)
+        add("sleep_before_dawn", 0, wake, "Сон в своём дворе." if household else "Ночной сон; место неизвестно.", sleep_location if household else "", "on_site" if household else "away")
+        add("preparation", wake, min(720, wake + 60), "Утренние дела: забота о скоте, печи и воде (поздняя аналогия)." if household else "Готовится к работе.", origin)
+        add("morning_work", min(720, wake + 60), 720, action, work)
     add("noon_meal", 720, 765, "Полуденная трапеза (аналогия).", "" if early_service else origin)
-    add("post_meal_rest", 765, 855, "Послеобеденный отдых (аналогия; длительность редакционная).", "" if early_service else origin)
+    add("post_meal_rest", 765, 855, "Послеобеденный отдых (аналогия; длительность редакционная).", origin if household else "", "on_site" if household else "away")
     end = sunset if until_sunset else max(855, sunset - 60)
-    add("afternoon_work", 855, end, action, work)
+    add("afternoon_work", 855, end, "Послеобеденные расчёты и домашние дела (поздняя аналогия)." if market else action, work)
     add("evening_return", end, sunset, "Завершает дела.", "" if early_service else origin)
-    if night:
-        add("night_work_after_dusk", sunset, 1440, action, work)
-    else:
-        add("sleep_after_dusk", sunset, 1440, "Сон в своём дворе." if household else "Ночной сон; место неизвестно.", sleep_location if household else "", "on_site" if household and sleep_location == origin else "away")
+    add("evening_tasks", sunset, bedtime, "Вечерние дела при свете лучины; конкретный свет зависит от сцены.", origin)
+    add("sleep_after_dusk", bedtime, 1440, "Сон в своём дворе." if household else "Ночной сон; место неизвестно.", sleep_location if household else "", "on_site" if household else "away")
     assert sum(p["duration_minutes"] for p in parts) == 1440
     return parts
 
@@ -143,6 +148,8 @@ def build():
                              ("nov_occ_church_guard", "pf_churchyard"),
                              ("nov_occ_market_guard", "pf_market_square")):
             specs[("occupation", guard, place, season, "night_watch")] = (place, "night_behavior", "Ночная стража при назначенной смене.")
+        specs[("social_role", "nov_role_smerd_householder", "pf_peasant_homestead", season, "night_watch")] = (
+            "pf_peasant_homestead", "night_behavior", "Ночная домашняя смена при необходимости (редакторское допущение).")
     specs[("occupation", "nov_occ_fisher", "pf_riverbank", "summer", "night_fishing")] = (
         "pf_riverbank", "night_behavior", "Ночной лов с огнём при подходящих условиях.")
     rows = []
@@ -161,21 +168,37 @@ def build():
         if subject == "occ_market_baker":
             origin = "pf_rural_yard"
         assert origin in places and work in places
-        if occupation and occupation.get(field) and not occupation[field].startswith("no_source"):
-            action = occupation[field] if subject.startswith("occ_") or not action else action
-        action = action or ((occupation.get("occupation_title_ru") or occupation.get("occupation_title")) if occupation else "Домашние дела по возрасту и положению")
+        season_field = "daily_schedule_" + ("spring_rasputitsa" if season == "spring" else season)
+        if occupation and subject.startswith("occ_"):
+            seasonal = occupation.get(season_field, "")
+            if seasonal.startswith("то же"):
+                seasonal = occupation.get("daily_schedule_winter", "") + "; " + seasonal[6:].strip()
+            action = seasonal or action
+            field = season_field if seasonal else field
+        elif occupation and not action:
+            action = "Занят делом: " + (occupation.get("occupation_title_ru") or occupation.get("occupation_title", "")) + " (редакторское описание)."
+            field = "occupation_title_ru" if subject.startswith("occ_") else "occupation_title"
+        action = action or ("Забота о дворе, скоте и воде (поздняя аналогия)." if kind == "social_role" else "Домашние дела по возрасту (редакторское допущение).")
+        if day_type == "market_day" and subject in {"nov_occ_local_trader", "nov_occ_market_stall_seller", "occ_market_baker"}:
+            action = "Торг до полудня (поздняя аналогия)."
+        action = re.split(r"(?i)(?:;\s*)?(?:вечером|ночью)\s*[:—]", action, maxsplit=1)[0].strip()
         household = origin in {"pf_peasant_homestead", "pf_rural_yard", "pf_outbuildings"}
         sleep_location = "pf_rural_yard" if origin == "pf_outbuildings" else origin
         blocks = routine_blocks(origin, work, season, action, household=household, sleep_location=sleep_location,
                                 early_service=subject in {"nov_occ_ponomar", "nov_occ_parish_priest_service"},
                                 baker=subject == "occ_market_baker", night=day_type in {"night_watch", "night_fishing"},
+                                market=day_type == "market_day",
                                 until_sunset=subject == "nov_occ_ferryman" and season == "winter")
         source = ("data/novgorod-region/novgorod_occupations_v1_enriched.tsv" if subject.startswith("nov_")
                   else "occupations-activities/occupations/occupations_additions.csv")
         refs = ([f"{source}#{subject}:{field}"] if occupation else
                 ([f"data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#{role}"] if role else ["book:622242 ¶519"]))
         refs += [f"places-binding/places/place_families.csv#{origin}", LIGHT_REF,
-                 "book:375645 ¶964", "book:375645 ¶965"]
+                 "book:375645 ¶959", "book:375645 ¶960", "book:375645 ¶963",
+                 "book:375645 ¶964", "book:375645 ¶965",
+                 "occupations-activities/occupations/occupations_additions.csv#occ_netmaker:daily_schedule_winter"]
+        if day_type == "market_day":
+            refs.append("book:375645 ¶967")
         if work != origin:
             refs.append(f"places-binding/places/place_families.csv#{work}")
         if any(p["subject_ref"] == subject and p["scope_ref"] == origin for p in presence):
@@ -201,7 +224,8 @@ def build():
             "", ";".join(dict.fromkeys(refs)), "rule:editorial_daylight_phase_partition_v2",
             "no_source:exact_clock_times_and_individual_presence"
                 + (";no_source:child_role_not_catalogued" if kind == "household_child" else ""),
-            "C", "candidate", "Сезонный распорядок-кандидат; конкретный человек и доступ требуют сцены."))))
+            "C", "candidate", "Сезонный распорядок-кандидат; конкретный человек и доступ требуют сцены."
+            + (" Ночная стража по ¶684 — аналогия военного стана." if day_type == "night_watch" else "")))))
     return rows
 
 

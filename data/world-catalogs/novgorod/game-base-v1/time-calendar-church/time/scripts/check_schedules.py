@@ -6,7 +6,7 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
-from build_schedules import ADDITIONS, BASE, FIELDS, MONTHS, OUT, PLACES, PRESENCE, REPO, ROLES, read_rows, render
+from build_schedules import ADDITIONS, BASE, FIELDS, MONTHS, OUT, PLACES, PRESENCE, REPO, ROLES, daylight, read_rows, render
 
 GAME_BASE = REPO / "data/world-catalogs/novgorod/game-base-v1"
 NOVGOROD = REPO / "data/world-catalogs/novgorod"
@@ -113,6 +113,8 @@ for row in rows:
     assert isinstance(blocks, list) and blocks, key
     assert sum(block["duration_minutes"] for block in blocks) == 1440, key
     assert len({block["state_id"] for block in blocks}) == len(blocks), key
+    if row["day_type"] in {"night_watch", "night_fishing"}:
+        assert not {"morning_work", "afternoon_work"} & {b["state_id"] for b in blocks}, key
     for block in blocks:
         assert set(block) == {"state_id", "duration_minutes", "runtime_status", "activity_ref",
                               "summary", "activity_status", "uses_current_activity",
@@ -123,22 +125,11 @@ for row in rows:
         assert block["activity_status"] in {"active", "paused"}, key
         assert block["presence_state"] in {"on_site", "nearby", "away"}, key
         assert block["location_ref"] == "" or block["location_ref"] in places, key
+        assert block["presence_state"] == "away" or block["location_ref"], key
         assert block["presence_state"] != "away" or block["absence_reason_ru"], key
         assert block["presence_state"] == "away" or not block["absence_reason_ru"], key
         for field in ("uses_current_activity", "can_continue_automatically", "decision_required"):
             assert isinstance(block[field], bool), key
-def check_coverage(rows, presence):
-    for item in presence:
-        for season in item["allowed_seasons"].split(";"):
-            assert any(r["season"] == season and r["day_type"] == "normal" and
-                       (r["occupation_ref"] == item["subject_ref"] or r["role_ref"] == item["subject_ref"]) and
-                       f"places-binding/places/place_families.csv#{item['scope_ref']}" in r["source_refs"]
-                       for r in rows), f"missing presence schedule: {item['subject_ref']} {item['scope_ref']} {season}"
-
-
-check_coverage(rows, presence)
-
-
 def block_at(row, minute):
     elapsed = int(row["local_start_minute"])
     for block in json.loads(row["time_blocks"]):
@@ -148,9 +139,31 @@ def block_at(row, minute):
     raise AssertionError(row["sch_id"])
 
 
+def check_coverage(rows, presence):
+    with (GAME_BASE / "places-binding/places/node_binding.csv").open(encoding="utf-8", newline="") as stream:
+        start_scopes = {node["pf_id"] for node in csv.DictReader(stream) if node["pf_id"] in places}
+    assert {p["scope_ref"] for p in presence} == start_scopes, "presence scopes differ from start node bindings"
+    for item in presence:
+        for season in item["allowed_seasons"].split(";"):
+            sunrise, sunset = daylight(season)
+            minutes = {"morning": sunrise + 30, "day": 900, "evening": sunset + 30, "night": 1380}
+            for window in item["allowed_times"].split(";"):
+                minute = minutes[window]
+                assert any(r["season"] == season and
+                           r["occupation_ref" if item["subject_kind"] == "occupation" else "role_ref"] == item["subject_ref"] and
+                           (block := block_at(r, minute))["location_ref"] == item["scope_ref"] and
+                           block["presence_state"] in {"on_site", "nearby"} and
+                           (window not in {"evening", "night"} or block["runtime_status"] == "available")
+                           for r in rows), f"missing awake presence: {item['subject_ref']} {item['scope_ref']} {season} {window}"
+
+
+check_coverage(rows, presence)
+
+
 for season, place in (("winter", "pf_winter_ice_crossing"), ("summer", "pf_ferry_landing")):
     ferry = next(r for r in rows if r["occupation_ref"] == "nov_occ_ferryman" and r["season"] == season and r["day_type"] == "normal")
     assert block_at(ferry, 900)["location_ref"] == place, season
+    assert block_at(ferry, 900)["presence_state"] == "on_site", season
 for role in ("nov_role_smerd_householder", "nov_role_household_mistress"):
     assert any(r["role_ref"] == role and r["season"] == "summer" and
                any(b["state_id"] == "sleep_after_dusk" and b["presence_state"] == "on_site" and

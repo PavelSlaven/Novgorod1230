@@ -245,8 +245,8 @@ errors.extend(check_generated(rel_rows, "rel_rule_id", "rel_start_", rel_key_fie
 errors.extend(check_generated(af_rows, "sp_id", "form_start_gap_", form_key_fields, expected_forms))
 if not start_pairs:
     errors.append("starting pairs: empty set")
-if (colocated, intersections) != (749, 6849):
-    errors.append(f"starting reachable contexts/intersections: {(colocated, intersections)} != (749, 6849)")
+if (colocated, intersections) != (704, 6549):
+    errors.append(f"starting reachable contexts/intersections: {(colocated, intersections)} != (704, 6549)")
 with open(os.path.join(ROOT, "scripts", "build_report.json"), encoding="utf-8") as f:
     start_report = json.load(f)["households_kinship"]
 if (start_report["start_colocated_node_season_contexts"], start_report["start_phase_intersections"]) != (colocated, intersections):

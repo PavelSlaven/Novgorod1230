@@ -11,26 +11,36 @@ const SCN = 'pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_sc
 const PAR = 'pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_node_parents.json';
 const CW = 'data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/crosswalk-rules.json';
 
-export function secondaryPfs(sceneRefs, primary, axes, cw, kinds) {
+export function secondaryPfs(sceneRefs, primary, axes, cw, kinds, placeTemplates, placeTemplateId = '') {
   const policy = cw.node_binding.pf_secondary;
-  const context = { ...axes, primary_pf_kind: kinds.get(primary) };
+  const context = { ...axes, primary_pf_kind: kinds.get(primary), place_template_id: placeTemplateId,
+    primary_place_template_refs: placeTemplates.get(primary) ?? [] };
+  const hasValue = (axis, values) => Array.isArray(context[axis])
+    ? context[axis].some((value) => values.includes(value)) : values.includes(context[axis]);
   const matches = (test) => Object.entries(test).every(([axis, values]) => axis.endsWith('_not')
-    ? !values.includes(context[axis.slice(0, -4)]) : values.includes(context[axis]));
+    ? !hasValue(axis.slice(0, -4), values) : hasValue(axis, values));
   const restricted = policy.primary_kind_rule.restricted_primary_kinds.includes(kinds.get(primary)) ||
     (kinds.get(primary) === 'water_edge' && policy.primary_kind_rule.restricted_water_edge_landscapes.includes(axes.landscape));
+  const groundRejects = (pf) => restricted && policy.primary_kind_rule.rejected_secondary_kinds.includes(kinds.get(pf)) &&
+    !(kinds.get(primary) === 'water_edge' && kinds.get(pf) === 'natural_edge') &&
+    !(axes.land_use === policy.primary_kind_rule.forest_resource_use_exception.land_use &&
+      policy.primary_kind_rule.forest_resource_use_exception.allowed_secondary_kinds.includes(kinds.get(pf)));
   const allowed = (pf) => policy.axis_rules.every((rule) => rule.pf_id !== pf ||
-    (!rule.require_any || Object.entries(rule.require_any).some(([axis, values]) => values.includes(context[axis]))) &&
+    (!rule.require_any || Object.entries(rule.require_any).some(([axis, values]) => hasValue(axis, values))) &&
     (!rule.exclude_if || !matches(rule.exclude_if))) &&
-    !(restricted && policy.primary_kind_rule.rejected_secondary_kinds.includes(kinds.get(pf)));
-  const result = [...new Set(sceneRefs.flatMap((ref) => {
+    !groundRejects(pf);
+  const candidates = [...new Set(sceneRefs.flatMap((ref) => {
     const scene = ref.replace(/@\d+$/, '');
     return cw.scene_templates.map[scene] ?? [];
-  }))].filter((pf) => pf !== primary && !(policy.overlay_rule.pf_kind === 'overlay' && kinds.get(pf) === 'overlay') && allowed(pf));
+  }))].filter((pf) => pf !== primary && !(policy.overlay_rule.pf_kind === 'overlay' && kinds.get(pf) === 'overlay'));
+  const result = candidates.filter(allowed);
   const ferry = policy.ferry_bank_rule;
-  if (primary === ferry.primary_pf && axes.land_use === ferry.parent_land_use && !result.includes(ferry.add_pf)) result.push(ferry.add_pf);
-  const ruleRefs = [...new Set([policy.include_rule.rule_id, policy.primary_kind_rule.rule_ref,
-    ...result.flatMap((pf) => policy.axis_rules.filter((rule) => rule.pf_id === pf).map((rule) => rule.rule_ref)),
-    ...(result.includes(ferry.add_pf) && primary === ferry.primary_pf && axes.land_use === ferry.parent_land_use ? [ferry.rule_ref] : [])])];
+  const ferryAdded = primary === ferry.primary_pf && axes.land_use === ferry.parent_land_use && !result.includes(ferry.add_pf);
+  if (ferryAdded) result.push(ferry.add_pf);
+  const ruleRefs = [...new Set([policy.include_rule.rule_id,
+    ...(candidates.some(groundRejects) ? [policy.primary_kind_rule.rule_ref] : []),
+    ...candidates.flatMap((pf) => policy.axis_rules.filter((rule) => rule.pf_id === pf).map((rule) => rule.rule_ref)),
+    ...(ferryAdded ? [ferry.rule_ref] : [])])];
   return { pfs: result, ruleRefs };
 }
 
@@ -40,6 +50,8 @@ export function build() {
   const wk = readJson(path.join(GROUP, '../../world-knowledge/production-v1/place-first-cartography.json'));
   const composes = new Map(wk.environment_families.map((f) => [f.id, f.composes_with ?? []]));
   const kinds = new Map(readCsv(path.join(GROUP, 'places/place_families.csv')).map((f) => [f.pf_id.slice(3), f.pf_kind]));
+  const placeTemplates = new Map(readCsv(path.join(GROUP, 'places/place_families.csv')).map((f) =>
+    [f.pf_id.slice(3), f.place_template_refs.split(';').filter(Boolean)]));
   const fmap = cw.node_binding.g4_function_to_pf.map;
   const sceneMap = cw.scene_templates.map;
   const rows = [];
@@ -52,7 +64,7 @@ export function build() {
     else if (typeof m === 'string') pf = m;
     else gap = `function axis '${g.axes.function}' has no crosswalk entry`;
     g4pf.set(g.g4_id, pf);
-    const secondary = secondaryPfs(g.scene_template_refs, pf, g.axes, cw, kinds);
+    const secondary = secondaryPfs(g.scene_template_refs, pf, g.axes, cw, kinds, placeTemplates);
     const tr = g.template_refs;
     rows.push({
       node_ref: `${g.g4_id}@${g.g4_version}`, node_level: 'G4', parent_node_ref: '', region_id: ex.region_id,
@@ -87,7 +99,7 @@ export function build() {
       else { pf = ppf; rule = 'rule4_inherit_parent'; counts.rule4_inherit_parent++; }
     }
     const tr = parent.template_refs;
-    const secondary = secondaryPfs([g5.scene_template_id], pf, parent.axes, cw, kinds);
+    const secondary = secondaryPfs([g5.scene_template_id], pf, parent.axes, cw, kinds, placeTemplates);
     rows.push({
       node_ref: `${g5.g5_id}@${g5.g5_version}`, node_level: 'G5', parent_node_ref: `${g5.parent_g4_id}@1`, region_id: ex.region_id,
       pf_id: pf ? 'pf_' + pf : '', pf_secondary: secondary.pfs.map((x) => 'pf_' + x),
@@ -107,7 +119,8 @@ export function build() {
     if (parent && parent.pf_id !== child.pf_id && !parent.pf_secondary.includes(child.pf_id)) {
       parent.pf_secondary.push(child.pf_id);
       if (!parent.binding_basis.includes(cw.node_binding.pf_secondary.parent_closure_rule.rule_ref))
-        parent.binding_basis += `; rule_ref=${cw.node_binding.pf_secondary.parent_closure_rule.rule_ref}`;
+        parent.binding_basis = parent.binding_basis.replace(/rule_refs=([^;]*)/, (_, refs) =>
+          `rule_refs=${refs},${cw.node_binding.pf_secondary.parent_closure_rule.rule_ref}`);
     }
   }
   const n = writeCsv(path.join(GROUP, 'places/node_binding.csv'), Object.keys(rows[0]), rows);

@@ -126,7 +126,7 @@ function secondaryFailures(nodes, extract, crosswalk) {
   for (const [name, fields] of [['overlay_rule', ['pf_kind', 'rule_ref', 'confidence', 'reason']],
     ['ferry_bank_rule', ['primary_pf', 'parent_land_use', 'add_pf', 'rule_ref', 'confidence', 'reason']],
     ['parent_closure_rule', ['rule_ref', 'confidence', 'reason']],
-    ['primary_kind_rule', ['rule_ref', 'confidence', 'reason', 'restricted_primary_kinds', 'restricted_water_edge_landscapes', 'rejected_secondary_kinds']]]) {
+    ['primary_kind_rule', ['rule_ref', 'confidence', 'reason', 'restricted_primary_kinds', 'restricted_water_edge_landscapes', 'rejected_secondary_kinds', 'forest_resource_use_exception']]]) {
     const rule = contract[name];
     if (!exact(rule, fields) || typeof rule.rule_ref !== 'string' || !rule.rule_ref || ruleIds.has(rule.rule_ref) ||
         rule.confidence !== 'C' || typeof rule.reason !== 'string' || !rule.reason) failures.push(`malformed ${name}`);
@@ -137,14 +137,21 @@ function secondaryFailures(nodes, extract, crosswalk) {
       contract.ferry_bank_rule?.parent_land_use !== 'waterway_access' ||
       contract.ferry_bank_rule?.add_pf !== 'riverbank') failures.push('invalid overlay/ferry rule target');
   if (JSON.stringify(contract.primary_kind_rule?.restricted_primary_kinds) !== JSON.stringify(['water', 'natural_wetland']) ||
-      JSON.stringify(contract.primary_kind_rule?.rejected_secondary_kinds) !== JSON.stringify(['natural_forest', 'route', 'settlement_space']) ||
+      JSON.stringify(contract.primary_kind_rule?.rejected_secondary_kinds) !== JSON.stringify(['natural_forest', 'route', 'natural_edge', 'settlement_space']) ||
+      JSON.stringify(contract.primary_kind_rule?.forest_resource_use_exception) !== JSON.stringify({ land_use: 'forest_resource_use', allowed_secondary_kinds: ['natural_forest', 'route', 'natural_edge'] }) ||
       !Array.isArray(contract.primary_kind_rule?.restricted_water_edge_landscapes) || !contract.primary_kind_rule.restricted_water_edge_landscapes.length)
     failures.push('invalid primary kind rule');
-  const validAxes = new Set(['landscape', 'land_use', 'function', 'primary_pf_kind']);
+  const validAxes = new Set(['landscape', 'land_use', 'function', 'primary_pf_kind', 'place_template_id', 'primary_place_template_refs']);
+  const registry = loadTemplateRegistry();
+  const axisVocab = Object.fromEntries(['landscape', 'land_use', 'function'].map((axis) =>
+    [axis, new Set(extract.g4.map((g) => g.axes[axis]))]));
+  axisVocab.primary_pf_kind = new Set(readCsv(P('places/place_families.csv')).map((f) => f.pf_kind));
+  const validValue = (axis, value) => ['place_template_id', 'primary_place_template_refs'].includes(axis)
+    ? registry.get(value)?.kind === 'place' : axisVocab[axis]?.has(value);
   const validCondition = (condition, allowNot = false) => condition && typeof condition === 'object' && !Array.isArray(condition) &&
     Object.keys(condition).length > 0 && Object.entries(condition).every(([axis, values]) =>
       (validAxes.has(axis) || (allowNot && axis.endsWith('_not') && validAxes.has(axis.slice(0, -4)))) &&
-      Array.isArray(values) && values.length > 0 && values.every((v) => typeof v === 'string' && v));
+      Array.isArray(values) && values.length > 0 && values.every((v) => typeof v === 'string' && validValue(axis.replace(/_not$/, ''), v)));
   for (const rule of contract.axis_rules) {
     if (!rule || !exact(rule, ['pf_id', 'rule_ref', 'confidence', 'reason', rule.require_any ? 'require_any' : 'exclude_if']) ||
         !sceneMap || !Object.values(sceneMap).some((pfs) => pfs.includes(rule.pf_id)) ||
@@ -162,6 +169,7 @@ function secondaryFailures(nodes, extract, crosswalk) {
     ...extract.g5.map((g) => [`${g.g5_id}@${g.g5_version}`, [g.scene_template_id], g4ById.get(g.parent_g4_id)?.axes]),
   ];
   const kinds = new Map(readCsv(P('places/place_families.csv')).map((f) => [f.pf_id.slice(3), f.pf_kind]));
+  const placeTemplates = new Map(readCsv(P('places/place_families.csv')).map((f) => [f.pf_id.slice(3), split(f.place_template_refs)]));
   const byNode = new Map(nodes.map((node) => [node.node_ref, node]));
   const children = new Map();
   for (const node of nodes.filter((node) => node.node_level === 'G5' && node.pf_id)) {
@@ -175,32 +183,41 @@ function secondaryFailures(nodes, extract, crosswalk) {
     const actual = node.pf_secondary;
     if (failures.some((failure) => failure.startsWith('malformed'))) continue;
     const primary = node.pf_id.replace(/^pf_/, '');
-    const context = { ...axes, primary_pf_kind: kinds.get(primary) };
+    const context = { ...axes, primary_pf_kind: kinds.get(primary), place_template_id: node.place_template_id,
+      primary_place_template_refs: placeTemplates.get(primary) ?? [] };
+    const hasValue = (axis, values) => Array.isArray(context[axis])
+      ? context[axis].some((value) => values.includes(value)) : values.includes(context[axis]);
     const restricted = contract.primary_kind_rule.restricted_primary_kinds.includes(kinds.get(primary)) ||
       (kinds.get(primary) === 'water_edge' && contract.primary_kind_rule.restricted_water_edge_landscapes.includes(axes.landscape));
-    const expected = [...new Set(scenes.flatMap((ref) => {
+    const groundRejects = (pf) => restricted && contract.primary_kind_rule.rejected_secondary_kinds.includes(kinds.get(pf)) &&
+      !(kinds.get(primary) === 'water_edge' && kinds.get(pf) === 'natural_edge') &&
+      !(axes.land_use === contract.primary_kind_rule.forest_resource_use_exception.land_use &&
+        contract.primary_kind_rule.forest_resource_use_exception.allowed_secondary_kinds.includes(kinds.get(pf)));
+    const candidates = [...new Set(scenes.flatMap((ref) => {
       const scene = ref.replace(/@\d+$/, '');
       return sceneMap[scene] ?? [];
-    }))].filter((pf) => `pf_${pf}` !== node.pf_id && !(contract.overlay_rule.pf_kind === 'overlay' && kinds.get(pf) === 'overlay') &&
-      !(restricted && contract.primary_kind_rule.rejected_secondary_kinds.includes(kinds.get(pf))) && contract.axis_rules.every((rule) =>
+    }))].filter((pf) => `pf_${pf}` !== node.pf_id && !(contract.overlay_rule.pf_kind === 'overlay' && kinds.get(pf) === 'overlay'));
+    const expected = candidates.filter((pf) => !groundRejects(pf) && contract.axis_rules.every((rule) =>
       rule.pf_id !== pf ||
-      (!rule.require_any || Object.entries(rule.require_any).some(([axis, values]) => values.includes(context[axis]))) &&
+      (!rule.require_any || Object.entries(rule.require_any).some(([axis, values]) => hasValue(axis, values))) &&
       (!rule.exclude_if || !Object.entries(rule.exclude_if).every(([axis, values]) => axis.endsWith('_not')
-        ? !values.includes(context[axis.slice(0, -4)]) : values.includes(context[axis]))))).map((pf) => `pf_${pf}`);
-    if (node.pf_id === `pf_${contract.ferry_bank_rule.primary_pf}` && axes.land_use === contract.ferry_bank_rule.parent_land_use &&
-         !expected.includes(`pf_${contract.ferry_bank_rule.add_pf}`)) expected.push(`pf_${contract.ferry_bank_rule.add_pf}`);
-    const sceneExpected = expected.slice();
+        ? !hasValue(axis.slice(0, -4), values) : hasValue(axis, values))))).map((pf) => `pf_${pf}`);
+    const ferryAdded = node.pf_id === `pf_${contract.ferry_bank_rule.primary_pf}` && axes.land_use === contract.ferry_bank_rule.parent_land_use &&
+      !expected.includes(`pf_${contract.ferry_bank_rule.add_pf}`);
+    if (ferryAdded) expected.push(`pf_${contract.ferry_bank_rule.add_pf}`);
     const closure = node.node_level === 'G4' ? (children.get(ref) ?? []).filter((pf) => pf !== node.pf_id) : [];
+    const closureAdded = closure.some((pf) => !expected.includes(pf));
     for (const pf of closure) if (!expected.includes(pf)) expected.push(pf);
     if (actual !== expected.join(';')) failures.push(`${ref}: pf_secondary expected ${expected.join(';')}, got ${actual}`);
     if (split(actual).some((pf) => kinds.get(pf.slice(3)) === 'overlay')) failures.push(`${ref}: overlay in pf_secondary`);
-    const applied = [contract.include_rule.rule_id, contract.primary_kind_rule.rule_ref,
-      ...sceneExpected.flatMap((pf) => contract.axis_rules.filter((rule) => rule.pf_id === pf.slice(3)).map((rule) => rule.rule_ref)),
-      ...(node.pf_id === `pf_${contract.ferry_bank_rule.primary_pf}` && axes.land_use === contract.ferry_bank_rule.parent_land_use ? [contract.ferry_bank_rule.rule_ref] : [])];
-    for (const rule of new Set(applied)) if (!node.binding_basis.includes(rule)) failures.push(`${ref}: missing applied rule_ref ${rule}`);
-    if (closure.some((pf) => !split(actual).includes(pf)) ||
-        (closure.some((pf) => !scenes.some((scene) => sceneMap[scene.replace(/@\d+$/, '')]?.includes(pf.slice(3)))) &&
-          !node.binding_basis.includes(contract.parent_closure_rule.rule_ref))) failures.push(`${ref}: parent closure rule missing`);
+    const applied = [...new Set([contract.include_rule.rule_id,
+      ...(candidates.some(groundRejects) ? [contract.primary_kind_rule.rule_ref] : []),
+      ...candidates.flatMap((pf) => contract.axis_rules.filter((rule) => rule.pf_id === pf).map((rule) => rule.rule_ref)),
+      ...(ferryAdded ? [contract.ferry_bank_rule.rule_ref] : []),
+      ...(closureAdded ? [contract.parent_closure_rule.rule_ref] : [])])];
+    const recorded = node.binding_basis.match(/rule_refs=([^;]*)/)?.[1].split(',').filter(Boolean) ?? [];
+    for (const rule of applied.filter((rule) => !recorded.includes(rule))) failures.push(`${ref}: missing applied rule_ref ${rule}`);
+    for (const rule of recorded.filter((rule) => !applied.includes(rule))) failures.push(`${ref}: stale rule_ref ${rule}`);
     if (!node.binding_basis.includes(`#node_binding.pf_secondary.include_rule[rule_id=${contract.include_rule.rule_id}]`) ||
                      !split(node.source_refs).includes('data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/crosswalk-rules.json'))
       failures.push(`${ref}: secondary rule/source missing`);
@@ -232,6 +249,21 @@ if (process.argv.includes('--self-test')) {
   const changed = (target, value) => nodes.map((node) => node === target ? { ...node, pf_secondary: value } : node);
   if (!secondaryFailures(changed(withSecondary, ''), extracted, crosswalk).length)
     throw new Error('secondary omission/extra probes failed');
+  const changedBasis = (suffix) => nodes.map((node) => node === withSecondary ? {
+    ...node, binding_basis: node.binding_basis.replace(/rule_refs=([^;]*)/, (_, refs) => `rule_refs=${refs}${suffix}`),
+  } : node);
+  if (!secondaryFailures(changedBasis(',stale_probe_v1'), extracted, crosswalk).some((f) => f.includes('stale rule_ref')))
+    throw new Error('rule-ref provenance probe failed');
+  const missingRef = nodes.map((node) => node === withSecondary ? {
+    ...node, binding_basis: node.binding_basis.replace(/rule_refs=([^;]*)/, (_, refs) =>
+      `rule_refs=${refs.split(',').filter((ref) => ref !== crosswalk.node_binding.pf_secondary.include_rule.rule_id).join(',')}`),
+  } : node);
+  if (!secondaryFailures(missingRef, extracted, crosswalk).some((f) => f.includes('missing applied rule_ref')))
+    throw new Error('missing rule-ref probe failed');
+  const invalidValue = structuredClone(crosswalk);
+  invalidValue.node_binding.pf_secondary.axis_rules.find((r) => r.pf_id === 'field_margin').require_any.primary_pf_kind = ['agrarian_use'];
+  if (!secondaryFailures(nodes, extracted, invalidValue).includes('malformed axis rule'))
+    throw new Error('invalid whitelist vocabulary probe failed');
   const g4Closure = nodes.find((node) => node.node_level === 'G4' && node.binding_basis.includes(crosswalk.node_binding.pf_secondary.parent_closure_rule.rule_ref));
   if (!g4Closure || !secondaryFailures(changed(g4Closure, ''), extracted, crosswalk).some((f) => f.includes('pf_secondary expected')))
     throw new Error('parent closure omission probe failed');
@@ -268,10 +300,10 @@ if (process.argv.includes('--self-test')) {
   const lane = nodes.find((node) => node.node_level === 'G5' && node.authoring_axes.includes('landscape=forest') && node.pf_id !== 'pf_village_lane');
   if (!lane || !secondaryFailures(changed(lane, [lane.pf_secondary, 'pf_village_lane'].filter(Boolean).join(';')), extracted, crosswalk).length)
     throw new Error('wild village lane probe failed');
-  for (const [pf, axis] of [['town_wall_edge', 'settlement_landscape'], ['field_margin', 'arable_use'],
-    ['river_wharf', 'settlement_landscape'], ['churchyard', 'religious_use']]) {
+  for (const [pf, positivePrimary] of [['town_wall_edge', 'pf_town_courtyard'], ['field_margin', 'pf_arable_field'],
+    ['river_wharf', 'pf_town_courtyard'], ['churchyard', 'pf_monastery_yard']]) {
     const rule = crosswalk.node_binding.pf_secondary.axis_rules.find((r) => r.pf_id === pf);
-    if (!rule?.require_any || !Object.values(rule.require_any).some((values) => values.includes(axis)))
+    if (!rule?.require_any || !Object.keys(rule.require_any).length)
       throw new Error(`${pf} whitelist positive probe failed`);
     const scene = Object.keys(crosswalk.scene_templates.map).find((id) => crosswalk.scene_templates.map[id].includes(pf));
     const negative = nodes.find((node) => node.node_level === 'G5' &&
@@ -279,21 +311,24 @@ if (process.argv.includes('--self-test')) {
       !split(node.pf_secondary).includes(`pf_${pf}`));
     if (!negative || !secondaryFailures(changed(negative, [negative.pf_secondary, `pf_${pf}`].filter(Boolean).join(';')), extracted, crosswalk).length)
       throw new Error(`${pf} whitelist negative probe failed`);
-    const positive = structuredClone(extracted);
-    const parentId = negative.node_level === 'G4' ? negative.node_ref : negative.parent_node_ref;
-    const parent = positive.g4.find((g) => `${g.g4_id}@${g.g4_version}` === parentId);
-    if (!parent) throw new Error(`${pf} whitelist positive parent missing`);
-    if (axis === 'settlement_landscape') parent.axes.landscape = axis;
-    else parent.axes.land_use = axis;
-    const positiveNodes = nodes.map((node) => node === negative ? { ...node, pf_id: 'pf_riverbank' } : node);
-    if (!secondaryFailures(positiveNodes, positive, crosswalk).some((failure) => failure.includes(`${negative.node_ref}: pf_secondary expected`) && failure.includes(`pf_${pf}`)))
+    const positiveNodes = nodes.map((node) => node === negative ? { ...node, pf_id: positivePrimary } : node);
+    if (!secondaryFailures(positiveNodes, extracted, crosswalk).some((failure) => failure.includes(`${negative.node_ref}: pf_secondary expected`) && failure.includes(`pf_${pf}`)))
       throw new Error(`${pf} whitelist positive probe failed`);
+    if (['town_wall_edge', 'river_wharf'].includes(pf)) {
+      const nodeSignal = nodes.map((node) => node === negative ? { ...node, pf_id: 'pf_rural_yard', place_template_id: 'pt_town' } : node);
+      if (!secondaryFailures(nodeSignal, extracted, crosswalk).some((failure) => failure.includes(`${negative.node_ref}: pf_secondary expected`) && failure.includes(`pf_${pf}`)))
+        throw new Error(`${pf} node place-template positive probe failed`);
+      const rural = nodes.map((node) => node === negative ? { ...node, pf_id: 'pf_peasant_homestead' } : node);
+      if (secondaryFailures(rural, extracted, crosswalk).some((failure) => failure.includes(`${negative.node_ref}: pf_secondary expected`) && failure.includes(`pf_${pf}`)))
+        throw new Error(`${pf} rural primary negative probe failed`);
+    }
   }
   const shifted = structuredClone(extracted);
   const forestEdge = nodes.find((node) => node.node_level === 'G5' && node.pf_id === 'pf_riverbank' &&
-    node.authoring_axes.includes('landscape=forest') && split(node.pf_secondary).includes('pf_forest_track'));
+    node.authoring_axes.includes('land_use=forest_resource_use') && node.authoring_axes.includes('landscape=river_channel') &&
+    split(node.pf_secondary).includes('pf_forest_track'));
   if (!forestEdge) throw new Error('forest water edge probe lacks target');
-  shifted.g4.find((g) => `${g.g4_id}@1` === forestEdge.parent_node_ref).axes.landscape = 'river_channel';
+  shifted.g4.find((g) => `${g.g4_id}@1` === forestEdge.parent_node_ref).axes.land_use = 'waterway_access';
   if (!secondaryFailures(nodes, shifted, crosswalk).some((failure) => failure.includes(`${forestEdge.node_ref}: pf_secondary expected`)))
     throw new Error('changed parent axes probe failed');
   const winterRule = readCsv(P('presence/presence_rules.csv')).find((rule) => rule.scope_ref === 'pf_winter_ice_crossing');
@@ -399,7 +434,10 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     const restricted = ['water', 'natural_wetland'].includes(kinds.get(row.pf_id)) ||
       (kinds.get(row.pf_id) === 'water_edge' && cw.node_binding.pf_secondary.primary_kind_rule.restricted_water_edge_landscapes.includes(landscape));
     if (restricted) for (const pf of split(row.pf_secondary))
-      if (cw.node_binding.pf_secondary.primary_kind_rule.rejected_secondary_kinds.includes(kinds.get(pf)) && !childPfs.has(pf))
+      if (cw.node_binding.pf_secondary.primary_kind_rule.rejected_secondary_kinds.includes(kinds.get(pf)) && !childPfs.has(pf) &&
+          !(kinds.get(row.pf_id) === 'water_edge' && kinds.get(pf) === 'natural_edge') &&
+          !(row.authoring_axes.includes('land_use=forest_resource_use') &&
+            cw.node_binding.pf_secondary.primary_kind_rule.forest_resource_use_exception.allowed_secondary_kinds.includes(kinds.get(pf))))
         kindFailures.push(`${row.node_ref}: incompatible ${pf}`);
   }
   check('node_binding', 'g4_contains_all_child_primary_pf', closureFailures);

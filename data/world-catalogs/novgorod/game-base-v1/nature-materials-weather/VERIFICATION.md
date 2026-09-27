@@ -434,3 +434,16 @@
 - Прежнее основание дороги `npt_central_current_split` (русло: «илистая кромка ушла под воду») было ложным. Замена исправляет реальную ошибку.
 - Ограничение. Для `village_lane` поменялся только id основания: тексты `vikhtuy_locality` дословно совпадают с прежними `channel_split_islet` (тот же шаблон пойменного суглинка). Зимой «пойма лежит под снегом, ровная, без троп», весной «пойма залита водой». Для деревенской улицы это противоречие. Метод покрытия проверяет лишь наличие текста G4, а не его соответствие PF. Ограничение существовало и до C006e2, но осталось.
 - Строк 183 → 183, изменены только 16 `basis_ref`, у olfactory по-прежнему `no_source`. `water_profiles.csv` не изменился.
+
+### natural_presentation_texts/sensory_coverage.csv — approve_with_limits
+Проверено: Claude Opus 5.5 (независимая проверка CR #158, C006e3, коммит 2e16b7b6 против 9b761782).
+- Новое правило «сначала G4, где PF основной; иначе `partial`» соблюдено. Итог: visual и acoustic — по 36 sourced + 25 partial, olfactory — 18 + 6 + 37 `no_source`; совпадает с README.
+- Перевод `sourced → partial` честен для всех семи PF: `bog`, `forest_track`, `hunting_ground`, `outbuildings`, `rural_yard`, `village_lane`, `winter_ice_crossing`. Ни один из них не основной ни у одного G4. G5-основные есть, но тексты существуют только на уровне G4.
+- **floodplain_meadow.** Прямой регрессии покрытия нет: cell утверждает наличие текста аспекта в сезоне, и основной G4 действительно есть. Но основание выбрано правилом «первая строка первого G4». Им стал `dry_island_ridge`: сухая гряда, весной только `thawed/no flood`, летом «сухой плотный грунт… выступают камни». Второй основной G4, `flooded_interior_basin`, имеет `surface__spring__flood` («Суглинистая пойма залита водой»). Он типичнее для поймы в половодье и уже служит основанием для запаха.
+- **Остальные основания.**
+  - `ferry_landing`: `sheltered_landing_terrace` и `vikhtuy_river_approach` («тянет речным илом») — подходит.
+  - `forest_edge`: `vikhtuy_resource_edge` — сырой лес, подходит; звук — вода и лёд, слабо, но это звук конкретного G4.
+  - `marshy_stream`: `forest_stream_route` — «Сырой лес», подходит. Это же подтверждает, что `forest_stream_route` — лесная сцена.
+  - `riverbank`: `channel_split_islet` — подходит.
+  - `forest_track` помечен `partial` честно. Однако основание — пойма острова, «ровная, без троп», то есть тот же дефект, что был у `village_lane`, хотя среди вторичных есть лесные `dry_pine_ridge` и `wet_conifer_tract`.
+- Рекомендация: среди кандидатов предпочитать G4, чей `landscape_template_id` входит в `landscape_template_refs` PF. Для запаха такой отбор уже работает через `scentGround`. После rework `node_binding` у `forest_stream_route` вернётся `forest_track`, и основания надо пересобрать.

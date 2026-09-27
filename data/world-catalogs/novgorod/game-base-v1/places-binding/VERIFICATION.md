@@ -953,3 +953,51 @@
 - `git status --short` в worktree — пусто (byte-identical) до и после
 - Детерминизм: повторный прогон всех четырёх сборщиков (places-binding, D-1, D-3, nature/weather) — sha256 семи ключевых выходных файлов (`node_binding.csv`, `presence_rules.csv`, `schedules_routines.csv`, `relationship_rules.csv`, `address_forms.csv`, `sensory_coverage.csv`, `water_profiles.csv`) идентичны run1/run2; `git status --short` после повторного прогона снова пусто
 - Числа, которые пересчитывал reviewer's script (227 узлов, secondary 545→429, presence 5719/27 source_refs и т.д.), не пересчитывались повторно по заданию — только рёбер-проверки через фактический rebuild/validate/hash подтвердили согласованность с DONE-C006e2
+
+### places/node_binding.csv — rework
+Проверено: Claude Opus 5.5 (независимая проверка CR #158, C006e3, коммит 2e16b7b6 против 9b761782).
+- **Снятие `forest_track` (48).** С 41 узла снято верно: у G4 речных плёсов, проток и эстуария и у их береговых G5 `*_approach`, `*_entrance`, `*_exit` основной PF `river_channel` или `riverbank`, оси `landscape=river_channel|estuary`, `land_use=waterway_access`. У родителя леса нет, есть только `forest_edge`, а `forest_track` — «тропа через лесистый грунт». Прежний довод «правдоподобно» опирался только на шаблон `route_approach`, поэтому снятие обосновано. Русла островов (`*_east_channel`, `*_west_channel`) верно потеряли тропу: G4 острова её сохраняет.
+- **Лишнее снятие у `forest_stream_route`.** Узлы: G4 (−`forest_track`, −`mixed_woodland`), `forest_stream_route_bank_path` (−`forest_track`), `forest_stream_route_pool` (−`mixed_woodland`). Оси `land_use=forest_resource_use`, `function=forest_stream`. Удалённые правила `woodland_not_open_channel_v1` и `resource_ground_not_open_channel_v1` имели исключение `land_use_not: forest_resource_use`, а новое `primary_ground_compatibility_v1` его потеряло. Против снятия говорят данные самой группы:
+  - в `place_families.csv` `pf_marshy_stream` имеет `composes_with=pf_mixed_woodland` и ландшафт `lt_wet_lowland_forest`;
+  - в составе людей у `pf_marshy_stream` записано «Проводник проходит маршрут вдоль ручья»;
+  - тексты природы этого G4 описывают «Сырой лес».
+  Теперь G4 «лесной ручей» остался без леса и тропы. У `bank_path` сцена `dry_route`, но ни одного пути нет.
+- **Проверка 20 G5.**
+  - Правильно: `*_deep_thread`, `*_lee_bank`, `*_upstream_approach`, `old_channel_pool_willow_bank`, `driftwood_bar_shallow_pool`, `reed_backwater_open_pool`, `flooded_interior_basin_reed_margin`, `forest_stream_route_headwater_fork`, `west_hidden_backwater_still_water` (охота на водоплавающую птицу).
+  - Законный лес и путь сохранены на береговых узлах вне поймы: `wet_conifer_tract_river_edge`, `sheltered_landing_terrace_water_approach`, `dry_pine_ridge_north_descent`, `dry_island_ridge_ridge_crest`.
+  - Ошибки: `forest_stream_route_bank_path` и `forest_stream_route_pool` (см. выше), `vikhtuy_locality_landing_candidate` (пристань, см. ниже).
+  - Сомнительно: у `tributary_mouth_crossing` и `dry_island_ridge_downstream_exit` вообще нет пути, хотя сосед (`inland_path`, `ridge_crest`) имеет основной `pf_road`.
+- **Механизм `primary_ground_compatibility_v1`.** Опора на основной PF — верный общий механизм, замыкание G4 ⊇ основные PF детей выполнено. Остались два ложных класса:
+  - нет исключения для `forest_resource_use`;
+  - `natural_wetland` ограничен без условий, хотя `pf_bog` сочетается с `conifer_woodland`/`forest_track`, а `pf_marshy_stream` — с `mixed_woodland`.
+  Тип `natural_edge` не запрещён, поэтому `pf_forest_edge` приносит на открытую воду те же сойку, дятлов и бересту (278 правил наличия). Примеры: эстуарные `mixing_reach_outer_route` и `outer_exposed_approach_sea_exit` с основным `river_channel`. Цель п. 2 REVIEW-C006e2 достигнута лишь частично — это ограничение. Кроме того, `rule_refs` называет `primary_ground_compatibility_v1` у всех 227 строк, в том числе у незатронутых. Значит, это «проверенные», а не «применённые» правила.
+- **Пристань.** Известная находка подтверждена: `pf_river_wharf` («Городская пристань», шаблоны `pt_town`/`pt_city_major_center`/`pt_posad_suburb`) добавлена 5 сельским и археологическим узлам Вихтуя и Заостровья. Обе ветви белого списка пропускают село: `landscape=settlement_landscape` и `primary_pf_kind=settlement_space` через `pf_peasant_homestead`. В этих сценах окажутся 53 правила пристани, среди них свинцовые пломбы и буллы, западная купеческая сумка, привозная поливная миска и сизый голубь.
+- **Другие белые списки.**
+  - `town_wall_settlement_axes_v1` имеет тот же дефект: сейчас ложных узлов нет лишь потому, что у сельских узлов нет сцены `boundary_access`.
+  - `field_margin_agrarian_axes_v1` и `churchyard_religious_axes_v1` ссылаются на значения, которых нет ни в одной оси: `arable_use`, `agrarian_use`, `religious_use`, `function=church`. Работает только ветвь `primary_pf_kind`. Результат сейчас верный (пашни и церкви нет), но validator не сверяет значения белых списков со словарём осей.
+- **Итог.** Узкий rework из двух условий policy: исключение `forest_resource_use` и городской признак для `river_wharf`/`town_wall_edge`. Затем пересборка, ожидаемая дельта — 9 membership-изменений (+4 `forest_stream_route`, −5 `river_wharf`).
+
+### presence/people_composition_authoring.json — approve_with_limits
+Проверено: Claude Opus 5.5 (независимая проверка CR #158, C006e3, коммит 2e16b7b6 против 9b761782).
+- Изменён только `weighted_subjects[0]` слота `pf_outbuildings.household_servant`: добавлены `sex=male`, `sex_confidence=C`, `sex_reason`, `sex_source_refs`. Общий профиль `{male,female}` не тронут, вероятностей 50/50 нет.
+- Пол задан слоту, а не роли. Это соответствует PLAN-OK-C006e3-delta: checker требует полный набор sex-полей, проверяет разрешимость ссылок и совместимость с `actor_applicability`. Отрицательные пробы есть: неполный слот, недопустимый пол, неразрешимая ссылка, женский профиль, снятие ограничения.
+- Честно сказано, что `PRO0421` («Домашняя служанка», `gender_scope=female`) выбор мужчины не подтверждает.
+- Слабое место — довод «работа со скотом». У `PRO0421` в `animal_ids` есть скот (`LIV0005`, `LIV0016`, `LIV0024`), то есть уход за скотом — и женская работа. Мужской выбор лучше опирать на строку `nov_occ_household_servant`: «дрова» и место работы «конюшня».
+- Редакционное C при единственном слуге стартовой территории допустимо. Ограничение — формулировка причины, а не сам выбор.
+
+### Повторная сборка C006e3 — PASS с находкой
+Проверено: Claude Sonnet 5 (повторная сборка в отдельном worktree, коммит 2e16b7b6).
+- Воркт `.../scratchpad/c001/repro` перед стартом: HEAD 2e16b7b6, git status чист.
+- places-binding: `build-all.mjs` — PASS все правила (людность, node_binding, presence_rules и т.д.), EXIT 0; sha256 `node_binding.csv` и `presence_rules.csv` идентичны между двумя прогонами (a7219d00…97e3aeae / 89650cb8…97e3aeae5).
+- places-binding: `validate.mjs --start-territory start-territory.json` — все правила PASS/INFO, EXIT 0, без FAIL.
+- places-binding: `check-people-composition.mjs --self-test` — `PASS people composition: 16 PF, 5 groups, 36 negative probes`.
+- D-1 time/calendar: `build_schedules.py` — «wrote 165 rows», sha256 `schedules_routines.csv` идентичны между прогонами; `check_schedules.py` — «OK: 165 schedules, 26 occupations, all presence subjects covered»; `check_calendar.py` — «checked 351 rows, years 1230-1250; OK: all acceptance checks passed».
+- D-3 households-psychology-speech: `build.py` — sha256 `relationship_rules.csv`, `address_forms.csv`, `build_report.json` идентичны между двумя прогонами; `check.py` — «OK: all checks passed»; `check.py --probe` — все негативные пробы сработали, «OK: all checks passed».
+- nature-materials-weather: `run-all.mjs` — sha256 `sensory_coverage.csv` идентичны между двумя прогонами, все внутренние check-и (`natural_materials_soils`, `weather_climate`, `natural_presentation_texts`) — OK, EXIT 0.
+- **Находка (не блокирует, зафиксирована, не переисследовалась):** после первого прогона `run-all.mjs` изменились относительно коммита 2e16b7b6 два файла — `nature-materials-weather/reports/counts.json` (`water_profiles.csv: 1621 → 1645`) и `weather_climate/water_profiles.csv` (180 строк diff). Оба прогона в этой сессии дают одинаковые 1645/новый контент между собой (детерминированность round-to-round подтверждена), но это расходится с зафиксированным в git состоянием — то есть коммит 2e16b7b6 не byte-identical с результатом чистого rebuild этого конкретного шага. Оба пути восстановлены `git checkout --` до состояния коммита.
+- Финальный `git status --short` в воркте — пустой (чисто), HEAD остаётся 2e16b7b6.
+
+### C006e4 — известные ограничения
+- `tributary_mouth_crossing` и `dry_island_ridge_downstream_exit` по-прежнему не имеют пути.
+- `west_hidden_backwater_dry_patch` имеет ошибочный основной `pf_river_channel`.
+- Оба пункта отложены по REVIEW-C006e3.

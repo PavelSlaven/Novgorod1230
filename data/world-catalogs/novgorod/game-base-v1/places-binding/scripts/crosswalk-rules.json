@@ -890,10 +890,11 @@
       "primary_kind_rule": {
         "rule_ref": "primary_ground_compatibility_v1",
         "confidence": "C",
-        "reason": "Open water and wetland ground cannot imply forest, route or settlement ground merely from a scene template; child-primary closure is explicit.",
+        "reason": "Open water and wetland ground cannot imply forest, route, natural edge or settlement ground merely from a scene template; forest resource use retains forest and route candidates. Child-primary closure is explicit.",
         "restricted_primary_kinds": ["water", "natural_wetland"],
         "restricted_water_edge_landscapes": ["river_channel", "estuary", "shoal", "backwater_wetland", "floodplain"],
-        "rejected_secondary_kinds": ["natural_forest", "route", "settlement_space"]
+        "rejected_secondary_kinds": ["natural_forest", "route", "natural_edge", "settlement_space"],
+        "forest_resource_use_exception": { "land_use": "forest_resource_use", "allowed_secondary_kinds": ["natural_forest", "route", "natural_edge"] }
       },
       "ferry_bank_rule": {
         "primary_pf": "ferry_landing",
@@ -922,29 +923,29 @@
           "pf_id": "town_wall_edge",
           "rule_ref": "town_wall_settlement_axes_v1",
           "confidence": "C",
-          "reason": "A town wall requires settlement ground.",
-          "require_any": { "landscape": ["settlement_landscape"], "primary_pf_kind": ["settlement_space"] }
+          "reason": "A town wall requires a town, major city center or posad place template on the node or primary family.",
+          "require_any": { "place_template_id": ["pt_town", "pt_city_major_center", "pt_posad_suburb"], "primary_place_template_refs": ["pt_town", "pt_city_major_center", "pt_posad_suburb"] }
         },
         {
           "pf_id": "field_margin",
           "rule_ref": "field_margin_agrarian_axes_v1",
           "confidence": "C",
-          "reason": "A field margin requires cultivated or agrarian ground.",
-          "require_any": { "primary_pf_kind": ["agrarian"], "land_use": ["arable_use", "agrarian_use"] }
+          "reason": "A field margin requires an agrarian primary family.",
+          "require_any": { "primary_pf_kind": ["agrarian"] }
         },
         {
           "pf_id": "river_wharf",
           "rule_ref": "river_wharf_settlement_axes_v1",
           "confidence": "C",
-          "reason": "A wharf requires an established settlement waterfront.",
-          "require_any": { "landscape": ["settlement_landscape"], "primary_pf_kind": ["settlement_space"] }
+          "reason": "A wharf requires a town, major city center or posad place template on the node or primary family.",
+          "require_any": { "place_template_id": ["pt_town", "pt_city_major_center", "pt_posad_suburb"], "primary_place_template_refs": ["pt_town", "pt_city_major_center", "pt_posad_suburb"] }
         },
         {
           "pf_id": "churchyard",
           "rule_ref": "churchyard_religious_axes_v1",
           "confidence": "C",
-          "reason": "A churchyard requires church or religious ground.",
-          "require_any": { "primary_pf_kind": ["religious_space"], "land_use": ["religious_use"], "function": ["church"] }
+          "reason": "A churchyard requires a religious-space primary family.",
+          "require_any": { "primary_pf_kind": ["religious_space"] }
         }
       ]
     },

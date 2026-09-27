@@ -145,6 +145,24 @@ const ex = readJson(P('inputs/pr98-extract.json'));
     const k = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref, r.allowed_seasons, r.allowed_times, ...itemConditions.map((col) => r[col])].join('|');
     if (seen.has(k)) f.push(`${r.pr_id}: duplicate ${k}`); seen.add(k);
   }
+  // Overlapping allowed_seasons (not only identical lists) for same scope/region/subject.
+  for (let i = 0; i < pr.length; i += 1) {
+    for (let j = i + 1; j < pr.length; j += 1) {
+      const a = pr[i];
+      const b = pr[j];
+      if (a.scope_kind !== b.scope_kind || a.scope_ref !== b.scope_ref) continue;
+      if (a.region_id !== b.region_id) continue;
+      if (a.subject_kind !== b.subject_kind || a.subject_ref !== b.subject_ref) continue;
+      const sa = split(a.allowed_seasons);
+      const sb = split(b.allowed_seasons);
+      const overlap = sa.includes('all') || sb.includes('all')
+        || sa.some((s) => sb.includes(s));
+      const setEq = sa.length === sb.length && sa.every((s) => sb.includes(s));
+      // Identical season lists already covered by row-key duplicate / authoring variants.
+      // F4: reject intersecting-but-not-equal season sets for the same subject key.
+      if (overlap && !setEq) f.push(`${a.pr_id}/${b.pr_id}: overlapping seasons`);
+    }
+  }
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
   const people = pr.filter((r) => r.subject_kind !== 'category');
   const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));

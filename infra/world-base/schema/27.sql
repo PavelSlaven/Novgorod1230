@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS world_base.place_families (
     REFERENCES world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT,
   display_name_ru TEXT,
   pf_kind TEXT,
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   directness TEXT NOT NULL DEFAULT 'authoring' CHECK (length(btrim(directness)) > 0),
   confidence TEXT NOT NULL
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_node_place_family_bindings (
   place_family_id TEXT NOT NULL,
   place_family_version INTEGER NOT NULL CHECK (place_family_version > 0),
   binding_role TEXT NOT NULL CHECK (binding_role IN ('primary', 'secondary')),
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   confidence TEXT NOT NULL
     CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high')),
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS world_base.spatial_node_place_family_bindings (
 CREATE UNIQUE INDEX IF NOT EXISTS spatial_node_place_family_primary_uq
   ON world_base.spatial_node_place_family_bindings (
     world_revision_id, node_id, node_version
-  ) WHERE binding_role = 'primary' AND status = 'approved';
+  ) WHERE binding_role = 'primary';
 
 CREATE TABLE IF NOT EXISTS world_base.presence_rules (
   rule_id TEXT NOT NULL,
@@ -63,12 +63,12 @@ CREATE TABLE IF NOT EXISTS world_base.presence_rules (
   search_only_if TEXT,
   entry_exposed_weight INTEGER CHECK (entry_exposed_weight IS NULL OR entry_exposed_weight >= 0),
   search_concealed_weight INTEGER CHECK (search_concealed_weight IS NULL OR search_concealed_weight >= 0),
-  wild_arrival_cause_required BOOLEAN NOT NULL DEFAULT false,
+  wild_arrival_cause TEXT,
   refresh_class TEXT NOT NULL DEFAULT 'none'
     CHECK (refresh_class IN ('none', 'by_year_season')),
   confidence TEXT NOT NULL
     CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high')),
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   authoring_payload JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(authoring_payload) = 'object'),
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS world_base.npc_relationship_materialization_rules (
   relationship_kind TEXT NOT NULL,
   direction TEXT,
   materialization_guard TEXT,
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   confidence TEXT NOT NULL
     CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS world_base.speech_address_forms (
   register_ref TEXT,
   form_ru TEXT NOT NULL,
   situation TEXT,
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   confidence TEXT NOT NULL
     CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS world_base.household_composition_profiles (
     OR members_estimate_min IS NULL
     OR members_estimate_max >= members_estimate_min
   ),
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   confidence TEXT NOT NULL
     CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS world_base.slot_instance_variants (
     CHECK (jsonb_typeof(applicability) = 'object'),
   facets JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(facets) = 'object'),
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   confidence TEXT NOT NULL DEFAULT 'unknown'
     CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS world_base.water_body_presence_facets (
   value_num DOUBLE PRECISION,
   unit TEXT,
   no_source BOOLEAN NOT NULL DEFAULT false,
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   confidence TEXT NOT NULL
     CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
@@ -205,7 +205,7 @@ CREATE TABLE IF NOT EXISTS world_base.fauna_phase_activity_rules (
   visibility_state TEXT,
   voice_state TEXT,
   voice_text_ref TEXT,
-  status TEXT NOT NULL CHECK (status IN ('draft', 'approved', 'deprecated', 'retired')),
+  status TEXT NOT NULL CHECK (status IN ('approved', 'deprecated', 'retired')),
   confidence TEXT NOT NULL
     CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high')),
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,

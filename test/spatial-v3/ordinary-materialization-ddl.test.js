@@ -25,4 +25,6 @@ test('037 extends ordinary scope_kind with g5 and adds weather log', async () =>
   assert.match(ddl, /PRIMARY KEY \(party_id, g0_zone_ref, interval_index_6h\)/u);
   assert.match(ddl, /EXECUTE FUNCTION party_runtime\.temporal_append_only\(\)/u);
   assert.match(ddl, /candidate_profile_refs<>OLD\.candidate_profile_refs/u);
+  assert.match(ddl, /interval_index_6h numeric NOT NULL/u);
+  assert.match(ddl, /game_timestamp_parts_valid/u);
 });

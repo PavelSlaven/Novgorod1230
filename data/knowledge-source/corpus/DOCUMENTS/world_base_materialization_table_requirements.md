@@ -220,9 +220,11 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 | `guards` | text[] provenance; **не исполнять** (словаря evaluator нет; LW) |
 | `entry_visible_if` / `search_only_if` | режимы обнаружения (exposed / concealed); без колонки `visibility_class` |
 | `entry_exposed_weight` / `search_concealed_weight` | INT NULL; веса weighted draw; пустые веса при обоих режимах = 1/1 (редакционное правило + LW) |
-| `wild_arrival_cause_required` | хранить; **не гейтит** presence-бросок (§3A.6: причина — само сохранённое правило) |
+| `wild_arrival_cause` | TEXT NULL; класс причины появления в дикой местности (например `prior_visitor_loss_or_discard`); **не гейтит** presence-бросок (§3A.6) |
 | `refresh_class` | `none` (default) или `by_year_season` |
-| `confidence` | словарь соседей `unknown \| low \| medium_low \| medium \| medium_high \| high`; при импорте authoring `A→high`, `B→medium`, `C→low`, пусто/`no_source`→`unknown`; readback presence_rules — только `low` |
+| `confidence` | словарь соседей `unknown \| low \| medium_low \| medium \| medium_high \| high`; при импорте authoring `A→high`, `B→medium`, `C→low`, пусто/`no_source`→`unknown` |
+| `authoring_payload` | JSONB object; исходный authoring payload правила |
+| `provenance_ref` | ссылка на `source_records` |
 | `rule_version` / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |
 
 Семантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.

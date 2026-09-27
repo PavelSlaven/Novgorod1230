@@ -240,7 +240,7 @@ export const TABLE_PURPOSE_FALLBACK = {
   spatial_v3_g6_acoustic_baselines: 'Утверждённый ambient-noise baseline каждой G6 scene slot для точного canonical G5 либо G5 generation template и scene template.',
   spatial_v3_g4_npc_composition_bindings: 'Точное approved авторское решение о составе NPC для G4 и ровно одного G5 generation template либо canonical G5; запись не создаёт NPC.',
   place_families: 'Справочник типов мест (pf_*); единственный слой scope для presence/routines/water/slots (D26). Без per-row canonical_digest.',
-  spatial_node_place_family_bindings: 'Привязка узла G4/G5 к place_family: primary (ровно одна approved) и опциональные secondary после утверждения смысла.',
+  spatial_node_place_family_bindings: 'Привязка узла G4/G5 к place_family: primary (ровно одна на узел) и опциональные secondary; secondary только субъекты, которых нет у primary.',
   presence_rules: 'Единый носитель правил наличия вещей, природы и людей (§3A.1 / §8.1); scope_kind=place_family|container_template.',
   npc_relationship_materialization_rules: 'Правила материализации отношений NPC (D-3); без per-row digest.',
   speech_address_forms: 'Формы обращения (D-3); без per-row digest.',

@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 27 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `3516966df9c236057f3b05d2b72299be667815d43dcff6dcc24cab9df135518b`.
+- SHA-256 развёрнутого DDL: `acd90541bf35972f86a7003f0e8c4fec99e9dc2e613dfad4ee9cbb6a2a599e00`.
 - Таблиц: 217.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3635,7 +3635,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `world_revision_id` | `TEXT` | нет | — | `world_base.spatial_v3_world_revisions(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
 | `display_name_ru` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `pf_kind` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `directness` | `TEXT` | нет | `'authoring'` | — | `NOT NULL`<br>`CHECK (length(btrim(directness)) > 0)` | Описание отсутствует. |
 | `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
@@ -3648,7 +3648,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 
 ### `world_base.spatial_node_place_family_bindings`
 
-Привязка узла G4/G5 к place_family: primary (ровно одна approved) и опциональные secondary после утверждения смысла.
+Привязка узла G4/G5 к place_family: primary (ровно одна на узел) и опциональные secondary; secondary только субъекты, которых нет у primary.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
@@ -3658,7 +3658,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `place_family_id` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `place_family_version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (place_family_version > 0)` | Описание отсутствует. |
 | `binding_role` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (binding_role IN ('primary', 'secondary'))` | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 
@@ -3666,7 +3666,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 
 - `PRIMARY KEY (world_revision_id, node_id, node_version, place_family_id, binding_role)`
 - `FOREIGN KEY (place_family_id, place_family_version, world_revision_id) REFERENCES world_base.place_families(id, version, world_revision_id) ON DELETE RESTRICT`
-- `UNIQUE INDEX spatial_node_place_family_primary_uq ( world_revision_id, node_id, node_version ) WHERE binding_role = 'primary' AND status = 'approved'`
+- `UNIQUE INDEX spatial_node_place_family_primary_uq ( world_revision_id, node_id, node_version ) WHERE binding_role = 'primary'`
 
 ### `world_base.presence_rules`
 
@@ -3692,10 +3692,10 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `search_only_if` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `entry_exposed_weight` | `INTEGER` | да | — | — | `CHECK (entry_exposed_weight IS NULL OR entry_exposed_weight >= 0)` | Описание отсутствует. |
 | `search_concealed_weight` | `INTEGER` | да | — | — | `CHECK (search_concealed_weight IS NULL OR search_concealed_weight >= 0)` | Описание отсутствует. |
-| `wild_arrival_cause_required` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
+| `wild_arrival_cause` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `refresh_class` | `TEXT` | нет | `'none'` | — | `NOT NULL`<br>`CHECK (refresh_class IN ('none', 'by_year_season'))` | Описание отсутствует. |
 | `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `authoring_payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(authoring_payload) = 'object')` | Описание отсутствует. |
 
@@ -3720,7 +3720,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `relationship_kind` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `direction` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `materialization_guard` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Нормализованный compiler output без исходного authoring descriptor. |
@@ -3745,7 +3745,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `register_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `form_ru` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
 | `situation` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Нормализованный compiler output без исходного authoring descriptor. |
@@ -3768,7 +3768,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `place_family_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `members_estimate_min` | `INTEGER` | да | — | — | `CHECK (members_estimate_min IS NULL OR members_estimate_min >= 0)` | Описание отсутствует. |
 | `members_estimate_max` | `INTEGER` | да | — | — | `CHECK ( members_estimate_max IS NULL OR members_estimate_min IS NULL OR members_estimate_max >= members_estimate_min )` | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Нормализованный compiler output без исходного authoring descriptor. |
@@ -3790,7 +3790,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `weight` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
 | `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(applicability) = 'object')` | Описание отсутствует. |
 | `facets` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(facets) = 'object')` | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `confidence` | `TEXT` | нет | `'unknown'` | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Нормализованный compiler output без исходного authoring descriptor. |
@@ -3819,7 +3819,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `value_num` | `DOUBLE PRECISION` | да | — | — | — | Описание отсутствует. |
 | `unit` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `no_source` | `BOOLEAN` | нет | `false` | — | `NOT NULL` | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Нормализованный compiler output без исходного authoring descriptor. |
@@ -3843,7 +3843,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `visibility_state` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `voice_state` | `TEXT` | да | — | — | — | Описание отсутствует. |
 | `voice_text_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
-| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('draft', 'approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status IN ('approved', 'deprecated', 'retired'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `confidence` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (confidence IN ('unknown', 'low', 'medium_low', 'medium', 'medium_high', 'high'))` | Уверенность в достоверности. Допустимо: unknown, low, medium_low, medium, medium_high, high. |
 | `provenance_ref` | `TEXT` | да | — | `world_base.source_records(id) ON DELETE RESTRICT` | — | Описание отсутствует. |
 | `payload` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Нормализованный compiler output без исходного authoring descriptor. |

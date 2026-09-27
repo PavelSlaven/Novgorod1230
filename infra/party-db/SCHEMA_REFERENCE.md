@@ -1301,14 +1301,24 @@ ALTER TABLE party_runtime.party_entity_controls
 CREATE TABLE IF NOT EXISTS party_runtime.party_environment_transition_log (
   party_id TEXT NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
   g0_zone_ref TEXT NOT NULL CHECK (length(btrim(g0_zone_ref)) > 0),
-  interval_index_6h INTEGER NOT NULL CHECK (interval_index_6h >= 0),
-  recorded_at_whole_minutes BIGINT NOT NULL,
-  recorded_at_subminute_numerator INTEGER NOT NULL DEFAULT 0,
-  recorded_at_subminute_denominator INTEGER NOT NULL DEFAULT 1
-    CHECK (recorded_at_subminute_denominator > 0),
+  interval_index_6h numeric NOT NULL
+    CHECK (party_runtime.integral_numeric(interval_index_6h) AND interval_index_6h >= 0),
+  recorded_at_whole_minutes numeric NOT NULL
+    CHECK (party_runtime.integral_numeric(recorded_at_whole_minutes)),
+  recorded_at_subminute_numerator numeric NOT NULL DEFAULT 0
+    CHECK (party_runtime.integral_numeric(recorded_at_subminute_numerator)
+      AND recorded_at_subminute_numerator >= 0),
+  recorded_at_subminute_denominator numeric NOT NULL DEFAULT 1
+    CHECK (party_runtime.integral_numeric(recorded_at_subminute_denominator)
+      AND recorded_at_subminute_denominator > 0),
   transition_kind TEXT NOT NULL CHECK (transition_kind = 'weather'),
   payload JSONB NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
-  PRIMARY KEY (party_id, g0_zone_ref, interval_index_6h)
+  PRIMARY KEY (party_id, g0_zone_ref, interval_index_6h),
+  CHECK (party_runtime.game_timestamp_parts_valid(
+    recorded_at_whole_minutes,
+    recorded_at_subminute_numerator,
+    recorded_at_subminute_denominator
+  ))
 );
 ```
 
@@ -10353,14 +10363,24 @@ ALTER TABLE party_runtime.party_ordinary_materialization_commits
 CREATE TABLE IF NOT EXISTS party_runtime.party_environment_transition_log (
   party_id TEXT NOT NULL REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
   g0_zone_ref TEXT NOT NULL CHECK (length(btrim(g0_zone_ref)) > 0),
-  interval_index_6h INTEGER NOT NULL CHECK (interval_index_6h >= 0),
-  recorded_at_whole_minutes BIGINT NOT NULL,
-  recorded_at_subminute_numerator INTEGER NOT NULL DEFAULT 0,
-  recorded_at_subminute_denominator INTEGER NOT NULL DEFAULT 1
-    CHECK (recorded_at_subminute_denominator > 0),
+  interval_index_6h numeric NOT NULL
+    CHECK (party_runtime.integral_numeric(interval_index_6h) AND interval_index_6h >= 0),
+  recorded_at_whole_minutes numeric NOT NULL
+    CHECK (party_runtime.integral_numeric(recorded_at_whole_minutes)),
+  recorded_at_subminute_numerator numeric NOT NULL DEFAULT 0
+    CHECK (party_runtime.integral_numeric(recorded_at_subminute_numerator)
+      AND recorded_at_subminute_numerator >= 0),
+  recorded_at_subminute_denominator numeric NOT NULL DEFAULT 1
+    CHECK (party_runtime.integral_numeric(recorded_at_subminute_denominator)
+      AND recorded_at_subminute_denominator > 0),
   transition_kind TEXT NOT NULL CHECK (transition_kind = 'weather'),
   payload JSONB NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
-  PRIMARY KEY (party_id, g0_zone_ref, interval_index_6h)
+  PRIMARY KEY (party_id, g0_zone_ref, interval_index_6h),
+  CHECK (party_runtime.game_timestamp_parts_valid(
+    recorded_at_whole_minutes,
+    recorded_at_subminute_numerator,
+    recorded_at_subminute_denominator
+  ))
 );
 
 DROP TRIGGER IF EXISTS temporal_append_only

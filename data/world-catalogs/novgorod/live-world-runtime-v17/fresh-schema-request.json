@@ -2,7 +2,7 @@
   "schema": "rus.live_world_runtime_v17_fresh_schema_request.v1",
   "request_id": "novgorod_live_world_runtime_v17_fresh_schema_001",
   "status": "pending_independent_high_review",
-  "source_commit": "09119f4307f8ffcc5ca96722cb3f6aa516e5f2a2",
+  "source_commit": "da6f323cdb691f4842df7562d9d212009b4a0476",
   "operation": "create_fresh_databases_and_apply_exact_schema",
   "target": {
     "cluster": "existing_managed_local_play_postgresql_16_14_0",
@@ -151,8 +151,8 @@
       },
       {
         "path": "infra/world-base/schema/27.sql",
-        "bytes": 9992,
-        "sha256": "9d85b58ad4136d1e3c80981cd376c885e06f34599b3c3d4991d65b1ca8a7eb26"
+        "bytes": 9852,
+        "sha256": "89d9a0ec8cc36b4d2ec75a52a41ad5abdd9335c3ac2ab438aad330b8ac58b9c9"
       }
     ],
     "expected_world_base_tables": 217
@@ -346,11 +346,11 @@
       },
       {
         "path": "schemas/party-db/037_party_runtime_m2c_presence_routines.sql",
-        "bytes": 4087,
-        "sha256": "450a8dcc2360e0db360c8d4caf60fc67609d53e6c17556d20d7977ad76776c45"
+        "bytes": 4578,
+        "sha256": "7f06036423e135e0a8daedabe4548eb35f3ca49544d28e2f25eae10330c07da8"
       }
     ],
-    "chain_digest": "4ed4f87066f2d9cd724cc51054e740bd2a388d685c0fc8bd1b72f3c66a8684a3"
+    "chain_digest": "872412c5875e37896e3633caf300bbaff884ee6f99dba6e60c5f957fa66c9d01"
   },
   "preconditions": [
     "Independent Sol high approval binds this exact request and source hashes before any production write.",

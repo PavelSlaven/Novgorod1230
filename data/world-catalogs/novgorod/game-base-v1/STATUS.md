@@ -14,7 +14,7 @@
 | [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 4 | 3 | 0 |
 | [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 10 | 8 | 0 |
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
-| [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | rework | 0 | 6 | 2 |
+| [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 0 | 8 | 0 |
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 4 | 8 | 0 |
 | [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 3 | 8 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
@@ -23,9 +23,9 @@
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 0 | 11 | 0 |
 | [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 4 | 19 | 0 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
-| [time-calendar-church](time-calendar-church/VERIFICATION.md) | rework | 0 | 4 | 1 |
+| [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **53** | **197** | **3** |
+| **Итого** | | **53** | **200** | **0** |
 
 ## Вердикты по файлам
 
@@ -213,10 +213,10 @@
 | [`households_kinship/household_composition_profiles.csv`](households-psychology-speech/households_kinship/household_composition_profiles.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#households_kinshiphousehold_composition_profilescsv--approve_with_limits) |
 | [`households_kinship/kinship_terms.csv`](households-psychology-speech/households_kinship/kinship_terms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#kinship_termscsv--approve_with_limits) |
 | [`households_kinship/marriage_inheritance_rules.csv`](households-psychology-speech/households_kinship/marriage_inheritance_rules.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#marriage_inheritance_rulescsv--approve_with_limits) |
-| [`households_kinship/relationship_rules.csv`](households-psychology-speech/households_kinship/relationship_rules.csv) | [rework](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--rework-2) |
+| [`households_kinship/relationship_rules.csv`](households-psychology-speech/households_kinship/relationship_rules.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--approve_with_limits) |
 | [`npc_psychology/psychology_profiles.csv`](households-psychology-speech/npc_psychology/psychology_profiles.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_profilescsv--approve_with_limits) |
 | [`social_norms_honour_hospitality/norms.csv`](households-psychology-speech/social_norms_honour_hospitality/norms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#normscsv--approve_with_limits) |
-| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [rework](households-psychology-speech/VERIFICATION.md#speech_addressaddress_formscsv--rework-2) |
+| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#speech_addressaddress_formscsv--approve_with_limits) |
 | [`speech_address/speech_registers.csv`](households-psychology-speech/speech_address/speech_registers.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#speech_registerscsv--approve_with_limits) |
 
 ### items-household-personal
@@ -375,7 +375,7 @@
 | [`religion/lifecycle_rites_burial.csv`](time-calendar-church/religion/lifecycle_rites_burial.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#religionlifecycle_rites_burialcsv--approve_with_limits) |
 | [`time/calendar_1230_1250.csv`](time-calendar-church/time/calendar_1230_1250.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timecalendar_1230_1250csv--approve_with_limits) |
 | [`time/paschalia_1230_1250.json`](time-calendar-church/time/paschalia_1230_1250.json) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timepaschalia_1230_1250json--approve_with_limits) |
-| [`time/schedules_routines.csv`](time-calendar-church/time/schedules_routines.csv) | [rework](time-calendar-church/VERIFICATION.md#timeschedules_routinescsv--rework-2) |
+| [`time/schedules_routines.csv`](time-calendar-church/time/schedules_routines.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timeschedules_routinescsv--approve_with_limits-1) |
 
 ### transport-health-recreation
 

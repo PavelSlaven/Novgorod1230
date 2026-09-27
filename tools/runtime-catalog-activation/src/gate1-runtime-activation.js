@@ -18,6 +18,8 @@ import { compileOverlaySemanticPayload } from './overlay-compiler.js';
 import { registerAlreadyImportedCatalogAndActivate } from './operator-executors.js';
 import { RECORD_ADAPTERS } from './record-adapters.generated.js';
 import { WORLD_RUNTIME_CATALOG_MIGRATION } from './forward-migrations.js';
+import { validateGate1RuntimeActivationAttestation } from
+  '../../../scripts/generate-gate1-activation-amendment-request.mjs';
 
 const SCOPE = 'item_container_materialization_v2';
 const GATE1_ROOT = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
@@ -307,19 +309,10 @@ async function readCandidateRows({ root, reconciliation, result, allRowsByTable 
   return output;
 }
 
-function assertGate1Authority({ request, attestation, result, worldReleaseId }) {
-  if (request.schema !== 'rus.gate1_v5_v6_activation_request_amendment.v1'
-      || request.supersedes?.path !==
-        `${GATE1_ROOT}/activation-amendment-v1/request.json`
-      || request.supersedes?.request_digest !==
-        '04282a4269116f46f0c6e36511af4fca0732054152de5e864cfdfab874d1e310'
-      || request.request_digest !== digestWithout(request, 'request_digest')
-      || attestation.attestation_digest !== digestWithout(attestation, 'attestation_digest')
-      || attestation.activation_amendment_request_digest !== request.request_digest
-      || attestation.approved_permissions?.activate_for_new_development_parties_only !== true
-      || attestation.approved_permissions?.import_approved_item_container_catalog !== false
-      || attestation.approved_permissions?.runtime_item_creation !== false
-      || result.status !== 'imported_exact_readback_verified'
+export function assertGate1Authority({ request, attestation, result,
+  worldReleaseId }) {
+  validateGate1RuntimeActivationAttestation({ request, attestation });
+  if (result.status !== 'imported_exact_readback_verified'
       || result.activation_performed !== false
       || result.runtime_item_creation_authorized !== false
       || digestEnvelope(result) !== request.completed_import_readback.canonical_digest
@@ -341,12 +334,6 @@ async function assertFileBinding(root, binding, parsed = null) {
     fail('GATE1_BOUND_FILE_CANONICAL_DIGEST_MISMATCH');
   }
   return value;
-}
-
-function digestWithout(value, field) {
-  const copy = structuredClone(value);
-  delete copy[field];
-  return digestEnvelope(copy);
 }
 
 function normalizeRow(row) {

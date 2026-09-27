@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(runtime): commit Gate1 activation-amendment attestation v2; assertGate1Authority runs full validateGate1RuntimeActivationAttestation; v2 forgery tests
 - fix(runtime): Gate1 activation-amendment v2 (restart sha drift); fail-closed without attestation v2; LW-055 added
 - fix(wk): #153 REVIEW-049 — Core `admittedCandidateRefs` + grounding scores admitted (not vector top-k); `rerank_applied` telemetry; `sufficient_enabled=false` caps SUFFICIENT; C26 single-field loader test; §63/LW-053/054 (#153, PR #98)
 - fix(wk): #153 REVIEW-048 — sufficiency_profile mutation kills; owner-server D21 remeasure (GPU/CPU p95 + 120-sit audit ON/OFF) keeps rerank OFF; LW-053 (#153, PR #98) LW-053 updated

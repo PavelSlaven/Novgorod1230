@@ -1,26 +1,44 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
 
-import { activateGate1RuntimeCatalog } from
+import {
+  activateGate1RuntimeCatalog,
+  assertGate1Authority
+} from
   '../../runtime-catalog-activation/src/gate1-runtime-activation.js';
 import {
   assertGate1ActivationAmendmentV2Attestation,
   buildGate1ActivationAmendmentRequest,
   GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_DIGEST,
   GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_PATH,
+  GATE1_ACTIVATION_AMENDMENT_V2_ATTESTATION_PATH,
+  GATE1_ACTIVATION_AMENDMENT_V2_REQUEST_PATH,
   validateGate1RuntimeActivationAttestation,
   validatePendingGate1ActivationAmendment
 } from
   '../../../scripts/generate-gate1-activation-amendment-request.mjs';
 
-const requestPath = 'data/world-catalogs/novgorod/runtime-catalog/'
-  + 'gate1-owner-data-v1/activation-amendment-v2/request.json';
-const v1RequestPath = 'data/world-catalogs/novgorod/runtime-catalog/'
-  + 'gate1-owner-data-v1/activation-amendment-v1/request.json';
+const requestPath = GATE1_ACTIVATION_AMENDMENT_V2_REQUEST_PATH;
+const attestationPath = GATE1_ACTIVATION_AMENDMENT_V2_ATTESTATION_PATH;
+const v1RequestPath = GATE1_ACTIVATION_AMENDMENT_V1_REQUEST_PATH;
 const v1AttestationPath = 'data/world-catalogs/novgorod/runtime-catalog/'
   + 'gate1-owner-data-v1/activation-amendment-v1/'
   + 'runtime-activation-approval-attestation.json';
+const importReadbackPath = 'data/world-catalogs/novgorod/runtime-catalog/'
+  + 'gate1-owner-data-v1/import-readback-result.json';
+const OLD_RESTART_SHA =
+  '698dcbeb221fb0dbc81c541324854cd8e237ca11347600c2ac4006f885a12e80';
+
+async function loadV2Pair() {
+  return {
+    request: JSON.parse(await readFile(requestPath, 'utf8')),
+    attestation: JSON.parse(await readFile(attestationPath, 'utf8')),
+    result: JSON.parse(await readFile(importReadbackPath, 'utf8'))
+  };
+}
 
 test('Gate1 activation amendment reproduces exact checked pending request',
   async () => {
@@ -127,20 +145,82 @@ test('sealed v1 runtime attestation remains exact historical archive',
     }
   });
 
+test('runtime attestation v2 approves only exact new-development activation',
+  async () => {
+    const { request, attestation, result } = await loadV2Pair();
+    assert.equal(validateGate1RuntimeActivationAttestation({ request,
+      attestation }), true);
+    assert.equal(assertGate1ActivationAmendmentV2Attestation(request,
+      attestation), true);
+    assertGate1Authority({
+      request,
+      attestation,
+      result,
+      worldReleaseId: 'spatial-v3-production-v5'
+    });
+    assert.equal(attestation.activation_amendment_request_digest,
+      request.request_digest);
+    assert.equal(attestation.activation_executed, false);
+    assert.equal(attestation.database_mutated, false);
+    assert.equal(attestation.restart_evidence.verification.sha256,
+      '1235aa3108555fcabf9622436e8651b1eb7ea77abde7f4e31f4b3bc8f6b57074');
+
+    for (const mutate of [
+      (value) => {
+        value.status = 'approved_production_not_executed';
+      },
+      (value) => { value.activation_executed = true; },
+      (value) => {
+        value.activation_amendment_request_digest = '0'.repeat(64);
+      },
+      (value) => {
+        value.restart_evidence.verification.sha256 = OLD_RESTART_SHA;
+      }
+    ]) {
+      const tampered = structuredClone(attestation);
+      mutate(tampered);
+      assert.throws(() => validateGate1RuntimeActivationAttestation({ request,
+        attestation: tampered }),
+      /GATE1_RUNTIME_ACTIVATION_ATTESTATION_(INVALID|DIGEST_INVALID)/u);
+      assert.throws(() => assertGate1Authority({
+        request,
+        attestation: tampered,
+        result,
+        worldReleaseId: 'spatial-v3-production-v5'
+      }),
+      /GATE1_RUNTIME_ACTIVATION_ATTESTATION_(INVALID|DIGEST_INVALID)/u);
+    }
+
+    const v1Attestation = JSON.parse(await readFile(v1AttestationPath, 'utf8'));
+    assert.throws(() => validateGate1RuntimeActivationAttestation({ request,
+      attestation: v1Attestation }),
+    /GATE1_RUNTIME_ACTIVATION_ATTESTATION_INVALID/u);
+  });
+
 test('Gate1 activation amendment v2 refuses missing attestation',
   async () => {
     const request = await buildGate1ActivationAmendmentRequest();
     assert.throws(() => assertGate1ActivationAmendmentV2Attestation(request,
       null),
     /GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2_REQUIRED/u);
-    await assert.rejects(() => activateGate1RuntimeCatalog({
-      worldPool: {},
-      partyPool: {},
-      repositoryRoot: process.cwd(),
-      worldReleaseId: 'spatial-v3-production-v5'
-    }), (error) => {
-      assert.equal(error.code,
-        'GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2_REQUIRED');
-      return true;
-    });
+    const tmp = await mkdtemp(join(tmpdir(), 'gate1-amendment-v2-'));
+    try {
+      const relDir = join(tmp,
+        'data/world-catalogs/novgorod/runtime-catalog/'
+        + 'gate1-owner-data-v1/activation-amendment-v2');
+      await mkdir(relDir, { recursive: true });
+      await copyFile(requestPath, join(tmp, requestPath));
+      await assert.rejects(() => activateGate1RuntimeCatalog({
+        worldPool: {},
+        partyPool: {},
+        repositoryRoot: tmp,
+        worldReleaseId: 'spatial-v3-production-v5'
+      }), (error) => {
+        assert.equal(error.code,
+          'GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2_REQUIRED');
+        return true;
+      });
+    } finally {
+      await rm(tmp, { recursive: true, force: true });
+    }
   });

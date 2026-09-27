@@ -8,7 +8,7 @@ WK production-v1 `family-social-context.json`) плюс курированный
 книжными `source_refs`. Проверено `scripts/check.py` (все проверки проходят
 на текущий момент, см. вывод ниже).
 
-**D-3 rework.** Связи и обращения покрывают 22 потенциальные пары из 11 субъектов в 16 стартовых PF (в пары входят 10 субъектов): пары вычисляются из `people_presence_authoring.csv` и привязок PF к G5 в `node_binding.csv`, с пересечением сезонов и времени суток. Общая сцена даёт возможность встречи, но не создаёт отношение или знакомство конкретных NPC. Для пары есть точное правило или `no_source`, а для каждого направления — устная форма или `no_source`. Письменные формулы отделены полем `channel`; `scripts/check.py --probe` проверяет, что удаление покрытия обнаруживается.
+**D-3 rework.** Связи и обращения покрывают потенциальные пары на стартовых PF: общий расчёт читает `people_presence_authoring.csv`, `schedules_routines.csv` и привязки PF к G5, пересекает сезон и фазы `on_site`/`nearby` на одном PF. Актуальные количества в `scripts/build_report.json`. Общая сцена даёт возможность встречи, но не создаёт отношение или знакомство конкретных NPC. Для пары есть точное правило или `no_source`, а для каждого направления — устная форма или `no_source` того же вида связи. Письменные формулы отделены полем `channel`; `scripts/check.py --probe` проверяет, что удаление покрытия обнаруживается.
 
 **Rework 2026-09-26.** Независимый verifier (см. `VERIFICATION.md`) вернул
 5 из 7 таблиц группы на переработку: `household_composition_profiles.csv`,
@@ -24,9 +24,9 @@ WK production-v1 `family-social-context.json`) плюс курированный
 
 | Домен | Файлы | Строк | Приоритет брифа | Статус покрытия |
 |---|---|---|---|---|
-| households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv, relationship_rules.csv | 139 / 8 / 32 / 34 | M2c | 22 стартовые пары; конкретные отношения устанавливаются только при материализации |
+| households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv, relationship_rules.csv | см. `scripts/build_report.json` | M2c | стартовые пары покрыты; конкретные отношения устанавливаются только при материализации |
 | npc_psychology | psychology_profiles.csv | 139 | M2c | покрытие 68 occupation + 71 role; контекстные мотивы и страхи привязаны только к применимым свидетельствам; шкала ценностей не утверждена владельцем |
-| speech_address | speech_registers.csv, address_forms.csv | 71 / 64 | M3 | 44 направленные стартовые пары покрыты устной формой или явным пробелом; 46 строк `no_source` всего |
+| speech_address | speech_registers.csv, address_forms.csv | см. `scripts/build_report.json` | M3 | направленные стартовые пары покрыты устной формой или явным пробелом |
 | social_norms_honour_hospitality | norms.csv | 19 | M3 | 4 из 5 ранее пустых norm_kind закрыты book evidence; gift всё ещё 0 строк |
 
 Подробности, правила вывода и гэпы — в README.md каждого домена.

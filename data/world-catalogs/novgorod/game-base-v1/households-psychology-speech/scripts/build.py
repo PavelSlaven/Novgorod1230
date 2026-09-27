@@ -32,32 +32,61 @@ def read_csv(path):
 
 
 def starting_pairs():
-    """Potential co-presence at a bound G5 scene, constrained by authored PF, season and time."""
+    """Potential co-presence at a bound G5 PF, using presence and timed routines."""
     presence = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_presence_authoring.csv"))
     bindings = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "places", "node_binding.csv"))
+    schedules = read_csv(os.path.join(GAME_BASE_V1, "time-calendar-church", "time", "schedules_routines.csv"))
+    seasons = ("winter", "spring", "summer", "autumn")
+    time_ranges = {"all": (0, 1440), "day": (360, 1080), "morning": (360, 720),
+                   "evening": (1080, 1440), "night": (0, 360)}
     by_pf = {}
     for row in presence:
         if row["scope_kind"] == "place_family":
-            by_pf.setdefault(row["scope_ref"], []).append(row)
+            for season in row["allowed_seasons"].split(";"):
+                for time in row["allowed_times"].split(";"):
+                    if time in time_ranges:
+                        by_pf.setdefault((row["scope_ref"], season), []).append(
+                            (row["subject_ref"], *time_ranges[time]))
+    routine_by_pf = {}
+    for row in schedules:
+        subject = row["occupation_ref"] or row["role_ref"]
+        if not subject:
+            continue
+        minute = int(row["local_start_minute"])
+        for phase in json.loads(row["time_blocks"]):
+            end = minute + int(phase["duration_minutes"])
+            if phase["presence_state"] in {"on_site", "nearby"} and phase["location_ref"]:
+                pf = phase["location_ref"]
+                routine_by_pf.setdefault((pf, row["season"]), []).append((subject, minute, end))
+            minute = end
+    for key, phases in routine_by_pf.items():
+        by_pf.setdefault(key, []).extend(phases)
     pairs = {}
     same_pf_pairs = set()
+    intersections = set()
+    colocated_contexts = set()
+    bound_pf = set()
     for node in bindings:
         if node["node_level"] != "G5":
             continue
         pf_refs = {node["pf_id"], *filter(None, node["pf_secondary"].split(";"))}
-        people = [row for pf in pf_refs for row in by_pf.get(pf, [])]
-        for a, b in combinations(people, 2):
-            if a["subject_ref"] == b["subject_ref"]:
-                continue
-            if not set(a["allowed_seasons"].split(";")) & set(b["allowed_seasons"].split(";")):
-                continue
-            if a["allowed_times"] != b["allowed_times"] and "all" not in (a["allowed_times"], b["allowed_times"]):
-                continue
-            key = tuple(sorted((a["subject_ref"], b["subject_ref"])))
-            pairs.setdefault(key, set()).add(node["node_ref"])
-            if a["scope_ref"] == b["scope_ref"] and a["subject_kind"] == b["subject_kind"] == "occupation":
-                same_pf_pairs.add(key)
-    return pairs, same_pf_pairs, len(by_pf), {row["subject_ref"] for rows in by_pf.values() for row in rows}
+        bound_pf.update(pf_refs)
+        for pf in pf_refs:
+            for season in seasons:
+                people = by_pf.get((pf, season), [])
+                for a, b in combinations(people, 2):
+                    if a[0] == b[0]:
+                        continue
+                    key = tuple(sorted((a[0], b[0])))
+                    colocated_contexts.add((pf, season, key))
+                    if max(a[1], b[1]) >= min(a[2], b[2]):
+                        continue
+                    pairs.setdefault(key, set()).add((node["node_ref"], pf, season))
+                    intersections.add((pf, season, *sorted((a, b))))
+                    if all(subject.startswith("nov_occ_") for subject in key):
+                        same_pf_pairs.add(key)
+    return pairs, same_pf_pairs, len({pf for pf, _ in by_pf if pf in bound_pf}), {
+        person[0] for (pf, _), people in by_pf.items() if pf in bound_pf for person in people}, len(intersections), len(colocated_contexts)
 
 
 def read_tsv(path):
@@ -324,14 +353,19 @@ def build_households_kinship(occs, roles):
         ("rel_community", "neighborhood", "pf_village_lane", "", "", "community_member", "symmetric", "Only named members of the same established verv; sharing a lane does not prove membership or kinship.", "book:641351 §2754", "", "", "A"),
         ("rel_rural_neighbor_gap", "neighborhood", "pf_village_lane", "", "", "unspecified", "symmetric", "Require named neighboring households; no direction or strength follows from proximity.", "", "", "No sourced direction or strength for arbitrary neighbors.", "C"),
         ("rel_kin_siblings", "household", "hh_role_nov_role_householder", "", "", "kin_siblings", "symmetric", "Only named siblings with an actor-level kin record; a shared household is insufficient.", "book:641351 §2988", "", "", "A"),
+        ("rel_kin_siblings_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "kin_siblings", "symmetric", "Only named siblings with an actor-level kin record; a shared household is insufficient.", "book:641351 §2988", "", "", "A"),
         ("rel_kin_parent_child", "household", "hh_role_nov_role_householder", "", "", "kin_parent_child", "directed", "Only a named parent and child with an actor-level kin record.", "book:641351 §2943", "", "", "A"),
+        ("rel_kin_parent_child_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "kin_parent_child", "directed", "Only a named parent and child with an actor-level kin record.", "book:641351 §2943", "", "", "A"),
         ("rel_kin_uncle_nephew", "household", "hh_role_nov_role_householder", "", "", "kin_uncle_nephew", "directed", "Only named uncle and nephew with an actor-level kin record.", "book:641351 §2988", "", "", "A"),
+        ("rel_kin_uncle_nephew_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "kin_uncle_nephew", "directed", "Only named uncle and nephew with an actor-level kin record.", "book:641351 §2988", "", "", "A"),
         ("rel_spouse", "household", "hh_role_nov_role_householder", "", "", "spouse", "symmetric", "Only named spouses with an actor-level marriage record; household titles do not establish marriage.", "book:641351 §2976", "", "", "A"),
+        ("rel_spouse_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "spouse", "symmetric", "Only named spouses with an actor-level marriage record; household titles do not establish marriage.", "book:641351 §2976", "", "", "A"),
         ("rel_dependent_herder", "role_pair", "", "nov_role_householder", "nov_occ_herder", "dependent_patron", "directed", "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt.", "book:641351 §2811", "", "", "A"),
+        ("rel_dependent_herder_smerd", "role_pair", "", "nov_role_smerd_householder", "nov_occ_herder", "dependent_patron", "directed", "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt.", "book:641351 §2811", "", "", "A"),
         ("rel_dependent_servant", "role_pair", "", "nov_role_smerd_householder", "nov_occ_household_servant", "dependent_patron", "directed", "Only a named household servant and their named employer in a materialized household.", "book:641352 §1814", "", "", "C"),
         ("rel_joint_work", "work_assignment", "", "", "", "joint_work", "symmetric", "Only named people with a shared work assignment at the same place and time; acquaintance alone implies no kinship, debt or enmity.", "", "editorial_joint_work_acquaintance_c", "", "C"),
     ]
-    pairs, same_pf_pairs, start_pf_count, start_subjects = starting_pairs()
+    pairs, same_pf_pairs, start_pf_count, start_subjects, intersections, colocated_contexts = starting_pairs()
     explicit_pairs = {frozenset((row[3], row[4])) for row in relation_rows if row[1] == "role_pair" and row[3] and row[4]}
     for index, pair in enumerate(sorted(pairs), 1):
         if frozenset(pair) in explicit_pairs:
@@ -358,8 +392,13 @@ def build_households_kinship(occs, roles):
         "start_subjects": len(start_subjects),
         "start_subjects_in_pairs": len({subject for pair in pairs for subject in pair}),
         "start_role_pairs": len(pairs),
+        "start_pair_pf_season_contexts": len({(pair, pf, season) for pair, contexts in pairs.items()
+                                               for _, pf, season in contexts}),
+        "start_colocated_pf_season_contexts": colocated_contexts,
+        "start_phase_intersections": intersections,
         "no_source_rows": sum(bool(row[10]) for row in relation_rows),
-        "start_pair_scene_counts": {"|".join(pair): len(nodes) for pair, nodes in sorted(pairs.items())},
+        "start_pair_scene_counts": {"|".join(pair): len({node for node, _, _ in contexts})
+                                    for pair, contexts in sorted(pairs.items())},
     }
 
 
@@ -520,14 +559,16 @@ def build_speech_address(roles):
         ("form_master_servant", "master_servant", "nov_role_servant", "nov_role_boyar", "plain_oral", "Господин", "устный доклад слуги хозяину", "", "слуги обращаются к своему господину; перенос на боярский двор", "book:641352 §1814", "", "", "C"),
         ("form_gospodine", "dependent_patron", "nov_occ_household_servant", "nov_role_smerd_householder", "plain_oral", "господине", "устное обращение зависимого к хозяину", "", "форма засвидетельствована к господину; перенос на названного хозяина условен", "book:641351 §1482", "", "", "C"),
         ("form_herder_master", "dependent_patron", "nov_occ_herder", "nov_role_householder", "plain_oral", "господине", "устное обращение закупа-пастуха к своему хозяину", "", "форма засвидетельствована к господину; перенос на закупа условен", "book:641351 §1482", "", "", "C"),
-        ("form_brother", "written_letter", "", "", "", "Господин брат", "письмо сестры брату", "", "берестяная грамота, сестра просит брата вступиться", "book:641351 §2984", "", "", "A"),
+        ("form_herder_smerd", "dependent_patron", "nov_occ_herder", "nov_role_smerd_householder", "plain_oral", "господине", "устное обращение закупа-пастуха к названному хозяину", "", "форма засвидетельствована к господину; перенос на закупа условен", "book:641351 §1482", "", "", "C"),
+        ("form_brother", "kin_siblings", "", "", "", "Господин брат", "письмо сестры брату", "", "берестяная грамота, сестра просит брата вступиться", "book:641351 §2984", "", "", "A"),
         ("form_spouse", "spouse", "nov_role_household_mistress", "nov_role_householder", "", "Господине мой", "жена к мужу; книжный топос, только вариант", "", "слово Даниила Заточника", "book:641351 §1673", "", "", "C"),
+        ("form_spouse_smerd", "spouse", "nov_role_household_mistress", "nov_role_smerd_householder", "", "Господине мой", "жена к мужу; книжный топос, только вариант", "", "слово Даниила Заточника; перенос на двор смерда условен", "book:641351 §1673", "", "", "C"),
         ("form_son", "kin_parent_child", "", "", "", "Сын мой", "отец к сыну", "", "летописная речь, medieval_general", "book:641352 §1765", "", "", "C"),
         ("form_father_in_law", "unspecified", "", "", "", "Господин и отец", "зять к тестю", "", "летописная речь, medieval_general; термин обращения не доказывает отцовство", "book:641352 §1722", "", "", "C"),
         ("form_gospozha", "written_letter", "", "", "", "госпожа моя", "письменная вежливая просьба женщины к женщине", "", "берестяная грамота; устный перенос не установлен", "book:641351 §2968", "", "", "A"),
         ("form_children", "unspecified", "", "", "", "Дети мои", "клирик к собранию людей", "", "речь клирика, не индивидуальная родственная форма", "book:641352 §1966", "", "", "A"),
-        ("form_bratie", "community_member", "", "", "", "Братия", "коллективное обращение к собранию", "", "летописная коллективная речь", "book:641352 §278", "", "", "A"),
-        ("form_brothers_novgorod", "community_member", "", "", "", "Братья новгородцы", "коллективное обращение к новгородцам", "", "речь Мстислава", "book:641352 §269", "", "", "A"),
+        ("form_bratie", "unspecified", "", "", "", "Братия", "коллективное обращение к собранию", "", "летописная коллективная речь", "book:641352 §278", "", "", "A"),
+        ("form_brothers_novgorod", "unspecified", "", "", "", "Братья новгородцы", "коллективное обращение к новгородцам", "", "речь Мстислава", "book:641352 §269", "", "", "A"),
         ("form_knyazhe", "unspecified", "", "nov_role_prince", "", "княже", "новгородцы к князю", "", "1228 год; отдельный вариант", "book:556930 §158", "", "", "B"),
         ("form_letter_from", "written_letter", "", "", "formal_literate", "От {отправитель} к {адресат}", "письмо", "", "письменный зачин", "book:641351 §2921", "", "", "C"),
         ("form_letter_gramota", "written_letter", "", "", "formal_literate", "Грамота от {отправитель} к {адресат}", "письмо", "", "письменный зачин", "book:641351 §2937", "", "", "A"),
@@ -535,15 +576,26 @@ def build_speech_address(roles):
         ("form_household_gap", "co_resident", "", "", "everyday_oral", "", "разговор жильцов одного двора", "", "", "", "", "No universal address follows from shared residence.", "C"),
         ("form_spouse_reverse_gap", "spouse", "nov_role_householder", "nov_role_household_mistress", "everyday_oral", "", "устное обращение мужа к жене", "", "", "", "", "No sourced oral form for this direction.", "C"),
         ("form_neighbor_gap", "unspecified", "", "", "everyday_oral", "", "устное обращение соседей", "", "", "", "", "No universal oral form or tie strength for neighboring households.", "C"),
+        ("form_siblings_gap", "kin_siblings", "", "", "everyday_oral", "", "устное обращение родных братьев и сестёр", "", "", "", "", "No sourced general oral sibling address.", "C"),
+        ("form_uncle_nephew_gap", "kin_uncle_nephew", "", "", "everyday_oral", "", "устное обращение дяди и племянника", "", "", "", "", "No sourced general oral uncle-nephew address.", "C"),
+        ("form_joint_work_gap", "joint_work", "", "", "everyday_oral", "", "устное обращение коллег", "", "", "", "", "No universal oral address follows from joint work.", "C"),
+        ("form_community_gap", "community_member", "", "", "everyday_oral", "", "устное обращение членов верви", "", "", "", "", "No sourced general oral address for community members.", "C"),
+        ("form_spouse_smerd_reverse_gap", "spouse", "nov_role_smerd_householder", "nov_role_household_mistress", "everyday_oral", "", "устное обращение мужа к жене", "", "", "", "", "No sourced oral form for this direction.", "C"),
     ]
     columns = ["sp_id", "channel", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
-    af_rows = [dict(zip(columns, (row[0], "written" if row[1] == "written_letter" else "oral", *row[1:], "candidate"))) for row in FORMS]
-    pairs, _, _, _ = starting_pairs()
+    af_rows = [dict(zip(columns, (row[0], "written" if row[1] == "written_letter" or row[0] == "form_brother" else "oral", *row[1:], "candidate"))) for row in FORMS]
+    pairs, same_pf_pairs, _, _, _, _ = starting_pairs()
+    explicit_kinds = {(r["subject_role_ref"], r["object_role_ref"]): r["relationship_kind"]
+                      for r in read_csv(os.path.join(ROOT, "households_kinship", "relationship_rules.csv"))
+                      if r["scope_kind"] == "role_pair"}
     for index, (a, b) in enumerate(sorted(pairs), 1):
+        kind = explicit_kinds.get((a, b), explicit_kinds.get((b, a),
+               "joint_work" if (a, b) in same_pf_pairs else "unspecified"))
         for speaker, addressee in ((a, b), (b, a)):
-            if any(row["channel"] == "oral" and row["speaker_role_ref"] == speaker and row["addressee_role_ref"] == addressee for row in af_rows):
+            if any(row["channel"] == "oral" and row["relationship_kind"] == kind and
+                   row["speaker_role_ref"] == speaker and row["addressee_role_ref"] == addressee for row in af_rows):
                 continue
-            af_rows.append(dict(zip(columns, (f"form_start_gap_{index:03}_{'a' if speaker == a else 'b'}", "oral", "unspecified",
+            af_rows.append(dict(zip(columns, (f"form_start_gap_{index:03}_{'a' if speaker == a else 'b'}", "oral", kind,
                                               speaker, addressee, "", "", "co-present actors at a bound starting scene", "", "", "", "",
                                               "No sourced oral form for this directed role pair in the searched corpora.", "C", "candidate"))))
     n_af = write_csv(
@@ -552,7 +604,9 @@ def build_speech_address(roles):
     )
     report["speech_address"] = {"speech_registers.csv": n_reg, "address_forms.csv": n_af,
                                  "no_source_rows": sum(bool(row["no_source"]) for row in af_rows),
-                                 "start_directed_pairs": 2 * len(pairs)}
+                                 "start_directed_pairs": 2 * len(pairs),
+                                 "start_directed_pf_season_contexts": 2 * len({(pair, pf, season)
+                                     for pair, contexts in pairs.items() for _, pf, season in contexts})}
 
 
 # ---------------------------------------------------------------------------

@@ -75,6 +75,7 @@ def tsv_ids(path, key):
 
 all_occ = tsv_ids(os.path.join(region_tsv, "novgorod_occupations_v1_enriched.tsv"), "occupation_id")
 all_role = tsv_ids(os.path.join(region_tsv, "novgorod_social_roles_v1_enriched.tsv"), "role_id")
+schedule_occ = {r["occupation_ref"] for r in read_csv(os.path.join(os.path.dirname(ROOT), "time-calendar-church", "time", "schedules_routines.csv")) if r["occupation_ref"]}
 missing_occ = all_occ - occ_refs
 missing_role = all_role - role_refs
 if missing_occ:
@@ -170,7 +171,7 @@ for i, r in enumerate(rel_rows):
         errors.append(f"{prefix}: unknown place feature")
     if r["scope_kind"] == "work_assignment" and (r["scope_ref"] or r["relationship_kind"] != "joint_work"):
         errors.append(f"{prefix}: work assignment must be generic joint_work")
-    if any(r[x] and r[x] not in all_role | all_occ for x in ("subject_role_ref", "object_role_ref")):
+    if any(r[x] and r[x] not in all_role | all_occ | schedule_occ for x in ("subject_role_ref", "object_role_ref")):
         errors.append(f"{prefix}: unknown role or occupation")
     if not r["materialization_guard"] or (r["no_source"] and r["relationship_kind"] != "unspecified"):
         errors.append(f"{prefix}: missing guard or unsupported assertion")
@@ -182,9 +183,9 @@ for i, r in enumerate(af_rows):
     check_evidence(r, prefix)
     if r["relationship_kind"] not in relation_kinds | {"written_letter"} or (r["register_ref"] and r["register_ref"] not in registers):
         errors.append(f"{prefix}: unknown relationship kind or register")
-    if r["channel"] not in {"oral", "written"} or (r["relationship_kind"] == "written_letter") != (r["channel"] == "written"):
+    if r["channel"] not in {"oral", "written"} or (r["relationship_kind"] == "written_letter" and r["channel"] != "written"):
         errors.append(f"{prefix}: invalid oral/written channel")
-    if any(r[x] and r[x] not in all_role | all_occ for x in ("speaker_role_ref", "addressee_role_ref")):
+    if any(r[x] and r[x] not in all_role | all_occ | schedule_occ for x in ("speaker_role_ref", "addressee_role_ref")):
         errors.append(f"{prefix}: unknown role or occupation")
     if r["source_refs"] and (not r["form_ru"] or not r["attestation"]):
         errors.append(f"{prefix}: sourced form needs text and attestation")
@@ -193,43 +194,43 @@ for i, r in enumerate(af_rows):
     if "поклон от" in r["form_ru"].lower() and "письмо" not in r["situation"].lower():
         errors.append(f"{prefix}: epistolary opening used as oral address")
 
-# Bound G5 PFs are scene candidates, not proof that either actor exists or knows the other.
-# Every co-present authored pair needs an exact relation row and an oral option/gap in each direction.
-from itertools import combinations
-presence = read_csv(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_presence_authoring.csv"))
-bindings = read_csv(os.path.join(os.path.dirname(ROOT), "places-binding", "places", "node_binding.csv"))
-by_pf = {}
-for row in presence:
-    if row["scope_kind"] == "place_family":
-        by_pf.setdefault(row["scope_ref"], []).append(row)
-start_pairs = set()
-for node in bindings:
-    if node["node_level"] != "G5":
-        continue
-    pf_refs = {node["pf_id"], *filter(None, node["pf_secondary"].split(";"))}
-    people = [person for pf in pf_refs for person in by_pf.get(pf, [])]
-    for a, b in combinations(people, 2):
-        if a["subject_ref"] == b["subject_ref"]:
-            continue
-        if not set(a["allowed_seasons"].split(";")) & set(b["allowed_seasons"].split(";")):
-            continue
-        if a["allowed_times"] != b["allowed_times"] and "all" not in (a["allowed_times"], b["allowed_times"]):
-            continue
-        start_pairs.add(tuple(sorted((a["subject_ref"], b["subject_ref"]))))
+# Builder and checker derive the same PF/season/phase pairs.
+from build import starting_pairs
+start_pairs, same_pf_pairs, _, _, _, _ = starting_pairs()
+if not start_pairs:
+    errors.append("starting pairs: empty set")
 
 
 def coverage_failures(relations, forms):
     missing = []
-    for a, b in sorted(start_pairs):
-        if not any({r["subject_role_ref"], r["object_role_ref"]} == {a, b} for r in relations if r["scope_kind"] == "role_pair"):
-            missing.append(f"starting pair {a}/{b}: no exact relationship rule or gap")
-        for speaker, addressee in ((a, b), (b, a)):
-            if not any(f["channel"] == "oral" and f["speaker_role_ref"] == speaker and f["addressee_role_ref"] == addressee and (f["form_ru"] or f["no_source"]) for f in forms):
-                missing.append(f"starting pair {speaker}->{addressee}: no exact oral form or gap")
+    for (a, b), contexts in sorted(start_pairs.items()):
+        for pf, season in sorted({(pf, season) for _, pf, season in contexts}):
+            matching = [r for r in relations if r["scope_kind"] == "role_pair" and
+                        {r["subject_role_ref"], r["object_role_ref"]} == {a, b}]
+            if not matching:
+                missing.append(f"starting pair {a}/{b} at {pf}/{season}: no exact relationship rule or gap")
+            if (a, b) in same_pf_pairs and not any(r["relationship_kind"] == "joint_work" and r["confidence"] == "C" and
+                                                    r["rule_ref"] == "editorial_joint_work_acquaintance_c" for r in matching):
+                missing.append(f"starting pair {a}/{b} at {pf}/{season}: no joint-work acquaintance rule")
+            for speaker, addressee in ((a, b), (b, a)):
+                if not any(f["channel"] == "oral" and f["relationship_kind"] == r["relationship_kind"] and
+                           f["speaker_role_ref"] == speaker and f["addressee_role_ref"] == addressee and
+                           (f["form_ru"] or f["no_source"]) for f in forms for r in matching):
+                    missing.append(f"starting pair {speaker}->{addressee} at {pf}/{season}: no exact oral form or gap")
     return missing
 
 
 errors.extend(coverage_failures(rel_rows, af_rows))
+
+
+def missing_oral_kinds(forms):
+    return {kind for kind in relation_kinds - {"unspecified"} if not any(
+        f["channel"] == "oral" and f["relationship_kind"] == kind and
+        (f["form_ru"] or f["no_source"]) for f in forms)}
+
+
+for kind in missing_oral_kinds(af_rows):
+    errors.append(f"relationship kind {kind}: no oral form or gap")
 if "--probe" in sys.argv and start_pairs:
     a, b = sorted(start_pairs)[0]
     reduced = [f for f in af_rows if not (f["channel"] == "oral" and f["speaker_role_ref"] == a and f["addressee_role_ref"] == b)]
@@ -242,6 +243,12 @@ if "--probe" in sys.argv and start_pairs:
         errors.append("negative coverage probe failed to detect removed relationship pair")
     else:
         print("OK: negative coverage probe detected missing relationship pair")
+    for kind in ("kin_siblings", "kin_uncle_nephew", "joint_work"):
+        reduced_kind = [f for f in af_rows if not (f["channel"] == "oral" and f["relationship_kind"] == kind)]
+        if kind not in missing_oral_kinds(reduced_kind):
+            errors.append(f"negative coverage probe failed to detect missing oral {kind}")
+        else:
+            print(f"OK: negative coverage probe detected missing oral {kind}")
 
 # social_norms: every norm with legal_weight_ref resolves (non-empty string); confidence in A/B/C
 sn_rows = read_csv(os.path.join(ROOT, "social_norms_honour_hospitality", "norms.csv"))

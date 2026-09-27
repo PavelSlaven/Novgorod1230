@@ -106,7 +106,7 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
   const itemSources = readCsv(P('../items-household-personal/items/item_place_frequency.csv'));
   const peopleSources = readCsv(P('presence/people_presence_authoring.csv'));
-  const itemConditions = ['entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'wild_arrival_cause_required'];
+  const itemConditions = ['entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required'];
   const f = [];
   const seen = new Set();
   for (const r of pr) {
@@ -190,6 +190,8 @@ const ex = readJson(P('inputs/pr98-extract.json'));
 // ---- materialization_slot_rules
 {
   const slots = readCsv(P('slots/materialization_slot_rules.csv'));
+  const candidates = readCsv(P('slots/slot_candidates.csv'));
+  const policy = readJson(P('slots/materialization_rules.json'));
   const gaps = readCsv(P('slots/no_required_slots.csv'));
   const boundPf = new Set(readCsv(P('places/node_binding.csv')).map((r) => r.pf_id).filter(Boolean));
   const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
@@ -199,6 +201,10 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   const f = [];
   const ids = new Set();
   const covered = new Set();
+  const rules = new Map(policy.rules.map((r) => [r.id, r]));
+  if (policy.application_scope !== 'once_per_g4_complex' || policy.g5_policy !== 'code_selects_applicable_g5_within_g4' || policy.pf_secondary_policy !== 'no_automatic_required_slot_from_secondary_pf') f.push('application scope/G5/secondary PF policy');
+  if (rules.size !== policy.rules.length) f.push('duplicate rule id');
+  for (const rule of policy.rules) if (!/^MSR-C003-/.test(rule.id) || !rule.text || !rule.basis || !['A', 'B', 'C'].includes(rule.confidence)) f.push(`invalid rule ${rule.id}`);
   for (const r of slots) {
     if (ids.has(r.slot_id) || !r.slot_id) f.push(`duplicate/empty slot_id ${r.slot_id}`);
     ids.add(r.slot_id);
@@ -207,27 +213,33 @@ const ex = readJson(P('inputs/pr98-extract.json'));
     if (!['anchor', 'item', 'container', 'building', 'npc'].includes(r.slot_kind) || !['true', 'false'].includes(r.required)) f.push(`${r.slot_id}: kind/required`);
     if (!/^\d+$/.test(r.count_min) || !/^\d+$/.test(r.count_max) || +r.count_min > +r.count_max || (r.required === 'true' && +r.count_min < 1) || (r.required === 'false' && +r.count_min !== 0)) f.push(`${r.slot_id}: count/required`);
     if (!['all', 'winter'].includes(r.applicability) || (r.pf_id === 'pf_winter_ice_crossing') !== (r.applicability === 'winter')) f.push(`${r.slot_id}: applicability`);
-    if (r.status !== 'candidate' || !['A', 'B', 'C'].includes(r.confidence) || !r.source_refs && !r.rule_ref) f.push(`${r.slot_id}: provenance/status`);
+    if (r.status !== 'candidate' || !['A', 'B', 'C'].includes(r.confidence) || !r.source_refs || !rules.has(r.rule_ref)) f.push(`${r.slot_id}: provenance/status/rule`);
     for (const c of split(r.candidate_category_refs)) if (!cats.has(c)) f.push(`${r.slot_id}: unknown category ${c}`);
-    const [kind, ref] = r.candidate_record_ref.split(':');
-    if (r.candidate_record_ref && !(kind === 'building' && buildings.has(ref) || kind === 'transport' && transport.has(ref) || kind === 'route' && routes.has(ref))) f.push(`${r.slot_id}: candidate record ${r.candidate_record_ref}`);
-    if (!r.candidate_category_refs && !r.candidate_record_ref || r.slot_kind === 'building' && kind !== 'building' || kind === 'transport' && r.slot_kind !== 'item' || r.slot_kind === 'anchor' && (kind !== 'route' || !r.candidate_category_refs)) f.push(`${r.slot_id}: kind/candidate`);
-    if (kind === 'building') {
-      const candidate = buildings.get(ref);
-      const pf = r.pf_id.slice(3);
-      if (candidate && !candidate.pf_ids.split('|').includes(pf) && !(r.pf_id === 'pf_rural_yard' && candidate.pf_ids.split('|').includes('peasant_homestead') && r.rule_ref === 'MSR-C003-rural-yard-uses-peasant-building-candidates')) f.push(`${r.slot_id}: building not applicable to ${pf}`);
-      if (!r.source_refs || !candidate?.source_refs) f.push(`${r.slot_id}: building without source`);
-    }
-    if (r.slot_kind === 'building' && fam.find((x) => x.pf_id === r.pf_id)?.pf_kind?.startsWith('natural') && !r.source_refs) f.push(`${r.slot_id}: unsourced natural building`);
+    if (r.slot_kind === 'building' && fam.find((x) => x.pf_id === r.pf_id)?.pf_kind?.startsWith('natural')) f.push(`${r.slot_id}: natural building forbidden`);
     if (r.presence_relation !== 'identity_requirement_not_frequency' || split(r.candidate_category_refs).some((c) => presence.some((p) => p.scope_ref === r.pf_id && p.category_ref === c))) f.push(`${r.slot_id}: presence relation`);
   }
+  const candidateKeys = new Set();
+  for (const c of candidates) {
+    const slot = slots.find((r) => r.slot_id === c.slot_id);
+    const [kind, ref] = c.candidate_record_ref.split(':');
+    const key = `${c.slot_id}|${c.candidate_record_ref}`;
+    if (candidateKeys.has(key)) f.push(`duplicate candidate ${key}`);
+    candidateKeys.add(key);
+    if (!slot || !Number.isSafeInteger(+c.weight) || +c.weight < 1 || !c.source_refs || c.status !== 'candidate' || !['A', 'B', 'C'].includes(c.confidence)) f.push(`candidate provenance/weight/slot ${key}`);
+    if (!(kind === 'building' && buildings.has(ref) || kind === 'transport' && transport.has(ref) || kind === 'route' && routes.has(ref))) f.push(`unresolved candidate ${key}`);
+    if (slot && (slot.slot_kind === 'building' && kind !== 'building' || slot.slot_kind === 'anchor' && !['route', 'transport'].includes(kind))) f.push(`candidate kind ${key}`);
+    if (kind === 'building' && slot && (!buildings.get(ref)?.pf_ids.split('|').includes(slot.pf_id.slice(3)) || !buildings.get(ref)?.source_refs)) f.push(`building owner/source ${key}`);
+    if (slot?.slot_id === 'msr_ferry_crossing' && c.candidate_record_ref !== 'transport:trv_011') f.push(`unsupported ferry candidate ${key}`);
+  }
+  for (const r of slots) if (!candidates.some((c) => c.slot_id === r.slot_id)) f.push(`${r.slot_id}: no candidates`);
+  for (const rule of rules.keys()) if (!slots.some((r) => r.rule_ref === rule)) f.push(`unused rule ${rule}`);
   for (const r of gaps) {
     if (!boundPf.has(r.pf_id) || covered.has(r.pf_id) || !r.reason || !r.source_refs || r.status !== 'candidate' || !['A', 'B', 'C'].includes(r.confidence)) f.push(`${r.pf_id}: invalid no-required-slot record`);
     covered.add(r.pf_id);
   }
   for (const pf of boundPf) if (!covered.has(pf)) f.push(`uncovered ${pf}`);
-  if (boundPf.size !== 16 || slots.length !== 7 || gaps.length !== 11 || covered.size !== 16) f.push(`coverage: ${boundPf.size} PF, ${slots.length} slots, ${gaps.length} gaps, ${covered.size} covered`);
-  check('materialization_slot_rules', 'c003_required_slots_and_explicit_gaps', f, { slots: slots.length, gaps: gaps.length, place_families: covered.size });
+  if (boundPf.size !== 16 || slots.length !== 5 || gaps.length !== 12 || covered.size !== 16) f.push(`coverage: ${boundPf.size} PF, ${slots.length} slots, ${gaps.length} gaps, ${covered.size} covered`);
+  check('materialization_slot_rules', 'c003_required_slots_and_explicit_gaps', f, { slots: slots.length, candidates: candidates.length, gaps: gaps.length, place_families: covered.size });
 }
 
 // ---- category_registry

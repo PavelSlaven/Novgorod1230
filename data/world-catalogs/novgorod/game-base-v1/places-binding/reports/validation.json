@@ -186,11 +186,11 @@
           "no_source_place_families": 39
         },
         "tools": {
-          "rows": 222,
-          "linked_rows": 205,
-          "no_source_rows": 17,
-          "linked_place_families": 30,
-          "no_source_place_families": 14
+          "rows": 239,
+          "linked_rows": 221,
+          "no_source_rows": 18,
+          "linked_place_families": 26,
+          "no_source_place_families": 18
         },
         "weapons": {
           "rows": 628,
@@ -238,8 +238,9 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "slots": 7,
-      "gaps": 11,
+      "slots": 5,
+      "candidates": 9,
+      "gaps": 12,
       "place_families": 16
     },
     {

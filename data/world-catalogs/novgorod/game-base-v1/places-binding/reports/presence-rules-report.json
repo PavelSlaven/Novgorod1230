@@ -90,142 +90,142 @@
   "conflicting_duplicates": 28,
   "conflicts": [
     {
-      "key": "place_family|pf_ordinary_workshop||cat_item_object_vessel_lid_v1|winter|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:ordinary_workshop|",
+      "key": "place_family|pf_ordinary_workshop||cat_item_object_vessel_lid_v1|winter|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row35",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row77"
     },
     {
-      "key": "place_family|pf_ordinary_workshop||cat_item_object_vessel_lid_v1|spring|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:ordinary_workshop|",
+      "key": "place_family|pf_ordinary_workshop||cat_item_object_vessel_lid_v1|spring|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row35",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row77"
     },
     {
-      "key": "place_family|pf_ordinary_workshop||cat_item_object_vessel_lid_v1|summer|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:ordinary_workshop|",
+      "key": "place_family|pf_ordinary_workshop||cat_item_object_vessel_lid_v1|summer|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row35",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row77"
     },
     {
-      "key": "place_family|pf_ordinary_workshop||cat_item_object_vessel_lid_v1|autumn|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:ordinary_workshop|",
+      "key": "place_family|pf_ordinary_workshop||cat_item_object_vessel_lid_v1|autumn|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row35",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row77"
     },
     {
-      "key": "place_family|pf_dwelling_interior||cat_item_object_bucket_v1|winter|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:dwelling_interior|",
+      "key": "place_family|pf_dwelling_interior||cat_item_object_bucket_v1|winter|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row155",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row157"
     },
     {
-      "key": "place_family|pf_dwelling_interior||cat_item_object_bucket_v1|spring|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:dwelling_interior|",
+      "key": "place_family|pf_dwelling_interior||cat_item_object_bucket_v1|spring|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row155",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row157"
     },
     {
-      "key": "place_family|pf_dwelling_interior||cat_item_object_bucket_v1|summer|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:dwelling_interior|",
+      "key": "place_family|pf_dwelling_interior||cat_item_object_bucket_v1|summer|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row155",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row157"
     },
     {
-      "key": "place_family|pf_dwelling_interior||cat_item_object_bucket_v1|autumn|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:dwelling_interior|",
+      "key": "place_family|pf_dwelling_interior||cat_item_object_bucket_v1|autumn|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row155",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row157"
     },
     {
-      "key": "place_family|pf_dwelling_interior||cat_item_object_splinter_holder_v1|winter|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:dwelling_interior|",
+      "key": "place_family|pf_dwelling_interior||cat_item_object_splinter_holder_v1|winter|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row206",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row208"
     },
     {
-      "key": "place_family|pf_dwelling_interior||cat_item_object_splinter_holder_v1|spring|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:dwelling_interior|",
+      "key": "place_family|pf_dwelling_interior||cat_item_object_splinter_holder_v1|spring|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row206",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row208"
     },
     {
-      "key": "place_family|pf_dwelling_interior||cat_item_object_splinter_holder_v1|summer|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:dwelling_interior|",
+      "key": "place_family|pf_dwelling_interior||cat_item_object_splinter_holder_v1|summer|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row206",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row208"
     },
     {
-      "key": "place_family|pf_dwelling_interior||cat_item_object_splinter_holder_v1|autumn|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:dwelling_interior|",
+      "key": "place_family|pf_dwelling_interior||cat_item_object_splinter_holder_v1|autumn|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row206",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row208"
     },
     {
-      "key": "place_family|pf_cellar_granary||cat_item_object_lock_v1|winter|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:cellar_granary|",
+      "key": "place_family|pf_cellar_granary||cat_item_object_lock_v1|winter|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row394",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row400"
     },
     {
-      "key": "place_family|pf_cellar_granary||cat_item_object_lock_v1|spring|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:cellar_granary|",
+      "key": "place_family|pf_cellar_granary||cat_item_object_lock_v1|spring|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row394",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row400"
     },
     {
-      "key": "place_family|pf_cellar_granary||cat_item_object_lock_v1|summer|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:cellar_granary|",
+      "key": "place_family|pf_cellar_granary||cat_item_object_lock_v1|summer|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row394",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row400"
     },
     {
-      "key": "place_family|pf_cellar_granary||cat_item_object_lock_v1|autumn|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:cellar_granary|",
+      "key": "place_family|pf_cellar_granary||cat_item_object_lock_v1|autumn|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row394",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row400"
     },
     {
-      "key": "place_family|pf_cellar_granary||cat_item_object_weight_v1|winter|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:cellar_granary|",
+      "key": "place_family|pf_cellar_granary||cat_item_object_weight_v1|winter|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row741",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row744"
     },
     {
-      "key": "place_family|pf_cellar_granary||cat_item_object_weight_v1|spring|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:cellar_granary|",
+      "key": "place_family|pf_cellar_granary||cat_item_object_weight_v1|spring|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row741",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row744"
     },
     {
-      "key": "place_family|pf_cellar_granary||cat_item_object_weight_v1|summer|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:cellar_granary|",
+      "key": "place_family|pf_cellar_granary||cat_item_object_weight_v1|summer|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row741",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row744"
     },
     {
-      "key": "place_family|pf_cellar_granary||cat_item_object_weight_v1|autumn|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:cellar_granary|",
+      "key": "place_family|pf_cellar_granary||cat_item_object_weight_v1|autumn|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row741",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row744"
     },
     {
-      "key": "place_family|pf_market_square||cat_item_object_weight_v1|winter|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:market_square|",
+      "key": "place_family|pf_market_square||cat_item_object_weight_v1|winter|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row742",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row745"
     },
     {
-      "key": "place_family|pf_market_square||cat_item_object_weight_v1|spring|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:market_square|",
+      "key": "place_family|pf_market_square||cat_item_object_weight_v1|spring|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row742",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row745"
     },
     {
-      "key": "place_family|pf_market_square||cat_item_object_weight_v1|summer|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:market_square|",
+      "key": "place_family|pf_market_square||cat_item_object_weight_v1|summer|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row742",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row745"
     },
     {
-      "key": "place_family|pf_market_square||cat_item_object_weight_v1|autumn|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:market_square|",
+      "key": "place_family|pf_market_square||cat_item_object_weight_v1|autumn|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row742",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row745"
     },
     {
-      "key": "place_family|pf_river_wharf||cat_item_object_weight_v1|winter|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:river_wharf|",
+      "key": "place_family|pf_river_wharf||cat_item_object_weight_v1|winter|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row743",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row746"
     },
     {
-      "key": "place_family|pf_river_wharf||cat_item_object_weight_v1|spring|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:river_wharf|",
+      "key": "place_family|pf_river_wharf||cat_item_object_weight_v1|spring|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row743",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row746"
     },
     {
-      "key": "place_family|pf_river_wharf||cat_item_object_weight_v1|summer|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:river_wharf|",
+      "key": "place_family|pf_river_wharf||cat_item_object_weight_v1|summer|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row743",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row746"
     },
     {
-      "key": "place_family|pf_river_wharf||cat_item_object_weight_v1|autumn|placed_exposed|placed_concealed|||data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:river_wharf|",
+      "key": "place_family|pf_river_wharf||cat_item_object_weight_v1|autumn|placed_exposed|placed_concealed|||no_source:placement_modes_absent|packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize|",
       "a": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row743",
       "b": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row746"
     }

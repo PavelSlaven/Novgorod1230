@@ -11,7 +11,7 @@
 | `categories/` | category_registry | `category_registry.csv`, `place_family_categories.csv` | 982, 61 (на пересборку 2026-09-26, см. `categories/README.md`) |
 | `limits/` | place_generation_limits | `place_generation_limits.csv` | 105 |
 | `parameters/` | category_parameters | `parameter_definitions.csv`, `category_parameters.csv` | 16, 3 697 |
-| `slots/` | materialization_slot_rules | `materialization_slot_rules.csv`, `no_required_slots.csv` | 7 slots, 11 explicit gaps for 16 bound PF |
+| `slots/` | materialization_slot_rules | `materialization_slot_rules.csv`, `slot_candidates.csv`, `materialization_rules.json`, `no_required_slots.csv` | 5 slots, 9 candidates, 12 explicit gaps for 16 bound PF |
 
 ## Скрипты
 
@@ -26,7 +26,7 @@
 | `build-category-parameters.mjs` | Параметры категорий. |
 | `validate.mjs` | Все критерии приёмки. Пишет `reports/validation.json`, код выхода 1 при провале собственной проверки. |
 
-Слоты C003 — candidate-условия идентичности места, а не частоты появления предметов из `presence_rules.csv`. Семь required-слотов задают судно у перевоза, жилое здание и ограду у крестьянской усадьбы и сельского двора, хозяйственную постройку у надворных построек и зимнюю ледовую дорогу как anchor. У остальных 11 привязанных PF есть явная причина отсутствия обязательного слота в `slots/no_required_slots.csv`. `candidate_category_refs` содержит только ID реестра категорий; там, где предметной категории судна или ограды пока нет, она пустая, а конкретный кандидат указан в `candidate_record_ref`. `spatial.g3.built_site` — лишь существующая общая категория застроенного места, конкретный тип здания задаёт запись `building:bt_*`. Для сельского двора применение строительных кандидатов крестьянской усадьбы помечено отдельным редакционным правилом с confidence C. Эти записи не получают статус approved автоматически.
+Слоты C003 — candidate-условия идентичности места, а не частоты появления предметов из `presence_rules.csv`. Пять required-слотов задают перевоз как anchor, жилое здание и ограду конкретной крестьянской усадьбы, хозяйственную постройку и зимнюю ледовую дорогу как anchor. У остальных 12 привязанных PF, включая общий сельский двор, есть явная причина отсутствия обязательного слота в `slots/no_required_slots.csv`. Кандидаты и относительные редакционные веса находятся по строкам в `slots/slot_candidates.csv`: веса 2/1 у жилья и ограды и 2/2/1 у хозяйственных построек отражают доступную смесь типов у владельца и предметность источников, не историческую частоту. `spatial.g3.built_site` — общая категория застроенного места; конкретный тип здания задаёт `building:bt_*`. Правила и область применения заданы в `slots/materialization_rules.json`: один комплект слотов на G4-комплекс, подходящий G5 выбирает код, `pf_secondary` сам по себе обязательный слот не создаёт. Историческая обязательность ограды остаётся редакционным C, отдельно от свидетельств о кандидатах. Эти записи не получают статус approved автоматически.
 
 Ручные решения (суждение, confidence C) лежат отдельно, в `scripts/pf-authoring.json` и `scripts/crosswalk-rules.json`. Их утверждает отдельный проход.
 

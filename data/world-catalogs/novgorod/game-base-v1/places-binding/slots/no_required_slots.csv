@@ -9,4 +9,5 @@ pf_marshy_stream,natural water has no sourced required materialization slot,data
 pf_river_channel,natural water has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=river_channel],C,candidate
 pf_riverbank,natural bank has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=riverbank],C,candidate
 pf_road,route has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=road],C,candidate
+pf_rural_yard,shared rural meeting and work area does not itself require a dwelling or fence; those belong to a specific homestead,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=rural_yard],C,candidate
 pf_village_lane,route has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=village_lane],C,candidate

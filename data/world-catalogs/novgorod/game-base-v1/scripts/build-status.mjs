@@ -3,12 +3,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const base = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const verdicts = ['approve_with_limits', 'approve', 'rework'];
-const severity = { approve: 0, approve_with_limits: 1, rework: 2 };
+const verdicts = ['approve', 'approve_with_limits', 'rework'];
+const extensions = /\.(?:csv|json|md|mjs|py|tsv)$/i;
+const targetPattern = /(?:[\w.-]+\/)*[\w.-]+\.(?:csv|json|md|mjs|py|tsv)\b|(?:[\w.-]+\/)+/gi;
 
 function verdict(text) {
-  const value = text.replace(/\*/g, '').trim().toLowerCase();
-  return value.match(/^(approve_with_limits|approve|rework)(?=$|[\s(.,:;])/)?.[1] ?? null;
+  return text.replace(/\*/g, '').trim().toLowerCase().match(/^(approve_with_limits|approve|rework)(?=$|[\s(.,:;])/)?.[1] ?? null;
 }
 
 function clean(text) {
@@ -19,20 +19,69 @@ function slug(text) {
   return clean(text).toLowerCase().replace(/<[^>]*>/g, '').replace(/[^\p{L}\p{N}_\-\s]/gu, '').replace(/\s/g, '-');
 }
 
-function parse(group) {
-  const lines = fs.readFileSync(path.join(base, group, 'VERIFICATION.md'), 'utf8').split(/\r?\n/);
+function inventory(root) {
+  const files = [];
+  function walk(dir, prefix = '') {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const relative = prefix + entry.name;
+      if (entry.isDirectory()) walk(path.join(dir, entry.name), `${relative}/`);
+      else if (entry.isFile() && extensions.test(entry.name)) files.push(relative);
+    }
+  }
+  walk(root);
+  return files.sort();
+}
+
+export function targets(raw, available) {
+  const original = clean(raw);
+  const readmeCount = original.match(/^README\.md\s*\(×(\d+)\)$/i);
+  if (readmeCount) {
+    const matches = available.filter(file => path.posix.basename(file) === 'README.md');
+    return matches.length === Number(readmeCount[1])
+      ? matches.map(file => ({ token: original, file }))
+      : [{ token: original, reason: `ожидалось ${readmeCount[1]} README.md, найдено ${matches.length}`, candidates: matches }];
+  }
+  const groupReadme = /(?:the )?group README\.md|README\.md\s*\(группа\)/i.test(original);
+  const normalized = original.replace(/\\/g, '/').replace(/\([^)]*\)/g, '');
+  const tokens = [...normalized.matchAll(targetPattern)].map(match => match[0]);
+  if (groupReadme && !tokens.includes('README.md')) tokens.push('README.md');
+  if (!tokens.length) return [{ token: original, reason: 'нет пути к файлу или каталогу' }];
+  const known = new Set(available);
+  return tokens.flatMap(token => {
+    if (token.endsWith('/')) {
+      const matches = available.filter(file => file.startsWith(token));
+      return matches.length ? matches.map(file => ({ token, file })) : [{ token, reason: 'каталог пуст или не найден' }];
+    }
+    if (token === 'README.md' && groupReadme && known.has(token)) return [{ token, file: token }];
+    if (known.has(token)) return [{ token, file: token }];
+    const matches = available.filter(file => path.posix.basename(file) === path.posix.basename(token));
+    if (matches.length === 1) return [{ token, file: matches[0] }];
+    return [{ token, reason: matches.length ? 'неоднозначное имя' : 'файл не найден', candidates: matches }];
+  });
+}
+
+export function parse(groupRoot) {
+  const lines = fs.readFileSync(path.join(groupRoot, 'VERIFICATION.md'), 'utf8').split(/\r?\n/);
+  const available = inventory(groupRoot);
   const files = new Map();
+  const unresolved = [];
   const anchors = new Map();
   let heading = '';
   let inTable = false;
   let fileColumn = -1;
   let verdictColumn = -1;
 
-  function record(file, status, anchor) {
-    if (file && status && !file.toLowerCase().includes('итого')) files.set(file, { status, anchor });
+  function record(raw, status, line) {
+    if (!status || !raw || raw.toLowerCase().includes('итого')) return;
+    for (const target of targets(raw, available)) {
+      const source = { status, anchor: heading, line };
+      if (target.file) files.set(target.file, source);
+      else unresolved.push({ ...target, original: clean(raw), ...source });
+    }
   }
 
-  for (const line of lines) {
+  for (const [index, line] of lines.entries()) {
+    const number = index + 1;
     const match = line.match(/^#{1,6}\s+(.*)$/);
     if (match) {
       const baseSlug = slug(match[1]);
@@ -41,59 +90,72 @@ function parse(group) {
       heading = `${baseSlug}${count ? `-${count}` : ''}`;
       inTable = false;
       const dash = match[1].indexOf('—');
-      if (dash !== -1 && /^#{2,5}\s/.test(line)) {
-        const status = verdict(match[1].slice(dash + 1));
-        for (const file of clean(match[1].slice(0, dash)).split(',').map(s => s.trim())) record(file, status, heading);
-      }
+      if (dash !== -1 && /^#{2,5}\s/.test(line)) record(match[1].slice(0, dash), verdict(match[1].slice(dash + 1)), number);
       continue;
     }
 
     const bold = /\*\*([^*]+?)\s*—\s*([^*]+?)\*\*/g;
     for (const match of line.matchAll(bold)) {
-      const token = clean(match[1]);
-      if (!/[.\\/]/.test(token)) continue;
-      const status = verdict(match[2]);
-      for (const file of token.split(/\s*,\s*|\s+\/\s+/).map(s => s.trim())) record(file, status, heading);
+      if (/[.\/]|README/i.test(match[1])) record(match[1], verdict(match[2]), number);
     }
 
     if (!line.trim().startsWith('|')) { inTable = false; continue; }
-    const cells = line.split('|').slice(1, -1).map(s => s.trim());
-    const lower = cells.map(s => s.toLowerCase());
-    const f = lower.findIndex(s => s.includes('файл') || s === 'file');
-    const v = lower.findIndex(s => s.includes('вердикт') || s.includes('verdict'));
+    const cells = line.split('|').slice(1, -1).map(cell => cell.trim());
+    const lower = cells.map(cell => cell.toLowerCase());
+    const f = lower.findIndex(cell => cell.includes('файл') || cell === 'file');
+    const v = lower.findIndex(cell => cell.includes('вердикт') || cell.includes('verdict'));
     if (f !== -1 && v !== -1) {
       inTable = true;
       fileColumn = f;
       verdictColumn = v;
       continue;
     }
-    if (cells.every(s => /^:?-+:?$/.test(s))) continue;
-    if (inTable && cells.length > Math.max(fileColumn, verdictColumn)) {
-      record(clean(cells[fileColumn]), verdict(cells[verdictColumn]), heading);
-    }
+    if (cells.every(cell => /^:?-+:?$/.test(cell))) continue;
+    if (inTable && cells.length > Math.max(fileColumn, verdictColumn)) record(cells[fileColumn], verdict(cells[verdictColumn]), number);
   }
-  return files;
+  return { files, unresolved };
 }
 
-const groups = fs.readdirSync(base, { withFileTypes: true })
-  .filter(entry => entry.isDirectory() && fs.existsSync(path.join(base, entry.name, 'VERIFICATION.md')))
-  .map(entry => entry.name).sort();
-const results = groups.map(group => ({ group, files: parse(group) }));
-const counts = { approve: 0, approve_with_limits: 0, rework: 0 };
-const rows = ['# Статус проверки game-base-v1', '', 'Производная сводка по последнему verdict каждого файла в `VERIFICATION.md` групп. Данные остаются candidate; импорт в world_base требует отдельного решения.', '', '| Группа | Статус | approve | approve_with_limits | rework |', '|---|---|---:|---:|---:|'];
-for (const { group, files } of results) {
-  const local = { approve: 0, approve_with_limits: 0, rework: 0 };
-  for (const { status } of files.values()) { local[status]++; counts[status]++; }
-  const status = verdicts.filter(v => local[v]).sort((a, b) => severity[b] - severity[a])[0] ?? '—';
-  rows.push(`| [${group}](${group}/VERIFICATION.md) | ${status} | ${local.approve} | ${local.approve_with_limits} | ${local.rework} |`);
+function link(group, anchor) {
+  return `${group}/VERIFICATION.md#${anchor}`;
 }
-rows.push(`| **Итого** | | **${counts.approve}** | **${counts.approve_with_limits}** | **${counts.rework}** |`, '', '## Вердикты по файлам', '');
-for (const { group, files } of results) {
-  rows.push(`### ${group}`, '', '| Файл | Последний verdict |', '|---|---|');
-  for (const [file, { status, anchor }] of files) {
-    rows.push(`| \`${file.replace(/\|/g, '\\|')}\` | [${status}](${group}/VERIFICATION.md#${anchor}) |`);
+
+function display(text) {
+  return text.replace(/\|/g, '\\|').replace(/`/g, '\\`');
+}
+
+export function buildStatus(root = base) {
+  const groups = fs.readdirSync(root, { withFileTypes: true })
+    .filter(entry => entry.isDirectory() && fs.existsSync(path.join(root, entry.name, 'VERIFICATION.md')))
+    .map(entry => entry.name).sort();
+  const results = groups.map(group => ({ group, ...parse(path.join(root, group)) }));
+  const counts = { approve: 0, approve_with_limits: 0, rework: 0 };
+  const rows = ['# Статус проверки game-base-v1', '', 'Производная сводка по последнему verdict каждого файла в `VERIFICATION.md` групп. Данные остаются candidate; импорт в world_base требует отдельного решения.', '', '| Группа | Статус | approve | approve_with_limits | rework |', '|---|---|---:|---:|---:|'];
+  for (const { group, files } of results) {
+    const local = { approve: 0, approve_with_limits: 0, rework: 0 };
+    for (const { status } of files.values()) { local[status]++; counts[status]++; }
+    const status = verdicts.toReversed().find(value => local[value]) ?? '—';
+    rows.push(`| [${group}](${group}/VERIFICATION.md) | ${status} | ${local.approve} | ${local.approve_with_limits} | ${local.rework} |`);
+  }
+  rows.push(`| **Итого** | | **${counts.approve}** | **${counts.approve_with_limits}** | **${counts.rework}** |`, '', '## Вердикты по файлам', '');
+  for (const { group, files } of results) {
+    rows.push(`### ${group}`, '', '| Файл | Последний verdict |', '|---|---|');
+    for (const [file, { status, anchor }] of [...files].sort(([a], [b]) => a.localeCompare(b))) {
+      rows.push(`| [\`${display(file)}\`](${group}/${file}) | [${status}](${link(group, anchor)}) |`);
+    }
+    rows.push('');
+  }
+  const unresolved = results.flatMap(({ group, unresolved }) => unresolved.map(row => ({ group, ...row })));
+  rows.push('## Неразрешённые цели вердиктов', '', '| Группа | Исходная цель | Вердикт | Причина / кандидаты |', '|---|---|---|---|');
+  for (const { group, original, token, status, anchor, reason, candidates = [] } of unresolved) {
+    rows.push(`| ${group} | [\`${display(original)}\`](${link(group, anchor)}) | ${status} | \`${display(token)}\`: ${reason}${candidates.length ? ` (${candidates.map(display).join(', ')})` : ''} |`);
   }
   rows.push('');
+  return { markdown: rows.join('\n'), counts: { groups: results.length, files: Object.values(counts).reduce((a, b) => a + b, 0), ...counts, unresolved: unresolved.length }, results };
 }
-fs.writeFileSync(path.join(base, 'STATUS.md'), rows.join('\n'));
-console.log(JSON.stringify({ groups: results.length, files: Object.values(counts).reduce((a, b) => a + b, 0), ...counts }));
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const { markdown, counts } = buildStatus();
+  fs.writeFileSync(path.join(base, 'STATUS.md'), markdown);
+  console.log(JSON.stringify(counts));
+}

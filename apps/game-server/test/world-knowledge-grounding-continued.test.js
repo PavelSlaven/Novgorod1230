@@ -13,7 +13,7 @@ import { createLowerDvinaTraceTurnStepModel } from '../src/runtime/lower-dvina-t
 
 function assertRetrievalObservability(observability, grounded) {
   assert.equal(observability.pack_ref, 'wk-pack:novgorod-1230');
-  assert.equal(observability.pack_revision, 'revision:production-v1');
+  assert.equal(observability.pack_revision, 'revision:production-v2');
   assert.equal(observability.embedding_profile_ref,
     'wk-embedding:giga-480m-0826:v1');
   assert.equal(observability.model_id,
@@ -40,7 +40,7 @@ function assertRetrievalObservability(observability, grounded) {
 
 test('production normalization removes unavailable domains and refs without changing authority', async () => {
   const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json',
     import.meta.url), 'utf8'));
   const inputs = [];
   const encoded = [];
@@ -65,7 +65,7 @@ test('production normalization removes unavailable domains and refs without chan
 
 test('an unused focus does not block a supplied physical premise or force its historical domain', async () => {
   const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json',
     import.meta.url), 'utf8'));
   let calls = 0;
   const plan = { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
@@ -90,7 +90,7 @@ test('an unused focus does not block a supplied physical premise or force its hi
 
 test('a material focus can retrieve its chemical facts without expanding selected domains', async () => {
   const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json',
     import.meta.url), 'utf8'));
   const diagnostics = [];
   const grounder = createProductionWorldKnowledgeGrounder({
@@ -222,7 +222,7 @@ test('grounding fails closed when the single vector scan fails without calling C
 
 test('NPC action grounding reads only the projected NPC role and historical context', async () => {
   const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json',
     import.meta.url), 'utf8'));
   const core = createWorldKnowledgeCore(bundle);
   let query;
@@ -261,7 +261,7 @@ test('NPC action grounding reads only the projected NPC role and historical cont
 
 test('player semantic grounding can request occupation context without assigning NPC skills', async () => {
   const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json',
     import.meta.url), 'utf8'));
   const core = createWorldKnowledgeCore(bundle);
   const grounder = createProductionWorldKnowledgeGrounder({

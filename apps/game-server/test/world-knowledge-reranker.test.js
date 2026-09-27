@@ -180,13 +180,13 @@ test('production loader rejects single-field invalid sufficiency profile (C26)',
     const rel = 'data/world-catalogs/novgorod/world-knowledge';
     mkdirSync(join(tempRoot, rel, 'sufficiency-profiles'), { recursive: true });
     mkdirSync(join(tempRoot, rel, 'embedding-profiles'), { recursive: true });
-    mkdirSync(join(tempRoot, rel, 'production-v1'), { recursive: true });
+    mkdirSync(join(tempRoot, rel, 'production-v2'), { recursive: true });
     for (const part of [
       'embedding-profiles/giga-480m-0826-v1.json',
       'embedding-profiles/bge-reranker-v2-m3-v1.json',
-      'production-v1/runtime-bundle.json',
-      'production-v1/vector-index.json',
-      'production-v1/vectors.f32'
+      'production-v2/runtime-bundle.json',
+      'production-v2/vector-index.json',
+      'production-v2/vectors.f32'
     ]) {
       try {
         symlinkSync(join(ROOT, rel, part), join(tempRoot, rel, part));
@@ -677,13 +677,13 @@ test('A3: production loader rejects sufficiency profile without sufficient_enabl
     const rel = 'data/world-catalogs/novgorod/world-knowledge';
     mkdirSync(join(tempRoot, rel, 'sufficiency-profiles'), { recursive: true });
     mkdirSync(join(tempRoot, rel, 'embedding-profiles'), { recursive: true });
-    mkdirSync(join(tempRoot, rel, 'production-v1'), { recursive: true });
+    mkdirSync(join(tempRoot, rel, 'production-v2'), { recursive: true });
     for (const part of [
       'embedding-profiles/giga-480m-0826-v1.json',
       'embedding-profiles/bge-reranker-v2-m3-v1.json',
-      'production-v1/runtime-bundle.json',
-      'production-v1/vector-index.json',
-      'production-v1/vectors.f32'
+      'production-v2/runtime-bundle.json',
+      'production-v2/vector-index.json',
+      'production-v2/vectors.f32'
     ]) {
       try {
         symlinkSync(join(ROOT, rel, part), join(tempRoot, rel, part));
@@ -711,13 +711,13 @@ test('C26: production loader rejects wrong sufficiency schema alone', async () =
     const rel = 'data/world-catalogs/novgorod/world-knowledge';
     mkdirSync(join(tempRoot, rel, 'sufficiency-profiles'), { recursive: true });
     mkdirSync(join(tempRoot, rel, 'embedding-profiles'), { recursive: true });
-    mkdirSync(join(tempRoot, rel, 'production-v1'), { recursive: true });
+    mkdirSync(join(tempRoot, rel, 'production-v2'), { recursive: true });
     for (const part of [
       'embedding-profiles/giga-480m-0826-v1.json',
       'embedding-profiles/bge-reranker-v2-m3-v1.json',
-      'production-v1/runtime-bundle.json',
-      'production-v1/vector-index.json',
-      'production-v1/vectors.f32'
+      'production-v2/runtime-bundle.json',
+      'production-v2/vector-index.json',
+      'production-v2/vectors.f32'
     ]) {
       try {
         symlinkSync(join(ROOT, rel, part), join(tempRoot, rel, part));

@@ -8,11 +8,11 @@ import { loadRerankerProfile, rerankerProductionEnabled,
   createBgeRerankerScorePairs, wireRerankerIfEnabled } from
   '../runtime/world-knowledge-reranker.js';
 
-const BUNDLE_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json';
+const BUNDLE_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json';
 const EMBEDDING_PROFILE_PATH = 'data/world-catalogs/novgorod/world-knowledge/embedding-profiles/giga-480m-0826-v1.json';
 const SUFFICIENCY_PROFILE_PATH = 'data/world-catalogs/novgorod/world-knowledge/sufficiency-profiles/giga-cosine-v1.json';
-const VECTOR_METADATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v1/vector-index.json';
-const VECTOR_DATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v1/vectors.f32';
+const VECTOR_METADATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v2/vector-index.json';
+const VECTOR_DATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v2/vectors.f32';
 
 export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
   python = 'python', requireEncoderReady = false,
@@ -30,7 +30,7 @@ export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
   ]);
   if (bundle?.schema !== 'world_knowledge_runtime_bundle_v1'
       || bundle.manifest?.pack_ref !== 'wk-pack:novgorod-1230'
-      || bundle.manifest?.revision_id !== 'revision:production-v1'
+      || bundle.manifest?.revision_id !== 'revision:production-v2'
       || bundle.manifest?.status !== 'production') {
     throw new TypeError('production World Knowledge bundle is invalid');
   }

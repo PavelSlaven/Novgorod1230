@@ -104,7 +104,7 @@ test('production grounding plans once and injects only an applicable bounded sli
     !calls[0].messages[0].content.includes(ref)));
   assert.equal(first, second);
   assert.equal(Object.hasOwn(request, 'world_knowledge'), false);
-  assert.equal(first.world_knowledge.pack_revision, 'revision:production-v1');
+  assert.equal(first.world_knowledge.pack_revision, 'revision:production-v2');
   assert.equal(first.world_knowledge.facts[0].claim_ref,
     'claim:regional-fish-exploitation');
   assert.match(first.world_knowledge.context_text,
@@ -479,7 +479,7 @@ test('real Core: vector-only admit keeps search_hint_hits false → PARTIAL', as
 
 function assertRetrievalObservability(observability, grounded) {
   assert.equal(observability.pack_ref, 'wk-pack:novgorod-1230');
-  assert.equal(observability.pack_revision, 'revision:production-v1');
+  assert.equal(observability.pack_revision, 'revision:production-v2');
   assert.equal(observability.embedding_profile_ref,
     'wk-embedding:giga-480m-0826:v1');
   assert.equal(observability.model_id,
@@ -515,7 +515,7 @@ function questionClasses(worldKnowledge, purpose, domains) {
 
 test('all hints use one combined query embedding and one vector lookup', async () => {
   const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json',
     import.meta.url), 'utf8'));
   const template = bundle.claims.find(claim => claim.domain === 'physics_material_science');
   bundle.claims = ['first', 'second', 'third', 'fourth', 'fifth'].map((id) => ({

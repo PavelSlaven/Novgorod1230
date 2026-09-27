@@ -18,6 +18,8 @@ export const SPATIAL_V3_TARGET_PRODUCTION_RELEASE = Object.freeze({
   world_revision_id: 'novgorod_spatial_v3_target_contract_approval_001',
   world_catalog_digest: '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
   world_catalog_manifest_sha256: '4056b93acc2a3c7ed4c76c18182d74b7ef5b9f5fc9c31f206670f11a6283192e',
+  // CR #153 step 7: v17 pins production-v2; v16 keeps revision:production-v1.
+  world_knowledge_pack_revision: 'revision:production-v2',
   runtime_catalog_revision_id: 'item_container_spatial_v3_target_001',
   actor_base_attributes_catalog_revision_id: 'actor_base_attributes_spatial_v3_target_001'
 });

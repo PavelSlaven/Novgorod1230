@@ -5,7 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createSpatialV3TargetProductionRelease,
   SPATIAL_V3_TARGET_PRODUCTION_RELEASE } from '../src/composition/production-spatial-v3-release-v17.js';
-import { createSpatialV3ProductionRelease } from '../src/composition/production-spatial-v3-release-v16.js';
+import { createSpatialV3ProductionRelease,
+  SPATIAL_V3_PRODUCTION_RELEASE } from '../src/composition/production-spatial-v3-release-v16.js';
+import { loadProductionWorldKnowledge } from '../src/internal/world-knowledge-production.js';
 import { deriveActivatedReleaseFromReadback } from '../src/composition/production-v2-activation-state.js';
 import { createSpatialV3ProductionCompositionRoot } from '../src/composition/production-spatial-v3.js';
 import { createTargetAuthoredStartCatalog } from '../src/internal/target-authored-start-catalog.js';
@@ -40,6 +42,21 @@ test('v17 cannot derive active status from an item pin alone; historical v16 sta
   assert.equal(historical.release_id, 'spatial-v3-production-v16');
   assert.equal(historical.world_revision_id, 'novgorod_spatial_v3_production_v6_candidate_001');
   assert.equal(historical.production_activation, false);
+});
+
+test('v17 pins World Knowledge production-v2; v16 keeps production-v1', async () => {
+  assert.equal(SPATIAL_V3_TARGET_PRODUCTION_RELEASE.world_knowledge_pack_ref,
+    'wk-pack:novgorod-1230');
+  assert.equal(SPATIAL_V3_TARGET_PRODUCTION_RELEASE.world_knowledge_pack_revision,
+    'revision:production-v2');
+  assert.equal(SPATIAL_V3_TARGET_PRODUCTION_RELEASE.world_knowledge_embedding_profile_ref,
+    'wk-embedding:giga-480m-0826:v1');
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_revision,
+    'revision:production-v1');
+  const loaded = await loadProductionWorldKnowledge();
+  assert.equal(loaded.bundle.manifest.revision_id, 'revision:production-v2');
+  assert.equal(loaded.embedding_profile.embedding_profile_ref,
+    'wk-embedding:giga-480m-0826:v1');
 });
 
 test('target selection is explicit and the official root rejects absent operator approvals before database access', async () => {

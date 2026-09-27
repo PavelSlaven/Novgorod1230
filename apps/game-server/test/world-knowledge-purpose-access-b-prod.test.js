@@ -13,7 +13,7 @@ import { createProductionWorldKnowledgeGrounder } from
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..');
 const bundlePath = join(ROOT,
-  'data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json');
+  'data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json');
 
 const HIDDEN = 'claim:bathing-washing-water';
 const ROLE = 'claim:population-bark-float';

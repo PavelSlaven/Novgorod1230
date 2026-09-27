@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- data(wk): World Knowledge pack revision production-v2 — D15 access reclassification with strict review, book-sourced claims, in-world law rewrites, 1230 famine claims gated by the event (D19/D22), final WR §21.1 approval of every changed claim, Giga vectors and benchmark; runtime still pins production-v1 until #153 step 7 (#154) LW-060..LW-065 added
+- feat(wk): #153 step 7 — v17 pins World Knowledge `revision:production-v2` (loader bundle/vectors); v16 keeps `production-v1`; embedding profile unchanged; retrieval benchmark pass (#153)
+- data(wk): World Knowledge pack revision production-v2 — D15 access reclassification with strict review, book-sourced claims, in-world law rewrites, 1230 famine claims gated by the event (D19/D22), final WR §21.1 approval of every changed claim, Giga vectors and benchmark; runtime pin is #153 step 7 (#154) LW-060..LW-065 added
 - data(temporal-v4): 1230 famine rule re-issued 14.09.1230–31.12.1231 with book 667380 source (D19/D22, #154)
 - fix(runtime): commit Gate1 activation-amendment attestation v2; assertGate1Authority runs full validateGate1RuntimeActivationAttestation; v2 forgery tests
 - fix(runtime): Gate1 activation-amendment v2 (restart sha drift); fail-closed without attestation v2; LW-055 added

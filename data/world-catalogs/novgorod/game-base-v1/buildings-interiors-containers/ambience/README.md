@@ -6,11 +6,11 @@
 
 | Файл | Строк | Что |
 |---|---|---|
-| `settlement_ambience_texts.csv` | 168 | тексты: семейство места × слой × сезон (× часть суток), канал, ясный и частичный текст, громкость, `requires_presence_ref` |
+| `settlement_ambience_texts.csv` | 184 | тексты: семейство места × слой × сезон (× часть суток), канал, ясный и частичный текст, громкость, `requires_presence_ref` |
 | `presence_tokens.csv` | 9 | токены наличия (`presence:people`, `presence:livestock`, `presence:dog`, `presence:poultry`, `presence:boats`, `presence:fishing_activity`, `presence:woodcutting`, `presence:market_day`, `presence:famine_1230`) |
-| `g4_human_layer_binding.csv` | 7 | 7 G4 стартовой территории с людским семейством → pf (Вихтуй: местность, промысловый край, речной подход; укрытая терраса-высадка; Заостровье: центр, высадка, погребальная зона) |
+| `g4_human_layer_binding.csv` | 7 | 7 G4 стартовой территории с людским семейством → pf (Вихтуй: местность, промысловый край, речной подход; укрытая терраса-высадка; Заостровье: центр, высадка, погребальная зона). Дворы Вихтуя и Заостровья также связаны с `rural_yard` и `outbuildings` как вторичными PF. |
 
-Семейства: peasant_homestead 28, village_lane 16, ferry_landing 16, churchyard 16, town_street 16, market_square 16, riverbank 12, river_wharf 12, forest_edge 12, fishing_camp 12, town_courtyard 12. Слои: traces 36, work_sounds 32, smells 32, voices 32, smoke 16, animals 16, bells 4. Уверенность: B 32, C 136.
+Семейства: peasant_homestead 28, village_lane 16, ferry_landing 16, churchyard 16, town_street 16, market_square 16, riverbank 12, river_wharf 12, forest_edge 12, fishing_camp 12, town_courtyard 12, rural_yard 8, outbuildings 8. Новые строки условны по фактическому типу постройки (`bt_*`).
 
 ## Правила
 

@@ -3,6 +3,7 @@
 // Source: book evidence (verified). Flags anachronism candidates by an explicit denylist
 // (per AGENTS.md acceptance rule: playing cards etc. must never appear for 1230).
 const path = require('path');
+const assert = require('node:assert/strict');
 const lib = require('../../scripts/lib.cjs');
 
 const ROOT = path.resolve(__dirname, '..', '..');
@@ -43,17 +44,23 @@ const NOTE_CAVEAT_PATTERNS = [
   [/не использовать как c1230/i, 'источник (историография XIX в., реалии XIV–XV вв.) не подтверждает эту реалию для 1230 г.; не использовать как достоверную для c1230'],
   [/для 1230 .{0,20}редкост|редкост.{0,20}(для )?1230/i, 'для Новгорода 1230 г. — редкость/сомнительно, не типичная реалия'],
 ];
-function anachronismFlag(entity, factsSummary, notesText) {
+function anachronismFlag(entity, factsSummary, notesText, facts) {
   const text = entity + ' ' + factsSummary;
   for (const [re, note] of ANACHRONISM_PATTERNS) if (re.test(text)) return note;
-  for (const [re, note] of NOTE_CAVEAT_PATTERNS) if (re.test(notesText)) return note;
+  for (const [re, note] of NOTE_CAVEAT_PATTERNS) if (re.test(notesText)) {
+    if (re.source.includes('не использовать') && facts.some(f => f.period === 'c1230' && !re.test(f.note || ''))) return 'Факты Костомарова — не использовать как достоверные для c1230; другие факты сущности имеют отдельные свидетельства c1230.';
+    return note;
+  }
   return '';
 }
+const factConfidence = (fact) => /^(medieval_general|ethnographic_late)$/.test(fact.period) || /реконструкция по этнографии/i.test(fact.note || '') ? 'C' : fact.confidence;
+assert.equal(factConfidence({ period: 'medieval_general', confidence: 'B' }), 'C');
+assert.match(anachronismFlag('пир', '', 'не использовать как c1230', [{ period: 'c1230', note: '' }]), /^Факты Костомарова/);
 
 const rowsOut = [];
 let seq = 1;
 for (const [entity, facts] of byEntity) {
-  const confidences = facts.map(f => f.confidence);
+  const confidences = facts.map(factConfidence);
   const sourceRefs = [...new Set(facts.map(lib.bookRef))];
   const factsSummary = [...new Set(facts.map(f => `${f.fact_type}: ${f.value}`))]
     .join(' | ')
@@ -68,7 +75,7 @@ for (const [entity, facts] of byEntity) {
     name_ru: entity,
     facts_summary: factsSummary,
     notes: notesText,
-    anachronism_flag: anachronismFlag(entity, factsSummary, notesText),
+    anachronism_flag: anachronismFlag(entity, factsSummary, notesText, facts),
     period: periods.join(';'),
     fact_count: facts.length,
     source_refs: sourceRefs.join(';'),

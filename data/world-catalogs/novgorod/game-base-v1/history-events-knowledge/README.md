@@ -9,12 +9,12 @@
 
 | Папка | Домен(ы) брифа | Приоритет брифа | Статус |
 |---|---|---|---|
-| `historical_events/` | `historical_events` | M3 | 35 событий / 175 фаз из черновика LLM (rus13tpl timeline v1), пересобраны скриптом; исправлено 2026-09-26 (было `rework`, см. `historical_events/VERIFICATION.md`) — 25 фаз (5 событий, 14%) подтверждены постраничными книжными свидетельствами группы (confidence B, было — неверными ссылками по ключевым словам на sqlite), остальные 150 — confidence C (не сверены построчно с текстом НПЛ в этом проходе, см. «Что НЕ сделано»); восстановлены `summary`/`historical_context`/`market_goods_affected`/`needs_review` |
+| `historical_events/` | `historical_events` | M3 | 35 событий / 177 фаз: 175 из черновика LLM и 2 отдельные поздние фазы голода 1231 г.; 25 исходных фаз (5 событий) и 2 добавленные фазы подтверждены книжными свидетельствами (confidence B), остальные 150 — confidence C; см. `VERIFICATION.md` |
 | `historical_figures/` | `historical_figures` | M3 | 23 лица (было 21, исправлено 2026-09-26, было `rework` — см. `historical_figures/VERIFICATION.md`): 14 из sqlite `persons_1230` (confidence A, летописно засвидетельствованы, 6 окон должностей скорректированы книжными свидетельствами) + 7 из черновика `novgorod_key_npc_seeds_v1` (confidence C/D, включая один флаг конфликта дат; анахронизм Биргера и окно Батыя исправлены) + 2 добавлены из книжных свидетельств (тысяцкий Борис, архиепископ Антоний, confidence B) |
 | `knowledge_rumors/` | `knowledge_rumors` | M3 | 105 строк: 53 шаблона слухов + 27 профилей знания (общее+дорожное) + 8 строк грамотности по роли (исследование) + 17 жанровых пулов берестяных грамот (sqlite, confidence A) |
 | `polities_external_relations/` | `polities_external_relations` (не было в каталоге — заявлено критиком брифа) | M3 | 26 строк: 6 региональных периферий (draft), 10 даннических зон (sqlite territories), Псков отдельно, 9 внешних держав/акторов, включая 4 подтверждённых веб-поиском (Ливонский орден 1237, монгольское нашествие 1237–1238, Невская битва 1240, вел. кн. Ярослав 1238–1246) |
 
-Итого новых строк: **35 + 175 + 23 + 105 + 26 = 364** (было 362 с 21 лицом до исправлений 2026-09-26;
+Итого новых строк: **35 + 177 + 23 + 105 + 26 = 366** (было 362 с 21 лицом до исправлений 2026-09-26;
 прежняя версия README называла сумму 397 — арифметическая ошибка, не связанная с проходом 2026-09-26,
 исправлена здесь заодно; без учёта отдельного `rejected_report.json`, который пуст —
 жёстких отказов нет, см. `historical_events/README.md`), во всех — `source_refs` и `confidence`, посчитано скриптами.
@@ -31,7 +31,7 @@
   разрыв: 150 фаз (30 событий) остаются `confidence=C`.
 - **`node_refs_v6 → node_refs_v17` не переведены.** Черновик привязан к графу v6 (`gn_nov_g1_...`); мэппинг на
   ~11 тыс. узлов v17 (G2–G4) требует владельца spatial/place_names и отдельного прохода — вне бюджета и
-  полномочий этого коллектора. Поле `node_refs_v17` во всех 175 строках оставлено пустым, а не выдумано;
+  полномочий этого коллектора. Поле `node_refs_v17` во всех 177 строках оставлено пустым, а не выдумано;
   `node_refs_v6` сохранён как есть.
 - **`historical_figures`: конфликт дат «Михаил Степанич».** Черновик `novgorod_key_npc_seeds_v1` даёт
   посадника «Михаил Степанич» на 1230–1250, что перекрывает засвидетельствованных летописью Внезда Водовика и
@@ -55,9 +55,9 @@
 - `data/rus13-base-staging/nov_region_audit/novgorod_rumor_templates_v1.json`,
   `novgorod_common_knowledge_v1.json`, `novgorod_route_knowledge_rules_v1.json` (draft)
 - `data/rus13-base-staging/nov_region_audit/novgorod_neighbor_regions_v1.json` (draft, 6 региональных периферий)
-- `C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite` — курированная база с кодами A–D и 30 источниками
-  (S01 = НПЛ, Насонов 1950/Michell&Forbes 1914; S02 = договор 1191–1192 с Готским берегом; S05 = gramoty.ru).
-  Не была упомянута в каталоге ранее (см. критику брифа) — теперь процитирована во всех четырёх доменах.
+- `sources/novgorod_1230_extract.json` — candidate-выжимка 14 строк `persons_1230` из курированной базы:
+  только семь полей, реально читаемых builder исторических лиц. Source pin: `novgorod_1230(1) (1).sqlite`,
+  163840 байт, SHA-256 `61f679a734aea087ccd9a9b34f6c0b76753f0856380b31b6735e603ff4efc94c`.
 - НПЛ, скачанные страницы izbornik.org.ua (старший извод 1219–1318, младший извод 1220–1257) —
   `scratchpad/gb-collect-history-events-knowledge/novg{06,07,08,23,24,25}.txt` — использованы для проверки
   годового покрытия источника; построчный аудит фаз по ним не завершён (см. выше).
@@ -70,9 +70,9 @@
 ## Как пересобрать всё
 
 ```
-node historical_events/scripts/build_events.cjs <timeline.json> <sqlite_dump.json> historical_events/
+node historical_events/scripts/build_events.cjs
 node historical_events/scripts/validate_events.cjs historical_events/
-node historical_figures/scripts/build_figures.cjs <sqlite_dump.json> <status_rules.json> historical_figures/
+node historical_figures/scripts/build_figures.cjs
 node historical_figures/scripts/validate_figures.cjs historical_figures/
 node knowledge_rumors/scripts/build_knowledge.js <rumor_templates.json> <common_knowledge.json> <route_knowledge_rules.json> <sqlite_dump.json> knowledge_rumors/
 node knowledge_rumors/scripts/validate_knowledge.js knowledge_rumors/
@@ -84,6 +84,6 @@ node polities_external_relations/scripts/build_polities.js <neighbor_regions.jso
 `polities_external_relations` не входили в проход исправлений 2026-09-26 — их скрипты не переименованы;
 если у них такая же проблема воспроизводимости, это отдельная задача для владельца тех доменов.
 
-Все скрипты только читают исходные JSON/sqlite-дампы (пути передаются аргументами) и пишут внутри своей папки.
-`sqlite_dump.json` — построчный экспорт `C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite` через
-`sqlite3`/python (см. `historical_figures/README.md` за точной командой экспорта).
+`historical_events` не зависит от SQLite; `historical_figures` по умолчанию читает минимальный extract.
+SQLite открывает только `scripts/export_novgorod_1230_extract.py`, в режиме read-only. Старый полный dump
+остаётся внешним входом прежних builders `knowledge_rumors` и `polities_external_relations` и не коммитится.

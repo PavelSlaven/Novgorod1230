@@ -1,19 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-Acceptance check for occupations_additions.csv, mirroring the
-approved-npc-runtime-basis.js validation the brief points to:
-- every required field non-empty
-- occupation_archetype_id resolves to one of the 15 known archetype ids used
-  in the project (main:novgorod_occupations_v1_enriched.tsv occupation_archetype_id
-  column) -- checked as "looks like an archetype id", not against a live DB
-- every row has source_refs referencing a WK id or a source file + row id
-Run: python check_occupations_additions.py
-"""
+"""Validate candidate occupations and resolve archetypes against pinned TSV."""
 import csv
 import os
 import sys
 
 CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "occupations_additions.csv")
+TSV_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "..", "..", "novgorod-region", "novgorod_occupations_v1_enriched.tsv")
 
 REQUIRED = [
     "occupation_id", "occupation_title_ru", "occupation_group", "historical_term",
@@ -37,6 +29,8 @@ def main():
     seen_ids = set()
     with open(CSV_PATH, encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
+    with open(TSV_PATH, encoding="utf-8") as f:
+        archetypes = {r["occupation_archetype_id"] for r in csv.DictReader(f, delimiter="\t")}
     for i, row in enumerate(rows, start=2):  # +1 header, +1 1-index
         oid = row.get("occupation_id", "")
         for field in REQUIRED:
@@ -50,9 +44,11 @@ def main():
             errors.append(f"row {i} ({oid}): invalid confidence '{conf}'")
         if row.get("status") != "candidate":
             errors.append(f"row {i} ({oid}): status must be 'candidate' for a collector (not self-approved), got '{row.get('status')}'")
+        if row.get("occupation_archetype_id") not in archetypes:
+            errors.append(f"row {i} ({oid}): unresolved occupation_archetype_id")
         src = row.get("source_refs", "")
-        if "gb:sources/" not in src and "wk:" not in src:
-            errors.append(f"row {i} ({oid}): source_refs does not reference a WK id or a gb sources/ path")
+        if not any(prefix in src for prefix in ("gb:sources/", "wk:", "book:")):
+            errors.append(f"row {i} ({oid}): source_refs lacks a source reference")
 
     print(f"checked {len(rows)} rows")
     if errors:

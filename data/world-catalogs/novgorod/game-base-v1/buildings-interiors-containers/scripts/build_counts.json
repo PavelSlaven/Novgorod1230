@@ -5,6 +5,7 @@
  "buildings/building_type_parts.csv": 288,
  "buildings/settlement_form.csv": 22,
  "buildings/settlement_building_mix.csv": 112,
+ "buildings/sf_pf_crosswalk.csv": 89,
  "interiors/scenes.csv": 69,
  "interiors/scene_items.csv": 795,
  "interiors/anti_patterns_ref.csv": 53,
@@ -18,7 +19,7 @@
  "containers/first_open_rule.json": 1,
  "landmarks/landmarks.csv": 76,
  "sources.csv": 44,
- "ambience/settlement_ambience_texts.csv": 168,
+ "ambience/settlement_ambience_texts.csv": 184,
  "ambience/presence_tokens.csv": 9,
  "ambience/g4_human_layer_binding.csv": 7,
  "interiors/matcult_item_refs.csv": 458

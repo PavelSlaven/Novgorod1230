@@ -37,7 +37,7 @@
 
 - `data/knowledge-source/imports/item-container-120-v5/candidate/tables/universal_categories.json` (366).
 - `data/world-catalogs/novgorod/spatial-v3/datasets/universal_categories.json` (57).
-- pr98 `live-world-runtime-v17/appearance-transfer-v3-datasets/universal_categories.json` (42).
+- `../inputs/appearance-categories.json` (42): committed extract of seven consumed fields from `live-world-runtime-v17/appearance-transfer-v3-datasets/universal_categories.json` at commit `745b9c874d73f1411c1fec2669c0e4e1b8e10e9a` (source SHA256 `539b555f9b1e025fa69d2816ec4f4171c7814862321a75c7ec8ca5e60a9f29cc`). Recreate with `node scripts/export-appearance-categories.mjs` when the source commit is available; verify the committed extract without that source using `node scripts/export-appearance-categories.mjs --check`. The regular registry build reads only the committed extract and fails if it is absent or differs from the pin.
 - `buildings-interiors-containers/containers/content_categories.csv` (41 строка вход → 14 в реестре, часть без `content_category` или дублирующая v5, см. отчёт).
 - Выходы групп game-base-v1.
 

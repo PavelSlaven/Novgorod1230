@@ -136,7 +136,7 @@ for (const r of ev) {
 for (const r of cl) { if (!roleIds.has(r.role_id)) err('combat: unknown role ' + r.role_id); if (r.combat_likelihood !== 'unknown') checkRefs('combat ' + r.role_id, split(r.source_refs)); else warn('combat: role ' + r.role_id + ' has unknown combat_likelihood (gap)'); }
 
 Object.assign(stats, { weapons_armour: wp.length, status_access_rows: acc.length, equipment_entries: eq.length, equipment_profiles: eqIds.size, crosswalk: cw.length, denylist: dn.length, security: sec.length, events: ev.length, combat_roles: cl.length, refs: refStats });
-const report = { checked: new Date().toISOString().slice(0, 10), ok: errors.length === 0, stats, errors, warnings };
+const report = { ok: errors.length === 0, stats, errors, warnings };
 fs.writeFileSync(path.join(ROOT, 'validation_report.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({ ok: report.ok, stats, errors: errors.length, warnings: warnings.length }, null, 1));
 if (errors.length) { console.log(errors.slice(0, 60).join('\n')); process.exit(1); }

@@ -10,7 +10,7 @@
 
 | Домен брифа | Файл(ы) | Строк | README |
 |---|---|---|---|
-| calendar_feasts_fasts | `time/calendar_1230_1250.csv` | 363 | [time/README.md](time/README.md) |
+| calendar_feasts_fasts | `time/calendar_1230_1250.csv` | 351 | [time/README.md](time/README.md) |
 | schedules_routines | `time/schedules_routines.csv` | 16 | [time/README.md](time/README.md) |
 | religion_church | `religion/church_practice.csv` | 148 | [religion/README.md](religion/README.md) |
 | lifecycle_rites_burial | `religion/lifecycle_rites_burial.csv` | 19 | [religion/README.md](religion/README.md) |

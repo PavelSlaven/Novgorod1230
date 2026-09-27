@@ -11,7 +11,7 @@ verified remote book evidence — no invented facts, no invented frequency
 weights. Real gaps are listed per-domain README and are NOT filled with
 guesses; closing the remaining ones needs either new sourced research
 (finno-ugric name pools for водь/ижора/корела/весь/чудь/емь-сумь;
-смоляне; Baltic/Scandinavian/German name pools) or an owner decision on
+Baltic/Scandinavian/German name pools) or an owner decision on
 v6→v17 node id migration (place_names).
 
 An earlier pass of this collector skipped the book-evidence CSVs on the
@@ -33,10 +33,10 @@ remains a flagged, real gap.
   cross-joined, and it is in any case a declared
   `forbidden_promotion_source` for this candidate.
 - `place_names/` — 911 place names from the v6 naming register TSV.
-- `peoples_origins/` — 23 candidate rows: 10 itinerant/guest groups from
+- `peoples_origins/` — 24 candidate rows: 10 itinerant/guest groups from
   the costume dataset `foreigner_profiles.csv` + 6 neighbor lands from
-  `novgorod_neighbor_regions_v1.json` + 7 distinct peoples (новгородцы,
-  водь, ижора, корела, весь, чудь/эсты, емь/сумь) added 2026-09-26 from
+  `novgorod_neighbor_regions_v1.json` + 8 distinct peoples (новгородцы,
+  водь, ижора, корела, весь, чудь/эсты, емь/сумь, смоляне) from
   verified remote book evidence; see `peoples_origins/README.md`.
 
 ## Not done (out of scope for this collector, flagged for owner/critic)

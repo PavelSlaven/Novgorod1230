@@ -40,7 +40,8 @@ def jl(s):
         return None
 
 
-files = sorted(p for p in OUT.rglob('*.csv') if 'source_snapshot' not in p.parts)
+# C002 crosswalk has typed no_source rows; its own --check validates that schema.
+files = sorted(p for p in OUT.rglob('*.csv') if 'source_snapshot' not in p.parts and p.name != 'household_type_pf_crosswalk.csv')
 data = {p.relative_to(OUT).as_posix(): rd(p) for p in files}
 ING = data['food/ingredients.csv']
 TAX = data['food/taxon_refs.csv']

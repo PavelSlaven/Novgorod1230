@@ -2,7 +2,7 @@
 // and light variants, habitat allowlists and pool-member phrases. node natural_presentation_texts/scripts/build.mjs
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readJson, readTsv, readCsv, writeCsv, SEASONS, SHARED, GROUP_DIR } from '../../_shared/scripts/lib.mjs';
+import { readJson, readTsv, readCsv, writeCsv, scentGroundForFamilies, SEASONS, SHARED, GROUP_DIR } from '../../_shared/scripts/lib.mjs';
 import * as L from '../authoring/lexicon.mjs';
 import MEMBERS, { LANDSCAPE_TAXA, EXTRA_MEMBERS } from '../authoring/members.mjs';
 
@@ -12,6 +12,11 @@ const landscapes = Object.fromEntries(readTsv(path.join(SHARED, 'novgorod_landsc
 const deny = readJson(path.join(SHARED, 'anachronism_denylist.json'));
 const clim = readCsv(path.join(GROUP_DIR, 'weather_climate', 'weather_season_climatology.csv'));
 const lightProfile = readCsv(path.join(GROUP_DIR, 'weather_climate', 'light_profile_by_month.csv'));
+const groundRows = readCsv(path.join(GROUP_DIR, 'natural_materials_soils', 'ground_types.csv'));
+const groundTypes = new Set(groundRows.map((r) => r.soil_ground_type));
+const bindings = readCsv(path.resolve(DIR, '../../places-binding/places/node_binding.csv'));
+const scentGround = scentGroundForFamilies(readCsv(path.resolve(DIR, '../../places-binding/places/place_families.csv')), groundRows);
+const TARGET_PF = ['bog', 'conifer_woodland', 'ferry_landing', 'floodplain_meadow', 'forest_edge', 'forest_track', 'hunting_ground', 'marshy_stream', 'outbuildings', 'peasant_homestead', 'river_channel', 'riverbank', 'road', 'rural_yard', 'village_lane', 'winter_ice_crossing'];
 const ALL_MEMBERS = { ...MEMBERS, ...EXTRA_MEMBERS };
 const SRC_G4 = 'pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json';
 const SRC_PRES = 'pr98:data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json';
@@ -58,6 +63,14 @@ for (const g of g4index.g4) {
   const app = g.applicability;
   const hasWater = !!g.water_body_type;
   for (const s of SEASONS) {
+    // Frozen ground has no supported seasonal smell claim; its gap is recorded below.
+    if (s !== 'winter' && groundTypes.has(g.surface) && L.OLFACTORY[g.surface]) {
+      const p = L.OLFACTORY[g.surface];
+      add(g, 'ground_scent', s, 'unfrozen', 'olfactory', p[0], p[1], {
+        cls: g.surface, requires: 'ground_state!=snow and ground_state!=ice',
+        src: [`game-base-v1/nature-materials-weather/natural_materials_soils/ground_types.csv#soil_ground_type=${g.surface}`],
+      });
+    }
     // surface
     if (app.surface === 'present') for (const c of surfaceConds(g, s)) { const p = L.SURFACE[g.surface]?.[s]?.[c] || L.SURFACE[g.surface]?.[s]?.thawed; add(g, 'surface', s, c, 'visual', p?.[0], p?.[1], { cls: g.surface, src: [SRC_PHEN] }); }
     // relief
@@ -81,7 +94,12 @@ for (const g of g4index.g4) {
         clear = t[s][0].replace('{taxa_winter}', joinRu(names)).replace('{taxa}', s === 'winter' ? '' : `среди них ${joinRu(names)}`);
       } else clear = t.generic[0];
       const taxaSrc = [...new Set(tx.flatMap((k) => expandSrc(ALL_MEMBERS[k]?.src || [])))];
-      add(g, 'tree_layer', s, s === 'winter' ? 'snow' : 'default', 'visual', clear, t[s][1], { cls: g.tree, src: taxaSrc });
+      if (s === 'winter' && /снег|сугроб/i.test(clear)) {
+        add(g, 'tree_layer', s, 'snow', 'visual', clear, t[s][1], { cls: g.tree, src: taxaSrc });
+        const bareNames = tx.map((k) => L.TREE_NAMES[k].winter_no_snow || L.TREE_NAMES[k].winter);
+        const bare = t[s][0].replace('{taxa_winter}', joinRu(bareNames));
+        add(g, 'tree_layer', s, 'no_snow', 'visual', bare, t[s][1], { cls: g.tree, src: taxaSrc });
+      } else add(g, 'tree_layer', s, 'default', 'visual', clear, t[s][1], { cls: g.tree, src: taxaSrc });
     }
     if (app.shrub_layer === 'present' && g.shrub) {
       const sh = L.SHRUB[g.shrub];
@@ -108,7 +126,8 @@ for (const g of g4index.g4) {
       if (frags.length) {
         if (s === 'winter') {
           add(g, 'natural_materials', s, 'snow', 'visual', L.MATERIALS_FRAME.winter[0].replace('{list}', joinRu(frags)), L.MATERIALS_FRAME.winter[1], { cls: g.ambient_materials.join('+'), requires: REQ.snow });
-          add(g, 'natural_materials', s, 'no_snow', 'visual', L.MATERIALS_FRAME.winter_no_snow[0].replace('{list}', joinRu(frags)), L.MATERIALS_FRAME.winter_no_snow[1], { cls: g.ambient_materials.join('+'), requires: REQ.no_snow });
+          const bareFrags = g.ambient_materials.map((m) => L.MATERIALS[m]?.winter_no_snow || L.MATERIALS[m]?.winter).filter(Boolean);
+          add(g, 'natural_materials', s, 'no_snow', 'visual', L.MATERIALS_FRAME.winter_no_snow[0].replace('{list}', joinRu(bareFrags)), L.MATERIALS_FRAME.winter_no_snow[1], { cls: g.ambient_materials.join('+'), requires: REQ.no_snow });
         } else { const f = L.MATERIALS_FRAME[s]; add(g, 'natural_materials', s, 'default', 'visual', f[0].replace('{list}', joinRu(frags)), f[1], { cls: g.ambient_materials.join('+') }); }
       }
     }
@@ -161,6 +180,15 @@ for (const g of g4index.g4) {
   }
 }
 
+const sensoryCoverage = [];
+for (const pf of TARGET_PF) {
+  const refs = new Set(bindings.filter((b) => b.node_level === 'G4' && [b.pf_id, ...b.pf_secondary.split(';')].includes(`pf_${pf}`)).map((b) => b.node_ref.replace(/@1$/, '')));
+  for (const season of (pf === 'winter_ice_crossing' ? ['winter'] : SEASONS)) for (const [aspect, channel] of [['visual', 'visual'], ['acoustic', 'acoustic'], ['olfactory', 'olfactory']]) {
+    const evidence = rows.find((r) => refs.has(r.g4_ref) && r.season_period === season && r.channel === channel && (aspect !== 'olfactory' || scentGround.get(`pf_${pf}`)?.has(r.layer_class)) && r.clear_text && r.partial_text);
+    sensoryCoverage.push({ pf_id: pf, season_period: season, aspect, coverage: evidence ? 'sourced' : 'no_source', basis_ref: evidence ? evidence.npt_id : `no_source:${aspect}_pf_season`, status: 'candidate' });
+  }
+}
+
 // ---------- member phrases ----------
 // npm_id is built from the full member_ref (not just its first word / kind), so distinct members
 // that share a first word (e.g. "alluvial sand and silt" vs "alluvial silt and clay") get distinct ids.
@@ -183,6 +211,7 @@ const counts = {
   member_phrases: writeCsv(path.join(DIR, 'member_phrases.csv'), memberRows),
   habitat_allowlist: writeCsv(path.join(DIR, 'habitat_allowlist.csv'), allow),
   denied_landscape_words: writeCsv(path.join(DIR, 'reports', 'denied_landscape_words.csv'), deniedWords.length ? deniedWords : [{ g4: '', word: '', landscape: '' }]),
+  sensory_coverage: writeCsv(path.join(DIR, 'sensory_coverage.csv'), sensoryCoverage),
 };
 const byLayer = {}; for (const r of rows) byLayer[r.layer] = (byLayer[r.layer] || 0) + 1;
 console.log(JSON.stringify(counts), JSON.stringify(byLayer));

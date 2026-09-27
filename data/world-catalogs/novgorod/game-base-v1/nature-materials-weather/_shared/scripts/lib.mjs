@@ -51,6 +51,13 @@ export function writeCsv(p, rows, columns) {
 export const FREQ_WEIGHT = { ubiquitous: 8, common: 4, contextual: 2, rare: 1, absent: 0 };
 export const SEASONS = ['winter', 'spring', 'summer', 'autumn'];
 
+export function scentGroundForFamilies(families, grounds) {
+  return new Map(families.map((family) => {
+    const landscapes = new Set(family.landscape_template_refs.split(';').filter(Boolean));
+    return [family.pf_id, new Set(grounds.filter((ground) => ground.perceptual_cues.includes('запах:') && ground.landscape_template_ids.split(';').some((id) => landscapes.has(id))).map((ground) => ground.soil_ground_type))];
+  }));
+}
+
 export function fail(errors, label) {
   if (errors.length) { console.error(`${label}: ${errors.length} error(s)`); for (const e of errors.slice(0, 60)) console.error(' - ' + e); process.exitCode = 1; }
   else console.log(`${label}: OK`);

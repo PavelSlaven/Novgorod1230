@@ -3,9 +3,10 @@
 // as "external" and do not fail the run.
 import fs from 'node:fs';
 import path from 'node:path';
-import { REPO, PR98, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
+import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry, WK_PLACE_FIRST, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
+import { build as buildPresenceRules } from './build-presence-rules.mjs';
 
 const checks = [];
 const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 15), external, ...extra });
@@ -73,49 +74,184 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   // binding_basis files and ids exist.
   const basisFail = [];
   const natIds = new Set(ex.g4.map((g) => g.profile_id));
-  const pr98Present = fs.existsSync(path.join(PR98, 'data/world-catalogs/novgorod/m2c-natural/candidate.json'));
   const cw = readJson(P('scripts/crosswalk-rules.json'));
   for (const r of nb.filter((x) => x.binding_status !== 'gap')) {
     const files = [...r.binding_basis.matchAll(/(pr98:)?(data\/[\w\-./]+\.json)/g)];
     for (const m of files) {
-      const abs = m[1] ? path.join(PR98, m[2]) : path.join(REPO, m[2]);
-      if ((m[1] ? pr98Present : true) && !fs.existsSync(abs)) basisFail.push(`${r.node_ref}: missing file ${m[0]}`);
+      if (!m[1] && !fs.existsSync(path.join(REPO, m[2]))) basisFail.push(`${r.node_ref}: missing file ${m[0]}`);
     }
     const pid = r.binding_basis.match(/profile_id=([\w]+)/)?.[1];
     if (r.node_level === 'G4' && !natIds.has(pid)) basisFail.push(`${r.node_ref}: profile ${pid} not in extract`);
     const fn = r.binding_basis.match(/g4_function_to_pf\.map\.(\w+)/)?.[1];
     if (r.node_level === 'G4' && !(fn in cw.node_binding.g4_function_to_pf.map)) basisFail.push(`${r.node_ref}: rule key ${fn} missing`);
   }
-  check('node_binding', 'binding_basis_files_and_ids_exist', basisFail, { pr98_worktree_checked: pr98Present });
+  check('node_binding', 'binding_basis_files_and_ids_exist', basisFail);
 }
 
 // ---- presence_rules
 {
   const rule = readJson(P('presence/frequency_rule.json'));
   const pr = readCsv(P('presence/presence_rules.csv'));
+  const rebuilt = buildPresenceRules({ write: false }).rows;
+  const columns = Object.keys(pr[0]);
+  const values = (row) => columns.map((column) => Array.isArray(row[column]) ? row[column].join(';') : String(row[column] ?? ''));
+  check('presence_rules', 'matches_current_input_pools', [
+    ...(pr.length === rebuilt.length ? [] : [`rows ${pr.length} != rebuilt ${rebuilt.length}`]),
+    ...pr.flatMap((row, i) => rebuilt[i] && JSON.stringify(values(row)) !== JSON.stringify(values(rebuilt[i])) ? [`row ${i + 2}: ${row.pr_id}`] : []),
+  ], { rows: pr.length, rebuilt_rows: rebuilt.length });
   const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
   const nb = readCsv(P('places/node_binding.csv'));
   const nodes = new Set(nb.map((r) => r.node_ref.replace(/@\d+$/, '')));
+  const occupations = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_occupations_v1.tsv')).map((r) => r.occupation_id));
+  const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
+  const itemSources = readCsv(P('../items-household-personal/items/item_place_frequency.csv'));
+  const peopleSources = readCsv(P('presence/people_presence_authoring.csv'));
+  const itemConditions = ['entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required'];
   const f = [];
   const seen = new Set();
   for (const r of pr) {
     const c = rule.classes[r.frequency_class];
     if (!c) f.push(`${r.pr_id}: class ${r.frequency_class}`);
     else if (+r.probability_ppm !== Math.round((1000000 * c.weight) / 8) || +r.probability_ppm !== c.probability_ppm) f.push(`${r.pr_id}: ppm ${r.probability_ppm} != rule`);
-    if (!cats.has(r.category_ref)) f.push(`${r.pr_id}: category ${r.category_ref}`);
+    if (r.subject_kind === 'category') { if (!cats.has(r.category_ref) || r.subject_ref !== r.category_ref) f.push(`${r.pr_id}: category ${r.category_ref}`); }
+    else if (!({ occupation: occupations, social_role: roles })[r.subject_kind]?.has(r.subject_ref) || r.category_ref) f.push(`${r.pr_id}: subject ${r.subject_kind}:${r.subject_ref}`);
     const ok = { place_family: pfSet.has(r.scope_ref), g4: nodes.has(r.scope_ref), g5: nodes.has(r.scope_ref), region: r.scope_ref === ex.region_id,
       landscape_template: reg.get(r.scope_ref)?.kind === 'landscape', place_template: reg.get(r.scope_ref)?.kind === 'place', scene_template: ex.scene_templates.some((s) => s.id === r.scope_ref), container_template: /^container_tpl_/.test(r.scope_ref) }[r.scope_kind];
     if (!ok) f.push(`${r.pr_id}: scope ${r.scope_kind}:${r.scope_ref}`);
     if (!(Number.isInteger(+r.count_limit) && +r.count_limit >= 1)) f.push(`${r.pr_id}: count_limit`);
+    if (!['pool_row', 'pool_count_limit_rule', 'default_minimum_1', 'people_authoring'].includes(r.count_limit_basis)) f.push(`${r.pr_id}: count_limit_basis`);
     const s = split(r.allowed_seasons);
     if (!s.length || s.some((x) => x !== 'all' && !SEASONS.includes(x))) f.push(`${r.pr_id}: seasons ${r.allowed_seasons}`);
+    if (!['all', 'morning', 'day', 'evening', 'night'].includes(r.allowed_times)) f.push(`${r.pr_id}: time ${r.allowed_times}`);
+    if (r.subject_kind !== 'category' && (!r.guards || r.status !== 'candidate' || !r.source_refs)) f.push(`${r.pr_id}: people provenance/guards/status`);
+    if (r.subject_kind !== 'category') {
+      const source = peopleSources[Number(r.source_pool.match(/people_presence_authoring\.csv#row(\d+)$/)?.[1]) - 2];
+      if (!source || r.subject_kind !== source.subject_kind || r.subject_ref !== source.subject_ref || r.guards !== source.guards || !split(source.allowed_seasons).includes(r.allowed_seasons) || !split(source.allowed_times).includes(r.allowed_times)) f.push(`${r.pr_id}: people subject/season/time/guards differ from authoring`);
+    }
+    for (const col of itemConditions) if (!Object.hasOwn(r, col)) f.push(`${r.pr_id}: missing ${col} column`);
+    const sources = split(r.source_pool);
+    const itemRows = sources.filter((s) => s.includes('/items-household-personal/items/item_place_frequency.csv#row'));
+    if (itemRows.length) {
+      if (itemRows.length !== sources.length || r.subject_kind !== 'category') f.push(`${r.pr_id}: mixed item/category sources`);
+      for (const source of itemRows) {
+        const row = itemSources[Number(source.match(/#row(\d+)$/)?.[1]) - 2];
+        if (!row) { f.push(`${r.pr_id}: unresolved item source ${source}`); continue; }
+        for (const col of itemConditions) if (r[col] !== row[col]) f.push(`${r.pr_id}: ${col} differs from ${source}`);
+        if (!row.entry_visible_if || !row.search_only_if) f.push(`${r.pr_id}: item discovery conditions empty`);
+        if (row.pf_class === 'wild' && r.wild_arrival_cause_required !== 'prior_visitor_loss_or_discard') f.push(`${r.pr_id}: wild item arrival cause missing`);
+      }
+    } else if (itemConditions.some((col) => r[col])) f.push(`${r.pr_id}: non-item discovery conditions`);
     if (!rule.refresh_rule.values.includes(r.refresh_class)) f.push(`${r.pr_id}: refresh ${r.refresh_class}`);
-    const k = [r.scope_kind, r.scope_ref, r.region_id, r.category_ref].join('|');
+    const k = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref, r.allowed_seasons, r.allowed_times, ...itemConditions.map((col) => r[col])].join('|');
     if (seen.has(k)) f.push(`${r.pr_id}: duplicate ${k}`); seen.add(k);
   }
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
+  const people = pr.filter((r) => r.subject_kind !== 'category');
+  const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));
+  check('presence_rules', 'people_cover_16_bound_pf', [
+    ...[...expectedPf].filter((id) => !people.some((r) => r.scope_ref === id)).map((id) => `missing ${id}`),
+    ...(expectedPf.size === 16 ? [] : [`expected 16 PF, got ${expectedPf.size}`]),
+    ...(nb.filter((r) => r.node_level === 'G4').length === 32 && nb.filter((r) => r.node_level === 'G5').length === 195 ? [] : ['expected 32 G4 / 195 G5']),
+    ...(people.length === 69 ? [] : [`people rules ${people.length} != 69`]),
+  ], { people_rules: people.length, place_families: expectedPf.size, g4: nb.filter((r) => r.node_level === 'G4').length, g5: nb.filter((r) => r.node_level === 'G5').length });
+  const crosswalks = [
+    ['livestock', '../fauna-fish-invertebrates-livestock/fauna/rpgr_pf_crosswalk.csv', ['rule_ref', 'pf_id'], (r) => Boolean(r.no_source)],
+    ['buildings', '../buildings-interiors-containers/buildings/sf_pf_crosswalk.csv', ['sf_id', 'pf_id'], (r) => Boolean(r.no_source)],
+    ['food', '../food-drink/food/household_type_pf_crosswalk.csv', ['household_type', 'pf_id'], (r) => r.basis === 'no_source'],
+    ['tools', '../crafts-tools-processes/craft_tools_gear/occupation_pf_crosswalk.csv', ['occupation_id', 'pf_id'], (r) => r.basis === 'no_source'],
+    ['weapons', '../items-weapons-armour/items/role_tier_pf_crosswalk.csv', ['role_id', 'tier', 'pf_id'], (r) => r.basis === 'no_source'],
+  ];
+  const crosswalkFailures = [];
+  const crosswalkCounts = {};
+  for (const [name, file, keys, isGap] of crosswalks) {
+    const rows = readCsv(P(file));
+    const linkedRows = rows.filter((r) => !isGap(r));
+    const gapRows = rows.filter(isGap);
+    const linkedPf = new Set(linkedRows.map((r) => r.pf_id).filter(Boolean));
+    const gapPf = new Set(gapRows.map((r) => r.pf_id).filter(Boolean));
+    const accountedPf = new Set([...linkedPf, ...gapPf]);
+    const rowKeys = rows.map((r) => keys.map((key) => r[key]).join('|'));
+    for (const row of linkedRows) {
+      for (const key of keys) if (!row[key]) crosswalkFailures.push(`${name}: linked row missing ${key}`);
+    }
+    crosswalkCounts[name] = { rows: rows.length, linked_rows: linkedRows.length, no_source_rows: gapRows.length, linked_place_families: linkedPf.size, no_source_place_families: gapPf.size };
+    for (const id of expectedPf) if (!accountedPf.has(id)) crosswalkFailures.push(`${name}: unaccounted ${id}`);
+    for (const id of accountedPf) if (!pfSet.has(id)) crosswalkFailures.push(`${name}: unknown ${id}`);
+    for (const id of linkedPf) if (gapPf.has(id)) crosswalkFailures.push(`${name}: ${id} is both linked and no_source`);
+    if (new Set(rowKeys).size !== rowKeys.length) crosswalkFailures.push(`${name}: duplicate key`);
+    if (rows.some((r) => r.status !== 'candidate')) crosswalkFailures.push(`${name}: non-candidate status`);
+  }
+  check('presence_rules', 'c002_crosswalks_account_for_16_bound_pf', crosswalkFailures,
+    { place_families: expectedPf.size, rows: crosswalkCounts });
   const rr = readJson(P('reports/presence-rules-report.json'));
   check('presence_rules', 'input_pool_rows_rejected (external)', Array(rr.rejected_rows).fill('x'), { reasons: rr.reject_reasons, by_file: rr.rejected_by_file }, true);
+}
+
+// ---- materialization_slot_rules
+{
+  const slots = readCsv(P('slots/materialization_slot_rules.csv'));
+  const candidates = readCsv(P('slots/slot_candidates.csv'));
+  const policy = readJson(P('slots/materialization_rules.json'));
+  const gaps = readCsv(P('slots/no_required_slots.csv'));
+  const boundPf = new Set(readCsv(P('places/node_binding.csv')).map((r) => r.pf_id).filter(Boolean));
+  const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
+  const buildings = new Map(readCsv(P('../buildings-interiors-containers/buildings/building_types.csv')).map((r) => [r.bt_id, r]));
+  const ruralMix = readCsv(P('../buildings-interiors-containers/buildings/settlement_building_mix.csv')).filter((r) => r.sf_id === 'sf_yard_peasant');
+  const transport = new Set(readCsv(P('../transport-health-recreation/transport_travel/transport_entities.csv')).map((r) => r.tr_id));
+  const presence = readCsv(P('presence/presence_rules.csv'));
+  const f = [];
+  const ids = new Set();
+  const covered = new Set();
+  const rules = new Map(policy.rules.map((r) => [r.id, r]));
+  if (policy.application_scope !== 'once_per_g4_complex' || policy.g5_policy !== 'code_selects_applicable_g5_within_g4' || policy.pf_secondary_policy !== 'no_automatic_required_slot_from_secondary_pf') f.push('application scope/G5/secondary PF policy');
+  if (rules.size !== policy.rules.length) f.push('duplicate rule id');
+  for (const rule of policy.rules) if (!/^MSR-C003-/.test(rule.id) || !rule.text || !rule.basis || !['A', 'B', 'C'].includes(rule.confidence)) f.push(`invalid rule ${rule.id}`);
+  for (const r of slots) {
+    if (ids.has(r.slot_id) || !r.slot_id) f.push(`duplicate/empty slot_id ${r.slot_id}`);
+    ids.add(r.slot_id);
+    if (!boundPf.has(r.pf_id)) f.push(`${r.slot_id}: unbound PF ${r.pf_id}`);
+    covered.add(r.pf_id);
+    if (!['anchor', 'item', 'container', 'building', 'npc'].includes(r.slot_kind) || !['true', 'false'].includes(r.required)) f.push(`${r.slot_id}: kind/required`);
+    if (!/^\d+$/.test(r.count_min) || !/^\d+$/.test(r.count_max) || +r.count_min > +r.count_max || (r.required === 'true' && +r.count_min < 1) || (r.required === 'false' && +r.count_min !== 0)) f.push(`${r.slot_id}: count/required`);
+    if (!['all', 'winter'].includes(r.applicability) || (r.pf_id === 'pf_winter_ice_crossing') !== (r.applicability === 'winter')) f.push(`${r.slot_id}: applicability`);
+    if (r.status !== 'candidate' || !['A', 'B', 'C'].includes(r.confidence) || !r.source_refs || !rules.has(r.rule_ref)) f.push(`${r.slot_id}: provenance/status/rule`);
+    for (const c of split(r.candidate_category_refs)) if (!cats.has(c)) f.push(`${r.slot_id}: unknown category ${c}`);
+    if (r.slot_kind === 'building' && fam.find((x) => x.pf_id === r.pf_id)?.pf_kind?.startsWith('natural')) f.push(`${r.slot_id}: natural building forbidden`);
+    if (r.presence_relation !== 'identity_requirement_not_frequency' || split(r.candidate_category_refs).some((c) => presence.some((p) => p.scope_ref === r.pf_id && p.category_ref === c))) f.push(`${r.slot_id}: presence relation`);
+  }
+  const candidateKeys = new Set();
+  for (const c of candidates) {
+    const slot = slots.find((r) => r.slot_id === c.slot_id);
+    const [kind, ref] = c.candidate_record_ref.split(':');
+    const key = `${c.slot_id}|${c.candidate_record_ref}`;
+    if (candidateKeys.has(key)) f.push(`duplicate candidate ${key}`);
+    candidateKeys.add(key);
+    if (!slot || !Number.isSafeInteger(+c.weight) || +c.weight < 1 || !c.source_refs || c.status !== 'candidate' || !['A', 'B', 'C'].includes(c.confidence)) f.push(`candidate provenance/weight/slot ${key}`);
+    if (!(kind === 'building' && buildings.has(ref) || kind === 'transport' && transport.has(ref) || kind === 'route' && routes.has(ref))) f.push(`unresolved candidate ${key}`);
+    if (slot && (slot.slot_kind === 'building' && kind !== 'building' || slot.slot_kind === 'anchor' && !['route', 'transport'].includes(kind))) f.push(`candidate kind ${key}`);
+    if (kind === 'building' && slot && (!buildings.get(ref)?.pf_ids.split('|').includes(slot.pf_id.slice(3)) || !buildings.get(ref)?.source_refs)) f.push(`building owner/source ${key}`);
+    if (slot?.slot_id === 'msr_ferry_crossing' && c.candidate_record_ref !== 'transport:trv_011') f.push(`unsupported ferry candidate ${key}`);
+  }
+  const mixByClass = (btClass) => new Set(ruralMix.filter((r) => buildings.get(r.member_id)?.bt_class === btClass).map((r) => `building:${r.member_id}`));
+  const dwellingMix = mixByClass('dwelling');
+  const dwellingCandidates = candidates.filter((c) => c.slot_id === 'msr_homestead_dwelling');
+  for (const c of dwellingCandidates) if (!dwellingMix.has(c.candidate_record_ref)) f.push(`dwelling outside peasant settlement mix ${c.candidate_record_ref}`);
+  for (const ref of dwellingMix) if (!dwellingCandidates.some((c) => c.candidate_record_ref === ref)) f.push(`missing peasant dwelling ${ref}`);
+  const fenceMix = mixByClass('enclosure');
+  const fenceCandidates = candidates.filter((c) => c.slot_id === 'msr_homestead_fence');
+  const ruralFenceWeights = fenceCandidates.filter((c) => fenceMix.has(c.candidate_record_ref)).map((c) => +c.weight);
+  const otherFenceWeights = fenceCandidates.filter((c) => !fenceMix.has(c.candidate_record_ref)).map((c) => +c.weight);
+  if (!ruralFenceWeights.length || Math.max(...ruralFenceWeights) < Math.max(0, ...otherFenceWeights)) f.push('peasant fence mix has lower weight than editorial alternative');
+  for (const c of fenceCandidates.filter((c) => !fenceMix.has(c.candidate_record_ref))) if (c.confidence !== 'C' || c.source_refs.includes('wk:claim:settlement-post-fence-yard')) f.push(`urban fence claim used as rural basis ${c.candidate_record_ref}`);
+  for (const r of slots) if (!candidates.some((c) => c.slot_id === r.slot_id)) f.push(`${r.slot_id}: no candidates`);
+  for (const rule of rules.keys()) if (!slots.some((r) => r.rule_ref === rule)) f.push(`unused rule ${rule}`);
+  for (const r of gaps) {
+    if (!boundPf.has(r.pf_id) || covered.has(r.pf_id) || !r.reason || !r.source_refs || r.status !== 'candidate' || !['A', 'B', 'C'].includes(r.confidence)) f.push(`${r.pf_id}: invalid no-required-slot record`);
+    covered.add(r.pf_id);
+  }
+  for (const pf of boundPf) if (!covered.has(pf)) f.push(`uncovered ${pf}`);
+  if (boundPf.size !== 16 || slots.length !== 5 || gaps.length !== 12 || covered.size !== 16) f.push(`coverage: ${boundPf.size} PF, ${slots.length} slots, ${gaps.length} gaps, ${covered.size} covered`);
+  check('materialization_slot_rules', 'c003_required_slots_and_explicit_gaps', f, { slots: slots.length, candidates: candidates.length, gaps: gaps.length, place_families: covered.size });
 }
 
 // ---- category_registry

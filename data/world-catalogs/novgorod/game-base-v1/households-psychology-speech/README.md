@@ -23,7 +23,7 @@ WK production-v1 `family-social-context.json`) плюс курированный
 | Домен | Файлы | Строк | Приоритет брифа | Статус покрытия |
 |---|---|---|---|---|
 | households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv | 139 / 8 / 32 | M2c | частично: состав двора теперь оценён по book evidence (min/max по wealth_band), но не по relation/sex/age_band (гэп) |
-| npc_psychology | psychology_profiles.csv | 139 | M2c | полное покрытие 68 occupation + 71 role; вывод теперь по различающимся категориальным полям, а не по шаблонному тексту; шкала ценностей не утверждена владельцем |
+| npc_psychology | psychology_profiles.csv | 139 | M2c | покрытие 68 occupation + 71 role; контекстные мотивы и страхи привязаны только к применимым свидетельствам; шкала ценностей не утверждена владельцем |
 | speech_address | speech_registers.csv, address_forms.csv | 71 / 3 | M3 | speech_registers.csv переработан (правило починено); address_forms.csv по-прежнему частичен: берестяно-грамотный корпус не собран |
 | social_norms_honour_hospitality | norms.csv | 19 | M3 | 4 из 5 ранее пустых norm_kind закрыты book evidence; gift всё ещё 0 строк |
 

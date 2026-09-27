@@ -27,6 +27,12 @@ node scripts/validate.cjs   # проверки и резолв ссылок -> v
 
 `wk:claim:<id>` (WK production-v1, проверяется статус approved) · `master:mc:<ITEM_ID>` (MASTER_ARCHIVE_v1 material_culture_items, снимок) · `costume:<ID>` / `costume:anti:<ID>` · `v5:<id>` (item-container-120-v5 candidate) · `tsv:role:<id>#<поле>` / `tsv:occ:<id>#<поле>` (data/novgorod-region) · `timeline:<event_id>` (аудит nov-region) · `sqlite:<таблица>:<ключ>` (C:/Users/Slaven/Downloads/novgorod_1230(1) (1).sqlite) · `statusrules:<rule_id>` · `bible:§N <заголовок>` (библия персонажа) · `lit:<id>` (authoring/literature.json) · `catalog:conventions.<ключ>`.
 
+## Правки C002
+
+`items/role_tier_pf_crosswalk.csv` соединяет `security.roles` и `security.pf_ids` с `weapon_status_access` по роли: роль × уровень оружия → семейство места. `source` означает, что связанный профиль снаряжения содержит оружие данного уровня для `role_id` или `base_role_ids`; его строки указаны в `equipment_entry_ids`. `rule` означает связь только по роли и праву доступа. `access_level` сохраняет ограничение доступа; строка не утверждает наличие конкретного оружия в месте. `security_ids` показывают основание места. Отсутствие связи фиксируется `no_source`; все строки `candidate`.
+
+Сборка: `python -B scripts/pf_crosswalk.py`; проверка разрешения ID, полноты 44 PF и 16 видов, уникальности и побайтной воспроизводимости: `python -B scripts/pf_crosswalk.py --check`.
+
 ## Итог проверки
 
 `validation_report.json`: 0 ошибок, 8 предупреждений. Две строки MASTER с достоверностью D оставлены с достоверностью C и примечанием. У шести ролей вероятность боя не установлена. Проверено 1437 ссылок.

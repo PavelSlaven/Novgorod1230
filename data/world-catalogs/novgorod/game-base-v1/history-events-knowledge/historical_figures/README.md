@@ -109,28 +109,25 @@
 ## Пересборка
 
 ```
-node scripts/build_figures.cjs <sqlite_dump.json> <novgorod_status_rules_v1.json> . [<book_evidence.csv>]
+node scripts/build_figures.cjs
 node scripts/validate_figures.cjs .
 ```
 Скрипты — `.cjs` (не `.js`): корневой `package.json` репозитория задаёт `"type": "module"`, а эти скрипты
 используют `require()` (переименовано 2026-09-26, было причиной `ReferenceError: require is not defined`
 при запуске команд README «как есть»).
 
-### Экспорт `sqlite_dump.json`
+Без аргументов builder читает `../sources/novgorod_1230_extract.json`, pinned status rules из
+`novgorod/sources/nov-region-audit-v1` и пишет в эту папку.
+
+### Экспорт минимальной выжимки
 
 ```
-python -c "
-import sqlite3, json, io
-con = sqlite3.connect(r'C:\Users\Slaven\Downloads\novgorod_1230(1) (1).sqlite')
-con.row_factory = sqlite3.Row
-cur = con.cursor()
-out = {}
-for t in ['metadata','sources','confidence','territories','settlements','ends','streets','city_features',
-          'institutions','persons_1230','events','economy','famine_prices','law','social_groups',
-          'material_culture','birchbark_selection']:
-    cur.execute(f'select * from {t}')
-    out[t] = [dict(r) for r in cur.fetchall()]
-with io.open('sqlite_dump.json', 'w', encoding='utf-8') as f:
-    json.dump(out, f, ensure_ascii=False, indent=1)
-"
+python ../scripts/export_novgorod_1230_extract.py <path-to-sqlite>
+python ../scripts/export_novgorod_1230_extract.py <path-to-sqlite> --check
 ```
+
+Экспортёр открывает SQLite в `mode=ro` и выбирает только семь полей `persons_1230`, которые читает
+builder: `id,name,role,period_1230,action,confidence,sources`. Pin источника: файл
+`novgorod_1230(1) (1).sqlite`, размер 163840 байт, SHA-256
+`61f679a734aea087ccd9a9b34f6c0b76753f0856380b31b6735e603ff4efc94c`. Проверка запрещает лишние
+таблицы/поля и текст длиннее одного предложения. Полная база и полный dump в репозиторий не входят.

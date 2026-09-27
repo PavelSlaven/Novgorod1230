@@ -6,14 +6,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const SQLITE_DUMP = process.argv[2];
-const STATUS_RULES = process.argv[3];
-const OUT_DIR = process.argv[4];
-// Optional 5th arg: book evidence CSV (history-events-knowledge.csv from servak:/srv/novgorod-work/data/books/evidence/),
-// used only to attach book:<id> §<section_path> ¶<para_no> citations for rows fixed in the 2026-09-26 rework pass.
-const BOOK_EVIDENCE = process.argv[5];
+const GROUP_ROOT = path.resolve(__dirname, '../..');
+const EXTRACT = process.argv[2] || path.resolve(GROUP_ROOT, 'sources/novgorod_1230_extract.json');
+const STATUS_RULES = process.argv[3] || path.resolve(GROUP_ROOT, '../../sources/nov-region-audit-v1/novgorod_status_rules_v1.json');
+const OUT_DIR = process.argv[4] || path.resolve(__dirname, '..');
 
-const sq = JSON.parse(fs.readFileSync(SQLITE_DUMP, 'utf8'));
+const extract = JSON.parse(fs.readFileSync(EXTRACT, 'utf8'));
 const sr = JSON.parse(fs.readFileSync(STATUS_RULES, 'utf8'));
 
 function csvEsc(v) {
@@ -77,7 +75,7 @@ const windowOverrides = {
   // Novgorod-reign window (1231-1236) already used in po_vladimir_suzdal_principality of this same group.
   R03: {
     end: '1236-12-31',
-    note: 'office_end скорректирован с 1246-12-31 (год смерти, ошибочно взятый как конец новгородского княжения) на 1236-12-31: книжные свидетельства (book:378072 §Нашествие иноземцев ¶464 "князь новгородский с 1236" — про сына Александра) и книжные свидетельства (book:566840 §Хронологическая таблица ¶1878 "4-е княжение в Новгороде с 30 дек. 1230") согласуются с окном 1230-12-30..1236, тем же, что в polities_external_relations этой группы. После 1236 г. Ярослав остаётся великим князем Владимирским/старшим князем, но не резидентным новгородским князем — это отдельная роль, не описанная этой строкой.',
+    note: 'Для этой строки выбрана граница 1236-12-31 по book:378072 §Нашествие иноземцев ¶464: Александр назван новгородским князем с 1236 г.; она согласуется с окном polities_external_relations. Другая хронология, book:566840 §Хронологическая таблица ¶1878, даёт четвёртое княжение Ярослава с 1230 до 1246 г.; источники расходятся, поэтому 1236 — принятый для каталога годовой предел, не бесспорная дата окончания княжения.',
   },
   // Verifier: sqlite/period text gives only "конец 1230"; book evidence (566840 ¶1879) gives a specific
   // month for the sons' arrival as намеcтники — January 1231, one month later than the draft text.
@@ -98,16 +96,21 @@ const windowOverrides = {
   },
   R09: {
     start: '1230-12-09',
-    note: 'office_start скорректирован с 1230-01-01 на 1230-12-09 (не 1230-12-01: точный день месяца в period_1230 "с декабря 1230" не дан, но sqlite.events, confidence A, S01, датирует смену власти "1230-12: Степан — посадник, Микита — тысяцкий" тем же днём, что назначение Степана посадником — 9 дек. 1230, тем же днём кончается тысяцкое предшественника hf_book_boris_negochevich); согласуется с book:667380 §Приложение 2 ¶486.',
+    end: '',
+    note: 'office_start скорректирован с 1230-01-01 на 1230-12-09 (не 1230-12-01: точный день месяца в period_1230 "с декабря 1230" не дан, но sqlite.events, confidence A, S01, датирует смену власти "1230-12: Степан — посадник, Микита — тысяцкий" тем же днём, что назначение Степана посадником — 9 дек. 1230, тем же днём кончается тысяцкое предшественника hf_book_boris_negochevich); согласуется с book:667380 §Приложение 2 ¶486. office_end очищен: источники дают избрание, но не конец тысяцкого.',
+  },
+  R02: {
+    end: '1230-12-08',
+    note: 'office_end ограничен 8 декабря 1230 г.: Ростислав ушёл из Новгорода с Водовиком по sqlite events и book:301539 §ПРОДОЛЖЕНИЕ МЕЖДОУСОБИЙ ¶4366; прежняя годовая граница 1230-12-31 перекрывала возвращение Ярослава 30 декабря.',
   },
 };
-const sqRows = sq.persons_1230.map(p => {
+const sqRows = extract.persons_1230.map(p => {
   const w = deriveWindow(p.period_1230);
   const override = windowOverrides[p.id];
   let note = '';
   if (override) {
     if (override.start) w.start = override.start;
-    if (override.end) w.end = override.end;
+    if (Object.hasOwn(override, 'end')) w.end = override.end;
     note = override.note;
   }
   return {
@@ -165,12 +168,14 @@ for (const p of sr.historical_key_npc_profiles) {
     // Extend the sqlite row's coverage window using the draft's broader years, keep sqlite as primary confidence A record.
     const target = sqRows.find(r => r.hf_id === dupTarget);
     const override = windowOverrides[dupTarget.replace('hf_sql_', '').toUpperCase()];
-    if (target && !(override && override.end)) {
+    if (target && !(override && Object.hasOwn(override, 'end'))) {
       // Only apply the draft-year extension when a 2026-09-26 book-sourced override hasn't already fixed office_end.
       target.office_end = endY ? (endY + '-12-31') : target.office_end;
     }
     if (target) {
-      target.note = (target.note + ' | расширение окна по draft rus13tpl novgorod_key_npc_seeds_v1: ' + p.historical_npc_id + ' (' + years + ')').trim();
+      target.note = (target.note + (override && Object.hasOwn(override, 'end')
+        ? ' | черновик rus13tpl novgorod_key_npc_seeds_v1 даёт отличающееся окно: '
+        : ' | расширение окна по draft rus13tpl novgorod_key_npc_seeds_v1: ') + p.historical_npc_id + ' (' + years + ')').trim();
     }
     continue;
   }
@@ -213,7 +218,7 @@ const addedRows = [
     source_refs: 'book:667380 §Приложение 2 Свод летописных известий о Новгородской земле ¶486 "тысяцкий Борис бежал в 1230 г. с Водовиком из Торжка в Чернигов"; book:301539 §ПРОДОЛЖЕНИЕ МЕЖДОУСОБИЙ ¶4366; book:566839 §Глава II Русь и Ливония ¶648 "избран тысяцким в 1228 г. вместо Вячеслава"',
     confidence: 'B',
     status: 'candidate',
-    note: 'Добавлен по требованию VERIFICATION.md (2026-09-26): предшественник hf_sql_r09 (Микита Петрилович), не покрыт sqlite.persons_1230 (окно той таблицы — 1229-12..1231, срез на момент смены власти). Другая книжная запись (book:566839 ¶661: "бывший посадник (1219) убит 9 дек. 1230") относится к иному лицу по имени Борис (бывший посадник 1219 г.) — не отождествлён с тысяцким Борисом Негочевичем в этой строке, чтобы не приписать ему чужую смерть без прямого подтверждения.',
+    note: 'Предшественник hf_sql_r09 (Микиты Петриловича), не покрыт sqlite.persons_1230. book:566839 ¶661 сообщает об убийстве бывшего посадника Семёна Борисовича (hf_sql_r12), а не тысяцкого Бориса Негочевича; это разные лица.',
   },
   {
     hf_id: 'hf_book_antony_archbishop',

@@ -45,10 +45,10 @@ def jl(x):
     return "|".join(x) if isinstance(x, (list, tuple)) else ("" if x is None else str(x))
 
 
-def write_csv(path, rows, cols):
+def write_csv(path, rows, cols, lineterminator="\r\n"):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols, extrasaction="raise")
+        w = csv.DictWriter(f, fieldnames=cols, extrasaction="raise", lineterminator=lineterminator)
         w.writeheader()
         for r in rows:
             w.writerow({c: jl(r.get(c, "")) for c in cols})
@@ -69,7 +69,7 @@ _BARE = {"required_items", "allowed_items", "furniture", "matcult", "example_ite
 _ID = re.compile(r"^[A-Z]{3}\d{4}$")
 
 
-def out(rel, rows, cols):
+def out(rel, rows, cols, lineterminator="\r\n"):
     for r in rows:
         for k, v in r.items():
             vals = v if isinstance(v, (list, tuple)) else [v]
@@ -78,7 +78,7 @@ def out(rel, rows, cols):
                     REFD.update(_TOK.findall(x))
                     if k in _BARE:
                         REFD.update(y for y in x.split("|") if _ID.match(y))
-    COUNTS[rel] = write_csv(os.path.join(GROUP, rel), rows, cols)
+    COUNTS[rel] = write_csv(os.path.join(GROUP, rel), rows, cols, lineterminator)
 
 
 def cap_band(slots):
@@ -133,6 +133,13 @@ def main():
         ["sf_id", "name_ru", "level", "settlement_kind", "region_id", "pf_ids", "place_template_ids", "v6_template_type", "v6_g3_count", "v6_place_template_ids", "v6_household_estimate", "v6_household_mix",
          "area_m2_min", "area_m2_max", "yard_layout", "street_elements", "fence_types", "source_refs", "confidence", "status", "notes"])
     out("buildings/settlement_building_mix.csv", mix_rows, ["sf_id", "member_id", "count_min", "count_max", "count_rule", "basis_ref", "status"])
+    crosswalk_pf_ids = {f["pf_id"] for f in read_csv(os.path.join(REPO, "data/world-catalogs/novgorod/game-base-v1/places-binding/places/place_families.csv"))}
+    sf_pf_rows = [dict(sf_id=s["sf_id"], pf_id="pf_" + pf, source_refs=s["source_refs"], rule_ref="SF-PF-1", no_source="", status=STATUS)
+                  for s in sf_rows for pf in s["pf_ids"].split("|") if pf]
+    for pf in sorted(crosswalk_pf_ids - {r["pf_id"] for r in sf_pf_rows}):
+        sf_pf_rows.append(dict(sf_id="", pf_id=pf, source_refs="", rule_ref="", no_source="no settlement_form source for this PF", status=STATUS))
+    out("buildings/sf_pf_crosswalk.csv", sorted(sf_pf_rows, key=lambda r: (r["pf_id"], r["sf_id"])),
+        ["sf_id", "pf_id", "source_refs", "rule_ref", "no_source", "status"], "\n")
 
     # ---------------- interiors ----------------
     sc_rows, item_rows = [], []
@@ -331,7 +338,7 @@ def main():
     names_v6 = {r["name"] for r in read_csv(os.path.join(V6_TSV, "novgorod_g2_g4_70_cells_v6_naming_register.tsv"), "\t")}
     def v6match(n):
         hits = [x for x in names_v6 if n.lower() in x.lower() or x.lower() in n.lower()]
-        return hits[0] if hits else ""
+        return min(hits, key=lambda x: (x.casefold() != n.casefold(), len(x), x)) if hits else ""
     catmap = {"храм": "church", "укрепление/центр": "fortification", "резиденция/хозяйственный комплекс": "court", "мост/рынок/судебная сцена": "bridge",
               "политико-торговый комплекс": "court", "храм/торговый суд": "church", "рынок": "market", "иностранный двор": "foreign_court", "резиденция": "court",
               "храм/кладбище": "church", "укрепление": "fortification", "инфраструктура": "infrastructure", "жильё": "building_type_ref", "жильё/власть": "building_type_ref",
@@ -405,11 +412,11 @@ def main():
         ["sat_id", "pf_id", "layer", "season_period", "day_part", "channel", "clear_text", "partial_text", "loudness", "requires_presence_ref", "source_refs", "confidence", "status"])
     out("ambience/presence_tokens.csv", [dict(token=t[0], meaning_ru=t[1], source_refs=t[2]) for t in ambience.PRESENCE_TOKENS], ["token", "meaning_ru", "source_refs"])
     G4 = [
-        ("g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality", "vikhtuy_locality", "peasant_homestead|village_lane"),
+        ("g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality", "vikhtuy_locality", "peasant_homestead|village_lane|rural_yard|outbuildings"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge", "forest_tract", "forest_edge"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach", "landing_terrace", "ferry_landing|riverbank"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace", "landing_terrace", "ferry_landing|riverbank"),
-        ("g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center", "archaeological_settlement", "peasant_homestead|village_lane"),
+        ("g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center", "archaeological_settlement", "peasant_homestead|village_lane|rural_yard|outbuildings"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing", "local_landing", "ferry_landing|riverbank|fishing_camp"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area", "burial_area", "churchyard"),
     ]
@@ -425,7 +432,8 @@ def main():
               dimensions=matcult.get(i, {}).get("dimensions", ""), source_ids=matcult.get(i, {}).get("source_ids", "")) for i in sorted(refd)],
         ["item_id", "exists", "name_ru", "category", "historical_confidence", "generation_policy", "dimensions", "source_ids"])
 
-    json.dump(COUNTS, open(os.path.join(GROUP, "scripts", "build_counts.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    with open(os.path.join(GROUP, "scripts", "build_counts.json"), "w", encoding="utf-8", newline="\n") as f:
+        json.dump(COUNTS, f, ensure_ascii=False, indent=1)
     for k, v in COUNTS.items():
         print("%6d  %s" % (v, k))
 

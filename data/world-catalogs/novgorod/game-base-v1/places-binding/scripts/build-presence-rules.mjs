@@ -10,7 +10,7 @@
 //   optional: region_id, count_limit|max_count, allowed_seasons|season_period|seasons|season, refresh_class, source_refs, confidence
 import fs from 'node:fs';
 import path from 'node:path';
-import { REPO, GROUP, GAME_BASE, readJson, readCsv, readTsv, writeCsv, writeJson, rel, split } from './lib.mjs';
+import { REPO, GROUP, GAME_BASE, readJson, readCsv, readTsv, writeCsv, writeJson, rel, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry } from './build-place-families.mjs';
 
 const RULE = readJson(path.join(GROUP, 'presence/frequency_rule.json'));
@@ -139,24 +139,10 @@ export function build({ write = true } = {}) {
       });
     });
   }
-  // Keep seasonal frequencies separate, including when one source states multiple seasons.
-  const seasonalPools = pools.flatMap((p) => p.allowed_seasons.includes('all') ? [p] : p.allowed_seasons.map((s) => ({ ...p, allowed_seasons: [s] })));
-  const key = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.category_ref, p.allowed_seasons.join(';'), p.entry_visible_if, p.search_only_if, p.entry_exposed_weight, p.search_concealed_weight, p.placement_basis_ref, p.placement_owner_ref, p.wild_arrival_cause_required].join('|');
-  const merged = new Map(), conflicts = [];
-  for (const p of seasonalPools) {
-    const k = key(p), prev = merged.get(k);
-    if (!prev) { merged.set(k, { ...p, source_pool: [p.source_pool], source_row_id: [p.source_row_id], source_refs: [p.source_refs] }); continue; }
-    if (prev.probability_ppm !== p.probability_ppm || prev.count_limit !== p.count_limit) conflicts.push({ key: k, a: prev.source_pool[0], b: p.source_pool });
-    if (p.probability_ppm > prev.probability_ppm) Object.assign(prev, { frequency_class: p.frequency_class, probability_ppm: p.probability_ppm });
-    prev.count_limit = Math.max(prev.count_limit, p.count_limit);
-    if (!prev.class_capped_from && p.class_capped_from) prev.class_capped_from = p.class_capped_from;
-    prev.source_pool.push(p.source_pool); prev.source_row_id.push(p.source_row_id); prev.source_refs.push(p.source_refs);
-  }
-  const rows = [...merged.values()].sort((a, b) => key(a).localeCompare(key(b))).map((p, i) => ({ pr_id: `pr_${String(i + 1).padStart(6, '0')}`, ...p, subject_kind: 'category', subject_ref: p.category_ref, allowed_times: 'all', guards: '', source_row_id: [...new Set(p.source_row_id)].join(';'), source_refs: [...new Set(p.source_refs)].join(' | '), status: 'candidate' }));
+  const candidates = pools.map((p) => ({ ...p, subject_kind: 'category', subject_ref: p.category_ref, allowed_times: 'all', guards: '', status: 'candidate' }));
   const people = readCsv(path.join(GROUP, 'presence/people_presence_authoring.csv'));
   const occupations = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_occupations_v1.tsv')).map((r) => r.occupation_id));
   const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
-  const peopleKeys = new Set();
   for (const [i, p] of people.entries()) {
     const where = `presence/people_presence_authoring.csv#row${i + 2}`;
     if (p.scope_kind !== 'place_family' || !families.has(p.scope_ref)) throw new Error(`${where}: unresolved place family ${p.scope_ref}`);
@@ -169,21 +155,55 @@ export function build({ write = true } = {}) {
     const times = split(p.allowed_times);
     if (!seasonList.length || seasonList.some((s) => !RULE.season_rule.dictionary.includes(s)) || !times.length || times.some((t) => !['morning', 'day', 'evening', 'night'].includes(t))) throw new Error(`${where}: invalid season or time`);
     for (const season of seasonList) for (const time of times) {
-      const k = [p.scope_kind, p.scope_ref, p.subject_kind, p.subject_ref, season, time].join('|');
-      if (peopleKeys.has(k)) throw new Error(`${where}: duplicate ${k}`);
-      peopleKeys.add(k);
-      rows.push({ pr_id: `pr_${String(rows.length + 1).padStart(6, '0')}`, scope_kind: p.scope_kind, scope_ref: p.scope_ref, region_id: 'region_novgorod_land', category_ref: '', subject_kind: p.subject_kind, subject_ref: p.subject_ref,
+      candidates.push({ scope_kind: p.scope_kind, scope_ref: p.scope_ref, region_id: 'region_novgorod_land', category_ref: '', subject_kind: p.subject_kind, subject_ref: p.subject_ref,
         frequency_class: fc.cls, class_capped_from: '', probability_ppm: fc.ppm, probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: +p.count_limit, count_limit_basis: 'people_authoring',
         allowed_seasons: season, allowed_times: time, guards: p.guards, entry_visible_if: '', search_only_if: '', entry_exposed_weight: '', search_concealed_weight: '', placement_basis_ref: '', placement_owner_ref: '', wild_arrival_cause_required: '', refresh_class: p.refresh_class, contract_scope_kind: 'no_needs_cr', source_pool: where, source_row_id: `${i + 2}`, source_refs: p.source_refs,
         confidence: p.confidence, pool_confidence: '', status: p.status });
     }
   }
+  const baseKey = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.subject_kind, p.subject_ref].join('|');
+  const provenance = ['source_pool', 'source_row_id', 'source_refs', 'placement_basis_ref', 'placement_owner_ref', 'pool_confidence', 'class_capped_from'];
+  const behavior = (p, includeTime = true) => JSON.stringify(Object.entries(p).filter(([k]) => !provenance.includes(k) && k !== 'allowed_seasons' && (includeTime || k !== 'allowed_times')).sort(([a], [b]) => a.localeCompare(b)));
+  const union = (values, separator) => [...new Set(values.flatMap((v) => String(v || '').split(separator).map((s) => s.trim()).filter(Boolean)))].sort().join(separator === ';' ? ';' : ' | ');
+  const groups = new Map();
+  for (const p of candidates) for (const season of p.allowed_seasons.includes('all') ? SEASONS : Array.isArray(p.allowed_seasons) ? p.allowed_seasons : split(p.allowed_seasons)) {
+    const k = `${baseKey(p)}|${season}`;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push({ ...p, allowed_seasons: season });
+  }
+  const resolved = [], resolutions = [];
+  for (const [key, group] of [...groups].sort(([a], [b]) => a.localeCompare(b))) {
+    const sorted = [...group].sort((a, b) => a.probability_ppm - b.probability_ppm || JSON.stringify(a).localeCompare(JSON.stringify(b)));
+    const winner = sorted[0];
+    const same = sorted.filter((p) => behavior(p, false) === behavior(winner, false));
+    const compatible = winner.subject_kind === 'category' ? same.filter((p) => p.allowed_times === winner.allowed_times) : same;
+    const chosen = { ...winner };
+    for (const field of provenance) chosen[field] = union(compatible.map((p) => p[field]), field === 'source_pool' || field === 'source_row_id' ? ';' : '|');
+    if (chosen.subject_kind !== 'category') chosen.allowed_times = ['morning', 'day', 'evening', 'night'].filter((t) => compatible.some((p) => split(p.allowed_times).includes(t))).join(';');
+    resolved.push(chosen);
+    if (group.length > 1) {
+      const reason = compatible.length === group.length ? chosen.subject_kind !== 'category' && new Set(group.map((p) => p.allowed_times)).size > 1 ? 'time_union' : 'equivalent_merged'
+        : sorted.some((p) => p.probability_ppm !== winner.probability_ppm) ? 'conservative_lower_ppm_equal_evidence' : 'stable_tie_break';
+      const source = (p) => ({ source_pool: p.source_pool, source_row_id: p.source_row_id });
+      const conflict = compatible.length !== group.length;
+      resolutions.push({ key, reason,
+        chosen: { ...source(chosen), ...(conflict ? { probability_ppm: chosen.probability_ppm, count_limit: chosen.count_limit, allowed_times: chosen.allowed_times, guards: chosen.guards, entry_visible_if: chosen.entry_visible_if, search_only_if: chosen.search_only_if, entry_exposed_weight: chosen.entry_exposed_weight, search_concealed_weight: chosen.search_concealed_weight, wild_arrival_cause_required: chosen.wild_arrival_cause_required } : {}) },
+        dropped: group.filter((p) => !compatible.includes(p)).map(source),
+      });
+    }
+  }
+  // A full-year result has one row only when its behavior and provenance are identical in all seasons.
+  const byBase = new Map();
+  for (const p of resolved) { const k = baseKey(p); if (!byBase.has(k)) byBase.set(k, []); byBase.get(k).push(p); }
+  const compact = [...byBase.values()].flatMap((seasonRows) => seasonRows.length === SEASONS.length && seasonRows.every((p) => behavior(p) === behavior(seasonRows[0]) && provenance.every((field) => p[field] === seasonRows[0][field]))
+    ? [{ ...seasonRows[0], allowed_seasons: 'all' }] : seasonRows);
+  const rows = compact.sort((a, b) => `${baseKey(a)}|${a.allowed_seasons}`.localeCompare(`${baseKey(b)}|${b.allowed_seasons}`)).map((p, i) => ({ pr_id: `pr_${String(i + 1).padStart(6, '0')}`, ...p }));
   const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
   const n = write ? writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows) : rows.length;
   const cappedRows = rows.filter((r) => r.class_capped_from);
   const report = {
-    rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n, category_rules: n - peopleKeys.size, people_rules: peopleKeys.size,
-    seasonal_pool_rows: seasonalPools.length, duplicates_merged: seasonalPools.length - (n - peopleKeys.size), conflicting_duplicates: conflicts.length, conflicts: conflicts.slice(0, 50),
+    rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n, category_rules: rows.filter((r) => r.subject_kind === 'category').length, people_rules: rows.filter((r) => r.subject_kind !== 'category').length,
+    seasonal_candidate_rows: [...groups.values()].reduce((n, g) => n + g.length, 0), resolutions,
     rejected_rows: rejects.length, rejected_by_file: rejects.reduce((a, r) => { const f = r.where.split('#')[0]; a[f] = (a[f] ?? 0) + 1; return a; }, {}),
     reject_reasons: rejects.flatMap((r) => r.errors.map((e) => e.replace(/'[^']*'/g, "'…'"))).reduce((a, e) => ((a[e] = (a[e] ?? 0) + 1), a), {}),
     rejected_sample: rejects.slice(0, 50),

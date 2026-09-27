@@ -12,6 +12,30 @@ import { checkPeopleComposition } from './check-people-composition.mjs';
 const checks = [];
 const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 15), external, ...extra });
 const P = (...p) => path.join(GROUP, ...p);
+const TIME_ORDER = ['morning', 'day', 'evening', 'night'];
+function seasonOverlaps(rows) {
+  const seen = new Map(), failures = [];
+  for (const r of rows) {
+    const key = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref].join('|');
+    const tokens = String(r.allowed_seasons ?? '').split(';').map((s) => s.trim());
+    if (tokens.some((s) => !s || (s !== 'all' && !SEASONS.includes(s))) || new Set(tokens).size !== tokens.length || (tokens.includes('all') && tokens.length !== 1)) {
+      failures.push(`${r.pr_id}: malformed or overlapping seasons ${r.allowed_seasons}`);
+      continue;
+    }
+    for (const season of tokens[0] === 'all' ? SEASONS : tokens) {
+      const slot = `${key}|${season}`;
+      if (seen.has(slot)) failures.push(`${r.pr_id}: overlaps ${seen.get(slot)} at ${slot}`);
+      else seen.set(slot, r.pr_id);
+    }
+  }
+  return failures;
+}
+if (process.argv.includes('--self-test')) {
+  const probe = { pr_id: 'probe_all', scope_kind: 'place_family', scope_ref: 'probe', region_id: '', subject_kind: 'category', subject_ref: 'probe', allowed_seasons: 'all' };
+  if (seasonOverlaps([probe, { ...probe, pr_id: 'probe_winter', allowed_seasons: 'winter' }]).length !== 1) throw new Error('season overlap negative probe failed');
+  for (const seasons of ['all;winter', 'winter;winter', 'monsoon']) if (!seasonOverlaps([{ ...probe, allowed_seasons: seasons }]).length) throw new Error(`season field negative probe failed: ${seasons}`);
+  console.log('PASS presence_rules / season_overlap_negative_probes');
+}
 
 const wk = readJson(WK_PLACE_FIRST);
 const fam = readCsv(P('places/place_families.csv'));
@@ -116,7 +140,6 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   const peopleSources = readCsv(P('presence/people_presence_authoring.csv'));
   const itemConditions = ['entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required'];
   const f = [];
-  const seen = new Set();
   for (const r of pr) {
     const c = rule.classes[r.frequency_class];
     if (!c) f.push(`${r.pr_id}: class ${r.frequency_class}`);
@@ -130,11 +153,14 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     if (!['pool_row', 'pool_count_limit_rule', 'default_minimum_1', 'people_authoring'].includes(r.count_limit_basis)) f.push(`${r.pr_id}: count_limit_basis`);
     const s = split(r.allowed_seasons);
     if (!s.length || s.some((x) => x !== 'all' && !SEASONS.includes(x))) f.push(`${r.pr_id}: seasons ${r.allowed_seasons}`);
-    if (!['all', 'morning', 'day', 'evening', 'night'].includes(r.allowed_times)) f.push(`${r.pr_id}: time ${r.allowed_times}`);
+    const times = split(r.allowed_times);
+    if (r.subject_kind === 'category' ? r.allowed_times !== 'all' : !times.length || times.some((t) => !TIME_ORDER.includes(t)) || r.allowed_times !== TIME_ORDER.filter((t) => times.includes(t)).join(';')) f.push(`${r.pr_id}: time ${r.allowed_times}`);
     if (r.subject_kind !== 'category' && (!r.guards || r.status !== 'candidate' || !r.source_refs)) f.push(`${r.pr_id}: people provenance/guards/status`);
     if (r.subject_kind !== 'category') {
-      const source = peopleSources[Number(r.source_pool.match(/people_presence_authoring\.csv#row(\d+)$/)?.[1]) - 2];
-      if (!source || r.subject_kind !== source.subject_kind || r.subject_ref !== source.subject_ref || r.guards !== source.guards || !split(source.allowed_seasons).includes(r.allowed_seasons) || !split(source.allowed_times).includes(r.allowed_times)) f.push(`${r.pr_id}: people subject/season/time/guards differ from authoring`);
+      const sourceRows = split(r.source_pool).map((ref) => peopleSources[Number(ref.match(/^presence\/people_presence_authoring\.csv#row(\d+)$/)?.[1]) - 2]);
+      if (!sourceRows.length || sourceRows.some((source) => !source || r.subject_kind !== source.subject_kind || r.subject_ref !== source.subject_ref || r.scope_kind !== source.scope_kind || r.scope_ref !== source.scope_ref || r.guards !== source.guards || (r.allowed_seasons === 'all' ? !SEASONS.every((season) => split(source.allowed_seasons).includes(season)) : !split(source.allowed_seasons).includes(r.allowed_seasons)) || +r.count_limit !== +source.count_limit || +r.probability_ppm !== +rule.classes[source.frequency_class]?.probability_ppm || r.refresh_class !== source.refresh_class || !r.source_refs.includes(source.source_refs))) f.push(`${r.pr_id}: people source subject/season/guards/probability differ from authoring`);
+      const supported = new Set(sourceRows.flatMap((source) => source ? split(source.allowed_times) : []));
+      if (times.some((time) => !supported.has(time)) || [...supported].some((time) => !times.includes(time))) f.push(`${r.pr_id}: people time union lacks source or output`);
     }
     for (const col of itemConditions) if (!Object.hasOwn(r, col)) f.push(`${r.pr_id}: missing ${col} column`);
     const sources = split(r.source_pool);
@@ -144,23 +170,21 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
       for (const source of itemRows) {
         const row = itemSources[Number(source.match(/#row(\d+)$/)?.[1]) - 2];
         if (!row) { f.push(`${r.pr_id}: unresolved item source ${source}`); continue; }
-        for (const col of itemConditions) if (r[col] !== row[col]) f.push(`${r.pr_id}: ${col} differs from ${source}`);
+        for (const col of itemConditions) if (['placement_basis_ref', 'placement_owner_ref'].includes(col) ? !String(r[col]).split('|').map((v) => v.trim()).includes(row[col]) : r[col] !== row[col]) f.push(`${r.pr_id}: ${col} differs from ${source}`);
         if (!row.entry_visible_if || !row.search_only_if) f.push(`${r.pr_id}: item discovery conditions empty`);
         if (row.pf_class === 'wild' && r.wild_arrival_cause_required !== 'prior_visitor_loss_or_discard') f.push(`${r.pr_id}: wild item arrival cause missing`);
       }
     } else if (itemConditions.some((col) => r[col])) f.push(`${r.pr_id}: non-item discovery conditions`);
     if (!rule.refresh_rule.values.includes(r.refresh_class)) f.push(`${r.pr_id}: refresh ${r.refresh_class}`);
-    const k = [r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref, r.allowed_seasons, r.allowed_times, ...itemConditions.map((col) => r[col])].join('|');
-    if (seen.has(k)) f.push(`${r.pr_id}: duplicate ${k}`); seen.add(k);
   }
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
+  check('presence_rules', 'one_rule_per_base_key_and_season', seasonOverlaps(pr));
   const people = pr.filter((r) => r.subject_kind !== 'category');
   const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));
   check('presence_rules', 'people_cover_16_bound_pf', [
     ...[...expectedPf].filter((id) => !people.some((r) => r.scope_ref === id)).map((id) => `missing ${id}`),
     ...(expectedPf.size === 16 ? [] : [`expected 16 PF, got ${expectedPf.size}`]),
     ...(nb.filter((r) => r.node_level === 'G4').length === 32 && nb.filter((r) => r.node_level === 'G5').length === 195 ? [] : ['expected 32 G4 / 195 G5']),
-    ...(people.length === 69 ? [] : [`people rules ${people.length} != 69`]),
   ], { people_rules: people.length, place_families: expectedPf.size, g4: nb.filter((r) => r.node_level === 'G4').length, g5: nb.filter((r) => r.node_level === 'G5').length });
   const crosswalks = [
     ['livestock', '../fauna-fish-invertebrates-livestock/fauna/rpgr_pf_crosswalk.csv', ['rule_ref', 'pf_id'], (r) => Boolean(r.no_source)],

@@ -1,8 +1,16 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 21,
-  "own_checks_total": 21,
+  "own_checks_passed": 23,
+  "own_checks_total": 23,
   "checks": [
+    {
+      "domain": "people_composition",
+      "name": "schema_refs_pf_coverage_and_schedules",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
     {
       "domain": "place_families",
       "name": "wk_44_families_exactly_once",
@@ -131,8 +139,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 10280,
-      "rebuilt_rows": 10280
+      "rows": 5724,
+      "rebuilt_rows": 5724
     },
     {
       "domain": "presence_rules",
@@ -141,7 +149,15 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 10280
+      "rows": 5724
+    },
+    {
+      "domain": "presence_rules",
+      "name": "one_rule_per_base_key_and_season",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
     },
     {
       "domain": "presence_rules",
@@ -150,7 +166,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "people_rules": 69,
+      "people_rules": 22,
       "place_families": 16,
       "g4": 32,
       "g5": 195

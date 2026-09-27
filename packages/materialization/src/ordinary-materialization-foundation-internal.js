@@ -4,6 +4,21 @@ import { canonicalDigest, MaterializationError } from './core.js';
 
 const { admission_class: ADMISSION, availability_class: AVAILABILITY, density_band: DENSITY, functional_bucket: BUCKET, scope_kind: SCOPE } = ORDINARY_MATERIALIZATION_V1_ENUMS;
 const RESOLUTIONS = new Set(['materialize', 'absent', 'no_change', 'authority_required']);
+const SUBJECT_KINDS = new Set(['category', 'social_role', 'occupation']);
+const DISCOVERY_MODES = new Set(['exposed', 'concealed']);
+const TRANSITION_KINDS = ['seed', 'resolve_presence', 'resolve_presence_rule', 'close_coverage'];
+
+export function isO1PresenceRecord(record) {
+  return record != null && Object.hasOwn(record, 'candidate_key');
+}
+
+export function isPresenceRuleRecord(record) {
+  return record != null && Object.hasOwn(record, 'subject_kind');
+}
+
+export function presenceRuleReplayKey(record) {
+  return tupleKey(record.scope_instance_ref, record.subject_kind, record.subject_ref, record.period_number ?? null);
+}
 
 
 export function assertAvailabilityAdmission({ availability_class, admission_classes, permission_refs, request, policy, code }) { enumOf(availability_class, AVAILABILITY, code, 'availability_class'); enums(admission_classes, ADMISSION, code, 'admission_classes', { nonempty: true }); refs(permission_refs, code, 'permission_refs', { allowEmpty: true }); if (admission_classes.includes('container_capable')) throw error(code, 'Template-less container admission remains disabled.'); const context = admission_classes.some((value) => value !== 'common_mundane'); if ((!context && availability_class !== 'common') || (context && availability_class !== 'context_bound')) throw error(code, 'Availability class is inconsistent with closed admission classes.', { availability_class, admission_classes: copy(admission_classes) }); if (context) { if (permission_refs.length === 0) throw error(code, 'Context-bound admission requires permission refs.'); const supplied = new Set(request?.policy_refs?.context_bound_permission_refs ?? []); if (permission_refs.length !== supplied.size || permission_refs.some((ref) => !supplied.has(ref))) throw error(code, 'Context-bound admission must use the exact request permission set.', { permission_refs: copy(permission_refs) }); if (policy && permission_refs.some((ref) => !policy.permission_refs?.includes(ref))) throw error(code, 'Supporting basis policy must cover required permissions.', { permission_refs: copy(permission_refs) }); } }
@@ -18,6 +33,7 @@ export function normalizeAggregateTransition(value) {
   const keysByKind = {
     seed: [...common, 'density_band', 'identity_budget', 'background_groups'],
     resolve_presence: [...common, 'resolution_ref', 'candidate_key', 'coverage_key', 'category_key', 'context_version', 'resolution', 'identity_key'],
+    resolve_presence_rule: [...common, 'subject_kind', 'subject_ref', 'subcategory_ref', 'count', 'rule_ref', 'discovery_mode', 'scope_instance_ref', 'period_number'],
     close_coverage: [...common, 'coverage_key', 'category_key', 'context_version', 'resolution']
   };
   if (!Object.hasOwn(keysByKind, value.kind)) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'Transition kind is invalid.');
@@ -26,7 +42,35 @@ export function normalizeAggregateTransition(value) {
   id(value.request_identity, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'request_identity'); nonnegative(value.expected_state_version, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'expected_state_version');
   if (value.kind === 'seed') { enumOf(value.density_band, DENSITY, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'density_band'); nonnegative(value.identity_budget, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'identity_budget'); if (!Array.isArray(value.background_groups)) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'background_groups must be an array.'); return frozen({ kind: 'seed', request_identity: value.request_identity, expected_state_version: value.expected_state_version, density_band: value.density_band, identity_budget: value.identity_budget, background_groups: copy(value.background_groups) }); }
   if (value.kind === 'resolve_presence') { id(value.resolution_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'resolution_ref'); id(value.candidate_key, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'candidate_key'); id(value.coverage_key, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'coverage_key'); id(value.category_key, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'category_key'); contextVersion(value.context_version); if (!RESOLUTIONS.has(value.resolution)) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'Resolution is invalid.'); if (value.resolution === 'materialize') id(value.identity_key, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'identity_key'); else if (Object.hasOwn(value, 'identity_key')) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'Only materialize may include identity_key.'); return frozen({ kind: 'resolve_presence', request_identity: value.request_identity, expected_state_version: value.expected_state_version, resolution_ref: value.resolution_ref, candidate_key: value.candidate_key, coverage_key: value.coverage_key, category_key: value.category_key, context_version: value.context_version, resolution: value.resolution, ...(value.resolution === 'materialize' ? { identity_key: value.identity_key } : {}) }); }
+  if (value.kind === 'resolve_presence_rule') return normalizePresenceRuleTransition(value);
   id(value.coverage_key, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'coverage_key'); id(value.category_key, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'category_key'); contextVersion(value.context_version); if (!RESOLUTIONS.has(value.resolution) || value.resolution === 'materialize') throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'Coverage closure resolution is invalid.'); return frozen({ kind: 'close_coverage', request_identity: value.request_identity, expected_state_version: value.expected_state_version, coverage_key: value.coverage_key, category_key: value.category_key, context_version: value.context_version, resolution: value.resolution });
+}
+
+function normalizePresenceRuleTransition(value) {
+  if (!SUBJECT_KINDS.has(value.subject_kind)) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'subject_kind is outside closed vocabulary.', { subject_kind: value.subject_kind });
+  id(value.subject_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'subject_ref');
+  if (value.subcategory_ref !== null) id(value.subcategory_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'subcategory_ref');
+  nonnegative(value.count, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'count');
+  id(value.rule_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'rule_ref');
+  if (!value.rule_ref.includes('@')) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'rule_ref must be rule_id@rule_version.');
+  if (!DISCOVERY_MODES.has(value.discovery_mode)) throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'discovery_mode is outside closed vocabulary.', { discovery_mode: value.discovery_mode });
+  id(value.scope_instance_ref, 'ORDINARY_AGGREGATE_TRANSITION_INVALID', 'scope_instance_ref');
+  if (value.period_number !== null && (!Number.isInteger(value.period_number) || value.period_number < 1)) {
+    throw error('ORDINARY_AGGREGATE_TRANSITION_INVALID', 'period_number must be null or a positive integer.');
+  }
+  return frozen({
+    kind: 'resolve_presence_rule',
+    request_identity: value.request_identity,
+    expected_state_version: value.expected_state_version,
+    subject_kind: value.subject_kind,
+    subject_ref: value.subject_ref,
+    subcategory_ref: value.subcategory_ref,
+    count: value.count,
+    rule_ref: value.rule_ref,
+    discovery_mode: value.discovery_mode,
+    scope_instance_ref: value.scope_instance_ref,
+    period_number: value.period_number
+  });
 }
 export function preparedGroupValid(group, expectedScope) {
   object(group, 'ORDINARY_AGGREGATE_GROUP_INVALID', 'prepared group');
@@ -47,18 +91,63 @@ export function aggregateValid(value) {
   if (value.schema !== 'ordinary_materialization_aggregate_v1') throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate schema is invalid.'); exactScope(value.scope_ref); positive(value.resolution_record_cap, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.resolution_record_cap');
   for (const key of ['background_groups', 'presence_resolutions', 'closed_observation_scopes']) if (!Array.isArray(value[key])) throw error('ORDINARY_AGGREGATE_INVALID', `${key} must be an array.`);
   if (!value.seeded) { if (value.state_version !== 0 || value.last_committed_request_identity !== null || value.last_committed_transition_kind !== null || value.density_band !== null || value.identity_budget !== 0 || value.remaining_identity_budget !== 0 || value.background_groups.length !== 0 || value.presence_resolutions.length !== 0 || value.closed_observation_scopes.length !== 0) throw error('ORDINARY_AGGREGATE_INVALID', 'Unseeded aggregate must be canonical initial state.'); return; }
-  positive(value.state_version, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.state_version'); id(value.last_committed_request_identity, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.last_committed_request_identity'); if (!['seed', 'resolve_presence', 'close_coverage'].includes(value.last_committed_transition_kind)) throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate last transition kind is invalid.'); enumOf(value.density_band, DENSITY, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.density_band'); nonnegative(value.identity_budget, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.identity_budget'); nonnegative(value.remaining_identity_budget, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.remaining_identity_budget'); if (value.remaining_identity_budget > value.identity_budget) throw error('ORDINARY_AGGREGATE_INVALID', 'Remaining budget exceeds identity budget.');
+  positive(value.state_version, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.state_version'); id(value.last_committed_request_identity, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.last_committed_request_identity'); if (!TRANSITION_KINDS.includes(value.last_committed_transition_kind)) throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate last transition kind is invalid.'); enumOf(value.density_band, DENSITY, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.density_band'); nonnegative(value.identity_budget, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.identity_budget'); nonnegative(value.remaining_identity_budget, 'ORDINARY_AGGREGATE_INVALID', 'aggregate.remaining_identity_budget'); if (value.remaining_identity_budget > value.identity_budget) throw error('ORDINARY_AGGREGATE_INVALID', 'Remaining budget exceeds identity budget.');
   for (const group of value.background_groups) preparedGroupValid(group, value.scope_ref); if (new Set(value.background_groups.map((group) => group.group_ref)).size !== value.background_groups.length) throw error('ORDINARY_AGGREGATE_INVALID', 'Background groups must be unique.');
-  const recordCount = value.presence_resolutions.length + value.closed_observation_scopes.length; if (value.state_version !== recordCount + 1) throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate state version does not match committed records.'); if (recordCount === 0 && value.last_committed_transition_kind !== 'seed') throw error('ORDINARY_AGGREGATE_INVALID', 'Seed must be the only transition in an aggregate without resolution records.'); if (value.last_committed_transition_kind === 'resolve_presence' && value.presence_resolutions.at(-1)?.request_identity !== value.last_committed_request_identity) throw error('ORDINARY_AGGREGATE_INVALID', 'Last request identity does not match the last presence resolution.'); if (value.last_committed_transition_kind === 'close_coverage' && value.closed_observation_scopes.at(-1)?.request_identity !== value.last_committed_request_identity) throw error('ORDINARY_AGGREGATE_INVALID', 'Last request identity does not match the last closed observation scope.');
-  const materialized = new Set(); const resolutionRefs = new Set(); const candidateCoverage = new Set();
-  for (const record of value.presence_resolutions) { validatePresenceRecord(record); if (resolutionRefs.has(record.resolution_ref)) throw error('ORDINARY_AGGREGATE_INVALID', 'Resolution ref is duplicated.'); resolutionRefs.add(record.resolution_ref); const tuple = tupleKey(record.candidate_key, record.coverage_key, record.context_version); if (candidateCoverage.has(tuple)) throw error('ORDINARY_AGGREGATE_INVALID', 'Candidate/coverage resolution is duplicated.'); candidateCoverage.add(tuple); if (record.resolution === 'materialize') { if (materialized.has(record.identity_key)) throw error('ORDINARY_AGGREGATE_INVALID', 'Materialized identity is duplicated.'); materialized.add(record.identity_key); } }
-  const closures = new Set(); for (const record of value.closed_observation_scopes) { validateClosureRecord(record); const tuple = tupleKey(record.coverage_key, record.category_key, record.context_version); if (closures.has(tuple)) throw error('ORDINARY_AGGREGATE_INVALID', 'Closed observation scope is duplicated.'); closures.add(tuple); const contradiction = value.presence_resolutions.some((presence) => presence.coverage_key === record.coverage_key && presence.category_key === record.category_key && presence.context_version === record.context_version && presence.resolution !== record.resolution); if (contradiction) throw error('ORDINARY_AGGREGATE_INVALID', 'Closed observation scope contradicts a committed resolution.'); }
+  const recordCount = value.presence_resolutions.length + value.closed_observation_scopes.length; if (value.state_version !== recordCount + 1) throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate state version does not match committed records.'); if (recordCount === 0 && value.last_committed_transition_kind !== 'seed') throw error('ORDINARY_AGGREGATE_INVALID', 'Seed must be the only transition in an aggregate without resolution records.'); if ((value.last_committed_transition_kind === 'resolve_presence' || value.last_committed_transition_kind === 'resolve_presence_rule') && value.presence_resolutions.at(-1)?.request_identity !== value.last_committed_request_identity) throw error('ORDINARY_AGGREGATE_INVALID', 'Last request identity does not match the last presence resolution.'); if (value.last_committed_transition_kind === 'close_coverage' && value.closed_observation_scopes.at(-1)?.request_identity !== value.last_committed_request_identity) throw error('ORDINARY_AGGREGATE_INVALID', 'Last request identity does not match the last closed observation scope.');
+  const materialized = new Set(); const resolutionRefs = new Set(); const candidateCoverage = new Set(); const presenceRuleKeys = new Set();
+  for (const record of value.presence_resolutions) {
+    validatePresenceRecord(record);
+    if (isPresenceRuleRecord(record)) {
+      if (isO1PresenceRecord(record)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence resolution cannot mix O1 and presence-rule fields.');
+      const key = presenceRuleReplayKey(record);
+      if (presenceRuleKeys.has(key)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule resolution key is duplicated.');
+      presenceRuleKeys.add(key);
+      continue;
+    }
+    if (!isO1PresenceRecord(record)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence resolution shape is unknown.');
+    if (resolutionRefs.has(record.resolution_ref)) throw error('ORDINARY_AGGREGATE_INVALID', 'Resolution ref is duplicated.');
+    resolutionRefs.add(record.resolution_ref);
+    const tuple = tupleKey(record.candidate_key, record.coverage_key, record.context_version);
+    if (candidateCoverage.has(tuple)) throw error('ORDINARY_AGGREGATE_INVALID', 'Candidate/coverage resolution is duplicated.');
+    candidateCoverage.add(tuple);
+    if (record.resolution === 'materialize') {
+      if (materialized.has(record.identity_key)) throw error('ORDINARY_AGGREGATE_INVALID', 'Materialized identity is duplicated.');
+      materialized.add(record.identity_key);
+    }
+  }
+  const closures = new Set(); for (const record of value.closed_observation_scopes) { validateClosureRecord(record); const tuple = tupleKey(record.coverage_key, record.category_key, record.context_version); if (closures.has(tuple)) throw error('ORDINARY_AGGREGATE_INVALID', 'Closed observation scope is duplicated.'); closures.add(tuple); const contradiction = value.presence_resolutions.some((presence) => isO1PresenceRecord(presence) && presence.coverage_key === record.coverage_key && presence.category_key === record.category_key && presence.context_version === record.context_version && presence.resolution !== record.resolution); if (contradiction) throw error('ORDINARY_AGGREGATE_INVALID', 'Closed observation scope contradicts a committed resolution.'); }
   const legacySpent = value.identity_budget - value.remaining_identity_budget;
   if (legacySpent < 0 || legacySpent > materialized.size) throw error('ORDINARY_AGGREGATE_INVALID', 'Aggregate identity budget compatibility fields are invalid.');
 }
-function validatePresenceRecord(record) { object(record, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution'); const common = ['resolution_ref', 'request_identity', 'candidate_key', 'coverage_key', 'category_key', 'context_version', 'resolution']; const keys = record.resolution === 'materialize' ? [...common, 'identity_key'] : common; if (Object.keys(record).length !== keys.length || keys.some((key) => !Object.hasOwn(record, key))) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence resolution has an unknown or missing field.'); for (const key of ['resolution_ref', 'request_identity', 'candidate_key', 'coverage_key', 'category_key']) id(record[key], 'ORDINARY_AGGREGATE_INVALID', `presence resolution.${key}`); contextVersion(record.context_version); if (!RESOLUTIONS.has(record.resolution)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence resolution is invalid.'); if (record.resolution === 'materialize') id(record.identity_key, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.identity_key'); }
+function validatePresenceRecord(record) {
+  object(record, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution');
+  if (isPresenceRuleRecord(record)) {
+    const keys = ['request_identity', 'subject_kind', 'subject_ref', 'subcategory_ref', 'count', 'rule_ref', 'discovery_mode', 'scope_instance_ref', 'period_number'];
+    if (Object.keys(record).length !== keys.length || keys.some((key) => !Object.hasOwn(record, key))) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule resolution has an unknown or missing field.');
+    id(record.request_identity, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.request_identity');
+    if (!SUBJECT_KINDS.has(record.subject_kind)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule subject_kind is invalid.');
+    id(record.subject_ref, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.subject_ref');
+    if (record.subcategory_ref !== null) id(record.subcategory_ref, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.subcategory_ref');
+    nonnegative(record.count, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.count');
+    id(record.rule_ref, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.rule_ref');
+    if (!record.rule_ref.includes('@')) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule rule_ref must be rule_id@rule_version.');
+    if (!DISCOVERY_MODES.has(record.discovery_mode)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule discovery_mode is invalid.');
+    id(record.scope_instance_ref, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.scope_instance_ref');
+    if (record.period_number !== null && (!Number.isInteger(record.period_number) || record.period_number < 1)) {
+      throw error('ORDINARY_AGGREGATE_INVALID', 'Presence-rule period_number must be null or a positive integer.');
+    }
+    return;
+  }
+  const common = ['resolution_ref', 'request_identity', 'candidate_key', 'coverage_key', 'category_key', 'context_version', 'resolution'];
+  const keys = record.resolution === 'materialize' ? [...common, 'identity_key'] : common;
+  if (Object.keys(record).length !== keys.length || keys.some((key) => !Object.hasOwn(record, key))) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence resolution has an unknown or missing field.');
+  for (const key of ['resolution_ref', 'request_identity', 'candidate_key', 'coverage_key', 'category_key']) id(record[key], 'ORDINARY_AGGREGATE_INVALID', `presence resolution.${key}`);
+  contextVersion(record.context_version);
+  if (!RESOLUTIONS.has(record.resolution)) throw error('ORDINARY_AGGREGATE_INVALID', 'Presence resolution is invalid.');
+  if (record.resolution === 'materialize') id(record.identity_key, 'ORDINARY_AGGREGATE_INVALID', 'presence resolution.identity_key');
+}
 function validateClosureRecord(record) { object(record, 'ORDINARY_AGGREGATE_INVALID', 'closed observation scope'); const keys = ['request_identity', 'coverage_key', 'category_key', 'context_version', 'resolution']; if (Object.keys(record).length !== keys.length || keys.some((key) => !Object.hasOwn(record, key))) throw error('ORDINARY_AGGREGATE_INVALID', 'Closed observation scope has an unknown or missing field.'); for (const key of ['request_identity', 'coverage_key', 'category_key']) id(record[key], 'ORDINARY_AGGREGATE_INVALID', `closed observation scope.${key}`); contextVersion(record.context_version); if (!RESOLUTIONS.has(record.resolution) || record.resolution === 'materialize') throw error('ORDINARY_AGGREGATE_INVALID', 'Closed observation scope resolution is invalid.'); }
-function tupleKey(first, second, third) { return JSON.stringify([first, second, third]); }
+function tupleKey(...parts) { return JSON.stringify(parts); }
 function sameOrdered(left, right) { return left.length === right.length && left.every((value, index) => value === right[index]); }
 export function exactScope(value) { object(value, 'ORDINARY_SCOPE_INVALID', 'scope'); if (Object.keys(value).length !== 2 || !Object.hasOwn(value, 'entity_kind') || !Object.hasOwn(value, 'entity_id')) throw error('ORDINARY_SCOPE_INVALID', 'scope_ref must have exactly entity_kind and entity_id.'); enumOf(value.entity_kind, SCOPE, 'ORDINARY_SCOPE_INVALID', 'scope.entity_kind'); id(value.entity_id, 'ORDINARY_SCOPE_INVALID', 'scope.entity_id'); }
 export function groupKey(group) { return { descriptor: group.descriptor, functional_bucket: group.functional_bucket, availability_class: group.availability_class, allowed_admission_classes: [...(group.allowed_admission_classes ?? [])].sort(), causal_basis: { basis_kind: group.causal_basis?.basis_kind, basis_refs: [...(group.causal_basis?.basis_refs ?? [])].sort() }, property_basis_ref: group.property_basis_ref, permission_refs: [...(group.permission_refs ?? [])].sort(), disclosure_policy_ref: group.disclosure_policy_ref }; }

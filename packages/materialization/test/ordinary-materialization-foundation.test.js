@@ -161,3 +161,102 @@ test('seed accepts only validated prepared groups and remains reload-valid for t
   const next = applyOrdinaryAggregateTransition({ aggregate: reloaded, transition: transition('close_coverage', 'prepared-group-next', { expected_state_version: 1, coverage_key: 'prepared-coverage', category_key: 'prepared-category', context_version: 'prepared-context', resolution: 'absent' }) });
   assert.equal(next.state_version, 2);
 });
+
+const presenceRule = (request_identity, extra = {}) => transition('resolve_presence_rule', request_identity, {
+  expected_state_version: extra.expected_state_version ?? 1,
+  subject_kind: extra.subject_kind ?? 'occupation',
+  subject_ref: extra.subject_ref ?? 'nov_occ_ferryman',
+  subcategory_ref: extra.subcategory_ref ?? null,
+  count: extra.count ?? 1,
+  rule_ref: extra.rule_ref ?? 'pr_ferryman@1',
+  discovery_mode: extra.discovery_mode ?? 'exposed',
+  scope_instance_ref: extra.scope_instance_ref ?? 'g5:wharf-a',
+  period_number: Object.hasOwn(extra, 'period_number') ? extra.period_number : null
+});
+
+test('resolve_presence_rule stores §5.5 outcome, replays by §3A.1 key, and coexists with O1', () => {
+  const g5Scope = { entity_kind: 'g5', entity_id: 'wharf-site-a' };
+  const seeded = applyOrdinaryAggregateTransition({
+    aggregate: createOrdinaryAggregate({ scope_ref: g5Scope, resolution_record_cap: 8 }),
+    transition: transition('seed', 'seed-rule', { density_band: 'ordinary', identity_budget: 3 })
+  });
+  const rule = presenceRule('rule-a', { expected_state_version: 1 });
+  const afterRule = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: rule });
+  assert.equal(afterRule.last_committed_transition_kind, 'resolve_presence_rule');
+  assert.deepEqual(afterRule.presence_resolutions[0], {
+    request_identity: 'rule-a',
+    subject_kind: 'occupation',
+    subject_ref: 'nov_occ_ferryman',
+    subcategory_ref: null,
+    count: 1,
+    rule_ref: 'pr_ferryman@1',
+    discovery_mode: 'exposed',
+    scope_instance_ref: 'g5:wharf-a',
+    period_number: null
+  });
+  assert.strictEqual(applyOrdinaryAggregateTransition({ aggregate: afterRule, transition: rule }), afterRule);
+  assert.throws(
+    () => applyOrdinaryAggregateTransition({
+      aggregate: afterRule,
+      transition: presenceRule('rule-reroll', {
+        expected_state_version: 2,
+        rule_ref: 'pr_ferryman@2',
+        count: 0
+      })
+    }),
+    (error) => error.code === 'ORDINARY_RESOLUTION_REPLAY'
+  );
+  const seasonal = applyOrdinaryAggregateTransition({
+    aggregate: afterRule,
+    transition: presenceRule('rule-season', {
+      expected_state_version: 2,
+      period_number: 3,
+      count: 2,
+      rule_ref: 'pr_ferryman@1'
+    })
+  });
+  assert.equal(seasonal.presence_resolutions.length, 2);
+  const o1 = transition('resolve_presence', 'o1-neighbor', {
+    expected_state_version: 3,
+    resolution_ref: 'r-o1',
+    candidate_key: 'c-o1',
+    coverage_key: 'v-o1',
+    category_key: 'k-o1',
+    context_version: 'ctx-o1',
+    resolution: 'materialize',
+    identity_key: 'i-o1'
+  });
+  const mixed = applyOrdinaryAggregateTransition({ aggregate: seasonal, transition: o1 });
+  assert.equal(mixed.presence_resolutions.length, 3);
+  assert.equal(mixed.presence_resolutions.filter((record) => Object.hasOwn(record, 'subject_kind')).length, 2);
+  assert.equal(mixed.presence_resolutions.filter((record) => Object.hasOwn(record, 'candidate_key')).length, 1);
+  assert.strictEqual(applyOrdinaryAggregateTransition({ aggregate: mixed, transition: o1 }), mixed);
+  assert.throws(
+    () => applyOrdinaryAggregateTransition({
+      aggregate: mixed,
+      transition: transition('resolve_presence', 'o1-reroll', {
+        expected_state_version: 4,
+        resolution_ref: 'r-o1-b',
+        candidate_key: 'c-o1',
+        coverage_key: 'v-o1',
+        category_key: 'k-o1',
+        context_version: 'ctx-o1',
+        resolution: 'absent'
+      })
+    }),
+    (error) => error.code === 'ORDINARY_RESOLUTION_REPLAY'
+  );
+  const otherSubject = applyOrdinaryAggregateTransition({
+    aggregate: mixed,
+    transition: presenceRule('rule-other', {
+      expected_state_version: 4,
+      subject_kind: 'social_role',
+      subject_ref: 'nov_role_watch',
+      discovery_mode: 'concealed',
+      count: 0,
+      rule_ref: 'pr_watch@1'
+    })
+  });
+  assert.equal(otherSubject.state_version, 5);
+  assert.equal(otherSubject.presence_resolutions.length, 4);
+});

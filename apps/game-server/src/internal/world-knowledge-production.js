@@ -51,7 +51,8 @@ export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
       || sufficiencyProfile.sufficiency_profile_ref
         !== 'wk-sufficiency:giga-cosine:v1'
       || !Number.isFinite(sufficiencyProfile.min_hint_relevance)
-      || sufficiencyProfile.relevance_source !== 'giga_cosine') {
+      || sufficiencyProfile.relevance_source !== 'giga_cosine'
+      || typeof sufficiencyProfile.sufficient_enabled !== 'boolean') {
     throw new TypeError('World Knowledge sufficiency profile is invalid');
   }
   if (vectorMetadata?.schema !== 'world_knowledge_vector_index_v1'

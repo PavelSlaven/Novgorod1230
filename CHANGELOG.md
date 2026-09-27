@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(wk): #153 REVIEW-049 — Core `admittedCandidateRefs` + grounding scores admitted (not vector top-k); `rerank_applied` telemetry; `sufficient_enabled=false` caps SUFFICIENT; C26 single-field loader test; §63/LW-053/054 (#153, PR #98)
 - fix(wk): #153 REVIEW-048 — sufficiency_profile mutation kills; owner-server D21 remeasure (GPU/CPU p95 + 120-sit audit ON/OFF) keeps rerank OFF; LW-053 (#153, PR #98) LW-053 updated
 - feat(wk): #153 Part C D17/D21 — Core `rerankScores`, gated-off bge pin+provision, SUFFICIENT relevance floor, plan-mode harness in world-catalog-workflow, M16 body-only auth; §49/§63/§74; LW-053/054 (#153, PR #98)
 - fix(wk): #153 REVIEW-044 — createTraceTurnRuntime grounder+telemetry wire (B1/B5); provider-failure degrade §73 (B2); F4 post-commit reload (B3); §15 coverage_profiles text; M2b exchange facets; degradation schema (#153, PR #98)

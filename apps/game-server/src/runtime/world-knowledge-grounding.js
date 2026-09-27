@@ -159,18 +159,30 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       }
       const embeddingInput = effectivePlan.search_hints.length > 0
         ? effectivePlan.search_hints.join('\n') : plannerRequest.semantic_input;
-      // P3-2: build rerank candidates only when D21 gate is open.
+      // D17: score Core-admitted candidates (not vector top-k alone). Otherwise
+      // all-or-nothing rerank never applies when lexical/exact expand admission.
       let rerankScores = null;
+      let rerankScoredCandidateCount = 0;
       if (rerankerProductionEnabled(worldKnowledge.reranker_profile)) {
-        const candidates = [...vectorScores.keys()].map((ref) => {
-          const claim = bundle.claims.find((entry) => entry.claim_ref === ref);
-          const locale = effectivePlan.query_locale;
+        if (typeof worldKnowledge.core.admittedCandidateRefs !== 'function') {
+          throw new TypeError(
+            'production World Knowledge core must expose admittedCandidateRefs');
+        }
+        const admittedRefs = worldKnowledge.core.admittedCandidateRefs(query, {
+          vectorScores
+        });
+        const claimByRef = new Map(bundle.claims.map((entry) =>
+          [entry.claim_ref, entry]));
+        const locale = effectivePlan.query_locale;
+        const candidates = admittedRefs.map((ref) => {
+          const claim = claimByRef.get(ref);
           const text = claim?.localizations?.[locale]?.runtime_text
             ?? claim?.localizations?.ru?.runtime_text
             ?? claim?.localizations?.en?.runtime_text
             ?? ref;
           return { claim_ref: ref, text };
         });
+        rerankScoredCandidateCount = candidates.length;
         rerankScores = await collectRerankScores({
           profile: worldKnowledge.reranker_profile ?? null,
           queryText: embeddingInput,
@@ -187,6 +199,9 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         worldKnowledge.sufficiency_profile?.min_hint_relevance)
         ? worldKnowledge.sufficiency_profile.min_hint_relevance
         : DEFAULT_MIN_HINT_RELEVANCE;
+      // Explicit true only — missing/false keeps SUFFICIENT off (LW-054).
+      const sufficientEnabled =
+        worldKnowledge.sufficiency_profile?.sufficient_enabled === true;
       if (usedDefaultQuery
           && slice.facts.length === 0
           && slice.hard_constraints.length === 0
@@ -199,7 +214,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
           embeddingProfile: worldKnowledge.embedding_profile,
           vectorScores, slice, embeddingMs, vectorMs, coreResolutionMs,
           totalRetrievalMs: Math.max(0, performance.now() - retrievalStarted),
-          cacheOutcome: 'miss' });
+          cacheOutcome: 'miss', rerankScoredCandidateCount });
         telemetry?.onGameplayTrace?.(worldKnowledgeNoNeedTrace({ request,
           purpose, semanticInput, plannerRequest, plannerPlan: planned.plan,
           defaultQuery: true, effectivePlan: effectivePlan,
@@ -224,10 +239,11 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         embeddingProfile: worldKnowledge.embedding_profile,
         vectorScores, slice, embeddingMs, vectorMs, coreResolutionMs,
         totalRetrievalMs: Math.max(0, performance.now() - retrievalStarted),
-        cacheOutcome: 'miss' });
+        cacheOutcome: 'miss', rerankScoredCandidateCount });
       const grounded = Object.freeze({ ...request,
         world_knowledge: modelSlice(slice, {
-          fromDefaultQuery: usedDefaultQuery, minHintRelevance }) });
+          fromDefaultQuery: usedDefaultQuery, minHintRelevance,
+          sufficientEnabled }) });
       cacheGrounded(cache, request, cacheKey, grounded);
       telemetry?.onGameplayTrace?.(worldKnowledgeTrace({ request, purpose,
         semanticInput, plannerRequest, plannerPlan: planned.plan,

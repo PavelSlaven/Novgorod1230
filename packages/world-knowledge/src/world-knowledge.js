@@ -38,17 +38,14 @@ export function createWorldKnowledgeCore(inputBundle) {
   const concepts = new Set(Object.keys(bundle.exact_indexes.concept_by_ref));
   const profiles = bundle.coverage_profiles;
   return Object.freeze({
+    /** Admitted claim refs before ranking/packing — pure; for D17 candidate scoring. */
+    admittedCandidateRefs(query, { vectorScores = null } = {}) {
+      const { normalized, claimScores } = prepareResolve(query, vectorScores);
+      return Object.freeze(computeAdmittedUnsorted(bundle, claims, normalized, claimScores)
+        .admittedUnsorted.map((claim) => claim.claim_ref));
+    },
     resolveWorldKnowledge(query, { vectorScores = null, rerankScores = null } = {}) {
-      const validation = validateWorldKnowledgeQuery(query, bundle);
-      if (!validation.ok) throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID', validation.errors.join('; '), { errors: validation.errors });
-      if (vectorScores != null && (!(vectorScores instanceof Map)
-          || bundle.manifest.embedding_profile_ref == null
-          || [...vectorScores].some(([ref, score]) =>
-            (!claims.has(ref) && !concepts.has(ref))
-            || !Number.isFinite(score)))) {
-        throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID',
-          'vector scores are invalid for this bundle');
-      }
+      const { normalized, claimScores } = prepareResolve(query, vectorScores);
       if (rerankScores != null && (!(rerankScores instanceof Map)
           || [...rerankScores].some(([ref, score]) =>
             (!claims.has(ref) && !concepts.has(ref))
@@ -56,14 +53,30 @@ export function createWorldKnowledgeCore(inputBundle) {
         throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID',
           'rerank scores are invalid for this bundle');
       }
-      const normalized = structuredClone(query);
-      normalized.context.conditions ??= {};
-      return resolve(bundle, claims, profiles, normalized,
-        claimVectorScores(bundle, claims, vectorScores ?? new Map()),
+      return resolve(bundle, claims, profiles, normalized, claimScores,
         claimVectorScores(bundle, claims, rerankScores ?? new Map()),
         rerankScores != null);
     }
   });
+
+  function prepareResolve(query, vectorScores) {
+    const validation = validateWorldKnowledgeQuery(query, bundle);
+    if (!validation.ok) throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID', validation.errors.join('; '), { errors: validation.errors });
+    if (vectorScores != null && (!(vectorScores instanceof Map)
+        || bundle.manifest.embedding_profile_ref == null
+        || [...vectorScores].some(([ref, score]) =>
+          (!claims.has(ref) && !concepts.has(ref))
+          || !Number.isFinite(score)))) {
+      throw new WorldKnowledgeError('WORLD_KNOWLEDGE_QUERY_INVALID',
+        'vector scores are invalid for this bundle');
+    }
+    const normalized = structuredClone(query);
+    normalized.context.conditions ??= {};
+    return {
+      normalized,
+      claimScores: claimVectorScores(bundle, claims, vectorScores ?? new Map())
+    };
+  }
 }
 
 function claimVectorScores(bundle, claims, scores) {
@@ -98,16 +111,10 @@ export function validateWorldKnowledgeQuery(value, bundle) {
   return frozenValidation(errors);
 }
 
-function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
-  useRerank) {
-  const exactRefs = new Set();
-  for (const ref of query.focus_refs) {
-    if (claimMap.has(ref)) exactRefs.add(ref);
-    for (const claimRef of bundle.exact_indexes.concept_to_claim_refs[ref] ?? []) exactRefs.add(claimRef);
-  }
+/** Pure admission before ranking/packing — shared by resolve and admittedCandidateRefs. */
+function computeAdmittedUnsorted(bundle, claimMap, query, vectorScores) {
+  const exactRefs = exactFocusRefs(claimMap, bundle, query);
   const lexicalScores = lexicalCandidates(bundle, query);
-  const normalizedLexicalScores = normalizeScores(lexicalScores);
-  const normalizedVectorScores = normalizeScores(vectorScores);
   // Rerank never expands recall: candidates come from exact/lexical/vector only.
   const candidateRefs = new Set([...exactRefs, ...lexicalScores.keys(),
     ...vectorScores.keys()]);
@@ -156,6 +163,25 @@ function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
     conflict_group_ref).filter(Boolean));
   const admittedUnsorted = allApplicable.filter((claim) => relevantRefs.has(claim.claim_ref)
     || relevantGroups.has(claim.conflict_group_ref));
+  return { admittedUnsorted, allApplicable, hintScores, exactRefs,
+    lexicalScores };
+}
+
+function exactFocusRefs(claimMap, bundle, query) {
+  const exactRefs = new Set();
+  for (const ref of query.focus_refs) {
+    if (claimMap.has(ref)) exactRefs.add(ref);
+    for (const claimRef of bundle.exact_indexes.concept_to_claim_refs[ref] ?? []) exactRefs.add(claimRef);
+  }
+  return exactRefs;
+}
+
+function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
+  useRerank) {
+  const { admittedUnsorted, allApplicable, hintScores, exactRefs, lexicalScores } =
+    computeAdmittedUnsorted(bundle, claimMap, query, vectorScores);
+  const normalizedLexicalScores = normalizeScores(lexicalScores);
+  const normalizedVectorScores = normalizeScores(vectorScores);
   // All-or-nothing: rerank applies only when every admitted claim has a score.
   // Partial maps fall back to hybrid order (no silent mixed-scale ranking).
   let appliedRerank = null;
@@ -216,6 +242,8 @@ function resolve(bundle, claimMap, profiles, query, vectorScores, rerankScores,
     context_text: contextText,
     search_hint_hits,
     search_hint_relevance,
+    // Orchestrator/audit diagnostic: true only when all-or-nothing rerank ran.
+    rerank_applied: appliedRerank != null,
   });
 }
 

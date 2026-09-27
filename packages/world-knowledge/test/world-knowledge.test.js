@@ -256,6 +256,11 @@ test('optional rerankScores reorder admitted claims without expanding recall', (
   // search_hint_relevance uses applied rerank (min-max), not raw vectors / constant 1.
   assert.equal(without.search_hint_relevance[0], 0.9);
   assert.equal(withRerank.search_hint_relevance[0], 1);
+  assert.equal(without.rerank_applied, false);
+  assert.equal(withRerank.rerank_applied, true);
+  assert.deepEqual(
+    core.admittedCandidateRefs(input, { vectorScores }).slice().sort(),
+    [alpha, beta].sort());
 });
 
 test('rerank map keys outside candidates do not expand recall', () => {

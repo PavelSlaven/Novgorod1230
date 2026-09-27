@@ -37,9 +37,19 @@ const importReadbackPath = 'data/world-catalogs/novgorod/runtime-catalog/'
   + 'gate1-owner-data-v1/import-readback-result.json';
 const V2_RESTART_SHA =
   '1235aa3108555fcabf9622436e8651b1eb7ea77abde7f4e31f4b3bc8f6b57074';
+const V3_RESTART_SHA =
+  '67c08266fd5bf8a225f6aad1cf2b0227433b03f026f6d14c7484d37422c28601';
 
 async function loadV3Request() {
   return JSON.parse(await readFile(requestPath, 'utf8'));
+}
+
+async function loadV3Pair() {
+  return {
+    request: JSON.parse(await readFile(requestPath, 'utf8')),
+    attestation: JSON.parse(await readFile(attestationPath, 'utf8')),
+    result: JSON.parse(await readFile(importReadbackPath, 'utf8'))
+  };
 }
 
 test('Gate1 activation amendment reproduces exact checked pending request',
@@ -161,6 +171,62 @@ test('sealed v2 runtime attestation remains exact historical archive',
     const v3Request = await loadV3Request();
     assert.throws(() => validateGate1RuntimeActivationAttestation({ request:
       v3Request, attestation }),
+    /GATE1_RUNTIME_ACTIVATION_ATTESTATION_INVALID/u);
+  });
+
+test('runtime attestation v3 approves only exact new-development activation',
+  async () => {
+    const { request, attestation, result } = await loadV3Pair();
+    assert.equal(validateGate1RuntimeActivationAttestation({ request,
+      attestation }), true);
+    assert.equal(assertGate1ActivationAmendmentV3Attestation(request,
+      attestation), true);
+    assertGate1Authority({
+      request,
+      attestation,
+      result,
+      worldReleaseId: 'spatial-v3-production-v5'
+    });
+    assert.equal(attestation.activation_amendment_request_digest,
+      request.request_digest);
+    assert.equal(attestation.activation_executed, false);
+    assert.equal(attestation.database_mutated, false);
+    assert.equal(attestation.restart_evidence.verification.sha256,
+      V3_RESTART_SHA);
+
+    for (const mutate of [
+      (value) => {
+        value.status = 'approved_production_not_executed';
+      },
+      (value) => { value.activation_executed = true; },
+      (value) => {
+        value.activation_amendment_request_digest = '0'.repeat(64);
+      },
+      (value) => {
+        value.restart_evidence.verification.sha256 = V2_RESTART_SHA;
+      },
+      (value) => {
+        value.approved_permissions.production_activation = true;
+      }
+    ]) {
+      const tampered = structuredClone(attestation);
+      mutate(tampered);
+      assert.throws(() => validateGate1RuntimeActivationAttestation({ request,
+        attestation: tampered }),
+      /GATE1_RUNTIME_ACTIVATION_ATTESTATION_(INVALID|DIGEST_INVALID)/u);
+      assert.throws(() => assertGate1Authority({
+        request,
+        attestation: tampered,
+        result,
+        worldReleaseId: 'spatial-v3-production-v5'
+      }),
+      /GATE1_RUNTIME_ACTIVATION_ATTESTATION_(INVALID|DIGEST_INVALID)/u);
+    }
+
+    const v2Attestation = JSON.parse(await readFile(v2AttestationPath,
+      'utf8'));
+    assert.throws(() => validateGate1RuntimeActivationAttestation({ request,
+      attestation: v2Attestation }),
     /GATE1_RUNTIME_ACTIVATION_ATTESTATION_INVALID/u);
   });
 

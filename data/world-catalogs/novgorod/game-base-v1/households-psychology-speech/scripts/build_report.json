@@ -617,14 +617,14 @@
         ]
       }
     ],
-    "start_pair_node_season_contexts": 859,
-    "start_colocated_node_season_contexts": 859,
-    "start_phase_intersections": 7661,
+    "start_pair_node_season_contexts": 749,
+    "start_colocated_node_season_contexts": 749,
+    "start_phase_intersections": 6849,
     "no_source_rows": 33,
     "start_pair_scene_counts": {
       "nov_occ_boatman|nov_occ_fisher": 15,
-      "nov_occ_boatman|nov_occ_hunter_trapper": 8,
-      "nov_occ_boatman|nov_occ_route_guide": 7,
+      "nov_occ_boatman|nov_occ_hunter_trapper": 9,
+      "nov_occ_boatman|nov_occ_route_guide": 2,
       "nov_occ_cart_driver|nov_occ_fisher": 8,
       "nov_occ_cart_driver|nov_occ_route_guide": 17,
       "nov_occ_cart_driver|nov_role_smerd_householder": 4,
@@ -643,8 +643,8 @@
       "nov_occ_fisher|nov_occ_forest_worker": 5,
       "nov_occ_fisher|nov_occ_herder": 1,
       "nov_occ_fisher|nov_occ_household_servant": 1,
-      "nov_occ_fisher|nov_occ_hunter_trapper": 45,
-      "nov_occ_fisher|nov_occ_route_guide": 44,
+      "nov_occ_fisher|nov_occ_hunter_trapper": 46,
+      "nov_occ_fisher|nov_occ_route_guide": 20,
       "nov_occ_fisher|nov_role_smerd_householder": 1,
       "nov_occ_forest_worker|nov_occ_hunter_trapper": 5,
       "nov_occ_herder|nov_occ_household_servant": 9,
@@ -669,7 +669,7 @@
     "address_forms.csv": 96,
     "no_source_rows": 76,
     "start_directed_pairs": 70,
-    "start_directed_node_season_contexts": 1718
+    "start_directed_node_season_contexts": 1498
   },
   "social_norms_honour_hospitality": {
     "norms.csv": 19,

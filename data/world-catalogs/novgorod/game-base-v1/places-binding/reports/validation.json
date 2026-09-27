@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 28,
-  "own_checks_total": 28,
+  "own_checks_passed": 30,
+  "own_checks_total": 30,
   "checks": [
     {
       "domain": "people_composition",
@@ -140,6 +140,22 @@
       "sample": [],
       "external": false,
       "nodes_checked": 227
+    },
+    {
+      "domain": "node_binding",
+      "name": "g4_contains_all_child_primary_pf",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
+    },
+    {
+      "domain": "node_binding",
+      "name": "secondary_primary_kind_compatibility",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
     },
     {
       "domain": "node_binding",

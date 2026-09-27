@@ -19,13 +19,19 @@ const reasoned = (value) => named(value) && value.trim().length >= 15 && value.t
 const subjectKey = (kind, ref) => `${kind}:${ref}`;
 const evidenceDir = path.join(BASE, '../sources/books-evidence-v1');
 const bookEvidence = new Map();
+const sexSources = new Map([
+  ['data/novgorod-region/novgorod_occupations_v1_enriched.tsv',
+    new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_occupations_v1_enriched.tsv')).map((r) => r.occupation_id))],
+  ['data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv',
+    new Set(readCsv(path.join(REPO, 'data/world-catalogs/novgorod/sources/master-archive-v1/data/normalized_source_tables/occupations/professions.csv')).map((r) => r.profession_id))],
+]);
 for (const file of fs.readdirSync(evidenceDir).filter((name) => name.endsWith('.csv'))) for (const row of readCsv(path.join(evidenceDir, file))) {
   const key = `${row.book_id}|${row.para_no}`;
   if (!bookEvidence.has(key)) bookEvidence.set(key, new Set());
   bookEvidence.get(key).add(row.section_path);
 }
 
-export function checkPeopleComposition(data, startTerritory = null, people = readCsv(PEOPLE), derived = readCsv(DERIVED)) {
+export function checkPeopleComposition(data, startTerritory = null, people = readCsv(PEOPLE), derived = readCsv(DERIVED), profileCatalog = readJson(PROFILES)) {
   const errors = [];
   const binding = readCsv(P('places/node_binding.csv'));
   const bound = new Set(binding.map((r) => r.pf_id).filter(Boolean));
@@ -34,7 +40,15 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
     ...readCsv(path.join(BASE, 'occupations-activities/occupations/occupations_additions.csv')),
   ].map((r) => r.occupation_id));
   const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
-  const profiles = new Map(readJson(PROFILES).profiles.map((p) => [p.profile_id, p]));
+  const profiles = new Map(profileCatalog.profiles.map((p) => [p.profile_id, p]));
+  const sexConstraints = (s) => [
+    ...profileCatalog.subject_applicability.filter((entry) => entry.subject_id === s.subject_ref &&
+      entry.subject_kind === (s.subject_kind === 'social_role' ? 'role' : s.subject_kind)).map((entry) => entry.actor_applicability),
+    ...profileCatalog.profiles.flatMap((profile) => (profile.regional_option_sets ?? [])
+      .filter((set) => set[s.subject_kind === 'social_role' ? 'role_ref' : 'occupation_ref'] === s.subject_ref)
+      .map((set) => set.actor_applicability)),
+    ...(s.profile_ref && profiles.get(s.profile_ref)?.actor_applicability ? [profiles.get(s.profile_ref).actor_applicability] : []),
+  ];
   const households = new Map(readCsv(HOUSEHOLDS).map((h) => [h.hh_id, h]));
   if (data?.schema !== 'people_composition_authoring.v1' || !Array.isArray(data.compositions) || !Array.isArray(data.never_created_gaps)) return ['schema/compositions/gaps'];
   if (bound.size !== 16) errors.push(`node_binding has ${bound.size} primary PF, expected 16`);
@@ -114,12 +128,41 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
       }
       if (!Array.isArray(g.weighted_subjects) || !g.weighted_subjects.length) { errors.push(`${id}: weighted_subjects`); continue; }
       for (const s of g.weighted_subjects) {
-        if (!exact(s, ['subject_kind', 'subject_ref', 'profile_ref', 'household_member_class', 'weight'])) { errors.push(`${id}: subject fields`); continue; }
+        const sexFields = ['sex', 'sex_confidence', 'sex_reason', 'sex_source_refs'];
+        const hasSex = sexFields.some((field) => Object.hasOwn(s, field));
+        if (!exact(s, ['subject_kind', 'subject_ref', 'profile_ref', 'household_member_class', 'weight', ...(hasSex ? sexFields : [])])) { errors.push(`${id}: subject fields`); continue; }
         if (!({ occupation: occupations, social_role: roles })[s.subject_kind]?.has(s.subject_ref)) errors.push(`${id}: unknown subject ${s.subject_kind}:${s.subject_ref}`);
         if (!Number.isInteger(s.weight) || s.weight <= 0) errors.push(`${id}: subject weight`);
         if (s.household_member_class !== null && !['adult', 'child', 'elder'].includes(s.household_member_class)) errors.push(`${id}: household_member_class`);
         if (s.household_member_class !== null && !['household', 'residents'].includes(g.group_kind)) errors.push(`${id}: household_member_class requires household/residents`);
         if (s.profile_ref !== null && (!profiles.has(s.profile_ref) || profiles.get(s.profile_ref)?.[s.subject_kind === 'occupation' ? 'occupation_ref' : 'role_ref'] !== s.subject_ref)) errors.push(`${id}: unknown/mismatched profile ${s.profile_ref}`);
+        if (hasSex) {
+          if (!['male', 'female'].includes(s.sex) || s.sex_confidence !== 'C' || !reasoned(s.sex_reason) ||
+              !Array.isArray(s.sex_source_refs) || !s.sex_source_refs.length || new Set(s.sex_source_refs).size !== s.sex_source_refs.length)
+            errors.push(`${id}: invalid sex slot`);
+          for (const ref of s.sex_source_refs ?? []) {
+            const [file, sourceId, extra] = String(ref).split('#');
+            if (extra || !sexSources.get(file)?.has(sourceId) || (file.endsWith('novgorod_occupations_v1_enriched.tsv') && sourceId !== s.subject_ref))
+              errors.push(`${id}: unresolved sex_source_ref ${ref}`);
+          }
+        }
+        const constraints = sexConstraints(s);
+        if (!constraints.length && !hasSex) errors.push(`${id}: no sourced sex for ${s.subject_ref}`);
+        const values = [];
+        for (const applicability of constraints) {
+          const options = applicability?.sex_category;
+          if (!Array.isArray(options) || !options.length || !Array.isArray(applicability.source_refs) ||
+              !applicability.source_refs.length || !named(applicability.rule) ||
+              options.some((option) => !['nov_1200_1250_sex_category_male', 'nov_1200_1250_sex_category_female'].includes(option))) {
+            errors.push(`${id}: unsourced sex applicability ${s.subject_ref}`);
+            continue;
+          }
+          if (hasSex && !options.includes(`nov_1200_1250_sex_category_${s.sex}`))
+            errors.push(`${id}: sex incompatible with NPC actor applicability`);
+          values.push(...options);
+          if (!hasSex && options.length !== 1) errors.push(`${id}: ambiguous sex requires slot ${s.subject_ref}`);
+        }
+        if (!hasSex && new Set(values).size !== 1) errors.push(`${id}: conflicting sex applicability ${s.subject_ref}`);
         const key = subjectKey(s.subject_kind, s.subject_ref);
         if (covered.has(key)) errors.push(`${c.pf_id}: duplicate composition subject ${key}`);
         covered.add(key);
@@ -142,6 +185,17 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
     }
   }
   for (const pf of bound) if (!seenPf.has(pf)) errors.push(`${pf}: missing composition`);
+  if (startTerritory) {
+    const expectedSlots = new Set([
+      'pf_ferry_landing|occupation:nov_occ_ferryman',
+      'pf_ferry_landing|occupation:nov_occ_crossing_guard',
+      'pf_outbuildings|occupation:nov_occ_household_servant',
+      'pf_peasant_homestead|social_role:nov_role_smerd_householder',
+      'pf_peasant_homestead|social_role:nov_role_household_mistress',
+    ]);
+    for (const slot of expectedSlots) if (!compositionPairs.has(slot)) errors.push(`missing start-territory slot ${slot}`);
+    for (const slot of compositionPairs) if (!expectedSlots.has(slot)) errors.push(`unexpected start-territory slot ${slot}`);
+  }
   const presenceSubjects = new Set();
   // Owners classify existing presence rows only; a D1-backed composition subject may have no row here.
   for (const row of people) {
@@ -188,6 +242,24 @@ if (isMain) {
     const group = () => original.compositions.find((c) => c.population_groups.length);
     probe('unknown subject', 'unknown subject', (d) => { d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0].weighted_subjects[0].subject_ref = 'unknown'; });
     probe('unknown profile', 'unknown/mismatched profile', (d) => { d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0].weighted_subjects[0].profile_ref = 'unknown'; });
+    const servant = (d) => d.compositions.find((c) => c.pf_id === 'pf_outbuildings').population_groups[0].weighted_subjects[0];
+    probe('partial sex slot', 'subject fields', (d) => { delete servant(d).sex_reason; });
+    probe('invalid sex', 'invalid sex slot', (d) => { servant(d).sex = 'unknown'; });
+    probe('unresolved sex source', 'unresolved sex_source_ref', (d) => { servant(d).sex_source_refs[0] = 'data/novgorod-region/novgorod_occupations_v1_enriched.tsv#unknown'; });
+    const femaleProfile = readJson(PROFILES).profiles.find((p) => p.actor_applicability?.sex_category?.includes('nov_1200_1250_sex_category_female') &&
+      !p.actor_applicability.sex_category.includes('nov_1200_1250_sex_category_male'));
+    if (!femaleProfile) errors.push('negative probe lacks female-only NPC profile');
+    else probe('NPC sex applicability', 'sex incompatible with NPC actor applicability', (d) => { servant(d).profile_ref = femaleProfile.profile_id; });
+    probe('servant sex ambiguity', 'ambiguous sex requires slot', (d) => {
+      for (const key of ['sex', 'sex_confidence', 'sex_reason', 'sex_source_refs']) delete servant(d)[key];
+    });
+    {
+      const badProfiles = structuredClone(readJson(PROFILES));
+      badProfiles.subject_applicability.find((entry) => entry.subject_id === 'nov_occ_ferryman').actor_applicability.sex_category = [];
+      if (!checkPeopleComposition(original, bridge, readCsv(PEOPLE), readCsv(DERIVED), badProfiles)
+        .some((error) => error.includes('unsourced sex applicability nov_occ_ferryman')))
+        errors.push('negative probe failed: tampered single-sex source');
+    }
     probe('unknown household', 'unknown household profile', (d) => { const g = d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0]; g.group_kind = 'household'; g.household_profile_ref = 'unknown'; });
     probe('invalid weights', 'count range/weights', (d) => { d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0].count_weights = [0]; });
     probe('invalid range', 'count range/weights', (d) => { d.compositions.find((c) => c.pf_id === group().pf_id).population_groups[0].max_count = 0; });
@@ -244,6 +316,6 @@ if (isMain) {
       [nodes[0].place_type, other.place_type] = [other.place_type, nodes[0].place_type];
     }
   }
-  if (!errors.length) console.log(`PASS people composition: ${original.compositions.length} PF, ${original.compositions.reduce((n, c) => n + c.population_groups.length, 0)} groups${process.argv.includes('--self-test') ? `, ${bridge ? 30 : 29} negative probes` : ''}`);
+  if (!errors.length) console.log(`PASS people composition: ${original.compositions.length} PF, ${original.compositions.reduce((n, c) => n + c.population_groups.length, 0)} groups${process.argv.includes('--self-test') ? `, ${bridge ? 36 : 35} negative probes` : ''}`);
   process.exitCode = errors.length ? 1 : 0;
 }

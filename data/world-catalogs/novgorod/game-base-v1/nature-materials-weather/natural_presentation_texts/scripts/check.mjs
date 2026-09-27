@@ -59,26 +59,30 @@ for (const g of g4index.g4) for (const s of SEASONS) for (const layer of LAYERS)
 }
 const TARGET_PF = ['bog', 'conifer_woodland', 'ferry_landing', 'floodplain_meadow', 'forest_edge', 'forest_track', 'hunting_ground', 'marshy_stream', 'outbuildings', 'peasant_homestead', 'river_channel', 'riverbank', 'road', 'rural_yard', 'village_lane', 'winter_ice_crossing'];
 const indexedG4 = new Set(g4index.g4.map((g) => g.g4_id));
-const matrix = { visual: { sourced: 0, no_source: 0 }, acoustic: { sourced: 0, no_source: 0 }, olfactory: { sourced: 0, no_source: 0 } };
+const matrix = { visual: { sourced: 0, partial: 0, no_source: 0 }, acoustic: { sourced: 0, partial: 0, no_source: 0 }, olfactory: { sourced: 0, partial: 0, no_source: 0 } };
 const coverageKeys = new Set();
 for (const c of coverage) {
   const key = `${c.pf_id}/${c.season_period}/${c.aspect}`;
   if (coverageKeys.has(key)) E.push(`duplicate sensory coverage ${key}`);
   coverageKeys.add(key);
   if (!TARGET_PF.includes(c.pf_id) || !SEASONS.includes(c.season_period) || !matrix[c.aspect] || (c.pf_id === 'winter_ice_crossing' && c.season_period !== 'winter')) E.push(`invalid sensory scope ${key}`);
-  if (!['sourced', 'no_source'].includes(c.coverage) || c.status !== 'candidate') E.push(`invalid sensory coverage ${key}`);
+  if (!['sourced', 'partial', 'no_source'].includes(c.coverage) || c.status !== 'candidate') E.push(`invalid sensory coverage ${key}`);
   if (matrix[c.aspect]?.[c.coverage] !== undefined) matrix[c.aspect][c.coverage]++;
 }
 for (const pf of TARGET_PF) {
-  const g4refs = bindings.filter((b) => b.node_level === 'G4' && [b.pf_id, ...b.pf_secondary.split(';')].includes(`pf_${pf}`))
-    .map((b) => b.node_ref.replace(/@1$/, ''));
+  const primaryRefs = bindings.filter((b) => b.node_level === 'G4' && b.pf_id === `pf_${pf}`).map((b) => b.node_ref.replace(/@1$/, ''));
+  const secondaryRefs = bindings.filter((b) => b.node_level === 'G4' && b.pf_id !== `pf_${pf}` && b.pf_secondary.split(';').includes(`pf_${pf}`)).map((b) => b.node_ref.replace(/@1$/, ''));
+  const g4refs = primaryRefs.concat(secondaryRefs);
   if (!g4refs.some((ref) => indexedG4.has(ref))) E.push(`no natural G4 binding for ${pf}`);
   for (const s of (pf === 'winter_ice_crossing' ? ['winter'] : SEASONS)) for (const aspect of Object.keys(matrix)) {
     const key = `${pf}/${s}/${aspect}`;
-    const evidence = rows.find((r) => g4refs.includes(r.g4_ref) && r.season_period === s && r.channel === aspect && (aspect !== 'olfactory' || scentGround.get(`pf_${pf}`)?.has(r.layer_class)) && r.clear_text && r.partial_text && r.source_refs);
+    const matches = (r) => r.season_period === s && r.channel === aspect && (aspect !== 'olfactory' || scentGround.get(`pf_${pf}`)?.has(r.layer_class)) && r.clear_text && r.partial_text && r.source_refs;
+    const primaryEvidence = rows.find((r) => primaryRefs.includes(r.g4_ref) && matches(r));
+    const evidence = primaryEvidence || rows.find((r) => secondaryRefs.includes(r.g4_ref) && matches(r));
+    const expectedCoverage = primaryEvidence ? 'sourced' : evidence ? 'partial' : 'no_source';
     const c = coverage.find((x) => x.pf_id === pf && x.season_period === s && x.aspect === aspect);
     if (!c) E.push(`missing sensory coverage ${key}`);
-    else if (evidence ? c.coverage !== 'sourced' || c.basis_ref !== evidence.npt_id : c.coverage !== 'no_source' || c.basis_ref !== `no_source:${aspect}_pf_season`) E.push(`sensory coverage mismatch ${key}`);
+    else if (c.coverage !== expectedCoverage || c.basis_ref !== (evidence ? evidence.npt_id : `no_source:${aspect}_pf_season`)) E.push(`sensory coverage mismatch ${key}`);
   }
 }
 const used = new Set(allow.map((a) => a.member_ref));

@@ -182,10 +182,13 @@ for (const g of g4index.g4) {
 
 const sensoryCoverage = [];
 for (const pf of TARGET_PF) {
-  const refs = new Set(bindings.filter((b) => b.node_level === 'G4' && [b.pf_id, ...b.pf_secondary.split(';')].includes(`pf_${pf}`)).map((b) => b.node_ref.replace(/@1$/, '')));
+  const primary = new Set(bindings.filter((b) => b.node_level === 'G4' && b.pf_id === `pf_${pf}`).map((b) => b.node_ref.replace(/@1$/, '')));
+  const secondary = new Set(bindings.filter((b) => b.node_level === 'G4' && b.pf_id !== `pf_${pf}` && b.pf_secondary.split(';').includes(`pf_${pf}`)).map((b) => b.node_ref.replace(/@1$/, '')));
   for (const season of (pf === 'winter_ice_crossing' ? ['winter'] : SEASONS)) for (const [aspect, channel] of [['visual', 'visual'], ['acoustic', 'acoustic'], ['olfactory', 'olfactory']]) {
-    const evidence = rows.find((r) => refs.has(r.g4_ref) && r.season_period === season && r.channel === channel && (aspect !== 'olfactory' || scentGround.get(`pf_${pf}`)?.has(r.layer_class)) && r.clear_text && r.partial_text);
-    sensoryCoverage.push({ pf_id: pf, season_period: season, aspect, coverage: evidence ? 'sourced' : 'no_source', basis_ref: evidence ? evidence.npt_id : `no_source:${aspect}_pf_season`, status: 'candidate' });
+    const eligible = (r) => r.season_period === season && r.channel === channel && (aspect !== 'olfactory' || scentGround.get(`pf_${pf}`)?.has(r.layer_class)) && r.clear_text && r.partial_text;
+    const primaryEvidence = rows.find((r) => primary.has(r.g4_ref) && eligible(r));
+    const evidence = primaryEvidence || rows.find((r) => secondary.has(r.g4_ref) && eligible(r));
+    sensoryCoverage.push({ pf_id: pf, season_period: season, aspect, coverage: primaryEvidence ? 'sourced' : evidence ? 'partial' : 'no_source', basis_ref: evidence ? evidence.npt_id : `no_source:${aspect}_pf_season`, status: 'candidate' });
   }
 }
 

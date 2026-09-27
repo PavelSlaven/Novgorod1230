@@ -882,6 +882,19 @@
         "confidence": "C",
         "reason": "A composition overlay has no separate ground and is not a secondary place family."
       },
+      "parent_closure_rule": {
+        "rule_ref": "g4_child_primary_closure_v1",
+        "confidence": "C",
+        "reason": "A G4 scene contains every primary place family of its G5 children."
+      },
+      "primary_kind_rule": {
+        "rule_ref": "primary_ground_compatibility_v1",
+        "confidence": "C",
+        "reason": "Open water and wetland ground cannot imply forest, route or settlement ground merely from a scene template; child-primary closure is explicit.",
+        "restricted_primary_kinds": ["water", "natural_wetland"],
+        "restricted_water_edge_landscapes": ["river_channel", "estuary", "shoal", "backwater_wetland", "floodplain"],
+        "rejected_secondary_kinds": ["natural_forest", "route", "settlement_space"]
+      },
       "ferry_bank_rule": {
         "primary_pf": "ferry_landing",
         "parent_land_use": "waterway_access",
@@ -906,52 +919,32 @@
           "require_any": { "landscape": ["settlement_landscape", "archaeological_area"], "land_use": ["recurrent_settlement_use"], "function": ["dry_ridge_route"] }
         },
         {
-          "pf_id": "hunting_ground",
-          "rule_ref": "resource_ground_not_open_channel_v1",
-          "confidence": "C",
-          "reason": "An open river channel is not hunting ground without forest resource use.",
-          "exclude_if": { "landscape": ["river_channel"], "land_use_not": ["forest_resource_use"] }
-        },
-        {
-          "pf_id": "mixed_woodland",
-          "rule_ref": "woodland_not_open_channel_v1",
-          "confidence": "C",
-          "reason": "An open river channel is not woodland without forest resource use.",
-          "exclude_if": { "landscape": ["river_channel"], "land_use_not": ["forest_resource_use"] }
-        }
-      ],
-      "exclusions": [
-        {
-          "scene_template_id": "stfv3__g5_boundary_access_v1",
           "pf_id": "town_wall_edge",
-          "rule_ref": "exclude_boundary_town_wall_edge_v1",
+          "rule_ref": "town_wall_settlement_axes_v1",
           "confidence": "C",
-          "reason": "Estuary and archaeological boundary access does not itself establish a town wall.",
-          "when": { "landscape": ["estuary", "archaeological_area"] }
+          "reason": "A town wall requires settlement ground.",
+          "require_any": { "landscape": ["settlement_landscape"], "primary_pf_kind": ["settlement_space"] }
         },
         {
-          "scene_template_id": "stfv3__g5_boundary_access_v1",
           "pf_id": "field_margin",
-          "rule_ref": "exclude_boundary_field_margin_v1",
+          "rule_ref": "field_margin_agrarian_axes_v1",
           "confidence": "C",
-          "reason": "Estuary and archaeological boundary access does not itself establish a field margin.",
-          "when": { "landscape": ["estuary", "archaeological_area"] }
+          "reason": "A field margin requires cultivated or agrarian ground.",
+          "require_any": { "primary_pf_kind": ["agrarian"], "land_use": ["arable_use", "agrarian_use"] }
         },
         {
-          "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
-          "pf_id": "churchyard",
-          "rule_ref": "exclude_burial_churchyard_v1",
-          "confidence": "C",
-          "reason": "An archaeological burial area without church use is not a churchyard.",
-          "when": { "function": ["burial_area"] }
-        },
-        {
-          "scene_template_id": "stfv3__g5_landing_transition_v1",
           "pf_id": "river_wharf",
-          "rule_ref": "exclude_landing_river_wharf_v1",
+          "rule_ref": "river_wharf_settlement_axes_v1",
           "confidence": "C",
-          "reason": "These landing, shore and settlement functions do not establish a town wharf.",
-          "when": { "function": ["dry_ridge_route", "island_ridge", "landing_terrace", "shoal_field", "vikhtuy_locality", "archaeological_settlement", "local_landing"] }
+          "reason": "A wharf requires an established settlement waterfront.",
+          "require_any": { "landscape": ["settlement_landscape"], "primary_pf_kind": ["settlement_space"] }
+        },
+        {
+          "pf_id": "churchyard",
+          "rule_ref": "churchyard_religious_axes_v1",
+          "confidence": "C",
+          "reason": "A churchyard requires church or religious ground.",
+          "require_any": { "primary_pf_kind": ["religious_space"], "land_use": ["religious_use"], "function": ["church"] }
         }
       ]
     },

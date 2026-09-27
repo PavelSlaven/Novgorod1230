@@ -1,5 +1,6 @@
 """Collect sourced candidate NPC profile bases; never authorize runtime use."""
 import csv
+import hashlib
 import json
 from pathlib import Path
 
@@ -12,9 +13,8 @@ CLOTHING = DATA / "game-base-v1/clothing-appearance/outfits_by_role/outfits.csv"
 ROLE_CLOTHING = DATA / "game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv"
 ROLES = DATA.parents[1] / "novgorod-region/novgorod_social_roles_v1_enriched.tsv"
 EQUIPMENT = DATA / "game-base-v1/items-weapons-armour/authoring/equipment_profiles.json"
-SOURCE = Path(r"C:\Users\Slaven\Documents\Novgorod-runtime\data\world-catalogs\novgorod\m2c-npc")
-BASE = SOURCE / "candidate.json"
-BINDINGS = SOURCE / "runtime-bindings.json"
+PIN = HERE / "pr98_extract.json"
+PIN_SHA256 = "923ca588a34f8944792e5863daadc0ca6bac750edc4a8c469e43811553c0119e"
 OUT = HERE / "npc_runtime_profiles.json"
 BASE_REF = "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json"
 BINDING_REF = "pr98:data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json"
@@ -30,6 +30,18 @@ NEW_CONTEXT = "game_base_v1_npc_regional_occupations_candidate_v1"
 def rows(path, delimiter=","):
     with path.open(encoding="utf-8", newline="") as f:
         return list(csv.DictReader(f, delimiter=delimiter))
+
+
+def read_pinned():
+    raw = PIN.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == PIN_SHA256, "PR98 extract changed"
+    extract = json.loads(raw)
+    assert extract["source_commit"] == "63ef38c30d4c6c118257be318418e4ff85ad0e32"
+    assert set(extract["sources"]) == {"candidate.json", "runtime-bindings.json"}
+    assert len(extract["candidate"]["profiles"]) == 9
+    assert len(extract["candidate"]["regional_context_profiles"]) == 5
+    assert len(extract["runtime_bindings"]["profiles"]) == 9
+    return extract
 
 
 def refs(value):
@@ -111,8 +123,9 @@ def regional_options(profile, role, regions, outfits, clothing_by_role, equipmen
 
 
 def main():
-    baseline = json.loads(BASE.read_text(encoding="utf-8"))
-    bindings = json.loads(BINDINGS.read_text(encoding="utf-8"))
+    extract = read_pinned()
+    baseline = extract["candidate"]
+    bindings = extract["runtime_bindings"]
     regional_contexts = [dict(r) for r in baseline["regional_context_profiles"]]
     occupations = rows(OCC)
     roles = {r["role_id"]: r for r in rows(ROLES, "\t")}
@@ -218,7 +231,7 @@ def main():
         "appearance_option_sets": {"novgorod_shared_facets_v1": appearance_sets},
         "regional_context_profiles": regional_contexts,
         "appearance_policy_source": baseline["appearance_policy"],
-        "g4_composition_source": {"path": BASE_REF, "count": len(baseline["g4_compositions"]),
+        "g4_composition_source": {"path": BASE_REF, "count": baseline["g4_compositions_count"],
                                   "rule": "source candidate only; no new presence bindings"},
         "profiles": profiles,
     }

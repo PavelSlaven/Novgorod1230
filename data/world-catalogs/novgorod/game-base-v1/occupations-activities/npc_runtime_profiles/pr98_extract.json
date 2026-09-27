@@ -1,0 +1,1328 @@
+{
+  "source_commit": "63ef38c30d4c6c118257be318418e4ff85ad0e32",
+  "sources": {
+    "candidate.json": {
+      "path": "data/world-catalogs/novgorod/m2c-npc/candidate.json",
+      "sha256": "2a9a15527f0d69b72273c4debc163127bb79e40dca57cdad60e1ea194501abce"
+    },
+    "runtime-bindings.json": {
+      "path": "data/world-catalogs/novgorod/m2c-npc/runtime-bindings.json",
+      "sha256": "50d3dd7e035f2cf5c4524e2bde4ca0915af2526af1da512cd0ac0c9425c39635"
+    }
+  },
+  "candidate": {
+    "appearance_policy": {
+      "required_facets": [
+        "sex_category",
+        "age_category",
+        "build",
+        "skin_tone",
+        "face_shape",
+        "hair_color",
+        "hair_length",
+        "hair_style",
+        "facial_hair",
+        "eye_color"
+      ],
+      "source_demographic_profile_ref": "novgorod_1200_1250_demographic_profile_v1",
+      "source_appearance_profile_ref": "novgorod_1200_1250_appearance_profile_v1",
+      "source_status": "approved_in_v4_and_authoring_approved_carry_forward_to_v6",
+      "target_status": "unbound",
+      "directness": "direct_for_source_rows_analogical_for_target_transfer",
+      "confidence": "medium",
+      "origin_inference_from_appearance": "forbidden",
+      "ethnic_facet_weights": "not_authored",
+      "policy": "Use the existing diverse appearance options without inferring ethnicity or language; never substitute the adult male equipment set for a selected woman."
+    },
+    "g4_compositions_count": 32,
+    "regional_context_profiles": [
+      {
+        "schema": "rus.npc_regional_context_profile.v1",
+        "id": "m2c_npc_regional_novgorod_land_v1",
+        "version": 1,
+        "status": "draft",
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "allowed_role_refs": [
+          "nov_role_boatman",
+          "nov_role_fisher",
+          "nov_role_forest_promyslovik",
+          "nov_role_guide",
+          "nov_role_hunter",
+          "nov_role_merchant_guest",
+          "nov_role_servant",
+          "nov_role_trader"
+        ],
+        "allowed_occupation_refs": [
+          "nov_occ_boatman",
+          "nov_occ_fisher",
+          "nov_occ_forest_worker",
+          "nov_occ_household_servant",
+          "nov_occ_hunter_trapper",
+          "nov_occ_local_trader",
+          "nov_occ_long_distance_merchant",
+          "nov_occ_route_guide"
+        ],
+        "applicability": [
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__channel_split",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+              "version": 1
+            }
+          }
+        ],
+        "origin": {
+          "label": "Новгородская земля",
+          "kind": "regional_affiliation",
+          "source_refs": [
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
+          ],
+          "directness": "analogical",
+          "confidence": "low",
+          "historical_basis": "Approved regional role basis; an individual affiliation is proposed gameplay reconstruction."
+        },
+        "language_status": "unknown",
+        "language_repertoire": null,
+        "gameplay_weight": 1,
+        "weight_basis": "editorial_equal_choice_not_historical_frequency"
+      },
+      {
+        "schema": "rus.npc_regional_context_profile.v1",
+        "id": "m2c_npc_regional_gotland_guest_v1",
+        "version": 1,
+        "status": "draft",
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "allowed_role_refs": [
+          "nov_role_foreign_guest"
+        ],
+        "allowed_occupation_refs": [
+          "nov_occ_long_distance_merchant"
+        ],
+        "applicability": [
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+              "version": 1
+            }
+          }
+        ],
+        "origin": {
+          "label": "Готланд",
+          "kind": "guest_origin",
+          "source_refs": [
+            "m2c_npc_treaty_gotland_german_cities_1191_1192"
+          ],
+          "directness": "analogical",
+          "confidence": "low",
+          "historical_basis": "Gotland merchants are directly attested for Novgorod; presence in target generated G5 is analogical reconstruction."
+        },
+        "language_status": "unknown",
+        "language_repertoire": null,
+        "gameplay_weight": 1,
+        "weight_basis": "editorial_equal_choice_not_historical_frequency"
+      },
+      {
+        "schema": "rus.npc_regional_context_profile.v1",
+        "id": "m2c_npc_regional_german_baltic_guest_v1",
+        "version": 1,
+        "status": "draft",
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "allowed_role_refs": [
+          "nov_role_foreign_guest"
+        ],
+        "allowed_occupation_refs": [
+          "nov_occ_long_distance_merchant"
+        ],
+        "applicability": [
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__river_reach",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+              "version": 1
+            }
+          }
+        ],
+        "origin": {
+          "label": "Немецкие города Балтийского торгового круга",
+          "kind": "guest_origin",
+          "source_refs": [
+            "m2c_npc_treaty_gotland_german_cities_1191_1192"
+          ],
+          "directness": "analogical",
+          "confidence": "low",
+          "historical_basis": "German merchant contacts are directly attested; Baltic denotes trading geography, not Baltic ethnicity."
+        },
+        "language_status": "unknown",
+        "language_repertoire": null,
+        "gameplay_weight": 1,
+        "weight_basis": "editorial_equal_choice_not_historical_frequency"
+      },
+      {
+        "schema": "rus.npc_regional_context_profile.v1",
+        "id": "m2c_npc_regional_karelian_traveler_v1",
+        "version": 1,
+        "status": "draft",
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "allowed_role_refs": [
+          "nov_role_guide"
+        ],
+        "allowed_occupation_refs": [
+          "nov_occ_route_guide"
+        ],
+        "applicability": [
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__channel_split",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+              "version": 1
+            }
+          }
+        ],
+        "origin": {
+          "label": "Корела",
+          "kind": "traveler_origin",
+          "source_refs": [
+            "m2c_npc_npl_younger_1228"
+          ],
+          "directness": "analogical",
+          "confidence": "low",
+          "historical_basis": "Karelians are named in the chronicle near Ladoga/Neva. An ordinary traveler in target G5 is explicitly analogical authoring."
+        },
+        "language_status": "unknown",
+        "language_repertoire": null,
+        "gameplay_weight": 1,
+        "weight_basis": "editorial_equal_choice_not_historical_frequency"
+      },
+      {
+        "schema": "rus.npc_regional_context_profile.v1",
+        "id": "m2c_npc_regional_ingrian_traveler_v1",
+        "version": 1,
+        "status": "draft",
+        "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+        "allowed_role_refs": [
+          "nov_role_guide"
+        ],
+        "allowed_occupation_refs": [
+          "nov_occ_route_guide"
+        ],
+        "applicability": [
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__channel_split",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__side_channel",
+              "version": 1
+            }
+          },
+          {
+            "g4_ref": {
+              "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+              "version": 1
+            },
+            "generation_template_ref": {
+              "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+              "version": 1
+            }
+          }
+        ],
+        "origin": {
+          "label": "Ижора",
+          "kind": "traveler_origin",
+          "source_refs": [
+            "m2c_npc_npl_younger_1228"
+          ],
+          "directness": "analogical",
+          "confidence": "low",
+          "historical_basis": "Izhorians are named in the chronicle near Ladoga/Neva. An ordinary traveler in target G5 is explicitly analogical authoring."
+        },
+        "language_status": "unknown",
+        "language_repertoire": null,
+        "gameplay_weight": 1,
+        "weight_basis": "editorial_equal_choice_not_historical_frequency"
+      }
+    ],
+    "profiles": [
+      {
+        "profile_id": "m2c_npc_boatman_v1",
+        "occupation_ref": "nov_occ_boatman",
+        "role_ref": "nov_role_boatman",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": "novgorod_transport_guiding_equipment_v1",
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_land_v1",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "profile_id": "m2c_npc_fisher_v1",
+        "occupation_ref": "nov_occ_fisher",
+        "role_ref": "nov_role_fisher",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": "novgorod_fishing_water_equipment_v1",
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_land_v1",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "profile_id": "m2c_npc_guide_v1",
+        "occupation_ref": "nov_occ_route_guide",
+        "role_ref": "nov_role_guide",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": null,
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_land_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_regional_karelian_traveler_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_regional_ingrian_traveler_v1",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "profile_id": "m2c_npc_hunter_v1",
+        "occupation_ref": "nov_occ_hunter_trapper",
+        "role_ref": "nov_role_hunter",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": null,
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_land_v1",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "profile_id": "m2c_npc_forest_worker_v1",
+        "occupation_ref": "nov_occ_forest_worker",
+        "role_ref": "nov_role_forest_promyslovik",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": null,
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_land_v1",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "profile_id": "m2c_npc_local_trader_v1",
+        "occupation_ref": "nov_occ_local_trader",
+        "role_ref": "nov_role_trader",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": null,
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_land_v1",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "profile_id": "m2c_npc_visiting_merchant_v1",
+        "occupation_ref": "nov_occ_long_distance_merchant",
+        "role_ref": "nov_role_merchant_guest",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": null,
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_land_v1",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "profile_id": "m2c_npc_foreign_merchant_v1",
+        "occupation_ref": "nov_occ_long_distance_merchant",
+        "role_ref": "nov_role_foreign_guest",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": null,
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_gotland_guest_v1",
+            "version": 1
+          },
+          {
+            "id": "m2c_npc_regional_german_baltic_guest_v1",
+            "version": 1
+          }
+        ]
+      },
+      {
+        "profile_id": "m2c_npc_household_servant_v1",
+        "occupation_ref": "nov_occ_household_servant",
+        "role_ref": "nov_role_servant",
+        "status": "candidate_approval_pending",
+        "appearance_profile_source_ref": "novgorod_1200_1250_appearance_profile_v1",
+        "appearance_target_binding": null,
+        "equipment_authoring_source_ref": null,
+        "equipment_scope": "Source refs are authoring-only; clothing ref applies only to adult male fisher/boatman, never default for other sex/role.",
+        "typed_gaps": [
+          "M2C_NPC_TARGET_RUNTIME_BINDING_MISSING",
+          "M2C_NPC_FULL_EQUIPMENT_BINDING_MISSING",
+          "M2C_NPC_ACTIVITY_BODY_BINDING_MISSING",
+          "M2C_NPC_ROUTINE_TRANSFER_PENDING"
+        ],
+        "regional_context_candidate_refs": [
+          {
+            "id": "m2c_npc_regional_novgorod_land_v1",
+            "version": 1
+          }
+        ]
+      }
+    ]
+  },
+  "runtime_bindings": {
+    "profiles": [
+      {
+        "profile_id": "m2c_npc_boatman_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      },
+      {
+        "profile_id": "m2c_npc_fisher_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      },
+      {
+        "profile_id": "m2c_npc_guide_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      },
+      {
+        "profile_id": "m2c_npc_hunter_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      },
+      {
+        "profile_id": "m2c_npc_forest_worker_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      },
+      {
+        "profile_id": "m2c_npc_local_trader_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      },
+      {
+        "profile_id": "m2c_npc_visiting_merchant_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      },
+      {
+        "profile_id": "m2c_npc_foreign_merchant_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      },
+      {
+        "profile_id": "m2c_npc_household_servant_v1",
+        "clothing_binding": {
+          "profile_ref": "m2c_npc_ordinary_personal_clothing_v1",
+          "version": 1,
+          "status": "candidate_approval_pending"
+        },
+        "property_binding": {
+          "controller_ref": "generated_actor_ref",
+          "status": "authoring_candidate",
+          "property_profile_source_ref": "property_context_household_personal_v1",
+          "owner_ref": "generated_actor_ref",
+          "runtime_actor_id": "resolved_by_materializer",
+          "property_rule_ref": "m2c_npc_actor_personal_property_v1",
+          "holder_ref": "generated_actor_ref",
+          "no_shared_or_unowned_items": true
+        },
+        "routine_binding": {
+          "profile_ref": "ordinary_day_work_routine_v1@1",
+          "status": "proposed_analogy",
+          "seasonal_schedule_source_fields": [
+            "daily_schedule_winter",
+            "daily_schedule_spring_rasputitsa",
+            "daily_schedule_summer",
+            "daily_schedule_autumn"
+          ]
+        }
+      }
+    ]
+  }
+}

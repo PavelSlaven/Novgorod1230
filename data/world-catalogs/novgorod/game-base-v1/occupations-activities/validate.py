@@ -2,9 +2,12 @@
 import csv
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE / "npc_runtime_profiles"))
+from build import read_pinned
 ROOT_DATA = HERE.parents[3]
 ORIGINAL_CONTEXT = "m2c_npc_regional_novgorod_land_v1"
 ORIGINAL_CONTEXT_SHA256 = "43399ce6523e58476339832b4bf8281838871f2ebc02c72c011e2968d2d87d72"
@@ -70,6 +73,9 @@ def main():
     profiles = npc["profiles"]
     contexts = {r["id"]: r for r in npc["regional_context_profiles"]}
     assert len(contexts) == len(npc["regional_context_profiles"])
+    pinned_contexts = read_pinned()["candidate"]["regional_context_profiles"]
+    assert npc["regional_context_profiles"][:-1] == pinned_contexts, "PR98 contexts changed"
+    assert npc["regional_context_profiles"][-1]["id"] == NEW_CONTEXT
     original = contexts[ORIGINAL_CONTEXT]
     original_digest = hashlib.sha256(json.dumps(original, sort_keys=True, ensure_ascii=False,
                                                 separators=(",", ":")).encode()).hexdigest()

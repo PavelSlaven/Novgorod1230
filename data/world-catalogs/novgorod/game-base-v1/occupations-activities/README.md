@@ -16,10 +16,9 @@ python data/world-catalogs/novgorod/game-base-v1/occupations-activities/occupati
 python data/world-catalogs/novgorod/game-base-v1/occupations-activities/validate.py
 ```
 
-NPC-генератор читает candidate.json и runtime-bindings.json из
-C:/Users/Slaven/Documents/Novgorod-runtime/data/world-catalogs/novgorod/m2c-npc/
-только для чтения. Эти входы требуются для повторной сборки; готовый JSON
-зафиксирован в этой группе. `no_source` обозначает отсутствие основания для
+NPC-генератор читает закреплённый срез PR98 из
+`npc_runtime_profiles/pr98_extract.json`; он входит в этот checkout вместе с
+готовым JSON. `no_source` обозначает отсутствие основания для
 конкретного поля, не исторический факт. Факты NPC и владение вещами определяет
 код; LLM описывает только выбранное состояние.
 

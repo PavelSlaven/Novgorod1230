@@ -28,6 +28,22 @@ test('findOverlappingPresenceRules rejects overlapping seasons not only identica
   assert.equal(failures.length, 1);
 });
 
+test('findOverlappingPresenceRules rejects equal season sets (N1/F4)', () => {
+  const failures = findOverlappingPresenceRules([
+    {
+      rule_id: 'a', scope_kind: 'place_family', scope_ref: 'pf_yard',
+      region_id: 'r1', subject_kind: 'occupation', subject_ref: 'occ_x',
+      allowed_seasons: ['summer', 'winter']
+    },
+    {
+      rule_id: 'b', scope_kind: 'place_family', scope_ref: 'pf_yard',
+      region_id: 'r1', subject_kind: 'occupation', subject_ref: 'occ_x',
+      allowed_seasons: ['winter', 'summer']
+    }
+  ]);
+  assert.equal(failures.length, 1);
+});
+
 test('validatePrimarySecondaryPresenceSubjects keeps secondary additive-only', () => {
   const failures = validatePrimarySecondaryPresenceSubjects(
     [{ subject_kind: 'category', subject_ref: 'cat_a', region_id: null }],

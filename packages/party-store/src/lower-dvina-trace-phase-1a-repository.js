@@ -495,7 +495,17 @@ function assertRoundTrip({
     includeNpcs: Object.hasOwn(expectedProjection ?? {}, 'npcs'),
     projectionSchema: expectedProjection?.schema
   });
-  if (npcSpatialSchedules != null) actualProjection.npc_spatial_schedules = npcSpatialSchedules;
+  if (npcSpatialSchedules != null) {
+    // Projection round-trip must ignore party DDL columns sealed after the approved
+    // snapshot (F13 / 037 candidate_profile_refs). Compare on expected field set only.
+    const expectedSchedules = expectedProjection?.npc_spatial_schedules;
+    const keys = Array.isArray(expectedSchedules) && expectedSchedules[0]
+      ? Object.keys(expectedSchedules[0])
+      : null;
+    actualProjection.npc_spatial_schedules = keys
+      ? npcSpatialSchedules.map((row) => Object.fromEntries(keys.map((key) => [key, row[key]])))
+      : npcSpatialSchedules;
+  }
   const expectedDigest = sha256(expectedProjection);
   if (!['rus.lower_dvina_trace_persisted_projection.v2',
     'rus.authored_start_persisted_projection.v1'].includes(expectedProjection?.schema)

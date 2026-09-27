@@ -68,7 +68,7 @@
 | 065 | `applicability.time` production-v2 | 65 claims с диапазоном 500+ лет не сужены (источники точнее не дают) | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 | 066 | `spatial_node_place_family_bindings`, presence/routines/water/slots | до утверждения `pf_secondary` — только primary | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 067 | `presence_rules.guards` | guards хранятся, не исполняются | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
-| 068 | `presence_rules` discovery weights | пустые веса при обоих режимах = 1/1 | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 068 | `presence_rules` discovery weights; Stage 16 `no_source` | пустые веса = 1/1; пробел Stage 16 не закрывать выдумкой | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 
 ## Записи
 
@@ -331,19 +331,19 @@
 - **Как жить.** Хранить для provenance. Не строить evaluator и не гейтить бросок по guards. `allowed_times` людей не импортировать; `wild_arrival_cause` не гейтит бросок.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
-### LW-068 — пустые веса discovery = 1/1
-- **Где.** `presence_rules.entry_exposed_weight` / `search_concealed_weight` при обоих режимах.
-- **Как жить.** Редакционное правило: NULL+NULL при обоих режимах → вес 1 и 1. Одна сторона пустая → только другая. Строки без режимов не проходят draw.
+### LW-068 — пустые веса discovery = 1/1; пробел Stage 16 (no_source)
+- **Где.** `presence_rules.entry_exposed_weight` / `search_concealed_weight` при обоих режимах; Stage 16 / `no_source` gaps в presence authoring.
+- **Как жить.** Редакционное правило: NULL+NULL при обоих режимах → вес 1 и 1. Одна сторона пустая → только другая. Строки без режимов не проходят draw. Пробел Stage 16 (`no_source`) не закрывать выдуманными весами/правилами — только явным источником или отдельным CR.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-069 — fresh-schema attestation снято до нового прохода
-- **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json` + approval/execution attestations.
-- **Как жить.** После DONE-065/065b файл запроса пересобран (217 таблиц / 37 party migrations); прежний `request_digest`/утверждение Sol high больше не действует (WR §21.1). Не выполнять D27 bootstrap по старым attestation. Новый независимый проход утверждения — до D27.
+- **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json` + approval/execution attestations; Gate1 request v2.
+- **Как жить.** После DONE-065/065b файл запроса пересобран (217 таблиц / 37 party migrations); прежний `request_digest`/утверждение Sol high больше не действует (WR §21.1). Не выполнять D27 bootstrap по старым attestation. Новый независимый проход утверждения — до D27. Пин Gate1 request v2 на старый fresh-schema-request — исторический; Gate1 не перегенерируется (C11).
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-070 — party 037 применится к живым party-БД v16/v17 при старте game-server
 - **Где.** `schemas/party-db/037_party_runtime_m2c_presence_routines.sql`; runner `runSpatialV3TargetMigrations`.
-- **Как жить.** Миграции 012–037 применяются к существующим party-БД при старте. `037` только добавляет (candidate_profile_refs, g5 CHECK, weather log). До зелёного PostgreSQL-теста на цепочке 001–036 **не запускать game-server на живых БД**. D27 rename/bootstrap — отдельный шаг.
+- **Как жить.** Миграции 012–037 применяются к существующим party-БД при старте. `037` только добавляет (candidate_profile_refs, g5 CHECK, weather log). Файл `037` правился на месте после первого применения в `5bfdebe1`/`da6f323c`: локальные/тестовые БД, где уже крутился старый `037`, пересоздавать (колонки иначе останутся старыми). Живые managed БД старый `037` не получали (game-server не запускался). До зелёного PostgreSQL-теста на цепочке 001–036 **не запускать game-server на живых БД**. D27 rename/bootstrap — отдельный шаг.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-071 — правило «предок уже решён — потомки не бросаются» вне resolve_presence_rule

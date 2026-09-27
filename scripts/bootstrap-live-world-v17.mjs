@@ -7,7 +7,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
 import { localV17ApprovalsPath } from '../tools/local-play/local-postgres.js';
-import { runSpatialV3TargetMigrations } from '../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
+import { runSpatialV3TargetMigrations, SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST } from '../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { buildTransactionalImportSql } from '../tools/spatial-v3/p12-authoring-importer.mjs';
 import { buildTargetAppearanceTransferV3ImportSql } from '../tools/spatial-v3/character-appearance-v1-importer.mjs';
 import { prepareSpatialV3TargetItemCatalog, buildSpatialV3TargetItemImport } from
@@ -115,6 +115,9 @@ export async function checkV17BootstrapInputs({
   attestationV2Path = gate1AttestationV2Path
 } = {}) {
   const schema = await json(`${v17}/fresh-schema-request.json`);
+  if (schema.party_schema?.chain_digest !== SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST) {
+    throw new Error('V17_FRESH_SCHEMA_CHAIN_DIGEST_MISMATCH');
+  }
   for (const source of [schema.world_schema.entrypoint,
     ...schema.world_schema.ordered_parts,
     ...schema.party_schema.ordered_migrations]) {

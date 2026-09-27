@@ -12,6 +12,7 @@ import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
 import { assertV17Gate1V2Attestation, checkV17BootstrapInputs } from
   '../../scripts/bootstrap-live-world-v17.mjs';
+import { inspectWorldBaseSchema } from '../../scripts/check-world-base-schema.mjs';
 
 test('Gate1 local-play modes reject crossed expected databases before connect', () => {
   const crossed = [
@@ -246,8 +247,12 @@ test('Gate1 v17-local-play preserves the fresh v17 schema and its import on repe
     assert.equal(result.first_state.approved_container_template_count, 18);
     assert.equal(result.first_state.approved_g4_count, 9);
     assert.deepEqual(result.repeated_state, result.first_state);
+    const expectedWorldBaseTableCount = (await inspectWorldBaseSchema({
+      root: process.cwd()
+    })).table_names.length;
     assert.equal(Number((await pool.query(`SELECT count(*) AS count
-      FROM pg_catalog.pg_tables WHERE schemaname = 'world_base'`)).rows[0].count), 208);
+      FROM pg_catalog.pg_tables WHERE schemaname = 'world_base'`)).rows[0].count),
+    expectedWorldBaseTableCount);
     const client = await pool.connect();
     try {
       const target = (await client.query(`SELECT id,parent_revision_id,status,catalog_digest

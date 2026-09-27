@@ -18,8 +18,11 @@ import { compileOverlaySemanticPayload } from './overlay-compiler.js';
 import { registerAlreadyImportedCatalogAndActivate } from './operator-executors.js';
 import { RECORD_ADAPTERS } from './record-adapters.generated.js';
 import { WORLD_RUNTIME_CATALOG_MIGRATION } from './forward-migrations.js';
-import { validateGate1RuntimeActivationAttestation } from
-  '../../../scripts/generate-gate1-activation-amendment-request.mjs';
+import {
+  GATE1_ACTIVATION_AMENDMENT_V3_ATTESTATION_PATH,
+  GATE1_ACTIVATION_AMENDMENT_V3_REQUEST_PATH,
+  validateGate1RuntimeActivationAttestation
+} from '../../../scripts/generate-gate1-activation-amendment-request.mjs';
 
 const SCOPE = 'item_container_materialization_v2';
 const GATE1_ROOT = 'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1';
@@ -38,16 +41,14 @@ export async function activateGate1RuntimeCatalog({
   activateRuntime = true
 }) {
   const root = resolve(repositoryRoot);
-  const request = await readBoundJson(root,
-    `${GATE1_ROOT}/activation-amendment-v2/request.json`);
+  const request = await readBoundJson(root, GATE1_ACTIVATION_AMENDMENT_V3_REQUEST_PATH);
   let attestation;
   try {
     attestation = await readBoundJson(root,
-      `${GATE1_ROOT}/activation-amendment-v2/`
-      + 'runtime-activation-approval-attestation.json');
+      GATE1_ACTIVATION_AMENDMENT_V3_ATTESTATION_PATH);
   } catch (error) {
     if (error?.code === 'ENOENT') {
-      fail('GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2_REQUIRED');
+      fail('GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V3_REQUIRED');
     }
     throw error;
   }

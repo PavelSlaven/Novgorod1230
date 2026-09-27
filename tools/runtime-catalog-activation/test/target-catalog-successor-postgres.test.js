@@ -36,13 +36,12 @@ import { importApprovedActorBaseAttributes, readActorBaseAttributesImport } from
   '../src/actor-base-attributes-import.js';
 import { activateActorBaseAttributes, validateActorBaseAttributesActivationResult } from
   '../src/actor-base-attributes-activation.js';
+import { GATE1_ACTIVATION_AMENDMENT_V3_ATTESTATION_PATH } from
+  '../../../scripts/generate-gate1-activation-amendment-request.mjs';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const subject = '821a1e10230fcedd6c846599868bf55521ad0233';
 const json = async (path) => JSON.parse(await readFile(path, 'utf8'));
-const GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2 =
-  'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/'
-  + 'activation-amendment-v2/runtime-activation-approval-attestation.json';
 // These attestations exist only in this isolated test. They never authorize deployment.
 const fixtureApproval = (payload) => {
   const value = { ...payload, attested_by: 'isolated-postgres-test-fixture' };
@@ -53,9 +52,9 @@ test('target item and actor successors preserve v6 parties through real PostgreS
   async (t) => {
     if (docker(['version']).status !== 0) return t.skip('Docker required');
     try {
-      await access(GATE1_ACTIVATION_AMENDMENT_ATTESTATION_V2);
+      await access(GATE1_ACTIVATION_AMENDMENT_V3_ATTESTATION_PATH);
     } catch {
-      return t.skip('Gate1 activation-amendment attestation v2 pending');
+      return t.skip('Gate1 activation-amendment attestation v3 pending');
     }
     const name = `m2c-catalog-successor-${process.pid}`;
     let pool, importer, activator;

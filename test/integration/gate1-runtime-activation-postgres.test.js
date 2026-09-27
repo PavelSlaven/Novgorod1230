@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFile, readdir } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
 
@@ -17,12 +17,19 @@ import { runPartyRuntimeCatalogMigration,
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { createPostgresTestBackend } from
   '../fixtures/postgres-test-backend.js';
+import { GATE1_ACTIVATION_AMENDMENT_V3_ATTESTATION_PATH } from
+  '../../scripts/generate-gate1-activation-amendment-request.mjs';
 
 const activationLifecycle = process.platform === 'win32'
   ? 'managed server restart' : 'external PostgreSQL reconnect';
 
 test(`Gate1 activation remains exact after ${activationLifecycle}`,
   async (t) => {
+    try {
+      await access(GATE1_ACTIVATION_AMENDMENT_V3_ATTESTATION_PATH);
+    } catch {
+      return t.skip('Gate1 activation-amendment attestation v3 pending');
+    }
     const backend = await createPostgresTestBackend('pr17_gate1_activation');
     if (!backend) return t.skip('No supported PostgreSQL test backend');
     let pool;

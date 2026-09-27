@@ -287,7 +287,7 @@
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-055 — pin sha restart-теста в утверждаемом Gate1-запросе
-- **Что.** `completed_import_readback.restart_verification` в `activation-amendment-v1/request.json` и в `spatial-v3-target-v1/item-compatibility-request.json` закрепляет sha256 `test/integration/gate1-owner-data-import-postgres.test.js`. Любая правка этого теста ломает reproduce-exact / attestation pin. Amendment ушёл в v2 (`activation-amendment-v2/request.json`, digest `61384359…`); v1 + его attestation — история. `item-compatibility-request.json` всё ещё указывает старый sha `698dcbeb…` — отдельный запрос, в этом шаге не трогали.
+- **Что.** `completed_import_readback.restart_verification` в `activation-amendment-v1/request.json` и в `spatial-v3-target-v1/item-compatibility-request.json` закрепляет sha256 `test/integration/gate1-owner-data-import-postgres.test.js`. Любая правка этого теста ломает reproduce-exact / attestation pin. Текущий pending amendment — v3 (`activation-amendment-v3/request.json`); v1/v2 request + их attestations — история. Утверждение amendment v2 снято до независимого прохода v3. `item-compatibility-request.json` всё ещё указывает старый sha `698dcbeb…` — отдельный запрос, в этом шаге не трогали.
 - **Как жить.** Не regenerate in-place утверждённый request; новый digest → новый amendment/package + независимое утверждение. item-compat — отдельный CR/пакет, когда его тест реально упадёт или понадобится activation-совместимость.
 - **Issue.** —
 
@@ -339,7 +339,7 @@
 
 ### LW-069 — fresh-schema attestation снято до нового прохода
 - **Где.** `data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json` + approval/execution attestations; Gate1 request v2.
-- **Как жить.** После DONE-065/065b файл запроса пересобран (217 таблиц / 37 party migrations); прежний `request_digest`/утверждение Sol high больше не действует (WR §21.1). Не выполнять D27 bootstrap по старым attestation. Новый независимый проход утверждения — до D27. Пин Gate1 request v2 на старый fresh-schema-request — исторический; Gate1 не перегенерируется (C11).
+- **Как жить.** После DONE-065/065b файл запроса пересобран (217 таблиц / 37 party migrations); прежний `request_digest`/утверждение Sol high больше не действует (WR §21.1). Не выполнять D27 bootstrap по старым attestation. Новый независимый проход утверждения (fresh-schema + Gate1 amendment v3) — до D27. Пин Gate1 amendment v2 на старый restart-test sha — исторический; Gate1 owner-data не перегенерируется (C11). Утверждение amendment v2 снято до v3.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-070 — party 037 применится к живым party-БД v16/v17 при старте game-server

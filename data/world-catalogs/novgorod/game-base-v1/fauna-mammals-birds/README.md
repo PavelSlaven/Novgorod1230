@@ -108,3 +108,9 @@ Download the pages first with curl from the URLs in `scripts/src/sources.cjs`. T
 - **Collector compatibility.** `build-presence-rules.mjs` deduplicates pool rows on (scope, region, category) and ignores season, so the four seasonal rows of one taxon × pf collapse to the highest class. The per-season detail stays here. The places-binding owner has to decide whether presence rules should carry a season key.
 - **Bat winter roosts.** Bat winter rows are dormant in forest and outbuilding families. Specific hibernation sites (cellars, caves) are covered only by `pf_cellar_granary`-type families that have no bat rows. Add them if needed.
 - The research used only public abstracts and extracts. No long passages were copied. Voice descriptions are standard onomatopoeia.
+
+## C006b3: согласование слышимости
+
+Для млекопитающих `wild_habitat_presence.audible` выводится из `mammals.signs_sounds`: общий безусловный звук относится к фазам `activity_time`, явно ограниченный — только к указанному времени или сезону. Положительные строки ссылаются на поле владельца в `source_refs`. Редкий, почти неслышный и обусловленный поимкой или тревогой звук не даёт обычного `voice=yes`. Отдельного списка видов больше нет. Спячка всегда даёт `audible=false`, а её фазовые строки — уверенность C. Валидатор независимо сверяет таблицу присутствия с текстом владельца и отвергает `voice=yes` при `audible=false`. У птиц оговорки «у гнезда» и «особенно вечером» не скрывают предшествующий общий голос; «на лету» не означает летний сезон.
+
+«Крик тревоги» косули не считается обычным голосом. Если за звуком при тревоге идёт самостоятельный звук после запятой, он оценивается отдельно: всплеск ныряния бобра остаётся слышимым признаком.

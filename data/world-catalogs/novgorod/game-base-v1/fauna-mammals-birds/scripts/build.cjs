@@ -42,12 +42,11 @@ const WOOD = ['conif', 'mixed', 'broad'];
 const HUNT_SRC = ['conif', 'mixed', 'broad', 'edge', 'flood', 'lake', 'bog', 'stream'];
 const WATER = ['river', 'lake'];
 
-// Mammal seasons with regularly heard sounds (prose acoustics); sources: sign/sound fields of the taxon.
-const MAMMAL_AUDIBLE = {
-  fa_m_elk: ['autumn'], fa_m_wolf: ['winter', 'summer', 'autumn'], fa_m_red_fox: ['winter'], fa_m_beaver: ['spring', 'summer', 'autumn'],
-  fa_m_red_squirrel: ['winter', 'spring', 'summer', 'autumn'], fa_m_wild_boar: ['summer', 'autumn'], fa_m_hedgehog: ['summer'],
-  fa_m_lynx: ['winter'], fa_m_roe_deer: ['summer', 'autumn'], fa_m_otter: ['winter', 'spring'],
-};
+function mammalAudible(t, season) {
+  if ((t.dorm || []).includes(season)) return false;
+  const owner = { class: 'Mammalia', activity_time: t.act, signs_sounds: t.sound || '' };
+  return phaseRules.phases.some((phase) => ['yes', null].includes(voicePhase(owner, season, phase, true, false)));
+}
 // Bird seasons without regular vocal activity (song over, silent migrants) — in addition to quietW (winter).
 const BIRD_QUIET = {
   fa_b_cuckoo: ['autumn'], fa_b_corncrake: ['autumn'], fa_b_quail: ['autumn'], fa_b_nightjar: ['autumn'], fa_b_thrush_nightingale: ['autumn'],
@@ -152,7 +151,7 @@ function presRowsFor(t, kind) {
     let state, sDelta = 0, audible = false;
     if (kind === 'mammal') {
       state = (t.dorm || []).includes(season) ? 'dormant' : 'active';
-      audible = state === 'active' && (MAMMAL_AUDIBLE[t.id] || []).includes(season);
+      audible = mammalAudible(t, season);
     } else {
       const c = t.mig[si]; if (c === '-') continue;
       state = MIG[c]; if (c === 'P' && !t.massP) sDelta = 1; if (c === 'I') sDelta = 1;
@@ -173,7 +172,7 @@ function presRowsFor(t, kind) {
         presence_id: `fhp_${t.id.replace(/^fa_/, '')}__${pf.replace(/^pf_/, '')}__${season}`, fa_id: t.id, category_ref: cat(kind, t.grp, t.id), pf_id: pf,
         region_id: t.region || REGION_DEFAULT, season, frequency_class: fc, weight: WEIGHT[fc], fit, state, activity_time: state === 'dormant' ? 'dormant' : t.act,
         audible: audible ? 'true' : 'false', observable_signs: sigSummary(t, kind, season, state), refresh_class: 'by_year_season',
-        rule_ref: RULE_REF, source_refs: [...new Set([...(kind === 'bird' ? ['SRC_PANT2001', t.mp ? 'SRC_MALPUK1983' : ''] : []), ...(t.src || '').split(';'), 'SRC_PF', 'SRC_FREQ_RULE', 'SRC_TEMPORAL_V4'].filter(Boolean))].join(';'),
+        rule_ref: RULE_REF, source_refs: [...new Set([...(kind === 'bird' ? ['SRC_PANT2001', t.mp ? 'SRC_MALPUK1983' : ''] : []), ...(t.src || '').split(';'), 'SRC_PF', 'SRC_FREQ_RULE', 'SRC_TEMPORAL_V4', kind === 'mammal' && audible ? `mammals.csv#${t.id}.signs_sounds` : ''].filter(Boolean))].join(';'),
         confidence: t.pres === 'C' ? 'C' : 'B', status: 'candidate',
       });
     }

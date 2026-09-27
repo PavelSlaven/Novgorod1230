@@ -2,7 +2,7 @@
 import json
 import re
 from collections import Counter, defaultdict
-from common import ITEMS, REPORTS, ME, read_csv, split, load_place_families
+from common import ITEMS, REPORTS, ME, ROOT, read_csv, split, load_master, load_place_families
 import rules as R
 
 KIND_OF_SLOT = {"own": {"owner_sign", "inscription"}, "mk": {"maker_mark", "inscription"}, "orn": {"ornament"},
@@ -71,6 +71,18 @@ def main():
                 if r["entity_kind"] in {"fragment", "residue", "deposit", "waste", "byproduct"}}
     residue_links = {r["link_id"] for r in read_csv(ME / "item_location_links.csv") if r["item_id"] in residues}
     residue_refs = {f"master_link:{x}" for x in residue_links} | {f"master_where_used:{x}" for x in residues}
+    master = load_master()
+    material = {r["item_id"]: r for r in read_csv(ME / "material_entities.csv")}
+    legacy = {m["canonical_id"]: lg for lg, m in master.items()}
+    links = {r["link_id"]: r for r in read_csv(ME / "item_location_links.csv")}
+    non_whole = {lg for lg, m in master.items() if m["rec"].get("entity_kind") in {"salvage", "component", "blank", "semifinished"}
+                 or m["rec"].get("manufacturing_state") == "broken" or re.search(r"\bобломок\b", m["name_ru"], re.I)}
+    item_by_id = {r["it_id"]: r for r in items}
+    scenes = read_csv(ROOT / "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv")
+    containers = read_csv(ROOT / "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles.csv")
+    scene_pfs = {pf for s in scenes if s["placement_rules"] for pf in s["pf_ids"].split("|") if pf}
+    container_pfs = {pf for c in containers for pf in c["pf_ids"].split("|") if pf}
+    stage_ref = "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
     it_ids = {r["it_id"] for r in items}
     fail = []
     per_pf = defaultdict(set)
@@ -100,10 +112,50 @@ def main():
             fail.append(f"{r['ipf_id']}: composed place must stay rare/C")
         if r["ref_kind"] == "it" and residue_refs.intersection(split(r["source_refs"])):
             fail.append(f"{r['ipf_id']}: residue used as whole-item evidence")
+        if r["ref_kind"] == "it":
+            whole_basis = False
+            for source in split(r["source_refs"]):
+                if source.startswith("master_link:") and links.get(source[12:], {}).get("item_id") in non_whole:
+                    fail.append(f"{r['ipf_id']}: non-whole link used as whole-item evidence")
+                elif source.startswith("master_link:") and source[12:] in links and links[source[12:]]["item_id"] not in non_whole:
+                    whole_basis = True
+                if source.startswith("master_spawn:") and source.rsplit(":", 1)[-1] in non_whole:
+                    fail.append(f"{r['ipf_id']}: non-whole spawn used as whole-item evidence")
+                elif source.startswith("master_spawn:"):
+                    whole_basis = True
+                if source.startswith("master_where_used:") and source[18:] in non_whole:
+                    fail.append(f"{r['ipf_id']}: non-whole place text used as whole-item evidence")
+            if r["frequency_class"] in {"ubiquitous", "common"} and not whole_basis:
+                fail.append(f"{r['ipf_id']}: high whole-item frequency lacks whole-item evidence")
         if r["ref_kind"] == "master" and r["item_or_category_ref"].rsplit(":", 1)[-1].upper() in residues:
             fail.append(f"{r['ipf_id']}: archaeological trace materialized as item")
         if r["entry_visible_if"] != "placed_exposed" or r["search_only_if"] != "placed_concealed":
             fail.append(f"{r['ipf_id']}: entry visibility and targeted search must be separate")
+        if r["ref_kind"] == "it":
+            source_ids = [legacy[c] for c in split(item_by_id[r["item_or_category_ref"]]["master_refs"])
+                          if legacy[c] not in non_whole
+                          and master[legacy[c]]["rec"].get("entity_kind") not in {"fragment", "residue", "deposit", "waste", "byproduct"}
+                          and master[legacy[c]]["conf"] in {"A", "B", "C"}
+                          and "never" not in str(material.get(legacy[c], {}).get("generation_policy") or master[legacy[c]]["rec"].get("generation_policy", ""))
+                          and material.get(legacy[c], {}).get("quantity_mode") != "portion_or_local_accumulation"
+                          and not DENY.search(master[legacy[c]]["name_ru"])]
+        else:
+            source_ids = [r["item_or_category_ref"].rsplit(":", 1)[-1].upper()]
+        mode_sources = [(lg, json.loads(material[lg]["placement_modes"])) for lg in source_ids
+                        if lg in material and material[lg].get("placement_modes")]
+        modes = {part for _, values in mode_sources for mode in values for part in mode.split("_or_")}
+        if modes:
+            hidden = sum(bool(re.search(r"container|chest|pouch|sack|basket|box|bag|jar|vessel|storage|storehouse|pit|buried|wrapped|covered|under|refuse|scrap", mode)) for mode in modes)
+            visible_weight = round(8 * (len(modes) - hidden) / len(modes))
+            expected_ref = ";".join(f"master:{master[lg]['canonical_id']}#placement_modes" for lg, _ in mode_sources)
+            if r["entry_exposed_weight"] != str(visible_weight) or r["search_concealed_weight"] != str(8 - visible_weight) or r["placement_basis_ref"] != expected_ref:
+                fail.append(f"{r['ipf_id']}: placement weights or source do not match master modes")
+        else:
+            expected_ref = (f"data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:{r['pf_id']}" if r["pf_id"] in scene_pfs else
+                            f"data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles.csv#first_open_rule@pf:{r['pf_id']}" if r["pf_id"] in container_pfs else
+                            stage_ref)
+            if r["entry_exposed_weight"] or r["search_concealed_weight"] or r["placement_basis_ref"] != expected_ref:
+                fail.append(f"{r['ipf_id']}: placement owner unresolved")
         if r["wild_arrival_cause_required"] != ("prior_visitor_loss_or_discard" if r["pf_class"] == "wild" else ""):
             fail.append(f"{r['ipf_id']}: wild arrival cause missing or misplaced")
         if r["item_or_category_ref"] == "it_hh_oven_peel" and r["pf_id"] in {"road", "bridge_crossing", "town_wall_edge"}:
@@ -115,6 +167,10 @@ def main():
     thin = {p: len(per_pf[p]) for p in peopled if len(per_pf[p]) < 10}
     if thin:
         fail.append(f"peopled pf with <10 items: {thin}")
+    if any(r["placement_basis_ref"] == stage_ref for r in ipf):
+        stage_path = ROOT / stage_ref.split("#", 1)[0]
+        if not stage_path.is_file() or not re.search(r"\bmaterialize\b", stage_path.read_text(encoding="utf-8")):
+            fail.append("Stage 16 placement owner reference unresolved")
     dropped = read_csv(REPORTS / "frequency_dropped.csv")
     res["item_place_frequency"] = {"pass": not fail, "failures": fail[:50],
                                    "peopled_pf_items_all": {p: len(per_pf[p]) for p in peopled},
@@ -187,6 +243,8 @@ def main():
         "confidence_frequency": dict(Counter(r["confidence"] for r in ipf)),
         "frequency_class_it": dict(Counter(r["frequency_class"] for r in ipf if r["ref_kind"] == "it")),
         "derivation_rule_it": dict(Counter(r["derivation_rule"] for r in ipf if r["ref_kind"] == "it")),
+        "placement_weights": dict(Counter(f"{r['entry_exposed_weight']}:{r['search_concealed_weight']}" for r in ipf)),
+        "placement_basis": dict(Counter(r["placement_basis_ref"].split(":", 1)[0].split(".", 1)[0] for r in ipf)),
         "owner_kind": dict(Counter(r["owner_kind"] for r in own)),
         "mark_kind": dict(Counter(m["mark_kind"] for m in marks)),
     }

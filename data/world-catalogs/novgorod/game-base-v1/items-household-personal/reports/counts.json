@@ -3,9 +3,9 @@
  "personal.csv": 79,
  "item_categories.csv": 160,
  "item_categories_proposed_new": 121,
- "item_place_frequency.csv": 12527,
- "item_place_frequency_it": 1709,
- "item_place_frequency_master": 10818,
+ "item_place_frequency.csv": 12631,
+ "item_place_frequency_it": 1654,
+ "item_place_frequency_master": 10977,
  "ownership_rules.csv": 1614,
  "recognizers.csv": 28,
  "mark_pools.csv": 86,
@@ -20,29 +20,43 @@
   "C": 22
  },
  "confidence_frequency": {
-  "B": 2860,
-  "C": 9667
+  "B": 2899,
+  "C": 9732
  },
  "frequency_class_it": {
-  "contextual": 702,
-  "common": 228,
-  "ubiquitous": 71,
-  "rare": 708
+  "contextual": 699,
+  "common": 190,
+  "ubiquitous": 58,
+  "rare": 707
  },
  "derivation_rule_it": {
-  "R_MASTER_LINK": 364,
-  "R_SPAWN_PROFILE": 113,
-  "R_WHERE_USED_TEXT": 434,
-  "R_GROUP_DEFAULT": 11,
-  "R_WHERE_USED_TEXT+R_LOSS_DOWNGRADE": 13,
+  "R_MASTER_LINK": 266,
+  "R_SPAWN_PROFILE": 112,
+  "R_WHERE_USED_TEXT": 478,
+  "R_GROUP_DEFAULT": 13,
+  "R_WHERE_USED_TEXT+R_LOSS_DOWNGRADE": 14,
   "R_MASTER_LINK+R_LOSS_DOWNGRADE": 25,
   "R_GROUP_DEFAULT+R_RESIDUAL_RARE_DATING": 3,
   "R_SPAWN_PROFILE+R_LOSS_DOWNGRADE": 2,
   "R_MASTER_LINK+R_RESIDUAL_RARE_DATING": 7,
   "R_WHERE_USED_TEXT+R_RESIDUAL_RARE_DATING": 3,
-  "R_ALIAS": 94,
+  "R_ALIAS": 93,
   "R_NAME_KEYWORD": 3,
-  "R_WK_COMPOSES": 637
+  "R_WK_COMPOSES": 635
+ },
+ "placement_weights": {
+  "8:0": 1010,
+  ":": 1451,
+  "3:5": 1892,
+  "6:2": 3259,
+  "5:3": 4858,
+  "4:4": 161
+ },
+ "placement_basis": {
+  "master": 11180,
+  "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes": 1166,
+  "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16": 277,
+  "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles": 8
  },
  "owner_kind": {
   "household": 673,

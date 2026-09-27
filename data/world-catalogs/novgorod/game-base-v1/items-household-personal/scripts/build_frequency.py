@@ -8,7 +8,7 @@ Part B (ref_kind=master): every master item_location_links row converted to pf (
 import json
 import re
 from collections import defaultdict
-from common import ITEMS, REPORTS, ME, read_csv, write_csv, split, load_master, load_me, load_place_families
+from common import ITEMS, REPORTS, ME, ROOT, read_csv, write_csv, split, load_master, load_me, load_place_families
 import rules as R
 
 WHERE_KW = [
@@ -26,6 +26,9 @@ WHERE_KW = [
 # describe how often it turns up lost/dropped in a wild place; stated rule: drop two classes.
 LOSS_DOWN = {"ubiquitous": "contextual", "common": "rare", "contextual": "rare", "rare": "rare"}
 ARCHAEOLOGICAL_KINDS = {"fragment", "residue", "deposit", "waste", "byproduct"}
+NON_WHOLE_KINDS = {"salvage", "component", "blank", "semifinished"}
+NON_WHOLE_NAME = re.compile(r"\bобломок\b", re.I)
+CONCEALED_MODE = re.compile(r"(?:container|chest|pouch|sack|basket|box|bag|jar|vessel|storage|storehouse|pit|buried|wrapped|covered|under|refuse|scrap)")
 # R_RESIDUAL_RARE_DATING: items whose own source basis dates them mostly before/declining by 1230
 # (see VERIFICATION.md items/personal.csv & household.csv notes) are capped at rare in frequency,
 # regardless of what master links/spawn profiles would otherwise imply for 1230.
@@ -101,6 +104,13 @@ def main():
             return "anachronism denylist match"
         return None
 
+    def whole_evidence(legacy):
+        """A part or damaged remnant cannot attest the frequency of its whole parent."""
+        m = master[legacy]["rec"]
+        return (m.get("entity_kind") not in NON_WHOLE_KINDS
+                and m.get("manufacturing_state") != "broken"
+                and not NON_WHOLE_NAME.search(master[legacy]["name_ru"]))
+
     rows = []
     # ---------- Part A
     link_superseded = {}
@@ -109,7 +119,7 @@ def main():
         acc = {}  # pf -> dict(cls, basis set, conf)
         for lg in legacy:
             link_superseded[lg] = it["it_id"]
-            if excluded(lg):
+            if excluded(lg) or not whole_evidence(lg):
                 continue
             if me.get(lg, {}).get("quantity_mode") in residue_units:
                 continue
@@ -124,7 +134,7 @@ def main():
                     a["fanout"] = a.get("fanout", False) or len(R.ARCH_PF[arch]) > 1
         if not acc:
             for lg in legacy:
-                if excluded(lg) or me.get(lg, {}).get("quantity_mode") in residue_units:
+                if excluded(lg) or not whole_evidence(lg) or me.get(lg, {}).get("quantity_mode") in residue_units:
                     continue
                 wu = re.sub(r"береговая рабочая зона", "", str(master[lg]["rec"].get("where_used") or ""), flags=re.I)
                 for rx, pfl, exrx in WHERE_KW:
@@ -275,6 +285,34 @@ def main():
     rows += extra
     catalog_pairs = {(r["item_or_category_ref"], r["pf_id"]) for r in rows if r["ref_kind"] == "it"}
     rows = [r for r in rows if r["ref_kind"] != "master" or (r["superseded_by"], r["pf_id"]) not in catalog_pairs]
+    scenes = read_csv(ROOT / "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv")
+    containers = read_csv(ROOT / "data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles.csv")
+    scene_pfs = {pf for s in scenes if s["placement_rules"] for pf in s["pf_ids"].split("|") if pf}
+    container_pfs = {pf for c in containers for pf in c["pf_ids"].split("|") if pf}
+    for r in rows:
+        if r["ref_kind"] == "it":
+            source_ids = [canon2legacy[c] for c in split(it_by_ref[r["item_or_category_ref"]]["master_refs"])
+                          if not excluded(canon2legacy[c]) and whole_evidence(canon2legacy[c])
+                          and me.get(canon2legacy[c], {}).get("quantity_mode") not in residue_units]
+        else:
+            source_ids = [r["item_or_category_ref"].rsplit(":", 1)[-1].upper()]
+        mode_sources = [(lg, json.loads(me[lg]["placement_modes"])) for lg in source_ids
+                        if lg in me and me[lg].get("placement_modes")]
+        modes = sorted({part for _, values in mode_sources for mode in values for part in mode.split("_or_")})
+        if modes:
+            concealed = sum(bool(CONCEALED_MODE.search(mode)) for mode in modes)
+            r["entry_exposed_weight"] = round(8 * (len(modes) - concealed) / len(modes))
+            r["search_concealed_weight"] = 8 - r["entry_exposed_weight"]
+            r["placement_basis_ref"] = ";".join(f"master:{master[lg]['canonical_id']}#placement_modes" for lg, _ in mode_sources)
+        else:
+            r["entry_exposed_weight"] = ""
+            r["search_concealed_weight"] = ""
+            if r["pf_id"] in scene_pfs:
+                r["placement_basis_ref"] = f"data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/interiors/scenes.csv#placement_rules@pf:{r['pf_id']}"
+            elif r["pf_id"] in container_pfs:
+                r["placement_basis_ref"] = f"data/world-catalogs/novgorod/game-base-v1/buildings-interiors-containers/containers/content_profiles.csv#first_open_rule@pf:{r['pf_id']}"
+            else:
+                r["placement_basis_ref"] = "packages/new-game/src/stages/stage-16-item-placement/orchestration/run-stage-16.js#materialize"
     fields = list(rows[0])
     n = write_csv(ITEMS / "item_place_frequency.csv", rows, fields)
     write_csv(REPORTS / "frequency_dropped.csv", dropped, ["link_id", "item_id", "location_archetype", "spawn_frequency", "reason"])

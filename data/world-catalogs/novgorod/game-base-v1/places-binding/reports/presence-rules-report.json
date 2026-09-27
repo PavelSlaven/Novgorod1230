@@ -7445,6 +7445,18 @@
       ]
     }
   ],
+  "item_variant_selection": {
+    "status": "data_gap",
+    "weights_status": "absent",
+    "activation_requirement": {
+      "runtime_constraint": "uniform_among_chosen_item_and_variants_if_weights_absent",
+      "implementation_present": false
+    },
+    "weight_owner": null,
+    "weight_contract": null,
+    "variant_keys": 149,
+    "item_alternatives": 183
+  },
   "rejected_rows": 10977,
   "rejected_by_file": {
     "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 10977

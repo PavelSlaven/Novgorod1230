@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 25,
-  "own_checks_total": 25,
+  "own_checks_passed": 26,
+  "own_checks_total": 26,
   "checks": [
     {
       "domain": "people_composition",
@@ -175,6 +175,16 @@
       "sample": [],
       "external": false,
       "accepted_occurrences": 10898
+    },
+    {
+      "domain": "presence_rules",
+      "name": "item_variant_selection_gap",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "variant_keys": 149,
+      "item_alternatives": 183
     },
     {
       "domain": "presence_rules",

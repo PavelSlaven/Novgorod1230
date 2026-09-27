@@ -247,9 +247,17 @@ export function build({ write = true } = {}) {
     else resolutions.push({ ...r, seasons: [r.season], _signature: signature });
   }
   for (const r of resolutions) { delete r.season; delete r._signature; }
+  const variantResolutions = resolutions.filter((r) => r.variants.length);
   const report = {
     rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n, category_rules: rows.filter((r) => r.subject_kind === 'category').length, people_rules: rows.filter((r) => r.subject_kind !== 'category').length,
     seasonal_candidate_rows: [...groups.values()].reduce((n, g) => n + g.length, 0), resolutions,
+    item_variant_selection: {
+      status: 'data_gap', weights_status: 'absent',
+      activation_requirement: { runtime_constraint: 'uniform_among_chosen_item_and_variants_if_weights_absent', implementation_present: false },
+      weight_owner: null, weight_contract: null,
+      variant_keys: new Set(variantResolutions.map((r) => r.key)).size,
+      item_alternatives: new Set(variantResolutions.flatMap((r) => r.variants.map((v) => `${r.key}|${v.item_ref}`))).size,
+    },
     rejected_rows: rejects.length, rejected_by_file: rejects.reduce((a, r) => { const f = r.where.split('#')[0]; a[f] = (a[f] ?? 0) + 1; return a; }, {}),
     reject_reasons: rejects.flatMap((r) => r.errors.map((e) => e.replace(/'[^']*'/g, "'…'"))).reduce((a, e) => ((a[e] = (a[e] ?? 0) + 1), a), {}),
     rejected_sample: rejects.slice(0, 50),

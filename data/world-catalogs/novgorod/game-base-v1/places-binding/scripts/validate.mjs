@@ -88,6 +88,18 @@ function acceptedCoverage(expected, rules, resolutions, itemRows) {
   for (const [key, count] of counts) if (count !== 1) failures.push(`${count ? 'double assignment' : 'orphan'} ${key} (${count})`);
   return failures;
 }
+function itemVariantSelection(resolutions, actual) {
+  const withVariants = resolutions.filter((r) => r.variants.length);
+  const expected = {
+    status: 'data_gap', weights_status: 'absent',
+    activation_requirement: { runtime_constraint: 'uniform_among_chosen_item_and_variants_if_weights_absent', implementation_present: false },
+    weight_owner: null, weight_contract: null,
+    variant_keys: new Set(withVariants.map((r) => r.key)).size,
+    item_alternatives: new Set(withVariants.flatMap((r) => r.variants.map((v) => `${r.key}|${v.item_ref}`))).size,
+  };
+  return Object.keys(expected).filter((key) => JSON.stringify(actual?.[key]) !== JSON.stringify(expected[key])).map((key) => `${key}: expected ${JSON.stringify(expected[key])}, got ${JSON.stringify(actual?.[key])}`)
+    .concat(Object.keys(actual || {}).filter((key) => !(key in expected)).map((key) => `unexpected field ${key}`));
+}
 if (process.argv.includes('--self-test')) {
   const probe = { pr_id: 'probe_all', scope_kind: 'place_family', scope_ref: 'probe', region_id: '', subject_kind: 'category', subject_ref: 'probe', allowed_seasons: 'all' };
   if (seasonOverlaps([probe, { ...probe, pr_id: 'probe_winter', allowed_seasons: 'winter' }]).length !== 1) throw new Error('season overlap negative probe failed');
@@ -271,7 +283,12 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     add(`presence/people_presence_authoring.csv#row${i + 2}`, scope, split(row.allowed_seasons), split(row.allowed_times));
   });
   check('presence_rules', 'accepted_occurrences_exactly_once', acceptedCoverage(expected, pr, rr.resolutions, itemRows), { accepted_occurrences: expected.length });
+  check('presence_rules', 'item_variant_selection_gap', itemVariantSelection(rr.resolutions, rr.item_variant_selection), {
+    variant_keys: rr.item_variant_selection?.variant_keys, item_alternatives: rr.item_variant_selection?.item_alternatives,
+  });
   if (process.argv.includes('--self-test')) {
+    if (!itemVariantSelection(rr.resolutions, { ...rr.item_variant_selection, activation_requirement: { ...rr.item_variant_selection.activation_requirement, implementation_present: true } }).some((f) => f.startsWith('activation_requirement:'))) throw new Error('item variant selection mutation probe failed');
+    console.log('PASS presence_rules / item_variant_selection_negative_probe');
     const target = rr.resolutions.find((r) => r.variants.some((v) => v.item_ref === 'it_ps_leather_purse'));
     if (!target) throw new Error('leather purse variant probe target missing');
     const altered = rr.resolutions.map((r) => r === target ? { ...r, variants: r.variants.filter((v) => v.item_ref !== 'it_ps_leather_purse') } : r);

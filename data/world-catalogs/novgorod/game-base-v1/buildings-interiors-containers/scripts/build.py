@@ -412,11 +412,11 @@ def main():
         ["sat_id", "pf_id", "layer", "season_period", "day_part", "channel", "clear_text", "partial_text", "loudness", "requires_presence_ref", "source_refs", "confidence", "status"])
     out("ambience/presence_tokens.csv", [dict(token=t[0], meaning_ru=t[1], source_refs=t[2]) for t in ambience.PRESENCE_TOKENS], ["token", "meaning_ru", "source_refs"])
     G4 = [
-        ("g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality", "vikhtuy_locality", "peasant_homestead|village_lane"),
+        ("g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality", "vikhtuy_locality", "peasant_homestead|village_lane|rural_yard|outbuildings"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge", "forest_tract", "forest_edge"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach", "landing_terrace", "ferry_landing|riverbank"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace", "landing_terrace", "ferry_landing|riverbank"),
-        ("g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center", "archaeological_settlement", "peasant_homestead|village_lane"),
+        ("g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center", "archaeological_settlement", "peasant_homestead|village_lane|rural_yard|outbuildings"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing", "local_landing", "ferry_landing|riverbank|fishing_camp"),
         ("g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area", "burial_area", "churchyard"),
     ]

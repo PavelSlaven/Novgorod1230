@@ -328,11 +328,21 @@ for a in amb:
     for r in sp(a["requires_presence_ref"]):
         if r not in bt_ids and r not in tokens: err("ambience %s presence ref %s unknown" % (a["sat_id"], r))
     if not a["clear_text"] or not a["partial_text"]: err("ambience %s missing text" % a["sat_id"])
+    if a["channel"] not in ("visual", "acoustic", "olfactory"): err("ambience %s unknown channel" % a["sat_id"])
+    if a["status"] != "candidate": err("ambience %s not candidate" % a["sat_id"])
 deny_scan(amb, "ambience", "sat_id")
 by_pf = collections.defaultdict(lambda: (set(), set()))
 for a in amb:
     by_pf[a["pf_id"]][0].add(a["season_period"]); by_pf[a["pf_id"]][1].add(a["layer"])
-for g in rd("ambience/g4_human_layer_binding.csv"):
+target_human_pf = ("ferry_landing", "forest_edge", "outbuildings", "peasant_homestead", "riverbank", "rural_yard", "village_lane")
+for pf in target_human_pf:
+    missing = {"winter", "spring_rasputitsa", "summer", "autumn"} - by_pf[pf][0]
+    if missing: err("ambience %s missing seasons %s" % (pf, ",".join(sorted(missing))))
+human_bindings = rd("ambience/g4_human_layer_binding.csv")
+bound_pf = {pf for g in human_bindings for pf in sp(g["pf_ids"])}
+for pf in target_human_pf:
+    if pf not in bound_pf: err("ambience %s has no G4 binding" % pf)
+for g in human_bindings:
     seasons, layers = set(), set()
     for pf in sp(g["pf_ids"]):
         seasons |= by_pf[pf][0]; layers |= by_pf[pf][1]

@@ -19,7 +19,7 @@
  "containers/first_open_rule.json": 1,
  "landmarks/landmarks.csv": 76,
  "sources.csv": 44,
- "ambience/settlement_ambience_texts.csv": 168,
+ "ambience/settlement_ambience_texts.csv": 184,
  "ambience/presence_tokens.csv": 9,
  "ambience/g4_human_layer_binding.csv": 7,
  "interiors/matcult_item_refs.csv": 458

@@ -15,6 +15,7 @@ const rows = readCsv(path.join(DIR, 'presentation_texts.csv'));
 const mrows = readCsv(path.join(DIR, 'member_phrases.csv'));
 const allow = readCsv(path.join(DIR, 'habitat_allowlist.csv'));
 const g4index = readJson(path.join(SHARED, 'g4_nature_index.json'));
+const bindings = readCsv(path.resolve(DIR, '../../places-binding/places/node_binding.csv'));
 const deny = readJson(path.join(SHARED, 'anachronism_denylist.json'));
 const denyRe = denyRegex(deny.terms_ru.concat(deny.terms_en));
 const ALL = { ...MEMBERS, ...EXTRA_MEMBERS };
@@ -46,6 +47,14 @@ for (const g of g4index.g4) for (const s of SEASONS) for (const layer of LAYERS)
   if (!rows.some((r) => r.g4_ref === g.g4_id && r.season_period === s && r.layer === layer && r.clear_text && r.partial_text)) E.push(`missing ${g.g4_short}/${s}/${layer}`);
   if (s === 'winter' && layer === 'tree_layer' && !rows.some((r) => r.g4_ref === g.g4_id && r.season_period === s && r.layer === layer && ['default', 'no_snow'].includes(r.condition))) E.push(`missing no-snow trees ${g.g4_short}`);
 }
+const TARGET_PF = ['bog', 'conifer_woodland', 'ferry_landing', 'floodplain_meadow', 'forest_edge', 'forest_track', 'hunting_ground', 'marshy_stream', 'outbuildings', 'peasant_homestead', 'river_channel', 'riverbank', 'road', 'rural_yard', 'village_lane', 'winter_ice_crossing'];
+const indexedG4 = new Set(g4index.g4.map((g) => g.g4_id));
+for (const pf of TARGET_PF) {
+  const g4refs = bindings.filter((b) => b.node_level === 'G4' && [b.pf_id, ...b.pf_secondary.split(';')].includes(`pf_${pf}`))
+    .map((b) => b.node_ref.replace(/@1$/, ''));
+  if (!g4refs.some((ref) => indexedG4.has(ref))) E.push(`no natural G4 binding for ${pf}`);
+  for (const s of SEASONS) if (!g4refs.some((ref) => indexedG4.has(ref) && rows.some((r) => r.g4_ref === ref && r.season_period === s && r.clear_text && r.partial_text && r.source_refs))) E.push(`no natural text for ${pf}/${s}`);
+}
 const used = new Set(allow.map((a) => a.member_ref));
 for (const g of g4index.g4) for (const m of g.members) used.add(m.ref);
 for (const ref of used) for (const s of SEASONS) if (!mrows.some((m) => m.member_ref === ref && m.season_period === s && m.channel === 'visual' && m.clear_text && m.partial_text)) E.push(`member phrase missing ${ref}/${s}`);
@@ -55,4 +64,5 @@ for (const m of mrows) {
   const h = `${m.clear_text} ${m.partial_text}`.match(denyRe); if (h) E.push(`anachronism in member ${m.npm_id}`); const sd = SEASON_DENY[m.season_period]; if (sd && sd.test(`${m.clear_text} ${m.partial_text}`)) E.push(`season contradiction member ${m.npm_id}`); if (m.channel === 'acoustic' && !['1', '2', '3'].includes(m.loudness)) E.push(`member acoustic loudness ${m.npm_id}`);
 }
 console.log(`checked: ${rows.length} texts, ${cells} G4 x season x layer cells, ${mrows.length} member phrases, ${allow.length} allowlist rows, ${dict.length} taxon words`);
+console.log(`checked: ${TARGET_PF.length * SEASONS.length} target PF x season natural cells`);
 fail(E, 'natural_presentation_texts check');

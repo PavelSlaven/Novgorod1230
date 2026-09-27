@@ -1,9 +1,8 @@
 slot_id,candidate_record_ref,weight,source_refs,confidence,status
 msr_ferry_crossing,transport:trv_011,1,book:624953 §Глава 6 Средства передвижения А.С. Хорошев ¶1224,B,candidate
-msr_homestead_dwelling,building:bt_izba_heated_single,2,matcult:ARC0020|matcult_scene:SCN008,A,candidate
-msr_homestead_dwelling,building:bt_klet_dwelling,1,matcult:ARC0021|wk:claim:settlement-log-building-form,B,candidate
-msr_homestead_fence,building:bt_palisade_fence,2,matcult:ARC0014|wk:claim:settlement-post-fence-yard,A,candidate
-msr_homestead_fence,building:bt_wattle_fence,1,matcult:AGR0004,C,candidate
+msr_homestead_dwelling,building:bt_izba_heated_single,1,matcult:ARC0020|matcult_scene:SCN008,A,candidate
+msr_homestead_fence,building:bt_palisade_fence,1,matcult:ARC0014,C,candidate
+msr_homestead_fence,building:bt_wattle_fence,2,matcult:AGR0004,C,candidate
 msr_outbuildings_economic,building:bt_khlev,2,matcult:ARC0002|matcult_scene:SCN008,B,candidate
 msr_outbuildings_economic,building:bt_klet_ambar,2,matcult:ARC0018|matcult_scene:SCN008,A,candidate
 msr_outbuildings_economic,building:bt_light_shed,1,matcult:ARC0017,B,candidate

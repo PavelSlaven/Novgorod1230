@@ -1,6 +1,6 @@
 slot_id,pf_id,slot_kind,required,candidate_category_refs,count_min,count_max,applicability,source_refs,rule_ref,confidence,status,presence_relation
 msr_ferry_crossing,pf_ferry_landing,anchor,true,,1,1,all,book:624953 §Глава 6 Средства передвижения А.С. Хорошев ¶1224,MSR-C003-ferry-crossing,B,candidate,identity_requirement_not_frequency
-msr_homestead_dwelling,pf_peasant_homestead,building,true,spatial.g3.built_site,1,1,all,matcult:ARC0020|matcult:ARC0021|matcult_scene:SCN008,MSR-C003-homestead-dwelling,C,candidate,identity_requirement_not_frequency
-msr_homestead_fence,pf_peasant_homestead,building,true,,1,1,all,matcult:ARC0014|matcult:AGR0004,MSR-C003-homestead-fence,C,candidate,identity_requirement_not_frequency
+msr_homestead_dwelling,pf_peasant_homestead,building,true,spatial.g3.built_site,1,1,all,matcult_scene:SCN008|matcult:ARC0020,MSR-C003-homestead-dwelling,C,candidate,identity_requirement_not_frequency
+msr_homestead_fence,pf_peasant_homestead,building,true,,1,1,all,matcult:AGR0004,MSR-C003-homestead-fence,C,candidate,identity_requirement_not_frequency
 msr_outbuildings_economic,pf_outbuildings,building,true,spatial.g3.built_site,1,1,all,matcult:ARC0002|matcult:ARC0018|matcult:ARC0017|matcult_scene:SCN008,MSR-C003-outbuilding-mix,B,candidate,identity_requirement_not_frequency
 msr_winter_ice_road,pf_winter_ice_crossing,anchor,true,seasonal_route,1,1,winter,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=winter_ice_crossing],MSR-C003-ice-road,B,candidate,identity_requirement_not_frequency

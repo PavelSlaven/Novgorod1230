@@ -4,8 +4,8 @@
   "pf_secondary_policy": "no_automatic_required_slot_from_secondary_pf",
   "rules": [
     { "id": "MSR-C003-ferry-crossing", "text": "A ferry landing requires one local crossing anchor; a boat is not inferred from the crossing record.", "basis": "transport:trv_011; book:624953 §Глава 6 Средства передвижения А.С. Хорошев ¶1224", "confidence": "B" },
-    { "id": "MSR-C003-homestead-dwelling", "text": "A peasant homestead requires one dwelling selected from its building mix.", "basis": "matcult_scene:SCN008; building_types.csv peasant_homestead owner mix", "confidence": "C" },
-    { "id": "MSR-C003-homestead-fence", "text": "A peasant homestead requires one enclosure; its candidate mix does not establish historical frequency.", "basis": "matcult:ARC0014; matcult:AGR0004; editorial requiredness", "confidence": "C" },
+    { "id": "MSR-C003-homestead-dwelling", "text": "A peasant homestead requires one izba.", "basis": "settlement_building_mix.csv#sf_yard_peasant:bt_izba_heated_single", "confidence": "C" },
+    { "id": "MSR-C003-homestead-fence", "text": "A peasant homestead requires one enclosure; wattle follows the rural mix, while palisade is an editorial alternative, not a rural frequency claim.", "basis": "settlement_building_mix.csv#sf_yard_peasant:bt_wattle_fence; editorial palisade alternative (matcult:ARC0014 concerns urban yards); editorial requiredness", "confidence": "C" },
     { "id": "MSR-C003-outbuilding-mix", "text": "Outbuildings require one economic building selected from locally applicable owner types.", "basis": "matcult_scene:SCN008; building_types.csv outbuildings owner mix", "confidence": "B" },
     { "id": "MSR-C003-ice-road", "text": "A winter ice crossing requires one seasonal route anchor in winter.", "basis": "place-first-cartography.json#environment_families[id=winter_ice_crossing]", "confidence": "B" }
   ]

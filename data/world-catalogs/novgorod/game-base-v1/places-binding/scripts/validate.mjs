@@ -196,6 +196,7 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   const boundPf = new Set(readCsv(P('places/node_binding.csv')).map((r) => r.pf_id).filter(Boolean));
   const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
   const buildings = new Map(readCsv(P('../buildings-interiors-containers/buildings/building_types.csv')).map((r) => [r.bt_id, r]));
+  const ruralMix = readCsv(P('../buildings-interiors-containers/buildings/settlement_building_mix.csv')).filter((r) => r.sf_id === 'sf_yard_peasant');
   const transport = new Set(readCsv(P('../transport-health-recreation/transport_travel/transport_entities.csv')).map((r) => r.tr_id));
   const presence = readCsv(P('presence/presence_rules.csv'));
   const f = [];
@@ -231,6 +232,17 @@ const ex = readJson(P('inputs/pr98-extract.json'));
     if (kind === 'building' && slot && (!buildings.get(ref)?.pf_ids.split('|').includes(slot.pf_id.slice(3)) || !buildings.get(ref)?.source_refs)) f.push(`building owner/source ${key}`);
     if (slot?.slot_id === 'msr_ferry_crossing' && c.candidate_record_ref !== 'transport:trv_011') f.push(`unsupported ferry candidate ${key}`);
   }
+  const mixByClass = (btClass) => new Set(ruralMix.filter((r) => buildings.get(r.member_id)?.bt_class === btClass).map((r) => `building:${r.member_id}`));
+  const dwellingMix = mixByClass('dwelling');
+  const dwellingCandidates = candidates.filter((c) => c.slot_id === 'msr_homestead_dwelling');
+  for (const c of dwellingCandidates) if (!dwellingMix.has(c.candidate_record_ref)) f.push(`dwelling outside peasant settlement mix ${c.candidate_record_ref}`);
+  for (const ref of dwellingMix) if (!dwellingCandidates.some((c) => c.candidate_record_ref === ref)) f.push(`missing peasant dwelling ${ref}`);
+  const fenceMix = mixByClass('enclosure');
+  const fenceCandidates = candidates.filter((c) => c.slot_id === 'msr_homestead_fence');
+  const ruralFenceWeights = fenceCandidates.filter((c) => fenceMix.has(c.candidate_record_ref)).map((c) => +c.weight);
+  const otherFenceWeights = fenceCandidates.filter((c) => !fenceMix.has(c.candidate_record_ref)).map((c) => +c.weight);
+  if (!ruralFenceWeights.length || Math.max(...ruralFenceWeights) < Math.max(0, ...otherFenceWeights)) f.push('peasant fence mix has lower weight than editorial alternative');
+  for (const c of fenceCandidates.filter((c) => !fenceMix.has(c.candidate_record_ref))) if (c.confidence !== 'C' || c.source_refs.includes('wk:claim:settlement-post-fence-yard')) f.push(`urban fence claim used as rural basis ${c.candidate_record_ref}`);
   for (const r of slots) if (!candidates.some((c) => c.slot_id === r.slot_id)) f.push(`${r.slot_id}: no candidates`);
   for (const rule of rules.keys()) if (!slots.some((r) => r.rule_ref === rule)) f.push(`unused rule ${rule}`);
   for (const r of gaps) {

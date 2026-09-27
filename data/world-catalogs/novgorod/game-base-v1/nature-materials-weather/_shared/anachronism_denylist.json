@@ -1,0 +1,13 @@
+{
+ "schema": "game_base_v1.nature_anachronism_denylist.v1",
+ "status": "candidate",
+ "scope": "Group nature-materials-weather checks only; to be merged into the proposed shared domain anachronism_denylist_lexicon.",
+ "sources": [
+  "game-base-v1/catalog.json#conventions.anachronism (картофель, кукуруза, томат, подсолнечник, табак, индейка, кролик как скот, тяжеловозы, чай, кофе, сахар-песок, огнестрел)",
+  "main:data/world-catalogs/novgorod/world-knowledge/production-v1 family r7-potato-anachronism-boundary",
+  "Regional-absent taxa for Novgorod land ~1230 (not native / introduced later): larch and fir (global landscape templates list them; natural range is east/north-east of the region — C, needs flora-domain confirmation), muskrat (introduced to USSR 20th c.), raccoon dog (introduced 20th c.), American mink (20th c.), Sosnowsky's hogweed (20th c.), Canadian waterweed (19th c.), lilac and horse chestnut (introduced later)."
+ ],
+ "note": "Terms are matched as word-initial prefixes (Cyrillic-aware); a trailing ! means exact whole word.",
+ "terms_ru": ["картофел", "картошк", "кукуруз", "томат", "помидор", "подсолнеч", "табак", "индейк", "индюк", "кролик", "тяжеловоз", "чай!", "кофе", "сахар", "пищал", "ружь", "порох", "огнестрел", "лиственниц", "пихт", "ондатр", "енотовидн", "норка американ", "борщевик", "элоде", "сирен", "конский каштан", "топол"],
+ "terms_en": ["potato", "maize", "tomato", "sunflower", "tobacco", "turkey", "rabbit", "draft horse", "coffee", "sugar", "musket", "gunpowder", "larch", "Larix", "Abies", "muskrat", "raccoon dog", "Populus nigra"]
+}

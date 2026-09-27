@@ -1,0 +1,55 @@
+{
+  "generated_by": "scripts/build.mjs",
+  "files": {
+    "flora/trees_shrubs.csv": 37,
+    "flora/tree_habitat_presence.csv": 840,
+    "flora/wood_use_kolchin1968.csv": 27,
+    "flora/woody_denylist.csv": 20,
+    "flora/woody_categories.csv": 42,
+    "flora/sources.csv": 63,
+    "flora/landscape_template_woody_check.csv": 34
+  },
+  "taxa_by_life_form": {
+    "tree": 14,
+    "small_tree": 5,
+    "shrub": 14,
+    "dwarf_shrub": 4
+  },
+  "taxa_by_confidence": {
+    "B": 20,
+    "C": 15,
+    "A": 2
+  },
+  "taxon_pf_pairs": 210,
+  "pf_used": [
+    "pf_bog",
+    "pf_broadleaf_woodland",
+    "pf_conifer_woodland",
+    "pf_field_margin",
+    "pf_floodplain_meadow",
+    "pf_forest_edge",
+    "pf_forest_track",
+    "pf_hay_meadow",
+    "pf_hunting_ground",
+    "pf_lake_shore",
+    "pf_marshy_stream",
+    "pf_mixed_woodland",
+    "pf_pasture",
+    "pf_riverbank",
+    "pf_road",
+    "pf_village_lane"
+  ],
+  "summer_presence_rows_by_class": {
+    "common": 86,
+    "ubiquitous": 7,
+    "contextual": 90,
+    "rare": 27
+  },
+  "kolchin_table1_sum": 909,
+  "kolchin_declared_total": 909,
+  "landscape_templates_flagged": [
+    "lt_boreal_taiga_coniferous_forest",
+    "lt_temperate_coniferous_forest",
+    "lt_wooded_floodplain"
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "dataset": "Novgorod1230_food_system_dataset_v1",
+  "status": "PASS",
+  "generated_date": "2026-08-29",
+  "summary": {
+    "dataset": "Novgorod1230_food_system_dataset_v1",
+    "period_center": 1230,
+    "ingredients": 191,
+    "recipes_total": 268,
+    "base_recipes": 188,
+    "recipe_variants": 80,
+    "recipe_steps": 1164,
+    "processing_recipes": 36,
+    "preservation_recipes": 44,
+    "storage_recipes": 3,
+    "drinks": 17,
+    "dishes": 168,
+    "meal_sets": 21,
+    "sources": 115,
+    "material_additions": 87,
+    "local_visual_references": 31,
+    "rejected_recipes": 25,
+    "recipe_confidence_counts": {
+      "A": 19,
+      "B": 199,
+      "C": 50
+    },
+    "ingredient_confidence_counts": {
+      "A": 63,
+      "B": 104,
+      "C": 23,
+      "D": 1
+    },
+    "recipe_type_counts": {
+      "dish": 168,
+      "drink": 17,
+      "preservation": 44,
+      "processing": 36,
+      "storage": 3
+    },
+    "recipe_ingredient_links": 883,
+    "recipe_item_links": 2831,
+    "recipe_profession_links": 686,
+    "recipe_activity_links": 403,
+    "recipe_source_links": 1316,
+    "seasonality_rows": 5508,
+    "material_items_with_recipe_links": 254,
+    "unlinked_food_like_items": 277,
+    "well_supported_technologies": [
+      "grain cleaning, crushing and milling",
+      "porridge/pottage cooking in ceramic vessels",
+      "bread fermentation and baking as a reconstructed chain from confirmed grain/material technology",
+      "mass fishing, gutting, boiling and baking",
+      "fish drying and salting terminology/process classes",
+      "malt and grain-fermentation chain with near-period hop trade",
+      "basic milk souring, curd, cheese and butter processing",
+      "dry storage of grain and root-cellar/cool storage as household processes"
+    ],
+    "most_disputed_or_contextual": [
+      "specific wild-green and mushroom dishes",
+      "controlled vegetable fermentation as a common norm",
+      "intentional fish smoking",
+      "aged cheese form",
+      "pressed food oil from flax/hemp as ordinary household food",
+      "pan-fried batter products and later dish names",
+      "specific filled baked products/pies",
+      "exact beer/mead strengths, mash temperatures and fermentation times",
+      "exact saltwork apparatus and yield"
+    ]
+  },
+  "checks": [
+    {
+      "check": "unique ingredient IDs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique ingredient slugs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique recipe IDs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique recipe slugs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique step IDs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique material addition IDs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique meal set IDs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique source IDs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique image IDs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "unique recipe graph edge IDs",
+      "status": "PASS",
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "check": "ingredient item references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "ingredient source references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "recipe source references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "recipe ingredient references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "recipe item/location references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "recipe profession references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "recipe activity references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "variant base recipe references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "step recipe references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "step ingredient references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "step item references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "every recipe has at least two structured steps",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "step numbers are consecutive",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "no confidence-D active recipes",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "confidence-C recipes are context-only",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "confidence-D ingredients are not used by active recipes",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "auto-enabled recipes have no required C/D ingredient",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "no post-Columbian/late forbidden term in active names",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "late famous dish names not used as active historical names",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "material additions do not collide with inherited IDs",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "every material addition is linked",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "all link-table recipe IDs resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "all link-table item IDs resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "all ingredient link IDs resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "meal set recipe references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "recipe chain references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "query example recipe references resolve",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "seasonality matrix is complete",
+      "status": "PASS",
+      "details": {
+        "expected": 5508,
+        "actual": 5508
+      }
+    },
+    {
+      "check": "heated recipes mark temperatures as modern reconstruction",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "historical quantity layer covers every required ingredient",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "reconstruction quantity layer covers every required ingredient",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "safety-sensitive records have modern safety notes",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "all local image references exist",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "prompt set is populated",
+      "status": "PASS",
+      "details": {
+        "prompt_files": 23
+      }
+    },
+    {
+      "check": "required archive structure exists",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "JSON/CSV row-count parity",
+      "status": "PASS",
+      "details": []
+    },
+    {
+      "check": "provisional ZIP integrity",
+      "status": "PASS",
+      "details": {
+        "bad_member": null,
+        "members": 183
+      }
+    }
+  ],
+  "error_count": 0,
+  "errors": []
+}

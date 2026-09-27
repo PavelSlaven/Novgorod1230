@@ -1,0 +1,166 @@
+{
+  "dataset_id": "Novgorod1230_other_material_entities_dataset_v1",
+  "validated_at": "2026-08-29",
+  "status": "PASS",
+  "checks": [
+    {
+      "check": "unique new item IDs",
+      "status": "PASS",
+      "details": "2196 records"
+    },
+    {
+      "check": "unique normalized new names",
+      "status": "PASS",
+      "details": "2196 records"
+    },
+    {
+      "check": "no exact normalized collision with existing catalog",
+      "status": "PASS",
+      "details": "exact name collisions = 0"
+    },
+    {
+      "check": "unique state IDs",
+      "status": "PASS",
+      "details": "90 variants"
+    },
+    {
+      "check": "all state bases resolve",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "check": "no confidence D emitted as material entity",
+      "status": "PASS",
+      "details": "C=165; D=0"
+    },
+    {
+      "check": "all item source refs resolve",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "check": "all state source refs resolve",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "check": "all item profession refs resolve",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "check": "all item location archetypes resolve",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "check": "profession links resolve",
+      "status": "PASS",
+      "details": "60868 links"
+    },
+    {
+      "check": "activity links resolve",
+      "status": "PASS",
+      "details": "13535 links"
+    },
+    {
+      "check": "location links resolve",
+      "status": "PASS",
+      "details": "12997 links"
+    },
+    {
+      "check": "source-item links resolve",
+      "status": "PASS",
+      "details": "15775 links"
+    },
+    {
+      "check": "transformation links resolve",
+      "status": "PASS",
+      "details": "12 links"
+    },
+    {
+      "check": "workflow stages are non-empty",
+      "status": "PASS",
+      "details": "28 workflows"
+    },
+    {
+      "check": "workflow item refs resolve",
+      "status": "PASS",
+      "details": "261 links"
+    },
+    {
+      "check": "workflow transition refs resolve",
+      "status": "PASS",
+      "details": "407 links"
+    },
+    {
+      "check": "spawn profile refs resolve",
+      "status": "PASS",
+      "details": "46 profiles"
+    },
+    {
+      "check": "inventory profile refs resolve",
+      "status": "PASS",
+      "details": "26 profiles"
+    },
+    {
+      "check": "user-focus crosswalk refs resolve",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "check": "dedup sources removed from emitted new types",
+      "status": "PASS",
+      "details": "79 candidate IDs removed"
+    },
+    {
+      "check": "all new items have function, location and source",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "check": "confidence C requires explicit context",
+      "status": "PASS",
+      "details": "C=165"
+    },
+    {
+      "check": "prompt files created",
+      "status": "PASS",
+      "details": "46 prompts"
+    },
+    {
+      "check": "xlsx opens with openpyxl",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "check": "JSON/CSV row-count parity",
+      "status": "PASS",
+      "details": "[]"
+    }
+  ],
+  "blocking_failures": [],
+  "warnings": [
+    {
+      "code": "FUZZY_OVERLAP_REVIEW",
+      "count": 60,
+      "note": "Review-only candidates; similarity is not automatically identity."
+    },
+    {
+      "code": "EXTERNAL_CATALOG_BOUNDARIES",
+      "count": 3,
+      "note": "Whole clothing/accessory/military objects remain owned by their canonical catalogs."
+    },
+    {
+      "code": "CONFIDENCE_C_EXPLICIT_ONLY",
+      "count": 165,
+      "note": "Not permitted as routine background."
+    },
+    {
+      "code": "NO_LOCAL_IMAGES",
+      "count": 0,
+      "note": "The archive supplies source URLs and Imagen prompts; it does not redistribute reference images."
+    }
+  ],
+  "scope_note": "Machine validation proves structural consistency, reference resolution and duplicate-control rules. It does not prove that every item is present in any particular party scene."
+}

@@ -1,0 +1,11 @@
+{
+ "built_by": "scripts/build.cjs",
+ "counts": {
+  "mammals": 44,
+  "birds": 149,
+  "wild_habitat_presence": 4231,
+  "fauna_categories": 220,
+  "taxa_checks": 27,
+  "sources": 21
+ }
+}

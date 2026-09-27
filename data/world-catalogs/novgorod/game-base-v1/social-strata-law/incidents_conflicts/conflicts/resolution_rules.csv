@@ -1,0 +1,6 @@
+rule_id,method,effect,source_refs
+resolve_witness,свидетель или старший,спор фиксируется в памяти; ложь позже имеет последствия,src_rus13tpl_local_conflict_templates_v1
+resolve_payment,"плата, компенсация, возврат вещи","может закрыть экономическую часть, но не всегда обиду",src_rus13tpl_local_conflict_templates_v1
+resolve_apology,извинение по статусу,"снижает эскалацию, если не было вреда",src_rus13tpl_local_conflict_templates_v1
+resolve_delay,"ожидание, отложенный разбор",создаёт deferred_event,src_rus13tpl_local_conflict_templates_v1
+resolve_force,сила,"быстро меняет сцену, но создаёт право, свидетелей, раны и репутацию",src_rus13tpl_local_conflict_templates_v1

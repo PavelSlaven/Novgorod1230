@@ -1,0 +1,72 @@
+{
+  "status_source": "candidate_not_approved",
+  "import_enabled": false,
+  "total_names": 54,
+  "by_origin_sex": {
+    "novgorod_rus|male": 20,
+    "novgorod_rus|female": 34
+  },
+  "declared_gaps_in_candidate": [
+    "karelian",
+    "izhorian",
+    "votic",
+    "estonian",
+    "broad_finnic"
+  ],
+  "excluded_pending_review": [
+    {
+      "name_id": "nov_name_rolf_pending_v1",
+      "canonical_tradition": "Rolf",
+      "status": "needs_review",
+      "reason": "Audit correction: no merchant attribution; excluded pending exact role/source review."
+    },
+    {
+      "name_id": "nov_name_olga_pending_v1",
+      "canonical_tradition": "Ольга",
+      "status": "needs_review",
+      "reason": "Historically possible, not impossible; local target evidence insufficient for default."
+    },
+    {
+      "name_id": "nov_name_elena_pending_v1",
+      "canonical_tradition": "Елена",
+      "status": "needs_review",
+      "reason": "Historically possible, not impossible; local target evidence insufficient for default."
+    },
+    {
+      "name_id": "nov_name_mstislav_george_pair_pending_v1",
+      "canonical_tradition": "Мстислав (Георгий)",
+      "status": "needs_review",
+      "reason": "Pairing pending exact dynastic evidence; excluded."
+    },
+    {
+      "name_id": "nov_name_rostislav_michael_pair_rejected_v1",
+      "canonical_tradition": "Ростислав (Михаил)",
+      "status": "rejected",
+      "reason": "False pairing removed; Михаил is father, not baptismal pair."
+    },
+    {
+      "name_id": "nov_name_marena_rejected_v1",
+      "canonical_tradition": "Марена",
+      "status": "rejected",
+      "reason": "Unsupported by supplied evidence."
+    },
+    {
+      "name_id": "nov_name_milusha_rejected_v1",
+      "canonical_tradition": "Милуша",
+      "status": "rejected",
+      "reason": "Unsupported by supplied evidence."
+    },
+    {
+      "name_id": "nov_name_miloslava_rejected_v1",
+      "canonical_tradition": "Милослава",
+      "status": "rejected",
+      "reason": "Unsupported by supplied evidence."
+    },
+    {
+      "name_id": "nov_name_ontsifor_pending_v1",
+      "canonical_tradition": "Онцифор",
+      "status": "needs_review",
+      "reason": "Out of target window; not impossible, excluded from 1230–1250."
+    }
+  ]
+}

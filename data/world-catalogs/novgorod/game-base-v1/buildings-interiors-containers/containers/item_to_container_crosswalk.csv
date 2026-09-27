@@ -1,0 +1,88 @@
+item_id,ct_id,name_ru
+AGR0001,ct_milk_pail,Деревянное ведро для доения
+AGR0002,ct_feed_manger,Ясли для сена
+AGR0008,ct_zakrom,Закром амбарный
+AGR0009,ct_grain_bin,Зерновой ларь
+AGR0010,ct_basket_grain,Корзина зерновая
+AGR0011,ct_sack_grain,Мешок зерновой
+AGR0026,ct_feed_manger,Деревянная кормушка для скота
+AGR0037,ct_lukoshko,Посевной лукошко/корзина
+ARC0026,ct_cellar_pit,Срубный погреб/холодное хранилище
+CON0004,ct_bucket_staved,Деревянное ведро строительное
+CON0005,ct_basket_woven,Корзина для раствора/щебня
+CRF0039,ct_kad,Кузнечная вода в кадке
+CRF0110,ct_kad,Дубильная яма или кадь
+FOD0049,ct_pot_cooking,Густая зерновая каша в горшке
+FOD0052,ct_sack_grain,Мука в мешке
+FOD0056,ct_korchaga,Импортное вино в амфоре/бочке — редкий товар
+FOD0059,ct_kad,Пиво/брага в клёпочной кадке
+FSH0017,ct_fish_tub,Деревянная кадка для рыбы
+FSH0024,ct_basket_fish,Плетёная корзина для рыбы
+FUR0003,ct_lar_dugout,Долбленый ларь
+FUR0006,ct_lar_plank,Ларь крупный
+FUR0007,ct_shelf_storage,Настенная открытая полка
+FUR0012,ct_chest_domed,Сундук с выпуклой крышкой
+FUR0014,ct_shelf_storage,Угловая полка
+FUR0023,ct_grain_bin,Ларь или зерновой короб
+FUR0024,ct_casket_small,Малый ларец
+FUR0025,ct_shelf_storage,Открытый стеллаж
+FUR0026,ct_chest_plank,Сундук дощатый с плоской крышкой
+HOU0001,ct_bucket_staved,Деревянное ведро с обручами
+HOU0015,ct_sack_cloth,Мешок тканевый
+HOU0016,ct_basket_woven,Плетёная корзина
+HOU0019,ct_trough_dugout,Корыто долбленое
+HOU0021,ct_birchbark_box,Берестяной короб
+HOU0022,ct_tues,Берестяной туес
+HOU0023,ct_birchbark_case,Берестяной чехол
+HOU0024,ct_barrel_oak,Бочка дубовая
+HOU0025,ct_keg_small,Бочонок малый
+HOU0031,ct_bucket_dugout,Долбленое ведро
+HOU0036,ct_kad,Кадка клепочная
+HOU0037,ct_knife_sheath,Кожаный чехол для ножа или инструмента
+HOU0038,ct_needle_case,Костяная игольница
+HOU0040,ct_lokhan,Лохань клепочная
+HOU0041,ct_pouch_small,Мешочек для мелочей
+HOU0043,ct_box_wooden_small,Небольшая деревянная коробочка
+HOU0044,ct_woodpile,Поленница
+HOU0048,ct_bale_wrapped,Тюк товара в тканевой обертке
+INT0013,ct_shelf_storage,Полка на стене
+INT0048,ct_shelf_storage,Настенная полка
+LTR0002,ct_cart_body,Кузов телеги дощатый
+LTR0030,ct_cart_body,Телега с дощатым коробом
+MIL0016,ct_flask_wooden,Деревянная походная фляга/бутыль
+MIL0017,ct_knife_sheath,Кожаные ножны боевого/хозяйственного ножа
+MIL0021,ct_belt_pouch,Поясная воинская сумка
+MIL0025,ct_travel_bag,Воинский дорожный мешок
+MIL0027,ct_quiver,Колчан для стрел
+MSC0018,ct_barrel_oak,Бочка пустая на боку
+MSC0024,ct_woodpile,Дровница под навесом
+MSC0042,ct_sack_cloth,Пустые мешки
+POT0018,ct_pot_storage_large,Керамический горшок крупный
+POT0019,ct_pot_small,Керамический горшок малый
+POT0020,ct_jug_ceramic,Керамический кувшин
+POT0021,ct_pot_cooking,Керамический кухонный горшок
+POT0023,ct_pot_fat,Керамический сосуд для хранения жира/масла
+POT0025,ct_kad,Клепочный деревянный сосуд
+TRD0004,ct_sack_cloth,Мешок соли
+TRD0005,ct_barrel_cargo,Солёная рыба в бочке
+TRD0009,ct_sack_grain,Мешок ржи
+TRD0022,ct_tues,Берестяной туес с товаром
+TRD0023,ct_barrel_cargo,Бочка торговая
+TRD0024,ct_kad_pressed,Кадка с крышкой и гнётом
+TRD0025,ct_sack_grain,Мешок зерна или муки
+TRD0026,ct_basket_cargo,Плетёная грузовая корзина
+TRD0027,ct_bale_wrapped,Товарный тюк ткани
+TRD0030,ct_chest_merchant,Купеческий сундук
+TRD0031,ct_trade_bin,Товарный ларь
+TRD0036,ct_shelf_storage,Складская полка для тары
+TRD0042,ct_box_plank_crate,Дощатый ящик
+TRD0044,ct_kad,Кадка с открытым верхом
+TRD0045,ct_barrel_cargo,Клёпочная грузовая бочка
+TRD0047,ct_barrel_cargo,Бочка мёда
+TRD0048,ct_barrel_cargo,Бочка соли
+TRD0052,ct_bale_wrapped,Тюк кожи
+TRD0053,ct_bale_wrapped,Тюк шерстяной ткани
+WPN0015,ct_knife_sheath,Ножны кожаные для ножа
+WPN0055,ct_sword_scabbard,"Ножны меча деревянные, обтянутые кожей"
+WPN0069,ct_knife_sheath,Боевой нож в кожаных ножнах
+WTR0019,ct_tar_pot,Горшок со смолой/дёгтем для ремонта лодки

@@ -1,0 +1,16 @@
+{
+  "rows": 105,
+  "by_scope": {
+    "place_template": 29,
+    "place_family": 44,
+    "g4": 32
+  },
+  "place_template_rows_with_households": 27,
+  "place_template_rows_with_residents": 1,
+  "families_with_items_max": 29,
+  "audit_comparison": {
+    "ours_gap": 21,
+    "equal": 53,
+    "differs": 182
+  }
+}

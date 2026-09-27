@@ -1,0 +1,221 @@
+category_id,domain,facet,stable_code,parent_category_id,name_ru,name_en,region_id,universal,source_refs,status
+fauna.mammal,fauna,class,fauna.mammal,,Дикие млекопитающие,Wild mammals,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird,fauna,class,fauna.bird,,Дикие птицы,Wild birds,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.ungulate,fauna,taxon_group,fauna.mammal.ungulate,fauna.mammal,Копытные,ungulate,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.large_predator,fauna,taxon_group,fauna.mammal.large_predator,fauna.mammal,Крупные хищники,large_predator,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.fur_predator,fauna,taxon_group,fauna.mammal.fur_predator,fauna.mammal,Пушные хищники,fur_predator,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.fur_small,fauna,taxon_group,fauna.mammal.fur_small,fauna.mammal,Мелкие пушные куньи,fur_small,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.small_predator,fauna,taxon_group,fauna.mammal.small_predator,fauna.mammal,Мелкие хищники,small_predator,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.fur_rodent,fauna,taxon_group,fauna.mammal.fur_rodent,fauna.mammal,Пушные грызуны,fur_rodent,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.small_mammal,fauna,taxon_group,fauna.mammal.small_mammal,fauna.mammal,"Мелкие звери (насекомоядные, грызуны)",small_mammal,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.game_small,fauna,taxon_group,fauna.mammal.game_small,fauna.mammal,Мелкая дичь,game_small,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.bat,fauna,taxon_group,fauna.mammal.bat,fauna.mammal,Летучие мыши,bat,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.marine_mammal,fauna,taxon_group,fauna.mammal.marine_mammal,fauna.mammal,Ластоногие,marine_mammal,,true,fauna-mammals-birds/README.md,candidate
+fauna.mammal.ungulate.elk,fauna,taxon,fauna.mammal.ungulate.elk,fauna.mammal.ungulate,Лось,Elk (moose),,true,SRC_HDBM2017,candidate
+fauna.mammal.ungulate.wild_boar,fauna,taxon,fauna.mammal.ungulate.wild_boar,fauna.mammal.ungulate,Кабан,Wild boar,,true,SRC_MASTER_FOOD#ING0117,candidate
+fauna.mammal.ungulate.roe_deer,fauna,taxon,fauna.mammal.ungulate.roe_deer,fauna.mammal.ungulate,Косуля,Roe deer,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.ungulate.reindeer,fauna,taxon,fauna.mammal.ungulate.reindeer,fauna.mammal.ungulate,Северный олень (лесной),Wild forest reindeer,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.large_predator.brown_bear,fauna,taxon,fauna.mammal.large_predator.brown_bear,fauna.mammal.large_predator,Бурый медведь,Brown bear,,true,SRC_HDBM2017,candidate
+fauna.mammal.large_predator.wolf,fauna,taxon,fauna.mammal.large_predator.wolf,fauna.mammal.large_predator,Волк,Grey wolf,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.fur_predator.red_fox,fauna,taxon,fauna.mammal.fur_predator.red_fox,fauna.mammal.fur_predator,Лисица,Red fox,,true,SRC_HDBM2017,candidate
+fauna.mammal.fur_predator.lynx,fauna,taxon,fauna.mammal.fur_predator.lynx,fauna.mammal.fur_predator,Рысь,Eurasian lynx,,true,SRC_WK_FAUNA,candidate
+fauna.mammal.fur_predator.wolverine,fauna,taxon,fauna.mammal.fur_predator.wolverine,fauna.mammal.fur_predator,Росомаха,Wolverine,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.fur_predator.badger,fauna,taxon,fauna.mammal.fur_predator.badger,fauna.mammal.fur_predator,Барсук,European badger,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.fur_small.pine_marten,fauna,taxon,fauna.mammal.fur_small.pine_marten,fauna.mammal.fur_small,Лесная куница,Pine marten,,true,SRC_HDBM2017,candidate
+fauna.mammal.fur_small.sable,fauna,taxon,fauna.mammal.fur_small.sable,fauna.mammal.fur_small,Соболь,Sable,,true,SRC_RYBINA2015,candidate
+fauna.mammal.fur_small.stoat,fauna,taxon,fauna.mammal.fur_small.stoat,fauna.mammal.fur_small,Горностай,Stoat,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_predator.weasel,fauna,taxon,fauna.mammal.small_predator.weasel,fauna.mammal.small_predator,Ласка,Least weasel,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.fur_small.polecat,fauna,taxon,fauna.mammal.fur_small.polecat,fauna.mammal.fur_small,Лесной хорь,European polecat,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.fur_small.european_mink,fauna,taxon,fauna.mammal.fur_small.european_mink,fauna.mammal.fur_small,Европейская норка,European mink,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.fur_predator.otter,fauna,taxon,fauna.mammal.fur_predator.otter,fauna.mammal.fur_predator,Выдра,Eurasian otter,,true,SRC_HDBM2017,candidate
+fauna.mammal.fur_rodent.beaver,fauna,taxon,fauna.mammal.fur_rodent.beaver,fauna.mammal.fur_rodent,Бобр,Eurasian beaver,,true,SRC_HDBM2017,candidate
+fauna.mammal.fur_rodent.red_squirrel,fauna,taxon,fauna.mammal.fur_rodent.red_squirrel,fauna.mammal.fur_rodent,Белка,Red squirrel,,true,SRC_RYBINA2015,candidate
+fauna.mammal.small_mammal.flying_squirrel,fauna,taxon,fauna.mammal.small_mammal.flying_squirrel,fauna.mammal.small_mammal,Летяга,Siberian flying squirrel,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.game_small.mountain_hare,fauna,taxon,fauna.mammal.game_small.mountain_hare,fauna.mammal.game_small,Заяц-беляк,Mountain hare,,true,SRC_HDBM2017,candidate
+fauna.mammal.small_mammal.hedgehog,fauna,taxon,fauna.mammal.small_mammal.hedgehog,fauna.mammal.small_mammal,Ёж,European hedgehog,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.mole,fauna,taxon,fauna.mammal.small_mammal.mole,fauna.mammal.small_mammal,Крот,European mole,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.common_shrew,fauna,taxon,fauna.mammal.small_mammal.common_shrew,fauna.mammal.small_mammal,Обыкновенная бурозубка,Common shrew,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.pygmy_shrew,fauna,taxon,fauna.mammal.small_mammal.pygmy_shrew,fauna.mammal.small_mammal,Малая бурозубка,Pygmy shrew,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.water_shrew,fauna,taxon,fauna.mammal.small_mammal.water_shrew,fauna.mammal.small_mammal,Кутора,Water shrew,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.bank_vole,fauna,taxon,fauna.mammal.small_mammal.bank_vole,fauna.mammal.small_mammal,Рыжая полёвка,Bank vole,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.field_vole,fauna,taxon,fauna.mammal.small_mammal.field_vole,fauna.mammal.small_mammal,Тёмная полёвка,Field vole,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.common_vole,fauna,taxon,fauna.mammal.small_mammal.common_vole,fauna.mammal.small_mammal,Обыкновенная полёвка,Common vole,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.water_vole,fauna,taxon,fauna.mammal.small_mammal.water_vole,fauna.mammal.small_mammal,Водяная полёвка,Water vole,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.yellow_necked_mouse,fauna,taxon,fauna.mammal.small_mammal.yellow_necked_mouse,fauna.mammal.small_mammal,Желтогорлая мышь,Yellow-necked mouse,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.wood_mouse,fauna,taxon,fauna.mammal.small_mammal.wood_mouse,fauna.mammal.small_mammal,Лесная мышь,Wood mouse,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.striped_field_mouse,fauna,taxon,fauna.mammal.small_mammal.striped_field_mouse,fauna.mammal.small_mammal,Полевая мышь,Striped field mouse,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.harvest_mouse,fauna,taxon,fauna.mammal.small_mammal.harvest_mouse,fauna.mammal.small_mammal,Мышь-малютка,Eurasian harvest mouse,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.house_mouse,fauna,taxon,fauna.mammal.small_mammal.house_mouse,fauna.mammal.small_mammal,Домовая мышь,House mouse,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.birch_mouse,fauna,taxon,fauna.mammal.small_mammal.birch_mouse,fauna.mammal.small_mammal,Лесная мышовка,Northern birch mouse,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.wood_lemming,fauna,taxon,fauna.mammal.small_mammal.wood_lemming,fauna.mammal.small_mammal,Лесной лемминг,Wood lemming,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.small_mammal.garden_dormouse,fauna,taxon,fauna.mammal.small_mammal.garden_dormouse,fauna.mammal.small_mammal,Садовая соня,Garden dormouse,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.bat.whiskered_bat,fauna,taxon,fauna.mammal.bat.whiskered_bat,fauna.mammal.bat,Усатая ночница,Whiskered bat,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.bat.northern_bat,fauna,taxon,fauna.mammal.bat.northern_bat,fauna.mammal.bat,Северный кожанок,Northern bat,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.bat.parti_coloured_bat,fauna,taxon,fauna.mammal.bat.parti_coloured_bat,fauna.mammal.bat,Двухцветный кожан,Parti-coloured bat,,true,SRC_VOLOGDA_MAMM,candidate
+fauna.mammal.bat.brown_long_eared_bat,fauna,taxon,fauna.mammal.bat.brown_long_eared_bat,fauna.mammal.bat,Бурый ушан,Brown long-eared bat,,true,SRC_WK_FAUNA,candidate
+fauna.mammal.bat.daubentons_bat,fauna,taxon,fauna.mammal.bat.daubentons_bat,fauna.mammal.bat,Водяная ночница,Daubenton's bat,,true,SRC_VALDAY_NP,candidate
+fauna.mammal.marine_mammal.ladoga_ringed_seal,fauna,taxon,fauna.mammal.marine_mammal.ladoga_ringed_seal,fauna.mammal.marine_mammal,Ладожская нерпа,Ladoga ringed seal,,true,SRC_RYBINA2015,candidate
+fauna.bird.waterbird,fauna,taxon_group,fauna.bird.waterbird,fauna.bird,Гагары и поганки,waterbird,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.heron,fauna,taxon_group,fauna.bird.heron,fauna.bird,Цапли и аисты,heron,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.crane,fauna,taxon_group,fauna.bird.crane,fauna.bird,Журавли,crane,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.rail,fauna,taxon_group,fauna.bird.rail,fauna.bird,Пастушковые,rail,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.waterfowl,fauna,taxon_group,fauna.bird.waterfowl,fauna.bird,"Гусеобразные (лебеди, гуси, утки)",waterfowl,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.raptor,fauna,taxon_group,fauna.bird.raptor,fauna.bird,Хищные птицы,raptor,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.gamebird,fauna,taxon_group,fauna.bird.gamebird,fauna.bird,Куриные (боровая и полевая дичь),gamebird,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.wader,fauna,taxon_group,fauna.bird.wader,fauna.bird,Кулики,wader,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.gull,fauna,taxon_group,fauna.bird.gull,fauna.bird,Чайки и крачки,gull,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.pigeon,fauna,taxon_group,fauna.bird.pigeon,fauna.bird,Голуби,pigeon,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.other,fauna,taxon_group,fauna.bird.other,fauna.bird,"Прочие (кукушка, козодой, стриж, зимородок)",other,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.owl,fauna,taxon_group,fauna.bird.owl,fauna.bird,Совы,owl,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.woodpecker,fauna,taxon_group,fauna.bird.woodpecker,fauna.bird,Дятлы,woodpecker,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.songbird,fauna,taxon_group,fauna.bird.songbird,fauna.bird,Воробьиные певчие,songbird,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.corvid,fauna,taxon_group,fauna.bird.corvid,fauna.bird,Врановые,corvid,,true,fauna-mammals-birds/README.md,candidate
+fauna.bird.waterbird.black_throated_loon,fauna,taxon,fauna.bird.waterbird.black_throated_loon,fauna.bird.waterbird,Чернозобая гагара,Black-throated loon,,true,SRC_PANT2001,candidate
+fauna.bird.waterbird.great_crested_grebe,fauna,taxon,fauna.bird.waterbird.great_crested_grebe,fauna.bird.waterbird,Чомга,Great crested grebe,,true,SRC_PANT2001,candidate
+fauna.bird.heron.bittern,fauna,taxon,fauna.bird.heron.bittern,fauna.bird.heron,Большая выпь,Eurasian bittern,,true,SRC_PANT2001,candidate
+fauna.bird.heron.grey_heron,fauna,taxon,fauna.bird.heron.grey_heron,fauna.bird.heron,Серая цапля,Grey heron,,true,SRC_PANT2001,candidate
+fauna.bird.heron.black_stork,fauna,taxon,fauna.bird.heron.black_stork,fauna.bird.heron,Чёрный аист,Black stork,,true,SRC_PANT2001,candidate
+fauna.bird.crane.common_crane,fauna,taxon,fauna.bird.crane.common_crane,fauna.bird.crane,Серый журавль,Common crane,,true,SRC_GOROBETS2017,candidate
+fauna.bird.rail.corncrake,fauna,taxon,fauna.bird.rail.corncrake,fauna.bird.rail,Коростель,Corn crake,,true,SRC_PANT2001,candidate
+fauna.bird.rail.spotted_crake,fauna,taxon,fauna.bird.rail.spotted_crake,fauna.bird.rail,Погоныш,Spotted crake,,true,SRC_PANT2001,candidate
+fauna.bird.rail.coot,fauna,taxon,fauna.bird.rail.coot,fauna.bird.rail,Лысуха,Eurasian coot,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.whooper_swan,fauna,taxon,fauna.bird.waterfowl.whooper_swan,fauna.bird.waterfowl,Лебедь-кликун,Whooper swan,,true,SRC_GOROBETS2017,candidate
+fauna.bird.waterfowl.bewicks_swan,fauna,taxon,fauna.bird.waterfowl.bewicks_swan,fauna.bird.waterfowl,Малый лебедь,Bewick's swan,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.greylag_goose,fauna,taxon,fauna.bird.waterfowl.greylag_goose,fauna.bird.waterfowl,Серый гусь,Greylag goose,,true,SRC_GOROBETS2017,candidate
+fauna.bird.waterfowl.white_fronted_goose,fauna,taxon,fauna.bird.waterfowl.white_fronted_goose,fauna.bird.waterfowl,Белолобый гусь,Greater white-fronted goose,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.bean_goose,fauna,taxon,fauna.bird.waterfowl.bean_goose,fauna.bird.waterfowl,Гуменник,Bean goose,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.mallard,fauna,taxon,fauna.bird.waterfowl.mallard,fauna.bird.waterfowl,Кряква,Mallard,,true,SRC_WK_BIRDRES,candidate
+fauna.bird.waterfowl.teal,fauna,taxon,fauna.bird.waterfowl.teal,fauna.bird.waterfowl,Чирок-свистунок,Eurasian teal,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.wigeon,fauna,taxon,fauna.bird.waterfowl.wigeon,fauna.bird.waterfowl,Свиязь,Eurasian wigeon,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.pintail,fauna,taxon,fauna.bird.waterfowl.pintail,fauna.bird.waterfowl,Шилохвость,Northern pintail,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.garganey,fauna,taxon,fauna.bird.waterfowl.garganey,fauna.bird.waterfowl,Чирок-трескунок,Garganey,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.shoveler,fauna,taxon,fauna.bird.waterfowl.shoveler,fauna.bird.waterfowl,Широконоска,Northern shoveler,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.tufted_duck,fauna,taxon,fauna.bird.waterfowl.tufted_duck,fauna.bird.waterfowl,Хохлатая чернеть,Tufted duck,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.goldeneye,fauna,taxon,fauna.bird.waterfowl.goldeneye,fauna.bird.waterfowl,Гоголь,Common goldeneye,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.smew,fauna,taxon,fauna.bird.waterfowl.smew,fauna.bird.waterfowl,Луток,Smew,,true,SRC_PANT2001,candidate
+fauna.bird.waterfowl.goosander,fauna,taxon,fauna.bird.waterfowl.goosander,fauna.bird.waterfowl,Большой крохаль,Goosander,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.osprey,fauna,taxon,fauna.bird.raptor.osprey,fauna.bird.raptor,Скопа,Osprey,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.honey_buzzard,fauna,taxon,fauna.bird.raptor.honey_buzzard,fauna.bird.raptor,Осоед,European honey buzzard,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.black_kite,fauna,taxon,fauna.bird.raptor.black_kite,fauna.bird.raptor,Чёрный коршун,Black kite,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.white_tailed_eagle,fauna,taxon,fauna.bird.raptor.white_tailed_eagle,fauna.bird.raptor,Орлан-белохвост,White-tailed eagle,,true,SRC_ZIN2012,candidate
+fauna.bird.raptor.goshawk,fauna,taxon,fauna.bird.raptor.goshawk,fauna.bird.raptor,Ястреб-тетеревятник,Northern goshawk,,true,SRC_GOROBETS2017,candidate
+fauna.bird.raptor.sparrowhawk,fauna,taxon,fauna.bird.raptor.sparrowhawk,fauna.bird.raptor,Ястреб-перепелятник,Eurasian sparrowhawk,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.rough_legged_buzzard,fauna,taxon,fauna.bird.raptor.rough_legged_buzzard,fauna.bird.raptor,Зимняк,Rough-legged buzzard,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.common_buzzard,fauna,taxon,fauna.bird.raptor.common_buzzard,fauna.bird.raptor,Канюк,Common buzzard,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.greater_spotted_eagle,fauna,taxon,fauna.bird.raptor.greater_spotted_eagle,fauna.bird.raptor,Большой подорлик,Greater spotted eagle,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.golden_eagle,fauna,taxon,fauna.bird.raptor.golden_eagle,fauna.bird.raptor,Беркут,Golden eagle,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.hen_harrier,fauna,taxon,fauna.bird.raptor.hen_harrier,fauna.bird.raptor,Полевой лунь,Hen harrier,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.marsh_harrier,fauna,taxon,fauna.bird.raptor.marsh_harrier,fauna.bird.raptor,Болотный лунь,Western marsh harrier,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.kestrel,fauna,taxon,fauna.bird.raptor.kestrel,fauna.bird.raptor,Обыкновенная пустельга,Common kestrel,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.merlin,fauna,taxon,fauna.bird.raptor.merlin,fauna.bird.raptor,Дербник,Merlin,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.hobby,fauna,taxon,fauna.bird.raptor.hobby,fauna.bird.raptor,Чеглок,Eurasian hobby,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.peregrine,fauna,taxon,fauna.bird.raptor.peregrine,fauna.bird.raptor,Сапсан,Peregrine falcon,,true,SRC_PANT2001,candidate
+fauna.bird.raptor.gyrfalcon,fauna,taxon,fauna.bird.raptor.gyrfalcon,fauna.bird.raptor,Кречет,Gyrfalcon,,true,SRC_PANT2001,candidate
+fauna.bird.gamebird.grey_partridge,fauna,taxon,fauna.bird.gamebird.grey_partridge,fauna.bird.gamebird,Серая куропатка,Grey partridge,,true,SRC_PANT2001,candidate
+fauna.bird.gamebird.quail,fauna,taxon,fauna.bird.gamebird.quail,fauna.bird.gamebird,Перепел,Common quail,,true,SRC_PANT2001,candidate
+fauna.bird.gamebird.willow_ptarmigan,fauna,taxon,fauna.bird.gamebird.willow_ptarmigan,fauna.bird.gamebird,Белая куропатка,Willow ptarmigan,,true,SRC_PANT2001,candidate
+fauna.bird.gamebird.capercaillie,fauna,taxon,fauna.bird.gamebird.capercaillie,fauna.bird.gamebird,Глухарь,Western capercaillie,,true,SRC_GOROBETS2017,candidate
+fauna.bird.gamebird.black_grouse,fauna,taxon,fauna.bird.gamebird.black_grouse,fauna.bird.gamebird,Тетерев,Black grouse,,true,SRC_GOROBETS2017,candidate
+fauna.bird.gamebird.hazel_grouse,fauna,taxon,fauna.bird.gamebird.hazel_grouse,fauna.bird.gamebird,Рябчик,Hazel grouse,,true,SRC_PANT2001,candidate
+fauna.bird.wader.little_ringed_plover,fauna,taxon,fauna.bird.wader.little_ringed_plover,fauna.bird.wader,Малый зуёк,Little ringed plover,,true,SRC_PANT2001,candidate
+fauna.bird.wader.lapwing,fauna,taxon,fauna.bird.wader.lapwing,fauna.bird.wader,Чибис,Northern lapwing,,true,SRC_PANT2001,candidate
+fauna.bird.wader.wood_sandpiper,fauna,taxon,fauna.bird.wader.wood_sandpiper,fauna.bird.wader,Фифи,Wood sandpiper,,true,SRC_PANT2001,candidate
+fauna.bird.wader.redshank,fauna,taxon,fauna.bird.wader.redshank,fauna.bird.wader,Травник,Common redshank,,true,SRC_PANT2001,candidate
+fauna.bird.wader.common_sandpiper,fauna,taxon,fauna.bird.wader.common_sandpiper,fauna.bird.wader,Перевозчик,Common sandpiper,,true,SRC_PANT2001,candidate
+fauna.bird.wader.ruff,fauna,taxon,fauna.bird.wader.ruff,fauna.bird.wader,Турухтан,Ruff,,true,SRC_PANT2001,candidate
+fauna.bird.wader.great_snipe,fauna,taxon,fauna.bird.wader.great_snipe,fauna.bird.wader,Дупель,Great snipe,,true,SRC_PANT2001,candidate
+fauna.bird.wader.snipe,fauna,taxon,fauna.bird.wader.snipe,fauna.bird.wader,Бекас,Common snipe,,true,SRC_PANT2001,candidate
+fauna.bird.wader.woodcock,fauna,taxon,fauna.bird.wader.woodcock,fauna.bird.wader,Вальдшнеп,Eurasian woodcock,,true,SRC_PANT2001,candidate
+fauna.bird.wader.curlew,fauna,taxon,fauna.bird.wader.curlew,fauna.bird.wader,Большой кроншнеп,Eurasian curlew,,true,SRC_PANT2001,candidate
+fauna.bird.wader.black_tailed_godwit,fauna,taxon,fauna.bird.wader.black_tailed_godwit,fauna.bird.wader,Большой веретенник,Black-tailed godwit,,true,SRC_PANT2001,candidate
+fauna.bird.gull.common_gull,fauna,taxon,fauna.bird.gull.common_gull,fauna.bird.gull,Сизая чайка,Common gull,,true,SRC_PANT2001,candidate
+fauna.bird.gull.black_headed_gull,fauna,taxon,fauna.bird.gull.black_headed_gull,fauna.bird.gull,Озёрная чайка,Black-headed gull,,true,SRC_PANT2001,candidate
+fauna.bird.gull.black_tern,fauna,taxon,fauna.bird.gull.black_tern,fauna.bird.gull,Чёрная крачка,Black tern,,true,SRC_PANT2001,candidate
+fauna.bird.gull.common_tern,fauna,taxon,fauna.bird.gull.common_tern,fauna.bird.gull,Речная крачка,Common tern,,true,SRC_PANT2001,candidate
+fauna.bird.pigeon.rock_dove,fauna,taxon,fauna.bird.pigeon.rock_dove,fauna.bird.pigeon,Сизый голубь,Rock dove (feral pigeon),,true,SRC_ZIN2025,candidate
+fauna.bird.pigeon.stock_dove,fauna,taxon,fauna.bird.pigeon.stock_dove,fauna.bird.pigeon,Клинтух,Stock dove,,true,SRC_PANT2001,candidate
+fauna.bird.pigeon.wood_pigeon,fauna,taxon,fauna.bird.pigeon.wood_pigeon,fauna.bird.pigeon,Вяхирь,Common wood pigeon,,true,SRC_PANT2001,candidate
+fauna.bird.other.cuckoo,fauna,taxon,fauna.bird.other.cuckoo,fauna.bird.other,Обыкновенная кукушка,Common cuckoo,,true,SRC_PANT2001,candidate
+fauna.bird.owl.eagle_owl,fauna,taxon,fauna.bird.owl.eagle_owl,fauna.bird.owl,Филин,Eurasian eagle-owl,,true,SRC_PANT2001,candidate
+fauna.bird.owl.pygmy_owl,fauna,taxon,fauna.bird.owl.pygmy_owl,fauna.bird.owl,Воробьиный сыч,Eurasian pygmy owl,,true,SRC_PANT2001,candidate
+fauna.bird.owl.great_grey_owl,fauna,taxon,fauna.bird.owl.great_grey_owl,fauna.bird.owl,Бородатая неясыть,Great grey owl,,true,SRC_PANT2001,candidate
+fauna.bird.owl.tawny_owl,fauna,taxon,fauna.bird.owl.tawny_owl,fauna.bird.owl,Серая неясыть,Tawny owl,,true,SRC_PANT2001,candidate
+fauna.bird.owl.ural_owl,fauna,taxon,fauna.bird.owl.ural_owl,fauna.bird.owl,Длиннохвостая неясыть,Ural owl,,true,SRC_PANT2001,candidate
+fauna.bird.owl.long_eared_owl,fauna,taxon,fauna.bird.owl.long_eared_owl,fauna.bird.owl,Ушастая сова,Long-eared owl,,true,SRC_PANT2001,candidate
+fauna.bird.owl.short_eared_owl,fauna,taxon,fauna.bird.owl.short_eared_owl,fauna.bird.owl,Болотная сова,Short-eared owl,,true,SRC_PANT2001,candidate
+fauna.bird.owl.tengmalms_owl,fauna,taxon,fauna.bird.owl.tengmalms_owl,fauna.bird.owl,Мохноногий сыч,Tengmalm's owl,,true,SRC_PANT2001,candidate
+fauna.bird.other.nightjar,fauna,taxon,fauna.bird.other.nightjar,fauna.bird.other,Козодой,European nightjar,,true,SRC_PANT2001,candidate
+fauna.bird.other.swift,fauna,taxon,fauna.bird.other.swift,fauna.bird.other,Чёрный стриж,Common swift,,true,SRC_PANT2001,candidate
+fauna.bird.other.kingfisher,fauna,taxon,fauna.bird.other.kingfisher,fauna.bird.other,Зимородок,Common kingfisher,,true,SRC_PANT2001,candidate
+fauna.bird.woodpecker.wryneck,fauna,taxon,fauna.bird.woodpecker.wryneck,fauna.bird.woodpecker,Вертишейка,Eurasian wryneck,,true,SRC_PANT2001,candidate
+fauna.bird.woodpecker.black_woodpecker,fauna,taxon,fauna.bird.woodpecker.black_woodpecker,fauna.bird.woodpecker,Желна,Black woodpecker,,true,SRC_PANT2001,candidate
+fauna.bird.woodpecker.grey_headed_woodpecker,fauna,taxon,fauna.bird.woodpecker.grey_headed_woodpecker,fauna.bird.woodpecker,Седой дятел,Grey-headed woodpecker,,true,SRC_PANT2001,candidate
+fauna.bird.woodpecker.great_spotted_woodpecker,fauna,taxon,fauna.bird.woodpecker.great_spotted_woodpecker,fauna.bird.woodpecker,Большой пёстрый дятел,Great spotted woodpecker,,true,SRC_PANT2001,candidate
+fauna.bird.woodpecker.white_backed_woodpecker,fauna,taxon,fauna.bird.woodpecker.white_backed_woodpecker,fauna.bird.woodpecker,Белоспинный дятел,White-backed woodpecker,,true,SRC_PANT2001,candidate
+fauna.bird.woodpecker.lesser_spotted_woodpecker,fauna,taxon,fauna.bird.woodpecker.lesser_spotted_woodpecker,fauna.bird.woodpecker,Малый пёстрый дятел,Lesser spotted woodpecker,,true,SRC_PANT2001,candidate
+fauna.bird.woodpecker.three_toed_woodpecker,fauna,taxon,fauna.bird.woodpecker.three_toed_woodpecker,fauna.bird.woodpecker,Трёхпалый дятел,Eurasian three-toed woodpecker,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.woodlark,fauna,taxon,fauna.bird.songbird.woodlark,fauna.bird.songbird,Лесной жаворонок,Woodlark,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.skylark,fauna,taxon,fauna.bird.songbird.skylark,fauna.bird.songbird,Полевой жаворонок,Eurasian skylark,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.sand_martin,fauna,taxon,fauna.bird.songbird.sand_martin,fauna.bird.songbird,Береговая ласточка,Sand martin,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.barn_swallow,fauna,taxon,fauna.bird.songbird.barn_swallow,fauna.bird.songbird,Деревенская ласточка,Barn swallow,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.house_martin,fauna,taxon,fauna.bird.songbird.house_martin,fauna.bird.songbird,Городская ласточка,Common house martin,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.yellow_wagtail,fauna,taxon,fauna.bird.songbird.yellow_wagtail,fauna.bird.songbird,Жёлтая трясогузка,Western yellow wagtail,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.white_wagtail,fauna,taxon,fauna.bird.songbird.white_wagtail,fauna.bird.songbird,Белая трясогузка,White wagtail,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.tree_pipit,fauna,taxon,fauna.bird.songbird.tree_pipit,fauna.bird.songbird,Лесной конёк,Tree pipit,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.red_backed_shrike,fauna,taxon,fauna.bird.songbird.red_backed_shrike,fauna.bird.songbird,Жулан,Red-backed shrike,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.great_grey_shrike,fauna,taxon,fauna.bird.songbird.great_grey_shrike,fauna.bird.songbird,Серый сорокопут,Great grey shrike,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.waxwing,fauna,taxon,fauna.bird.songbird.waxwing,fauna.bird.songbird,Свиристель,Bohemian waxwing,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.wren,fauna,taxon,fauna.bird.songbird.wren,fauna.bird.songbird,Крапивник,Eurasian wren,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.robin,fauna,taxon,fauna.bird.songbird.robin,fauna.bird.songbird,Зарянка,European robin,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.thrush_nightingale,fauna,taxon,fauna.bird.songbird.thrush_nightingale,fauna.bird.songbird,Соловей,Thrush nightingale,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.bluethroat,fauna,taxon,fauna.bird.songbird.bluethroat,fauna.bird.songbird,Варакушка,Bluethroat,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.redstart,fauna,taxon,fauna.bird.songbird.redstart,fauna.bird.songbird,Горихвостка-лысушка,Common redstart,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.whinchat,fauna,taxon,fauna.bird.songbird.whinchat,fauna.bird.songbird,Луговой чекан,Whinchat,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.blackbird,fauna,taxon,fauna.bird.songbird.blackbird,fauna.bird.songbird,Чёрный дрозд,Common blackbird,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.fieldfare,fauna,taxon,fauna.bird.songbird.fieldfare,fauna.bird.songbird,Рябинник,Fieldfare,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.redwing,fauna,taxon,fauna.bird.songbird.redwing,fauna.bird.songbird,Белобровик,Redwing,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.song_thrush,fauna,taxon,fauna.bird.songbird.song_thrush,fauna.bird.songbird,Певчий дрозд,Song thrush,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.mistle_thrush,fauna,taxon,fauna.bird.songbird.mistle_thrush,fauna.bird.songbird,Деряба,Mistle thrush,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.grasshopper_warbler,fauna,taxon,fauna.bird.songbird.grasshopper_warbler,fauna.bird.songbird,Обыкновенный сверчок,Common grasshopper warbler,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.sedge_warbler,fauna,taxon,fauna.bird.songbird.sedge_warbler,fauna.bird.songbird,Камышевка-барсучок,Sedge warbler,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.garden_warbler,fauna,taxon,fauna.bird.songbird.garden_warbler,fauna.bird.songbird,Садовая славка,Garden warbler,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.blackcap,fauna,taxon,fauna.bird.songbird.blackcap,fauna.bird.songbird,Черноголовая славка,Eurasian blackcap,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.whitethroat,fauna,taxon,fauna.bird.songbird.whitethroat,fauna.bird.songbird,Серая славка,Common whitethroat,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.willow_warbler,fauna,taxon,fauna.bird.songbird.willow_warbler,fauna.bird.songbird,Пеночка-весничка,Willow warbler,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.chiffchaff,fauna,taxon,fauna.bird.songbird.chiffchaff,fauna.bird.songbird,Пеночка-теньковка,Common chiffchaff,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.wood_warbler,fauna,taxon,fauna.bird.songbird.wood_warbler,fauna.bird.songbird,Пеночка-трещотка,Wood warbler,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.goldcrest,fauna,taxon,fauna.bird.songbird.goldcrest,fauna.bird.songbird,Желтоголовый королёк,Goldcrest,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.spotted_flycatcher,fauna,taxon,fauna.bird.songbird.spotted_flycatcher,fauna.bird.songbird,Серая мухоловка,Spotted flycatcher,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.long_tailed_tit,fauna,taxon,fauna.bird.songbird.long_tailed_tit,fauna.bird.songbird,Ополовник,Long-tailed tit,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.willow_tit,fauna,taxon,fauna.bird.songbird.willow_tit,fauna.bird.songbird,Пухляк,Willow tit,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.coal_tit,fauna,taxon,fauna.bird.songbird.coal_tit,fauna.bird.songbird,Московка,Coal tit,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.crested_tit,fauna,taxon,fauna.bird.songbird.crested_tit,fauna.bird.songbird,Хохлатая синица,Crested tit,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.great_tit,fauna,taxon,fauna.bird.songbird.great_tit,fauna.bird.songbird,Большая синица,Great tit,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.blue_tit,fauna,taxon,fauna.bird.songbird.blue_tit,fauna.bird.songbird,Лазоревка,Eurasian blue tit,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.nuthatch,fauna,taxon,fauna.bird.songbird.nuthatch,fauna.bird.songbird,Обыкновенный поползень,Eurasian nuthatch,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.treecreeper,fauna,taxon,fauna.bird.songbird.treecreeper,fauna.bird.songbird,Обыкновенная пищуха,Eurasian treecreeper,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.yellowhammer,fauna,taxon,fauna.bird.songbird.yellowhammer,fauna.bird.songbird,Обыкновенная овсянка,Yellowhammer,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.reed_bunting,fauna,taxon,fauna.bird.songbird.reed_bunting,fauna.bird.songbird,Камышовая овсянка,Common reed bunting,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.snow_bunting,fauna,taxon,fauna.bird.songbird.snow_bunting,fauna.bird.songbird,Пуночка,Snow bunting,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.chaffinch,fauna,taxon,fauna.bird.songbird.chaffinch,fauna.bird.songbird,Зяблик,Common chaffinch,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.brambling,fauna,taxon,fauna.bird.songbird.brambling,fauna.bird.songbird,Юрок,Brambling,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.siskin,fauna,taxon,fauna.bird.songbird.siskin,fauna.bird.songbird,Чиж,Eurasian siskin,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.goldfinch,fauna,taxon,fauna.bird.songbird.goldfinch,fauna.bird.songbird,Щегол,European goldfinch,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.redpoll,fauna,taxon,fauna.bird.songbird.redpoll,fauna.bird.songbird,Обыкновенная чечётка,Common redpoll,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.linnet,fauna,taxon,fauna.bird.songbird.linnet,fauna.bird.songbird,Коноплянка,Common linnet,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.common_rosefinch,fauna,taxon,fauna.bird.songbird.common_rosefinch,fauna.bird.songbird,Обыкновенная чечевица,Common rosefinch,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.pine_grosbeak,fauna,taxon,fauna.bird.songbird.pine_grosbeak,fauna.bird.songbird,Щур,Pine grosbeak,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.red_crossbill,fauna,taxon,fauna.bird.songbird.red_crossbill,fauna.bird.songbird,Клёст-еловик,Red crossbill,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.bullfinch,fauna,taxon,fauna.bird.songbird.bullfinch,fauna.bird.songbird,Снегирь,Eurasian bullfinch,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.house_sparrow,fauna,taxon,fauna.bird.songbird.house_sparrow,fauna.bird.songbird,Домовый воробей,House sparrow,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.tree_sparrow,fauna,taxon,fauna.bird.songbird.tree_sparrow,fauna.bird.songbird,Полевой воробей,Eurasian tree sparrow,,true,SRC_ZIN2025,candidate
+fauna.bird.songbird.starling,fauna,taxon,fauna.bird.songbird.starling,fauna.bird.songbird,Обыкновенный скворец,Common starling,,true,SRC_PANT2001,candidate
+fauna.bird.songbird.golden_oriole,fauna,taxon,fauna.bird.songbird.golden_oriole,fauna.bird.songbird,Иволга,Eurasian golden oriole,,true,SRC_PANT2001,candidate
+fauna.bird.corvid.jay,fauna,taxon,fauna.bird.corvid.jay,fauna.bird.corvid,Сойка,Eurasian jay,,true,SRC_PANT2001,candidate
+fauna.bird.corvid.siberian_jay,fauna,taxon,fauna.bird.corvid.siberian_jay,fauna.bird.corvid,Кукша,Siberian jay,,true,SRC_PANT2001,candidate
+fauna.bird.corvid.magpie,fauna,taxon,fauna.bird.corvid.magpie,fauna.bird.corvid,Сорока,Eurasian magpie,,true,SRC_PANT2001,candidate
+fauna.bird.corvid.nutcracker,fauna,taxon,fauna.bird.corvid.nutcracker,fauna.bird.corvid,Кедровка,Spotted nutcracker,,true,SRC_PANT2001,candidate
+fauna.bird.corvid.jackdaw,fauna,taxon,fauna.bird.corvid.jackdaw,fauna.bird.corvid,Галка,Western jackdaw,,true,SRC_ZIN2025,candidate
+fauna.bird.corvid.rook,fauna,taxon,fauna.bird.corvid.rook,fauna.bird.corvid,Грач,Rook,,true,SRC_ZIN2025,candidate
+fauna.bird.corvid.hooded_crow,fauna,taxon,fauna.bird.corvid.hooded_crow,fauna.bird.corvid,Серая ворона,Hooded crow,,true,SRC_ZIN2025,candidate
+fauna.bird.corvid.raven,fauna,taxon,fauna.bird.corvid.raven,fauna.bird.corvid,Ворон,Common raven,,true,SRC_ZIN2025,candidate

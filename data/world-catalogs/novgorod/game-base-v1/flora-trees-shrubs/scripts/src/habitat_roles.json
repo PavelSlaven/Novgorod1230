@@ -1,0 +1,1171 @@
+{
+ "schema": "gb_flora_trees_shrubs_habitat_roles_v1",
+ "status": "candidate",
+ "rule": {
+  "rule_id": "woody_role_to_frequency_class_v1",
+  "text": "Each (taxon, place family) pair gets one habitat role read from the cited source wording; the class follows only from the role: edificator (source: dominates / forms stands / 'главным образом', 'чистые', 'сплошные заросли') -> ubiquitous 8; component (source names the habitat as a typical place of growth / undergrowth / 'повсеместно') -> common 4; occasional (source: 'встречается', admixture, secondary habitat, habitat named once among several, or source says the genus occupies 'less space') -> contextual 2; rare (source: 'only in southern districts', 'дефицитный', unconfirmed native status, or habitat implied only indirectly) -> rare 1. Presence does not change by season (woody plants persist all year); seasonal state is derived separately from phenology.",
+  "classes": {
+   "edificator": [
+    "ubiquitous",
+    8
+   ],
+   "component": [
+    "common",
+    4
+   ],
+   "occasional": [
+    "contextual",
+    2
+   ],
+   "rare": [
+    "rare",
+    1
+   ]
+  },
+  "overlay_rule": "pf_forest_track and pf_hunting_ground are overlays on woodland: each taxon takes its max class over pf_conifer_woodland, pf_mixed_woodland, pf_broadleaf_woodland (forest_track) and additionally pf_forest_edge and pf_bog (hunting_ground), capped at 'component' (a taxon confined to one source place family cannot become guaranteed-present/edificator on the overlay pf just by dominating that one habitat). Derived by scripts/build.mjs; an explicit authored row for the overlay pf is allowed and wins over the capped overlay when its own class is higher. Fixed 2026-09-26 per verifier note (VERIFICATION.md#tree_habitat_presence.csv item 1): previously uncapped, lipa/leshina got guaranteed presence on every pf_forest_track and bagulnik on every pf_hunting_ground.",
+  "region": "region_novgorod_land (southern-taiga Novgorod land). Taxa are universal categories; region permission is expressed only by these presence rows.",
+  "not_measured": "Classes are an editorial reading of qualitative sources, not biological abundance or encounter probability. Colchin 1968 table I counts are artefact counts and are NOT used to set classes."
+ },
+ "legend": {
+  "K": "src:src_kolchin_1968",
+  "VP": "src:src_valdaypark_flora",
+  "VN": "src:src_valdaypark_nature",
+  "NB": "src:src_nbcrs_novgorod_flora",
+  "W": "src:<the taxon's src_wiki_*>"
+ },
+ "roles": {
+  "fl_ts_pinus_sylvestris": {
+   "pf_conifer_woodland": [
+    "edificator",
+    "K: чистые сосняки на сухих песчаных почвах; VP: сосняки 18,3 % лесов парка",
+    [
+     "K",
+     "VP"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "component",
+    "K: лес по преимуществу хвойный, сосна в меньшем количестве, чем ель",
+    [
+     "K"
+    ]
+   ],
+   "pf_bog": [
+    "component",
+    "W: сосна занимает сухие пески и болота; VP: заболоченные сосняки на сфагновых болотах",
+    [
+     "W",
+     "VP"
+    ]
+   ],
+   "pf_forest_edge": [
+    "occasional",
+    "светолюбива; опушки боров — вторичное местообитание (C)",
+    [
+     "W"
+    ]
+   ],
+   "pf_lake_shore": [
+    "occasional",
+    "W: сухие пески (песчаные берега) (C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_picea_abies": {
+   "pf_conifer_woodland": [
+    "edificator",
+    "K: лес Новгородской земли главным образом из ели, по низинам на плодородных землях; VP: ельники 34,9 %",
+    [
+     "K",
+     "VP"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "edificator",
+    "K: ель вытесняет сосну в низменных и сырых местах; лиственные подчинены хвойным",
+    [
+     "K"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "VP: богатые ельники с неморальными видами — ель в составе",
+    [
+     "VP"
+    ]
+   ],
+   "pf_forest_edge": [
+    "occasional",
+    "теневынослива, на опушках — примесь (C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_betula_pendula": {
+   "pf_mixed_woodland": [
+    "component",
+    "K: лиственные породы в новгородских лесах играли подчинённую роль, берёза встречается в примеси к хвойным, а не образует древостои (C: world_db draft lt_boreal_mixed_forest не используется как основание — сам коллектор считает его ненадёжным)",
+    [
+     "K"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "component",
+    "примесь в хвойных лесах (W; lt_boreal_taiga_coniferous_forest draft не называет — C)",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "component",
+    "W: пионерная порода вырубок и гарей",
+    [
+     "W"
+    ]
+   ],
+   "pf_field_margin": [
+    "occasional",
+    "W: пионер открытых мест; Рдейский 2012: зарастающие поля — берёза",
+    [
+     "W",
+     "src:src_rdeysky_letopis_2012"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "примесь (C)",
+    [
+     "W"
+    ]
+   ],
+   "pf_road": [
+    "rare",
+    "W: пионер открытых нарушенных мест (C)",
+    [
+     "W"
+    ]
+   ],
+   "pf_village_lane": [
+    "rare",
+    "W: пионер открытых нарушенных мест (C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_betula_pubescens": {
+   "pf_bog": [
+    "component",
+    "W: окраины болот, болота; VP: заболоченные березняки на сфагновых болотах",
+    [
+     "W",
+     "VP"
+    ]
+   ],
+   "pf_marshy_stream": [
+    "component",
+    "W: сыроватые леса, заболачивание почвы",
+    [
+     "W"
+    ]
+   ],
+   "pf_lake_shore": [
+    "occasional",
+    "W: по берегам озёр",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "W: сыроватые леса",
+    [
+     "W"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "occasional",
+    "примесь в заболоченных хвойных (C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_populus_tremula": {
+   "pf_mixed_woodland": [
+    "component",
+    "W: смешанные леса с хвойными и берёзой; K: встречается осина",
+    [
+     "W",
+     "K"
+    ]
+   ],
+   "pf_forest_edge": [
+    "component",
+    "W: вырубки и поляны",
+    [
+     "W"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "occasional",
+    "W: примесь в хвойных",
+    [
+     "W"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "VP: осинники среди лесов с неморальными видами",
+    [
+     "VP"
+    ]
+   ],
+   "pf_riverbank": [
+    "occasional",
+    "W: вдоль водотоков",
+    [
+     "W"
+    ]
+   ],
+   "pf_field_margin": [
+    "occasional",
+    "Рдейский 2012: зарастающие поля и канавы — осина, ивы, берёза",
+    [
+     "src:src_rdeysky_letopis_2012"
+    ]
+   ]
+  },
+  "fl_ts_alnus_glutinosa": {
+   "pf_marshy_stream": [
+    "edificator",
+    "W: черноольховые топи по ручьям и берегам озёр",
+    [
+     "W"
+    ]
+   ],
+   "pf_bog": [
+    "occasional",
+    "W: заболоченные низины (низинные болота) (C для верховых)",
+    [
+     "W"
+    ]
+   ],
+   "pf_riverbank": [
+    "component",
+    "W: берега ручьёв и озёр; K: ольха распространена повсеместно",
+    [
+     "W",
+     "K"
+    ]
+   ],
+   "pf_lake_shore": [
+    "component",
+    "W: берега озёр",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "K: ольха повсеместно; в смешанных — в сырых понижениях",
+    [
+     "K"
+    ]
+   ]
+  },
+  "fl_ts_alnus_incana": {
+   "pf_forest_edge": [
+    "component",
+    "W: заболоченные опушки, лесосеки, гари",
+    [
+     "W"
+    ]
+   ],
+   "pf_riverbank": [
+    "component",
+    "W: берега рек",
+    [
+     "W"
+    ]
+   ],
+   "pf_field_margin": [
+    "component",
+    "W: заброшенные пашни",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "component",
+    "VP: сероольшаники; K: ольха повсеместно",
+    [
+     "VP",
+     "K"
+    ]
+   ],
+   "pf_marshy_stream": [
+    "occasional",
+    "W: болота",
+    [
+     "W"
+    ]
+   ],
+   "pf_floodplain_meadow": [
+    "occasional",
+    "W: берега рек (C для луга)",
+    [
+     "W"
+    ]
+   ],
+   "pf_pasture": [
+    "rare",
+    "W: заброшенные угодья зарастают (C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_tilia_cordata": {
+   "pf_broadleaf_woodland": [
+    "edificator",
+    "NB: небольшие рощи из дуба и липы; K: липа распространена повсеместно",
+    [
+     "NB",
+     "K"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "component",
+    "K: липа распространена повсеместно",
+    [
+     "K"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "occasional",
+    "K: повсеместно; в ельниках — подлесок/второй ярус (C)",
+    [
+     "K"
+    ]
+   ]
+  },
+  "fl_ts_quercus_robur": {
+   "pf_broadleaf_woodland": [
+    "component",
+    "NB: рощи из дуба и липы; WK research: северные дубравы с лещиной (Валдай, /nature)",
+    [
+     "NB",
+     "VN"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "rare",
+    "K: дуб растёт только в южных районах; запасы небольшие, древесина дефицитна",
+    [
+     "K"
+    ]
+   ],
+   "pf_forest_edge": [
+    "rare",
+    "K: только юг Новгородской земли (C)",
+    [
+     "K"
+    ]
+   ],
+   "pf_field_margin": [
+    "rare",
+    "WK: межевой/знаменный дуб в Русской Правде — одиночные деревья на меже",
+    [
+     "wk:claim:residual-law-boundaries-and-marked-trees",
+     "K"
+    ]
+   ]
+  },
+  "fl_ts_fraxinus_excelsior": {
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "NB: примесь ясеня; W: широколиственные и смешанные леса; K: только юг",
+    [
+     "NB",
+     "W",
+     "K"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "rare",
+    "K: ясень растёт только в южных районах Новгородской земли",
+    [
+     "K"
+    ]
+   ]
+  },
+  "fl_ts_ulmus_glabra": {
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "W: широколиственные, дубовые и липовые леса, овраги; K: встречается ильм",
+    [
+     "W",
+     "K"
+    ]
+   ],
+   "pf_riverbank": [
+    "rare",
+    "W: речные долины (C)",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "rare",
+    "K: встречается (C)",
+    [
+     "K"
+    ]
+   ]
+  },
+  "fl_ts_ulmus_laevis": {
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "W: второй ярус дубовых и смешанных лесов; K: встречается вяз",
+    [
+     "W",
+     "K"
+    ]
+   ],
+   "pf_riverbank": [
+    "rare",
+    "W: стойкая к воде древесина, поймы (C)",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "rare",
+    "W: смешанные леса",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_acer_platanoides": {
+   "pf_broadleaf_woodland": [
+    "component",
+    "W: лиственные и смешанные леса; K: клён повсеместно, но занимает меньше пространства",
+    [
+     "W",
+     "K"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "K: клён занимает меньше пространства",
+    [
+     "K"
+    ]
+   ]
+  },
+  "fl_ts_sorbus_aucuparia": {
+   "pf_conifer_woodland": [
+    "component",
+    "W: подлесок и второй ярус хвойных лесов",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "component",
+    "W: подлесок смешанных лесов",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "component",
+    "W: вырубки и опушки среди кустарников",
+    [
+     "W"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "W: изредка в лиственных",
+    [
+     "W"
+    ]
+   ],
+   "pf_field_margin": [
+    "rare",
+    "Рдейский 2012: зарастающие поля и канавы — осина, ивы, берёза, «реже рябина»",
+    [
+     "src:src_rdeysky_letopis_2012"
+    ]
+   ]
+  },
+  "fl_ts_prunus_padus": {
+   "pf_riverbank": [
+    "component",
+    "W: берега рек, приречные леса (уремы)",
+    [
+     "W"
+    ]
+   ],
+   "pf_marshy_stream": [
+    "component",
+    "W: уремы, кустарниковые заросли у воды",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "occasional",
+    "W: лесные опушки",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "K: встречается черёмуха",
+    [
+     "K"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "K: встречается черёмуха (C)",
+    [
+     "K"
+    ]
+   ],
+   "pf_floodplain_meadow": [
+    "occasional",
+    "W: кустарниковые заросли поймы",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_malus_sylvestris": {
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "WK: троицкие яблоки связаны с южными лиственными лесами",
+    [
+     "wk:claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
+    ]
+   ],
+   "pf_riverbank": [
+    "rare",
+    "W: пойменные леса",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "rare",
+    "W: живые изгороди, кустарники (C для опушки)",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "rare",
+    "K: яблоня — местная порода (C)",
+    [
+     "K"
+    ]
+   ]
+  },
+  "fl_ts_salix_alba": {
+   "pf_riverbank": [
+    "rare",
+    "W: берега рек, плавни; аборигенность на северо-западе не подтверждена",
+    [
+     "W",
+     "wk:claim:white-willow-depends-on-moist-lit-riparian-habitat"
+    ]
+   ],
+   "pf_floodplain_meadow": [
+    "rare",
+    "W: плавни; см. выше",
+    [
+     "W"
+    ]
+   ],
+   "pf_village_lane": [
+    "rare",
+    "W: около жилья в населённых пунктах; см. выше",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_salix_caprea": {
+   "pf_forest_edge": [
+    "component",
+    "W: опушки, вырубки",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "W: сырые леса с богатыми почвами",
+    [
+     "W"
+    ]
+   ],
+   "pf_road": [
+    "occasional",
+    "W: обочины дорог",
+    [
+     "W"
+    ]
+   ],
+   "pf_field_margin": [
+    "occasional",
+    "W: вырубки и открытые места (C)",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_track": [
+    "occasional",
+    "W: обочины (явная строка сверх overlay)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_salix_pentandra": {
+   "pf_bog": [
+    "occasional",
+    "W: торфяные и травяные болота",
+    [
+     "W"
+    ]
+   ],
+   "pf_marshy_stream": [
+    "component",
+    "W: болотистые долины, сырые леса",
+    [
+     "W"
+    ]
+   ],
+   "pf_floodplain_meadow": [
+    "occasional",
+    "W: влажные луга, плавни",
+    [
+     "W"
+    ]
+   ],
+   "pf_riverbank": [
+    "occasional",
+    "W: плавни",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_salix_cinerea": {
+   "pf_marshy_stream": [
+    "edificator",
+    "W: топкие места, канавы; нередко обширные заросли",
+    [
+     "W"
+    ]
+   ],
+   "pf_bog": [
+    "component",
+    "W: моховые и травяные болота",
+    [
+     "W"
+    ]
+   ],
+   "pf_floodplain_meadow": [
+    "component",
+    "W: пойменные луга",
+    [
+     "W"
+    ]
+   ],
+   "pf_field_margin": [
+    "occasional",
+    "W: возле канав",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "W: сырые смешанные леса",
+    [
+     "W"
+    ]
+   ],
+   "pf_hay_meadow": [
+    "rare",
+    "W: пойменные луга (покос — C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_salix_aurita": {
+   "pf_bog": [
+    "component",
+    "W: мезотрофные окраины болот",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "component",
+    "W: светлые леса, вырубки, гари",
+    [
+     "W"
+    ]
+   ],
+   "pf_marshy_stream": [
+    "occasional",
+    "W: сырые низины",
+    [
+     "W"
+    ]
+   ],
+   "pf_road": [
+    "occasional",
+    "W: возле дорог, насыпей",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_salix_triandra": {
+   "pf_riverbank": [
+    "component",
+    "W: берега рек и озёр, главным образом пойма — «главным образом» относится к местообитанию (пойма), а не к господству на берегу; понижено с edificator до component (C, нет доминантной формулировки)",
+    [
+     "W"
+    ]
+   ],
+   "pf_floodplain_meadow": [
+    "component",
+    "W: пойма",
+    [
+     "W"
+    ]
+   ],
+   "pf_lake_shore": [
+    "component",
+    "W: берега озёр",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_salix_viminalis": {
+   "pf_riverbank": [
+    "component",
+    "W: прирусловая пойма с песчаным аллювием",
+    [
+     "W"
+    ]
+   ],
+   "pf_floodplain_meadow": [
+    "occasional",
+    "W: затопляемые острова и пойма",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_salix_myrsinifolia": {
+   "pf_forest_edge": [
+    "component",
+    "W: лесные опушки",
+    [
+     "W"
+    ]
+   ],
+   "pf_hay_meadow": [
+    "occasional",
+    "W: луга",
+    [
+     "W"
+    ]
+   ],
+   "pf_bog": [
+    "occasional",
+    "W: окраины болот",
+    [
+     "W"
+    ]
+   ],
+   "pf_road": [
+    "occasional",
+    "W: вдоль дорог",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_salix_rosmarinifolia": {
+   "pf_bog": [
+    "occasional",
+    "W: торфяники",
+    [
+     "W"
+    ]
+   ],
+   "pf_hay_meadow": [
+    "occasional",
+    "W: сырые и торфяные луга",
+    [
+     "W"
+    ]
+   ],
+   "pf_floodplain_meadow": [
+    "occasional",
+    "W: сырые луга",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "rare",
+    "W: боровые пески, вырубки",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_corylus_avellana": {
+   "pf_broadleaf_woodland": [
+    "edificator",
+    "WK research WFM S1 (Валдай, /nature): северные дубравы с лещиной; W: подлесок широколиственных",
+    [
+     "VN",
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "component",
+    "W: подлесок смешанных лесов; NB: орешник в подлеске",
+    [
+     "W",
+     "NB"
+    ]
+   ],
+   "pf_forest_edge": [
+    "component",
+    "W: опушки, вырубки, гари",
+    [
+     "W"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "occasional",
+    "W: подлесок хвойных",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_juniperus_communis": {
+   "pf_conifer_woodland": [
+    "component",
+    "W: подлесок боров",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "component",
+    "W: опушки и прогалины",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "K: местная хвойная порода (C для типа леса)",
+    [
+     "K"
+    ]
+   ],
+   "pf_pasture": [
+    "rare",
+    "W: сухие открытые места (выгон — C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_frangula_alnus": {
+   "pf_mixed_woodland": [
+    "component",
+    "NB: крушина в подлеске; Plantarium: мелколиственные и заболоченные леса",
+    [
+     "NB",
+     "src:src_plantarium_frangula_alnus"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "occasional",
+    "Plantarium: заболоченные леса",
+    [
+     "src:src_plantarium_frangula_alnus"
+    ]
+   ],
+   "pf_forest_edge": [
+    "component",
+    "W: опушки",
+    [
+     "W"
+    ]
+   ],
+   "pf_bog": [
+    "occasional",
+    "W: окраины болот",
+    [
+     "W"
+    ]
+   ],
+   "pf_riverbank": [
+    "occasional",
+    "W: берега рек и озёр",
+    [
+     "W"
+    ]
+   ],
+   "pf_marshy_stream": [
+    "occasional",
+    "Plantarium: пойменные кустарники",
+    [
+     "src:src_plantarium_frangula_alnus"
+    ]
+   ]
+  },
+  "fl_ts_viburnum_opulus": {
+   "pf_riverbank": [
+    "component",
+    "W: берега водоёмов, увлажнённые почвы",
+    [
+     "W"
+    ]
+   ],
+   "pf_marshy_stream": [
+    "occasional",
+    "W: увлажнённые почвы",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "occasional",
+    "W: поляны, опушки",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "W: подлесок разных лесов",
+    [
+     "W"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "W: подлесок разных лесов",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_rosa_majalis": {
+   "pf_floodplain_meadow": [
+    "component",
+    "W: чаще всего кустарниковые заросли в поймах рек",
+    [
+     "W"
+    ]
+   ],
+   "pf_riverbank": [
+    "component",
+    "W: поймы рек",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "occasional",
+    "W: поляны, кустарники",
+    [
+     "W"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "W: подлесок",
+    [
+     "W"
+    ]
+   ],
+   "pf_field_margin": [
+    "rare",
+    "W: кустарниковые заросли (C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_daphne_mezereum": {
+   "pf_conifer_woodland": [
+    "occasional",
+    "W: подлесок темнохвойных лесов; NB: волчье лыко в подлеске",
+    [
+     "W",
+     "NB"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "occasional",
+    "W: подлесок смешанных лесов",
+    [
+     "W"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "NB: подлесок (C для типа леса)",
+    [
+     "NB"
+    ]
+   ]
+  },
+  "fl_ts_lonicera_xylosteum": {
+   "pf_mixed_woodland": [
+    "component",
+    "W: подлесок смешанных лесов; NB: жимолость в подлеске",
+    [
+     "W",
+     "NB"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "occasional",
+    "W: подлесок хвойных",
+    [
+     "W"
+    ]
+   ],
+   "pf_broadleaf_woodland": [
+    "component",
+    "NB: жимолость в подлеске (C для типа леса)",
+    [
+     "NB"
+    ]
+   ],
+   "pf_riverbank": [
+    "rare",
+    "W: заросли у рек и в оврагах",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_euonymus_verrucosus": {
+   "pf_broadleaf_woodland": [
+    "occasional",
+    "W: широколиственные леса на богатых почвах; K: местная порода",
+    [
+     "W",
+     "K"
+    ]
+   ],
+   "pf_mixed_woodland": [
+    "rare",
+    "W: смешанные леса",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_calluna_vulgaris": {
+   "pf_conifer_woodland": [
+    "component",
+    "W: сплошные заросли в редких сосняках",
+    [
+     "W"
+    ]
+   ],
+   "pf_bog": [
+    "component",
+    "W: торфяные болота",
+    [
+     "W"
+    ]
+   ],
+   "pf_forest_edge": [
+    "occasional",
+    "W: гари, пустоши",
+    [
+     "W"
+    ]
+   ],
+   "pf_pasture": [
+    "rare",
+    "W: пустоши; побеги поедают овцы (C)",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_rhododendron_tomentosum": {
+   "pf_bog": [
+    "component",
+    "W: моховые болота, торфяники — формулировка называет местообитание, не господство/сплошные заросли; понижено с edificator до component (C, нет доминантной формулировки)",
+    [
+     "W"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "occasional",
+    "W: заболоченные хвойные леса",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_chamaedaphne_calyculata": {
+   "pf_bog": [
+    "component",
+    "W: преимущественно сфагновые болота",
+    [
+     "W"
+    ]
+   ]
+  },
+  "fl_ts_andromeda_polifolia": {
+   "pf_bog": [
+    "component",
+    "W: верховые и переходные сфагновые болота",
+    [
+     "W"
+    ]
+   ],
+   "pf_conifer_woodland": [
+    "rare",
+    "W: заболоченные сосняки",
+    [
+     "W"
+    ]
+   ]
+  }
+ }
+}

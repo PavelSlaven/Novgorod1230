@@ -1,0 +1,43 @@
+product_ref,name_ru,produced_by,consumed_by,items_domain_ref,status
+pr:birchbark_letter,берестяная грамота,pc_birchbark_letter,,,candidate
+pr:bone_comb,составной костяной гребень,pc_bone_comb,,,candidate
+pr:bone_skate,костяной конёк,pc_bone_skate,,,candidate
+pr:cast_ornament,литое украшение или деталь,pc_nonferrous_casting;pc_lost_wax_casting,,,candidate
+pr:ceramic_pot,гончарный сосуд,pc_pottery_wheel,,,candidate
+pr:damaged_boat,повреждённая лодка,,pc_boat_repair,,candidate
+pr:dugout_boat,лодка-однодеревка,pc_dugout_boat,,,candidate
+pr:dyed_cloth,окрашенная ткань,pc_textile_dyeing,,,candidate
+pr:edge_tool,рубящее или режущее орудие со стальным лезвием,pc_welded_steel_edge,,,candidate
+pr:embossed_mount,тиснёная накладка,pc_sheet_embossing,,,candidate
+pr:filigree_ornament,филигранное украшение,pc_wire_filigree,,,candidate
+pr:fish_trap,верша,pc_fish_trap,,,candidate
+pr:fishing_net,рыболовная сеть,pc_net_making,,,candidate
+pr:flax_stems,тресты и стебли льна или конопли,,pc_flax_fibre,,candidate
+pr:forged_iron_object,кованое железное изделие,pc_smith_forging,,,candidate
+pr:forged_nail,кованый гвоздь,pc_nail_forging,,,candidate
+pr:garment,одежда (шитая вещь),pc_sewing_mending,,,candidate
+pr:glass_bracelet,стеклянный браслет,pc_glass_bracelet,,,candidate
+pr:hewn_board,тёсаная доска или плаха,pc_board_hewing,pc_plank_boat;pc_boat_repair;pc_street_paving,,candidate
+pr:honeycomb,соты с воском,,pc_wax_candle,,candidate
+pr:hunting_bow,охотничий лук со стрелами,pc_self_bow,,,candidate
+pr:leather_footwear,кожаная обувь,pc_shoemaking;pc_shoe_repair,,,candidate
+pr:leather_small_goods,"ножны, кошель, ремень",pc_leather_goods,,,candidate
+pr:lime_mortar,известковый раствор,pc_lime_burning,,,candidate
+pr:log,бревно,pc_timber_felling,pc_street_paving,,candidate
+pr:log_frame,сруб,pc_log_building,,,candidate
+pr:marked_object,вещь со знаком собственности или надписью,pc_ownership_mark,,,candidate
+pr:net_float,сетевой поплавок,pc_bark_float,,,candidate
+pr:plank_boat,дощатая лодка,pc_plank_boat;pc_boat_repair,,,candidate
+pr:repaired_iron_object,починенная железная вещь,pc_iron_repair,,,candidate
+pr:seal_matrix,матрица печати (буллотирий) или клеймо,pc_seal_matrix,,,candidate
+pr:sealed_document,документ с вислой свинцовой печатью,pc_lead_seal,,,candidate
+pr:sledge,сани,pc_sledge_making,,,candidate
+pr:stave_vessel,"клёпаный сосуд (кадь, ведро, бочонок)",pc_cooperage,,,candidate
+pr:street_pavement,деревянная мостовая,pc_street_paving,,,candidate
+pr:turned_vessel,точёная деревянная посуда,pc_wood_turning,,,candidate
+pr:unmarked_object,вещь без знака,,pc_ownership_mark,,candidate
+pr:wax_candle,восковая свеча,pc_wax_candle,,,candidate
+pr:worn_footwear,изношенная обувь,,pc_shoe_repair,,candidate
+pr:worn_iron_object,изношенная или сломанная железная вещь,,pc_iron_repair,,candidate
+pr:woven_cloth,тканое полотно или сукно,pc_weaving,pc_textile_dyeing;pc_sewing_mending,,candidate
+pr:yarn,пряжа,pc_spinning,pc_weaving;pc_sewing_mending,,candidate

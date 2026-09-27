@@ -1,0 +1,4754 @@
+{
+  "schema": "places_binding_pr98_extract_v1",
+  "note": "Mechanical extract from the PR #98 worktree; regenerate with scripts/extract-pr98-inputs.mjs.",
+  "sources": {
+    "natural": {
+      "path": "pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json",
+      "sha256": "d07eaf5abfa684c31c6493c553ae53404b3ed49658ceddcb6f2826db95f89f93"
+    },
+    "richness": {
+      "path": "pr98:data/world-catalogs/novgorod/m2c-natural/nature-richness-candidate-v1.json",
+      "sha256": "a6bb9dc862ae9257c3f588776a10395769d06ef56744f7b9c8c55d18e6bbf4e6"
+    },
+    "nodes": {
+      "path": "pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_nodes.json",
+      "sha256": "cff88ee829daa5c2af45f8b573777a114688d2fbc7fdc8ba85db28777995053a"
+    },
+    "parents": {
+      "path": "pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_node_parents.json",
+      "sha256": "71b5b5d3eba09cd8e20d4ac6fd8974abcce0155198b2f70087e8f994e098a28c"
+    },
+    "scene_templates": {
+      "path": "pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_scene_templates.json",
+      "sha256": "67a7fc39a6547a587960931acf4cb84bc01102a6ac06b6aed7690643ff9d2626"
+    },
+    "scene_candidates": {
+      "path": "pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_scene_materialization_candidates.json",
+      "sha256": "201f727712ac180e175fc4e8ab4b56bd690341fdf83088c9c3ecdb5af3cb7d48"
+    },
+    "scene_profiles": {
+      "path": "pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_scene_materialization_profiles.json",
+      "sha256": "d0969c31887feb86dfe63ce87696f552813587dc5c569775fc9841293868d0fc"
+    },
+    "regional_env": {
+      "path": "pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json",
+      "sha256": "4bed25cb62d1be00c9ac053b73aa2fc85d9f633d5377071831657279b4abda51"
+    },
+    "npc": {
+      "path": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json",
+      "sha256": "2a9a15527f0d69b72273c4debc163127bb79e40dca57cdad60e1ea194501abce"
+    }
+  },
+  "statuses": {
+    "natural": "candidate_approval_pending",
+    "regional_env": "pending_independent_approval",
+    "npc": "candidate_approval_pending",
+    "richness": "candidate_approval_pending"
+  },
+  "region_id": "region_novgorod_land",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "natural_nonblocking_limits": [
+    "Local species, exact microtopography, hydrologic measurements, and finite wild-resource stocks are not necessary for ordinary first-screen context.",
+    "The live weather/time values require their existing runtime owners; this authoring candidate supplies applicability and profile basis only.",
+    "All referenced world-base regional templates are drafts; independent data approval is still required before import or activation."
+  ],
+  "richness_weight_policy": {
+    "version": 1,
+    "status": "editorial_candidate",
+    "meaning": "Relative game selection preference among eligible alternatives within one layer and exact G4; not archaeological frequency, biological abundance, encounter probability or yield",
+    "weights": {
+      "dominant": 8,
+      "common": 4,
+      "occasional": 2,
+      "rare": 1
+    }
+  },
+  "g4": [
+    {
+      "profile_id": "m2c_natural_g4_central_current_split",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "g4_version": 1,
+      "source_place_type": "channel_split",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "channel_split",
+        "family_ref": "m2c_g5_river_channel__waterway_access__channel_split"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_central_navigation_reach",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "g4_version": 1,
+      "source_place_type": "river_reach",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_central_main_channel",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_channel_split_islet",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "g4_version": 1,
+      "source_place_type": "island_head",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_water_navigation_v1@1",
+        "stfv3__g5_wetland_flood_v1@1"
+      ],
+      "axes": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head",
+        "family_ref": "m2c_g5_island__low_intensity_natural_use__island_head"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_alluvial_floodplain",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_alluvial_floodplain"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_driftwood_bar",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "g4_version": 1,
+      "source_place_type": "driftwood_bar",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_resource_hazard_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "driftwood_bar",
+        "family_ref": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "not_applicable",
+        "shrub_layer": "not_applicable",
+        "ground_cover": "not_applicable",
+        "riparian_vegetation": "not_applicable",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_dry_island_ridge",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "g4_version": 1,
+      "source_place_type": "island_ridge",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_landing_transition_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_ridge",
+        "family_ref": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_gentle_hills",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_gentle_hills"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_dry_pine_ridge",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "g4_version": 1,
+      "source_place_type": "pine_ridge",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "pine_ridge",
+        "family_ref": "m2c_g5_forest__forest_resource_use__pine_ridge"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_temperate_coniferous_forest",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_temperate_coniferous_forest"
+        ],
+        "water_body_template_id": null,
+        "water_regional_link_ids": []
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "not_applicable",
+        "bank_structure": "not_applicable",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "not_applicable",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_east_flood_bypass",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "g4_version": 1,
+      "source_place_type": "side_channel",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel",
+        "family_ref": "m2c_g5_river_channel__waterway_access__side_channel"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_east_side_channel",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "g4_version": 1,
+      "source_place_type": "side_channel",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_east_distributary_belt",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel",
+        "family_ref": "m2c_g5_river_channel__waterway_access__side_channel"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_flooded_interior_basin",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "g4_version": 1,
+      "source_place_type": "floodplain_basin",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_inner_floodplain",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_wetland_flood_v1@1"
+      ],
+      "axes": {
+        "landscape": "floodplain",
+        "land_use": "low_intensity_natural_use",
+        "function": "floodplain_basin",
+        "family_ref": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_alluvial_floodplain",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_alluvial_floodplain"
+        ],
+        "water_body_template_id": "wb_floodwater",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_floodwater"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_floodplain_ridge_route",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "g4_version": 1,
+      "source_place_type": "dry_ridge_route",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_landing_transition_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "dry_ridge_route",
+        "family_ref": "m2c_g5_ridge__waterway_access__dry_ridge_route"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_gentle_hills",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_gentle_hills"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_forest_stream_route",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "g4_version": 1,
+      "source_place_type": "forest_stream",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "forest_resource_use",
+        "function": "forest_stream",
+        "family_ref": "m2c_g5_river_channel__forest_resource_use__forest_stream"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_wet_lowland_forest",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_wet_lowland_forest"
+        ],
+        "water_body_template_id": "wb_brook",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_brook"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_large_island_head",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "g4_version": 1,
+      "source_place_type": "island_head",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_island_head_mosaic",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_water_navigation_v1@1",
+        "stfv3__g5_wetland_flood_v1@1"
+      ],
+      "axes": {
+        "landscape": "island",
+        "land_use": "low_intensity_natural_use",
+        "function": "island_head",
+        "family_ref": "m2c_g5_island__low_intensity_natural_use__island_head"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_alluvial_floodplain",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_alluvial_floodplain"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_mixing_reach",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "g4_version": 1,
+      "source_place_type": "estuary_mixing",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_boundary_access_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "estuary",
+        "land_use": "low_intensity_natural_use",
+        "function": "estuary_mixing",
+        "family_ref": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_alluvial_floodplain",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_alluvial_floodplain"
+        ],
+        "water_body_template_id": "wb_estuary",
+        "water_regional_link_ids": []
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_north_exposed_turn",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "g4_version": 1,
+      "source_place_type": "river_reach",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_north_outflow_reach",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "g4_version": 1,
+      "source_place_type": "river_reach",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_north_main_channel",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_old_channel_pool",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "g4_version": 1,
+      "source_place_type": "old_channel",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_exploration_concealment_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_resource_hazard_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1"
+      ],
+      "axes": {
+        "landscape": "backwater_wetland",
+        "land_use": "waterway_access",
+        "function": "old_channel",
+        "family_ref": "m2c_g5_backwater_wetland__waterway_access__old_channel"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_freshwater_marsh",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_freshwater_marsh"
+        ],
+        "water_body_template_id": "wb_backwater",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_backwater"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "not_applicable",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_outer_exposed_approach",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "g4_version": 1,
+      "source_place_type": "outer_exposed",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_river_sea_transition",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_boundary_access_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "estuary",
+        "land_use": "waterway_access",
+        "function": "outer_exposed",
+        "family_ref": "m2c_g5_estuary__waterway_access__outer_exposed"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_alluvial_floodplain",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_alluvial_floodplain"
+        ],
+        "water_body_template_id": "wb_nearshore_sea",
+        "water_regional_link_ids": []
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_reed_backwater",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "g4_version": 1,
+      "source_place_type": "reed_backwater",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_backwater_wetlands",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_exploration_concealment_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1"
+      ],
+      "axes": {
+        "landscape": "backwater_wetland",
+        "land_use": "low_intensity_natural_use",
+        "function": "reed_backwater",
+        "family_ref": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_freshwater_marsh",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_freshwater_marsh"
+        ],
+        "water_body_template_id": "wb_backwater",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_backwater"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "not_applicable",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_sheltered_inner_reach",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "g4_version": 1,
+      "source_place_type": "river_reach",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_sheltered_landing_terrace",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "g4_version": 1,
+      "source_place_type": "landing_terrace",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_dry_ridge_belt",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_landing_transition_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "ridge",
+        "land_use": "waterway_access",
+        "function": "landing_terrace",
+        "family_ref": "m2c_g5_ridge__waterway_access__landing_terrace"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_gentle_hills",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_gentle_hills"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_shifting_shoal_field",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "g4_version": 1,
+      "source_place_type": "shoal_field",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_shoal_bar_field",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_landing_transition_v1@1",
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "shoal",
+        "land_use": "low_intensity_natural_use",
+        "function": "shoal_field",
+        "family_ref": "m2c_g5_shoal__low_intensity_natural_use__shoal_field"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "not_applicable",
+        "shrub_layer": "not_applicable",
+        "ground_cover": "not_applicable",
+        "riparian_vegetation": "not_applicable",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_south_entry_reach",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "g4_version": 1,
+      "source_place_type": "river_reach",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_south_main_channel",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_observation_orientation_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "river_reach",
+        "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_tributary_mouth",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "g4_version": 1,
+      "source_place_type": "tributary_mouth",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_small_stream_network",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "tributary_mouth",
+        "family_ref": "m2c_g5_river_channel__waterway_access__tributary_mouth"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_brook",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_brook"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_vikhtuy_locality",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "g4_version": 1,
+      "source_place_type": "vikhtuy_locality",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_habitation_v1@1",
+        "stfv3__g5_landing_transition_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_work_storage_social_v1@1"
+      ],
+      "axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "recurrent_settlement_use",
+        "function": "vikhtuy_locality",
+        "family_ref": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_alluvial_floodplain",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_alluvial_floodplain"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_vikhtuy_resource_edge",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "g4_version": 1,
+      "source_place_type": "forest_tract",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_exploration_concealment_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract",
+        "family_ref": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_wet_lowland_forest",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_wet_lowland_forest"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_vikhtuy_river_approach",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "g4_version": 1,
+      "source_place_type": "landing_terrace",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_landing_transition_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "settlement_landscape",
+        "land_use": "waterway_access",
+        "function": "landing_terrace",
+        "family_ref": "m2c_g5_settlement_landscape__waterway_access__landing_terrace"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_west_hidden_backwater",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "g4_version": 1,
+      "source_place_type": "backwater",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_exploration_concealment_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "low_intensity_natural_use",
+        "function": "backwater",
+        "family_ref": "m2c_g5_river_channel__low_intensity_natural_use__backwater"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_backwater",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_backwater"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_west_side_channel",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "g4_version": 1,
+      "source_place_type": "side_channel",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_west_distributary_belt",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_water_hazard_v1@1",
+        "stfv3__g5_water_navigation_v1@1"
+      ],
+      "axes": {
+        "landscape": "river_channel",
+        "land_use": "waterway_access",
+        "function": "side_channel",
+        "family_ref": "m2c_g5_river_channel__waterway_access__side_channel"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_wet_conifer_tract",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "g4_version": 1,
+      "source_place_type": "forest_tract",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_forest_hinterland",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_exploration_concealment_v1@1",
+        "stfv3__g5_general_hazard_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_shelter_rest_v1@1"
+      ],
+      "axes": {
+        "landscape": "forest",
+        "land_use": "forest_resource_use",
+        "function": "forest_tract",
+        "family_ref": "m2c_g5_forest__forest_resource_use__forest_tract"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_wet_lowland_forest",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_wet_lowland_forest"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_zaostrovye_burial_area",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "g4_version": 1,
+      "source_place_type": "burial_area",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_boundary_access_v1@1",
+        "stfv3__g5_burial_ritual_buffer_v1@1",
+        "stfv3__g5_route_approach_v1@1"
+      ],
+      "axes": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "burial_area",
+        "family_ref": "m2c_g5_archaeological_area__heritage_access_limited__burial_area"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_wooded_floodplain",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_wooded_floodplain"
+        ],
+        "water_body_template_id": null,
+        "water_regional_link_ids": []
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "not_applicable",
+        "bank_structure": "not_applicable",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_zaostrovye_landing",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "g4_version": 1,
+      "source_place_type": "local_landing",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_landing_transition_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_seasonal_route_hazard_v1@1",
+        "stfv3__g5_shelter_rest_v1@1",
+        "stfv3__g5_work_storage_social_v1@1"
+      ],
+      "axes": {
+        "landscape": "archaeological_area",
+        "land_use": "waterway_access",
+        "function": "local_landing",
+        "family_ref": "m2c_g5_archaeological_area__waterway_access__local_landing"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_low_alluvial_riverbank",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_low_alluvial_riverbank"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    },
+    {
+      "profile_id": "m2c_natural_g4_zaostrovye_settlement_center",
+      "profile_status": "candidate_approval_pending",
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "g4_version": 1,
+      "source_place_type": "archaeological_settlement",
+      "parent_g2_id": "gn_nov_g2_xp017_yp026_r2_zaostrovye_archaeological_area",
+      "canonical_g5_refs": [
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source@1",
+        "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone@1"
+      ],
+      "scene_template_refs": [
+        "stfv3__g5_dry_route_v1@1",
+        "stfv3__g5_habitation_v1@1",
+        "stfv3__g5_landing_transition_v1@1",
+        "stfv3__g5_resource_v1@1",
+        "stfv3__g5_route_approach_v1@1",
+        "stfv3__g5_work_storage_social_v1@1"
+      ],
+      "axes": {
+        "landscape": "archaeological_area",
+        "land_use": "heritage_access_limited",
+        "function": "archaeological_settlement",
+        "family_ref": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement"
+      },
+      "axes_directness": {
+        "landscape": "inferred/medium",
+        "land_use": "inferred/low",
+        "function": "direct/high"
+      },
+      "template_refs": {
+        "landscape_template_id": "lt_wooded_floodplain",
+        "landscape_regional_link_ids": [
+          "rlt_novgorod_wooded_floodplain"
+        ],
+        "water_body_template_id": "wb_river_channel",
+        "water_regional_link_ids": [
+          "rwbt_novgorod_river_channel"
+        ]
+      },
+      "layers": {
+        "surface": "present",
+        "relief": "present",
+        "water_body": "present",
+        "bank_structure": "present",
+        "tree_layer": "present",
+        "shrub_layer": "present",
+        "ground_cover": "present",
+        "riparian_vegetation": "present",
+        "natural_materials": "present",
+        "seasonal_state": "present",
+        "light": "present",
+        "weather": "present",
+        "audible_context": "present"
+      }
+    }
+  ],
+  "g4nodes": [
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "version": 1,
+      "status": "approved"
+    },
+    {
+      "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "version": 1,
+      "status": "approved"
+    }
+  ],
+  "g5": [
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_fast_branch",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_islet_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_rejoin_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_slow_branch",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_split_point",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_current_split_upstream_nose",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_deep_thread",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_downstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_lee_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_observation_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_shoal_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_central_navigation_reach_upstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_downstream_tail",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_east_channel",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_high_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_upstream_tip",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_west_channel",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_channel_split_islet_wet_hollow",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "scene_template_id": "stfv3__g5_wetland_flood_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_downstream_cut",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_driftwood_mass",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "scene_template_id": "stfv3__g5_resource_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_dry_cap",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_shallow_pool",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_driftwood_bar_upstream_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_camp_candidate",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_downstream_exit",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_forest_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_landing",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "scene_template_id": "stfv3__g5_landing_transition_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_ridge_crest",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_island_ridge_wet_hollow",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_north_descent",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_pine_stand",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_ridge_top",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_sandy_hollow",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_south_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_dry_pine_ridge_view_gap",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_entrance",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_exit",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_mud_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_narrow_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_quiet_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_flood_bypass_seasonal_barrier",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_entrance",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_exit",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_mud_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_narrow_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_quiet_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_east_side_channel_seasonal_barrier",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_bog_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_dry_mound",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_inlet",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_overflow",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_reed_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_flooded_interior_basin_shallow_basin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "scene_template_id": "stfv3__g5_wetland_flood_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_forest_shelter",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_north_exit",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_ridge_path",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_south_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_water_access",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "scene_template_id": "stfv3__g5_landing_transition_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_floodplain_ridge_route_wet_gap",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bank_path",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_bog_crossing",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_fallen_timber",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_headwater_fork",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_lower_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_forest_stream_route_pool",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_downstream_tail",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_east_channel",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_high_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_upstream_tip",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_west_channel",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_large_island_head_wet_hollow",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "scene_template_id": "stfv3__g5_wetland_flood_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_current_shear",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_ice_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_inner_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_lee_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_open_water",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_mixing_reach_outer_route",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "scene_template_id": "stfv3__g5_boundary_access_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_deep_thread",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_downstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_lee_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_observation_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_shoal_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_exposed_turn_upstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_deep_thread",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_downstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_lee_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_observation_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_shoal_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_north_outflow_reach_upstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_deep_pool",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "scene_template_id": "stfv3__g5_resource_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_dry_crossing",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_hidden_link",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_old_mouth",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_silted_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_old_channel_pool_willow_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_ice_break_zone",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_river_side",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sea_exit",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "scene_template_id": "stfv3__g5_boundary_access_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_sheltered_inlet",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_shoal_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_outer_exposed_approach_wind_fetch",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_bird_shallows",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_entrance",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_mud_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_open_pool",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_reed_channel",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_reed_backwater_winter_thin_ice",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_deep_thread",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_downstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_lee_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_observation_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_shoal_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_inner_reach_upstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_flood_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_inland_path",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_landing_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "scene_template_id": "stfv3__g5_landing_transition_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_water_source",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_cross_current",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_deep_thread",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_emergency_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "scene_template_id": "stfv3__g5_landing_transition_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_shallow_bars",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_warning_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_shifting_shoal_field_winter_crack",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_deep_thread",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_downstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_lee_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_observation_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "scene_template_id": "stfv3__g5_observation_orientation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_shoal_margin",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_south_entry_reach_upstream_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_crossing",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_inland_path",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_lower_stream",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_main_river_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_marsh_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_tributary_mouth_mouth_bar",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_forest_path",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_household_cluster",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "scene_template_id": "stfv3__g5_habitation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_landing_candidate",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "scene_template_id": "stfv3__g5_landing_transition_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_meeting_area",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "scene_template_id": "stfv3__g5_work_storage_social_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_occupation_terrace",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "scene_template_id": "stfv3__g5_habitation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_river_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "source_backed_with_localization_uncertainty",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_water_access",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_locality_work_storage",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "scene_template_id": "stfv3__g5_work_storage_social_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_deep_forest",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_dry_patch",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_game_trail",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_resource_patch",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_river_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_resource_edge_wet_forest",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_flood_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_high_platform",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_inland_path",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_landing_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "scene_template_id": "stfv3__g5_landing_transition_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_vikhtuy_river_approach_water_source",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_dry_patch",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_entrance",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_hidden_outlet",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_muddy_shore",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_reed_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_hidden_backwater_still_water",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_entrance",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_exit",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_mud_bank",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "scene_template_id": "stfv3__g5_water_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_narrow_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "scene_template_id": "stfv3__g5_water_navigation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_quiet_reach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_west_side_channel_seasonal_barrier",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_deep_forest",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_dry_patch",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_game_trail",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "scene_template_id": "stfv3__g5_exploration_concealment_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_resource_patch",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_river_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_wet_conifer_tract_wet_forest",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "scene_template_id": "stfv3__g5_general_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_burial_core",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_outer_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "scene_template_id": "stfv3__g5_boundary_access_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_ritual_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_wet_boundary",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "scene_template_id": "stfv3__g5_boundary_access_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_burial_area_woodland_buffer",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_boat_drawing",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "scene_template_id": "stfv3__g5_work_storage_social_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_dry_platform",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "scene_template_id": "stfv3__g5_shelter_rest_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_flood_limit",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "scene_template_id": "stfv3__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_landing_edge",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "scene_template_id": "stfv3__g5_landing_transition_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_path_to_settlement",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_landing_river_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_habitation_terrace",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "scene_template_id": "stfv3__g5_habitation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_hinterland_path",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "scene_template_id": "stfv3__g5_dry_route_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_household_zone",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "scene_template_id": "stfv3__g5_habitation_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_landing",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "scene_template_id": "stfv3__g5_landing_transition_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_river_approach",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "archaeologically_supported_with_access_limit",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "scene_template_id": "stfv3__g5_route_approach_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_storage_zone",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "scene_template_id": "stfv3__g5_work_storage_social_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_water_source",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "regional_typology",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "scene_template_id": "stfv3__g5_resource_v1"
+    },
+    {
+      "g5_id": "cg5v3__gn_nov_g4_xp017_yp026_r2_zaostrovye_settlement_center_work_zone",
+      "g5_version": 1,
+      "status": "approved",
+      "evidence_status": "comparative_reconstruction",
+      "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "scene_template_id": "stfv3__g5_work_storage_social_v1"
+    }
+  ],
+  "scene_templates": [
+    {
+      "id": "stfv3__g5_boundary_access_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_boundary_access_v1"
+    },
+    {
+      "id": "stfv3__g5_burial_ritual_buffer_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_burial_ritual_buffer_v1"
+    },
+    {
+      "id": "stfv3__g5_dry_route_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_dry_route_v1"
+    },
+    {
+      "id": "stfv3__g5_exploration_concealment_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_exploration_concealment_v1"
+    },
+    {
+      "id": "stfv3__g5_general_hazard_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_general_hazard_v1"
+    },
+    {
+      "id": "stfv3__g5_habitation_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_habitation_v1"
+    },
+    {
+      "id": "stfv3__g5_landing_transition_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_landing_transition_v1"
+    },
+    {
+      "id": "stfv3__g5_observation_orientation_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_observation_orientation_v1"
+    },
+    {
+      "id": "stfv3__g5_resource_hazard_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_resource_hazard_v1"
+    },
+    {
+      "id": "stfv3__g5_resource_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_resource_v1"
+    },
+    {
+      "id": "stfv3__g5_route_approach_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_route_approach_v1"
+    },
+    {
+      "id": "stfv3__g5_seasonal_route_hazard_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_seasonal_route_hazard_v1"
+    },
+    {
+      "id": "stfv3__g5_shelter_rest_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_shelter_rest_v1"
+    },
+    {
+      "id": "stfv3__g5_water_hazard_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_water_hazard_v1"
+    },
+    {
+      "id": "stfv3__g5_water_navigation_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_water_navigation_v1"
+    },
+    {
+      "id": "stfv3__g5_wetland_flood_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_wetland_flood_v1"
+    },
+    {
+      "id": "stfv3__g5_work_storage_social_v1",
+      "version": 1,
+      "status": "approved",
+      "regional_template_id": "regional_scene_basis__g5_work_storage_social_v1"
+    }
+  ],
+  "regional_env": {
+    "revision_id": "novgorod_regional_environment_1230_1250_v1",
+    "status": "pending_independent_approval",
+    "promotions": {
+      "landscape": [
+        {
+          "id": "lt_temperate_broadleaf_mixed_forest",
+          "regional_id": "rlt_novgorod_temperate_broadleaf_mixed_forest",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_temperate_coniferous_forest",
+          "regional_id": "rlt_novgorod_temperate_coniferous_forest",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_boreal_taiga_coniferous_forest",
+          "regional_id": "rlt_novgorod_boreal_taiga_coniferous_forest",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_boreal_mixed_forest",
+          "regional_id": "rlt_novgorod_boreal_mixed_forest",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_dense_coniferous_forest",
+          "regional_id": "rlt_novgorod_dense_coniferous_forest",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_wet_lowland_forest",
+          "regional_id": "rlt_novgorod_wet_lowland_forest",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_freshwater_marsh",
+          "regional_id": "rlt_novgorod_freshwater_marsh",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_seasonal_sedge_marsh",
+          "regional_id": "rlt_novgorod_seasonal_sedge_marsh",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_reedbed_marsh",
+          "regional_id": "rlt_novgorod_reedbed_marsh",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_shrub_swamp",
+          "regional_id": "rlt_novgorod_shrub_swamp",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_wooded_swamp",
+          "regional_id": "rlt_novgorod_wooded_swamp",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_peat_swamp_forest",
+          "regional_id": "rlt_novgorod_peat_swamp_forest",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_raised_bog",
+          "regional_id": "rlt_novgorod_raised_bog",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_fen",
+          "regional_id": "rlt_novgorod_fen",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_dry_meadow",
+          "regional_id": "rlt_novgorod_dry_meadow",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_mesic_meadow",
+          "regional_id": "rlt_novgorod_mesic_meadow",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_wet_meadow",
+          "regional_id": "rlt_novgorod_wet_meadow",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_scrub_meadow",
+          "regional_id": "rlt_novgorod_scrub_meadow",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lt_alluvial_floodplain",
+          "regional_id": "rlt_novgorod_alluvial_floodplain",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_floodplain_wet_grassland",
+          "regional_id": "rlt_novgorod_floodplain_wet_grassland",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_wooded_floodplain",
+          "regional_id": "rlt_novgorod_wooded_floodplain",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_seasonally_flooded_forest",
+          "regional_id": "rlt_novgorod_seasonally_flooded_forest",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_low_alluvial_riverbank",
+          "regional_id": "rlt_novgorod_low_alluvial_riverbank",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_steep_eroding_riverbank",
+          "regional_id": "rlt_novgorod_steep_eroding_riverbank",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_riparian_scrub_bank",
+          "regional_id": "rlt_novgorod_riparian_scrub_bank",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_sandy_lake_shore",
+          "regional_id": "rlt_novgorod_sandy_lake_shore",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_rocky_lake_shore",
+          "regional_id": "rlt_novgorod_rocky_lake_shore",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lt_reed_lake_shore",
+          "regional_id": "rlt_novgorod_reed_lake_shore",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_marsh_lake_margin",
+          "regional_id": "rlt_novgorod_marsh_lake_margin",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_gentle_hills",
+          "regional_id": "rlt_novgorod_gentle_hills",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_steep_hills",
+          "regional_id": "rlt_novgorod_steep_hills",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lt_wooded_hills",
+          "regional_id": "rlt_novgorod_wooded_hills",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lt_dry_ravine_gully",
+          "regional_id": "rlt_novgorod_dry_ravine_gully",
+          "verdict": "APPROVE_WITH_LIMITS"
+        }
+      ],
+      "water": [
+        {
+          "id": "wb_spring",
+          "regional_id": "rwbt_novgorod_spring",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_seep",
+          "regional_id": "rwbt_novgorod_seep",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_brook",
+          "regional_id": "rwbt_novgorod_brook",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_small_river",
+          "regional_id": "rwbt_novgorod_small_river",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_medium_river",
+          "regional_id": "rwbt_novgorod_medium_river",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_large_river",
+          "regional_id": "rwbt_novgorod_large_river",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_river_channel",
+          "regional_id": "rwbt_novgorod_river_channel",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_rapid_section",
+          "regional_id": "rwbt_novgorod_rapid_section",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "wb_oxbow_lake",
+          "regional_id": "rwbt_novgorod_oxbow_lake",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_backwater",
+          "regional_id": "rwbt_novgorod_backwater",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_floodplain_lake",
+          "regional_id": "rwbt_novgorod_floodplain_lake",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_freshwater_pond",
+          "regional_id": "rwbt_novgorod_freshwater_pond",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_small_fresh_lake",
+          "regional_id": "rwbt_novgorod_small_fresh_lake",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_large_fresh_lake",
+          "regional_id": "rwbt_novgorod_large_fresh_lake",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_seasonal_pool",
+          "regional_id": "rwbt_novgorod_seasonal_pool",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "wb_floodwater",
+          "regional_id": "rwbt_novgorod_floodwater",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "wb_marsh_pool",
+          "regional_id": "rwbt_novgorod_marsh_pool",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_bog_pool",
+          "regional_id": "rwbt_novgorod_bog_pool",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_marsh_channel",
+          "regional_id": "rwbt_novgorod_marsh_channel",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "wb_brine_spring",
+          "regional_id": "rwbt_novgorod_brine_spring",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "wb_moat_water",
+          "regional_id": "rwbt_novgorod_moat_water",
+          "verdict": "APPROVE_WITH_LIMITS"
+        }
+      ],
+      "land_use": [
+        {
+          "id": "lu_rainfed_arable",
+          "regional_id": "rlut_novgorod_rainfed_arable",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_fallow_rotation",
+          "regional_id": "rlut_novgorod_fallow_rotation",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_slash_burn_cultivation",
+          "regional_id": "rlut_novgorod_slash_burn_cultivation",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_kitchen_garden",
+          "regional_id": "rlut_novgorod_kitchen_garden",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_orchard_fruit_grove",
+          "regional_id": "rlut_novgorod_orchard_fruit_grove",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lu_fiber_crop_plot",
+          "regional_id": "rlut_novgorod_fiber_crop_plot",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_hay_meadow_cutting",
+          "regional_id": "rlut_novgorod_hay_meadow_cutting",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_common_pasture",
+          "regional_id": "rlut_novgorod_common_pasture",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_wood_pasture_silvopasture",
+          "regional_id": "rlut_novgorod_wood_pasture_silvopasture",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_reed_sedge_harvest",
+          "regional_id": "rlut_novgorod_reed_sedge_harvest",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lu_timber_felling",
+          "regional_id": "rlut_novgorod_timber_felling",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_fuelwood_gathering",
+          "regional_id": "rlut_novgorod_fuelwood_gathering",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_charcoal_burning",
+          "regional_id": "rlut_novgorod_charcoal_burning",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lu_resin_tar_pitch_production",
+          "regional_id": "rlut_novgorod_resin_tar_pitch_production",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lu_bark_bast_collection",
+          "regional_id": "rlut_novgorod_bark_bast_collection",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_wild_food_gathering",
+          "regional_id": "rlut_novgorod_wild_food_gathering",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_tree_beekeeping_bortnichestvo",
+          "regional_id": "rlut_novgorod_tree_beekeeping_bortnichestvo",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_hunting_ground",
+          "regional_id": "rlut_novgorod_hunting_ground",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_fur_trapping_ground",
+          "regional_id": "rlut_novgorod_fur_trapping_ground",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_inland_capture_fishing",
+          "regional_id": "rlut_novgorod_inland_capture_fishing",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "lu_fish_weir_trap_operation",
+          "regional_id": "rlut_novgorod_fish_weir_trap_operation",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lu_saltmaking_saltern",
+          "regional_id": "rlut_novgorod_saltmaking_saltern",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lu_clay_extraction",
+          "regional_id": "rlut_novgorod_clay_extraction",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "lu_bog_iron_extraction",
+          "regional_id": "rlut_novgorod_bog_iron_extraction",
+          "verdict": "APPROVE_WITH_LIMITS"
+        }
+      ],
+      "place": [
+        {
+          "id": "pt_isolated_farmstead",
+          "regional_id": "rpt_novgorod_isolated_farmstead",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_hamlet",
+          "regional_id": "rpt_novgorod_hamlet",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_village",
+          "regional_id": "rpt_novgorod_village",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_nucleated_village",
+          "regional_id": "rpt_novgorod_nucleated_village",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_dispersed_settlement_cluster",
+          "regional_id": "rpt_novgorod_dispersed_settlement_cluster",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_rural_church_center",
+          "regional_id": "rpt_novgorod_rural_church_center",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_pogost_center",
+          "regional_id": "rpt_novgorod_pogost_center",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_estate_center",
+          "regional_id": "rpt_novgorod_estate_center",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_monastic_grange",
+          "regional_id": "rpt_novgorod_monastic_grange",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_wintering_hut",
+          "regional_id": "rpt_novgorod_wintering_hut",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_forest_work_camp",
+          "regional_id": "rpt_novgorod_forest_work_camp",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_hunting_camp",
+          "regional_id": "rpt_novgorod_hunting_camp",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_fishing_station",
+          "regional_id": "rpt_novgorod_fishing_station",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_fish_weir_site",
+          "regional_id": "rpt_novgorod_fish_weir_site",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_river_landing",
+          "regional_id": "rpt_novgorod_river_landing",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_boat_landing",
+          "regional_id": "rpt_novgorod_boat_landing",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_market_place",
+          "regional_id": "rpt_novgorod_market_place",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_periodic_fairground",
+          "regional_id": "rpt_novgorod_periodic_fairground",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_town",
+          "regional_id": "rpt_novgorod_town",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_city_major_center",
+          "regional_id": "rpt_novgorod_city_major_center",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_fortified_town",
+          "regional_id": "rpt_novgorod_fortified_town",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_posad_suburb",
+          "regional_id": "rpt_novgorod_posad_suburb",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_crossroads",
+          "regional_id": "rpt_novgorod_crossroads",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_ford_place",
+          "regional_id": "rpt_novgorod_ford_place",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_ferry_place",
+          "regional_id": "rpt_novgorod_ferry_place",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_bridge_place",
+          "regional_id": "rpt_novgorod_bridge_place",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_portage_place",
+          "regional_id": "rpt_novgorod_portage_place",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_monastery",
+          "regional_id": "rpt_novgorod_monastery",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_hermitage_skete",
+          "regional_id": "rpt_novgorod_hermitage_skete",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_pilgrimage_shrine",
+          "regional_id": "rpt_novgorod_pilgrimage_shrine",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_hillfort_gorodishche",
+          "regional_id": "rpt_novgorod_hillfort_gorodishche",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_watchpost_guard_post",
+          "regional_id": "rpt_novgorod_watchpost_guard_post",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_administrative_court",
+          "regional_id": "rpt_novgorod_administrative_court",
+          "verdict": "APPROVE"
+        },
+        {
+          "id": "pt_toll_customs_post",
+          "regional_id": "rpt_novgorod_toll_customs_post",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_saltworks",
+          "regional_id": "rpt_novgorod_saltworks",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_clay_pit_pottery_site",
+          "regional_id": "rpt_novgorod_clay_pit_pottery_site",
+          "verdict": "APPROVE_WITH_LIMITS"
+        },
+        {
+          "id": "pt_iron_smelting_site",
+          "regional_id": "rpt_novgorod_iron_smelting_site",
+          "verdict": "APPROVE_WITH_LIMITS"
+        }
+      ]
+    },
+    "pending": [
+      {
+        "id": "pt_drying_storage_workspace",
+        "status": "pending_independent_review"
+      }
+    ]
+  },
+  "npc_compositions": [
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+      "presence_mode": "passing_people_only",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+      "presence_mode": "passing_people_only",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_local_trader_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_forest_worker_v1",
+        "m2c_npc_hunter_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_forest_worker_v1",
+        "m2c_npc_hunter_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_local_trader_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_forest_worker_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_guide_v1",
+        "m2c_npc_visiting_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_forest_worker_v1",
+        "m2c_npc_hunter_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_local_trader_v1",
+        "m2c_npc_household_servant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_boatman_v1",
+        "m2c_npc_fisher_v1",
+        "m2c_npc_local_trader_v1",
+        "m2c_npc_visiting_merchant_v1",
+        "m2c_npc_foreign_merchant_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    },
+    {
+      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+      "presence_mode": "occupation_or_transit",
+      "min_count": 0,
+      "max_count": 2,
+      "profile_refs": [
+        "m2c_npc_fisher_v1",
+        "m2c_npc_guide_v1"
+      ],
+      "status": "candidate_approval_pending"
+    }
+  ]
+}

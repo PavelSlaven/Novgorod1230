@@ -1,0 +1,4 @@
+lit_id,name_ru,usage_context,slots,source_refs,confidence,status
+lit_priest,Священник на литургии,liturgy,vestment_base=gm_cl004|vestment_stole=gm_cl005|vestment_outer=gm_cl006|vestment_cuffs=gm_cl007,costume:CMB021,B,candidate
+lit_deacon,Дьякон на литургии,liturgy,vestment_base=gm_cl004|vestment_stole=gm_cl008|vestment_cuffs=gm_cl007,costume:CMB022,B,candidate
+lit_archbishop,Архиепископ на литургии,liturgy,vestment_base=gm_cl004|vestment_stole=gm_cl005|vestment_cuffs=gm_cl007|vestment_omophorion=gm_cl009,costume:CMB044,C,candidate

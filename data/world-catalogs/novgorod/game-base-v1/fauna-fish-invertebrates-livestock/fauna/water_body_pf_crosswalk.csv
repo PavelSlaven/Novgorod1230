@@ -1,0 +1,53 @@
+cw_id,water_body_template_ref,water_body_type,template_title,pf_id,example_waters,season_limit,rule_ref,source_refs,confidence,status
+cw_wb_large_river__river_channel,wb_large_river,river,Большая река,river_channel,"Волхов, низовья крупных рек",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_river__riverbank,wb_large_river,river,Большая река,riverbank,"Волхов, низовья крупных рек",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_river__river_wharf,wb_large_river,river,Большая река,river_wharf,"Волхов, низовья крупных рек",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_river__ferry_landing,wb_large_river,river,Большая река,ferry_landing,"Волхов, низовья крупных рек",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_river__bridge_crossing,wb_large_river,river,Большая река,bridge_crossing,"Волхов, низовья крупных рек",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_river__fishing_camp,wb_large_river,river,Большая река,fishing_camp,"Волхов, низовья крупных рек",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_river__winter_ice_crossing,wb_large_river,river,Большая река,winter_ice_crossing,"Волхов, низовья крупных рек",winter,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_medium_river__river_channel,wb_medium_river,river,Средняя река,river_channel,"Мста, Ловать, Шелонь",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_medium_river__riverbank,wb_medium_river,river,Средняя река,riverbank,"Мста, Ловать, Шелонь",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_medium_river__river_wharf,wb_medium_river,river,Средняя река,river_wharf,"Мста, Ловать, Шелонь",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_medium_river__ferry_landing,wb_medium_river,river,Средняя река,ferry_landing,"Мста, Ловать, Шелонь",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_medium_river__bridge_crossing,wb_medium_river,river,Средняя река,bridge_crossing,"Мста, Ловать, Шелонь",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_medium_river__fishing_camp,wb_medium_river,river,Средняя река,fishing_camp,"Мста, Ловать, Шелонь",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_medium_river__winter_ice_crossing,wb_medium_river,river,Средняя река,winter_ice_crossing,"Мста, Ловать, Шелонь",winter,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_small_river__river_channel,wb_small_river,river,Малая река,river_channel,малые реки,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_small_river__riverbank,wb_small_river,river,Малая река,riverbank,малые реки,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_small_river__bridge_crossing,wb_small_river,river,Малая река,bridge_crossing,малые реки,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_small_river__ferry_landing,wb_small_river,river,Малая река,ferry_landing,малые реки,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_small_river__mill,wb_small_river,river,Малая река,mill,малые реки,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_river_channel__river_channel,wb_river_channel,channel,Протока / речной рукав,river_channel,протоки и рукава,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_river_channel__riverbank,wb_river_channel,channel,Протока / речной рукав,riverbank,протоки и рукава,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_river_channel__fishing_camp,wb_river_channel,channel,Протока / речной рукав,fishing_camp,протоки и рукава,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_river_channel__river_wharf,wb_river_channel,channel,Протока / речной рукав,river_wharf,протоки и рукава,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_rapid_section__river_channel,wb_rapid_section,river_section,Порожистый участок,river_channel,"пороги (Мста, Волховские пороги)",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_rapid_section__riverbank,wb_rapid_section,river_section,Порожистый участок,riverbank,"пороги (Мста, Волховские пороги)",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_fresh_lake__lake_shore,wb_large_fresh_lake,lake,Крупное пресное озеро,lake_shore,Ильмень,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_fresh_lake__fishing_camp,wb_large_fresh_lake,lake,Крупное пресное озеро,fishing_camp,Ильмень,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_fresh_lake__winter_ice_crossing,wb_large_fresh_lake,lake,Крупное пресное озеро,winter_ice_crossing,Ильмень,winter,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_large_fresh_lake__river_wharf,wb_large_fresh_lake,lake,Крупное пресное озеро,river_wharf,Ильмень,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_small_fresh_lake__lake_shore,wb_small_fresh_lake,lake,Малое пресное озеро,lake_shore,малые озёра,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_small_fresh_lake__fishing_camp,wb_small_fresh_lake,lake,Малое пресное озеро,fishing_camp,малые озёра,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_small_fresh_lake__winter_ice_crossing,wb_small_fresh_lake,lake,Малое пресное озеро,winter_ice_crossing,малые озёра,winter,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_backwater__riverbank,wb_backwater,backwater,Заводь / затон,riverbank,"заводи, затоны",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_backwater__marshy_stream,wb_backwater,backwater,Заводь / затон,marshy_stream,"заводи, затоны",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_backwater__fishing_camp,wb_backwater,backwater,Заводь / затон,fishing_camp,"заводи, затоны",,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_oxbow_lake__floodplain_meadow,wb_oxbow_lake,oxbow_lake,Старица / старичное озеро,floodplain_meadow,старицы,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_oxbow_lake__lake_shore,wb_oxbow_lake,oxbow_lake,Старица / старичное озеро,lake_shore,старицы,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_floodplain_lake__floodplain_meadow,wb_floodplain_lake,floodplain_lake,Пойменное озеро,floodplain_meadow,пойменные озёра,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_floodplain_lake__lake_shore,wb_floodplain_lake,floodplain_lake,Пойменное озеро,lake_shore,пойменные озёра,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_floodwater__floodplain_meadow,wb_floodwater,seasonal_floodwater,Паводковая вода / разлив,floodplain_meadow,весенний разлив,spring_rasputitsa,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_marsh_channel__marshy_stream,wb_marsh_channel,channel,Болотная протока,marshy_stream,болотные протоки,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_marsh_channel__bog,wb_marsh_channel,channel,Болотная протока,bog,болотные протоки,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_marsh_pool__bog,wb_marsh_pool,marsh_pool,Маршевое окно / болотная вода,bog,болотные окна,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_marsh_pool__marshy_stream,wb_marsh_pool,marsh_pool,Маршевое окно / болотная вода,marshy_stream,болотные окна,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_brook__marshy_stream,wb_brook,stream,Ручей / малый поток,marshy_stream,ручьи,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_brook__forest_track,wb_brook,stream,Ручей / малый поток,forest_track,ручьи,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_brook__forest_edge,wb_brook,stream,Ручей / малый поток,forest_edge,ручьи,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_mill_leat__mill,wb_mill_leat,mill_leat,Мельничный лоток / деривационный канал,mill,мельничный лоток,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_reservoir_impoundment__mill,wb_reservoir_impoundment,reservoir,Запруда / водохранилище / мельничный пруд,mill,мельничная запруда,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_moat_water__town_wall_edge,wb_moat_water,moat,Ров с водой / оборонительная вода,town_wall_edge,ров с водой,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_freshwater_pond__rural_yard,wb_freshwater_pond,pond,Пресный пруд,rural_yard,пруд у двора,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate
+cw_wb_freshwater_pond__orchard_garden,wb_freshwater_pond,pond,Пресный пруд,orchard_garden,пруд у двора,,WB-PF-1,src:world-db-water-body-templates;src:wk-place-first-cartography,C,candidate

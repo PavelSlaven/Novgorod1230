@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- data(world-catalog): игровая база game-base-v1 (кандидаты, 21 группа, STATUS.md) и книжные факты books-evidence-v1 (#155)
 - fix(wk): #153 REVIEW-063 — WK loader selects pack by `packRevision` (v1|v2 closed list); composition passes `release.world_knowledge_pack_revision` so v16 keeps production-v1 (#153)
 - feat(wk): #153 step 7 — v17 pins World Knowledge `revision:production-v2` (loader bundle/vectors); v16 keeps `production-v1`; embedding profile unchanged; retrieval benchmark pass (#153)
 - data(wk): World Knowledge pack revision production-v2 — D15 access reclassification with strict review, book-sourced claims, in-world law rewrites, 1230 famine claims gated by the event (D19/D22), final WR §21.1 approval of every changed claim, Giga vectors and benchmark; runtime pin is #153 step 7 (#154) LW-060..LW-065 added
@@ -21,14 +22,9 @@
 - fix(wk): #153 REVIEW-036 — party historical_events port; O1 clock through exactModelContext; N-1..N-6 started-historical/v3/facet validator; LW-049..051 (#153, PR #98) LW-049 updated LW-050 LW-051 added
 - fix(wk): #153 REVIEW-035 A-01..A-12 — empty started_historical_events; party authoritative factory; O1 clock; facet registry; LF contract; LW-048/049 (#153, PR #98) LW-048 LW-049 added
 - feat(wk): #153 Part A D18 — party calendar year, focus date/access filter, started_historical_events, time-events API, contract §13/§14/§53/§54 (#153, PR #98)
-
 - fix(wk): #152 REVIEW-034 — N1 nested production cues; planner_plan vs effective_plan+default_query; real-Core vector-only PARTIAL (#152, PR #98)
-
 - fix(wk): #152 REVIEW-033 — S1/N1/O1 semantic_input text; default-query capped at PARTIAL; disputes count; shared context_text strip; fail-closed encoder; F5 diagnostic/query; contract/LW-047 (#152, PR #98) LW-047 added
-
 - fix(wk): #152 empty semantic_resolution plan -> default Core query; NPC semantic_input text; sufficiency beside verdict; strip duplicate context_text; cache_hit/miss telemetry; contract §50/§51/§60/§61/§63/§85 (#152, PR #98) LW-046 added
-Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
-
 - docs(corpus): #146 шаг 4 REVIEW-031 — F1/F4–F6 + LW-039 (KSP сказуемое; ссылки на источник; candidate_hint; v2 выведен из корпуса; source_basis/REFERENCE долг) (#146, PR #98) LW-039 updated
 - docs(corpus): #146 шаг 4 — вынос архивных приложений v2 из корпуса; MODULE_RULES §6→AI §10; KSP ordinary LLM/code; LW-039 norms closed (#146, PR #98) LW-028 LW-029 LW-039 updated
 - docs(corpus): #146 шаг 3 REVIEW-029 — N1–N4/F13 (немагический мир NPC; полные «не ради…»; combat §40.12; LW-045 уточнён; CR #146 п.11 у «действующий»; INDEX §3) (#146, PR #98) LW-045 updated
@@ -154,6 +150,8 @@
 - feat(knowledge-source): оформлен RAG и добавлен agent CLI (#11)
 - feat(spatial): интегрирована Temporal travel, environment и perception runtime (#8)
 - feat(world-base): добавлены Stage 3C promotion, legacy inventory и approved-only materialization (#7)
+
+Правило: одна строка на PR в формате `- <type>(<area>): что (#PR)`; изменения техдолга отмечаются в той же строке как `LW-### added` / `LW-### closed` (реестр — `docs/work/LEGACY_WARNINGS.md`).
 
 ## 0.23.0-migration.24 — 2026-07-14
 

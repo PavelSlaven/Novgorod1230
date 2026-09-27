@@ -1,0 +1,7 @@
+size_band,min_g,max_g,default_nominal_g,rule,basis,confidence
+tiny,1,50,20,"nominal = v5 template mass | analogous v5 template mass | band default; must lie in [min,max]",editorial policy (this domain); v5 masses from src_gameplay_physical_policy_v3,C
+small,50,250,120,"nominal = v5 template mass | analogous v5 template mass | band default; must lie in [min,max]",editorial policy (this domain); v5 masses from src_gameplay_physical_policy_v3,C
+hand,250,1000,500,"nominal = v5 template mass | analogous v5 template mass | band default; must lie in [min,max]",editorial policy (this domain); v5 masses from src_gameplay_physical_policy_v3,C
+medium,1000,5000,2000,"nominal = v5 template mass | analogous v5 template mass | band default; must lie in [min,max]",editorial policy (this domain); v5 masses from src_gameplay_physical_policy_v3,C
+large,5000,25000,10000,"nominal = v5 template mass | analogous v5 template mass | band default; must lie in [min,max]",editorial policy (this domain); v5 masses from src_gameplay_physical_policy_v3,C
+bulky,25000,200000,40000,"nominal = v5 template mass | analogous v5 template mass | band default; must lie in [min,max]",editorial policy (this domain); v5 masses from src_gameplay_physical_policy_v3,C

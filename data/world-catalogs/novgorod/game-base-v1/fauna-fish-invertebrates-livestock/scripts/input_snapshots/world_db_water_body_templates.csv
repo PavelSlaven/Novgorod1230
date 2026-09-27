@@ -1,0 +1,42 @@
+id,slug,title,water_body_type,flow_type,salinity,typical_depth,supports_fishing,freeze_pattern,status,is_allowed,is_common
+wb_backwater,backwater,Заводь / затон,backwater,still_or_slow,fresh_or_brackish,shallow_to_medium,t,freezes_earlier_than_main_channel,draft,t,t
+wb_bog_pool,bog_pool,Болотное окно / торфяная вода,bog_pool,still,fresh_acidic,shallow_to_deep,f,thin_or_hidden_ice,draft,t,t
+wb_braided_river_channel,braided_river_channel,Разветвлённое русло / плетёная река,river_section,variable,fresh,shallow_to_medium,t,unstable_ice_channels,draft,,
+wb_brine_spring,brine_spring,Солёный источник / рассольный выход,spring,seeping,saline_or_brine,very_shallow,f,may_remain_open_or_crust,draft,t,t
+wb_brook,brook_stream,Ручей / малый поток,stream,slow_to_fast,fresh,shallow,t,full_or_partial_winter,draft,t,t
+wb_coastal_lagoon,coastal_lagoon,Прибрежная лагуна,lagoon,still_or_wind_driven,brackish_or_salt,shallow_to_medium,t,climate_salinity_dependent,draft,,
+wb_delta_channel,delta_channel,Дельтовая протока,channel,slow_to_moderate,fresh_or_brackish,variable,t,uneven_ice_or_none,draft,,
+wb_drainage_canal,drainage_canal,Осушительная канава / дренажный канал,drainage_canal,controlled_or_slow,fresh_or_brackish,shallow_to_medium,f,may_freeze_or_silt,draft,,
+wb_ephemeral_stream_wadi,ephemeral_stream_wadi,Временный поток / вади,ephemeral_stream,seasonal_flash,fresh_or_brackish,dry_to_flash,f,usually_dry_or_flash_frozen_by_climate,draft,,
+wb_estuary,estuary,Эстуарий / устьевая вода,estuary,mixed_tidal_river,brackish_or_fresh,variable,t,climate_and_tide_dependent,draft,,
+wb_fishpond,fishpond,Рыбный пруд,fishpond,still_controlled,fresh,shallow_to_medium,t,usually_freezes_by_climate,draft,t,t
+wb_floodplain_lake,floodplain_lake,Пойменное озеро,floodplain_lake,still_or_seasonal,fresh,shallow_to_medium,t,freezes_and_floods_seasonally,draft,t,t
+wb_floodwater,floodwater,Паводковая вода / разлив,seasonal_floodwater,seasonal_flow,fresh_or_brackish,shallow_to_deep,t,flood_then_ice_or_retreat,draft,t,t
+wb_freshwater_pond,freshwater_pond,Пресный пруд,pond,still,fresh,shallow,t,usually_freezes,draft,t,t
+wb_irrigation_canal,irrigation_canal,Оросительный канал / арык,canal,controlled_flow,fresh_or_brackish,shallow_to_medium,f,may_freeze_or_dry,draft,,
+wb_large_fresh_lake,large_fresh_lake,Крупное пресное озеро,lake,wind_driven_still,fresh,deep_with_shallows,t,climate_dependent_ice,draft,t,t
+wb_large_river,large_river,Большая река,river,moderate_to_strong,fresh,deep,t,climate_dependent_major_ice,draft,t,t
+wb_marsh_channel,marsh_channel,Болотная протока,channel,slow,fresh_or_brackish,shallow_to_medium,t,uneven_or_hidden_ice,draft,t,t
+wb_marsh_pool,marsh_pool,Маршевое окно / болотная вода,marsh_pool,still,fresh_or_brackish,shallow_to_deep,t,thin_or_hidden_ice,draft,t,t
+wb_medium_river,medium_river,Средняя река,river,moderate,fresh,medium_to_deep,t,partial_or_full_winter,draft,t,t
+wb_mill_leat,mill_leat,Мельничный лоток / деривационный канал,mill_leat,controlled_flow,fresh,shallow_to_medium,f,may_freeze_and_stop_mill,draft,t,t
+wb_moat_water,moat_water,Ров с водой / оборонительная вода,moat,still_or_controlled,fresh_or_brackish,shallow_to_deep,t,freezes_by_climate_but_unsafe,draft,t,t
+wb_mountain_torrent,mountain_torrent,Горный поток / бурный ручей,stream,fast,fresh,shallow_to_medium,t,ice_and_open_rapids,draft,,
+wb_nearshore_sea,nearshore_sea,Прибрежное море,sea,wind_tide_current,salt,shallow_to_deep,t,sea_ice_possible_by_region,draft,,
+wb_open_sea,open_sea,Открытое море,sea,wind_tide_current,salt,deep,t,sea_ice_possible_by_region,draft,,
+wb_oxbow_lake,oxbow_lake,Старица / старичное озеро,oxbow_lake,still_or_slow,fresh,shallow_to_medium,t,usually_freezes,draft,t,t
+wb_qanat_falaj_channel,qanat_falaj_channel,Кяриз / фаладж / канатный водоход,qanat_channel,controlled_flow,fresh,shallow_or_subsurface,f,usually_stable_subsurface,draft,,
+wb_rapid_section,rapid_section,Порожистый участок,river_section,fast,fresh,variable,t,dangerous_open_water_and_ice,draft,t,t
+wb_reservoir_impoundment,reservoir_impoundment,Запруда / водохранилище / мельничный пруд,reservoir,still_controlled,fresh,shallow_to_deep,t,usually_freezes_by_climate,draft,t,t
+wb_river_channel,river_channel_protoka,Протока / речной рукав,channel,slow_to_moderate,fresh_or_brackish,variable,t,uneven_ice,draft,t,t
+wb_salt_lake,salt_lake,Солёное озеро,lake,still,salt_or_hypersaline,shallow_to_deep,f,climate_and_salinity_dependent,draft,,
+wb_salt_pan,salt_pan,Соляная выпарная площадка / соляной чан,salt_pan,controlled_still,salt_or_hypersaline,very_shallow,f,may_crust_or_dry,draft,,
+wb_sea_bay,sea_bay,Морской залив / бухта,bay,wind_and_tide,salt_or_brackish,medium_to_deep,t,sea_ice_possible_by_region,draft,,
+wb_seasonal_pool,seasonal_pool,Временная вода / сезонная лужа,seasonal_water,still,fresh_or_dirty,very_shallow,f,seasonal_or_absent,draft,t,t
+wb_sea_strait,sea_strait,Морской пролив,strait,tidal_or_current,salt_or_brackish,deep_variable,t,sea_ice_possible_by_region,draft,,
+wb_seep,seep,Сочащийся выход воды / мокрое пятно,seep,seeping,fresh,very_shallow,f,ice_or_wet_snow_patch,draft,t,t
+wb_small_fresh_lake,small_fresh_lake,Малое пресное озеро,lake,still,fresh,shallow_to_medium,t,usually_freezes,draft,t,t
+wb_small_river,small_river,Малая река,river,moderate,fresh,shallow_to_medium,t,partial_or_full_winter,draft,t,t
+wb_spring,spring,Родник,spring,seeping,fresh,very_shallow,f,may_remain_open_or_form_ice,draft,t,t
+wb_tidal_creek,tidal_creek,Приливная протока,tidal_channel,tidal,brackish_or_salt,shallow_to_medium,t,ice_or_none_by_climate,draft,,
+wb_waterfall_cascade,waterfall_cascade,Водопад / каскад,river_section,falling_fast,fresh,deep_plunge_or_shallow_rocks,t,icefall_or_open_water,draft,,

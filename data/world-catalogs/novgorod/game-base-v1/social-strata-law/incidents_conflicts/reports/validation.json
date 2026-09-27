@@ -1,0 +1,53 @@
+{
+  "ok": true,
+  "errors": [],
+  "weak_fit_conflict_types_used": [
+    [
+      "conflict_witness_argument",
+      "witness",
+      "property"
+    ],
+    [
+      "conflict_disease",
+      "disease",
+      "resource"
+    ],
+    [
+      "conflict_famine",
+      "famine",
+      "resource"
+    ],
+    [
+      "conflict_wolves",
+      "beasts",
+      "resource"
+    ],
+    [
+      "conflict_damaged_boat",
+      "boat_damage",
+      "property"
+    ]
+  ],
+  "ddl_allowed_conflict_types": [
+    "debt",
+    "duty",
+    "family",
+    "labor",
+    "property",
+    "religious",
+    "resource",
+    "road",
+    "status",
+    "stranger",
+    "tax",
+    "theft",
+    "trade",
+    "violence"
+  ],
+  "resolved_via_law_justice_governance": [
+    "conflict_debt_dispute",
+    "conflict_guarantor",
+    "conflict_witness_argument"
+  ],
+  "resolved_as_обычай_C": 37
+}

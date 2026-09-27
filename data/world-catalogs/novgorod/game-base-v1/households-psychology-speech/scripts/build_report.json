@@ -1,0 +1,25 @@
+{
+  "inputs": {
+    "occupations_rows": 68,
+    "roles_rows": 71
+  },
+  "households_kinship": {
+    "household_composition_profiles.csv": 139,
+    "marriage_inheritance_rules.csv": 8,
+    "kinship_terms.csv": 32
+  },
+  "npc_psychology": {
+    "psychology_profiles.csv": 139,
+    "occupations_covered": 68,
+    "roles_covered": 71
+  },
+  "speech_address": {
+    "speech_registers.csv": 71,
+    "address_forms.csv": 3,
+    "gap": "berestyanaya-grammota corpus not collected row-by-row in this pass; brief fill_method=research not fulfilled beyond 3 seed formulas"
+  },
+  "social_norms_honour_hospitality": {
+    "norms.csv": 19,
+    "gap": "gift-giving (norm_kind=gift) still not populated in this pass; sn_rp_slave_insult has no per-row article-number attestation (see its source_refs note)"
+  }
+}

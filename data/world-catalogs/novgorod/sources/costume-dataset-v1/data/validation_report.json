@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "research_date": "2026-08-29",
+  "period": "Новгород и Новгородская земля, около 1230 года; рабочий диапазон преимущественно 1180–1260",
+  "counts": {
+    "sources": 50,
+    "catalog_items": 180,
+    "combinations": 46,
+    "foreigner_profiles": 10,
+    "anti_patterns": 20,
+    "materials_and_colors": 24,
+    "image_manifest_entries": 23,
+    "local_reference_sheets": 9,
+    "external_visual_references": 14,
+    "prompt_files_including_master": 47
+  },
+  "confidence_counts": {
+    "A": 41,
+    "B": 99,
+    "C": 40
+  },
+  "checks": [
+    "all IDs are unique",
+    "all item/source/image references resolve",
+    "all combination required/optional/forbidden references resolve",
+    "all confidence values in catalog_items and combinations are A/B/C",
+    "all local images exist, decode, and are 1800x1200",
+    "all JSON files parse",
+    "all CSV files contain rows",
+    "all required archive paths exist"
+  ],
+  "limitations": [
+    "external URLs were researched online but are not embedded or mirrored",
+    "local sheets are original schematic syntheses, not primary evidence",
+    "preliminary 2026 archaeological news remains confidence C until full publication"
+  ]
+}

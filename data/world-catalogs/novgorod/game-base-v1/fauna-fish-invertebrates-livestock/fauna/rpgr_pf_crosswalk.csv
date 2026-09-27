@@ -1,0 +1,145 @@
+rule_ref,pf_id,source_refs,mapping_rule,no_source,status
+,pf_arable_field,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_city_major_center,pf_bathhouse,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_bathhouse,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_bathhouse,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastery,pf_bathhouse,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_bathhouse,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_bathhouse,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_bathhouse,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_bog,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_bridge_place,pf_bridge_crossing,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_broadleaf_woodland,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_city_major_center,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_market_place,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastic_grange,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_cellar_granary,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_church_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastery,pf_church_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_pogost_center,pf_church_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_rural_church_center,pf_church_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_church_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_churchyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastery,pf_churchyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_pogost_center,pf_churchyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_rural_church_center,pf_churchyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_churchyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_forest_work_camp,pf_conifer_woodland,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hunting_camp,pf_conifer_woodland,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_wintering_hut,pf_conifer_woodland,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_dwelling_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_dwelling_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_dwelling_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_dwelling_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_dwelling_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_dwelling_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_dwelling_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_wintering_hut,pf_dwelling_interior,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_boat_landing,pf_ferry_landing,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_ferry_place,pf_ferry_landing,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_river_landing,pf_ferry_landing,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_field_margin,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_fish_weir_site,pf_fishing_camp,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_fishing_station,pf_fishing_camp,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_floodplain_meadow,,,no matching allowed place_template_id in rus13 rules v2,candidate
+,pf_forest_edge,,,no matching allowed place_template_id in rus13 rules v2,candidate
+,pf_forest_track,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_estate_center,pf_grain_drying_shed_ovin,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_grain_drying_shed_ovin,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_grain_drying_shed_ovin,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_grain_drying_shed_ovin,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_hay_meadow,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_hunting_camp,pf_hunting_ground,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_wintering_hut,pf_hunting_ground,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_boat_landing,pf_lake_shore,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_fishing_station,pf_lake_shore,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_market_square,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_market_place,pf_market_square,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_periodic_fairground,pf_market_square,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_market_square,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_marshy_stream,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_watermill_site,pf_mill,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_forest_work_camp,pf_mixed_woodland,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hunting_camp,pf_mixed_woodland,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hermitage_skete,pf_monastery_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastery,pf_monastery_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastic_grange,pf_monastery_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_orchard_garden,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_orchard_garden,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_orchard_garden,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastery,pf_orchard_garden,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_orchard_garden,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_orchard_garden,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_clay_pit_pottery_site,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_iron_smelting_site,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastery,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_shipyard_boatyard,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_ordinary_workshop,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_outbuildings,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_outbuildings,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_outbuildings,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastic_grange,pf_outbuildings,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_outbuildings,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_outbuildings,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_outbuildings,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_pasture,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_dispersed_settlement_cluster,pf_peasant_homestead,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_peasant_homestead,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_peasant_homestead,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_peasant_homestead,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_reality_batch_01_open_conditions,,,no matching allowed place_template_id in rus13 rules v2,candidate
+,pf_reality_first_practical_conditions,,,no matching allowed place_template_id in rus13 rules v2,candidate
+,pf_river_channel,,,no matching allowed place_template_id in rus13 rules v2,candidate
+rpgr_nov_city_major_center,pf_river_wharf,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_river_wharf,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_river_landing,pf_river_wharf,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_river_wharf,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_boat_landing,pf_riverbank,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_fishing_station,pf_riverbank,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_crossroads,pf_road,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_dispersed_settlement_cluster,pf_rural_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_rural_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_rural_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_rural_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastic_grange,pf_rural_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_rural_yard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_smithy,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_smithy,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_iron_smelting_site,pf_smithy,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastery,pf_smithy,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_smithy,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_smithy,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_smithy,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_threshing_barn,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_threshing_barn,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_isolated_farmstead,pf_threshing_barn,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_monastic_grange,pf_threshing_barn,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_threshing_barn,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_administrative_court,pf_town_courtyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_town_courtyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_estate_center,pf_town_courtyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_fortified_town,pf_town_courtyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_town_courtyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_town_courtyard,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_town_street,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_fortified_town,pf_town_street,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_posad_suburb,pf_town_street,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_town_street,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_city_major_center,pf_town_wall_edge,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_fortified_town,pf_town_wall_edge,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hillfort_gorodishche,pf_town_wall_edge,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_town,pf_town_wall_edge,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_hamlet,pf_village_lane,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_pogost_center,pf_village_lane,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_rural_church_center,pf_village_lane,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+rpgr_nov_village_arable_meadow,pf_village_lane,src:rus13-place-rules-v2,RPGR-PF-PT-1,,candidate
+,pf_winter_ice_crossing,,,no matching allowed place_template_id in rus13 rules v2,candidate

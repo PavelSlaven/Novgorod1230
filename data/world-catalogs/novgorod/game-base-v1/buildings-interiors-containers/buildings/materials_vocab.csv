@@ -1,0 +1,42 @@
+mat_id,name_ru,name_en,material_class,source_refs,confidence,note,status
+mat_log_conifer,хвойное строевое бревно (сосна/ель),conifer building log,timber,matcult:CON0034|wk:claim:settlement-pine-spruce-log|matcult:ARC0020,A,,candidate
+mat_log_oak,дубовое бревно,oak log,timber,matcult:FOR0013|matcult:CON0013|wk:claim:civic-defence-log-courses,B,"фортификация, сваи, ответственные узлы",candidate
+mat_log_crown,венцовое бревно с чашей и пазом,notched wall log,timber,matcult:CON0029|matcult:CON0015,A,,candidate
+mat_plank_hewn,тёсаная доска,hewn board,timber,matcult:CON0035,A,ширина 10–40+ см,candidate
+mat_plank_split,плаха (расколотое бревно),split half-log plank,timber,matcult:CON0033|matcult:STR0008,A,,candidate
+mat_slab,горбыль/обапол,slab offcut,timber,matcult:CON0028,A,,candidate
+mat_pole,жердь,pole,timber,matcult:CON0024,A,,candidate
+mat_pile,свая деревянная,timber pile,timber,matcult:CON0013,A,дуб/сосна,candidate
+mat_sill_log,подкладное бревно/лежень,sill log,timber,matcult:CON0012,A,,candidate
+mat_roof_tes,кровельный тёс,roof boards,roofing,matcult:CON0027,A,,candidate
+mat_shingle_oak,дубовая кровельная дрань,oak shingles,roofing,wk:claim:settlement-oak-shingle-roof,A,,candidate
+mat_shingle_conifer,хвойная дрань/щепа,conifer shingles,roofing,matcult:CON0030,B,,candidate
+mat_lemekh,лемех (осиновые дощечки),aspen shingle scales,roofing,matcult:CON0031,C,не массовая жилая норма 1230; только церковные главы как осторожная реконструкция,candidate
+mat_birch_bark,береста листовая,birch bark sheet,roofing,matcult:CON0025,B,гидроизоляция под кровлей,candidate
+mat_turf,дёрн кровельный,roof turf,roofing,matcult:CON0026,C,осторожная реконструкция,candidate
+mat_straw,солома,straw,roofing,matcult:ARC0001|matcult:ARC0002|matcult:INT0016,B,подстилка; кровля хозпостроек — C,candidate
+mat_hay,сено,hay,fodder,matcult:ARC0001,B,,candidate
+mat_moss,мох (конопатка),moss caulking,caulk,matcult:CON0032,A,,candidate
+mat_clay,глина строительная,building clay,earth,matcult:CON0046|matcult:INT0043,A,,candidate
+mat_sand,песок,sand,earth,matcult:INT0002|matcult:CON0020,B,,candidate
+mat_earth,грунт/земля,earth fill,earth,matcult:FOR0001|matcult:FOR0012|matcult:INT0047,B,,candidate
+mat_boulder,валун/бутовый камень,fieldstone boulder,stone,matcult:CON0016,A,,candidate
+mat_hearth_stone,камни печи/каменки,hearth stones,stone,matcult:INT0007|matcult:INT0042,B,,candidate
+mat_limestone,известняк строительный,limestone,stone,matcult:CON0037|wk:claim:construction-quarry-procurement,A,,candidate
+mat_shell_rock,ракушечник,shell limestone,stone,wk:claim:construction-quarry-procurement|matcult:ARC0005,B,,candidate
+mat_plinfa,плинфа,plinthite brick,ceramic,matcult:CON0041|wk:claim:construction-construction-pottery-products,A,только монументальные постройки; не для изб,candidate
+mat_lime_mortar,известковый раствор,lime mortar,binder,matcult:CON0020|matcult:CON0036,A,,candidate
+mat_lime_plaster,фресковая штукатурка,fresco plaster,binder,matcult:CON0023,A,,candidate
+mat_pigment,минеральный пигмент,mineral pigment,finish,matcult:CON0022,A,,candidate
+mat_wood_peg,деревянный нагель,wooden treenail,fastener,matcult:CON0009,A,,candidate
+mat_iron_nail,кованый гвоздь,forged nail,fastener,matcult:CON0010|matcult:CON0011,A,,candidate
+mat_iron_clamp,железная скоба,iron cramp,fastener,matcult:CON0047,A,,candidate
+mat_iron_hinge,железная петля,iron strap hinge,fastener,matcult:CON0001,A,,candidate
+mat_iron_hasp,железный пробой/накладка,iron hasp,fastener,matcult:CON0002,A,,candidate
+mat_hardwood_bar,брус твёрдой древесины,hardwood bar,timber,matcult:FOR0004|matcult:INT0023,B,,candidate
+mat_rope,верёвка (лён/конопля/лыко),rope,cordage,matcult:CON0003|wk:claim:population-processes-hemp-cordage,A,,candidate
+mat_wattle,прутья (плетень),wattle rods,wattle,matcult:ARC0002|matcult:ARC0017|wk:claim:population-rod-input,B,,candidate
+mat_glass_fragment,оконное стекло малыми кусками,window glass fragments,restricted,matcult:INT0025|matcult:ARC0030,C,только церковь/элита; в крестьянской и рядовой избе — анахронизм,candidate
+mat_textile_felt,шерстяная ткань/войлок,wool cloth/felt,textile,matcult:INT0018|matcult:INT0021,C,,candidate
+mat_charcoal,древесный уголь,charcoal,fuel,matcult:MSC0036|wk:claim:fuel-charcoal-pit-sealing,B,,candidate
+mat_iron_metal,железо кованое (деталь),wrought iron fitting,metal,matcult:INT0029|matcult:CON0047,A,,candidate

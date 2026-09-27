@@ -1,0 +1,28 @@
+check_id,taxon_ru,name_lat,verdict,fa_ids,reason,source_refs,confidence,status
+fchk_001,Северный олень (дикий лесной),Rangifer tarandus fennicus,included_rare,fa_m_reindeer,«Оленьи шкуры» в грамотах (SRC_RYBINA2015); вид описан для соседней Вологодской обл. (SRC_VOLOGDA_MAMM); только удалённые болотно-таёжные части,SRC_RYBINA2015;SRC_VOLOGDA_MAMM,C,candidate
+fchk_002,Росомаха,Gulo gulo,included_rare,fa_m_wolverine,Одно упоминание в грамотах; северная тайга,SRC_RYBINA2015;SRC_VOLOGDA_MAMM,C,candidate
+fchk_003,Соболь,Martes zibellina,included_rare,fa_m_sable,"Одно упоминание в грамотах, томары «для соболя»; ареал в ядре Новгородской земли 1230 г. не подтверждён — в основном привозной мех (GAP)",SRC_RYBINA2015,C,candidate
+fchk_004,Кабан,Sus scrofa,included_rare,fa_m_wild_boar,На Северо-Западе к XIX в. исчезал и вернулся в XX в.; MASTER ING0117 без новгородской кости,SRC_MASTER_FOOD;SRC_VALDAY_NP,C,candidate
+fchk_005,Косуля,Capreolus capreolus,included_rare,fa_m_roe_deer,"Северная граница ареала, чувствительна к снегу; Красная книга Новгородской обл.",SRC_VALDAY_NP;SRC_VOLOGDA_MAMM,C,candidate
+fchk_006,Заяц-русак,Lepus europaeus,excluded_doubtful,,Степной вид; на север расселялся вслед за сведением лесов и распашкой (современное «часто» на Валдае — результат этого). Для 1230 г. не подтверждён — не размещается; при появлении источника добавить как rare в пашню/межу,SRC_VALDAY_NP;SRC_VOLOGDA_MAMM,C,candidate
+fchk_007,Благородный олень,Cervus elaphus,excluded_unattested,,Нет в прочитанных новгородских и региональных источниках,SRC_HDBM2017,C,candidate
+fchk_008,Зубр / тур,Bison bonasus / Bos primigenius,excluded_unattested,,Нет в прочитанных источниках для Новгородской земли XIII в.; GAP — проверить костные списки Троицкого раскопа,SRC_HDBM2017,C,candidate
+fchk_009,Выхухоль,Desmana moschata,excluded_doubtful,,В Вологодской обл. — единичная шкура 1939 г. из бассейна Унжи (Волжский бассейн); для Ильменско-Волховского бассейна не подтверждена,SRC_VOLOGDA_MAMM,C,candidate
+fchk_010,Чёрная крыса,Rattus rattus,excluded_doubtful,,Средневековое присутствие в Новгороде не проверено (GAP: костные списки мелких млекопитающих),,C,candidate
+fchk_011,Серая крыса (пасюк),Rattus norvegicus,excluded_anachronism,,Расселение по Европе в XVIII в.; на Валдае сейчас «у населённых пунктов» (SRC_VALDAY_NP) — современное,SRC_VALDAY_NP,B,candidate
+fchk_012,Енотовидная собака,Nyctereutes procyonoides,excluded_anachronism,,"Акклиматизирована с Дальнего Востока в XX в. (SRC_VOLOGDA_MAMM: «у себя на родине, в Амуро-Уссурийском крае»)",SRC_VOLOGDA_MAMM;SRC_NBCRS,A,candidate
+fchk_013,Ондатра,Ondatra zibethicus,excluded_anachronism,,"Североамериканский вид, акклиматизирован в XX в. (SRC_VOLOGDA_MAMM: «акклиматизированная у нас ондатра»)",SRC_VOLOGDA_MAMM,A,candidate
+fchk_014,Американская норка,Neogale vison,excluded_anachronism,,"Интродуцирована в XX в., вытеснила европейскую норку (общеизвестно; источник не прочитан — GAP)",,B,candidate
+fchk_015,Пятнистый олень,Cervus nippon,excluded_anachronism,,Завезён с Дальнего Востока (SRC_NBCRS),SRC_NBCRS,A,candidate
+fchk_016,Кролик (как дикий зверь или скот),Oryctolagus cuniculus,excluded_anachronism,,Общий denylist проекта (catalog conventions.anachronism),,B,candidate
+fchk_017,Белый аист,Ciconia ciconia,excluded_doubtful,,На Северо-Западе регулярно гнездится лишь с 1970-х (Malchevsky #12); Петров 1885 отмечал в Приильменье; для 1230 г. не размещается,SRC_MALPUK1983;SRC_PANT2001,C,candidate
+fchk_018,Кольчатая горлица,Streptopelia decaocto,excluded_anachronism,,Расселение в Европу в XX в. (Malchevsky #127),SRC_MALPUK1983,A,candidate
+fchk_019,Фазан,Phasianus colchicus,excluded_anachronism,,Лишь попытки интродукции (Malchevsky «Попытки интродукции фазана»),SRC_MALPUK1983,A,candidate
+fchk_020,Дроздовидная камышевка,Acrocephalus arundinaceus,excluded_doubtful,,Проникла на Северо-Запад в результате расселения в XX в. (Malchevsky #190),SRC_MALPUK1983,C,candidate
+fchk_021,Дубонос,Coccothraustes coccothraustes,excluded_doubtful,,До 1960-х чрезвычайно редок на всём Северо-Западе (Malchevsky #241),SRC_MALPUK1983,C,candidate
+fchk_022,Лебедь-шипун,Cygnus olor,excluded_doubtful,,Отнесён к возможным и редким залётам (Malchevsky #14); нет в списке Пантелеева,SRC_MALPUK1983;SRC_PANT2001,C,candidate
+fchk_023,Сорока (в городе),Pica pica,included_rural_only,fa_b_magpie,"Кости сороки в Новгороде не найдены, поздний колонист города (SRC_ZIN2025); в сельских семействах rare",SRC_ZIN2025;SRC_ZIN_NEWS2025,C,candidate
+fchk_024,Скворец (в городе),Sturnus vulgaris,included_rural_only,fa_b_starling,Поздний колонист города по SRC_ZIN2025 (конфликт с SRC_ZIN_NEWS2025 «XIII в.»); скворечники — не источник для 1230 г.,SRC_ZIN2025;SRC_ZIN_NEWS2025,C,candidate
+fchk_025,Домовый воробей,Passer domesticus,included_rural_contextual,fa_b_house_sparrow,В аннотации SRC_ZIN2025 к XIII в. назван только полевой воробей,SRC_ZIN2025,C,candidate
+fchk_026,"Озёрная чайка, лысуха, чибис, чомга, чёрная крачка, белобровик, чечевица",various,included_reduced,fa_b_black_headed_gull;fa_b_coot;fa_b_lapwing;fa_b_great_crested_grebe;fa_b_black_tern;fa_b_redwing;fa_b_common_rosefinch,"Рост численности или расширение ареала в XX в. по Malchevsky — базовый класс понижен, presence C",SRC_MALPUK1983,C,candidate
+fchk_027,Кречет как предмет торговли/дани,Falco rusticolus,included_rare,fa_b_gyrfalcon,Как дикая птица — редкие зимние встречи (SRC_PANT2001); сведения о ловчих кречетах как товаре в прочитанных источниках нет (GAP),SRC_PANT2001,C,candidate

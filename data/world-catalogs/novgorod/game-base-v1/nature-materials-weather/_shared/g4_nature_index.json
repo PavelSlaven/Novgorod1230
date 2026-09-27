@@ -1,0 +1,2793 @@
+{
+ "schema": "game_base_v1.g4_nature_index.v1",
+ "status": "derived_read_only_index",
+ "source": {
+  "root": "pr98",
+  "path": "data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json",
+  "sha256": "58e0d2be66df86a79faf76d4ef57d3d020ba778711736a61b4478c255d8cbef7",
+  "candidate_status": "candidate_approval_pending"
+ },
+ "g4_count": 32,
+ "g4": [
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+   "g4_short": "central_current_split",
+   "natural_profile_id": "m2c_natural_g4_central_current_split",
+   "place_function": "channel_split",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__channel_split"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+   "g4_short": "central_navigation_reach",
+   "natural_profile_id": "m2c_natural_g4_central_navigation_reach",
+   "place_function": "river_reach",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+   "g4_short": "channel_split_islet",
+   "natural_profile_id": "m2c_natural_g4_channel_split_islet",
+   "place_function": "island_head",
+   "landscape_template_id": "lt_alluvial_floodplain",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "island",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_island__low_intensity_natural_use__island_head"
+   },
+   "surface": "alluvial_silt_clay",
+   "relief": "flat_lowland",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_clay",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_clay",
+    "grass_sedge_litter",
+    "shrub_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "open",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "wet-ground grass and sedge guild (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground cover and visibility depend on growing season, water, snow and disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_2"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Woody form may persist year-round; foliage requires growing-season state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial silt and clay",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure and wetness vary with water level, freezing and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round habitat compatibility; observation or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+   "g4_short": "driftwood_bar",
+   "natural_profile_id": "m2c_natural_g4_driftwood_bar",
+   "place_function": "driftwood_bar",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "shoal",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": null,
+   "shrub": null,
+   "ground": null,
+   "riparian": null,
+   "ambient_materials": [
+    "driftwood",
+    "alluvial_silt_mud"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "not_applicable",
+    "shrub_layer": "not_applicable",
+    "ground_cover": "not_applicable",
+    "riparian_vegetation": "not_applicable",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+   "g4_short": "dry_island_ridge",
+   "natural_profile_id": "m2c_natural_g4_dry_island_ridge",
+   "place_function": "island_ridge",
+   "landscape_template_id": "lt_gentle_hills",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "floodplain",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge"
+   },
+   "surface": "firm_soil",
+   "relief": "rolling_hills",
+   "water_body_type": "channel",
+   "bank": "firm_soil",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "firm_soil",
+    "grass_shrub_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "medium",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Betula (birch)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Deciduous foliage requires current growing-season state; woody form may persist year-round.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_1"
+    },
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "grass and shrub cover (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground vegetation depends on growing season, snow and local disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "firm mineral soil",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Surface conditions depend on frost, thaw, rain and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Alces (elk)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round compatibility; encounter requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+   "g4_short": "dry_pine_ridge",
+   "natural_profile_id": "m2c_natural_g4_dry_pine_ridge",
+   "place_function": "pine_ridge",
+   "landscape_template_id": "lt_temperate_coniferous_forest",
+   "water_body_template_id": null,
+   "axes": {
+    "landscape": "forest",
+    "land_use": "forest_resource_use",
+    "family_ref": "m2c_g5_forest__forest_resource_use__pine_ridge"
+   },
+   "surface": "needle_litter_roots",
+   "relief": "flat_hill_or_mountain",
+   "water_body_type": null,
+   "bank": null,
+   "tree": "woodland_canopy",
+   "shrub": "shrub_or_understory",
+   "ground": "needle_litter_groundcover",
+   "riparian": null,
+   "ambient_materials": [
+    "rooted_forest_soil",
+    "needle_litter",
+    "small_woody_debris"
+   ],
+   "audible": "wind_and_ground_cover",
+   "light_exposure": "limited",
+   "seasonal_stability": "medium",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "not_applicable",
+    "bank_structure": "not_applicable",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "not_applicable",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Pinus (pine)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "evergreen canopy possible year-round; cones or fallen branches need separate current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_1"
+    },
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Picea (spruce)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "evergreen canopy possible year-round",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "sandy mineral ground",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with snow, water and ground state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Alces (elk)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation depends on current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+   "g4_short": "east_flood_bypass",
+   "natural_profile_id": "m2c_natural_g4_east_flood_bypass",
+   "place_function": "side_channel",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__side_channel"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+   "g4_short": "east_side_channel",
+   "natural_profile_id": "m2c_natural_g4_east_side_channel",
+   "place_function": "side_channel",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__side_channel"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+   "g4_short": "flooded_interior_basin",
+   "natural_profile_id": "m2c_natural_g4_flooded_interior_basin",
+   "place_function": "floodplain_basin",
+   "landscape_template_id": "lt_alluvial_floodplain",
+   "water_body_template_id": "wb_floodwater",
+   "axes": {
+    "landscape": "floodplain",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin"
+   },
+   "surface": "alluvial_silt_clay",
+   "relief": "flat_lowland",
+   "water_body_type": "seasonal_floodwater",
+   "bank": "alluvial_silt_clay",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_clay",
+    "grass_sedge_litter",
+    "shrub_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "open",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "wet-ground grass and sedge guild (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground cover and visibility depend on growing season, water, snow and disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_2"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Woody form may persist year-round; foliage requires growing-season state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial silt and clay",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure and wetness vary with water level, freezing and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round habitat compatibility; observation or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+   "g4_short": "floodplain_ridge_route",
+   "natural_profile_id": "m2c_natural_g4_floodplain_ridge_route",
+   "place_function": "dry_ridge_route",
+   "landscape_template_id": "lt_gentle_hills",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "ridge",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_ridge__waterway_access__dry_ridge_route"
+   },
+   "surface": "firm_soil",
+   "relief": "rolling_hills",
+   "water_body_type": "channel",
+   "bank": "firm_soil",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "firm_soil",
+    "grass_shrub_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "medium",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Betula (birch)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Deciduous foliage requires current growing-season state; woody form may persist year-round.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_1"
+    },
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "grass and shrub cover (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground vegetation depends on growing season, snow and local disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "firm mineral soil",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Surface conditions depend on frost, thaw, rain and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Alces (elk)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round compatibility; encounter requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+   "g4_short": "forest_stream_route",
+   "natural_profile_id": "m2c_natural_g4_forest_stream_route",
+   "place_function": "forest_stream",
+   "landscape_template_id": "lt_wet_lowland_forest",
+   "water_body_template_id": "wb_brook",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "forest_resource_use",
+    "family_ref": "m2c_g5_river_channel__forest_resource_use__forest_stream"
+   },
+   "surface": "wet_roots_mud",
+   "relief": "flat_lowland",
+   "water_body_type": "stream",
+   "bank": "wet_roots_mud",
+   "tree": "woodland_canopy",
+   "shrub": "shrub_or_understory",
+   "ground": "wet_forest_understory_and_litter_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "wet_roots_mud",
+    "leaf_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "limited",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Picea (spruce)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "evergreen canopy possible year-round",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_1"
+    },
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "Sphagnum (peat moss)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "visible ground cover depends on snow and current water state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "waterlogged forest soil",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "current wetness and exposure require weather and water state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Alces (elk)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation depends on current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+   "g4_short": "large_island_head",
+   "natural_profile_id": "m2c_natural_g4_large_island_head",
+   "place_function": "island_head",
+   "landscape_template_id": "lt_alluvial_floodplain",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "island",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_island__low_intensity_natural_use__island_head"
+   },
+   "surface": "alluvial_silt_clay",
+   "relief": "flat_lowland",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_clay",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_clay",
+    "grass_sedge_litter",
+    "shrub_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "open",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "wet-ground grass and sedge guild (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground cover and visibility depend on growing season, water, snow and disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_2"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Woody form may persist year-round; foliage requires growing-season state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial silt and clay",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure and wetness vary with water level, freezing and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round habitat compatibility; observation or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+   "g4_short": "mixing_reach",
+   "natural_profile_id": "m2c_natural_g4_mixing_reach",
+   "place_function": "estuary_mixing",
+   "landscape_template_id": "lt_alluvial_floodplain",
+   "water_body_template_id": "wb_estuary",
+   "axes": {
+    "landscape": "estuary",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing"
+   },
+   "surface": "alluvial_silt_clay",
+   "relief": "flat_lowland",
+   "water_body_type": "estuary",
+   "bank": "generic_shore_or_bank_margin",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_clay",
+    "grass_sedge_litter",
+    "shrub_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "open",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "wet-ground grass and sedge guild (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground cover and visibility depend on growing season, water, snow and disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_2"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Woody form may persist year-round; foliage requires growing-season state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial silt and clay",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure and wetness vary with water level, freezing and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round habitat compatibility; observation or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+   "g4_short": "north_exposed_turn",
+   "natural_profile_id": "m2c_natural_g4_north_exposed_turn",
+   "place_function": "river_reach",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+   "g4_short": "north_outflow_reach",
+   "natural_profile_id": "m2c_natural_g4_north_outflow_reach",
+   "place_function": "river_reach",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+   "g4_short": "old_channel_pool",
+   "natural_profile_id": "m2c_natural_g4_old_channel_pool",
+   "place_function": "old_channel",
+   "landscape_template_id": "lt_freshwater_marsh",
+   "water_body_template_id": "wb_backwater",
+   "axes": {
+    "landscape": "backwater_wetland",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_backwater_wetland__waterway_access__old_channel"
+   },
+   "surface": "mineral_mud_silt",
+   "relief": "lowland",
+   "water_body_type": "backwater",
+   "bank": "mineral_mud_silt",
+   "tree": null,
+   "shrub": "shrub_or_understory",
+   "ground": "sedge_reed_and_wetland_herb_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "mineral_mud_silt",
+    "sedge_reed_litter",
+    "wetland_herb_litter"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "open",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "not_applicable",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "horsetail and wetland herb guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Visible shoots require growing-season and water-state support.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_2"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Phragmites (common reed)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Standing dry stems may persist; fresh stems require growing-season and current water state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "waterlogged organic and mineral sediment",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure, saturation and frost follow current water and weather state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round compatibility; animal or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+   "g4_short": "outer_exposed_approach",
+   "natural_profile_id": "m2c_natural_g4_outer_exposed_approach",
+   "place_function": "outer_exposed",
+   "landscape_template_id": "lt_alluvial_floodplain",
+   "water_body_template_id": "wb_nearshore_sea",
+   "axes": {
+    "landscape": "estuary",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_estuary__waterway_access__outer_exposed"
+   },
+   "surface": "alluvial_silt_clay",
+   "relief": "flat_lowland",
+   "water_body_type": "sea",
+   "bank": "generic_shore_or_bank_margin",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_clay",
+    "grass_sedge_litter",
+    "shrub_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "open",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "wet-ground grass and sedge guild (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground cover and visibility depend on growing season, water, snow and disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_2"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Woody form may persist year-round; foliage requires growing-season state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial silt and clay",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure and wetness vary with water level, freezing and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round habitat compatibility; observation or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+   "g4_short": "reed_backwater",
+   "natural_profile_id": "m2c_natural_g4_reed_backwater",
+   "place_function": "reed_backwater",
+   "landscape_template_id": "lt_freshwater_marsh",
+   "water_body_template_id": "wb_backwater",
+   "axes": {
+    "landscape": "backwater_wetland",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater"
+   },
+   "surface": "mineral_mud_silt",
+   "relief": "lowland",
+   "water_body_type": "backwater",
+   "bank": "mineral_mud_silt",
+   "tree": null,
+   "shrub": "shrub_or_understory",
+   "ground": "sedge_reed_and_wetland_herb_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "mineral_mud_silt",
+    "sedge_reed_litter",
+    "wetland_herb_litter"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "open",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "not_applicable",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "horsetail and wetland herb guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Visible shoots require growing-season and water-state support.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_2"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Phragmites (common reed)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Standing dry stems may persist; fresh stems require growing-season and current water state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "waterlogged organic and mineral sediment",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure, saturation and frost follow current water and weather state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round compatibility; animal or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+   "g4_short": "sheltered_inner_reach",
+   "natural_profile_id": "m2c_natural_g4_sheltered_inner_reach",
+   "place_function": "river_reach",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+   "g4_short": "sheltered_landing_terrace",
+   "natural_profile_id": "m2c_natural_g4_sheltered_landing_terrace",
+   "place_function": "landing_terrace",
+   "landscape_template_id": "lt_gentle_hills",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "ridge",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_ridge__waterway_access__landing_terrace"
+   },
+   "surface": "firm_soil",
+   "relief": "rolling_hills",
+   "water_body_type": "channel",
+   "bank": "firm_soil",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "firm_soil",
+    "grass_shrub_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "medium",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Betula (birch)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Deciduous foliage requires current growing-season state; woody form may persist year-round.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_1"
+    },
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "grass and shrub cover (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground vegetation depends on growing season, snow and local disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "firm mineral soil",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Surface conditions depend on frost, thaw, rain and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Alces (elk)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round compatibility; encounter requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+   "g4_short": "shifting_shoal_field",
+   "natural_profile_id": "m2c_natural_g4_shifting_shoal_field",
+   "place_function": "shoal_field",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "shoal",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_shoal__low_intensity_natural_use__shoal_field"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": null,
+   "shrub": null,
+   "ground": null,
+   "riparian": null,
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "water_sorted_sediment"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "not_applicable",
+    "shrub_layer": "not_applicable",
+    "ground_cover": "not_applicable",
+    "riparian_vegetation": "not_applicable",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field:nature_member_3"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+   "g4_short": "south_entry_reach",
+   "natural_profile_id": "m2c_natural_g4_south_entry_reach",
+   "place_function": "river_reach",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__river_reach"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+   "g4_short": "tributary_mouth",
+   "natural_profile_id": "m2c_natural_g4_tributary_mouth",
+   "place_function": "tributary_mouth",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_brook",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__tributary_mouth"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "stream",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+   "g4_short": "vikhtuy_locality",
+   "natural_profile_id": "m2c_natural_g4_vikhtuy_locality",
+   "place_function": "vikhtuy_locality",
+   "landscape_template_id": "lt_alluvial_floodplain",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "settlement_landscape",
+    "land_use": "recurrent_settlement_use",
+    "family_ref": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality"
+   },
+   "surface": "alluvial_silt_clay",
+   "relief": "flat_lowland",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_clay",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_clay",
+    "grass_sedge_litter",
+    "shrub_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "open",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "wet-ground grass and sedge guild (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Above-ground cover and visibility depend on growing season, water, snow and disturbance.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_2"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Woody form may persist year-round; foliage requires growing-season state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial silt and clay",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure and wetness vary with water level, freezing and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round habitat compatibility; observation or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+   "g4_short": "vikhtuy_resource_edge",
+   "natural_profile_id": "m2c_natural_g4_vikhtuy_resource_edge",
+   "place_function": "forest_tract",
+   "landscape_template_id": "lt_wet_lowland_forest",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "settlement_landscape",
+    "land_use": "forest_resource_use",
+    "family_ref": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract"
+   },
+   "surface": "wet_roots_mud",
+   "relief": "flat_lowland",
+   "water_body_type": "channel",
+   "bank": "wet_roots_mud",
+   "tree": "woodland_canopy",
+   "shrub": "shrub_or_understory",
+   "ground": "wet_forest_understory_and_litter_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "wet_roots_mud",
+    "leaf_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "limited",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Picea (spruce)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "evergreen canopy possible year-round",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_1"
+    },
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "Sphagnum (peat moss)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "visible ground cover depends on snow and current water state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "waterlogged forest soil",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "current wetness and exposure require weather and water state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Alces (elk)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation depends on current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+   "g4_short": "vikhtuy_river_approach",
+   "natural_profile_id": "m2c_natural_g4_vikhtuy_river_approach",
+   "place_function": "landing_terrace",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "settlement_landscape",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_settlement_landscape__waterway_access__landing_terrace"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+   "g4_short": "west_hidden_backwater",
+   "natural_profile_id": "m2c_natural_g4_west_hidden_backwater",
+   "place_function": "backwater",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_backwater",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "low_intensity_natural_use",
+    "family_ref": "m2c_g5_river_channel__low_intensity_natural_use__backwater"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "backwater",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+   "g4_short": "west_side_channel",
+   "natural_profile_id": "m2c_natural_g4_west_side_channel",
+   "place_function": "side_channel",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "river_channel",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_river_channel__waterway_access__side_channel"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+   "g4_short": "wet_conifer_tract",
+   "natural_profile_id": "m2c_natural_g4_wet_conifer_tract",
+   "place_function": "forest_tract",
+   "landscape_template_id": "lt_wet_lowland_forest",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "forest",
+    "land_use": "forest_resource_use",
+    "family_ref": "m2c_g5_forest__forest_resource_use__forest_tract"
+   },
+   "surface": "wet_roots_mud",
+   "relief": "flat_lowland",
+   "water_body_type": "channel",
+   "bank": "wet_roots_mud",
+   "tree": "woodland_canopy",
+   "shrub": "shrub_or_understory",
+   "ground": "wet_forest_understory_and_litter_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "wet_roots_mud",
+    "leaf_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "limited",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Picea (spruce)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "evergreen canopy possible year-round",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_1"
+    },
+    {
+     "layer": "ground_cover",
+     "kind": "flora",
+     "ref": "Sphagnum (peat moss)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "visible ground cover depends on snow and current water state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "waterlogged forest soil",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "current wetness and exposure require weather and water state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Alces (elk)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation depends on current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+   "g4_short": "zaostrovye_burial_area",
+   "natural_profile_id": "m2c_natural_g4_zaostrovye_burial_area",
+   "place_function": "burial_area",
+   "landscape_template_id": "lt_wooded_floodplain",
+   "water_body_template_id": null,
+   "axes": {
+    "landscape": "archaeological_area",
+    "land_use": "heritage_access_limited",
+    "family_ref": "m2c_g5_archaeological_area__heritage_access_limited__burial_area"
+   },
+   "surface": "alluvial_mud_roots",
+   "relief": "flat_lowland",
+   "water_body_type": null,
+   "bank": null,
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "shrub_and_leaf_litter_cover",
+   "riparian": "generic_wet_edge_vegetation",
+   "ambient_materials": [
+    "alluvial_mud_roots",
+    "leaf_litter",
+    "woody_debris"
+   ],
+   "audible": "wind_and_ground_cover",
+   "light_exposure": "limited",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "not_applicable",
+    "bank_structure": "not_applicable",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Alnus (alder)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Woody form may persist year-round; foliage requires current growing-season state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_1"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "wet-edge herb and shrub guild (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Visible shoots and leaves require growing-season, water and snow state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "root-bound alluvial mud and leaf litter",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure and wetness vary with flood, rain, freeze and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round compatibility; encounter or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area:nature_member_3"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+   "g4_short": "zaostrovye_landing",
+   "natural_profile_id": "m2c_natural_g4_zaostrovye_landing",
+   "place_function": "local_landing",
+   "landscape_template_id": "lt_low_alluvial_riverbank",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "archaeological_area",
+    "land_use": "waterway_access",
+    "family_ref": "m2c_g5_archaeological_area__waterway_access__local_landing"
+   },
+   "surface": "alluvial_silt_mud",
+   "relief": "bank_low",
+   "water_body_type": "channel",
+   "bank": "alluvial_silt_mud",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "grass_sedge_and_shrub_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_silt_mud",
+    "grass_sedge_litter",
+    "small_woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "semi_open",
+   "seasonal_stability": "high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "Salix (willow)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "woody stems year-round; foliage requires current growing season",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing:nature_member_1"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "alluvial sand and silt",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "exposure varies with water level, freezing and snow",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing:nature_member_3"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing:nature_member_4"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "year-round compatibility; observation and sign require current state",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing:nature_member_2"
+    }
+   ]
+  },
+  {
+   "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+   "g4_short": "zaostrovye_settlement_center",
+   "natural_profile_id": "m2c_natural_g4_zaostrovye_settlement_center",
+   "place_function": "archaeological_settlement",
+   "landscape_template_id": "lt_wooded_floodplain",
+   "water_body_template_id": "wb_river_channel",
+   "axes": {
+    "landscape": "archaeological_area",
+    "land_use": "heritage_access_limited",
+    "family_ref": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement"
+   },
+   "surface": "alluvial_mud_roots",
+   "relief": "flat_lowland",
+   "water_body_type": "channel",
+   "bank": "alluvial_mud_roots",
+   "tree": "scattered_tree_cover",
+   "shrub": "shrub_or_understory",
+   "ground": "shrub_and_leaf_litter_cover",
+   "riparian": "generic_riparian_or_wetland_cover",
+   "ambient_materials": [
+    "alluvial_mud_roots",
+    "leaf_litter",
+    "woody_debris"
+   ],
+   "audible": "water_movement_wind_and_cover",
+   "light_exposure": "limited",
+   "seasonal_stability": "very_high",
+   "applicability": {
+    "surface": "present",
+    "relief": "present",
+    "water_body": "present",
+    "bank_structure": "present",
+    "tree_layer": "present",
+    "shrub_layer": "present",
+    "ground_cover": "present",
+    "riparian_vegetation": "present",
+    "natural_materials": "present",
+    "seasonal_state": "present",
+    "light": "present",
+    "weather": "present",
+    "audible_context": "present",
+    "fauna": "conditional"
+   },
+   "members": [
+    {
+     "layer": "tree_layer",
+     "kind": "flora",
+     "ref": "Alnus (alder)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Woody form may persist year-round; foliage requires current growing-season state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_1"
+    },
+    {
+     "layer": "riparian_vegetation",
+     "kind": "flora",
+     "ref": "wet-edge herb and shrub guild (unidentified)",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Visible shoots and leaves require growing-season, water and snow state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_2"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "material",
+     "ref": "root-bound alluvial mud and leaf litter",
+     "frequency_category": "common",
+     "weight": 4,
+     "season_condition": "Exposure and wetness vary with flood, rain, freeze and snow.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_4"
+    },
+    {
+     "layer": "natural_materials",
+     "kind": "fungi",
+     "ref": "decomposer fungal guild (unidentified)",
+     "frequency_category": "occasional",
+     "weight": 2,
+     "season_condition": "Substrate processes can continue across seasons; visible fruiting depends on current moisture, temperature and species.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_5"
+    },
+    {
+     "layer": "fauna",
+     "kind": "fauna",
+     "ref": "Castor (beaver)",
+     "frequency_category": "rare",
+     "weight": 1,
+     "season_condition": "Year-round compatibility; encounter or sign requires current state.",
+     "member_id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center:nature_member_3"
+    }
+   ]
+  }
+ ]
+}

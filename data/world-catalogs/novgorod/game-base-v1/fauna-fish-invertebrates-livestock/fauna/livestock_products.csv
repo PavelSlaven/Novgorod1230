@@ -1,0 +1,27 @@
+lp_id,species_ref,name_ru,product_kind,food_or_material_refs,season_note,source_refs,confidence,status
+lp_milk_cow,fa_dom_cattle,Коровье молоко,food,master:food_system:ING0089,больше летом на пастбище,src:master-food-ingredients;src:russkaya-pravda-prostrannaya,A,candidate
+lp_butter,fa_dom_cattle,Масло коровье,food,master:food_system:ING0097;master:food_system:ING0098,,src:master-food-ingredients;claim:maslo-birchbark-718-account,B,candidate
+lp_sour_milk_curd,fa_dom_cattle,"Кислое молоко, творог, свежий сыр",food,master:food_system:ING0093;master:food_system:ING0100;master:food_system:ING0101,,src:master-food-ingredients;claim:place-milk-acid-or-enzymic-coagulation-can-form-curd;claim:place-milk-fresh-curd-can-progressively-separate-from-whey,B,candidate
+lp_beef_veal,fa_dom_cattle,"Говядина, телятина",food,master:food_system:ING0106;master:food_system:ING0107,осенний и зимний забой (C),src:master-food-ingredients;claim:environment-p1-cattle,A,candidate
+lp_cattle_hide,fa_dom_cattle,"Коровья шкура, кожа",material,wk:material_culture:hide;wk:material_culture:leather,,claim:population-hide-leather-distinction;claim:novgorod-leather-items,A,candidate
+lp_horn_bone,fa_dom_cattle,Рог и кость,material,wk:material_culture:bone,,claim:environment-p1-cattle;src:master-material-culture,B,candidate
+lp_manure,fa_dom_cattle,Навоз,material,master:n1230:material_item:liv0024,копится зимой в хлеву,master:n1230:material_item:liv0024,B,candidate
+lp_draught_ox,fa_dom_cattle,Тягловая сила вола,service,,,src:rus13-place-rules-v2,C,candidate
+lp_horse_work,fa_dom_horse,Тягловая и верховая сила,service,,,claim:environment-p1-horse-transport,A,candidate
+lp_horsemeat,fa_dom_horse,Конина,food,master:food_system:ING0110,в голод 1230 г. — массово (НПЛ),claim:environment-p1-horse-meat;src:npl-6736-6738;src:master-food-ingredients,A,candidate
+lp_horse_hide,fa_dom_horse,Конская шкура,material,wk:material_culture:hide,,claim:population-hide-leather-distinction,C,candidate
+lp_pork_lard,fa_dom_pig,"Свинина, сало",food,master:food_system:ING0108;master:food_system:ING0084,осенний забой (C),src:master-food-ingredients;claim:environment-p1-pig,A,candidate
+lp_wool,fa_dom_sheep,Шерсть,material,wk:material_culture:wool,стрижка ножницами,claim:clothing-wool;claim:harvest-sheep-shearing-scissors;claim:static-wool-moisture-heat-mechanical-action-can-felt,A,candidate
+lp_sheepskin,fa_dom_sheep,Овчина,material,wk:material_culture:kozhukh,,claim:population-hide-leather-distinction,B,candidate
+lp_mutton,fa_dom_sheep,Баранина,food,master:food_system:ING0109,,src:master-food-ingredients;src:russkaya-pravda-prostrannaya,A,candidate
+lp_milk_sheep,fa_dom_sheep,Овечье молоко,food,master:food_system:ING0091,,src:master-food-ingredients,C,candidate
+lp_milk_goat,fa_dom_goat,Козье молоко,food,master:food_system:ING0090,,src:master-food-ingredients,B,candidate
+lp_goat_meat,fa_dom_goat,Козлятина,food,master:food_system:ING0109,,src:master-food-ingredients,B,candidate
+lp_egg_chicken,fa_dom_chicken,Куриные яйца,food,master:food_system:ING0103,больше весной и летом (C),src:master-food-ingredients;claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying;claim:r401-cracked-shell-compromises-egg-barrier,A,candidate
+lp_chicken_meat,fa_dom_chicken,Курятина,food,master:food_system:ING0111,,src:master-food-ingredients;src:russkaya-pravda-prostrannaya,B,candidate
+lp_goose_meat_fat_feather,fa_dom_goose,"Гусятина, гусиный жир, перо и пух",food;material,master:food_system:ING0112;master:food_system:ING0104,осенний забой (C),src:master-food-ingredients;master:n1230:material_item:liv0012,B,candidate
+lp_duck_meat_egg,fa_dom_duck,"Утятина, утиные яйца",food,master:food_system:ING0113;master:food_system:ING0105,,src:master-food-ingredients,B,candidate
+lp_guard,fa_dom_dog,"Охрана, лай, сопровождение",service,,,master:n1230:material_item:liv0007,A,candidate
+lp_dog_famine_meat,fa_dom_dog,Псина (только голод),food,,голод 1230 г.,src:npl-6736-6738,A,candidate
+lp_rodent_control,fa_dom_cat,Ловля мышей,service,,,master:n1230:material_item:liv0001,A,candidate
+lp_honey_wax_bort,fa_ins_honeybee,Мёд и воск бортевых пчёл,food;material,master:food_system:ING0085;master:food_system:ING0086,подъём борти летом–осенью (C),claim:agriculture-fauna-borts-honey;claim:agriculture-fauna-borts-wax;src:master-food-ingredients,A,candidate

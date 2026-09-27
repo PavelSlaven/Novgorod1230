@@ -90,6 +90,16 @@ export async function checkV17BootstrapInputs() {
     await exact(path, sha256);
 
   const gate = await json(`${gate1}/v17-bootstrap-import-request.json`);
+  await exact(gate.runner.path, gate.runner.sha256);
+  const expectedRunnerArgs = [
+    '--mode', 'v17-local-play',
+    '--expected-database', 'novgorod_world_v17',
+    '--write-result', 'OPERATOR_SELECTED_V17_READBACK_PATH'
+  ];
+  if (gate.runner.path !== 'scripts/run-pr17-item-container-stage3c.mjs'
+      || gate.runner.arguments.length !== expectedRunnerArgs.length
+      || gate.runner.arguments.some((value, index) => value !== expectedRunnerArgs[index]))
+    throw new Error('V17_GATE1_RUNNER_ARGS_MISMATCH');
   for (const source of gate.approved_sources) await exact(source.path, source.sha256);
   const dryRun = JSON.parse(execFileSync(process.execPath,
     ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'dry-run'],

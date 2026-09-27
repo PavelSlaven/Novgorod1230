@@ -11,6 +11,23 @@ import { applyRevisionPromotionPlan } from
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
 
+test('Gate1 local-play modes reject crossed expected databases before connect', () => {
+  const crossed = [
+    ['local-play', 'novgorod_world_v17'],
+    ['v17-local-play', 'novgorod_world']
+  ];
+  for (const [mode, database] of crossed) {
+    const result = spawnSync(process.execPath,
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', mode,
+        '--expected-database', database], {
+        cwd: process.cwd(), encoding: 'utf8', timeout: 30_000
+      });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr,
+      new RegExp(`PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED:${database}`, 'u'));
+  }
+});
+
 test('Gate1 imports canonical owner closure and Stage3C without activation',
   async (t) => {
     const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-gate1-postgres-'));

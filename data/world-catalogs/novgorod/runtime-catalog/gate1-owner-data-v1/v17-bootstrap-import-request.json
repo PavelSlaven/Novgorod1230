@@ -6,10 +6,10 @@
   "operation": "import_approved_gate1_owner_closure_and_item_container_catalog",
   "runner": {
     "path": "scripts/run-pr17-item-container-stage3c.mjs",
-    "sha256": "a5aaa5d511eb7c86cd2438f7b5a26a25102b847f2a8e2f8537b3ebd728fda003",
+    "sha256": "0cbea19ff4f1c106320a930ba051934f3cade1d03625a2477b1dc20a2dcdce30",
     "arguments": [
       "--mode",
-      "local-play",
+      "v17-local-play",
       "--expected-database",
       "novgorod_world_v17",
       "--write-result",
@@ -96,12 +96,12 @@
   "preconditions": [
     "independent high review approves exact request digest, runner bytes, prior approvals, schema execution evidence and target identity before write",
     "operator rechecks actual cluster, database, owner, all 208 tables and zero world_base rows; stop on drift",
-    "runner local-play performs no schema initialization or destructive DDL",
+    "runner v17-local-play performs no schema initialization or destructive DDL",
     "run dry-run and compare all expected plan digests and counts",
     "confirm offline backup and absence of overlapping Gate1 keys"
   ],
   "execution": [
-    "run exact local-play command against verified novgorod_world_v17 only; built-in rollback probe must pass",
+    "run exact v17-local-play command against verified novgorod_world_v17 only; built-in rollback probe must pass",
     "read back approved Gate1 owner closure and 102 item templates, 18 container templates, 9 G4 mappings with exact digests",
     "repeat read-only verifyPromotionState in the same database after commit; require repeat_readback_status exact_match and identical first_state_digest and repeated_state_digest; no second apply is performed",
     "confirm unchanged 208-table schema, no activation, no party rematerialization, and old database counts unchanged",
@@ -117,5 +117,5 @@
     "database_mutated": false
   },
   "independent_import_attestation": null,
-  "request_digest": "a95018d028cb7a68abade7efba35bc2186b4b132c2217d0e8399f0e897e6f6ad"
+  "request_digest": "355991ad54bd8061048a632f0ac2dc73c16ea7f68cc37d7587061687fc2c93a5"
 }

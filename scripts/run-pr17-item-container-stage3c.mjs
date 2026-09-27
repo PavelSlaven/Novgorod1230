@@ -41,7 +41,9 @@ const mode = argument('--mode', 'dry-run');
 const expectedDatabase = argument('--expected-database', null);
 const isV17LocalPlay = mode === 'v17-local-play';
 const isLocalPlayFamily = mode === 'local-play' || isV17LocalPlay;
-if (isLocalPlayFamily && !['novgorod_world', 'novgorod_world_v17'].includes(expectedDatabase)) {
+const expectedLocalPlayDatabase = isV17LocalPlay ? 'novgorod_world_v17'
+  : mode === 'local-play' ? 'novgorod_world' : null;
+if (isLocalPlayFamily && expectedDatabase !== expectedLocalPlayDatabase) {
   throw new Error(`PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED:${expectedDatabase}`);
 }
 const attestationPath = resolve(argument('--attestation', resolve(evidenceRoot, 'FINAL_APPROVAL_ATTESTATION.json')));

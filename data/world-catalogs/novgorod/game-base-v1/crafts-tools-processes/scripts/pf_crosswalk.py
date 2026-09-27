@@ -113,7 +113,7 @@ add('nov_occ_hunter_trapper', 'pf_hunting_ground', 'rule', 'C',
 rows = []
 for (occupation, pf), link in sorted(links.items()):
     rows.append((occupation, pf, pf_kind[pf], 'source' if 'source' in link['basis'] else 'rule',
-                 max(link['confidence']), ';'.join(sorted(link['refs'])),
+                 min(link['confidence']), ';'.join(sorted(link['refs'])),
                  ';'.join(sorted(link['tools'])), ';'.join(sorted(link['workshops'])), 'candidate'))
 for pf in sorted(pf_kind.keys() - {pf for _, pf in links}):
     rows.append(('', pf, pf_kind[pf], 'no_source', '', '', '', '', 'candidate'))
@@ -149,7 +149,7 @@ if '--check' in sys.argv:
                 row = next(row for row in actual if row['occupation_id'] == occupation and row['pf_id'] == pf)
                 assert f'{G4_OWNER}#g4_location_type={term}' in row['source_refs'].split(';')
                 assert set(owner_row['source_refs'].split(';')) <= set(row['source_refs'].split(';'))
-                assert row['confidence'] >= owner_row['confidence']
+                assert row['confidence'] <= max(tsv_confidence[record['confidence']], owner_row['confidence'])
         for term, pf in w_pf.items():
             if term in named_work(record):
                 assert (occupation, pf) in linked, (occupation, term, pf)
@@ -159,6 +159,9 @@ if '--check' in sys.argv:
     hunter = next(row for row in actual if row['occupation_id'] == 'nov_occ_hunter_trapper'
                   and row['pf_id'] == 'pf_hunting_ground')
     assert hunter['basis'] == 'rule' and hunter['confidence'] == 'C'
+    smith = next(row for row in actual if row['occupation_id'] == 'nov_occ_blacksmith'
+                 and row['pf_id'] == 'pf_smithy')
+    assert smith['confidence'] == 'A' and smith['workshop_ids'] == 'ws_smithy_town'
 else:
     TARGET.write_bytes(expected)
 print(f'PASS tools occupation crosswalk: {len(rows)} rows, {len(links)} linked pairs, '

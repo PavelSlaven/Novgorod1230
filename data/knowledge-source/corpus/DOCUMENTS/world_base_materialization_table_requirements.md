@@ -213,6 +213,8 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 | `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |
 | `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |
 | `category_id` | заполняется только при `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); при `social_role` / `occupation` поле не заполняется (предмет правила — `subject_ref`) |
+| `item_ref` | при `subject_kind=category` — выбранная вещь правила; NULL, если authoring не задаёт конкретный item |
+| `variants` | JSON-массив альтернативных `item_ref` той же категории (подкатегории §3A.4); весов в authoring нет — runtime выбирает **равномерно** тем же seed после исхода «есть» |
 | `presence_probability_ppm` | целое 0…1_000_000 |
 | `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |
 | `allowed_seasons` | закрытый словарь сезонов календаря |
@@ -226,6 +228,8 @@ fabric, trim, main/secondary visible color и headwear kind. Эти bindings
 | `authoring_payload` | JSONB object; исходный authoring payload правила |
 | `provenance_ref` | ссылка на `source_records` |
 | `rule_version` / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |
+
+**Импорт и исход (C12 / NOTE-rule-cause).** В одной `world_revision_id` пара `(rule_id, rule_version)` обязана быть уникальна. Стабильный authoring `pr_id` не гарантирует неизменность содержания при том же `rule_version`. В party-записи исхода (`presence_resolutions[].rule_ref`) хранится `rule_id@rule_version` как причина **в пределах мировой ревизии, закреплённой за партией**; сравнение между ревизиями не выполняется.
 
 Семантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.
 

@@ -53,6 +53,9 @@ CREATE TABLE IF NOT EXISTS world_base.presence_rules (
   subject_kind TEXT NOT NULL CHECK (subject_kind IN ('category', 'social_role', 'occupation')),
   subject_ref TEXT NOT NULL CHECK (length(btrim(subject_ref)) > 0),
   category_id TEXT,
+  item_ref TEXT,
+  variants JSONB NOT NULL DEFAULT '[]'::jsonb
+    CHECK (jsonb_typeof(variants) = 'array'),
   presence_probability_ppm INTEGER NOT NULL
     CHECK (presence_probability_ppm >= 0 AND presence_probability_ppm <= 1000000),
   count_limit INTEGER NOT NULL CHECK (count_limit >= 0),

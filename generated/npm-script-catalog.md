@@ -93,6 +93,10 @@
 - `lower-dvina:first-playable:write-content-manifest`
 - `lower-dvina:v3:production-cutover`
 
+## m2c-npc-wave (1)
+
+- `m2c-npc-wave:generate-datasets`
+
 ## migration (1)
 
 - `migration:status`

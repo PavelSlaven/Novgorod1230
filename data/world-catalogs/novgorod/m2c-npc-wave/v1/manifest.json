@@ -1,0 +1,107 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v1",
+  "bundle_id": "novgorod_m2c_npc_wave_v1",
+  "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+  "status": "draft",
+  "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+  "delete_policy": "forbid",
+  "source_commit": "b1f249de",
+  "datasets": [
+    {
+      "table": "source_records",
+      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/source_records.json",
+      "sha256": "f75316be1268f62e2015292a4da6e8ef4c9b7686070bf10ab206d75b94daa2ae",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "place_families",
+      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/place_families.json",
+      "sha256": "90f209700dc30a695a34ea7097ac6d48fbb41b025cafdc3971deaaa987015726",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "spatial_node_place_family_bindings",
+      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/spatial_node_place_family_bindings.json",
+      "sha256": "89ddf6839766e691e45602bf23822e47ba01338ca684b88eef29b325ab36b3c6",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "presence_rules",
+      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/presence_rules.json",
+      "sha256": "1dec4b7282c6ffdaa86cfa2dc1f0e71044994dca6aca7ae27a498c6e34f60fe0",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "household_composition_profiles",
+      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/household_composition_profiles.json",
+      "sha256": "7cd4d2d2f658eb9e13a4a0687a24af3883a1ffb029da7d40a2188269fbd3e8b0",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "slot_instance_variants",
+      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/slot_instance_variants.json",
+      "sha256": "b8fbd822098e9c1a0d3cb1ba32ed63844af6c4432dedb530c95a19ad9a2dd1c1",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    },
+    {
+      "table": "water_body_presence_facets",
+      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/water_body_presence_facets.json",
+      "sha256": "429df516199b54289210c639f28afad8d7fd320b7e58e83e5fc2ea40b83248d3",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "place_families"
+      ]
+    },
+    {
+      "table": "fauna_phase_activity_rules",
+      "file": "data/world-catalogs/novgorod/m2c-npc-wave/v1/datasets/fauna_phase_activity_rules.json",
+      "sha256": "63f61dfb967415046d3aebe29ee70335a7f431833a8f67e9a7fcb0d51cf4047c",
+      "status": "draft",
+      "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "source_records"
+      ]
+    }
+  ],
+  "data_gaps": [
+    {
+      "gap_id": "M2C_D1_ROUTINES_TARGET_TABLE",
+      "summary": "schedules_routines normal rows staged; spatial_v3_npc_runtime_profiles import pending DDL/importer"
+    },
+    {
+      "gap_id": "M2C_D2_COMPOSITION_BINDINGS",
+      "summary": "people_composition_authoring staged; spatial_v3_g4_npc_composition_bindings import pending DDL/importer"
+    }
+  ]
+}

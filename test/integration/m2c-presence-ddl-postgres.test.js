@@ -109,6 +109,16 @@ test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', 
   );
   assert.equal(wildCol.rows[0]?.data_type, 'text');
   assert.equal(wildCol.rows[0]?.is_nullable, 'YES');
+  for (const col of ['item_ref', 'variants']) {
+    const info = await world.query(
+      `SELECT column_name, data_type, is_nullable FROM information_schema.columns
+       WHERE table_schema='world_base' AND table_name='presence_rules'
+         AND column_name=$1`,
+      [col]
+    );
+    assert.equal(info.rows.length, 1, col);
+    if (col === 'variants') assert.equal(info.rows[0].data_type, 'jsonb');
+  }
 
   // Party fresh: full 001-037 via runner.
   const partyFresh = new pg.Pool({

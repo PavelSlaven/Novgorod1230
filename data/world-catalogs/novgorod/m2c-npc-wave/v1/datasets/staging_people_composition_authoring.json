@@ -1,0 +1,427 @@
+{
+  "schema": "people_composition_authoring.v1",
+  "never_created_gaps": [
+    {
+      "subject_kind": "household_member",
+      "subject_ref": "child",
+      "reason": "Нет численности детей и самостоятельного каталожного субъекта; на стартовой территории они не создаются."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_blacksmith",
+      "reason": "На стартовой территории не задано место создания кузнеца."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_carpenter",
+      "reason": "На стартовой территории не задано место создания плотника."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_church_guard",
+      "reason": "На стартовой территории не задано место создания церковного сторожа."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_fish_weir_keeper",
+      "reason": "На стартовой территории не задано место создания работника запруды."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_haymaker",
+      "reason": "На стартовой территории не задано место создания косца."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_local_trader",
+      "reason": "На стартовой территории не задано место создания торговца."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_market_guard",
+      "reason": "На стартовой территории не задано место создания рыночного стража."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_market_stall_seller",
+      "reason": "На стартовой территории не задано место создания продавца лавки."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_parish_priest_service",
+      "reason": "На стартовой территории не задано место создания приходского священника."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_ploughman",
+      "reason": "На стартовой территории не задано место создания отдельного пахаря."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_ponomar",
+      "reason": "На стартовой территории не задано место создания пономаря."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "nov_occ_potter",
+      "reason": "На стартовой территории не задано место создания гончара."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "occ_locksmith",
+      "reason": "На стартовой территории не задано место создания слесаря."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "occ_market_baker",
+      "reason": "На стартовой территории не задано место создания рыночного пекаря."
+    },
+    {
+      "subject_kind": "occupation",
+      "subject_ref": "occ_netmaker",
+      "reason": "На стартовой территории не задано место создания изготовителя сетей."
+    }
+  ],
+  "compositions": [
+    {
+      "pf_id": "pf_bog",
+      "population_groups": [],
+      "empty_reason": "Болото не создаёт постоянного населения; проводник приходит по маршруту.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_route_guide",
+          "reason": "Проводник проходит маршрут, а не живёт на болоте."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_conifer_woodland",
+      "population_groups": [],
+      "empty_reason": "Лесные работники приходят из поселения; постоянный лесной двор не задан.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_forest_worker",
+          "reason": "Сезонная работа в лесу не означает создание жителя вместе с лесным местом."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_ferry_landing",
+      "population_groups": [
+        {
+          "group_id": "pf_ferry_landing.ferryman",
+          "group_kind": "workers",
+          "min_count": 1,
+          "max_count": 1,
+          "count_weights": [
+            1
+          ],
+          "weighted_subjects": [
+            {
+              "subject_kind": "occupation",
+              "subject_ref": "nov_occ_ferryman",
+              "profile_ref": null,
+              "household_member_class": null,
+              "weight": 1
+            }
+          ],
+          "household_profile_ref": null,
+          "source_refs": "",
+          "rule_ref": "rule:one_per_work_role_v1",
+          "no_source": "",
+          "confidence": "C"
+        },
+        {
+          "group_id": "pf_ferry_landing.crossing_guard",
+          "group_kind": "workers",
+          "min_count": 1,
+          "max_count": 1,
+          "count_weights": [
+            1
+          ],
+          "weighted_subjects": [
+            {
+              "subject_kind": "occupation",
+              "subject_ref": "nov_occ_crossing_guard",
+              "profile_ref": null,
+              "household_member_class": null,
+              "weight": 1
+            }
+          ],
+          "household_profile_ref": null,
+          "source_refs": "",
+          "rule_ref": "rule:one_per_work_role_v1",
+          "no_source": "",
+          "confidence": "C"
+        }
+      ],
+      "scheduled_absences": []
+    },
+    {
+      "pf_id": "pf_floodplain_meadow",
+      "population_groups": [],
+      "empty_reason": "Пастух приходит на луг, постоянный двор здесь не установлен.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_herder",
+          "reason": "Выпас в расписании не является постоянным проживанием на лугу."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_forest_edge",
+      "population_groups": [],
+      "empty_reason": "Охотник приходит на промысел; постоянное поселение на опушке не задано.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_hunter_trapper",
+          "reason": "Место охоты не является местом создания постоянного работника."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_forest_track",
+      "population_groups": [],
+      "empty_reason": "Лесная тропа транзитная.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_route_guide",
+          "reason": "Проводник проходит тропу по маршруту."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_hunting_ground",
+      "population_groups": [],
+      "empty_reason": "Охотничьи угодья не задают постоянного двора.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_hunter_trapper",
+          "reason": "Охотник приходит на промысел."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_marshy_stream",
+      "population_groups": [],
+      "empty_reason": "Ручей транзитный, постоянное поселение не задано.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_route_guide",
+          "reason": "Проводник проходит маршрут вдоль ручья."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_outbuildings",
+      "population_groups": [
+        {
+          "group_id": "pf_outbuildings.household_servant",
+          "group_kind": "workers",
+          "min_count": 1,
+          "max_count": 1,
+          "count_weights": [
+            1
+          ],
+          "weighted_subjects": [
+            {
+              "subject_kind": "occupation",
+              "subject_ref": "nov_occ_household_servant",
+              "profile_ref": "m2c_npc_household_servant_v1",
+              "household_member_class": null,
+              "weight": 1
+            }
+          ],
+          "household_profile_ref": null,
+          "source_refs": "",
+          "rule_ref": "rule:one_per_work_role_v1",
+          "no_source": "",
+          "confidence": "C"
+        }
+      ],
+      "scheduled_absences": []
+    },
+    {
+      "pf_id": "pf_peasant_homestead",
+      "population_groups": [
+        {
+          "group_id": "pf_peasant_homestead.householder",
+          "group_kind": "residents",
+          "min_count": 1,
+          "max_count": 1,
+          "count_weights": [
+            1
+          ],
+          "weighted_subjects": [
+            {
+              "subject_kind": "social_role",
+              "subject_ref": "nov_role_smerd_householder",
+              "profile_ref": null,
+              "household_member_class": "adult",
+              "weight": 1
+            }
+          ],
+          "household_profile_ref": null,
+          "source_refs": "",
+          "rule_ref": "rule:one_per_resident_role_v1",
+          "no_source": "",
+          "confidence": "C"
+        },
+        {
+          "group_id": "pf_peasant_homestead.mistress",
+          "group_kind": "residents",
+          "min_count": 1,
+          "max_count": 1,
+          "count_weights": [
+            1
+          ],
+          "weighted_subjects": [
+            {
+              "subject_kind": "social_role",
+              "subject_ref": "nov_role_household_mistress",
+              "profile_ref": null,
+              "household_member_class": "adult",
+              "weight": 1
+            }
+          ],
+          "household_profile_ref": null,
+          "source_refs": "book:622242 §519;book:648161 §2639;book:641351 §2976",
+          "rule_ref": "",
+          "no_source": "",
+          "confidence": "C"
+        }
+      ],
+      "scheduled_absences": [
+        {
+          "subject_kind": "household_member",
+          "subject_ref": "child",
+          "reason": "Детский распорядок не имеет каталожного subject_ref; численность детей не подтверждена профилем домохозяйства, на стартовой территории дети не создаются."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_ploughman",
+          "reason": "Работа в поле не обосновывает отдельного пахаря при каждой усадьбе; на стартовой территории он не создаётся."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_household_servant",
+          "reason": "Слуга создаётся при хозяйственных постройках, не повторно при усадьбе."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_river_channel",
+      "population_groups": [],
+      "empty_reason": "Русло не создаёт постоянное население; лодочник движется по нему.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_boatman",
+          "reason": "Лодочник в русле следует маршруту, а не привязан к месту."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_riverbank",
+      "population_groups": [],
+      "empty_reason": "Берег не задаёт постоянное жильё или рабочий двор.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_fish_weir_keeper",
+          "reason": "Работа у запруды не доказывает место создания работника; на стартовой территории он не создаётся."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_fisher",
+          "reason": "Рыбак приходит к месту промысла."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_road",
+      "population_groups": [],
+      "empty_reason": "Дорога транзитная.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_cart_driver",
+          "reason": "Возчик проходит дорогу по маршруту."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_rural_yard",
+      "population_groups": [],
+      "empty_reason": "Общий сельский двор не задаёт конкретного домохозяйства; численность здесь не подтверждена.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_haymaker",
+          "reason": "На стартовой территории косец не создаётся: для работы не задано место создания."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_herder",
+          "reason": "Приходит на работу."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_household_servant",
+          "reason": "Работник привязан к хозяйственным постройкам или конкретной усадьбе, а не к общему типу двора."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "occ_market_baker",
+          "reason": "Рыночный день не задаёт место создания пекаря; на стартовой территории он не создаётся."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "occ_netmaker",
+          "reason": "Рабочий маршрут не задаёт место создания изготовителя сетей; на стартовой территории он не создаётся."
+        },
+        {
+          "subject_kind": "social_role",
+          "subject_ref": "nov_role_smerd_householder",
+          "reason": "Домохозяин привязан к конкретной усадьбе, не к общему типу двора."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_village_lane",
+      "population_groups": [],
+      "empty_reason": "Деревенская улица транзитная.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "social_role",
+          "subject_ref": "nov_role_smerd_householder",
+          "reason": "Домохозяин выходит на улицу из усадьбы."
+        }
+      ]
+    },
+    {
+      "pf_id": "pf_winter_ice_crossing",
+      "population_groups": [],
+      "empty_reason": "Ледовая переправа сезонная, постоянного жителя или работника не создаёт.",
+      "scheduled_absences": [
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_ferryman",
+          "reason": "Перевозчик закреплён за береговой пристанью; зимой выходит на лёд."
+        },
+        {
+          "subject_kind": "occupation",
+          "subject_ref": "nov_occ_winter_road_worker",
+          "reason": "Сезонная дорожная работа не создаёт постоянного работника с ледовой переправой."
+        }
+      ]
+    }
+  ]
+}

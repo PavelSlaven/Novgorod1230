@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 27 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `acd90541bf35972f86a7003f0e8c4fec99e9dc2e613dfad4ee9cbb6a2a599e00`.
+- SHA-256 развёрнутого DDL: `31ac195160a8a8d07e203a65b7110c37eb918fada624adea993a6cf0795a565a`.
 - Таблиц: 217.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3683,6 +3683,8 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 | `subject_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (subject_kind IN ('category', 'social_role', 'occupation'))` | Описание отсутствует. |
 | `subject_ref` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (length(btrim(subject_ref)) > 0)` | Описание отсутствует. |
 | `category_id` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `item_ref` | `TEXT` | да | — | — | — | Описание отсутствует. |
+| `variants` | `JSONB` | нет | `'[]'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(variants) = 'array')` | Описание отсутствует. |
 | `presence_probability_ppm` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (presence_probability_ppm >= 0 AND presence_probability_ppm <= 1000000)` | Описание отсутствует. |
 | `count_limit` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (count_limit >= 0)` | Описание отсутствует. |
 | `allowed_seasons` | `TEXT[]` | нет | `ARRAY[]::text[]` | — | `NOT NULL` | Описание отсутствует. |

@@ -1,0 +1,662 @@
+[
+  {
+    "id": "pf_reality_batch_01_open_conditions",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Открытые условия (наложение): сырость, работа, животные, уход, грунт",
+    "pf_kind": "overlay",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Open conditions overlay (wetland, work, animals, care, ground)",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=reality_batch_01_open_conditions];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.reality_batch_01_open_conditions"
+    }
+  },
+  {
+    "id": "pf_reality_first_practical_conditions",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Практические условия места (наложение): работа, путь, уход, еда, животные",
+    "pf_kind": "overlay",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Practical conditions overlay",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=reality_first_practical_conditions];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.reality_first_practical_conditions"
+    }
+  },
+  {
+    "id": "pf_rural_yard",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Сельский двор",
+    "pf_kind": "settlement_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Rural yard",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=rural_yard];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.rural_yard"
+    }
+  },
+  {
+    "id": "pf_town_street",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Городская улица (мостовая)",
+    "pf_kind": "settlement_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Town street",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=town_street];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.town_street"
+    }
+  },
+  {
+    "id": "pf_market_square",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Торг, торговая площадь",
+    "pf_kind": "settlement_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Market square",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=market_square];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.market_square"
+    }
+  },
+  {
+    "id": "pf_river_wharf",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Городская пристань",
+    "pf_kind": "water_edge",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Urban river wharf",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=river_wharf];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.river_wharf"
+    }
+  },
+  {
+    "id": "pf_town_courtyard",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Городская усадьба, двор",
+    "pf_kind": "settlement_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Town courtyard",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=town_courtyard];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.town_courtyard"
+    }
+  },
+  {
+    "id": "pf_town_wall_edge",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Край города у вала и ворот",
+    "pf_kind": "settlement_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Town wall edge",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=town_wall_edge];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.town_wall_edge"
+    }
+  },
+  {
+    "id": "pf_riverbank",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Речной берег",
+    "pf_kind": "water_edge",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Riverbank",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=riverbank];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.riverbank"
+    }
+  },
+  {
+    "id": "pf_river_channel",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Речное русло, протока",
+    "pf_kind": "water",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "River channel",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=river_channel];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.river_channel"
+    }
+  },
+  {
+    "id": "pf_floodplain_meadow",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Пойменный луг",
+    "pf_kind": "natural_open",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Floodplain meadow",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=floodplain_meadow];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.floodplain_meadow"
+    }
+  },
+  {
+    "id": "pf_lake_shore",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Озёрный берег",
+    "pf_kind": "water_edge",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Lake shore",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=lake_shore];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.lake_shore"
+    }
+  },
+  {
+    "id": "pf_arable_field",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Пашня, нива",
+    "pf_kind": "agrarian",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Arable field",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=arable_field];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.arable_field"
+    }
+  },
+  {
+    "id": "pf_hay_meadow",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Сенокосный луг",
+    "pf_kind": "agrarian",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Hay meadow",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=hay_meadow];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.hay_meadow"
+    }
+  },
+  {
+    "id": "pf_broadleaf_woodland",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Широколиственный лес (дубравный, липовый участок)",
+    "pf_kind": "natural_forest",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Broadleaf woodland",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=broadleaf_woodland];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.broadleaf_woodland"
+    }
+  },
+  {
+    "id": "pf_conifer_woodland",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Хвойный лес (бор, ельник)",
+    "pf_kind": "natural_forest",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Conifer woodland",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=conifer_woodland];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.conifer_woodland"
+    }
+  },
+  {
+    "id": "pf_mixed_woodland",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Смешанный лес",
+    "pf_kind": "natural_forest",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Mixed woodland",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=mixed_woodland];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.mixed_woodland"
+    }
+  },
+  {
+    "id": "pf_forest_edge",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Опушка, лесной край",
+    "pf_kind": "natural_edge",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Forest edge",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=forest_edge];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.forest_edge"
+    }
+  },
+  {
+    "id": "pf_bog",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Болото (мох, торф)",
+    "pf_kind": "natural_wetland",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Bog",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=bog];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.bog"
+    }
+  },
+  {
+    "id": "pf_marshy_stream",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Заболоченный ручей, топкая низина у воды",
+    "pf_kind": "natural_wetland",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Marshy stream",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=marshy_stream];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.marshy_stream"
+    }
+  },
+  {
+    "id": "pf_village_lane",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Деревенская улица, проулок",
+    "pf_kind": "settlement_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Village lane",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=village_lane];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.village_lane"
+    }
+  },
+  {
+    "id": "pf_peasant_homestead",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Крестьянская усадьба",
+    "pf_kind": "settlement_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Peasant homestead",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=peasant_homestead];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.peasant_homestead"
+    }
+  },
+  {
+    "id": "pf_outbuildings",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Хозяйственные постройки (хлев, сарай, навес)",
+    "pf_kind": "structure",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Outbuildings",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=outbuildings];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.outbuildings"
+    }
+  },
+  {
+    "id": "pf_cellar_granary",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Погреб, клеть, амбар",
+    "pf_kind": "structure",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Cellar / granary",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=cellar_granary];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.cellar_granary"
+    }
+  },
+  {
+    "id": "pf_bathhouse",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Баня",
+    "pf_kind": "structure",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Bathhouse",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=bathhouse];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.bathhouse"
+    }
+  },
+  {
+    "id": "pf_smithy",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Кузница",
+    "pf_kind": "structure",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Smithy",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=smithy];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.smithy"
+    }
+  },
+  {
+    "id": "pf_mill",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Мельница (водяная)",
+    "pf_kind": "structure",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Mill",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=mill];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.mill"
+    }
+  },
+  {
+    "id": "pf_threshing_barn",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Гумно, ток",
+    "pf_kind": "structure",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Threshing barn",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=threshing_barn];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.threshing_barn"
+    }
+  },
+  {
+    "id": "pf_churchyard",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Церковный двор, погост",
+    "pf_kind": "religious_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Churchyard",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=churchyard];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.churchyard"
+    }
+  },
+  {
+    "id": "pf_monastery_yard",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Монастырский двор",
+    "pf_kind": "religious_space",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Monastery yard",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=monastery_yard];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.monastery_yard"
+    }
+  },
+  {
+    "id": "pf_road",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Дорога",
+    "pf_kind": "route",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Road",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=road];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.road"
+    }
+  },
+  {
+    "id": "pf_bridge_crossing",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Мост, мостовая переправа",
+    "pf_kind": "route",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Bridge crossing",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=bridge_crossing];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.bridge_crossing"
+    }
+  },
+  {
+    "id": "pf_ferry_landing",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Перевоз, причал, высадка",
+    "pf_kind": "water_edge",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Ferry landing",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=ferry_landing];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.ferry_landing"
+    }
+  },
+  {
+    "id": "pf_forest_track",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Лесная тропа, лесной ход",
+    "pf_kind": "route",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Forest track",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=forest_track];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.forest_track"
+    }
+  },
+  {
+    "id": "pf_hunting_ground",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Охотничьи угодья",
+    "pf_kind": "use_overlay",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Hunting ground",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=hunting_ground];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.hunting_ground"
+    }
+  },
+  {
+    "id": "pf_orchard_garden",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Огород, сад",
+    "pf_kind": "agrarian",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Orchard / kitchen garden",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=orchard_garden];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.orchard_garden"
+    }
+  },
+  {
+    "id": "pf_pasture",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Выгон, пастбище",
+    "pf_kind": "agrarian",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Pasture",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=pasture];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.pasture"
+    }
+  },
+  {
+    "id": "pf_winter_ice_crossing",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Зимняя переправа по льду, зимник",
+    "pf_kind": "seasonal_overlay",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Winter ice crossing",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=winter_ice_crossing];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.winter_ice_crossing"
+    }
+  },
+  {
+    "id": "pf_field_margin",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Межа, край поля",
+    "pf_kind": "agrarian",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Field margin",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=field_margin];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.field_margin"
+    }
+  },
+  {
+    "id": "pf_fishing_camp",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Рыбацкий стан, тоня",
+    "pf_kind": "work_site",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Fishing camp",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=fishing_camp];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.fishing_camp"
+    }
+  },
+  {
+    "id": "pf_dwelling_interior",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Жилое помещение (изба, горница)",
+    "pf_kind": "interior",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Dwelling interior",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=dwelling_interior];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.dwelling_interior"
+    }
+  },
+  {
+    "id": "pf_church_interior",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Внутренность церкви",
+    "pf_kind": "interior",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Church interior",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=church_interior];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.church_interior"
+    }
+  },
+  {
+    "id": "pf_ordinary_workshop",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Мастерская",
+    "pf_kind": "interior",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Ordinary workshop",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=ordinary_workshop];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.ordinary_workshop"
+    }
+  },
+  {
+    "id": "pf_grain_drying_shed_ovin",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+    "display_name_ru": "Овин (сушильня снопов)",
+    "pf_kind": "structure",
+    "status": "approved",
+    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "confidence": "low",
+    "payload": {
+      "name_en": "Grain-drying shed (ovin)",
+      "csv_status": "candidate",
+      "source_refs": "data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=grain_drying_shed_ovin];infra/world-base/*_templates.seed.json;pr98:data/world-catalogs/novgorod/regional-environment/candidates/novgorod-1230-1250-v1/candidate.json;data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/pf-authoring.json#families.grain_drying_shed_ovin"
+    }
+  }
+]

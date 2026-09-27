@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "eb3485a6df6f2ae581a0c948da2cefba1349967429ae4e9baf9fd2ae83d1073c",
+  "corpus_hash": "46f62a83b1e250a4c2d1b50490adaa3bedfd956c91a710418965ee269a070cd5",
   "chunk_count": 2863,
   "chunks": [
     {
@@ -765,8 +765,8 @@
       "section": "3A.1. Бросок и его ключ",
       "line_start": 169,
       "line_end": 190,
-      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\n равные) наборы `allowed_seasons` для одной пары scope/region/subject. Категория без правила на всех уровнях = отсутствует (0 ppm), не ошибка runtime.\n\nБросок один и сохраняется; переброса нет. Seed: `{ party_id, scope_instance_ref, subject_kind, subject_ref, rng_algorithm_id: mulberry32_v1 }`; для сезонного правила добавляется номер периода. `rule_id`, `rule_version` и `world_revision_id` в seed не входят. Исход хранится по ключу (партия, экземпляр scope, `subject_kind`, `subject_ref` правила) в существующем агрегате ordinary-материализации (`presence_resolutions` / `closed_observation_scopes`). Новая версия правил уже решённую пару не перебрасывает; `rule_id@rule_version` хранится в записи как причинное основание. Если предок уже решён, правила на потомках в этом экземпляре не бросаются.\n\nДля `subject_kind` = `social_role` | `occupation` иерархии `parent_category_id` и выбора подвида по весам нет: бросок решает наличие по `subject_ref`, число — равномерно из `1..count_limit`. Наследование по `parent_category_id` и выбор подкатегории по `region_category_options.weight` (§3A.4) относятся только к `subject_kind=category`.",
-      "char_count": 1217
+      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\n равные) наборы `allowed_seasons` для одной пары scope/region/subject. Категория без правила на всех уровнях = отсутствует (0 ppm), не ошибка runtime.\n\nБросок один и сохраняется; переброса нет. Seed: `{ party_id, scope_instance_ref, subject_kind, subject_ref, rng_algorithm_id: mulberry32_v1 }`; для сезонного правила добавляется номер периода. `rule_id`, `rule_version` и `world_revision_id` в seed не входят. Исход хранится по ключу (партия, экземпляр scope, `subject_kind`, `subject_ref` правила) в существующем агрегате ordinary-материализации (`presence_resolutions` / `closed_observation_scopes`). Новая версия правил уже решённую пару не перебрасывает; `rule_id@rule_version` хранится в записи как причинное основание и идентифицирует правило **в пределах мировой ревизии, закреплённой за партией** (C12): импорт в одну `world_revision_id` проверяет уникальность пары `rule_id@rule_version`; сравнение между ревизиями не выполняется; стабильный authoring `pr_id` не гарантирует неизменность содержания при том же `rule_version`. Если предок уже решён, правила на потомках в этом экземпляре не бросаются.",
+      "char_count": 1189
     },
     {
       "id": "code_driven_world_materialization_architecture.md:3A.1. Бросок и его ключ:4",
@@ -774,8 +774,8 @@
       "section": "3A.1. Бросок и его ключ",
       "line_start": 169,
       "line_end": 190,
-      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\nit`. Наследование по `parent_category_id` и выбор подкатегории по `region_category_options.weight` (§3A.4) относятся только к `subject_kind=category`.\n\nОбязательное наличие — правило с `presence_probability_ppm = 1_000_000`. Отдельного поля «обязательный минимум» нет. Причины появления (следы, стоянка и т.п.) — отдельные утверждённые правила, не свободный JSONB condition set.",
-      "char_count": 457
+      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\ng `pr_id` не гарантирует неизменность содержания при том же `rule_version`. Если предок уже решён, правила на потомках в этом экземпляре не бросаются.\n\nДля `subject_kind` = `social_role` | `occupation` иерархии `parent_category_id` и выбора подвида по весам нет: бросок решает наличие по `subject_ref`, число — равномерно из `1..count_limit`. Наследование по `parent_category_id` и выбор подкатегории по `region_category_options.weight` (§3A.4) относятся только к `subject_kind=category`.\n\nОбязательное наличие — правило с `presence_probability_ppm = 1_000_000`. Отдельного поля «обязательный минимум» нет. Причины появления (следы, стоянка и т.п.) — отдельные утверждённые правила, не свободный JSONB condition set.",
+      "char_count": 795
     },
     {
       "id": "code_driven_world_materialization_architecture.md:3A.2. Первое прибытие (D3):0",
@@ -14895,8 +14895,8 @@
       "section": "3.1. Порог выдумок (CR #158 / C7)",
       "line_start": 71,
       "line_end": 77,
-      "text": "## situational_prose_requirements.md — 3.1. Порог выдумок (CR #158 / C7)\n### 3.1. Порог выдумок (CR #158 / C7)\n\nДва независимых критерия, не смешивать:\n\n1. **Детерминированная проверка кода** у владельца `@rus/narration`: **0** изобретённых имён, топонимов, обращений и служебных/world_base field names в player-facing тексте. Unit fail при любом изобретённом токене или технической утечке.\n2. **Прозаический порог CR:** ≤ **0,67** выдумки на текст при верности ≥ **4** (методика эксперимента владельца в CR #158). Отдельный model «revise» после auditor **запрещён** (Strategy D: auditor + ≤1 format repair + ≤1 semantic rewrite + code checks).",
-      "char_count": 644
+      "text": "## situational_prose_requirements.md — 3.1. Порог выдумок (CR #158 / C7)\n### 3.1. Порог выдумок (CR #158 / C7)\n\nДва независимых критерия, не смешивать:\n\n1. **Детерминированная проверка кода** у владельца `@rus/narration`: **0** изобретённых имён, топонимов, обращений и служебных/world_base field names в player-facing тексте. Unit fail при любом изобретённом токене или технической утечке.\n2. **Прозаический порог CR (методика без чисел CR):** три слепых судьи на один и тот же текст, одна рубрика, классы выдумок; «жёсткие выдумки» — без красок света, цвета, температуры и поз. Числовые пороги приёмки задаются только ссылкой на CR [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158), comment [5857929393](https://github.com/PavelSlaven/Novgorod1230/issues/158#issuecomment-5857929393): верность ≥ 3,5; жёстких выдумок ≤ 2,0; противоречий ≤ 0,6; худший текст ≤ 4 / < 2. Отдельный model «revise» после auditor **запрещён** (Strategy D: auditor + ≤1 format repair + ≤1 semantic rewrite + code checks).",
+      "char_count": 1012
     },
     {
       "id": "situational_prose_requirements.md:4. Общая композиционная норма:0",
@@ -23444,7 +23444,7 @@
       "file": "world_base_materialization_table_requirements.md",
       "section": "8.1. Таблица правил наличия (M2c authoring)",
       "line_start": 200,
-      "line_end": 231,
+      "line_end": 235,
       "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\n### 8.1. Таблица правил наличия (M2c authoring)\n\n§8.1 — действующее требование M2c к authoring `world_base` (C-006 / ACTIVE specialization Spatial v3 table-purpose). Физическая таблица — `world_base.presence_rules` (`infra/world-base/schema/27.sql`, CR #158).\n\nТребуется тонкая authoring-таблица у materialization owner со столбцами:",
       "char_count": 431
     },
@@ -23453,25 +23453,25 @@
       "file": "world_base_materialization_table_requirements.md",
       "section": "8.1. Таблица правил наличия (M2c authoring)",
       "line_start": 200,
-      "line_end": 231,
-      "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\nа — `world_base.presence_rules` (`infra/world-base/schema/27.sql`, CR #158).\n\nТребуется тонкая authoring-таблица у materialization owner со столбцами:\n\n| Поле | Смысл |\n|---|---|\n| `rule_id` | стабильный id правила (`pr_id` authoring); в исходе броска хранится как `rule_id@rule_version` (§3A.1) |\n| `world_revision_id` | ревизия authoring |\n| `scope_kind` | для M2c presence/routines/water/slots — `place_family`; для контейнеров — `container_template` |\n| `scope_ref` | `pf_id` или id контейнерного шаблона |\n| `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |\n| `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |\n| `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |\n| `category_id` | заполняется только при `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); при `social_role` / `occupation` поле не заполняется (предмет правила — `subject_ref`) |\n| `presence_probability_ppm` | целое 0…1_000_000 |\n| `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |\n| `allowed_seasons` | закрытый словарь сезонов календаря |\n| `allowed_times` | authoring provenance; для людей **не импортировать** (время суток решают распорядки, §3A.5); для природы/вещей — хранить, не исполнять как гейт часа прихода |\n| `guards` | text[] provenance; **не исполнять** (словаря evaluator нет; LW) |\n| `entry_visible_if` / `search_only_if` | режимы обнаружения (exposed / concealed); без колонки `visibility_class` |\n| `entry_exposed_weight` / `search_concealed_weight` | INT NULL; веса weighted draw; пустые веса при обоих режимах = 1/1 (редакционное правило + LW) |\n| `wild_arrival_cause` | TEXT NULL; класс причины появления в дикой местности (например `prior_visitor_loss_or_discard`); **не гейтит** presence-бросок (§3A.6) |\n| `refresh_class` | `none` (default) или `by_year_season` |\n| `confidence` | словарь соседей `unknown \\| low \\| medium_low \\| medium \\| medium_high \\| high`; при импорте authoring `A→high`, `B→medium`, `C→low`, пусто/`no_source`→`unknown` |\n| `authoring_payload` | JSONB object; исходный authoring payload правила |\n| `provenance_ref` | ссылка на `source_records` |\n| `rule_version` / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |",
-      "char_count": 2593
+      "line_end": 235,
+      "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\nа — `world_base.presence_rules` (`infra/world-base/schema/27.sql`, CR #158).\n\nТребуется тонкая authoring-таблица у materialization owner со столбцами:\n\n| Поле | Смысл |\n|---|---|\n| `rule_id` | стабильный id правила (`pr_id` authoring); в исходе броска хранится как `rule_id@rule_version` (§3A.1) |\n| `world_revision_id` | ревизия authoring |\n| `scope_kind` | для M2c presence/routines/water/slots — `place_family`; для контейнеров — `container_template` |\n| `scope_ref` | `pf_id` или id контейнерного шаблона |\n| `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |\n| `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |\n| `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |\n| `category_id` | заполняется только при `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); при `social_role` / `occupation` поле не заполняется (предмет правила — `subject_ref`) |\n| `item_ref` | при `subject_kind=category` — выбранная вещь правила; NULL, если authoring не задаёт конкретный item |\n| `variants` | JSON-массив альтернативных `item_ref` той же категории (подкатегории §3A.4); весов в authoring нет — runtime выбирает **равномерно** тем же seed после исхода «есть» |\n| `presence_probability_ppm` | целое 0…1_000_000 |\n| `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |\n| `allowed_seasons` | закрытый словарь сезонов календаря |\n| `allowed_times` | authoring provenance; для людей **не импортировать** (время суток решают распорядки, §3A.5); для природы/вещей — хранить, не исполнять как гейт часа прихода |\n| `guards` | text[] provenance; **не исполнять** (словаря evaluator нет; LW) |\n| `entry_visible_if` / `search_only_if` | режимы обнаружения (exposed / concealed); без колонки `visibility_class` |\n| `entry_exposed_weight` / `search_concealed_weight` | INT NULL; веса weighted draw; пустые веса при обоих режимах = 1/1 (редакционное правило + LW) |\n| `wild_arrival_cause` | TEXT NULL; класс причины появления в дикой местности (например `prior_visitor_loss_or_discard`); **не гейтит** presence-бросок (§3A.6) |\n| `refresh_class` | `none` (default) или `by_year_season` |\n| `confidence` | словарь соседей `unknown \\| low \\| medium_low \\| medium \\| medium_high \\| high`; при импорте authoring `A→high`, `B→medium`, `C→low`, пусто/`no_source`→`unknown` |\n| `authoring_payload` | JSONB object; исходный authoring payload правила |\n| `provenance_ref` | ссылка на `source_records` |\n| `rule_version` / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |",
+      "char_count": 2893
     },
     {
       "id": "world_base_materialization_table_requirements.md:8.1. Таблица правил наличия (M2c authoring):2",
       "file": "world_base_materialization_table_requirements.md",
       "section": "8.1. Таблица правил наличия (M2c authoring)",
       "line_start": 200,
-      "line_end": 231,
-      "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\n / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |\n\nСемантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.",
-      "char_count": 343
+      "line_end": 235,
+      "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\n / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |\n\n**Импорт и исход (C12 / NOTE-rule-cause).** В одной `world_revision_id` пара `(rule_id, rule_version)` обязана быть уникальна. Стабильный authoring `pr_id` не гарантирует неизменность содержания при том же `rule_version`. В party-записи исхода (`presence_resolutions[].rule_ref`) хранится `rule_id@rule_version` как причина **в пределах мировой ревизии, закреплённой за партией**; сравнение между ревизиями не выполняется.\n\nСемантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.",
+      "char_count": 767
     },
     {
       "id": "world_base_materialization_table_requirements.md:9. Bounded decision data:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "9. Bounded decision data",
-      "line_start": 232,
-      "line_end": 233,
+      "line_start": 236,
+      "line_end": 237,
       "text": "## world_base_materialization_table_requirements.md — 9. Bounded decision data\n## 9. Bounded decision data",
       "char_count": 106
     },
@@ -23479,8 +23479,8 @@
       "id": "world_base_materialization_table_requirements.md:`decision_command_catalog`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`decision_command_catalog`",
-      "line_start": 234,
-      "line_end": 237,
+      "line_start": 238,
+      "line_end": 241,
       "text": "## world_base_materialization_table_requirements.md — `decision_command_catalog`\n### `decision_command_catalog`\n\nUniversal command definitions. Команда описывает тип намерения и зарегистрированный code handler, но не результат действия.",
       "char_count": 236
     },
@@ -23488,8 +23488,8 @@
       "id": "world_base_materialization_table_requirements.md:`decision_policy_profiles`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`decision_policy_profiles`",
-      "line_start": 238,
-      "line_end": 241,
+      "line_start": 242,
+      "line_end": 245,
       "text": "## world_base_materialization_table_requirements.md — `decision_policy_profiles`\n### `decision_policy_profiles`\n\nОпределяет, когда для actor/context требуется bounded decision, какие command domains разрешены и какая версия состояния обязательна.",
       "char_count": 246
     },
@@ -23497,8 +23497,8 @@
       "id": "world_base_materialization_table_requirements.md:`decision_policy_options`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`decision_policy_options`",
-      "line_start": 242,
-      "line_end": 245,
+      "line_start": 246,
+      "line_end": 249,
       "text": "## world_base_materialization_table_requirements.md — `decision_policy_options`\n### `decision_policy_options`\n\nСвязывает policy с допустимыми commands, preconditions, costs и risk metadata. Runtime формирует options только после code filtering.",
       "char_count": 244
     },
@@ -23506,8 +23506,8 @@
       "id": "world_base_materialization_table_requirements.md:10. Party database v2:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "10. Party database v2",
-      "line_start": 246,
-      "line_end": 286,
+      "line_start": 250,
+      "line_end": 290,
       "text": "## world_base_materialization_table_requirements.md — 10. Party database v2\n## 10. Party database v2\n\nParty schema хранится в `party_runtime`, логически изолируется `party_id` и имеет внутренние FK. World refs сопровождаются `world_revision_id` и проходят application validation, поскольку `world_base` может быть отдельной PostgreSQL database.\n\nОбязательные логические хранилища:\n\n- party/version pins, current state, position, player character и knowledge map;\n- `party_materialization_runs` и `party_materialization_choices`;\n- `party_g5_nodes`, `party_g5_edges` и anchors/slots;\n- `party_npcs`, traits, relations, knowledge и schedules;\n- `party_items`, `party_containers`, inventory и ownership;\n- `party_decision_requests` и `party_decision_results`;\n- `party_change_sets` и `party_autonomous_updates`;\n- events, journal и versioned public-screen read model.\n- `party_server_sessions` как нормализованная техническая проекция HTTP/game-server состояния с FK на v2 party; она не является source of truth мира.\n\nОдин committed baseline materialization допускается на `(party_id, g4_id)`. Repeat-entry читает его; repair использует отдельное поколение и историю.",
       "char_count": 1165
     },
@@ -23515,8 +23515,8 @@
       "id": "world_base_materialization_table_requirements.md:10. Party database v2:1",
       "file": "world_base_materialization_table_requirements.md",
       "section": "10. Party database v2",
-      "line_start": 246,
-      "line_end": 286,
+      "line_start": 250,
+      "line_end": 290,
       "text": "## world_base_materialization_table_requirements.md — 10. Party database v2\n\nОдин committed baseline materialization допускается на `(party_id, g4_id)`. Repeat-entry читает его; repair использует отдельное поколение и историю.\n\nCanonical appearance нового NPC хранится атомарно в существующем\n`party_npcs.identity_state`, player — в существующем profile/dossier JSON.\nОтдельная party appearance table запрещена. Name profile snapshot содержит\nтолько name/provenance. Одежда хранится только как `party_items` + placements +\nownership, а immutable `item_visual_profile_snapshot_v1` находится в state\nконкретного item. `portrait_spec_v1` не сохраняется ни в одной party table.",
       "char_count": 673
     },
@@ -23524,8 +23524,8 @@
       "id": "world_base_materialization_table_requirements.md:10. Party database v2:2",
       "file": "world_base_materialization_table_requirements.md",
       "section": "10. Party database v2",
-      "line_start": 246,
-      "line_end": 286,
+      "line_start": 250,
+      "line_end": 290,
       "text": "## world_base_materialization_table_requirements.md — 10. Party database v2\nownership, а immutable `item_visual_profile_snapshot_v1` находится в state\nконкретного item. `portrait_spec_v1` не сохраняется ни в одной party table.\n\nActive O2b existing-container contents не создаёт вторую таблицу semantic\ncontents. First-entry P16 provision-ит authored template-backed container вместе\nс общим ordinary ledger без дополнительной транзакции или party bump:\naggregate/context/basis/enablement rows с\n`scope_kind='container'`, а approved concrete children сохраняются обычными\n`party_items` с exact mechanics/property/placement и ссылкой на parent\ncontainer. Exact profile/policy/template/mechanics/property/owner/placement\npins обязательны; authoritative contents имеют приоритет. При доступе transition\nтого же container ledger, children, open/reveal, visible package и единственный\nparty version bump входят в один combined P16 transaction. Template-less\ncontainer, partial batch и\nотдельный contents store запрещены. Reload/reopen читает committed aggregate и\nchildren без model/reroll.\n\nСтарая JSONB `game_sessions` не входит в production DDL v2, не создаётся migrations и не читается runtime. Backup/rollback старого формата выполняется только внешним migration tooling.",
       "char_count": 1270
     },
@@ -23533,8 +23533,8 @@
       "id": "world_base_materialization_table_requirements.md:11. Seed/import contract:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "11. Seed/import contract",
-      "line_start": 287,
-      "line_end": 304,
+      "line_start": 291,
+      "line_end": 308,
       "text": "## world_base_materialization_table_requirements.md — 11. Seed/import contract\n## 11. Seed/import contract\n\nAuthoring datasets поставляются отдельными versioned JSON-файлами и manifest. Manifest хранит schema version, world revision, список таблиц, digests, dependencies, provenance, режим удаления и approval.\n\nИмпорт выполняется так:\n\n1. Проверка manifest и файловых digests.\n2. JSON Schema validation.\n3. Проверка table registry и отсутствия party instances.\n4. Cross-reference validation.\n5. Построение FK-derived load order.\n6. Dry-run без записи.\n7. Явное approval.\n8. Transactional apply.\n9. Readback counts/digests и audit record.\n\nImplicit delete запрещён. Неизвестная таблица, ID вне manifest, dangling ref, active ambiguity либо отсутствующий required candidate блокируют импорт.",
       "char_count": 790
     },
@@ -23542,8 +23542,8 @@
       "id": "world_base_materialization_table_requirements.md:12. Порядок наполнения:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "12. Порядок наполнения",
-      "line_start": 305,
-      "line_end": 322,
+      "line_start": 309,
+      "line_end": 326,
       "text": "## world_base_materialization_table_requirements.md — 12. Порядок наполнения\n## 12. Порядок наполнения\n\n```text\n1. sources, revisions, regions и канонические G0–G4\n2. специализированные universal справочники\n3. universal_categories, relations и parameter definitions\n4. region_category_options\n5. regional NPC component profiles и profile sets\n6. room/building/G4/G5 templates и bindings\n7. item/container/property/transport profiles\n8. G4-specific materialization rules\n9. decision commands и policies\n10. readiness/cross-reference audit\n11. активация revision\n```\n\nТаблица готова к runtime только если её required links разрешаются, JSONB payload проходит свою schema, sources и period заданы, negative fixtures существуют, import order определён и readiness audit не содержит hard gaps.",
       "char_count": 789
     },
@@ -23551,8 +23551,8 @@
       "id": "world_base_materialization_table_requirements.md:13. Принятые физические решения:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "13. Принятые физические решения",
-      "line_start": 323,
-      "line_end": 335,
+      "line_start": 327,
+      "line_end": 339,
       "text": "## world_base_materialization_table_requirements.md — 13. Принятые физические решения\n## 13. Принятые физические решения\n\n1. Generic registry называется `universal_categories`.\n2. Существующие специализированные справочники не дублируются.\n3. Plural ID relations нормализуются в entry/binding tables.\n4. `place_minilocations` и `scene_anchors` deprecated; новые G5 используют templates.\n5. Party G5 хранится нормализованно в `party_runtime`.\n6. Queryable NPC components хранятся строками/relations, snapshots — JSONB.\n7. RNG version — `mulberry32_v1`, seed derivation — SHA-256 canonical JSON.\n8. Trace разделяется на run и choice rows; validation snapshot допустим в JSONB.\n9. Command envelope — request-bound `cmd.v1` digest и exact option match.\n10. Runtime v2 создаёт только новые партии; legacy JSONB sessions не мигрируют и не загружаются.",
       "char_count": 845
     },
@@ -23560,8 +23560,8 @@
       "id": "world_base_materialization_table_requirements.md:14. Domain-scoped activation и exact import membership:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "14. Domain-scoped activation и exact import membership",
-      "line_start": 336,
-      "line_end": 337,
+      "line_start": 340,
+      "line_end": 341,
       "text": "## world_base_materialization_table_requirements.md — 14. Domain-scoped activation и exact import membership\n## 14. Domain-scoped activation и exact import membership",
       "char_count": 166
     },
@@ -23569,8 +23569,8 @@
       "id": "world_base_materialization_table_requirements.md:`domain_catalog_revisions`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`domain_catalog_revisions`",
-      "line_start": 338,
-      "line_end": 344,
+      "line_start": 342,
+      "line_end": 348,
       "text": "## world_base_materialization_table_requirements.md — `domain_catalog_revisions`\n### `domain_catalog_revisions`\n\nCompanion к `world_revisions`, доказывающий, что revision является утверждённым\ndomain overlay, а не полным world pin. Хранит scope, parent registration,\ntarget digest, compatible world tuple, registry/runtime-contract digests и\napproved status. Общий world selector исключает такие revisions.",
       "char_count": 406
     },
@@ -23578,8 +23578,8 @@
       "id": "world_base_materialization_table_requirements.md:`catalog_baseline_registrations`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`catalog_baseline_registrations`",
-      "line_start": 345,
-      "line_end": 351,
+      "line_start": 349,
+      "line_end": 355,
       "text": "## world_base_materialization_table_requirements.md — `catalog_baseline_registrations`\n### `catalog_baseline_registrations`\n\nAppend-only регистрация точного operator baseline: parent tuple, snapshot\nmanifest, schema fingerprint, record registry, compatible world tuple,\nregistration request и attestation. Регистрация выполняется одной транзакцией,\nexact repeat идемпотентен, а конфликтующий digest блокирует продолжение.",
       "char_count": 421
     },
@@ -23587,8 +23587,8 @@
       "id": "world_base_materialization_table_requirements.md:`catalog_imports`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`catalog_imports`",
-      "line_start": 352,
-      "line_end": 358,
+      "line_start": 356,
+      "line_end": 362,
       "text": "## world_base_materialization_table_requirements.md — `catalog_imports`\n### `catalog_imports`\n\nЕдинственный immutable audit root успешного import. Связывает scope, parent и\ncompatible tuples, target revision/digest, registry, promotion/approval,\nmigration, tables, records, dependency assertions и итоговый import audit\ndigest. Строка появляется только после полного transactional readback.",
       "char_count": 390
     },
@@ -23596,8 +23596,8 @@
       "id": "world_base_materialization_table_requirements.md:`catalog_import_tables`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`catalog_import_tables`",
-      "line_start": 359,
-      "line_end": 364,
+      "line_start": 363,
+      "line_end": 368,
       "text": "## world_base_materialization_table_requirements.md — `catalog_import_tables`\n### `catalog_import_tables`\n\nExact table-level membership: dependency order, counts операций\n`insert`/`assert_existing`, общий record count и payload digest. Digest\nвычисляется по membership entries, а не по выборке всех строк revision.",
       "char_count": 314
     },
@@ -23605,8 +23605,8 @@
       "id": "world_base_materialization_table_requirements.md:`catalog_import_records`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`catalog_import_records`",
-      "line_start": 365,
-      "line_end": 378,
+      "line_start": 369,
+      "line_end": 382,
       "text": "## world_base_materialization_table_requirements.md — `catalog_import_records`\n### `catalog_import_records`\n\nExact record-level membership с composite record key, operation kind,\ncanonical payload, record digest и ordinal:\n\n```text\ninsert\nassert_existing\n```\n\n`insert` создаёт утверждённую overlay row. `assert_existing` проверяет точную\nparent row без записи. Canonical payload является immutable audit snapshot, но\nне заменяет normalized authoring rows.",
       "char_count": 455
     },
@@ -23614,8 +23614,8 @@
       "id": "world_base_materialization_table_requirements.md:`catalog_import_dependency_assertions`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`catalog_import_dependency_assertions`",
-      "line_start": 379,
-      "line_end": 385,
+      "line_start": 383,
+      "line_end": 389,
       "text": "## world_base_materialization_table_requirements.md — `catalog_import_dependency_assertions`\n### `catalog_import_dependency_assertions`\n\nScoped assertion связывает materialization scope с exact G4 dependency и\ncanonical base-row snapshot. Она не изменяет `graph_nodes.status`, не создаёт\nновый G4 и не меняет историческую или пространственную семантику узла. Любое\nрасхождение текущей canonical base row со snapshot является hard block.",
       "char_count": 436
     },
@@ -23623,8 +23623,8 @@
       "id": "world_base_materialization_table_requirements.md:`runtime_catalog_activation_events`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`runtime_catalog_activation_events`",
-      "line_start": 386,
-      "line_end": 393,
+      "line_start": 390,
+      "line_end": 397,
       "text": "## world_base_materialization_table_requirements.md — `runtime_catalog_activation_events`\n### `runtime_catalog_activation_events`\n\nAppend-only read pointer на успешно импортированный domain catalog. Event\nсвязывает exact import, compatible world tuple, registry/runtime contract,\nactivation request/attestation, runtime release и previous event. Активация\nразрешена только после exact import readback, успешного party preflight,\nпроверки runtime identity и CAS под фиксированной scope lock.",
       "char_count": 490
     },
@@ -23632,8 +23632,8 @@
       "id": "world_base_materialization_table_requirements.md:`party_catalog_pins`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`party_catalog_pins`",
-      "line_start": 394,
-      "line_end": 400,
+      "line_start": 398,
+      "line_end": 404,
       "text": "## world_base_materialization_table_requirements.md — `party_catalog_pins`\n### `party_catalog_pins`\n\nНормализованный immutable pin каталога партии: scope, revision/digest, exact\nimport и audit digest, registry/runtime contract, compatible world tuple и\nactivation event. Межбазового FK в `world_base` нет; ссылку проверяет\nприложение.",
       "char_count": 334
     },
@@ -23641,8 +23641,8 @@
       "id": "world_base_materialization_table_requirements.md:`party_materialization_run_catalog_pins`:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "`party_materialization_run_catalog_pins`",
-      "line_start": 401,
-      "line_end": 411,
+      "line_start": 405,
+      "line_end": 415,
       "text": "## world_base_materialization_table_requirements.md — `party_materialization_run_catalog_pins`\n### `party_materialization_run_catalog_pins`\n\nRun-level provenance того же exact domain pin. Для materialization v2\nсуществующее `party_materialization_runs.catalog_digest` обязано совпадать с\nнормализованной row; источником полного provenance является run-pin row.\n\nImport, activation и party persistence проходят exact readback до commit.\nRuntime loader восстанавливает только membership данного `import_id`, проверяет\nвсе record/table/root digests и compatible world tuple. Live authoring rows и\nтекущий active event не могут подменить historical catalog существующей партии.",
       "char_count": 673
     },
@@ -23650,8 +23650,8 @@
       "id": "world_base_materialization_table_requirements.md:15. Статус документа:0",
       "file": "world_base_materialization_table_requirements.md",
       "section": "15. Статус документа",
-      "line_start": 412,
-      "line_end": 414,
+      "line_start": 416,
+      "line_end": 418,
       "text": "## world_base_materialization_table_requirements.md — 15. Статус документа\n## 15. Статус документа\n\nЭтот документ уже `ACTIVE` (общий authoring/readiness слой; production table-purpose — Spatial v3 specialization, см. C-006). Устаревший «критерий повышения в active» удалён: повышение статуса не повторяется. Новые таблицы presence-правил входят через DDL/importer CR реализации M2c и Contract Auditor (CR #146 шаг 1).",
       "char_count": 418
     },

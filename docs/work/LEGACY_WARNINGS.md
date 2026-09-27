@@ -69,6 +69,7 @@
 | 066 | `spatial_node_place_family_bindings`, presence/routines/water/slots | до утверждения `pf_secondary` — только primary | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 067 | `presence_rules.guards` | guards хранятся, не исполняются | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 068 | `presence_rules` discovery weights; Stage 16 `no_source` | пустые веса = 1/1; пробел Stage 16 не закрывать выдумкой | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` при `readGit`/gh недоступен или PR head mismatch — окружение worktree, не регресс CR #158; на `162a86b9` acceptance «persists a free turn» падает так же (`startLlm` не в `provisionRuntime`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 
 ## Записи
 
@@ -350,4 +351,9 @@
 ### LW-071 — правило «предок уже решён — потомки не бросаются» вне resolve_presence_rule
 - **Где.** Выбор presence-правил / R-2 consumer; не `applyOrdinaryAggregateTransition`/`resolve_presence_rule`.
 - **Как жить.** Примитив агрегата хранит и повторяет исход по ключу §3A.1. Запрет броска потомков при решённом предке — у движка выбора правил (R-2). Тест — там же, не в foundation transition.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
+
+### LW-072 — local-play git provenance в worktree
+- **Где.** `tools/local-play/local-play.js` (`LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE`); acceptance `test/acceptance/local-play-postgres.test.js` («persists a free turn»).
+- **Как жить.** Код `readGit`/gh PR head mismatch или недоступность gh — не считать регрессом R-1/CR #158 в worktree без привязки PR. Отдельно: падение «persists a free turn» из‑за `startLlm` в `provisionRuntime` воспроизводится на `162a86b9` — дефект acceptance, не блокер п.3 REVIEW-069b.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

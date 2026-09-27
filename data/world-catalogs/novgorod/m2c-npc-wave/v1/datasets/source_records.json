@@ -1,0 +1,9 @@
+[
+  {
+    "id": "game_base_v1_m2c_people_b1f249de",
+    "status": "approved",
+    "provenance_kind": "game_base_authoring",
+    "source_commit": "b1f249de",
+    "notes": "approve_with_limits wave from game-base-v1 @ git show"
+  }
+]

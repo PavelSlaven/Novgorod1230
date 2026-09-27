@@ -330,3 +330,52 @@
   - сезон `spring` здесь и `spring_rasputitsa` в ambience;
   - тексты уровня G4: двор во Вихтуе весной получает «пойма залита водой».
 - **Выдуманного нет.** Все строки C/candidate, прежние ссылки pr98 и WK.
+
+## Независимая проверка C003b (Claude Opus 5.5, коммит aa18c441)
+
+Пятый проход, отдельный от автора правок. `rework` — возвращено исполнителю; `approve_with_limits` — годно для M2c с перечисленными ограничениями; статус данных `candidate` до утверждения набора.
+
+### natural_presentation_texts/presentation_texts.csv — approve_with_limits
+
+Проверено: Claude Opus 5.5 (независимая проверка C003b, коммит aa18c441).
+
+- **Major C003 (запахов нет) — исправлен.**
+  - Добавлено 96 строк канала olfactory, слой `ground_scent`: 32 G4 × весна, лето, осень. Все строки C/candidate, без громкости.
+  - Прежние 4002 строки побайтно совпадают с 9db968c2 (свой скрипт). member_phrases не менялись.
+- **Выдуманных запахов нет.**
+  - Текстов 7, по одному на тип грунта. Все 7 сверены с `ground_types.csv#perceptual_cues`, все 96 строк проверены скриптом.
+  - Каждый текст пересказывает часть подсказки «запах:». Примеры: alluvial_silt_mud — «сырой речной ил»; needle_litter_roots — «смолистая хвоя»; mineral_mud_silt — «тина»; alluvial_mud_roots — «прелый лист, речной ил».
+  - Уточнения «болотного», «лесной», «берега» взяты из названия грунта в ground_types.
+  - Людских запахов (дым, печь, скот, навоз) нет. Сено не заявлено.
+  - Сами подсказки о запахе с C001 признаны редакторскими (C). «Sourced» здесь значит «по записанному редакторскому признаку», а не «по литературе».
+- **Покрытие по аспектам (`sensory_coverage.csv`, 183 строки) — подтверждено своим скриптом.**
+  - 61 пара PF × сезон: visual 61/61, acoustic 61/61, olfactory 45 sourced + 16 no_source.
+  - Все 16 no_source — зимние, из них одна — winter_ice_crossing/winter.
+  - Каждый basis_ref существует, принадлежит G4 этого PF, совпадает по сезону и каналу.
+  - `check.mjs` запущен: OK.
+  - Негативные тесты на копии:
+    - зимняя строка запаха → «unsupported scent» и расхождения покрытия;
+    - «дымом» → «human ambience»;
+    - winter_ice_crossing/summer → «invalid sensory scope»;
+    - перевод ячейки в no_source → «coverage mismatch».
+- **Ледовая переправа — только зима.** В покрытии у неё 3 ячейки, все зимние. Правило совпадает с `place_families.csv` (pf_kind `seasonal_overlay`, «frozen water»), но записано в коде по имени PF, без ссылки.
+- **Major: условие `ground_state!=frozen` не работает.**
+  - Значения `frozen` нет ни в GROUND_STATES (dry, wet, mud, snow, ice, flooded, unknown), ни в `ground_water_condition_rules.csv`.
+  - Условие всегда истинно, запах ила может выводиться при ground_state=ice.
+  - check словарь не проверяет: `ground_state!=banana` проходит.
+- **Major: самодельная таблица PF → грунт (`SCENT_GROUND`).**
+  - Лежит в build.mjs и check.mjs без ссылки и без пометки editorial.
+  - С выводом по владельцам (place_families.landscape_template_refs × ground_types) расходится у 6 из 9 PF.
+  - bog: по шаблонам PF грунты торфяные, а 3 ячейки получают «sourced» из старичного G4 old_channel_pool («тянет тиной»).
+  - forest_edge: по шаблонам нужны podzolic_litter_roots или grass_brush_soil, таких G4 нет.
+  - Нужно выводить фильтр из данных владельцев или ставить no_source.
+- **Minor:**
+  - check не сравнивает текст запаха с подсказкой: «Пахнет сеном и мёдом» проходит.
+  - TARGET_PF и SCENT_GROUND продублированы в build и check.
+  - firm_soil «сухой землёй» весной и осенью выводится без условия dry.
+- **Прежние ограничения без изменений:**
+  - покрытие на уровне G4: road получает запах речного ила, bog — картинку поймы;
+  - 60 ice-строк;
+  - ссылка о плетении у ивы;
+  - 14 снежных member_phrases;
+  - spring против spring_rasputitsa.

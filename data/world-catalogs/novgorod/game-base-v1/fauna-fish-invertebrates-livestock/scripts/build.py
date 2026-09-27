@@ -218,6 +218,7 @@ for s in inv_herp_data.INV:
         flying=str(s["flying"]).lower(), blood_feeding=str(s["blood"]).lower(), nuisance_or_danger=s["danger"],
         perceptual_cues=s["cues"], season_peak=s["peak"], uses=s["uses"],
         active_seasons=j(sorted({se for (f2, pf, se, sb), c in presence.items() if f2 == fid and c["activity"] == "active"}, key=SEASONS.index)),
+        dormant_seasons=j(sorted({se for (f2, pf, se, sb), c in presence.items() if f2 == fid and c["activity"] == "dormant"}, key=SEASONS.index)),
         habitat_presence_count=sum(1 for k in presence if k[0] == fid),
         source_refs=refs(src, fid), confidence=s["conf"], status=STATUS, notes=s["notes"]))
 
@@ -464,28 +465,62 @@ counts = {}
 counts["fish.csv"] = write_csv("fish.csv", list(fish_rows[0].keys()), fish_rows)
 counts["fishing_methods.csv"] = write_csv("fishing_methods.csv", list(fm_rows[0].keys()), fm_rows)
 counts["water_body_pf_crosswalk.csv"] = write_csv("water_body_pf_crosswalk.csv", list(cw_rows[0].keys()), cw_rows)
-counts["invertebrates_herps.csv"] = write_csv("invertebrates_herps.csv", list(inv_rows[0].keys()), inv_rows)
+counts["invertebrates_herps.csv"] = write_csv("invertebrates_herps.csv", list(inv_rows[0].keys()), inv_rows, "\n")
 counts["fauna_presence.csv"] = write_csv("fauna_presence.csv", list(pres_rows[0].keys()), pres_rows)
 with open(os.path.join(OUT, '..', 'places-binding', 'places', 'node_binding.csv'), encoding='utf-8') as f:
     start_pf = {r['pf_id'].removeprefix('pf_') for r in csv.DictReader(f) if r['pf_id']}
 with open(os.path.join(OUT, '..', 'fauna-mammals-birds', 'fauna', 'activity_phase_rules.json'), encoding='utf-8') as f:
     phase_rules = json.load(f)
-phase_scope = sorted({(r['fa_id'], r['season_period']) for r in pres_rows if r['pf_id'] in start_pf})
+with open(os.path.join(OUT, '..', 'nature-materials-weather', 'weather_climate', 'light_profile_by_month.csv'), encoding='utf-8') as f:
+    light_by_season = defaultdict(list)
+    for light in csv.DictReader(f):
+        light_by_season[light['season_period']].append(light)
+def clock_minutes(clock):
+    hour, minute = map(int, clock.split(':'))
+    return hour * 60 + minute
+rooster_phase = {}
+for season in SEASONS:
+    lights = sorted(light_by_season['spring' if season == 'spring_rasputitsa' else season], key=lambda r: int(r['julian_month']))
+    middle = lights[len(lights) // 2]
+    at_four = 4 * 60
+    rooster_phase[season] = ('night' if at_four < clock_minutes(middle['avg_civil_dawn_lmst']) else
+                             'civil_dawn' if at_four < clock_minutes(middle['avg_sunrise_lmst']) else
+                             'daylight' if at_four < clock_minutes(middle['avg_sunset_lmst']) else
+                             'civil_dusk' if at_four < clock_minutes(middle['avg_civil_dusk_lmst']) else 'night')
+phase_scope = sorted({(r['fa_id'], r['season_period']) for r in pres_rows if r['pf_id'] in start_pf and not r['fa_id'].startswith('fa_mamm_')})
 bound_rules = {r['rule_ref'] for r in rpgr_pf_rows if r['pf_id'].removeprefix('pf_') in start_pf and r['rule_ref']}
 livestock_rules = defaultdict(set)
 for row in pt_rows:
     if row['rule_ref'] in bound_rules and row['species_ref'] in {r['fa_id'] for r in sp_rows}:
         livestock_rules[row['species_ref']].add(row['pl_id'])
+with open(os.path.join(OUT, '..', 'places-binding', 'places', 'place_families.csv'), encoding='utf-8') as f:
+    start_yards = {r['pf_id'].removeprefix('pf_') for r in csv.DictReader(f)
+                   if r['pf_id'].removeprefix('pf_') in start_pf and 'yard' in r['master_location_archetypes'].split(';')}
+household_profiles = {r['household_profile_ref'] for r in xw_rows}
+linked_herd_species = {r['species_ref'] for r in herd_rows if r['household_profile_ref'] in household_profiles}
+for row in herd_rows:
+    if start_yards and row['species_ref'] in linked_herd_species and row['species_ref'] in {r['fa_id'] for r in sp_rows}:
+        livestock_rules[row['species_ref']].add(row['hc_id'])
 phase_scope = sorted(set(phase_scope) | {(fid, season) for fid in livestock_rules for season in SEASONS})
 active_scope = {(r['fa_id'], r['season_period']) for r in pres_rows if r['pf_id'] in start_pf and r['activity_state'] == 'active'}
 phase_rows = []
 taxa = {r['fa_id']: r for r in fish_rows + inv_rows + sp_rows}
 with open(os.path.join(HERE, 'src', 'phase_cues.json'), encoding='utf-8') as f:
     cue_facts = json.load(f)
-for t in inv_rows:
-    if t['fa_id'] in {fid for fid, _ in phase_scope} and re.search(r'ноч|сумерк|вечер|полд|днём|днем|солнечн|утр|зар[еяю]', t['perceptual_cues'].lower()) \
-            and t['fa_id'] not in cue_facts and t['fa_id'] != 'fa_arach_cross_spider':
-        problems['unmapped_temporal_cue'].append(t['fa_id'])
+temporal_pattern = r'ноч|сумерк|вечер|полд|днём|днем|солнечн|утр|рассвет|на зор|зорях|жар'
+mapped_temporal = set(cue_facts) | {'fa_amph_common_frog', 'fa_amph_smooth_newt', 'fa_crust_noble_crayfish',
+                                    'fa_fish_zander', 'fa_fish_burbot', 'fa_dom_chicken', 'fa_ins_grasshoppers',
+                                    'fa_dom_cattle', 'fa_dom_horse'}
+def unmapped_temporal_cue(fid, text):
+    return bool(re.search(temporal_pattern, text.lower())) and fid not in mapped_temporal and fid != 'fa_arach_cross_spider'
+
+if '--self-test' in sys.argv:
+    assert unmapped_temporal_cue('fa_probe_fish', 'ночью выходит из нор')
+    assert unmapped_temporal_cue('fa_probe_livestock', 'крик в жару')
+for t, fields in [(t, ('perceptual_cues',)) for t in inv_rows] + [(t, ('look_ru', 'spawning_site')) for t in fish_rows] + [(t, ('primary_uses', 'notes')) for t in lt_rows] + [(t, ('housing', 'care_tasks_daily')) for t in care_rows]:
+    fid = t.get('fa_id') or t.get('species_ref')
+    if fid in {id for id, _ in phase_scope} and unmapped_temporal_cue(fid, ' '.join(t.get(field, '') for field in fields)):
+        problems['unmapped_temporal_cue'].append(fid)
 for fid, season in phase_scope:
     taxon = taxa[fid]
     for phase in phase_rules['phases']:
@@ -494,27 +529,55 @@ for fid, season in phase_scope:
         state = phase_rules['rules'][activity][phase] if activity else 'no_source'
         voice = 'no_source'
         voice_ref = ''
-        source = {'fa_ins_honeybee': 'claim:fauna-bee-diurnal',
-                  'fa_amph_smooth_newt': 'books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L152'}.get(fid, '')
+        source = ''
+        rule = f"fauna/activity_phase_rules.json#{phase_rules['id']}.{activity}.{phase}" if activity and state != 'no_source' else ''
         cue = cue_facts.get(fid, {})
         if phase in cue.get('phases', {}) and season in cue.get('seasons', SEASONS) and (fid, season) in active_scope:
             state, voice = cue['phases'][phase]
             source = f'invertebrates_herps.csv#{fid}.perceptual_cues'
+            rule = ''
             if cue.get('seasons'):
                 source += f';invertebrates_herps.csv#{fid}.season_peak'
             if voice == 'yes':
                 voice_ref = f'invertebrates_herps.csv#{fid}.perceptual_cues'
         if fid == 'fa_rept_adder' and season in ('spring_rasputitsa', 'autumn') and phase == 'night':
-            state, source = 'no', 'books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L139'
+            state, source, rule = 'no', 'books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L139', ''
+        if fid == 'fa_amph_smooth_newt' and season == 'spring_rasputitsa' and phase == 'daylight':
+            state, source, rule = 'no_source', '', ''
+        if fid == 'fa_crust_noble_crayfish' and phase == 'night':
+            state, source, rule = 'yes', 'fish.csv#fa_crust_noble_crayfish.look_ru;books-evidence-v1/fauna-fish-invertebrates-livestock.csv#L160', ''
+        if fid == 'fa_fish_zander' and season == 'spring_rasputitsa' and phase in ('civil_dawn', 'night'):
+            state, source, rule = 'yes', 'fish.csv#fa_fish_zander.spawning_site', ''
+        if fid == 'fa_fish_burbot' and season == 'winter' and phase == 'night':
+            state, source, rule = 'yes', 'fish.csv#fa_fish_burbot.spawning_site', ''
+        if fid == 'fa_amph_common_frog' and phase == 'night' and (fid, season) in active_scope:
+            state, source, rule = 'yes', '', 'fauna/activity_phase_rules.json#frog-damp-night'
+        if fid == 'fa_ins_mosquitoes' and phase == 'civil_dawn' and (fid, season) in active_scope:
+            voice, voice_ref, source, rule = 'yes', 'invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues', '', 'fauna/activity_phase_rules.json#mosquito-dawn-sound'
+        if fid == 'fa_ins_grasshoppers' and season == 'summer' and phase == 'daylight' and (fid, season) in active_scope:
+            voice, voice_ref, source, rule = 'yes', 'invertebrates_herps.csv#fa_ins_grasshoppers.perceptual_cues', '', 'fauna/activity_phase_rules.json#heat-daylight'
+        if fid == 'fa_ins_dragonflies' and season == 'summer' and phase == 'daylight':
+            state, source, rule = 'yes', '', 'fauna/activity_phase_rules.json#sunny-daylight'
+        if fid == 'fa_dom_chicken':
+            if phase == rooster_phase[season]:
+                voice, source, rule = 'yes', '', 'fauna/activity_phase_rules.json#rooster-four-am'
+                voice_ref = 'livestock_types.csv#ls_chicken_rooster.primary_uses'
+            elif phase == 'daylight' and season in ('winter', 'spring_rasputitsa', 'summer'):
+                voice = 'yes'
+                voice_ref = f'buildings-interiors-containers/ambience/settlement_ambience_texts.csv#sat_village_lane_animals_{season}_{dict(winter="033", spring_rasputitsa="034", summer="035")[season]}'
+                source, rule = voice_ref, ''
+        if fid in {r['fa_id'] for r in inv_rows} and season in taxon.get('dormant_seasons', '').split(';'):
+            state, voice, voice_ref = 'no', 'no', ''
+            source, rule = f'invertebrates_herps.csv#{fid}.dormant_seasons', ''
         complete_gap = state == 'no_source' and voice == 'no_source'
         if complete_gap:
-            source = ''
+            source, rule = '', ''
         occurrence = '|'.join(sorted(livestock_rules.get(fid, [])))
         phase_rows.append(dict(phase_rule_id=f'fpa_{fid}_{season}_{phase}', fa_id=fid, season=season, phase=phase,
                                visibility_state=state, voice_state=voice, voice_text_ref=voice_ref,
-                               source_refs=source, rule_ref='',
+                               source_refs=source, rule_ref=rule,
                                no_source=('phase visibility and voice unknown' + (f'; conditional occurrence refs: {occurrence}' if occurrence else '')) if complete_gap else '',
-                               confidence=taxon['confidence'] if source else 'C', status=STATUS))
+                               confidence=taxon['confidence'] if source and not rule and state != 'no_source' and voice != 'no_source' and not source.startswith('buildings-interiors-containers/') else 'C', status=STATUS))
 phase_header = ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref',
                 'source_refs', 'rule_ref', 'no_source', 'confidence', 'status']
 counts['phase_activity.csv'] = write_csv('phase_activity.csv', phase_header, phase_rows, '\n')

@@ -131,7 +131,7 @@ test('Factual visible envelope rejects hidden fields and combined write plans re
           } },
           equipment: [{ physical_position: 'worn',
             visual_profile_snapshot: {
-              schema: 'rus.actor_equipment_visual_profile.v1', version: 1,
+              schema: 'item_visual_profile_snapshot_v1', version: 1,
               visible_fabric: 'light_linen'
             } }],
           outward_presentation: { gaze: 'down', body_pose: 'frontal' }

@@ -70,6 +70,38 @@ const catalogDdl = {
 
 function digest(bytes) { return createHash('sha256').update(bytes).digest('hex'); }
 
+function canonicalize(value) {
+  if (value === null || typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map(canonicalize);
+  return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonicalize(value[key])]));
+}
+
+function digestJson(value) {
+  return createHash('sha256').update(JSON.stringify(canonicalize(value))).digest('hex');
+}
+
+const gate1RequestV2Path =
+  `${gate1}/v17-bootstrap-import-request-v2.json`;
+const gate1AttestationV2Path =
+  `${gate1}/v17-bootstrap-import-approval-attestation-v2.json`;
+const gate1AttestationV2Schema = 'rus.gate1_v17_bootstrap_import_approval.v1';
+const gate1AttestationV2Verdicts = new Set(['APPROVE', 'APPROVE_CONDITIONAL']);
+
+export function assertV17Gate1V2Attestation(request, attestation) {
+  if (!attestation) throw new Error('V17_GATE1_ATTESTATION_V2_REQUIRED');
+  if (attestation.schema !== gate1AttestationV2Schema)
+    throw new Error('V17_GATE1_ATTESTATION_SCHEMA_MISMATCH');
+  if (!gate1AttestationV2Verdicts.has(attestation.verdict))
+    throw new Error('V17_GATE1_ATTESTATION_VERDICT_REJECTED');
+  if (attestation.request_path !== gate1RequestV2Path)
+    throw new Error('V17_GATE1_ATTESTATION_REQUEST_PATH_MISMATCH');
+  if (attestation.runner_sha256 !== request.runner?.sha256)
+    throw new Error('V17_GATE1_ATTESTATION_RUNNER_MISMATCH');
+  if (attestation.request_digest !== request.request_digest)
+    throw new Error('V17_GATE1_ATTESTATION_DIGEST_MISMATCH');
+  return attestation;
+}
+
 async function exact(path, sha256, bytes) {
   const content = await readFile(resolve(root, path));
   if (digest(content) !== sha256 || (bytes !== undefined && content.length !== bytes))
@@ -79,7 +111,9 @@ async function exact(path, sha256, bytes) {
 
 async function json(path) { return JSON.parse(await readFile(resolve(root, path), 'utf8')); }
 
-export async function checkV17BootstrapInputs() {
+export async function checkV17BootstrapInputs({
+  attestationV2Path = gate1AttestationV2Path
+} = {}) {
   const schema = await json(`${v17}/fresh-schema-request.json`);
   for (const source of [schema.world_schema.entrypoint,
     ...schema.world_schema.ordered_parts,
@@ -89,7 +123,28 @@ export async function checkV17BootstrapInputs() {
   for (const [path, sha256] of [...catalogDdl.world, ...catalogDdl.party])
     await exact(path, sha256);
 
-  const gate = await json(`${gate1}/v17-bootstrap-import-request.json`);
+  const gate = await json(gate1RequestV2Path);
+  const { request_digest: claimedGateDigest, ...gateBody } = gate;
+  if (digestJson(gateBody) !== claimedGateDigest)
+    throw new Error('V17_GATE1_REQUEST_DIGEST_MISMATCH');
+  await exact(gate.runner.path, gate.runner.sha256);
+  const expectedRunnerArgs = [
+    '--mode', 'v17-local-play',
+    '--expected-database', 'novgorod_world_v17',
+    '--write-result', 'OPERATOR_SELECTED_V17_READBACK_PATH'
+  ];
+  if (gate.runner.path !== 'scripts/run-pr17-item-container-stage3c.mjs'
+      || gate.runner.arguments.length !== expectedRunnerArgs.length
+      || gate.runner.arguments.some((value, index) => value !== expectedRunnerArgs[index]))
+    throw new Error('V17_GATE1_RUNNER_ARGS_MISMATCH');
+  let gateAttestation = null;
+  try {
+    gateAttestation = await json(attestationV2Path);
+  } catch (error) {
+    if (error?.code === 'ENOENT') throw new Error('V17_GATE1_ATTESTATION_V2_REQUIRED');
+    throw error;
+  }
+  assertV17Gate1V2Attestation(gate, gateAttestation);
   for (const source of gate.approved_sources) await exact(source.path, source.sha256);
   const dryRun = JSON.parse(execFileSync(process.execPath,
     ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'dry-run'],
@@ -199,6 +254,18 @@ async function applyCatalogDdl(pool, schema, migrations, tables) {
     throw new Error(`V17_CATALOG_DDL_READBACK_MISMATCH:${schema}`);
 }
 
+/** Same ordered_parts + digest pins bootstrap uses. Caller owns BEGIN/COMMIT. */
+export async function applyV17WorldSchemaOrderedParts(client, {
+  worldSchema = null
+} = {}) {
+  const schema = worldSchema
+    ?? (await json(`${v17}/fresh-schema-request.json`)).world_schema;
+  for (const source of schema.ordered_parts)
+    await client.query((await exact(source.path, source.sha256, source.bytes)).toString());
+  await client.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
+  return schema;
+}
+
 export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest = null,
   activationApprovalsPath = localV17ApprovalsPath() }) {
   if (!adminUrl) throw new Error('V17_ADMIN_URL_REQUIRED');
@@ -245,9 +312,9 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     try {
       for (const commit of [false, true]) {
         await client.query('BEGIN');
-        for (const source of schema.world_schema.ordered_parts)
-          await client.query((await exact(source.path, source.sha256, source.bytes)).toString());
-        await client.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
+        await applyV17WorldSchemaOrderedParts(client, {
+          worldSchema: schema.world_schema
+        });
         await client.query(commit ? 'COMMIT' : 'ROLLBACK');
         if (!commit && await countTables(client, 'world_base'))
           throw new Error('V17_SCHEMA_ROLLBACK_MISMATCH');
@@ -267,7 +334,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
 
     const gatePath = join(work, 'gate1.json');
     const gate = JSON.parse(execFileSync(process.execPath,
-      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play',
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'v17-local-play',
         '--expected-database', worldName, '--write-result', gatePath],
       { cwd: root, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024,
         timeout: 600_000,

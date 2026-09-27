@@ -39,7 +39,11 @@ const gate1Cache = { seedSql: null };
 assertAllowedArguments();
 const mode = argument('--mode', 'dry-run');
 const expectedDatabase = argument('--expected-database', null);
-if (mode === 'local-play' && !['novgorod_world', 'novgorod_world_v17'].includes(expectedDatabase)) {
+const isV17LocalPlay = mode === 'v17-local-play';
+const isLocalPlayFamily = mode === 'local-play' || isV17LocalPlay;
+const expectedLocalPlayDatabase = isV17LocalPlay ? 'novgorod_world_v17'
+  : mode === 'local-play' ? 'novgorod_world' : null;
+if (isLocalPlayFamily && expectedDatabase !== expectedLocalPlayDatabase) {
   throw new Error(`PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED:${expectedDatabase}`);
 }
 const attestationPath = resolve(argument('--attestation', resolve(evidenceRoot, 'FINAL_APPROVAL_ATTESTATION.json')));
@@ -76,14 +80,16 @@ if (plan.status !== 'ready') throw new Error(`PR17_STAGE3C_PLAN_BLOCKED:${plan.e
 if (mode === 'dry-run') {
   process.stdout.write(`${JSON.stringify(summary({ mode, plan, applied: false }), null, 2)}\n`);
 } else if (mode === 'lifecycle' || mode === 'local-play'
-    || mode === 'fixture-bootstrap') {
+    || mode === 'v17-local-play' || mode === 'fixture-bootstrap') {
   const databaseUrl = process.env.PR17_TEST_DATABASE_URL;
   if (!databaseUrl) throw new Error('PR17_TEST_DATABASE_URL_REQUIRED');
   const pool = new pg.Pool({ connectionString: databaseUrl, max: 1 });
   const client = await pool.connect();
   try {
     const database = await assertDatabaseForMode(client, mode, expectedDatabase);
-    if (mode === 'local-play') await assertEmptyWorldBase(client);
+    // v17 path: require already-bootstrapped empty v17 schema.
+    // local-play (v16): initializeSchema as before 3043915a.
+    if (isV17LocalPlay) await assertEmptyWorldBase(client);
     else await initializeSchema(client);
     if (mode === 'fixture-bootstrap') {
       const first = await applyRevisionPromotionPlan({ plan,
@@ -99,15 +105,15 @@ if (mode === 'dry-run') {
         adapter: createPostgresAdapter(client, gate1) });
       const firstState = await verifyPromotionState(client, plan, input, gate1);
       const runtimeE2e = await verifyPromotedRuntime(client, plan);
-      if (mode !== 'local-play') await initializeSchema(client);
-      const repeated = mode === 'local-play' ? null
+      if (!isV17LocalPlay) await initializeSchema(client);
+      const repeated = isV17LocalPlay ? null
         : await applyRevisionPromotionPlan({ plan,
           adapter: createPostgresAdapter(client, gate1) });
       const repeatedState = await verifyPromotionState(client, plan, input, gate1);
-      if (mode === 'local-play') assert.deepEqual(repeatedState, firstState);
+      if (isV17LocalPlay) assert.deepEqual(repeatedState, firstState);
       const result = { ...summary({ mode, plan, applied: first.applied }),
         database, rollback,
-        ...(mode === 'local-play'
+        ...(isV17LocalPlay
           ? { repeat_readback_status: 'exact_match',
             first_state_digest: digestValue(firstState),
             repeated_state_digest: digestValue(repeatedState) }
@@ -168,10 +174,12 @@ function loadPromotionInput(path, gate1Plan) {
 async function assertDatabaseForMode(client, selectedMode, expectedDatabaseName) {
   const result = await client.query('SELECT current_database() AS database');
   const database = result.rows[0]?.database;
-  const allowed = selectedMode === 'local-play'
+  const localPlayFamily = selectedMode === 'local-play'
+    || selectedMode === 'v17-local-play';
+  const allowed = localPlayFamily
     ? database === expectedDatabaseName
     : /^pr17_[a-z0-9_]+$/u.test(String(database ?? ''));
-  if (!allowed) throw new Error(`PR17_${selectedMode === 'local-play' ? 'LOCAL_PLAY' : 'ISOLATED'}_DATABASE_REQUIRED:${database}`);
+  if (!allowed) throw new Error(`PR17_${localPlayFamily ? 'LOCAL_PLAY' : 'ISOLATED'}_DATABASE_REQUIRED:${database}`);
   return database;
 }
 
@@ -821,7 +829,7 @@ function importReadbackEvidence(result) {
     target_revision_id: result.target_revision_id,
     target_catalog_digest: result.target_catalog_digest,
     rollback: result.rollback,
-    ...(result.mode === 'local-play'
+    ...(result.mode === 'v17-local-play'
       ? { repeat_readback_status: result.repeat_readback_status,
         first_state_digest: result.first_state_digest,
         repeated_state_digest: result.repeated_state_digest }

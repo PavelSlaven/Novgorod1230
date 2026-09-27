@@ -10,6 +10,62 @@ import { applyRevisionPromotionPlan } from
   '../../tools/world-catalog-workflow/src/revision-promotion.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
+import { assertV17Gate1V2Attestation, checkV17BootstrapInputs } from
+  '../../scripts/bootstrap-live-world-v17.mjs';
+
+test('Gate1 local-play modes reject crossed expected databases before connect', () => {
+  const crossed = [
+    ['local-play', 'novgorod_world_v17'],
+    ['v17-local-play', 'novgorod_world']
+  ];
+  for (const [mode, database] of crossed) {
+    const result = spawnSync(process.execPath,
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', mode,
+        '--expected-database', database], {
+        cwd: process.cwd(), encoding: 'utf8', timeout: 30_000
+      });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr,
+      new RegExp(`PR17_LOCAL_PLAY_EXPECTED_DATABASE_REQUIRED:${database}`, 'u'));
+  }
+});
+
+test('Gate1 v2 attestation gate refuses missing and mismatched digest', async () => {
+  const request = {
+    request_digest: 'a'.repeat(64),
+    runner: { sha256: 'c'.repeat(64) }
+  };
+  const requestPath =
+    'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/'
+    + 'v17-bootstrap-import-request-v2.json';
+  const valid = {
+    schema: 'rus.gate1_v17_bootstrap_import_approval.v1',
+    verdict: 'APPROVE_CONDITIONAL',
+    request_path: requestPath,
+    runner_sha256: request.runner.sha256,
+    request_digest: request.request_digest
+  };
+  assert.throws(() => assertV17Gate1V2Attestation(request, null),
+    /V17_GATE1_ATTESTATION_V2_REQUIRED/u);
+  assert.throws(() => assertV17Gate1V2Attestation(request,
+    { ...valid, request_digest: 'b'.repeat(64) }),
+    /V17_GATE1_ATTESTATION_DIGEST_MISMATCH/u);
+  assert.throws(() => assertV17Gate1V2Attestation(request,
+    { ...valid, verdict: 'REJECT' }),
+    /V17_GATE1_ATTESTATION_VERDICT_REJECTED/u);
+  assert.throws(() => assertV17Gate1V2Attestation(request,
+    { ...valid, runner_sha256: 'd'.repeat(64) }),
+    /V17_GATE1_ATTESTATION_RUNNER_MISMATCH/u);
+  assert.throws(() => assertV17Gate1V2Attestation(request,
+    { ...valid, request_path: 'other/path.json' }),
+    /V17_GATE1_ATTESTATION_REQUEST_PATH_MISMATCH/u);
+  assertV17Gate1V2Attestation(request, valid);
+  const missingPath = join(tmpdir(),
+    `novgorod-missing-attestation-v2-${process.pid}.json`);
+  await assert.rejects(
+    () => checkV17BootstrapInputs({ attestationV2Path: missingPath }),
+    /V17_GATE1_ATTESTATION_V2_REQUIRED/u);
+});
 
 test('Gate1 imports canonical owner closure and Stage3C without activation',
   async (t) => {
@@ -148,7 +204,7 @@ test('Gate1 imports canonical owner closure and Stage3C without activation',
     }]);
   });
 
-test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
+test('Gate1 v17-local-play preserves the fresh v17 schema and its import on repeat',
   async (t) => {
     const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-gate1-v17-'));
     const settings = { ...LOCAL_POSTGRES,
@@ -167,7 +223,7 @@ test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
     }
     const resultPath = join(dataRoot, 'v17-import-readback-result.json');
     const run = () => spawnSync(process.execPath,
-      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'local-play',
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'v17-local-play',
         '--expected-database', 'novgorod_world_v17',
         '--write-result', resultPath], {
         cwd: process.cwd(), encoding: 'utf8', timeout: 300_000,
@@ -229,4 +285,32 @@ test('Gate1 local-play preserves the fresh v17 schema and its import on repeat',
     assert.equal(Number((await pool.query(`SELECT count(*) AS count
       FROM world_base.item_templates WHERE world_revision_id = $1`,
     [result.target_revision_id])).rows[0].count), 102);
+  });
+
+test('Gate1 v17-local-play rejects a non-v17 world_base table set',
+  async (t) => {
+    const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-gate1-v17-mismatch-'));
+    const settings = { ...LOCAL_POSTGRES,
+      worldDatabase: 'novgorod_world_v17',
+      partyDatabase: `pr17_gate1_party_mismatch_${process.pid}`,
+      worldUser: 'postgres', partyUser: 'postgres' };
+    const managed = await ensureLocalPostgres({ dataRoot, settings });
+    const pool = new pg.Pool({ connectionString: managed.worldUrl, max: 1 });
+    t.after(async () => {
+      await pool.end();
+      await managed.close();
+      await rm(dataRoot, { recursive: true, force: true });
+    });
+    // Parts 1-17 only = v16-shaped table set, not the approved v17 fingerprint.
+    for (let part = 1; part <= 17; part += 1) {
+      await pool.query(await readFile(new URL(`../../infra/world-base/schema/${String(part).padStart(2, '0')}.sql`, import.meta.url), 'utf8'));
+    }
+    const rejected = spawnSync(process.execPath,
+      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'v17-local-play',
+        '--expected-database', 'novgorod_world_v17'], {
+        cwd: process.cwd(), encoding: 'utf8', timeout: 120_000,
+        env: { ...process.env, PR17_TEST_DATABASE_URL: managed.worldUrl }
+      });
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr, /PR17_LOCAL_PLAY_SCHEMA_MISMATCH/u);
   });

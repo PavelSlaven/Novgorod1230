@@ -67,23 +67,34 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
           ...(committedState?.player_profile?.knowledge?.initial_records ?? []),
           ...(committedState?.knowledge ?? [])]), projectInteractions(committedState?.interactions))])],
     visible_npc: visibleContext.visible_npc.map((npc) => {
-      const detail = details.get(npc?.entity_ref?.entity_id);
+      const id = npc?.entity_ref?.entity_id;
+      // ponytail: only observed (visible before+after) transitions may refresh
+      // status; never machine_state.current_activity.summary (private note).
+      const observed = observedTransitions.find(({ npc_id }) => npc_id === id);
+      const transitionStatus = text(observed?.proposal?.factual_transition?.summary)
+        ? observed.proposal.factual_transition.summary
+        : null;
+      const detail = details.get(id);
       const informative = detail != null
         && (detail.visible_equipment.length > 0
           || Object.keys(detail.presentation).length > 0
           || detail.ordinary_remainder != null
           || Object.keys(detail.identity_state).some((key) =>
             key !== 'display_name'));
-      return !informative ? structuredClone(npc) : {
+      if (!informative && !transitionStatus) return structuredClone(npc);
+      return {
         ...structuredClone(npc),
-        observable_cues: {
-          identity: structuredClone(detail.identity_state),
-          equipment: structuredClone(detail.visible_equipment),
-          outward_presentation: structuredClone(detail.presentation),
-          ...(detail.ordinary_remainder == null ? {} : {
-            ordinary_remainder: structuredClone(detail.ordinary_remainder)
-          })
-        }
+        ...(transitionStatus ? { visible_status: transitionStatus } : {}),
+        ...(informative ? {
+          observable_cues: {
+            identity: structuredClone(detail.identity_state),
+            equipment: structuredClone(detail.visible_equipment),
+            outward_presentation: structuredClone(detail.presentation),
+            ...(detail.ordinary_remainder == null ? {} : {
+              ordinary_remainder: structuredClone(detail.ordinary_remainder)
+            })
+          }
+        } : {})
       };
     })
   });

@@ -22,6 +22,7 @@
 - Условия берутся из `weather_climate/seasonal_phenomena.csv` и `ground_water_condition_rules.csv`, свет — из `light_profile_by_month.csv`, набор погод сезона — из `weather_season_climatology.csv`.
 - Тексты не утверждают людей, постройки, текущее присутствие зверя, количества и события. Фразы о фауне — только следы или звуки, при условии текущего физического источника (`render_condition`).
 - Обонятельные фразы основаны на `natural_materials_soils/ground_types.csv#perceptual_cues` для грунта конкретного G4. Утверждение применимо при `ground_state!=snow and ground_state!=ice`; запах сена не заявлен, поскольку наличие сена в конкретной природной сцене не засвидетельствовано. Для PF обонятельное покрытие учитывает только грунты, связанные через `places-binding/places/place_families.csv#landscape_template_refs` и `natural_materials_soils/ground_types.csv#landscape_template_ids`.
+- После условий вторичных PF в places-binding (C006e2) ссылки `sensory_coverage.csv` для дороги берутся из сухопутных G4; число строк остаётся 183.
 
 ## Приёмка (скрипт `check.mjs` — OK)
 

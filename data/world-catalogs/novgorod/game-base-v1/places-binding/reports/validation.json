@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 27,
-  "own_checks_total": 27,
+  "own_checks_passed": 28,
+  "own_checks_total": 28,
   "checks": [
     {
       "domain": "people_composition",
@@ -140,6 +140,18 @@
       "sample": [],
       "external": false,
       "nodes_checked": 227
+    },
+    {
+      "domain": "node_binding",
+      "name": "reached_seasonal_overlay_presence_own_season",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "reached_seasonal_pfs": [
+        "pf_winter_ice_crossing"
+      ],
+      "violations": []
     },
     {
       "domain": "presence_rules",

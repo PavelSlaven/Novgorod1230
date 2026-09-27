@@ -4,19 +4,28 @@
 // G5: pf by the stated suffix/scene-template rule; templates inherited from the parent G4.
 // land_use_template_id and place_template_id have no v17 node-level source -> typed gap.
 import path from 'node:path';
-import { GROUP, readJson, writeCsv, writeJson } from './lib.mjs';
+import { GROUP, readCsv, readJson, writeCsv, writeJson } from './lib.mjs';
 
 const NAT = 'pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json';
 const SCN = 'pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_scene_materialization_candidates.json';
 const PAR = 'pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_node_parents.json';
 const CW = 'data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/crosswalk-rules.json';
 
-export function secondaryPfs(sceneRefs, primary, cw) {
-  const excluded = new Set(cw.node_binding.pf_secondary.exclusions.map((e) => `${e.scene_template_id}|${e.pf_id}`));
-  return [...new Set(sceneRefs.flatMap((ref) => {
+export function secondaryPfs(sceneRefs, primary, axes, cw, overlayPfs) {
+  const policy = cw.node_binding.pf_secondary;
+  const matches = (test) => Object.entries(test).every(([axis, values]) => axis.endsWith('_not')
+    ? !values.includes(axes[axis.slice(0, -4)]) : values.includes(axes[axis]));
+  const allowed = (pf) => policy.axis_rules.every((rule) => rule.pf_id !== pf ||
+    (!rule.require_any || Object.entries(rule.require_any).some(([axis, values]) => values.includes(axes[axis]))) &&
+    (!rule.exclude_if || !matches(rule.exclude_if)));
+  const result = [...new Set(sceneRefs.flatMap((ref) => {
     const scene = ref.replace(/@\d+$/, '');
-    return (cw.scene_templates.map[scene] ?? []).filter((pf) => !excluded.has(`${scene}|${pf}`));
-  }))].filter((pf) => pf !== primary);
+    return (cw.scene_templates.map[scene] ?? []).filter((pf) =>
+      !policy.exclusions.some((e) => e.scene_template_id === scene && e.pf_id === pf && matches(e.when)));
+  }))].filter((pf) => pf !== primary && !(policy.overlay_rule.pf_kind === 'overlay' && overlayPfs.has(pf)) && allowed(pf));
+  const ferry = policy.ferry_bank_rule;
+  if (primary === ferry.primary_pf && axes.land_use === ferry.parent_land_use && !result.includes(ferry.add_pf)) result.push(ferry.add_pf);
+  return result;
 }
 
 export function build() {
@@ -24,6 +33,7 @@ export function build() {
   const cw = readJson(path.join(GROUP, 'scripts/crosswalk-rules.json'));
   const wk = readJson(path.join(GROUP, '../../world-knowledge/production-v1/place-first-cartography.json'));
   const composes = new Map(wk.environment_families.map((f) => [f.id, f.composes_with ?? []]));
+  const overlayPfs = new Set(readCsv(path.join(GROUP, 'places/place_families.csv')).filter((f) => f.pf_kind === 'overlay').map((f) => f.pf_id.slice(3)));
   const fmap = cw.node_binding.g4_function_to_pf.map;
   const sceneMap = cw.scene_templates.map;
   const rows = [];
@@ -36,7 +46,7 @@ export function build() {
     else if (typeof m === 'string') pf = m;
     else gap = `function axis '${g.axes.function}' has no crosswalk entry`;
     g4pf.set(g.g4_id, pf);
-    const secondary = secondaryPfs(g.scene_template_refs, pf, cw);
+    const secondary = secondaryPfs(g.scene_template_refs, pf, g.axes, cw, overlayPfs);
     const tr = g.template_refs;
     rows.push({
       node_ref: `${g.g4_id}@${g.g4_version}`, node_level: 'G4', parent_node_ref: '', region_id: ex.region_id,
@@ -73,7 +83,7 @@ export function build() {
     const tr = parent.template_refs;
     rows.push({
       node_ref: `${g5.g5_id}@${g5.g5_version}`, node_level: 'G5', parent_node_ref: `${g5.parent_g4_id}@1`, region_id: ex.region_id,
-      pf_id: pf ? 'pf_' + pf : '', pf_secondary: secondaryPfs([g5.scene_template_id], pf, cw).map((x) => 'pf_' + x),
+      pf_id: pf ? 'pf_' + pf : '', pf_secondary: secondaryPfs([g5.scene_template_id], pf, parent.axes, cw, overlayPfs).map((x) => 'pf_' + x),
       landscape_template_id: tr.landscape_template_id ?? '', land_use_template_id: '', place_template_id: '', water_body_template_id: tr.water_body_template_id ?? '',
       landscape_regional_link_ids: tr.landscape_regional_link_ids ?? [], water_regional_link_ids: tr.water_regional_link_ids ?? [],
       authoring_axes: `inherited from parent: landscape=${parent.axes.landscape}; land_use=${parent.axes.land_use}; function=${parent.axes.function}; g5_suffix=${suffix.slice(1)}`,

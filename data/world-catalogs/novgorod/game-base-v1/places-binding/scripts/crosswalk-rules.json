@@ -869,41 +869,89 @@
   "node_binding": {
     "source": "pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json natural_profiles[].authoring_axes (landscape, land_use, function)",
     "pf_secondary": {
-      "meaning": "part of the node scene accessible without transition",
+      "meaning": "candidate part of the node scene subject to parent-axis rules",
       "candidate_basis": "scene_templates.map",
       "include_rule": {
         "rule_id": "scene_candidate_access_v1",
-        "statement": "Include each scene-template candidate as a secondary place family when it is accessible in the node scene without a transition, except the editorial exclusions below and the primary family.",
+        "statement": "Scene-template mappings propose candidates; the conditional parent-axis rules below decide secondary membership. The primary family is omitted. This binding does not independently establish physical accessibility.",
         "confidence": "C"
       },
+      "overlay_rule": {
+        "pf_kind": "overlay",
+        "rule_ref": "exclude_composition_overlay_v1",
+        "confidence": "C",
+        "reason": "A composition overlay has no separate ground and is not a secondary place family."
+      },
+      "ferry_bank_rule": {
+        "primary_pf": "ferry_landing",
+        "parent_land_use": "waterway_access",
+        "add_pf": "riverbank",
+        "rule_ref": "ferry_waterway_bank_v1",
+        "confidence": "C",
+        "reason": "A waterway ferry landing includes its bank in the same scene."
+      },
+      "axis_rules": [
+        {
+          "pf_id": "village_lane",
+          "rule_ref": "settlement_lane_axes_v1",
+          "confidence": "C",
+          "reason": "A village lane needs settlement or archaeological landscape, or recurrent settlement use.",
+          "require_any": { "landscape": ["settlement_landscape", "archaeological_area"], "land_use": ["recurrent_settlement_use"] }
+        },
+        {
+          "pf_id": "road",
+          "rule_ref": "terrestrial_road_axes_v1",
+          "confidence": "C",
+          "reason": "Secondary road needs settlement or archaeological ground, recurrent settlement use, or an explicit dry land route function.",
+          "require_any": { "landscape": ["settlement_landscape", "archaeological_area"], "land_use": ["recurrent_settlement_use"], "function": ["dry_ridge_route"] }
+        },
+        {
+          "pf_id": "hunting_ground",
+          "rule_ref": "resource_ground_not_open_channel_v1",
+          "confidence": "C",
+          "reason": "An open river channel is not hunting ground without forest resource use.",
+          "exclude_if": { "landscape": ["river_channel"], "land_use_not": ["forest_resource_use"] }
+        },
+        {
+          "pf_id": "mixed_woodland",
+          "rule_ref": "woodland_not_open_channel_v1",
+          "confidence": "C",
+          "reason": "An open river channel is not woodland without forest resource use.",
+          "exclude_if": { "landscape": ["river_channel"], "land_use_not": ["forest_resource_use"] }
+        }
+      ],
       "exclusions": [
         {
           "scene_template_id": "stfv3__g5_boundary_access_v1",
           "pf_id": "town_wall_edge",
           "rule_ref": "exclude_boundary_town_wall_edge_v1",
           "confidence": "C",
-          "reason": "Editorial decision: do not infer a town wall from boundary access at these nodes."
+          "reason": "Estuary and archaeological boundary access does not itself establish a town wall.",
+          "when": { "landscape": ["estuary", "archaeological_area"] }
         },
         {
           "scene_template_id": "stfv3__g5_boundary_access_v1",
           "pf_id": "field_margin",
           "rule_ref": "exclude_boundary_field_margin_v1",
           "confidence": "C",
-          "reason": "Editorial decision: boundary access at these river and burial nodes does not imply a field margin."
+          "reason": "Estuary and archaeological boundary access does not itself establish a field margin.",
+          "when": { "landscape": ["estuary", "archaeological_area"] }
         },
         {
           "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
           "pf_id": "churchyard",
           "rule_ref": "exclude_burial_churchyard_v1",
           "confidence": "C",
-          "reason": "Editorial decision: do not place this burial scene in a churchyard."
+          "reason": "An archaeological burial area without church use is not a churchyard.",
+          "when": { "function": ["burial_area"] }
         },
         {
           "scene_template_id": "stfv3__g5_landing_transition_v1",
           "pf_id": "river_wharf",
           "rule_ref": "exclude_landing_river_wharf_v1",
           "confidence": "C",
-          "reason": "Editorial decision: a landing transition does not imply a town wharf here."
+          "reason": "These landing, shore and settlement functions do not establish a town wharf.",
+          "when": { "function": ["dry_ridge_route", "island_ridge", "landing_terrace", "shoal_field", "vikhtuy_locality", "archaeological_settlement", "local_landing"] }
         }
       ]
     },

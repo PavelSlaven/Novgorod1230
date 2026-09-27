@@ -2,7 +2,7 @@
 // node weather_climate/scripts/build.mjs
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readJson, writeCsv, writeJson, FREQ_WEIGHT, SEASONS, MAIN } from '../../_shared/scripts/lib.mjs';
+import { readJson, readCsv, writeCsv, writeJson, FREQ_WEIGHT, SEASONS, MAIN } from '../../_shared/scripts/lib.mjs';
 import { SOURCES, MONTHLY, DAYCOUNTS, OCCUPANCY, SEASON_MONTHS, PHENOMENA, HISTORICAL } from '../authoring/climate_inputs.mjs';
 import { STATES, PHASE, BANDS, ANOMALIES, ANOMALY_ORDER, STATE_TEMP_MOD, INTERVALS, LOCAL_MODIFIERS, GROUND_RULES, WATER_RULES } from '../authoring/states.mjs';
 
@@ -232,5 +232,8 @@ writeJson(path.join(DIR, 'weather_transition_profile_v2.candidate.json'), {
   },
   stationary_distribution_report: stationary,
 });
+await import('./build-sensory-profiles.mjs');
+counts.water_profiles = 24;
+counts.wind_air_profiles = readCsv(path.join(DIR, 'wind_air_profiles.csv')).length;
 console.log(JSON.stringify(counts));
 console.log('stationary vs target (winter):', JSON.stringify(stationary.winter));

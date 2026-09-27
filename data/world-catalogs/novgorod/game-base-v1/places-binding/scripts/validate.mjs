@@ -252,6 +252,37 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   for (const pf of boundPf) if (!covered.has(pf)) f.push(`uncovered ${pf}`);
   if (boundPf.size !== 16 || slots.length !== 5 || gaps.length !== 12 || covered.size !== 16) f.push(`coverage: ${boundPf.size} PF, ${slots.length} slots, ${gaps.length} gaps, ${covered.size} covered`);
   check('materialization_slot_rules', 'c003_required_slots_and_explicit_gaps', f, { slots: slots.length, candidates: candidates.length, gaps: gaps.length, place_families: covered.size });
+
+  const variants = readJson(P('slots/slot_instance_variants.json'));
+  const materials = new Set(readCsv(P('../buildings-interiors-containers/buildings/materials_vocab.csv')).map((r) => r.mat_id));
+  const variantFailures = [];
+  const variantIds = new Set();
+  const variantKeys = new Set();
+  const exact = (object, keys) => Object.keys(object).sort().join('|') === [...keys].sort().join('|');
+  for (const v of variants) {
+    const key = `${v.slot_id}|${v.candidate_record_ref}`;
+    if (!exact(v, ['variant_id', 'slot_id', 'candidate_record_ref', 'weight', 'applicability', 'facets', 'status']) || variantIds.has(v.variant_id) || !/^siv_\d{3}$/.test(v.variant_id)) variantFailures.push(`${key}: keys/id`);
+    variantIds.add(v.variant_id);
+    variantKeys.add(key);
+    const candidate = candidates.find((c) => `${c.slot_id}|${c.candidate_record_ref}` === key);
+    const slot = slots.find((s) => s.slot_id === v.slot_id);
+    if (!candidate || !slot || v.weight !== Number(candidate.weight) || v.applicability !== slot.applicability || v.status !== 'candidate') variantFailures.push(`${key}: candidate/weight/applicability/status`);
+    if (!v.facets || !exact(v.facets, ['material', 'size', 'condition', 'age'])) { variantFailures.push(`${key}: facets`); continue; }
+    const [kind, id] = v.candidate_record_ref.split(':');
+    const building = kind === 'building' ? buildings.get(id) : undefined;
+    for (const [name, facet] of Object.entries(v.facets)) {
+      if (!facet || !exact(facet, ['value', 'value_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence'])) { variantFailures.push(`${key}/${name}: keys`); continue; }
+      const routes = ['source_refs', 'rule_ref', 'no_source'].filter((route) => Boolean(facet[route]));
+      if (routes.length !== 1 || !['A', 'B', 'C'].includes(facet.confidence) || (facet.no_source ? Boolean(facet.value || facet.value_ref) : !Boolean(facet.value || facet.value_ref))) variantFailures.push(`${key}/${name}: evidence/value`);
+      if (facet.source_refs && (!building || !building.source_refs || facet.source_refs !== building.source_refs)) variantFailures.push(`${key}/${name}: source`);
+      if (facet.rule_ref && (!building || facet.rule_ref !== `building:${id}.${name}_states` || !building[`${name}_states`]?.split('|').includes(facet.value))) variantFailures.push(`${key}/${name}: rule`);
+      if (name === 'material' && facet.value_ref && (!materials.has(facet.value_ref) || !building?.materials.split('|').includes(facet.value_ref))) variantFailures.push(`${key}: material ref`);
+      if (name === 'size' && facet.value && facet.value !== building?.size_note) variantFailures.push(`${key}: size ref`);
+    }
+  }
+  for (const key of candidateKeys) if (!variantKeys.has(key)) variantFailures.push(`${key}: no variant`);
+  if (variantKeys.size !== variants.length) variantFailures.push('duplicate variant candidate');
+  check('slot_instance_variants', 'all_candidates_and_four_sourced_or_gap_facets', variantFailures, { variants: variants.length, candidates: candidates.length });
 }
 
 // ---- category_registry

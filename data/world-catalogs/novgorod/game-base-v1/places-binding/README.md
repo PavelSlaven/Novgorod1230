@@ -11,7 +11,7 @@
 | `categories/` | category_registry | `category_registry.csv`, `place_family_categories.csv` | 982, 61 (на пересборку 2026-09-26, см. `categories/README.md`) |
 | `limits/` | place_generation_limits | `place_generation_limits.csv` | 105 |
 | `parameters/` | category_parameters | `parameter_definitions.csv`, `category_parameters.csv` | 16, 3 697 |
-| `slots/` | materialization_slot_rules | `materialization_slot_rules.csv`, `slot_candidates.csv`, `materialization_rules.json`, `no_required_slots.csv` | 5 slots, 8 candidates, 12 explicit gaps for 16 bound PF |
+| `slots/` | materialization_slot_rules | `materialization_slot_rules.csv`, `slot_candidates.csv`, `slot_instance_variants.json`, `materialization_rules.json`, `no_required_slots.csv` | 5 slots, 8 candidates, 8 variants, 12 explicit gaps for 16 bound PF |
 
 ## Скрипты
 
@@ -24,6 +24,7 @@
 | `build-presence-rules.mjs` | Сборщик правил наличия из пулов групп. |
 | `build-generation-limits.mjs` | Лимиты по правилам R1–R5 и сверка с черновиком аудита. |
 | `build-category-parameters.mjs` | Параметры категорий. |
+| `build-slot-variants.mjs` | Варианты для каждого кандидата слота; четыре фасета берутся из каталога владельца или имеют явный `no_source`. |
 | `validate.mjs` | Все критерии приёмки. Пишет `reports/validation.json`, код выхода 1 при провале собственной проверки. |
 
 Слоты C003 — candidate-условия идентичности места, а не частоты появления предметов из `presence_rules.csv`. Пять required-слотов задают перевоз как anchor, жилое здание и ограду конкретной крестьянской усадьбы, хозяйственную постройку и зимнюю ледовую дорогу как anchor. У остальных 12 привязанных PF, включая общий сельский двор, есть явная причина отсутствия обязательного слота в `slots/no_required_slots.csv`. Для жилья сельский `settlement_building_mix.csv#sf_yard_peasant` даёт только избу 1..1; жилая клеть в этот слот не входит. В ограде плетень из сельского mix имеет вес 2, частокол — вес 1 и редакционный статус C: `ARC0014` описывает городские дворы и не служит основанием сельской частоты. У хозяйственных построек веса 2/2/1. Все веса относительные и не задают историческую частоту. `spatial.g3.built_site` — общая категория застроенного места; конкретный тип здания задаёт `building:bt_*`. Правила и область применения заданы в `slots/materialization_rules.json`: один комплект слотов на G4-комплекс, подходящий G5 выбирает код, `pf_secondary` сам по себе обязательный слот не создаёт. Историческая обязательность ограды остаётся редакционным C, отдельно от свидетельств о кандидатах. Эти записи не получают статус approved автоматически.

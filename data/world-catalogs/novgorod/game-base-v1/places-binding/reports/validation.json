@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 20,
-  "own_checks_total": 20,
+  "own_checks_passed": 21,
+  "own_checks_total": 21,
   "checks": [
     {
       "domain": "place_families",
@@ -242,6 +242,16 @@
       "candidates": 8,
       "gaps": 12,
       "place_families": 16
+    },
+    {
+      "domain": "slot_instance_variants",
+      "name": "all_candidates_and_four_sourced_or_gap_facets",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "variants": 8,
+      "candidates": 8
     },
     {
       "domain": "category_registry",

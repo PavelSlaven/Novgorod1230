@@ -1,0 +1,338 @@
+[
+  {
+    "variant_id": "siv_001",
+    "slot_id": "msr_ferry_crossing",
+    "candidate_record_ref": "transport:trv_011",
+    "weight": 1,
+    "applicability": "all",
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      }
+    },
+    "status": "candidate"
+  },
+  {
+    "variant_id": "siv_002",
+    "slot_id": "msr_homestead_dwelling",
+    "candidate_record_ref": "building:bt_izba_heated_single",
+    "weight": 1,
+    "applicability": "all",
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_log_conifer",
+        "source_refs": "matcult:ARC0020|nov1230db:B028|nov1230db:S26|ref:arhitekto_2russ27|matcult:INT0006|wk:claim:settlement-log-building-form|wk:claim:settlement-oven-heating|wk:claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "size": {
+        "value": "16–80 м² (matcult ARC0020); чаще 20–70 м² (nov1230db B028); стороны 4–9 м (arhitekto); сруб около 6×6 м первой половины XIII в. (nov1230db S26)",
+        "value_ref": "",
+        "source_refs": "matcult:ARC0020|nov1230db:B028|nov1230db:S26|ref:arhitekto_2russ27|matcult:INT0006|wk:claim:settlement-log-building-form|wk:claim:settlement-oven-heating|wk:claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "condition": {
+        "value": "sound",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_izba_heated_single.condition_states",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "new",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_izba_heated_single.age_states",
+        "no_source": "",
+        "confidence": "B"
+      }
+    },
+    "status": "candidate"
+  },
+  {
+    "variant_id": "siv_003",
+    "slot_id": "msr_homestead_fence",
+    "candidate_record_ref": "building:bt_palisade_fence",
+    "weight": 1,
+    "applicability": "all",
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_log_conifer",
+        "source_refs": "matcult:ARC0014|nov1230db:B027|wk:claim:settlement-post-fence-yard",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "sound",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_palisade_fence.condition_states",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "new",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_palisade_fence.age_states",
+        "no_source": "",
+        "confidence": "B"
+      }
+    },
+    "status": "candidate"
+  },
+  {
+    "variant_id": "siv_004",
+    "slot_id": "msr_homestead_fence",
+    "candidate_record_ref": "building:bt_wattle_fence",
+    "weight": 2,
+    "applicability": "all",
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_wattle",
+        "source_refs": "matcult:ARC0002|wk:claim:population-rod-input|wk:claim:population-rod-cord",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "sound",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_wattle_fence.condition_states",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "new",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_wattle_fence.age_states",
+        "no_source": "",
+        "confidence": "B"
+      }
+    },
+    "status": "candidate"
+  },
+  {
+    "variant_id": "siv_005",
+    "slot_id": "msr_outbuildings_economic",
+    "candidate_record_ref": "building:bt_khlev",
+    "weight": 2,
+    "applicability": "all",
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_log_conifer",
+        "source_refs": "matcult:ARC0002|wk:claim:practical-livestock-care|wk:claim:residual-law-zakup-loss-context",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "sound",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_khlev.condition_states",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "new",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_khlev.age_states",
+        "no_source": "",
+        "confidence": "B"
+      }
+    },
+    "status": "candidate"
+  },
+  {
+    "variant_id": "siv_006",
+    "slot_id": "msr_outbuildings_economic",
+    "candidate_record_ref": "building:bt_klet_ambar",
+    "weight": 2,
+    "applicability": "all",
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_log_conifer",
+        "source_refs": "matcult:ARC0018|nov1230db:B031|wk:claim:population-household-storage",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "size": {
+        "value": "небольшой плотный сруб; размер по плану (matcult ARC0018)",
+        "value_ref": "",
+        "source_refs": "matcult:ARC0018|nov1230db:B031|wk:claim:population-household-storage",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "condition": {
+        "value": "sound",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_klet_ambar.condition_states",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "new",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_klet_ambar.age_states",
+        "no_source": "",
+        "confidence": "B"
+      }
+    },
+    "status": "candidate"
+  },
+  {
+    "variant_id": "siv_007",
+    "slot_id": "msr_outbuildings_economic",
+    "candidate_record_ref": "building:bt_light_shed",
+    "weight": 1,
+    "applicability": "all",
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "mat_pole",
+        "source_refs": "matcult:ARC0017|rus13tpl:container:canopy_naves",
+        "rule_ref": "",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "sound",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_light_shed.condition_states",
+        "no_source": "",
+        "confidence": "B"
+      },
+      "age": {
+        "value": "new",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "building:bt_light_shed.age_states",
+        "no_source": "",
+        "confidence": "B"
+      }
+    },
+    "status": "candidate"
+  },
+  {
+    "variant_id": "siv_008",
+    "slot_id": "msr_winter_ice_road",
+    "candidate_record_ref": "route:rt_winter_road",
+    "weight": 1,
+    "applicability": "winter",
+    "facets": {
+      "material": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "size": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "condition": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      },
+      "age": {
+        "value": "",
+        "value_ref": "",
+        "source_refs": "",
+        "rule_ref": "",
+        "no_source": "not established for this candidate",
+        "confidence": "C"
+      }
+    },
+    "status": "candidate"
+  }
+]

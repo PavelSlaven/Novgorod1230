@@ -24,12 +24,46 @@ const wk = new Set();
 const wkDir = path.join(MAIN, 'data/world-catalogs/novgorod/world-knowledge/production-v1');
 for (const f of fs.readdirSync(wkDir).filter((f) => f.endsWith('.json') && !f.startsWith('verification'))) { try { for (const c of JSON.parse(fs.readFileSync(path.join(wkDir, f), 'utf8')).claims || []) wk.add(c.claim_ref); } catch { /* skip */ } }
 for (const f of fs.readdirSync(DIR).filter((f) => f.endsWith('.csv'))) {
+  if (['water_profiles.csv', 'wind_air_profiles.csv'].includes(f)) continue;
   for (const r of T(f)) {
     if (!r.source_refs) E.push(`${f}: row without source_refs`);
     if (r.confidence && !['A', 'B', 'C'].includes(r.confidence)) E.push(`${f}: bad confidence ${r.confidence}`);
     for (const ref of (r.source_refs || '').split('|')) if (ref.startsWith('wk:claim:') && !wk.has(ref.slice(3))) E.push(`${f}: unknown WK ${ref}`);
   }
 }
+
+const waterProfiles = T('water_profiles.csv');
+const airProfiles = T('wind_air_profiles.csv');
+const waterFacets = ['current', 'color', 'sound', 'width', 'opposite_bank_visible', 'ice'];
+const states = T('weather_states.csv');
+const waterTemplates = readCsv(path.join(DIR, '../../fauna-fish-invertebrates-livestock/scripts/input_snapshots/world_db_water_body_templates.csv'));
+const riverFamily = readCsv(path.join(DIR, '../../places-binding/places/place_families.csv')).find((r) => r.pf_id === 'pf_river_channel');
+const keys = (row, expected) => Object.keys(row).sort().join('|') === [...expected].sort().join('|');
+const waterColumns = 'water_profile_id,scope_kind,scope_ref,pf_id,season,facet,variant_id,weight,value_ru,value_num,unit,value_ref,condition,source_refs,rule_ref,no_source,confidence,status'.split(',');
+const airColumns = 'air_profile_id,season,weather_state_ref,facet,value_ru,condition,source_refs,rule_ref,no_source,confidence,status'.split(',');
+const evidence = (row) => ['source_refs', 'rule_ref', 'no_source'].filter((key) => Boolean(row[key])).length === 1 && ['A', 'B', 'C'].includes(row.confidence);
+const waterIds = new Set();
+for (const row of waterProfiles) {
+  if (!keys(row, waterColumns) || waterIds.has(row.water_profile_id)) E.push(`${row.water_profile_id}: keys/id`);
+  waterIds.add(row.water_profile_id);
+  if (!SEASONS.includes(row.season) || !waterFacets.includes(row.facet) || row.scope_kind !== 'water_body_template' || !waterTemplates.some((x) => x.id === row.scope_ref) || row.pf_id !== 'pf_river_channel' || !riverFamily?.water_body_template_refs.split(';').includes(row.scope_ref) || row.variant_id !== 'v1' || row.weight !== '1' || row.status !== 'candidate') E.push(`${row.water_profile_id}: scope/season/facet/status`);
+  if (!evidence(row) || (row.no_source ? Boolean(row.value_ru || row.value_num || row.value_ref) : !Boolean(row.value_ru || row.value_num || row.value_ref))) E.push(`${row.water_profile_id}: evidence/value`);
+  if (row.scope_kind === 'water_body_template' && row.facet === 'ice' && !row.no_source) E.push(`${row.water_profile_id}: generic template cannot inherit local ice timing`);
+  if (row.scope_kind === 'water_body_template' && /ground_water_condition_rules\.csv#|seasonal_phenomena\.csv#/.test(`${row.rule_ref}|${row.source_refs}`)) E.push(`${row.water_profile_id}: local water evidence requires specific water-body scope`);
+  if (['width', 'opposite_bank_visible'].includes(row.facet) && !row.no_source && !/^(water_body|spatial|geometry):/.test(row.source_refs || row.rule_ref)) E.push(`${row.water_profile_id}: geometry required`);
+  if (row.rule_ref?.startsWith('world_db_water_body_templates.csv#') && row.rule_ref !== `world_db_water_body_templates.csv#${row.scope_ref}.flow_type`) E.push(`${row.water_profile_id}: template rule`);
+}
+for (const season of SEASONS) for (const facet of waterFacets) if (waterProfiles.filter((r) => r.season === season && r.facet === facet).length !== 1) E.push(`water coverage ${season}/${facet}`);
+const airIds = new Set();
+for (const row of airProfiles) {
+  if (!keys(row, airColumns) || airIds.has(row.air_profile_id)) E.push(`${row.air_profile_id}: keys/id`);
+  airIds.add(row.air_profile_id);
+  const state = states.find((s) => s.wx_state_id === row.weather_state_ref);
+  if (!state || !state.seasons_available.split('|').includes(row.season) || !['wind', 'air_sensation'].includes(row.facet) || row.status !== 'candidate' || !evidence(row)) E.push(`${row.air_profile_id}: ref/facet/evidence`);
+  if (state && (row.rule_ref !== `weather_states.csv#${state.wx_state_id}.wind` || !row.condition.includes(`wind=${state.wind}`))) E.push(`${row.air_profile_id}: wind mismatch`);
+  if (row.no_source ? Boolean(row.value_ru) : !row.value_ru) E.push(`${row.air_profile_id}: value/gap`);
+}
+for (const state of states) for (const season of state.seasons_available.split('|')) for (const facet of ['wind', 'air_sensation']) if (airProfiles.filter((r) => r.weather_state_ref === state.wx_state_id && r.season === season && r.facet === facet).length !== 1) E.push(`air coverage ${state.wx_state_id}/${season}/${facet}`);
 
 for (const s of SEASONS) {
   const avail = clim.filter((c) => c.season_period === s && Number(c.entry_weight) > 0).map((c) => c.wx_state_id);

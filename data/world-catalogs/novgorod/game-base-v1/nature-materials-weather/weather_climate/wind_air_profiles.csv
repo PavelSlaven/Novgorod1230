@@ -1,0 +1,71 @@
+air_profile_id,season,weather_state_ref,facet,value_ru,condition,source_refs,rule_ref,no_source,confidence,status
+ap_winter_wx_clear_wind,winter,wx_clear,wind,слабый ветер,weather_state=wx_clear; wind=weak,,weather_states.csv#wx_clear.wind,,C,candidate
+ap_winter_wx_clear_air_sensation,winter,wx_clear,air_sensation,слабый ветер; ясно,weather_state=wx_clear; wind=weak,,weather_states.csv#wx_clear.wind,,C,candidate
+ap_winter_wx_partly_cloudy_wind,winter,wx_partly_cloudy,wind,слабый ветер,weather_state=wx_partly_cloudy; wind=weak,,weather_states.csv#wx_partly_cloudy.wind,,C,candidate
+ap_winter_wx_partly_cloudy_air_sensation,winter,wx_partly_cloudy,air_sensation,слабый ветер; переменная облачность,weather_state=wx_partly_cloudy; wind=weak,,weather_states.csv#wx_partly_cloudy.wind,,C,candidate
+ap_winter_wx_overcast_wind,winter,wx_overcast,wind,слабый ветер,weather_state=wx_overcast; wind=weak,,weather_states.csv#wx_overcast.wind,,C,candidate
+ap_winter_wx_overcast_air_sensation,winter,wx_overcast,air_sensation,слабый ветер; пасмурно без осадков,weather_state=wx_overcast; wind=weak,,weather_states.csv#wx_overcast.wind,,C,candidate
+ap_winter_wx_fog_wind,winter,wx_fog,wind,безветрие,weather_state=wx_fog; wind=none,,weather_states.csv#wx_fog.wind,,C,candidate
+ap_winter_wx_fog_air_sensation,winter,wx_fog,air_sensation,безветрие; туман,weather_state=wx_fog; wind=none,,weather_states.csv#wx_fog.wind,,C,candidate
+ap_winter_wx_precip_light_wind,winter,wx_precip_light,wind,слабый ветер,weather_state=wx_precip_light; wind=weak,,weather_states.csv#wx_precip_light.wind,,C,candidate
+ap_winter_wx_precip_light_air_sensation,winter,wx_precip_light,air_sensation,"слабый ветер; слабые осадки (морось, небольшой дождь или снег)",weather_state=wx_precip_light; wind=weak,,weather_states.csv#wx_precip_light.wind,,C,candidate
+ap_winter_wx_precip_steady_wind,winter,wx_precip_steady,wind,умеренный ветер,weather_state=wx_precip_steady; wind=moderate,,weather_states.csv#wx_precip_steady.wind,,C,candidate
+ap_winter_wx_precip_steady_air_sensation,winter,wx_precip_steady,air_sensation,умеренный ветер; обложные осадки (затяжной дождь или снегопад),weather_state=wx_precip_steady; wind=moderate,,weather_states.csv#wx_precip_steady.wind,,C,candidate
+ap_winter_wx_windy_dry_wind,winter,wx_windy_dry,wind,сильный ветер,weather_state=wx_windy_dry; wind=strong,,weather_states.csv#wx_windy_dry.wind,,C,candidate
+ap_winter_wx_windy_dry_air_sensation,winter,wx_windy_dry,air_sensation,сильный ветер; сильный ветер без осадков,weather_state=wx_windy_dry; wind=strong,,weather_states.csv#wx_windy_dry.wind,,C,candidate
+ap_winter_wx_windy_precip_wind,winter,wx_windy_precip,wind,опасный ветер,weather_state=wx_windy_precip; wind=dangerous,,weather_states.csv#wx_windy_precip.wind,,C,candidate
+ap_winter_wx_windy_precip_air_sensation,winter,wx_windy_precip,air_sensation,опасный ветер; ветер с осадками (метель или ветреный дождь),weather_state=wx_windy_precip; wind=dangerous,,weather_states.csv#wx_windy_precip.wind,,C,candidate
+ap_spring_wx_clear_wind,spring,wx_clear,wind,слабый ветер,weather_state=wx_clear; wind=weak,,weather_states.csv#wx_clear.wind,,C,candidate
+ap_spring_wx_clear_air_sensation,spring,wx_clear,air_sensation,слабый ветер; ясно,weather_state=wx_clear; wind=weak,,weather_states.csv#wx_clear.wind,,C,candidate
+ap_spring_wx_partly_cloudy_wind,spring,wx_partly_cloudy,wind,слабый ветер,weather_state=wx_partly_cloudy; wind=weak,,weather_states.csv#wx_partly_cloudy.wind,,C,candidate
+ap_spring_wx_partly_cloudy_air_sensation,spring,wx_partly_cloudy,air_sensation,слабый ветер; переменная облачность,weather_state=wx_partly_cloudy; wind=weak,,weather_states.csv#wx_partly_cloudy.wind,,C,candidate
+ap_spring_wx_overcast_wind,spring,wx_overcast,wind,слабый ветер,weather_state=wx_overcast; wind=weak,,weather_states.csv#wx_overcast.wind,,C,candidate
+ap_spring_wx_overcast_air_sensation,spring,wx_overcast,air_sensation,слабый ветер; пасмурно без осадков,weather_state=wx_overcast; wind=weak,,weather_states.csv#wx_overcast.wind,,C,candidate
+ap_spring_wx_fog_wind,spring,wx_fog,wind,безветрие,weather_state=wx_fog; wind=none,,weather_states.csv#wx_fog.wind,,C,candidate
+ap_spring_wx_fog_air_sensation,spring,wx_fog,air_sensation,безветрие; туман,weather_state=wx_fog; wind=none,,weather_states.csv#wx_fog.wind,,C,candidate
+ap_spring_wx_precip_light_wind,spring,wx_precip_light,wind,слабый ветер,weather_state=wx_precip_light; wind=weak,,weather_states.csv#wx_precip_light.wind,,C,candidate
+ap_spring_wx_precip_light_air_sensation,spring,wx_precip_light,air_sensation,"слабый ветер; слабые осадки (морось, небольшой дождь или снег)",weather_state=wx_precip_light; wind=weak,,weather_states.csv#wx_precip_light.wind,,C,candidate
+ap_spring_wx_precip_steady_wind,spring,wx_precip_steady,wind,умеренный ветер,weather_state=wx_precip_steady; wind=moderate,,weather_states.csv#wx_precip_steady.wind,,C,candidate
+ap_spring_wx_precip_steady_air_sensation,spring,wx_precip_steady,air_sensation,умеренный ветер; обложные осадки (затяжной дождь или снегопад),weather_state=wx_precip_steady; wind=moderate,,weather_states.csv#wx_precip_steady.wind,,C,candidate
+ap_spring_wx_convective_storm_wind,spring,wx_convective_storm,wind,сильный ветер,weather_state=wx_convective_storm; wind=strong,,weather_states.csv#wx_convective_storm.wind,,C,candidate
+ap_spring_wx_convective_storm_air_sensation,spring,wx_convective_storm,air_sensation,сильный ветер; гроза с ливнем,weather_state=wx_convective_storm; wind=strong,,weather_states.csv#wx_convective_storm.wind,,C,candidate
+ap_spring_wx_windy_dry_wind,spring,wx_windy_dry,wind,сильный ветер,weather_state=wx_windy_dry; wind=strong,,weather_states.csv#wx_windy_dry.wind,,C,candidate
+ap_spring_wx_windy_dry_air_sensation,spring,wx_windy_dry,air_sensation,сильный ветер; сильный ветер без осадков,weather_state=wx_windy_dry; wind=strong,,weather_states.csv#wx_windy_dry.wind,,C,candidate
+ap_spring_wx_windy_precip_wind,spring,wx_windy_precip,wind,опасный ветер,weather_state=wx_windy_precip; wind=dangerous,,weather_states.csv#wx_windy_precip.wind,,C,candidate
+ap_spring_wx_windy_precip_air_sensation,spring,wx_windy_precip,air_sensation,опасный ветер; ветер с осадками (метель или ветреный дождь),weather_state=wx_windy_precip; wind=dangerous,,weather_states.csv#wx_windy_precip.wind,,C,candidate
+ap_summer_wx_clear_wind,summer,wx_clear,wind,слабый ветер,weather_state=wx_clear; wind=weak,,weather_states.csv#wx_clear.wind,,C,candidate
+ap_summer_wx_clear_air_sensation,summer,wx_clear,air_sensation,слабый ветер; ясно,weather_state=wx_clear; wind=weak,,weather_states.csv#wx_clear.wind,,C,candidate
+ap_summer_wx_partly_cloudy_wind,summer,wx_partly_cloudy,wind,слабый ветер,weather_state=wx_partly_cloudy; wind=weak,,weather_states.csv#wx_partly_cloudy.wind,,C,candidate
+ap_summer_wx_partly_cloudy_air_sensation,summer,wx_partly_cloudy,air_sensation,слабый ветер; переменная облачность,weather_state=wx_partly_cloudy; wind=weak,,weather_states.csv#wx_partly_cloudy.wind,,C,candidate
+ap_summer_wx_overcast_wind,summer,wx_overcast,wind,слабый ветер,weather_state=wx_overcast; wind=weak,,weather_states.csv#wx_overcast.wind,,C,candidate
+ap_summer_wx_overcast_air_sensation,summer,wx_overcast,air_sensation,слабый ветер; пасмурно без осадков,weather_state=wx_overcast; wind=weak,,weather_states.csv#wx_overcast.wind,,C,candidate
+ap_summer_wx_fog_wind,summer,wx_fog,wind,безветрие,weather_state=wx_fog; wind=none,,weather_states.csv#wx_fog.wind,,C,candidate
+ap_summer_wx_fog_air_sensation,summer,wx_fog,air_sensation,безветрие; туман,weather_state=wx_fog; wind=none,,weather_states.csv#wx_fog.wind,,C,candidate
+ap_summer_wx_precip_light_wind,summer,wx_precip_light,wind,слабый ветер,weather_state=wx_precip_light; wind=weak,,weather_states.csv#wx_precip_light.wind,,C,candidate
+ap_summer_wx_precip_light_air_sensation,summer,wx_precip_light,air_sensation,"слабый ветер; слабые осадки (морось, небольшой дождь или снег)",weather_state=wx_precip_light; wind=weak,,weather_states.csv#wx_precip_light.wind,,C,candidate
+ap_summer_wx_precip_steady_wind,summer,wx_precip_steady,wind,умеренный ветер,weather_state=wx_precip_steady; wind=moderate,,weather_states.csv#wx_precip_steady.wind,,C,candidate
+ap_summer_wx_precip_steady_air_sensation,summer,wx_precip_steady,air_sensation,умеренный ветер; обложные осадки (затяжной дождь или снегопад),weather_state=wx_precip_steady; wind=moderate,,weather_states.csv#wx_precip_steady.wind,,C,candidate
+ap_summer_wx_convective_storm_wind,summer,wx_convective_storm,wind,сильный ветер,weather_state=wx_convective_storm; wind=strong,,weather_states.csv#wx_convective_storm.wind,,C,candidate
+ap_summer_wx_convective_storm_air_sensation,summer,wx_convective_storm,air_sensation,сильный ветер; гроза с ливнем,weather_state=wx_convective_storm; wind=strong,,weather_states.csv#wx_convective_storm.wind,,C,candidate
+ap_summer_wx_windy_dry_wind,summer,wx_windy_dry,wind,сильный ветер,weather_state=wx_windy_dry; wind=strong,,weather_states.csv#wx_windy_dry.wind,,C,candidate
+ap_summer_wx_windy_dry_air_sensation,summer,wx_windy_dry,air_sensation,сильный ветер; сильный ветер без осадков,weather_state=wx_windy_dry; wind=strong,,weather_states.csv#wx_windy_dry.wind,,C,candidate
+ap_summer_wx_windy_precip_wind,summer,wx_windy_precip,wind,опасный ветер,weather_state=wx_windy_precip; wind=dangerous,,weather_states.csv#wx_windy_precip.wind,,C,candidate
+ap_summer_wx_windy_precip_air_sensation,summer,wx_windy_precip,air_sensation,опасный ветер; ветер с осадками (метель или ветреный дождь),weather_state=wx_windy_precip; wind=dangerous,,weather_states.csv#wx_windy_precip.wind,,C,candidate
+ap_autumn_wx_clear_wind,autumn,wx_clear,wind,слабый ветер,weather_state=wx_clear; wind=weak,,weather_states.csv#wx_clear.wind,,C,candidate
+ap_autumn_wx_clear_air_sensation,autumn,wx_clear,air_sensation,слабый ветер; ясно,weather_state=wx_clear; wind=weak,,weather_states.csv#wx_clear.wind,,C,candidate
+ap_autumn_wx_partly_cloudy_wind,autumn,wx_partly_cloudy,wind,слабый ветер,weather_state=wx_partly_cloudy; wind=weak,,weather_states.csv#wx_partly_cloudy.wind,,C,candidate
+ap_autumn_wx_partly_cloudy_air_sensation,autumn,wx_partly_cloudy,air_sensation,слабый ветер; переменная облачность,weather_state=wx_partly_cloudy; wind=weak,,weather_states.csv#wx_partly_cloudy.wind,,C,candidate
+ap_autumn_wx_overcast_wind,autumn,wx_overcast,wind,слабый ветер,weather_state=wx_overcast; wind=weak,,weather_states.csv#wx_overcast.wind,,C,candidate
+ap_autumn_wx_overcast_air_sensation,autumn,wx_overcast,air_sensation,слабый ветер; пасмурно без осадков,weather_state=wx_overcast; wind=weak,,weather_states.csv#wx_overcast.wind,,C,candidate
+ap_autumn_wx_fog_wind,autumn,wx_fog,wind,безветрие,weather_state=wx_fog; wind=none,,weather_states.csv#wx_fog.wind,,C,candidate
+ap_autumn_wx_fog_air_sensation,autumn,wx_fog,air_sensation,безветрие; туман,weather_state=wx_fog; wind=none,,weather_states.csv#wx_fog.wind,,C,candidate
+ap_autumn_wx_precip_light_wind,autumn,wx_precip_light,wind,слабый ветер,weather_state=wx_precip_light; wind=weak,,weather_states.csv#wx_precip_light.wind,,C,candidate
+ap_autumn_wx_precip_light_air_sensation,autumn,wx_precip_light,air_sensation,"слабый ветер; слабые осадки (морось, небольшой дождь или снег)",weather_state=wx_precip_light; wind=weak,,weather_states.csv#wx_precip_light.wind,,C,candidate
+ap_autumn_wx_precip_steady_wind,autumn,wx_precip_steady,wind,умеренный ветер,weather_state=wx_precip_steady; wind=moderate,,weather_states.csv#wx_precip_steady.wind,,C,candidate
+ap_autumn_wx_precip_steady_air_sensation,autumn,wx_precip_steady,air_sensation,умеренный ветер; обложные осадки (затяжной дождь или снегопад),weather_state=wx_precip_steady; wind=moderate,,weather_states.csv#wx_precip_steady.wind,,C,candidate
+ap_autumn_wx_convective_storm_wind,autumn,wx_convective_storm,wind,сильный ветер,weather_state=wx_convective_storm; wind=strong,,weather_states.csv#wx_convective_storm.wind,,C,candidate
+ap_autumn_wx_convective_storm_air_sensation,autumn,wx_convective_storm,air_sensation,сильный ветер; гроза с ливнем,weather_state=wx_convective_storm; wind=strong,,weather_states.csv#wx_convective_storm.wind,,C,candidate
+ap_autumn_wx_windy_dry_wind,autumn,wx_windy_dry,wind,сильный ветер,weather_state=wx_windy_dry; wind=strong,,weather_states.csv#wx_windy_dry.wind,,C,candidate
+ap_autumn_wx_windy_dry_air_sensation,autumn,wx_windy_dry,air_sensation,сильный ветер; сильный ветер без осадков,weather_state=wx_windy_dry; wind=strong,,weather_states.csv#wx_windy_dry.wind,,C,candidate
+ap_autumn_wx_windy_precip_wind,autumn,wx_windy_precip,wind,опасный ветер,weather_state=wx_windy_precip; wind=dangerous,,weather_states.csv#wx_windy_precip.wind,,C,candidate
+ap_autumn_wx_windy_precip_air_sensation,autumn,wx_windy_precip,air_sensation,опасный ветер; ветер с осадками (метель или ветреный дождь),weather_state=wx_windy_precip; wind=dangerous,,weather_states.csv#wx_windy_precip.wind,,C,candidate

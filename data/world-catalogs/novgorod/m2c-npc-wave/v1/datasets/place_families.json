@@ -6,7 +6,7 @@
     "display_name_ru": "Открытые условия (наложение): сырость, работа, животные, уход, грунт",
     "pf_kind": "overlay",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Open conditions overlay (wetland, work, animals, care, ground)",
@@ -21,7 +21,7 @@
     "display_name_ru": "Практические условия места (наложение): работа, путь, уход, еда, животные",
     "pf_kind": "overlay",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Practical conditions overlay",
@@ -36,7 +36,7 @@
     "display_name_ru": "Сельский двор",
     "pf_kind": "settlement_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Rural yard",
@@ -51,7 +51,7 @@
     "display_name_ru": "Городская улица (мостовая)",
     "pf_kind": "settlement_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Town street",
@@ -66,7 +66,7 @@
     "display_name_ru": "Торг, торговая площадь",
     "pf_kind": "settlement_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Market square",
@@ -81,7 +81,7 @@
     "display_name_ru": "Городская пристань",
     "pf_kind": "water_edge",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Urban river wharf",
@@ -96,7 +96,7 @@
     "display_name_ru": "Городская усадьба, двор",
     "pf_kind": "settlement_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Town courtyard",
@@ -111,7 +111,7 @@
     "display_name_ru": "Край города у вала и ворот",
     "pf_kind": "settlement_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Town wall edge",
@@ -126,7 +126,7 @@
     "display_name_ru": "Речной берег",
     "pf_kind": "water_edge",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Riverbank",
@@ -141,7 +141,7 @@
     "display_name_ru": "Речное русло, протока",
     "pf_kind": "water",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "River channel",
@@ -156,7 +156,7 @@
     "display_name_ru": "Пойменный луг",
     "pf_kind": "natural_open",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Floodplain meadow",
@@ -171,7 +171,7 @@
     "display_name_ru": "Озёрный берег",
     "pf_kind": "water_edge",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Lake shore",
@@ -186,7 +186,7 @@
     "display_name_ru": "Пашня, нива",
     "pf_kind": "agrarian",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Arable field",
@@ -201,7 +201,7 @@
     "display_name_ru": "Сенокосный луг",
     "pf_kind": "agrarian",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Hay meadow",
@@ -216,7 +216,7 @@
     "display_name_ru": "Широколиственный лес (дубравный, липовый участок)",
     "pf_kind": "natural_forest",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Broadleaf woodland",
@@ -231,7 +231,7 @@
     "display_name_ru": "Хвойный лес (бор, ельник)",
     "pf_kind": "natural_forest",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Conifer woodland",
@@ -246,7 +246,7 @@
     "display_name_ru": "Смешанный лес",
     "pf_kind": "natural_forest",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Mixed woodland",
@@ -261,7 +261,7 @@
     "display_name_ru": "Опушка, лесной край",
     "pf_kind": "natural_edge",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Forest edge",
@@ -276,7 +276,7 @@
     "display_name_ru": "Болото (мох, торф)",
     "pf_kind": "natural_wetland",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Bog",
@@ -291,7 +291,7 @@
     "display_name_ru": "Заболоченный ручей, топкая низина у воды",
     "pf_kind": "natural_wetland",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Marshy stream",
@@ -306,7 +306,7 @@
     "display_name_ru": "Деревенская улица, проулок",
     "pf_kind": "settlement_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Village lane",
@@ -321,7 +321,7 @@
     "display_name_ru": "Крестьянская усадьба",
     "pf_kind": "settlement_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Peasant homestead",
@@ -336,7 +336,7 @@
     "display_name_ru": "Хозяйственные постройки (хлев, сарай, навес)",
     "pf_kind": "structure",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Outbuildings",
@@ -351,7 +351,7 @@
     "display_name_ru": "Погреб, клеть, амбар",
     "pf_kind": "structure",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Cellar / granary",
@@ -366,7 +366,7 @@
     "display_name_ru": "Баня",
     "pf_kind": "structure",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Bathhouse",
@@ -381,7 +381,7 @@
     "display_name_ru": "Кузница",
     "pf_kind": "structure",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Smithy",
@@ -396,7 +396,7 @@
     "display_name_ru": "Мельница (водяная)",
     "pf_kind": "structure",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Mill",
@@ -411,7 +411,7 @@
     "display_name_ru": "Гумно, ток",
     "pf_kind": "structure",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Threshing barn",
@@ -426,7 +426,7 @@
     "display_name_ru": "Церковный двор, погост",
     "pf_kind": "religious_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Churchyard",
@@ -441,7 +441,7 @@
     "display_name_ru": "Монастырский двор",
     "pf_kind": "religious_space",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Monastery yard",
@@ -456,7 +456,7 @@
     "display_name_ru": "Дорога",
     "pf_kind": "route",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Road",
@@ -471,7 +471,7 @@
     "display_name_ru": "Мост, мостовая переправа",
     "pf_kind": "route",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Bridge crossing",
@@ -486,7 +486,7 @@
     "display_name_ru": "Перевоз, причал, высадка",
     "pf_kind": "water_edge",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Ferry landing",
@@ -501,7 +501,7 @@
     "display_name_ru": "Лесная тропа, лесной ход",
     "pf_kind": "route",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Forest track",
@@ -516,7 +516,7 @@
     "display_name_ru": "Охотничьи угодья",
     "pf_kind": "use_overlay",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Hunting ground",
@@ -531,7 +531,7 @@
     "display_name_ru": "Огород, сад",
     "pf_kind": "agrarian",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Orchard / kitchen garden",
@@ -546,7 +546,7 @@
     "display_name_ru": "Выгон, пастбище",
     "pf_kind": "agrarian",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Pasture",
@@ -561,7 +561,7 @@
     "display_name_ru": "Зимняя переправа по льду, зимник",
     "pf_kind": "seasonal_overlay",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Winter ice crossing",
@@ -576,7 +576,7 @@
     "display_name_ru": "Межа, край поля",
     "pf_kind": "agrarian",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Field margin",
@@ -591,7 +591,7 @@
     "display_name_ru": "Рыбацкий стан, тоня",
     "pf_kind": "work_site",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Fishing camp",
@@ -606,7 +606,7 @@
     "display_name_ru": "Жилое помещение (изба, горница)",
     "pf_kind": "interior",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Dwelling interior",
@@ -621,7 +621,7 @@
     "display_name_ru": "Внутренность церкви",
     "pf_kind": "interior",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Church interior",
@@ -636,7 +636,7 @@
     "display_name_ru": "Мастерская",
     "pf_kind": "interior",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Ordinary workshop",
@@ -651,7 +651,7 @@
     "display_name_ru": "Овин (сушильня снопов)",
     "pf_kind": "structure",
     "status": "approved",
-    "provenance_ref": "game_base_v1_m2c_people_b1f249de",
+    "provenance_ref": "game_base_v1_m2c_people_367a88c0",
     "confidence": "low",
     "payload": {
       "name_en": "Grain-drying shed (ovin)",

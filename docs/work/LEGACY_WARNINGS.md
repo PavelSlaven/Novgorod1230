@@ -69,7 +69,18 @@
 | 066 | `spatial_node_place_family_bindings`, presence/routines/water/slots | до утверждения `pf_secondary` — только primary | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 067 | `presence_rules.guards` | guards хранятся, не исполняются | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
 | 068 | `presence_rules` discovery weights; Stage 16 `no_source` | пустые веса = 1/1; пробел Stage 16 не закрывать выдумкой | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
-| 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` при `readGit`/gh недоступен или PR head mismatch — окружение worktree, не регресс CR #158; на `162a86b9` acceptance «persists a free turn» падает так же (`startLlm` не в `provisionRuntime`) | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 072 | `tools/local-play/local-play.js`, acceptance `local-play-postgres` | `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE` / `startLlm` в acceptance — см. запись | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+| 073 | acceptance `revision 35 survives production restart` | таймаут 300s на базовом прогоне до M2c — не регресс 070b | [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158) |
+
+### Сводка LW-069…073 (CR #158 M2c)
+
+| LW | Суть | Блокер релиза? |
+|---|---|---|
+| 069 | fresh-schema attestation v2 историчен; действует только attestation с `request_digest` текущего `fresh-schema-request.json` | D27 до v3 от ревьюера |
+| 070 | party `037` на живых БД — только после зелёного PG DDL-теста | game-server на prod party DB |
+| 071 | «предок решён — потомки не бросаются» — owner R-2, не foundation | R-2 |
+| 072 | git provenance worktree + acceptance `startLlm` | нет |
+| 073 | acceptance revision 35 timeout 300s | нет |
 
 ## Записи
 
@@ -354,6 +365,13 @@
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-072 — local-play git provenance в worktree
-- **Где.** `tools/local-play/local-play.js` (`LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE`); acceptance `test/acceptance/local-play-postgres.test.js` («persists a free turn»).
-- **Как жить.** Код `readGit`/gh PR head mismatch или недоступность gh — не считать регрессом R-1/CR #158 в worktree без привязки PR. Отдельно: падение «persists a free turn» из‑за `startLlm` в `provisionRuntime` воспроизводится на `162a86b9` — дефект acceptance, не блокер п.3 REVIEW-069b.
+- **Где.** `tools/local-play/local-play.js:140` (`readGit` → `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE`); acceptance `test/acceptance/local-play-postgres.test.js:65-66` (`provisionRuntime` ожидает `startLlm === false`).
+- **Доказательство.** На `a8aa11c4` (и `162a86b9`): `npm run test:acceptance` — «local play persists a free turn» падает тем же образом; git provenance в detached worktree без gh PR — `LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE`, не регресс datasets CR #158.
+- **Как жить.** `readGit`/gh PR head mismatch — окружение worktree. Падение «persists a free turn» из‑за `startLlm` — **дефект acceptance-теста** (stub не передаёт `startLlm`), не блокер M2c importer.
+- **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
+
+### LW-073 — acceptance revision 35 timeout
+- **Где.** `test/acceptance/*` кейс «revision 35 survives production restart» (300s budget).
+- **Доказательство.** REVIEW-069d / `fullsuite-logs/base_acceptance.log`: на коммите до M2c — 1 fail cancelled по таймауту 300s; совпадает с прогоном DONE-069d (3 pass / 1 fail / 1 cancelled).
+- **Как жить.** Не считать регрессом DONE-070b; полный acceptance — после fresh-schema attestation v3 (REVIEW-070 г).
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)

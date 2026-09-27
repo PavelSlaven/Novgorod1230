@@ -76,9 +76,14 @@ CREATE TABLE IF NOT EXISTS world_base.presence_rules (
   authoring_payload JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(authoring_payload) = 'object'),
   PRIMARY KEY (rule_id, rule_version),
+  UNIQUE (rule_id, rule_version, world_revision_id),
   CHECK (
     (subject_kind = 'category' AND category_id IS NOT NULL)
     OR (subject_kind IN ('social_role', 'occupation') AND category_id IS NULL)
+  ),
+  CHECK (
+    subject_kind = 'category'
+    OR (item_ref IS NULL AND variants = '[]'::jsonb)
   )
 );
 
@@ -105,7 +110,8 @@ CREATE TABLE IF NOT EXISTS world_base.npc_relationship_materialization_rules (
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   payload JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(payload) = 'object'),
-  PRIMARY KEY (rule_id, rule_version)
+  PRIMARY KEY (rule_id, rule_version),
+  UNIQUE (rule_id, rule_version, world_revision_id)
 );
 
 CREATE TABLE IF NOT EXISTS world_base.speech_address_forms (
@@ -126,7 +132,8 @@ CREATE TABLE IF NOT EXISTS world_base.speech_address_forms (
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   payload JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(payload) = 'object'),
-  PRIMARY KEY (form_id, form_version)
+  PRIMARY KEY (form_id, form_version),
+  UNIQUE (form_id, form_version, world_revision_id)
 );
 
 CREATE TABLE IF NOT EXISTS world_base.household_composition_profiles (
@@ -149,7 +156,8 @@ CREATE TABLE IF NOT EXISTS world_base.household_composition_profiles (
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   payload JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(payload) = 'object'),
-  PRIMARY KEY (profile_id, profile_version)
+  PRIMARY KEY (profile_id, profile_version),
+  UNIQUE (profile_id, profile_version, world_revision_id)
 );
 
 CREATE TABLE IF NOT EXISTS world_base.slot_instance_variants (
@@ -169,7 +177,8 @@ CREATE TABLE IF NOT EXISTS world_base.slot_instance_variants (
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   payload JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(payload) = 'object'),
-  PRIMARY KEY (variant_id, variant_version)
+  PRIMARY KEY (variant_id, variant_version),
+  UNIQUE (variant_id, variant_version, world_revision_id)
 );
 
 CREATE TABLE IF NOT EXISTS world_base.water_body_presence_facets (
@@ -194,7 +203,8 @@ CREATE TABLE IF NOT EXISTS world_base.water_body_presence_facets (
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   payload JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(payload) = 'object'),
-  PRIMARY KEY (facet_id, facet_version)
+  PRIMARY KEY (facet_id, facet_version),
+  UNIQUE (facet_id, facet_version, world_revision_id)
 );
 
 CREATE TABLE IF NOT EXISTS world_base.fauna_phase_activity_rules (
@@ -214,5 +224,6 @@ CREATE TABLE IF NOT EXISTS world_base.fauna_phase_activity_rules (
   provenance_ref TEXT REFERENCES world_base.source_records(id) ON DELETE RESTRICT,
   payload JSONB NOT NULL DEFAULT '{}'::jsonb
     CHECK (jsonb_typeof(payload) = 'object'),
-  PRIMARY KEY (rule_id, rule_version)
+  PRIMARY KEY (rule_id, rule_version),
+  UNIQUE (rule_id, rule_version, world_revision_id)
 );

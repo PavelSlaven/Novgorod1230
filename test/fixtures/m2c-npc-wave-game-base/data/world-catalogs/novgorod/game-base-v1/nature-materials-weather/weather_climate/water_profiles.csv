@@ -1,0 +1,2 @@
+water_profile_id,scope_kind,scope_ref,pf_id,season,facet,variant_id,weight,value_ru,value_num,unit,no_source,value_ref,condition,rule_ref,confidence,status,source_refs
+wp_x,place_family,pf_x,,spring,ice,,,,,,,,,C,candidate,

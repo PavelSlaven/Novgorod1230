@@ -119,6 +119,59 @@ test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', 
     assert.equal(info.rows.length, 1, col);
     if (col === 'variants') assert.equal(info.rows[0].data_type, 'jsonb');
   }
+  await world.query(`
+    INSERT INTO world_base.presence_rules(
+      rule_id, rule_version, world_revision_id, scope_kind, scope_ref,
+      subject_kind, subject_ref, category_id, item_ref, variants,
+      presence_probability_ppm, count_limit, confidence, status
+    ) VALUES (
+      'pr-cat', 1, 'm2c-rev', 'place_family', 'pf_a',
+      'category', 'cat_x', 'cat_x', 'it_a', '[]'::jsonb,
+      0, 0, 'high', 'approved'
+    )
+  `);
+  await assert.rejects(() => world.query(`
+    INSERT INTO world_base.presence_rules(
+      rule_id, rule_version, world_revision_id, scope_kind, scope_ref,
+      subject_kind, subject_ref, item_ref, variants,
+      presence_probability_ppm, count_limit, confidence, status
+    ) VALUES (
+      'pr-role', 1, 'm2c-rev', 'place_family', 'pf_a',
+      'social_role', 'nov_role_x', 'it_bad', '[]'::jsonb,
+      0, 0, 'high', 'approved'
+    )
+  `), (error) => {
+    assert.equal(error.code, '23514', 'item_ref forbidden for social_role');
+    return true;
+  });
+  await assert.rejects(() => world.query(`
+    INSERT INTO world_base.presence_rules(
+      rule_id, rule_version, world_revision_id, scope_kind, scope_ref,
+      subject_kind, subject_ref, category_id, variants,
+      presence_probability_ppm, count_limit, confidence, status
+    ) VALUES (
+      'pr-cat2', 1, 'm2c-rev', 'place_family', 'pf_a',
+      'category', 'cat_y', 'cat_y', '{"not":"array"}'::jsonb,
+      0, 0, 'high', 'approved'
+    )
+  `), (error) => {
+    assert.equal(error.code, '23514', 'variants must be json array');
+    return true;
+  });
+  await assert.rejects(() => world.query(`
+    INSERT INTO world_base.presence_rules(
+      rule_id, rule_version, world_revision_id, scope_kind, scope_ref,
+      subject_kind, subject_ref, category_id, item_ref, variants,
+      presence_probability_ppm, count_limit, confidence, status
+    ) VALUES (
+      'pr-cat', 1, 'm2c-rev', 'place_family', 'pf_b',
+      'category', 'cat_z', 'cat_z', 'it_other', '[]'::jsonb,
+      0, 0, 'high', 'approved'
+    )
+  `), (error) => {
+    assert.equal(error.code, '23505', 'duplicate rule_id@rule_version hits PK');
+    return true;
+  });
 
   // Party fresh: full 001-037 via runner.
   const partyFresh = new pg.Pool({

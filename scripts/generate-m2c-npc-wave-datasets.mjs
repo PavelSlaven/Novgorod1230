@@ -10,9 +10,9 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = process.cwd();
-const SOURCE_COMMIT = process.env.M2C_SOURCE_COMMIT ?? 'b1f249de';
+const DEFAULT_SOURCE_COMMIT = '367a88c07d6f153433e3143a2de2fb82446d17ee';
+const SOURCE_COMMIT = process.env.M2C_SOURCE_COMMIT ?? DEFAULT_SOURCE_COMMIT;
 const WORLD_REVISION_ID = 'novgorod_spatial_v3_target_contract_approval_001';
-const PROVENANCE_REF = `game_base_v1_m2c_people_${SOURCE_COMMIT.slice(0, 8)}`;
 const OUT_ROOT = 'data/world-catalogs/novgorod/m2c-npc-wave/v1';
 const GAME_BASE = 'data/world-catalogs/novgorod/game-base-v1';
 
@@ -111,10 +111,32 @@ export function parseVariants(raw) {
   if (!t || t === '[]') return [];
   try {
     const parsed = JSON.parse(t);
-    return Array.isArray(parsed) ? parsed.map(String) : [];
-  } catch {
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((entry) => {
+      if (typeof entry === 'string') return entry;
+      if (entry && typeof entry === 'object' && entry.item_ref != null) {
+        const variant = { item_ref: String(entry.item_ref) };
+        if (entry.source_pool) variant.source_pool = String(entry.source_pool);
+        if (entry.source_row_id) variant.source_row_id = String(entry.source_row_id);
+        return variant;
+      }
+      throw new Error(`invalid variants entry: ${JSON.stringify(entry)}`);
+    });
+  } catch (error) {
+    if (String(error.message).startsWith('invalid variants')) throw error;
     return [];
   }
+}
+
+/** Slot variant weight: empty → 1; zero/negative → error (DDL requires weight > 0). */
+export function parseSlotWeight(raw) {
+  const t = String(raw ?? '').trim();
+  if (!t) return 1;
+  const n = Number(t);
+  if (!Number.isFinite(n) || n <= 0) {
+    throw new Error(`invalid slot weight: ${raw}`);
+  }
+  return n;
 }
 
 export function parseNodeRef(nodeRef) {
@@ -138,6 +160,56 @@ function intOrNull(raw) {
 function intOrZero(raw) {
   const n = intOrNull(raw);
   return n == null ? 0 : n;
+}
+
+export function mapNpcRelationshipRule(row, worldRevisionId, provenanceRef) {
+  return {
+    rule_id: row.rel_rule_id,
+    rule_version: 1,
+    world_revision_id: worldRevisionId,
+    scope_kind: row.scope_kind,
+    scope_ref: blank(row.scope_ref) ?? '',
+    subject_role_ref: blank(row.subject_role_ref),
+    object_role_ref: blank(row.object_role_ref),
+    relationship_kind: row.relationship_kind,
+    direction: blank(row.direction),
+    materialization_guard: blank(row.materialization_guard),
+    status: 'approved',
+    confidence: mapConfidence(row.confidence),
+    provenance_ref: provenanceRef,
+    payload: {
+      source_refs: row.source_refs ?? '',
+      rule_ref: row.rule_ref ?? '',
+      no_source: row.no_source ?? '',
+      csv_status: row.status ?? '',
+    },
+  };
+}
+
+export function mapSpeechAddressForm(row, worldRevisionId, provenanceRef) {
+  return {
+    form_id: row.sp_id,
+    form_version: 1,
+    world_revision_id: worldRevisionId,
+    channel: blank(row.channel),
+    relationship_kind: blank(row.relationship_kind),
+    speaker_role_ref: blank(row.speaker_role_ref),
+    addressee_role_ref: blank(row.addressee_role_ref),
+    register_ref: blank(row.register_ref),
+    form_ru: row.form_ru,
+    situation: blank(row.situation),
+    status: 'approved',
+    confidence: mapConfidence(row.confidence),
+    provenance_ref: provenanceRef,
+    payload: {
+      legal_weight_ref: row.legal_weight_ref ?? '',
+      attestation: row.attestation ?? '',
+      source_refs: row.source_refs ?? '',
+      rule_ref: row.rule_ref ?? '',
+      no_source: row.no_source ?? '',
+      csv_status: row.status ?? '',
+    },
+  };
 }
 
 export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
@@ -180,18 +252,20 @@ export function mapPresenceRule(row, worldRevisionId, provenanceRef) {
   };
 }
 
-async function writeDataset(relPath, rows) {
-  const file = `${OUT_ROOT}/${relPath}`;
+async function writeDataset(relPath, rows, outRoot) {
+  const file = `${outRoot}/${relPath}`;
   await mkdir(dirname(resolve(root, file)), { recursive: true });
   const body = json(rows);
   await writeFile(resolve(root, file), body, 'utf8');
-  return { file, sha256: sha256(body) };
+  return { relPath, sha256: sha256(body) };
 }
 
 export async function buildM2cNpcWaveDatasets(options = {}) {
   const commit = options.sourceCommit ?? SOURCE_COMMIT;
   const worldRevisionId = options.worldRevisionId ?? WORLD_REVISION_ID;
-  const provenanceRef = options.provenanceRef ?? PROVENANCE_REF;
+  const outRoot = options.outRoot ?? OUT_ROOT;
+  const provenanceRef = options.provenanceRef
+    ?? `game_base_v1_m2c_people_${commit.slice(0, 8)}`;
   const show = options.gitShow ?? ((path) => execSync(`git show ${commit}:${path}`, {
     encoding: 'utf8',
     maxBuffer: 64 * 1024 * 1024,
@@ -278,7 +352,7 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     variant_version: 1,
     world_revision_id: worldRevisionId,
     slot_id: row.slot_id,
-    weight: intOrZero(row.weight) || 1,
+    weight: parseSlotWeight(row.weight),
     applicability: typeof row.applicability === 'object' && row.applicability != null
       ? row.applicability
       : { scope: String(row.applicability ?? 'all') },
@@ -357,6 +431,20 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
       csv_status: row.status ?? '',
     }));
 
+  const relCsv = parseCsv(show(
+    `${GAME_BASE}/households-psychology-speech/households_kinship/relationship_rules.csv`
+  ));
+  const npcRelationshipRules = relCsv.map((row) => mapNpcRelationshipRule(
+    row, worldRevisionId, provenanceRef
+  ));
+
+  const speechCsv = parseCsv(show(
+    `${GAME_BASE}/households-psychology-speech/speech_address/address_forms.csv`
+  ));
+  const speechAddressForms = speechCsv.map((row) => mapSpeechAddressForm(
+    row, worldRevisionId, provenanceRef
+  ));
+
   const compositionStaging = JSON.parse(show(
     `${GAME_BASE}/places-binding/presence/people_composition_authoring.json`
   ));
@@ -367,6 +455,8 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
     ['datasets/place_families.json', placeFamilies, 'place_families', ['source_records']],
     ['datasets/spatial_node_place_family_bindings.json', bindings, 'spatial_node_place_family_bindings', ['place_families']],
     ['datasets/presence_rules.json', presenceRules, 'presence_rules', ['place_families']],
+    ['datasets/npc_relationship_materialization_rules.json', npcRelationshipRules, 'npc_relationship_materialization_rules', ['source_records']],
+    ['datasets/speech_address_forms.json', speechAddressForms, 'speech_address_forms', ['source_records']],
     ['datasets/household_composition_profiles.json', householdProfiles, 'household_composition_profiles', ['source_records']],
     ['datasets/slot_instance_variants.json', slotVariants, 'slot_instance_variants', ['source_records']],
     ['datasets/water_body_presence_facets.json', waterFacets, 'water_body_presence_facets', ['place_families']],
@@ -376,11 +466,12 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
   ];
 
   for (const [rel, rows, table, dependsOn] of entries) {
-    const { file, sha256: digest } = await writeDataset(rel, rows);
+    const { relPath, sha256: digest } = await writeDataset(rel, rows, outRoot);
     if (table) {
+      const manifestFile = outRoot === OUT_ROOT ? `${outRoot}/${relPath}` : relPath;
       datasets.push({
         table,
-        file,
+        file: manifestFile,
         sha256: digest,
         status: 'draft',
         provenance_ref: provenanceRef,
@@ -408,18 +499,39 @@ export async function buildM2cNpcWaveDatasets(options = {}) {
         gap_id: 'M2C_D2_COMPOSITION_BINDINGS',
         summary: 'people_composition_authoring staged; spatial_v3_g4_npc_composition_bindings import pending DDL/importer',
       },
+      {
+        gap_id: 'M2C_R1_PRESENCE_IMPORTER',
+        summary: 'presence_rules world_base importer absent (R-1): id@version content compare idempotent skip / fail-closed deferred to importer; PK enforces duplicate id@version at DDL',
+      },
+      {
+        gap_id: 'M2C_WR21_APPROVED_ROWS',
+        summary: 'dataset rows carry status=approved while game-base CSV rows remain candidate until WR §21.1 source_record + D24 verdict import (R-1); do not rewrite CSV status in generator',
+      },
     ],
   };
 
-  const manifestPath = `${OUT_ROOT}/manifest.json`;
+  const manifestPath = `${outRoot}/manifest.json`;
   await mkdir(dirname(resolve(root, manifestPath)), { recursive: true });
   await writeFile(resolve(root, manifestPath), json(manifest), 'utf8');
 
+  const variantElementCount = presenceRules.reduce(
+    (sum, rule) => sum + (Array.isArray(rule.variants) ? rule.variants.length : 0),
+    0
+  );
+  const rulesWithVariants = presenceRules.filter(
+    (rule) => Array.isArray(rule.variants) && rule.variants.length > 0
+  ).length;
+
   return {
     manifestPath,
+    sourceCommit: commit,
     counts: Object.fromEntries(datasets.map((d) => [d.table, 'rows'])),
     presenceRules: presenceRules.length,
+    rulesWithVariants,
+    variantElementCount,
     bindings: bindings.length,
+    npcRelationshipRules: npcRelationshipRules.length,
+    speechAddressForms: speechAddressForms.length,
   };
 }
 

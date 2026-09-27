@@ -1,0 +1,2 @@
+sch_id,revision,role_ref,occupation_ref,season,day_type,time_blocks,place_access_ref,confidence,status,source_refs
+sch_x,1,,,spring,normal,blocks,,C,candidate,

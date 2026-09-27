@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "46f62a83b1e250a4c2d1b50490adaa3bedfd956c91a710418965ee269a070cd5",
-  "chunk_count": 2863,
+  "corpus_hash": "c31eeb8eae53a0a3a4ce85d5f979c3de2a5f6cc7e639f80287eb96ec5fb98485",
+  "chunk_count": 2864,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -737,7 +737,7 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.1. Бросок и его ключ",
       "line_start": 169,
-      "line_end": 190,
+      "line_end": 192,
       "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\n### 3A.1. Бросок и его ключ\n\nВероятность наличия и `count_limit` задаются authoring-правилом с ключом `(scope_kind, scope_ref)` и региональным переопределением (`region_id` NULL = общемировое значение по умолчанию). Для presence, routines, water facets и slot variants единственный слой типов мест — `scope_kind=place_family` со `scope_ref=pf_id` из справочника `world_base.place_families` и привязок `world_base.spatial_node_place_family_bindings` (D26 / CR #158). Для контейнеров сохраняется `container_template` (O2b). Legacy-ключи `landscape_template` / `place_template` / `scene_template` не являются ключом presence-правил M2c.\n\nПравило ставится только на категорию одного иерархического фасета домена: у предметов — `object_type`, у контейнеров — `container_form`; у новых доменов — фасет из `universal_category_classification_policy.md`. Правило на иных фасетах того же домена — ошибка валидации импорта. Наследование — только по `parent_category_id` внутри фасета; рёбра `universal_category_relations` для наличия не используются.",
       "char_count": 1118
     },
@@ -746,7 +746,7 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.1. Бросок и его ключ",
       "line_start": 169,
-      "line_end": 190,
+      "line_end": 192,
       "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\nибка валидации импорта. Наследование — только по `parent_category_id` внутри фасета; рёбра `universal_category_relations` для наличия не используются.\n\nПравило наличия имеет поля `subject_kind` (`category` | `social_role` | `occupation`) и `subject_ref`. Для природы и вещей `subject_kind=category` и `subject_ref` = `category_id` фасета. Для людей бросок идёт по роли или занятию из `region_social_roles` / `region_occupations` (`subject_kind` = `social_role` | `occupation`). Носитель один для природы, вещей и людей (D4; техническое решение ревьюера, аудит #146 шаг 1 F3c).\n\nПорядок выбора применимого правила:\n\n1. ближайшая категория вверх по `parent_category_id` (сама или предок), у которой есть правило, применимое к экземпляру;\n2. среди правил на одной категории — более конкретный scope: для места — `place_family` по привязкам узла; для контейнера — `container_template`;\n3. региональное правило побеждает общемировое.",
       "char_count": 1007
     },
@@ -755,7 +755,7 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.1. Бросок и его ключ",
       "line_start": 169,
-      "line_end": 190,
+      "line_end": 192,
       "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\n конкретный scope: для места — `place_family` по привязкам узла; для контейнера — `container_template`;\n3. региональное правило побеждает общемировое.\n\nУ экземпляра по одной primary-ссылке `place_family` на узел (`binding_role='primary'`). Presence / routines / water / slots читают `primary ∪ утверждённые secondary` из таблицы привязок одним путём кода. Если на одну категорию или роль есть правила и у primary PF, и у secondary — побеждает primary; secondary добавляет только субъекты, которых у primary нет. Один бросок на ключ seed. Валидатор импорта отвергает пересечение субъектов primary/secondary и пересекающиеся (не только дословно равные) наборы `allowed_seasons` для одной пары scope/region/subject. Категория без правила на всех уровнях = отсутствует (0 ppm), не ошибка runtime.",
       "char_count": 871
     },
@@ -764,25 +764,34 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.1. Бросок и его ключ",
       "line_start": 169,
-      "line_end": 190,
-      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\n равные) наборы `allowed_seasons` для одной пары scope/region/subject. Категория без правила на всех уровнях = отсутствует (0 ppm), не ошибка runtime.\n\nБросок один и сохраняется; переброса нет. Seed: `{ party_id, scope_instance_ref, subject_kind, subject_ref, rng_algorithm_id: mulberry32_v1 }`; для сезонного правила добавляется номер периода. `rule_id`, `rule_version` и `world_revision_id` в seed не входят. Исход хранится по ключу (партия, экземпляр scope, `subject_kind`, `subject_ref` правила) в существующем агрегате ordinary-материализации (`presence_resolutions` / `closed_observation_scopes`). Новая версия правил уже решённую пару не перебрасывает; `rule_id@rule_version` хранится в записи как причинное основание и идентифицирует правило **в пределах мировой ревизии, закреплённой за партией** (C12): импорт в одну `world_revision_id` проверяет уникальность пары `rule_id@rule_version`; сравнение между ревизиями не выполняется; стабильный authoring `pr_id` не гарантирует неизменность содержания при том же `rule_version`. Если предок уже решён, правила на потомках в этом экземпляре не бросаются.",
-      "char_count": 1189
+      "line_end": 192,
+      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\n равные) наборы `allowed_seasons` для одной пары scope/region/subject. Категория без правила на всех уровнях = отсутствует (0 ppm), не ошибка runtime.\n\nБросок один и сохраняется; переброса нет. Seed: `{ party_id, scope_instance_ref, subject_kind, subject_ref, rng_algorithm_id: mulberry32_v1 }`; для сезонного правила добавляется номер периода. `rule_id`, `rule_version` и `world_revision_id` в seed не входят. Исход хранится по ключу (партия, экземпляр scope, `subject_kind`, `subject_ref` правила) в существующем агрегате ordinary-материализации (`presence_resolutions` / `closed_observation_scopes`). Новая версия правил уже решённую пару не перебрасывает; `rule_id@rule_version` хранится в записи как причинное основание **в пределах мировой ревизии, закреплённой за партией** (C12).",
+      "char_count": 866
     },
     {
       "id": "code_driven_world_materialization_architecture.md:3A.1. Бросок и его ключ:4",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.1. Бросок и его ключ",
       "line_start": 169,
-      "line_end": 190,
-      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\ng `pr_id` не гарантирует неизменность содержания при том же `rule_version`. Если предок уже решён, правила на потомках в этом экземпляре не бросаются.\n\nДля `subject_kind` = `social_role` | `occupation` иерархии `parent_category_id` и выбора подвида по весам нет: бросок решает наличие по `subject_ref`, число — равномерно из `1..count_limit`. Наследование по `parent_category_id` и выбор подкатегории по `region_category_options.weight` (§3A.4) относятся только к `subject_kind=category`.\n\nОбязательное наличие — правило с `presence_probability_ppm = 1_000_000`. Отдельного поля «обязательный минимум» нет. Причины появления (следы, стоянка и т.п.) — отдельные утверждённые правила, не свободный JSONB condition set.",
-      "char_count": 795
+      "line_end": 192,
+      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\nпару не перебрасывает; `rule_id@rule_version` хранится в записи как причинное основание **в пределах мировой ревизии, закреплённой за партией** (C12).\n\nПара `rule_id@rule_version` **глобально** уникальна и неизменна: PK `(rule_id, rule_version)`; `world_revision_id` — поле строки, не часть identity правила. Изменение содержания при том же authoring `pr_id` требует нового `rule_version` (первый импорт — `rule_version=1`, C12). Импортёр R-1: тот же `id@version` с тем же содержанием — идемпотентный пропуск; с иным содержанием — отказ (fail-closed). До R-1 DDL удерживает только PK (повторная вставка того же `id@version` — ошибка PK). Если предок уже решён, правила на потомках в этом экземпляре не бросаются.\n\nДля `subject_kind` = `social_role` | `occupation` иерархии `parent_category_id` и выбора подвида по весам нет: бросок решает наличие по `subject_ref`, число — равномерно из `1..count_limit`. Наследование по `parent_category_id` и выбор подкатегории по `region_category_options.weight` (§3A.4) относятся только к `subject_kind=category`.",
+      "char_count": 1129
+    },
+    {
+      "id": "code_driven_world_materialization_architecture.md:3A.1. Бросок и его ключ:5",
+      "file": "code_driven_world_materialization_architecture.md",
+      "section": "3A.1. Бросок и его ключ",
+      "line_start": 169,
+      "line_end": 192,
+      "text": "## code_driven_world_materialization_architecture.md — 3A.1. Бросок и его ключ\nit`. Наследование по `parent_category_id` и выбор подкатегории по `region_category_options.weight` (§3A.4) относятся только к `subject_kind=category`.\n\nОбязательное наличие — правило с `presence_probability_ppm = 1_000_000`. Отдельного поля «обязательный минимум» нет. Причины появления (следы, стоянка и т.п.) — отдельные утверждённые правила, не свободный JSONB condition set.",
+      "char_count": 457
     },
     {
       "id": "code_driven_world_materialization_architecture.md:3A.2. Первое прибытие (D3):0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.2. Первое прибытие (D3)",
-      "line_start": 191,
-      "line_end": 198,
+      "line_start": 193,
+      "line_end": 200,
       "text": "## code_driven_world_materialization_architecture.md — 3A.2. Первое прибытие (D3)\n### 3A.2. Первое прибытие (D3)\n\nВсе броски наличия места выполняются при первом прибытии в место, без LLM. Для категорий с обновлением «по сезону года» — при первом прибытии в новом сезоне (номер периода в ключе).\n\nНа первый экран попадает то, что персонаж воспринимает при прибытии, с учётом света, погоды и видимости. Скрытое уже существует после броска и находится только навыком; поиск и `request_discovery` нового не создают. Содержимое контейнера решается при первом открытии. Копание и обыск не создают рукотворного.\n\nРукотворная вещь **в тайнике** появляется только по authority-записи или причинному событию (PC §9.1). Бросок наличия тайников не создаёт.",
       "char_count": 745
     },
@@ -790,8 +799,8 @@
       "id": "code_driven_world_materialization_architecture.md:3A.3. Сезон и обновление (D6):0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.3. Сезон и обновление (D6)",
-      "line_start": 199,
-      "line_end": 207,
+      "line_start": 201,
+      "line_end": 209,
       "text": "## code_driven_world_materialization_architecture.md — 3A.3. Сезон и обновление (D6)\n### 3A.3. Сезон и обновление (D6)\n\nВ правиле два закрытых поля:\n\n- `allowed_seasons` — словарь `allowed_seasons`, календарь `@rus/time-events-history`;\n- класс обновления: `none` (по умолчанию) или `by_year_season`.\n\nНомер периода входит в ключ броска. Бросок нового периода ничего не удаляет и добавляет только до `count_limit` минус уже существующее. Пополнение природного источника — у finite-owner (`party_resource_nodes`, `@rus/items-property`). Привоз и приезд купца — результат процесса мира, не presence-бросок.",
       "char_count": 604
     },
@@ -799,17 +808,17 @@
       "id": "code_driven_world_materialization_architecture.md:3A.4. Подкатегория и число (D9):0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.4. Подкатегория и число (D9)",
-      "line_start": 208,
-      "line_end": 216,
-      "text": "## code_driven_world_materialization_architecture.md — 3A.4. Подкатегория и число (D9)\n### 3A.4. Подкатегория и число (D9)\n\nПосле исхода «есть» код тем же seed выбирает:\n\n- для `subject_kind=category`: подкатегорию среди потомков категории правила, у которых нет своего правила, по `region_category_options.weight`; если весов нет — равномерно, и это пробел данных;\n- число: для контейнера — `min_quantity..max_quantity` записи профиля содержимого; для места при `subject_kind=category` — равномерно из `1..count_limit`; для `social_role` / `occupation` — равномерно из `1..count_limit` без выбора подвида. У природных конечных источников число не бросается.\n\nПодкатегория и число сохраняются с исходом. LLM описывает уже выбранный экземпляр с опорой на WK и может предложить характеристики. Для изготовленного и для названного игроком категорию выбирает LLM, код проверяет.",
-      "char_count": 874
+      "line_start": 210,
+      "line_end": 219,
+      "text": "## code_driven_world_materialization_architecture.md — 3A.4. Подкатегория и число (D9)\n### 3A.4. Подкатегория и число (D9)\n\nПосле исхода «есть» код тем же seed выбирает:\n\n- для `subject_kind=category` при заданном authoring `item_ref`: пул `{item_ref} ∪ variants[].item_ref`, выбор **равномерный** (весов в authoring нет — пробел данных);\n- для `subject_kind=category` без `item_ref`: подкатегорию среди потомков категории правила, у которых нет своего правила, по `region_category_options.weight`; если весов нет — равномерно, и это пробел данных;\n- число: для контейнера — `min_quantity..max_quantity` записи профиля содержимого; для места при `subject_kind=category` — равномерно из `1..count_limit`; для `social_role` / `occupation` — равномерно из `1..count_limit` без выбора подвида. У природных конечных источников число не бросается.\n\nПодкатегория и число сохраняются с исходом. LLM описывает уже выбранный экземпляр с опорой на WK и может предложить характеристики. Для изготовленного и для названного игроком категорию выбирает LLM, код проверяет.",
+      "char_count": 1057
     },
     {
       "id": "code_driven_world_materialization_architecture.md:3A.5. Люди и расписания мест (D5):0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.5. Люди и расписания мест (D5)",
-      "line_start": 217,
-      "line_end": 222,
+      "line_start": 220,
+      "line_end": 225,
       "text": "## code_driven_world_materialization_architecture.md — 3A.5. Люди и расписания мест (D5)\n### 3A.5. Люди и расписания мест (D5)\n\nГде находится уже созданный NPC, решает исполнение его распорядка (`@rus/npc-runtime`, ADR-003). Открытость места — `@rus/turn` и `@rus/party-store` (ADR-004). Расписание места задаёт только, какие постоянные жители и работники создаются вместе с местом и какой распорядок они получают. Приезжие — через события мира. Расписание места **не** условие броска наличия.\n\nПример ночной стражи (поправка [#133 п.7](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5843988793)): ночью у ворот, на торгу, у церквей и складов — сторожа (`nov_occ_gate_guard`, `nov_occ_market_guard`, `nov_occ_church_guard`, `nov_occ_storehouse_keeper`). Уличного дозора по городу без источниковой записи нет.",
       "char_count": 829
     },
@@ -817,8 +826,8 @@
       "id": "code_driven_world_materialization_architecture.md:3A.6. Рукотворное в дикой местности:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.6. Рукотворное в дикой местности",
-      "line_start": 223,
-      "line_end": 228,
+      "line_start": 226,
+      "line_end": 231,
       "text": "## code_driven_world_materialization_architecture.md — 3A.6. Рукотворное в дикой местности\n### 3A.6. Рукотворное в дикой местности\n\nРукотворная категория может выпасть по правилу на `place_family` (`scope_kind=place_family`, `scope_ref=pf_id`). Причинное основание — сохранённые правило и исход броска. Проза описывает только сохранённое (вещь, место, состояние); кто потерял вещь, LLM не выдумывает. Состояние задаёт код через фасет `condition`.\n\nКанонический пример (PC §9.1; поправка [#133 п.8](https://github.com/PavelSlaven/Novgorod1230/issues/133#issuecomment-5843988793)): меч в глухом лесу — малый, но не нулевой шанс; найти можно; причина — сохранённое правило наличия и бросок при первом прибытии, а не запрет класса «оружие».",
       "char_count": 736
     },
@@ -826,8 +835,8 @@
       "id": "code_driven_world_materialization_architecture.md:3A.7. Глоссарий (D10):0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.7. Глоссарий (D10)",
-      "line_start": 229,
-      "line_end": 240,
+      "line_start": 232,
+      "line_end": 243,
       "text": "## code_driven_world_materialization_architecture.md — 3A.7. Глоссарий (D10)\n### 3A.7. Глоссарий (D10)\n\n- **Ordinary** — обычная вещь/человек/ресурс из категорий кода и presence/лимитов, без authority-записи uniqueness.\n- **Authored** — заранее заданный авторским источником экземпляр или слот.\n- **Significant** — назначено authority-записью. Ценность, редкость и класс вещи никогда не делают её significant и не служат причиной запрета.\n- **Hidden** — уже существует после броска, но не в воспринимаемом слое до навыка/условия.\n- **Informational** — сведение по authority-записи (улика, сюжетное сведение, назначенный informational fact). Обычный документ, письмо, грамота или носитель письма сами по себе informational не являются: это ordinary/authored по наличию и authority, а не класс «информация» (D10).\n- **`authority_required` / typed gap для вещей** — только вещи, назначенные authority-записью: уникальные, квестовые, размещённые или спрятанные авторским источником. Technical/typed gap не выдаётся игроку как физическая невозможность, отсутствие вещи в мире или отказ персонажа (AI §10.1; O2a: `authority_required` не доказывает физическое отсутствие).",
       "char_count": 1165
     },
@@ -835,8 +844,8 @@
       "id": "code_driven_world_materialization_architecture.md:3A.7. Глоссарий (D10):1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "3A.7. Глоссарий (D10)",
-      "line_start": 229,
-      "line_end": 240,
+      "line_start": 232,
+      "line_end": 243,
       "text": "## code_driven_world_materialization_architecture.md — 3A.7. Глоссарий (D10)\nку как физическая невозможность, отсутствие вещи в мире или отказ персонажа (AI §10.1; O2a: `authority_required` не доказывает физическое отсутствие).\n\nКанонический пример изготовления (PC §9.1; D10): можно ли изготовить поддельную грамоту — да, через A1 (материалы, инструмент, навык, технология эпохи); нехватка любого из них — неудача внутри мира, не запрет команды. Опознавательный текст подделки пишет игрок; подлинность и правовые последствия оценивает `@rus/social-law`, физический предмет ведёт `@rus/items-property`.",
       "char_count": 602
     },
@@ -844,8 +853,8 @@
       "id": "code_driven_world_materialization_architecture.md:4. Граница ответственности:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4. Граница ответственности",
-      "line_start": 241,
-      "line_end": 242,
+      "line_start": 244,
+      "line_end": 245,
       "text": "## code_driven_world_materialization_architecture.md — 4. Граница ответственности\n## 4. Граница ответственности",
       "char_count": 111
     },
@@ -853,8 +862,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.1. Редакторский процесс:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.1. Редакторский процесс",
-      "line_start": 243,
-      "line_end": 246,
+      "line_start": 246,
+      "line_end": 249,
       "text": "## code_driven_world_materialization_architecture.md — 4.1. Редакторский процесс\n### 4.1. Редакторский процесс\n\nСоздаёт категории, templates, profiles, rules и исторические утверждения; задаёт источники, период, регион, confidence, status и запреты. Неполноту фиксирует как gap.",
       "char_count": 278
     },
@@ -862,8 +871,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.2. `world_base`:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.2. `world_base`",
-      "line_start": 247,
-      "line_end": 250,
+      "line_start": 250,
+      "line_end": 253,
       "text": "## code_driven_world_materialization_architecture.md — 4.2. `world_base`\n### 4.2. `world_base`\n\nХранит активные утверждённые G0–G4, универсальные справочники, региональные разрешения, materialization profiles/rules и decision policies. Runtime имеет только read-only доступ.",
       "char_count": 274
     },
@@ -871,8 +880,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.3. Код:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.3. Код",
-      "line_start": 251,
-      "line_end": 254,
+      "line_start": 254,
+      "line_end": 257,
       "text": "## code_driven_world_materialization_architecture.md — 4.3. Код\n### 4.3. Код\n\nЗагружает активный bundle, проверяет ссылки и применимость, фильтрует и сортирует candidates, выполняет deterministic choices, создаёт instances, проверяет инварианты, формирует trace/change set/write plan и выполняет commit.",
       "char_count": 303
     },
@@ -880,8 +889,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
-      "line_start": 255,
-      "line_end": 291,
+      "line_start": 258,
+      "line_end": 294,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\n### 4.4. LLM\n\nДопустим для closed bounded decisions, активного player `turn_step_plan_v1`, разрешённой конкретизации key entity, аудита, персонажа игрока и прозы из persisted visible context.\n\nPlayer step planner получает только player-safe working projection и возвращает следующий шаг по строгой schema. Один structural repair получает исходный request и перечень schema violations, но не новое состояние мира. Код владеет admission, exact fast path, checks, domain routing, working projection, derived mechanics, commit-time revalidation и записью.\n\nLLM не создаёт runtime G5, key/significant NPC, authored/significant/hidden items или party-state patch. Обычного NPC создаёт код по D-005/D8. Узкий ordinary result из D-011/D-014 становится экземпляром только после code-owned validation и сохранения exact runtime mechanics snapshot. Содержимое контейнера решает код при первом открытии (D3/D9); LLM может описать уже выбранное. Visible factual projection формирует код; narrator читает её только после commit.",
       "char_count": 1078
     },
@@ -889,8 +898,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
-      "line_start": 255,
-      "line_end": 291,
+      "line_start": 258,
+      "line_end": 294,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nет код при первом открытии (D3/D9); LLM может описать уже выбранное. Visible factual projection формирует код; narrator читает её только после commit.\n\nO1 — discovery уже существующего через `request_discovery` / поиск / осмотр (PC §9.1; D3; CR [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146) шаг 2). Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029). Поиск и `request_discovery` находят только то, что уже существует после сохранённого броска кода при первом прибытии (место) или первом открытии контейнера (O2b). Они не создают нового. О наличии решает только сохранённый бросок кода; из плана LLM убраны `presence_resolutions` и `density_band_proposal`. `density_band` код выводит из сохранённых исходов; `identity_budget` равен сумме сохранённых чисел экземпляров (или отсутствует как отдельное поле плана). Meaningful gate и code-first short circuit предшествуют model call. Stage A/B могут описывать уже выбранный экземпляр с опорой на WK; код строит identity/classification/policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) — только `candidate_hint` для сопоставления с уже решённым исходом; identity выводится кодом из экземпляра scope и subject-правил (не noun/recipe gate и не authority; долг кода v17 — LW-028, если иначе). Exact normalized retry использует persisted resolution без reroll. Model call вне physical transaction; один P16 commit фиксирует positive/negative resolution и item при positive. Player-safe projection — через `@rus/visibility-knowledge-memory`. O1 не включает A1, F1, S1, N1 и template-less runtime containers как путь создания; finite sources и fabrication — у своих owners.",
       "char_count": 1752
     },
@@ -898,8 +907,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:2",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
-      "line_start": 255,
-      "line_end": 291,
+      "line_start": 258,
+      "line_end": 294,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\n-knowledge-memory`. O1 не включает A1, F1, S1, N1 и template-less runtime containers как путь создания; finite sources и fabrication — у своих owners.\n\nТекущая O2a activation поверх O1 discovery включает authored abundant ambient source берега и authored first-entry context-bound finite stock подготовленной глины. Context-bound marker сообщает только `discovery_available`; committed stock виден как обычный source только при отдельном approved disclosure state, а concealed capability остаётся server-only. Expected result, permission и capacity не раскрываются. Stage B свободно конкретизирует unlisted ordinary semantic type/name внутри approved class, но не может менять source/property/permission/mechanics или добавлять facts. Обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. First-entry атомарно provision-ит finite basis, permission/property/placement pins и resource row. Conservation является generic owner-native правилом любого admitted `finite_source`, независимо от `common_mundane` или constrained admission; mutable state загружается по выбранному source ref, поэтому несколько stocks не делят quantity. Constrained policy только добавляет региональные/resource permissions. `authority_required` — только для вещей по authority-записи (D10); класс weapon/currency/document сам по себе не запрет находки или изготовления (PC §9.1). Не provisioned precious/remnant profiles остаются fail-closed, пока нет presence-правила или A1-пути.",
       "char_count": 1549
     },
@@ -907,8 +916,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:3",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
-      "line_start": 255,
-      "line_end": 291,
+      "line_start": 258,
+      "line_end": 294,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nбе не запрет находки или изготовления (PC §9.1). Не provisioned precious/remnant profiles остаются fail-closed, пока нет presence-правила или A1-пути.\n\nActive A1 revision 21 использует sole player boundary `turn_step_request_v1 → turn_step_plan_v1`: qualitative physical result вложен в `request_item_use`, после чего code-owned owner не вызывает LLM. Один или несколько committed либо validated same-root revealed non-container material sources и ноль или несколько доступных actor-controlled tools на текущем placement явно разделены и могут иметь другого legal owner. Profile не содержит template/recipe whitelist и допускает preserve, до четырёх independent outputs, no-result, partial/nonworking/waste, writing, non-authoritative token-like и closed weapon-capable outcomes. Generic check применяется только при неопределённом исходе; детерминированное действие использует `domain_request` без RNG, но любая выполненная попытка проходит одно обычное semantic activity/time application. A1 `domain_request` содержит ровно одну operation и не допускает direct preparation в том же step. Code перечитывает committed mechanics/property/placement/ownership либо exact same-root ordinary overlay, выводит source/output mechanics из реально списанных allocations, уменьшает finite source и атомарно retire-ит полностью разделённый единичный source. Partial independent output получает из sole plan только grounded qualitative `material_extent = minor|half|major`; item owner переводит его в exact code-owned `ceil(1/4|1/2|3/4 × mass)` gram decrement, сохраняет identity source и остаточную mechanics. Output descriptor описывает только новые entities; обязательный `source_fact_delta` отдельно удаляет obsolete visible refs и добавляет current facts surviving source. Full partition использует `whole`. Известная масса полного partition сохраняется с детерминированным остатком; qualitative `physical_form` вместе с exact mass переводится item owner в hand/packing/carry, а не наследуется от source. Новый independent output требует safe непустое display name; nullable physical description не сохраняется как `null` fact. Non-authoritative semantic descriptor сохраняется в ordinary item metadata, а visible current physical facts входят в same-root и reload player-safe projection. Надпись является durable physical fact до explicit удаления/замены по видимому `fact_ref`. Всё фиксируется в одном combined P16. Model не задаёт numbers, canonical identity, currency/official status, truth или combat mechanics; A1 state не хранит combat class/damage, а combat owner bounded-классифицирует current facts/form любого held A1 item без exact weapon mechanics только при конкретном combat use и может вернуть `not_weapon_capable`; последний A1 `output_class` не является combat gate.",
       "char_count": 2841
     },
@@ -916,8 +925,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:4",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
-      "line_start": 255,
-      "line_end": 291,
+      "line_start": 258,
+      "line_end": 294,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nбез exact weapon mechanics только при конкретном combat use и может вернуть `not_weapon_capable`; последний A1 `output_class` не является combat gate.\n\nПовторные A1 transitions сохраняют current non-authoritative physical facts в общей ordinary metadata, exact-дедуплицируют одинаковый текст и удаляют ложные facts только по explicit ref. Несколько причинных A1 steps одного root turn последовательно читают общий working state и фиксируются одним combined P16 через существующие transaction/state-version/idempotency механизмы; отдельные A1 plan hashes или combat profile digests для этого не создаются.",
       "char_count": 668
     },
@@ -925,8 +934,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:5",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
-      "line_start": 255,
-      "line_end": 291,
+      "line_start": 258,
+      "line_end": 294,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\ned P16 через существующие transaction/state-version/idempotency механизмы; отдельные A1 plan hashes или combat profile digests для этого не создаются.\n\nSpatial semantic materialization starts from a finite code-owned envelope,\nbound to committed scope and active profile. LLM supplies only open ordinary\nsemantic concretization outside transaction; it cannot invent topology,\nresources, exact mechanics or authority. Existing Spatial materialization owner\nvalidates this concretization and produces one formal proposal with admitted\nrefs and profile-provided mechanics. Game server does\nnot make that proposal: its P16/SQL boundary revalidates committed pins, scope\nand capacity, then atomically persists accepted formal proposal. Retry/reload\nreads committed result. Concrete profile variants, including passages and their\nfail-closed prerequisites, belong to versioned profile, manifest and binding.\nActivation remains a versioned production activation cutover.",
       "char_count": 1027
     },
@@ -934,8 +943,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:6",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
-      "line_start": 255,
-      "line_end": 291,
+      "line_start": 258,
+      "line_end": 294,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\n and their\nfail-closed prerequisites, belong to versioned profile, manifest and binding.\nActivation remains a versioned production activation cutover.\n\nFor normal first-entry/baseline materialization, the Spatial owner creates\nevery approved broad `open_one_space` slot and its formal G6/position/topology\nbefore any late semantic call; those baseline rows are immutable after commit.\nLate S1 is therefore not topology expansion or lazy baseline materialization:\nLLM returns only ordinary name, description and qualitative required semantics.\nThe Spatial owner validates that response against the finite envelope and binds\none `local_ref` to the already persisted formal placement; game server only\ncomposes and P16/SQL-commits that owner result.",
       "char_count": 810
     },
@@ -943,8 +952,8 @@
       "id": "code_driven_world_materialization_architecture.md:4.5. Party database:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.5. Party database",
-      "line_start": 292,
-      "line_end": 295,
+      "line_start": 295,
+      "line_end": 298,
       "text": "## code_driven_world_materialization_architecture.md — 4.5. Party database\n### 4.5. Party database\n\nХранит G5, NPC, предметы, контейнеры, ownership, relations, schedules, knowledge, decisions, change sets, autonomous updates, traces, visible read models и изменяемое состояние партии.",
       "char_count": 284
     },
@@ -952,8 +961,8 @@
       "id": "code_driven_world_materialization_architecture.md:5. Контракт materializer v2:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "5. Контракт materializer v2",
-      "line_start": 296,
-      "line_end": 344,
+      "line_start": 299,
+      "line_end": 347,
       "text": "## code_driven_world_materialization_architecture.md — 5. Контракт materializer v2\n## 5. Контракт materializer v2\n\nОбязательный вход:\n\n```text\nparty_id\nworld_revision_id\nhistorical_frame\ng1_id\ng4_id\ncatalog_bundle (immutable catalog snapshot)\ncatalog_digest (exact domain catalog pin)\ncatalog_bundle_digest (canonical digest применимой immutable projection)\nmaterializer_version\nrng_algorithm_id\nseed_context\nexisting_party_state\ntrigger\n```\n\n`catalog_digest` и `catalog_bundle_digest` являются разными идентичностями.\nПервый связывает materialization run с approved domain revision/import и\npersisted party pin. Второй доказывает неизменность уже проверенной применимой\nprojection. Подмена одного digest другим запрещена. Legacy input без\n`catalog_bundle_digest` допускается только внутри прежнего compatibility\nконтракта и проверяет `catalog_digest` непосредственно против bundle.\n\nОбязательный результат:\n\n```text\nmaterialization_status\ng5_nodes\ng5_edges\ng5_anchors\nnpc_instances\nitem_instances\ncontainer_instances\nownership_relations\nknowledge_records\nschedule_records\nmaterialization_trace\nvalidation_report\nproposed_write_set\n```\n\nMaterializer является чистым относительно persistence. Он не выполняет запись и не читает скрытое глобальное состояние.",
       "char_count": 1256
     },
@@ -961,8 +970,8 @@
       "id": "code_driven_world_materialization_architecture.md:5. Контракт materializer v2:1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "5. Контракт materializer v2",
-      "line_start": 296,
-      "line_end": 344,
+      "line_start": 299,
+      "line_end": 347,
       "text": "## code_driven_world_materialization_architecture.md — 5. Контракт materializer v2\nreport\nproposed_write_set\n```\n\nMaterializer является чистым относительно persistence. Он не выполняет запись и не читает скрытое глобальное состояние.\n\nКаталог ссылается на будущие экземпляры только через утверждённые `slot_key`: `g5_node_slot_key`, `anchor_slot_key`, `from_anchor_slot_key`, `to_anchor_slot_key` и аналогичные domain-specific ссылки. Instance ID не хранится в authoring catalog: materializer разрешает однозначные slot-ссылки после deterministic selection, блокирует отсутствующие и неоднозначные ссылки и только затем формирует `player_start_position` и schema-qualified `proposed_write_set`.",
       "char_count": 694
     },
@@ -970,8 +979,8 @@
       "id": "code_driven_world_materialization_architecture.md:6. Детерминизм и identity:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "6. Детерминизм и identity",
-      "line_start": 345,
-      "line_end": 361,
+      "line_start": 348,
+      "line_end": 364,
       "text": "## code_driven_world_materialization_architecture.md — 6. Детерминизм и identity\n## 6. Детерминизм и identity\n\nSeed material включает party ID, world revision, G4, trigger, materializer/RNG versions и occurrence. Итоговый seed — SHA-256 canonical JSON. Алгоритм v2 использует `mulberry32_v1` через явный `RandomSource`.\n\nДля каждого выбора сохраняются:\n\n```text\nchoice_key\ncandidate_digest\nselected_id\nrng_counter\nselected_weight\nrejection_summary\n```\n\nInstance ID детерминированно выводится из party, run, domain, slot key и ordinal. Изменение candidate set меняет digest и требует нового осознанного запуска, а не молчаливой замены.",
       "char_count": 634
     },
@@ -979,8 +988,8 @@
       "id": "code_driven_world_materialization_architecture.md:7. Материализация G5:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "7. Материализация G5",
-      "line_start": 362,
-      "line_end": 380,
+      "line_start": 365,
+      "line_end": 383,
       "text": "## code_driven_world_materialization_architecture.md — 7. Материализация G5\n## 7. Материализация G5\n\nПорядок:\n\n1. Проверить отсутствие сохранённого baseline G5.\n2. Загрузить применимый G4 profile и binding.\n3. Загрузить layout, G5 templates и slot rules.\n4. Проверить период, сезон, время, погоду, доступ и состояние G4.\n5. Создать обязательные nodes и допустимые optional nodes.\n6. Создать edges и проверить связность, входы и выходы.\n7. Создать anchors и slots.\n8. Материализовать NPC и предметный слой.\n9. Проверить capacity, access, visibility, ownership и causal basis.\n10. Сформировать trace и единый write set.\n\nRuntime-вход Stage 13 обязан содержать отдельные approved profile, layout, node/anchor/edge templates и slot rules с нормализованными ссылками. Capacity, access, visibility, parent slot и start anchor не выводятся из «типового» значения и не имеют fallback.\n\nИнварианты: принадлежность одному G4, отсутствие G6, существование обязательных входов/выходов, физическая связность, отсутствие anchor без slot, совместимость NPC/items со slot и отсутствие доступа в закрытую зону без разрешённого прохода.",
       "char_count": 1118
     },
@@ -988,8 +997,8 @@
       "id": "code_driven_world_materialization_architecture.md:8. Материализация NPC:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "8. Материализация NPC",
-      "line_start": 381,
-      "line_end": 408,
+      "line_start": 384,
+      "line_end": 411,
       "text": "## code_driven_world_materialization_architecture.md — 8. Материализация NPC\n## 8. Материализация NPC\n\nИсточники NPC образуют обязательную цепочку:\n\n```text\nG4 rule → regional archetype/profile set\n→ social role/occupation/legal status\n→ demographic/name/appearance\n→ clothing/equipment\n→ knowledge/behavior\n→ activity/schedule/relationship\n```\n\nЭкземпляр хранит машинные параметры, profile/source refs, причину присутствия, права доступа, route/resource basis и уровень `background|scene|key`. Художественное описание не заменяет данные.\n\nНовый actor независимо от уровня получает полный `actor_base_appearance_v1` в\nсуществующем identity state. Explicit authored values сохраняются без draw;\nих applicability заранее ограничивает deterministic prerequisite choices\n(например, authored hair style/facial hair ограничивает hair length/sex/age),\nа противоречие отклоняется до RNG. Только\nотсутствующие facets выбираются из approved/applicable normalized\nprofile entries, отсортированных по stable ID. Appearance draws выполняются\nпосле прежних materialization choices, а NPC обрабатываются в стабильном\nпорядке slot/instance keys. Пустой required facet — typed data gap. Runtime LLM\nне выбирает внешность NPC. Historical actors не дополняются автоматически.",
       "char_count": 1256
     },
@@ -997,8 +1006,8 @@
       "id": "code_driven_world_materialization_architecture.md:8. Материализация NPC:1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "8. Материализация NPC",
-      "line_start": 381,
-      "line_end": 408,
+      "line_start": 384,
+      "line_end": 411,
       "text": "## code_driven_world_materialization_architecture.md — 8. Материализация NPC\nдке slot/instance keys. Пустой required facet — typed data gap. Runtime LLM\nне выбирает внешность NPC. Historical actors не дополняются автоматически.\n\nПовышение профиля использует отдельный deterministic expansion seed, заполняет только отсутствующие поля и не меняет ранее выбранные значения.",
       "char_count": 371
     },
@@ -1006,8 +1015,8 @@
       "id": "code_driven_world_materialization_architecture.md:9. Предметы, контейнеры и имущество:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "9. Предметы, контейнеры и имущество",
-      "line_start": 409,
-      "line_end": 426,
+      "line_start": 412,
+      "line_end": 429,
       "text": "## code_driven_world_materialization_architecture.md — 9. Предметы, контейнеры и имущество\n## 9. Предметы, контейнеры и имущество\n\nПредмет создаётся только при наличии категории, template/profile, materialization rule, causal basis, допустимого slot, количества и ownership/holder policy — кроме ordinary-результата A1 или direct action по D-014. Location, holder, owner, controller, access, visibility, condition, quantity, legal status и container relation хранятся раздельно.\n\nОдежда материализуется тем же item owner, а не отдельным outfit materializer.\nКаждый garment имеет реальный item ID, owner/holder/controller, placement и\nequipment slot. Exact pinned garment semantics сохраняется в item-owned\nimmutable visual snapshot; clothing state на actor запрещён.\n\n`portrait_spec_v1` строится только на чтении из committed canonical identity и\nserver-sanitized visible equipped items. Это player-safe presentation\nprojection: она не входит в party rows, snapshots, write plans или mutable\ncache, не вызывает LLM/RNG и возвращает `null` для incomplete historical или\nambiguous equipment state. Renderer использует поля spec напрямую и не\nвыбирает внешность hash/RNG.",
       "char_count": 1168
     },
@@ -1015,8 +1024,8 @@
       "id": "code_driven_world_materialization_architecture.md:9. Предметы, контейнеры и имущество:1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "9. Предметы, контейнеры и имущество",
-      "line_start": 409,
-      "line_end": 426,
+      "line_start": 412,
+      "line_end": 429,
       "text": "## code_driven_world_materialization_architecture.md — 9. Предметы, контейнеры и имущество\n и возвращает `null` для incomplete historical или\nambiguous equipment state. Renderer использует поля spec напрямую и не\nвыбирает внешность hash/RNG.\n\nСодержимое контейнера решается кодом при первом открытии: один бросок presence по правилам §3A (`container_template`); число — `min_quantity..max_quantity` профиля содержимого (D3, D9). Создание контейнера само по себе содержимое не материализует. Заявка игрока не создаёт новый slot и не reroll-ит сохранённое. Действующая норма; код v17 — долг CR реализации M2c (LW-028/LW-029).",
       "char_count": 623
     },
@@ -1024,8 +1033,8 @@
       "id": "code_driven_world_materialization_architecture.md:10. Bounded decision protocol:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "10. Bounded decision protocol",
-      "line_start": 427,
-      "line_end": 447,
+      "line_start": 430,
+      "line_end": 450,
       "text": "## code_driven_world_materialization_architecture.md — 10. Bounded decision protocol\n## 10. Bounded decision protocol\n\nКод сначала исключает невозможные варианты. Каждый option содержит:\n\n```text\noption_id\ncommand_token\ncommand_id\nactor_id\ntarget_id\npreconditions\nexpected_cost\nknown_risks\nreason_visible_to_actor\nstate_version\n```\n\nДопустимый ответ содержит только `request_id`, один известный `option_id` и точный token. Token связан с request, actor, option, command, policy version, state version и options digest.\n\nНедопустимы неизвестный token, несколько вариантов, свободный текст, SQL, patch, новый план, утверждение результата и ответ на устаревшую версию состояния.",
       "char_count": 675
     },
@@ -1033,8 +1042,8 @@
       "id": "code_driven_world_materialization_architecture.md:11. Автономные обновления, NPC boundaries и базовый ход:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "11. Автономные обновления, NPC boundaries и базовый ход",
-      "line_start": 448,
-      "line_end": 455,
+      "line_start": 451,
+      "line_end": 458,
       "text": "## code_driven_world_materialization_architecture.md — 11. Автономные обновления, NPC boundaries и базовый ход\n## 11. Автономные обновления, NPC boundaries и базовый ход\n\nКаждое code-only обновление имеет правило, входное состояние, change set, trace, idempotency key и commit gate. Active revision-15 conversation и autonomous paths сводят фактические причины к ровно пяти категориям `self`, `others`, `environment`, `objective`, `communication` и двум уровням `material`, `critical`. Все новые сигналы одного NPC в одном fully resolved same-time batch образуют не более одной boundary и одного LLM-вызова; продолжение намерения и простое восприятие без meaningful response boundary модель не вызывают. Закрытый bounded request остаётся допустим только для genuinely closed domain choice и historical revision, явно выбранной pin.\n\nПервый успешный вход в нематериализованный G4 включает G5 materialization в ту же атомарную транзакцию, что и перемещение. Ошибка либо пустой candidate set отменяют весь переход.\n\nПроверка отсутствующего baseline сериализуется transaction-scoped advisory lock по `(party_id,g4_id)`: блокировка берётся до чтения baseline и защищает также случай, когда строки baseline ещё нет.",
       "char_count": 1209
     },
@@ -1042,8 +1051,8 @@
       "id": "code_driven_world_materialization_architecture.md:12. New-game pipeline:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "12. New-game pipeline",
-      "line_start": 456,
-      "line_end": 470,
+      "line_start": 459,
+      "line_end": 473,
       "text": "## code_driven_world_materialization_architecture.md — 12. New-game pipeline\n## 12. New-game pipeline\n\n- Stage 9 выбирает стартовый узел через bounded protocol.\n- Stage 13 кодом создаёт G5 structure и общий run context.\n- Stage 14 кодом проверяет G5.\n- Stage 15 кодом создаёт NPC, canonical appearance и candidate→instance mapping.\n- Stage 16 кодом создаёт items/containers/property, включая реальные initial garments.\n- Stage 19 кодом собирает hidden state из уже утверждённых экземпляров.\n- Stage 24 кодом строит фиксированный party write plan.\n- Stage 25 атомарно фиксирует результат.\n\nStage 24 не подставляет run/seed/profile/quantity/condition/legal status. Он принимает эти значения только из approved outputs/trace, повторно требует полный appearance contract для новых actors, рекурсивно отклоняет `portrait_spec_v1`, формирует `insert_only` batches для полного нормализованного набора relations и переводит party в `active` внутри того же плана. Stage 25 квалифицирует физические targets схемой `party_runtime` и исполняет их production SQL adapter.\n\nProduction-роли `G5SceneMaterializer`, `InitialNpcPlacer`, `InitialItemPlacer` и LLM write-plan builder запрещены.",
       "char_count": 1174
     },
@@ -1051,8 +1060,8 @@
       "id": "code_driven_world_materialization_architecture.md:13. Проверки:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "13. Проверки",
-      "line_start": 471,
-      "line_end": 474,
+      "line_start": 474,
+      "line_end": 477,
       "text": "## code_driven_world_materialization_architecture.md — 13. Проверки\n## 13. Проверки\n\nОбязательны unit/property/integration tests детерминизма, filters, graph connectivity, capacity, ownership, repeat-entry, no-rematerialization, decision tokens, invalid LLM responses, autonomous updates, rollback, full new-game и first-entry turn. Документ уже `ACTIVE`; критерий «повышения в active» удалён (как в `world_base_materialization_table_requirements.md` §15). Новые нормы presence (§3A) и сопутствующий DDL входят через CR реализации M2c и Contract Auditor.",
       "char_count": 554
     },
@@ -1060,8 +1069,8 @@
       "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "14. Domain-scoped runtime catalog activation",
-      "line_start": 475,
-      "line_end": 526,
+      "line_start": 478,
+      "line_end": 529,
       "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n## 14. Domain-scoped runtime catalog activation\n\nПолный world pin партии и pin предметно-контейнерного каталога являются\nразными identities.\n\n```text\nfull world pin\n= parties.world_revision_id + parties.world_catalog_digest\n\ndomain pin\n= item_container_materialization_v2 catalog revision\n+ catalog digest\n+ exact successful import\n+ runtime contract\n+ compatible world tuple\n```\n\nDomain revision не является полной world revision и не может выбираться общим\nworld-pin selector. Parent tuple фиксирует точный operator snapshot, относительно\nкоторого собран overlay. Compatible world tuple фиксирует полный world pin, с\nкоторым overlay разрешён runtime; равенство этих tuple не предполагается.\n\nActive domain pin читается ровно один раз при создании новой партии, до\nкомпозиции Stage 8. Один immutable pin проходит через Stage 8, 13, 14, 16, 24 и\n25. Stage 24 включает party pin и run pin в тот же logical write plan, что и\nmaterialization rows, а Stage 25 записывает и проверяет их в одной party\ntransaction.",
       "char_count": 1108
     },
@@ -1069,8 +1078,8 @@
       "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "14. Domain-scoped runtime catalog activation",
-      "line_start": 475,
-      "line_end": 526,
+      "line_start": 478,
+      "line_end": 529,
       "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n включает party pin и run pin в тот же logical write plan, что и\nmaterialization rows, а Stage 25 записывает и проверяет их в одной party\ntransaction.\n\nReload, turn и повторный вход читают только persisted party pin и exact\nhistorical import snapshots. Active pointer повторно не читается. Смена active\ncatalog не меняет существующие партии и не запускает автоматическую\nрематериализацию или backfill. Отсутствующий party domain pin является typed\nhard block.\n\nRuntime восстанавливает каталог только по exact import membership. Membership\nразличает:\n\n- `insert` — строка принадлежит overlay и была создана import;\n- `assert_existing` — точная каноническая строка уже существовала в parent\n  snapshot и была проверена без записи.\n\nScoped dependency assertion является утверждённым входом только одного\nmaterialization scope. Она хранит точный canonical base-row snapshot и не\nсоздаёт G4, не меняет его canonical status, историческую или пространственную\nсемантику. Изменение base row после утверждения блокирует использование\nassertion.",
       "char_count": 1135
     },
@@ -1078,8 +1087,8 @@
       "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:2",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "14. Domain-scoped runtime catalog activation",
-      "line_start": 475,
-      "line_end": 526,
+      "line_start": 478,
+      "line_end": 529,
       "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n, не меняет его canonical status, историческую или пространственную\nсемантику. Изменение base row после утверждения блокирует использование\nassertion.\n\nДо materialization runtime обязан fail-closed проверить compatible world tuple,\nexact import и runtime contract. Domain pin, import provenance, activation event\nи их digests сохраняются в party state и run trace. Неполный pin, несовместимый\ntuple, отсутствующее membership или несовпавший digest запрещают запуск\nmaterialization.",
       "char_count": 581
     },
@@ -1566,8 +1575,8 @@
       "section": "4. Explicit active contracts",
       "line_start": 86,
       "line_end": 111,
-      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts\n\n| Документ | Статус | Основной scope / примечание |\n|---|---|---|\n| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details; §3A.1 — `place_family` как единственный слой типов мест для presence/routines/water/slots (CR #158 / D26) |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |\n| [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |\n| [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details; §8.1 — `presence_rules` + `place_family` и колонки discovery/guards/confidence (CR #158 / D26) |\n| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, role-owned reasoning effort и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |\n| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; первый приход во время игры — turn/Strategy B (D25); §3.1 — 0 изобретённых токенов + прозаический порог ≤0,67 CR; private auditor возвращает literal ordered source reviews и semantic/literary failures, Adapter без синтеза reviewed segments/evidence детерминированно собирает coverage/verdict и fail-closed отклоняет malformed output; factual/hidden/technical failures блокируют delivery, чисто литературный verdict сохраняется без блокировки сервера/первого экрана; atomic current-beat sources отдельно сохраняют выполненную попытку и неизвестный результат наблюдения; current beat получает только `visible_scene` support, новые sensory facts входят в required visible changes, а scene-only wire сохраняет descriptive sensory support; opening после factual materialization и до delivery требует persisted rich package, stable retry identity, eight-question reader control и bounded Stage 22/23, static prose только hint; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |\n| [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |\n| [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |\n| [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |\n| [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |\n| [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |\n| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Default gameplay model — exact `qwen3.8-27b-uncensored-w4a16-tp2` через настроенный пользователем OpenAI-compatible vLLM endpoint; managed gameplay provider и fallback отсутствуют. Readiness, persistence и UI принадлежат game-server/game-web/local-play MODULE owners. Runtime wiring spatial-v3 production v16 активирован как sole production owner и определяется actual release/binding. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |\n| [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `ACTIVE` | универсальные категории и фасеты; presence-правила только на иерархический фасет домена (`object_type` / `container_form`); [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146), PC §9.1 |",
-      "char_count": 5481
+      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts\n\n| Документ | Статус | Основной scope / примечание |\n|---|---|---|\n| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details; §3A.1 — `place_family` как единственный слой типов мест для presence/routines/water/slots (CR #158 / D26) |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |\n| [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |\n| [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details; §8.1 — `presence_rules` + `place_family` и колонки discovery/guards/confidence (CR #158 / D26) |\n| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, role-owned reasoning effort и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |\n| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; первый приход во время игры — turn/Strategy B (D25); §3.1 — 0 изобретённых токенов + прозаический порог CR [#158 comment 5857929393](https://github.com/PavelSlaven/Novgorod1230/issues/158#issuecomment-5857929393); private auditor возвращает literal ordered source reviews и semantic/literary failures, Adapter без синтеза reviewed segments/evidence детерминированно собирает coverage/verdict и fail-closed отклоняет malformed output; factual/hidden/technical failures блокируют delivery, чисто литературный verdict сохраняется без блокировки сервера/первого экрана; atomic current-beat sources отдельно сохраняют выполненную попытку и неизвестный результат наблюдения; current beat получает только `visible_scene` support, новые sensory facts входят в required visible changes, а scene-only wire сохраняет descriptive sensory support; opening после factual materialization и до delivery требует persisted rich package, stable retry identity, eight-question reader control и bounded Stage 22/23, static prose только hint; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |\n| [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |\n| [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |\n| [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |\n| [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |\n| [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |\n| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Default gameplay model — exact `qwen3.8-27b-uncensored-w4a16-tp2` через настроенный пользователем OpenAI-compatible vLLM endpoint; managed gameplay provider и fallback отсутствуют. Readiness, persistence и UI принадлежат game-server/game-web/local-play MODULE owners. Runtime wiring spatial-v3 production v16 активирован как sole production owner и определяется actual release/binding. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |\n| [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `ACTIVE` | универсальные категории и фасеты; presence-правила только на иерархический фасет домена (`object_type` / `container_form`); [#146](https://github.com/PavelSlaven/Novgorod1230/issues/146), PC §9.1 |",
+      "char_count": 5581
     },
     {
       "id": "CONTRACT_INDEX.md:4. Explicit active contracts:2",
@@ -14895,8 +14904,8 @@
       "section": "3.1. Порог выдумок (CR #158 / C7)",
       "line_start": 71,
       "line_end": 77,
-      "text": "## situational_prose_requirements.md — 3.1. Порог выдумок (CR #158 / C7)\n### 3.1. Порог выдумок (CR #158 / C7)\n\nДва независимых критерия, не смешивать:\n\n1. **Детерминированная проверка кода** у владельца `@rus/narration`: **0** изобретённых имён, топонимов, обращений и служебных/world_base field names в player-facing тексте. Unit fail при любом изобретённом токене или технической утечке.\n2. **Прозаический порог CR (методика без чисел CR):** три слепых судьи на один и тот же текст, одна рубрика, классы выдумок; «жёсткие выдумки» — без красок света, цвета, температуры и поз. Числовые пороги приёмки задаются только ссылкой на CR [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158), comment [5857929393](https://github.com/PavelSlaven/Novgorod1230/issues/158#issuecomment-5857929393): верность ≥ 3,5; жёстких выдумок ≤ 2,0; противоречий ≤ 0,6; худший текст ≤ 4 / < 2. Отдельный model «revise» после auditor **запрещён** (Strategy D: auditor + ≤1 format repair + ≤1 semantic rewrite + code checks).",
-      "char_count": 1012
+      "text": "## situational_prose_requirements.md — 3.1. Порог выдумок (CR #158 / C7)\n### 3.1. Порог выдумок (CR #158 / C7)\n\nДва независимых критерия, не смешивать:\n\n1. **Детерминированная проверка кода** у владельца `@rus/narration`: **0** изобретённых имён, топонимов, обращений и служебных/world_base field names в player-facing тексте. Unit fail при любом изобретённом токене или технической утечке.\n2. **Прозаический порог CR (методика):** классы C1–C5; на каждый кейс — 3 текста qwen; на каждый текст — среднее трёх слепых судей по одной рубрике; порог приёмки — по среднему за 15 текстов (5 кейсов × 3). «Жёсткие выдумки» — без красок света, цвета, температуры, поз, **взглядов и настроения** (не переданных во входе). Числовые пороги — CR [#158 comment 5857929393](https://github.com/PavelSlaven/Novgorod1230/issues/158#issuecomment-5857929393): верность ≥ 3,5; жёстких выдумок ≤ 2,0; противоречий ≤ 0,6; худший текст — жёстких выдумок ≤ 4 и противоречий < 2. Отдельный model «revise» после auditor **запрещён** (Strategy D: auditor + ≤1 format repair + ≤1 semantic rewrite + code checks).",
+      "char_count": 1084
     },
     {
       "id": "situational_prose_requirements.md:4. Общая композиционная норма:0",
@@ -23454,8 +23463,8 @@
       "section": "8.1. Таблица правил наличия (M2c authoring)",
       "line_start": 200,
       "line_end": 235,
-      "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\nа — `world_base.presence_rules` (`infra/world-base/schema/27.sql`, CR #158).\n\nТребуется тонкая authoring-таблица у materialization owner со столбцами:\n\n| Поле | Смысл |\n|---|---|\n| `rule_id` | стабильный id правила (`pr_id` authoring); в исходе броска хранится как `rule_id@rule_version` (§3A.1) |\n| `world_revision_id` | ревизия authoring |\n| `scope_kind` | для M2c presence/routines/water/slots — `place_family`; для контейнеров — `container_template` |\n| `scope_ref` | `pf_id` или id контейнерного шаблона |\n| `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |\n| `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |\n| `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |\n| `category_id` | заполняется только при `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); при `social_role` / `occupation` поле не заполняется (предмет правила — `subject_ref`) |\n| `item_ref` | при `subject_kind=category` — выбранная вещь правила; NULL, если authoring не задаёт конкретный item |\n| `variants` | JSON-массив альтернативных `item_ref` той же категории (подкатегории §3A.4); весов в authoring нет — runtime выбирает **равномерно** тем же seed после исхода «есть» |\n| `presence_probability_ppm` | целое 0…1_000_000 |\n| `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |\n| `allowed_seasons` | закрытый словарь сезонов календаря |\n| `allowed_times` | authoring provenance; для людей **не импортировать** (время суток решают распорядки, §3A.5); для природы/вещей — хранить, не исполнять как гейт часа прихода |\n| `guards` | text[] provenance; **не исполнять** (словаря evaluator нет; LW) |\n| `entry_visible_if` / `search_only_if` | режимы обнаружения (exposed / concealed); без колонки `visibility_class` |\n| `entry_exposed_weight` / `search_concealed_weight` | INT NULL; веса weighted draw; пустые веса при обоих режимах = 1/1 (редакционное правило + LW) |\n| `wild_arrival_cause` | TEXT NULL; класс причины появления в дикой местности (например `prior_visitor_loss_or_discard`); **не гейтит** presence-бросок (§3A.6) |\n| `refresh_class` | `none` (default) или `by_year_season` |\n| `confidence` | словарь соседей `unknown \\| low \\| medium_low \\| medium \\| medium_high \\| high`; при импорте authoring `A→high`, `B→medium`, `C→low`, пусто/`no_source`→`unknown` |\n| `authoring_payload` | JSONB object; исходный authoring payload правила |\n| `provenance_ref` | ссылка на `source_records` |\n| `rule_version` / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |",
-      "char_count": 2893
+      "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\nа — `world_base.presence_rules` (`infra/world-base/schema/27.sql`, CR #158).\n\nТребуется тонкая authoring-таблица у materialization owner со столбцами:\n\n| Поле | Смысл |\n|---|---|\n| `rule_id` | стабильный id правила (`pr_id` authoring); в исходе броска хранится как `rule_id@rule_version` (§3A.1) |\n| `world_revision_id` | ревизия authoring |\n| `scope_kind` | для M2c presence/routines/water/slots — `place_family`; для контейнеров — `container_template` |\n| `scope_ref` | `pf_id` или id контейнерного шаблона |\n| `region_id` | NULL = общемировое по умолчанию; иначе региональное переопределение |\n| `subject_kind` | `category` / `social_role` / `occupation` — предмет правила (D4; люди — роль/занятие) |\n| `subject_ref` | id категории фасета, `region_social_roles` или `region_occupations` |\n| `category_id` | заполняется только при `subject_kind=category` — категория hierarchical presence-фасета (`object_type` / `container_form` / …); при `social_role` / `occupation` поле не заполняется (предмет правила — `subject_ref`) |\n| `item_ref` | при `subject_kind=category` — выбранная вещь правила; NULL, если authoring не задаёт конкретный item |\n| `variants` | JSON-массив объектов с обязательным `item_ref` (optional provenance); альтернативные вещи той же категории; пул выбора и равномерный draw — §3A.4 |\n| `presence_probability_ppm` | целое 0…1_000_000 |\n| `count_limit` | верхняя граница числа на экземпляр scope (не на шаблон); для природных finite sources — стык с `party_resource_nodes` |\n| `allowed_seasons` | закрытый словарь сезонов календаря |\n| `allowed_times` | authoring provenance; для людей **не импортировать** (время суток решают распорядки, §3A.5); для природы/вещей — хранить, не исполнять как гейт часа прихода |\n| `guards` | text[] provenance; **не исполнять** (словаря evaluator нет; LW) |\n| `entry_visible_if` / `search_only_if` | режимы обнаружения (exposed / concealed); без колонки `visibility_class` |\n| `entry_exposed_weight` / `search_concealed_weight` | INT NULL; веса weighted draw; пустые веса при обоих режимах = 1/1 (редакционное правило + LW) |\n| `wild_arrival_cause` | TEXT NULL; класс причины появления в дикой местности (например `prior_visitor_loss_or_discard`); **не гейтит** presence-бросок (§3A.6) |\n| `refresh_class` | `none` (default) или `by_year_season` |\n| `confidence` | словарь соседей `unknown \\| low \\| medium_low \\| medium \\| medium_high \\| high`; при импорте authoring `A→high`, `B→medium`, `C→low`, пусто/`no_source`→`unknown` |\n| `authoring_payload` | JSONB object; исходный authoring payload правила |\n| `provenance_ref` | ссылка на `source_records` |\n| `rule_version` / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |",
+      "char_count": 2874
     },
     {
       "id": "world_base_materialization_table_requirements.md:8.1. Таблица правил наличия (M2c authoring):2",
@@ -23463,8 +23472,8 @@
       "section": "8.1. Таблица правил наличия (M2c authoring)",
       "line_start": 200,
       "line_end": 235,
-      "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\n / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |\n\n**Импорт и исход (C12 / NOTE-rule-cause).** В одной `world_revision_id` пара `(rule_id, rule_version)` обязана быть уникальна. Стабильный authoring `pr_id` не гарантирует неизменность содержания при том же `rule_version`. В party-записи исхода (`presence_resolutions[].rule_ref`) хранится `rule_id@rule_version` как причина **в пределах мировой ревизии, закреплённой за партией**; сравнение между ревизиями не выполняется.\n\nСемантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.",
-      "char_count": 767
+      "text": "## world_base_materialization_table_requirements.md — 8.1. Таблица правил наличия (M2c authoring)\n / `status` | версия и approval status правила; импорт только вердиктов `approve` / `approve_with_limits` (WR §21.1); без per-row `canonical_digest` |\n\n**Импорт и исход (C12 / NOTE-rule-cause).** Семантика ключа `rule_id@rule_version`, глобальная неизменность и правила импорта (идемпотентный пропуск / fail-closed при ином содержании) — `code_driven_world_materialization_architecture.md` §3A.1. Импортёр R-1 реализует сравнение содержания; до R-1 DDL удерживает PK `(rule_id, rule_version)`.\n\nСемантика броска и хранения исхода — `code_driven_world_materialization_architecture.md` §3A.",
+      "char_count": 686
     },
     {
       "id": "world_base_materialization_table_requirements.md:9. Bounded decision data:0",

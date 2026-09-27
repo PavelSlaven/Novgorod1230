@@ -1,0 +1,2 @@
+phase_rule_id,fa_id,season,phase,visibility_state,voice_state,voice_text_ref,source_refs,rule_ref,confidence,status
+fa_x,fa_a,spring,day,,,,,C,candidate

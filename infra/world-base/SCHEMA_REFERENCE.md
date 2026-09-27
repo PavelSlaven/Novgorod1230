@@ -2,7 +2,7 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 27 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `31ac195160a8a8d07e203a65b7110c37eb918fada624adea993a6cf0795a565a`.
+- SHA-256 развёрнутого DDL: `236a7dbedb13ca0e57844a556e9264103a05800a240ae4f2550e4968e6cc7f28`.
 - Таблиц: 217.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
@@ -3704,7 +3704,9 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (rule_id, rule_version)`
+- `UNIQUE (rule_id, rule_version, world_revision_id)`
 - `CHECK ( (subject_kind = 'category' AND category_id IS NOT NULL) OR (subject_kind IN ('social_role', 'occupation') AND category_id IS NULL) )`
+- `CHECK ( subject_kind = 'category' OR (item_ref IS NULL AND variants = '[]'::jsonb) )`
 
 ### `world_base.npc_relationship_materialization_rules`
 
@@ -3730,6 +3732,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (rule_id, rule_version)`
+- `UNIQUE (rule_id, rule_version, world_revision_id)`
 
 ### `world_base.speech_address_forms`
 
@@ -3755,6 +3758,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (form_id, form_version)`
+- `UNIQUE (form_id, form_version, world_revision_id)`
 
 ### `world_base.household_composition_profiles`
 
@@ -3778,6 +3782,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (profile_id, profile_version)`
+- `UNIQUE (profile_id, profile_version, world_revision_id)`
 
 ### `world_base.slot_instance_variants`
 
@@ -3800,6 +3805,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (variant_id, variant_version)`
+- `UNIQUE (variant_id, variant_version, world_revision_id)`
 
 ### `world_base.water_body_presence_facets`
 
@@ -3829,6 +3835,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (facet_id, facet_version)`
+- `UNIQUE (facet_id, facet_version, world_revision_id)`
 
 ### `world_base.fauna_phase_activity_rules`
 
@@ -3853,6 +3860,7 @@ Finite deterministic recovery selectors без party IDs и nearest fallback.
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (rule_id, rule_version)`
+- `UNIQUE (rule_id, rule_version, world_revision_id)`
 
 ## Materialization v2: NPC-профили
 

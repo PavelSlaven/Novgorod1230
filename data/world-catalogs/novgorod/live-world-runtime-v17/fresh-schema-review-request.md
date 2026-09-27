@@ -1,8 +1,8 @@
 # Fresh v17 database schema review request
 
 Review [fresh-schema-request.json](fresh-schema-request.json) at source commit
-`00ba1de301a3236ea3ba929651ea04026bcf2671`. Request SHA-256:
-`9a41e939e063524bb02923408096ca58137b9f6c58d24ee29d8b75de6d2bc78e` (15449 bytes).
+`faaf77ecd9b678758f69f14327d61492cd7df578`. Request SHA-256:
+`655424b850ece915cfa58f91bf033f44fbdadb2f6e7cc360d157c640538119e2` (15450 bytes).
 This is a pending request, not an approval or execution record.
 
 Requested target is two **new** databases in the existing managed local-play

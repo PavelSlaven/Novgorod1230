@@ -1,0 +1,2 @@
+sp_id,channel,relationship_kind,speaker_role_ref,addressee_role_ref,register_ref,form_ru,situation,legal_weight_ref,attestation,source_refs,rule_ref,no_source,confidence,status
+form_test,oral,unspecified,,nov_role_a,,Господин,,,,, ,A,candidate

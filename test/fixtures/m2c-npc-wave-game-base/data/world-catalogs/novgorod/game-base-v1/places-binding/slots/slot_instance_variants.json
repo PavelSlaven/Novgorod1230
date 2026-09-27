@@ -1,0 +1,1 @@
+[{"variant_id":"sv_empty_w","slot_id":"slot_a","weight":"","applicability":"all","facets":{},"candidate_record_ref":""},{"variant_id":"sv_one_w","slot_id":"slot_b","weight":"2","applicability":"all","facets":{"confidence":"C"},"candidate_record_ref":""}]

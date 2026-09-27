@@ -7,6 +7,7 @@ import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } fr
 import { loadTemplateRegistry, WK_PLACE_FIRST, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
 import { build as buildPresenceRules } from './build-presence-rules.mjs';
+import { checkPeopleComposition } from './check-people-composition.mjs';
 
 const checks = [];
 const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 15), external, ...extra });
@@ -18,6 +19,13 @@ const reg = loadTemplateRegistry();
 const routes = new Set(readJson(SEEDS.route).map((r) => r.id));
 const pfSet = new Set(fam.map((f) => f.pf_id));
 const ex = readJson(P('inputs/pr98-extract.json'));
+
+const startTerritoryArg = process.argv.indexOf('--start-territory');
+if (startTerritoryArg >= 0 && !process.argv[startTerritoryArg + 1]) throw new Error('--start-territory requires a JSON path');
+check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeopleComposition(
+  readJson(P('presence/people_composition_authoring.json')),
+  startTerritoryArg >= 0 ? readJson(path.resolve(process.argv[startTerritoryArg + 1])) : null,
+));
 
 // ---- place_families
 {

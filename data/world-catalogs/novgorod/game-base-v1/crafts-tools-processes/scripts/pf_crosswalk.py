@@ -19,6 +19,26 @@ def read(path, delimiter=','):
 families = read(GB / 'places-binding/places/place_families.csv')
 pf_kind = {row['pf_id']: row['pf_kind'] for row in families}
 assert len(pf_kind) == len(families) and len(set(pf_kind.values())) == 16
+G4_OWNER = 'places-binding/places/crosswalk_v6_g4_location_types.csv'
+owner_rows = read(GB / G4_OWNER)
+owner = {row['g4_location_type']: row for row in owner_rows}
+assert len(owner) == len(owner_rows)
+
+
+def owner_pf(term):
+    row = owner.get(term)
+    if not row or row['mapping_status'] != 'mapped':
+        return None
+    ids = row['pf_ids'].split(';')
+    return ids[0] if len(ids) == 1 and ids[0] in pf_kind else None
+
+
+def named_g4(record):
+    return {term.strip() for term in record['typical_g4_location_types'].split(';') if term.strip()}
+
+
+def named_work(record):
+    return {term.strip() for term in record['where_work_happens'].split(';') if term.strip()}
 occupations = {row['occupation_id']: row for row in read(REPO / 'data/novgorod-region/novgorod_occupations_v1_enriched.tsv', '\t')}
 tool_rows = read(GROUP / 'craft_tools_gear/tools_gear.csv')
 tools = {row['tl_id']: row for row in tool_rows}
@@ -60,51 +80,33 @@ for row in read(GROUP / 'workshops/workshops.csv'):
             add(occupation, pf, 'source', row['confidence'],
                 f'workshops/workshops.csv#ws_id={row["ws_id"]}', workshop=row['ws_id'])
 
-# Only exact G4 location terms with an unambiguous PF equivalent.
-g4_pf = {
-    'ferry_mooring': 'ferry_landing', 'church': 'church_interior',
-    'church_yard': 'churchyard', 'road_exit': 'road',
-    'outer_gate': 'town_wall_edge', 'church_gate': 'churchyard',
-    'market_square': 'market_square', 'craft_street': 'town_street',
-    'work_sheds': 'ordinary_workshop', 'merchant_yards': 'town_courtyard',
-    'storehouses': 'cellar_granary', 'storage_klet': 'cellar_granary',
-    'stable_yard': 'outbuildings', 'cattle_yard': 'outbuildings',
-    'river_landings': 'river_wharf', 'dwelling_yard': 'rural_yard',
-    'field_edge': 'field_margin', 'threshing_floor': 'threshing_barn',
-    'gardens': 'orchard_garden',
-}
+# G4: only an exact occupation token with one mapped PF in the places owner.
+# Multivalued owner rows remain gaps; no occupation-specific choice is evidenced.
+# W: only complete semicolon-delimited terms explicitly naming one PF.
+# No substring matching (for example, "зимовье" does not name "зимник").
+w_pf = {'зимник': 'pf_winter_ice_crossing', 'погост': 'pf_churchyard',
+        'болото': 'pf_bog', 'скотный двор': 'pf_outbuildings',
+        'поле': 'pf_arable_field', 'покос': 'pf_hay_meadow',
+        'рыболовный стан': 'pf_fishing_camp', 'торг': 'pf_market_square',
+        'церковный двор': 'pf_churchyard'}
 for occupation, record in occupations.items():
-    for term in record['typical_g4_location_types'].split(';'):
-        term = term.strip()
-        if term in g4_pf:
-            add(occupation, 'pf_' + g4_pf[term], 'source',
-                tsv_confidence[record['confidence']],
-                f'tsv:occ:{occupation}#typical_g4_location_types')
-    for term in record['where_work_happens'].split(';'):
-        pf = {'зимник': 'winter_ice_crossing', 'погост': 'churchyard'}.get(term.strip())
+    for term in named_g4(record):
+        pf = owner_pf(term)
         if pf:
-            add(occupation, 'pf_' + pf, 'source',
-                tsv_confidence[record['confidence']],
+            add(occupation, pf, 'source',
+                max(tsv_confidence[record['confidence']], owner[term]['confidence']),
+                f'tsv:occ:{occupation}#typical_g4_location_types')
+            links[(occupation, pf)]['refs'].add(f'{G4_OWNER}#g4_location_type={term}')
+            links[(occupation, pf)]['refs'].update(owner[term]['source_refs'].split(';'))
+    for term in named_work(record):
+        pf = w_pf.get(term)
+        if pf:
+            add(occupation, pf, 'source', tsv_confidence[record['confidence']],
                 f'tsv:occ:{occupation}#where_work_happens')
 
-# These work sites are named in the occupation, rather than inferred from its kit.
-direct = {
-    'nov_occ_herder': [('outbuildings', 'where_work_happens', 'скотный двор'),
-                       ('pasture', 'occupation_title', 'пастух')],
-    'nov_occ_cattle_keeper': [('outbuildings', 'where_work_happens', 'скотный двор')],
-    'nov_occ_ploughman': [('arable_field', 'where_work_happens', 'поле')],
-    'nov_occ_haymaker': [('hay_meadow', 'where_work_happens', 'покос')],
-    'nov_occ_fisher': [('fishing_camp', 'where_work_happens', 'рыболовный стан')],
-    'nov_occ_fish_weir_keeper': [('fishing_camp', 'where_work_happens', 'рыболовный стан')],
-    'nov_occ_market_guard': [('market_square', 'where_work_happens', 'торг')],
-    'nov_occ_beggar_alms': [('churchyard', 'where_work_happens', 'церковный двор'),
-                             ('market_square', 'where_work_happens', 'торг')],
-}
-for occupation, sites in direct.items():
-    for pf, field, phrase in sites:
-        assert phrase in occupations[occupation][field], occupation
-        add(occupation, 'pf_' + pf, 'source', tsv_confidence[occupations[occupation]['confidence']],
-            f'tsv:occ:{occupation}#{field}')
+assert 'пастух' in occupations['nov_occ_herder']['occupation_title']
+add('nov_occ_herder', 'pf_pasture', 'rule', 'C',
+    'tsv:occ:nov_occ_herder#occupation_title')
 assert 'охотник' in occupations['nov_occ_hunter_trapper']['occupation_title']
 add('nov_occ_hunter_trapper', 'pf_hunting_ground', 'rule', 'C',
     'tsv:occ:nov_occ_hunter_trapper#occupation_title')
@@ -135,28 +137,25 @@ if '--check' in sys.argv:
     actual = read(TARGET)
     assert all(row['basis'] != 'no_source' for row in actual if row['occupation_id'] and row['pf_id'])
     assert {(row['occupation_id'], row['pf_id']) for row in actual if row['basis'] != 'no_source'} == set(links)
-    # Independently require the named sites reported missing by the C003a review.
-    named_g4 = {
-        'outer_gate': 'town_wall_edge', 'cattle_yard': 'outbuildings',
-        'threshing_floor': 'threshing_barn', 'gardens': 'orchard_garden',
-        'storage_klet': 'cellar_granary', 'church_yard': 'churchyard',
-    }
+    # Independently compare each parseable G4 token to the current owner row.
     linked = {(row['occupation_id'], row['pf_id']) for row in actual if row['basis'] != 'no_source'}
     for occupation, record in occupations.items():
-        named = set(record['typical_g4_location_types'].split(';'))
-        for term, pf in named_g4.items():
-            if term in {value.strip() for value in named}:
-                assert (occupation, 'pf_' + pf) in linked, (occupation, term, pf)
-        for term, pf in {'зимник': 'winter_ice_crossing', 'погост': 'churchyard'}.items():
-            if term in {value.strip() for value in record['where_work_happens'].split(';')}:
-                assert (occupation, 'pf_' + pf) in linked, (occupation, term, pf)
-    named_direct = {
-        'nov_occ_market_guard': ('where_work_happens', 'торг', 'market_square'),
-        'nov_occ_beggar_alms': ('where_work_happens', 'церковный двор', 'churchyard'),
-    }
-    for occupation, (field, phrase, pf) in named_direct.items():
-        assert phrase in occupations[occupation][field], (occupation, field, phrase)
-        assert (occupation, 'pf_' + pf) in linked, (occupation, pf)
+        for term in named_g4(record):
+            owner_row = owner.get(term)
+            if owner_row and owner_row['mapping_status'] == 'mapped' and len(owner_row['pf_ids'].split(';')) == 1:
+                pf = owner_row['pf_ids']
+                assert pf in pf_kind, (term, pf)
+                assert (occupation, pf) in linked, (occupation, term, pf)
+                row = next(row for row in actual if row['occupation_id'] == occupation and row['pf_id'] == pf)
+                assert f'{G4_OWNER}#g4_location_type={term}' in row['source_refs'].split(';')
+                assert set(owner_row['source_refs'].split(';')) <= set(row['source_refs'].split(';'))
+                assert row['confidence'] >= owner_row['confidence']
+        for term, pf in w_pf.items():
+            if term in named_work(record):
+                assert (occupation, pf) in linked, (occupation, term, pf)
+    herder = next(row for row in actual if row['occupation_id'] == 'nov_occ_herder'
+                  and row['pf_id'] == 'pf_pasture')
+    assert herder['basis'] == 'rule' and herder['confidence'] == 'C'
     hunter = next(row for row in actual if row['occupation_id'] == 'nov_occ_hunter_trapper'
                   and row['pf_id'] == 'pf_hunting_ground')
     assert hunter['basis'] == 'rule' and hunter['confidence'] == 'C'

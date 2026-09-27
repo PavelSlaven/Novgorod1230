@@ -147,7 +147,7 @@ W('military/security.csv', Object.keys(secRows[0]), secRows);
 W('military/military_events.csv', Object.keys(evRows[0]), evRows);
 W('military/combat_likelihood_by_role.csv', Object.keys(clRows[0]), clRows);
 const tally = (rows, f) => rows.reduce((a, r) => (a[r[f]] = (a[r[f]] || 0) + 1, a), {});
-const summary = { generated: new Date().toISOString().slice(0, 10), files: counts,
+const summary = { files: counts,
   weapons_armour: { by_kind: tally(wpRows, 'kind'), by_tier: tally(wpRows, 'effective_tier'), by_confidence: tally(wpRows, 'confidence'), by_priority: tally(wpRows, 'priority'), by_category_status: tally(wpRows, 'category_status') },
   crosswalk: tally(cw, 'mapping'), access_levels: tally(accRows, 'access_level'),
   security: { by_kind: tally(secRows, 'unit_or_post_kind'), by_confidence: tally(secRows, 'confidence') }, events: { by_kind: tally(evRows, 'kind'), by_confidence: tally(evRows, 'confidence') },

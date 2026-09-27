@@ -21,11 +21,11 @@
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 9 | 23 | 0 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | approve_with_limits | 0 | 11 | 0 |
-| [places-binding](places-binding/VERIFICATION.md) | approve_with_limits | 4 | 19 | 0 |
+| [places-binding](places-binding/VERIFICATION.md) | rework | 4 | 19 | 1 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **54** | **205** | **0** |
+| **Итого** | | **54** | **205** | **1** |
 
 ## Вердикты по файлам
 
@@ -349,6 +349,7 @@
 | [`places/place_families.csv`](places-binding/places/place_families.csv) | [approve_with_limits](places-binding/VERIFICATION.md#placesplace_familiescsv--approve_with_limits) |
 | [`places/place_family_facets.csv`](places-binding/places/place_family_facets.csv) | [approve](places-binding/VERIFICATION.md#placesplace_family_facetscsv--approve) |
 | [`presence/frequency_rule.json`](places-binding/presence/frequency_rule.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencefrequency_rulejson--approve_with_limits) |
+| [`presence/people_composition_authoring.json`](places-binding/presence/people_composition_authoring.json) | [rework](places-binding/VERIFICATION.md#presencepeople_composition_authoringjson--rework) |
 | [`presence/people_presence_authoring.csv`](places-binding/presence/people_presence_authoring.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_presence_authoringcsv--approve_with_limits) |
 | [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepresence_rulescsv-перенос-placement_owner_ref--approve_with_limits) |
 | [`reports/validation.json`](places-binding/reports/validation.json) | [approve_with_limits](places-binding/VERIFICATION.md#reportsvalidationjson--approve_with_limits) |

@@ -145,6 +145,7 @@ export function build({ write = true } = {}) {
   const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
   for (const [i, p] of people.entries()) {
     const where = `presence/people_presence_authoring.csv#row${i + 2}`;
+    if (!['composition', 'presence_rule'].includes(p.creation_owner)) throw new Error(`${where}: invalid creation_owner`);
     if (p.scope_kind !== 'place_family' || !families.has(p.scope_ref)) throw new Error(`${where}: unresolved place family ${p.scope_ref}`);
     if (!({ occupation: occupations, social_role: roles })[p.subject_kind]?.has(p.subject_ref)) throw new Error(`${where}: unresolved subject ${p.subject_kind}:${p.subject_ref}`);
     const fc = ppmFor(p.frequency_class);
@@ -154,6 +155,7 @@ export function build({ write = true } = {}) {
     const seasonList = split(p.allowed_seasons);
     const times = split(p.allowed_times);
     if (!seasonList.length || seasonList.some((s) => !RULE.season_rule.dictionary.includes(s)) || !times.length || times.some((t) => !['morning', 'day', 'evening', 'night'].includes(t))) throw new Error(`${where}: invalid season or time`);
+    if (p.creation_owner === 'composition') continue;
     for (const season of seasonList) for (const time of times) {
       candidates.push({ scope_kind: p.scope_kind, scope_ref: p.scope_ref, region_id: 'region_novgorod_land', category_ref: '', subject_kind: p.subject_kind, subject_ref: p.subject_ref,
         frequency_class: fc.cls, class_capped_from: '', probability_ppm: fc.ppm, probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: +p.count_limit, count_limit_basis: 'people_authoring',

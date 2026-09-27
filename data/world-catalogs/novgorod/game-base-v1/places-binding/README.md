@@ -7,8 +7,8 @@
 | Папка | Домен | Главный файл | Строк |
 |---|---|---|---|
 | `places/` | place_families, place_binding | `place_families.csv`, `node_binding.csv` | 44, 227 |
-| `presence/` | presence_rules | `frequency_rule.json`, `presence_rules.csv` | правило; 2 426 на пересборку 2026-09-26 (пересобирается из пулов, см. `presence/README.md`) |
-| `presence/` | people composition D-2 | `people_composition_authoring.json` | 16 PF, 6 постоянных групп, 13 явных пустых пробелов; формат и проверки — `presence/README.md` |
+| `presence/` | presence_rules | `frequency_rule.json`, `presence_rules.csv` | правило; 5 719 производных строк (пересобирается из пулов, см. `presence/README.md`) |
+| `presence/` | people composition D-2 | `people_composition_authoring.json` | 16 PF, 5 постоянных групп, 16 глобальных пробелов; формат и проверки — `presence/README.md` |
 | `categories/` | category_registry | `category_registry.csv`, `place_family_categories.csv` | 982, 61 (на пересборку 2026-09-26, см. `categories/README.md`) |
 | `limits/` | place_generation_limits | `place_generation_limits.csv` | 105 |
 | `parameters/` | category_parameters | `parameter_definitions.csv`, `category_parameters.csv` | 16, 3 697 |
@@ -48,7 +48,7 @@
 Подробности, метод, источники и пробелы — в README каждой папки.
 ## Правки C002 — people presence
 
-`presence/people_presence_authoring.csv` задаёт candidate-роли и занятия для 16 PF с сезонным и суточным измерением. `scripts/build-presence-rules.mjs` добавляет 69 правил людей к правилам категорий из пулов; проверка ссылок, ключей и условий — в `scripts/validate.mjs`. Числа и guards — редакционные кандидаты, не approved historical frequency; подробности в `presence/README.md`.
+`presence/people_presence_authoring.csv` задаёт 19 candidate-привязок людей к 16 PF с сезонным и суточным измерением. `creation_owner=composition` направляет 5 строк в состав при создании места; `creation_owner=presence_rule` оставляет 14 строк для производных правил наличия. Охват PF обеспечивают оба владельца вместе. Проверка ссылок, ключей и условий — в `scripts/validate.mjs`. Числа и guards — редакционные кандидаты, не approved historical frequency; подробности в `presence/README.md`.
 
 ## Варианты слотов C006a2
 

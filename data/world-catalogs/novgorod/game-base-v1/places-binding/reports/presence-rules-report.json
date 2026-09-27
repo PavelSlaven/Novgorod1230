@@ -82,10 +82,10 @@
     }
   ],
   "pool_rows_accepted": 5885,
-  "rules_written": 5724,
+  "rules_written": 5719,
   "category_rules": 5702,
-  "people_rules": 22,
-  "seasonal_candidate_rows": 10916,
+  "people_rules": 17,
+  "seasonal_candidate_rows": 10898,
   "resolutions": [
     {
       "key": "place_family|pf_bridge_crossing||category|cat_item_object_drawstring_pouch_v1|autumn",
@@ -2388,33 +2388,6 @@
       "chosen": {
         "source_pool": "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row13;data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv#row17",
         "source_row_id": "ipf_it_hh_hollowed_bowl__dwelling_interior;ipf_it_hh_turned_bowl__dwelling_interior"
-      },
-      "dropped": []
-    },
-    {
-      "key": "place_family|pf_ferry_landing|region_novgorod_land|occupation|nov_occ_ferryman|autumn",
-      "reason": "time_union",
-      "chosen": {
-        "source_pool": "presence/people_presence_authoring.csv#row8;presence/people_presence_authoring.csv#row9",
-        "source_row_id": "8;9"
-      },
-      "dropped": []
-    },
-    {
-      "key": "place_family|pf_ferry_landing|region_novgorod_land|occupation|nov_occ_ferryman|spring",
-      "reason": "time_union",
-      "chosen": {
-        "source_pool": "presence/people_presence_authoring.csv#row8;presence/people_presence_authoring.csv#row9",
-        "source_row_id": "8;9"
-      },
-      "dropped": []
-    },
-    {
-      "key": "place_family|pf_ferry_landing|region_novgorod_land|occupation|nov_occ_ferryman|summer",
-      "reason": "time_union",
-      "chosen": {
-        "source_pool": "presence/people_presence_authoring.csv#row8;presence/people_presence_authoring.csv#row9",
-        "source_row_id": "8;9"
       },
       "dropped": []
     },
@@ -5263,42 +5236,6 @@
       "dropped": []
     },
     {
-      "key": "place_family|pf_peasant_homestead|region_novgorod_land|social_role|nov_role_smerd_householder|autumn",
-      "reason": "time_union",
-      "chosen": {
-        "source_pool": "presence/people_presence_authoring.csv#row10;presence/people_presence_authoring.csv#row11",
-        "source_row_id": "10;11"
-      },
-      "dropped": []
-    },
-    {
-      "key": "place_family|pf_peasant_homestead|region_novgorod_land|social_role|nov_role_smerd_householder|spring",
-      "reason": "time_union",
-      "chosen": {
-        "source_pool": "presence/people_presence_authoring.csv#row10;presence/people_presence_authoring.csv#row11",
-        "source_row_id": "10;11"
-      },
-      "dropped": []
-    },
-    {
-      "key": "place_family|pf_peasant_homestead|region_novgorod_land|social_role|nov_role_smerd_householder|summer",
-      "reason": "time_union",
-      "chosen": {
-        "source_pool": "presence/people_presence_authoring.csv#row10;presence/people_presence_authoring.csv#row11",
-        "source_row_id": "10;11"
-      },
-      "dropped": []
-    },
-    {
-      "key": "place_family|pf_peasant_homestead|region_novgorod_land|social_role|nov_role_smerd_householder|winter",
-      "reason": "time_union",
-      "chosen": {
-        "source_pool": "presence/people_presence_authoring.csv#row10;presence/people_presence_authoring.csv#row11",
-        "source_row_id": "10;11"
-      },
-      "dropped": []
-    },
-    {
       "key": "place_family|pf_river_wharf||category|cat_item_object_weight_v1|autumn",
       "reason": "conservative_lower_ppm_equal_evidence",
       "chosen": {
@@ -7245,56 +7182,56 @@
       "to": "contextual"
     },
     {
-      "pr_id": "pr_003459",
+      "pr_id": "pr_003456",
       "scope_ref": "pf_market_square",
       "category_ref": "cat_item_object_folding_balance_v1",
       "from": "common",
       "to": "rare"
     },
     {
-      "pr_id": "pr_004009",
+      "pr_id": "pr_004006",
       "scope_ref": "pf_monastery_yard",
       "category_ref": "cat_item_object_birch_bark_sheet_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004017",
+      "pr_id": "pr_004014",
       "scope_ref": "pf_monastery_yard",
       "category_ref": "cat_item_object_parchment_leaf_v1",
       "from": "common",
       "to": "rare"
     },
     {
-      "pr_id": "pr_004024",
+      "pr_id": "pr_004021",
       "scope_ref": "pf_monastery_yard",
       "category_ref": "cat_item_object_wax_tablet_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004214",
+      "pr_id": "pr_004211",
       "scope_ref": "pf_ordinary_workshop",
       "category_ref": "cat_item_object_comb_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004233",
+      "pr_id": "pr_004230",
       "scope_ref": "pf_ordinary_workshop",
       "category_ref": "cat_item_object_iron_clamp_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004305",
+      "pr_id": "pr_004302",
       "scope_ref": "pf_outbuildings",
       "category_ref": "cat_item_object_iron_clamp_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004311",
+      "pr_id": "pr_004308",
       "scope_ref": "pf_outbuildings",
       "category_ref": "cat_item_object_parchment_leaf_v1",
       "from": "common",
@@ -7302,11 +7239,11 @@
     }
   ],
   "by_scope_kind": {
-    "place_family": 5724
+    "place_family": 5719
   },
   "by_class": {
     "common": 1259,
-    "contextual": 2042,
+    "contextual": 2037,
     "ubiquitous": 345,
     "rare": 2078
   }

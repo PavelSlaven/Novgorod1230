@@ -158,7 +158,7 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     if (r.subject_kind !== 'category' && (!r.guards || r.status !== 'candidate' || !r.source_refs)) f.push(`${r.pr_id}: people provenance/guards/status`);
     if (r.subject_kind !== 'category') {
       const sourceRows = split(r.source_pool).map((ref) => peopleSources[Number(ref.match(/^presence\/people_presence_authoring\.csv#row(\d+)$/)?.[1]) - 2]);
-      if (!sourceRows.length || sourceRows.some((source) => !source || r.subject_kind !== source.subject_kind || r.subject_ref !== source.subject_ref || r.scope_kind !== source.scope_kind || r.scope_ref !== source.scope_ref || r.guards !== source.guards || (r.allowed_seasons === 'all' ? !SEASONS.every((season) => split(source.allowed_seasons).includes(season)) : !split(source.allowed_seasons).includes(r.allowed_seasons)) || +r.count_limit !== +source.count_limit || +r.probability_ppm !== +rule.classes[source.frequency_class]?.probability_ppm || r.refresh_class !== source.refresh_class || !r.source_refs.includes(source.source_refs))) f.push(`${r.pr_id}: people source subject/season/guards/probability differ from authoring`);
+      if (!sourceRows.length || sourceRows.some((source) => !source || source.creation_owner !== 'presence_rule' || r.subject_kind !== source.subject_kind || r.subject_ref !== source.subject_ref || r.scope_kind !== source.scope_kind || r.scope_ref !== source.scope_ref || r.guards !== source.guards || (r.allowed_seasons === 'all' ? !SEASONS.every((season) => split(source.allowed_seasons).includes(season)) : !split(source.allowed_seasons).includes(r.allowed_seasons)) || +r.count_limit !== +source.count_limit || +r.probability_ppm !== +rule.classes[source.frequency_class]?.probability_ppm || r.refresh_class !== source.refresh_class || !r.source_refs.includes(source.source_refs))) f.push(`${r.pr_id}: people source subject/season/guards/probability differ from authoring`);
       const supported = new Set(sourceRows.flatMap((source) => source ? split(source.allowed_times) : []));
       if (times.some((time) => !supported.has(time)) || [...supported].some((time) => !times.includes(time))) f.push(`${r.pr_id}: people time union lacks source or output`);
     }
@@ -182,7 +182,7 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   const people = pr.filter((r) => r.subject_kind !== 'category');
   const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));
   check('presence_rules', 'people_cover_16_bound_pf', [
-    ...[...expectedPf].filter((id) => !people.some((r) => r.scope_ref === id)).map((id) => `missing ${id}`),
+    ...[...expectedPf].filter((id) => !people.some((r) => r.scope_ref === id) && !readJson(P('presence/people_composition_authoring.json')).compositions.some((c) => c.pf_id === id && c.population_groups.length)).map((id) => `missing ${id}`),
     ...(expectedPf.size === 16 ? [] : [`expected 16 PF, got ${expectedPf.size}`]),
     ...(nb.filter((r) => r.node_level === 'G4').length === 32 && nb.filter((r) => r.node_level === 'G5').length === 195 ? [] : ['expected 32 G4 / 195 G5']),
   ], { people_rules: people.length, place_families: expectedPf.size, g4: nb.filter((r) => r.node_level === 'G4').length, g5: nb.filter((r) => r.node_level === 'G5').length });

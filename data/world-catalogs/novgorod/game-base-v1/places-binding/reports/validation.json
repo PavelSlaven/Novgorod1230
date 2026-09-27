@@ -139,8 +139,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5724,
-      "rebuilt_rows": 5724
+      "rows": 5719,
+      "rebuilt_rows": 5719
     },
     {
       "domain": "presence_rules",
@@ -149,7 +149,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 5724
+      "rows": 5719
     },
     {
       "domain": "presence_rules",
@@ -166,7 +166,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "people_rules": 22,
+      "people_rules": 17,
       "place_families": 16,
       "g4": 32,
       "g5": 195

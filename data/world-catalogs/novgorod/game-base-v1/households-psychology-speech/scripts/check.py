@@ -215,6 +215,17 @@ def missing_ferry_pairs(pairs):
 
 errors.extend(missing_ferry_pairs(start_pairs))
 
+homestead_pair = frozenset(("nov_role_smerd_householder", "nov_role_household_mistress"))
+
+
+def missing_homestead_pair(pairs):
+    return [] if any(frozenset(roles) == homestead_pair and
+                     any(pf == "pf_peasant_homestead" for _, pf, _ in contexts)
+                     for roles, contexts in pairs.items()) else ["homestead scene: missing householder/mistress pair"]
+
+
+errors.extend(missing_homestead_pair(start_pairs))
+
 
 def coverage_failures(relations, forms):
     missing = []
@@ -270,6 +281,11 @@ if "--probe" in sys.argv and start_pairs:
             errors.append(f"negative coverage probe failed to detect missing ferry pair {sorted(pair)}")
         else:
             print(f"OK: negative coverage probe detected missing ferry pair {sorted(pair)}")
+    reduced_pairs = {roles: contexts for roles, contexts in start_pairs.items() if frozenset(roles) != homestead_pair}
+    if not missing_homestead_pair(reduced_pairs):
+        errors.append("negative coverage probe failed to detect missing homestead pair")
+    else:
+        print("OK: negative coverage probe detected missing homestead pair")
 
 # social_norms: every norm with legal_weight_ref resolves (non-empty string); confidence in A/B/C
 sn_rows = read_csv(os.path.join(ROOT, "social_norms_honour_hospitality", "norms.csv"))

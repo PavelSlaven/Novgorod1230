@@ -32,7 +32,7 @@ def read_csv(path):
 
 
 def starting_pairs():
-    """Potential co-presence at a bound G5 PF, using presence and timed routines."""
+    """Potential co-presence across every PF of a bound G5 node."""
     presence = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_presence_authoring.csv"))
     bindings = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "places", "node_binding.csv"))
     schedules = read_csv(os.path.join(GAME_BASE_V1, "time-calendar-church", "time", "schedules_routines.csv"))
@@ -66,25 +66,28 @@ def starting_pairs():
     intersections = set()
     colocated_contexts = set()
     bound_pf = set()
+    occupations = {row["occupation_id"] for row in read_tsv(OCC_TSV)}
+    occupations.update(row["occupation_id"] for row in read_csv(os.path.join(
+        GAME_BASE_V1, "occupations-activities", "occupations", "occupations_additions.csv")))
     for node in bindings:
         if node["node_level"] != "G5":
             continue
         pf_refs = {node["pf_id"], *filter(None, node["pf_secondary"].split(";"))}
         bound_pf.update(pf_refs)
-        for pf in pf_refs:
-            for season in seasons:
-                people = by_pf.get((pf, season), [])
-                for a, b in combinations(people, 2):
-                    if a[0] == b[0]:
-                        continue
-                    key = tuple(sorted((a[0], b[0])))
-                    colocated_contexts.add((pf, season, key))
-                    if max(a[1], b[1]) >= min(a[2], b[2]):
-                        continue
-                    pairs.setdefault(key, set()).add((node["node_ref"], pf, season))
-                    intersections.add((pf, season, *sorted((a, b))))
-                    if all(subject.startswith("nov_occ_") for subject in key):
-                        same_pf_pairs.add(key)
+        for season in seasons:
+            people = [(subject, start, end, pf) for pf in pf_refs
+                      for subject, start, end in by_pf.get((pf, season), [])]
+            for a, b in combinations(people, 2):
+                if a[0] == b[0]:
+                    continue
+                key = tuple(sorted((a[0], b[0])))
+                colocated_contexts.add((node["node_ref"], season, key))
+                if max(a[1], b[1]) >= min(a[2], b[2]):
+                    continue
+                pairs.setdefault(key, set()).add((node["node_ref"], node["pf_id"], season))
+                intersections.add((node["node_ref"], season, *sorted((a, b))))
+                if a[3] == b[3] and all(subject in occupations for subject in key):
+                    same_pf_pairs.add(key)
     return pairs, same_pf_pairs, len({pf for pf, _ in by_pf if pf in bound_pf}), {
         person[0] for (pf, _), people in by_pf.items() if pf in bound_pf for person in people}, len(intersections), len(colocated_contexts)
 
@@ -361,7 +364,7 @@ def build_households_kinship(occs, roles):
         ("rel_spouse", "household", "hh_role_nov_role_householder", "", "", "spouse", "symmetric", "Only named spouses with an actor-level marriage record; household titles do not establish marriage.", "book:641351 §2976", "", "", "A"),
         ("rel_spouse_smerd", "household", "hh_role_nov_role_smerd_householder", "", "", "spouse", "symmetric", "Only named spouses with an actor-level marriage record; household titles do not establish marriage.", "book:641351 §2976", "", "", "A"),
         ("rel_dependent_herder", "role_pair", "", "nov_role_householder", "nov_occ_herder", "dependent_patron", "directed", "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt.", "book:641351 §2811", "", "", "A"),
-        ("rel_dependent_herder_smerd", "role_pair", "", "nov_role_smerd_householder", "nov_occ_herder", "dependent_patron", "directed", "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt.", "book:641351 §2811", "", "", "A"),
+        ("rel_dependent_herder_smerd", "role_pair", "", "nov_role_smerd_householder", "nov_occ_herder", "dependent_patron", "directed", "Only a named purchased-debt herder and the owner of the same livestock; occupation alone proves no debt. Transfer of the cited patron rule to a smerd household is conditional.", "book:641351 §2811", "", "", "C"),
         ("rel_dependent_servant", "role_pair", "", "nov_role_smerd_householder", "nov_occ_household_servant", "dependent_patron", "directed", "Only a named household servant and their named employer in a materialized household.", "book:641352 §1814", "", "", "C"),
         ("rel_joint_work", "work_assignment", "", "", "", "joint_work", "symmetric", "Only named people with a shared work assignment at the same place and time; acquaintance alone implies no kinship, debt or enmity.", "", "editorial_joint_work_acquaintance_c", "", "C"),
     ]
@@ -392,9 +395,9 @@ def build_households_kinship(occs, roles):
         "start_subjects": len(start_subjects),
         "start_subjects_in_pairs": len({subject for pair in pairs for subject in pair}),
         "start_role_pairs": len(pairs),
-        "start_pair_pf_season_contexts": len({(pair, pf, season) for pair, contexts in pairs.items()
-                                               for _, pf, season in contexts}),
-        "start_colocated_pf_season_contexts": colocated_contexts,
+        "start_pair_node_season_contexts": len({(pair, node, season) for pair, contexts in pairs.items()
+                                                 for node, _, season in contexts}),
+        "start_colocated_node_season_contexts": colocated_contexts,
         "start_phase_intersections": intersections,
         "no_source_rows": sum(bool(row[10]) for row in relation_rows),
         "start_pair_scene_counts": {"|".join(pair): len({node for node, _, _ in contexts})
@@ -605,8 +608,8 @@ def build_speech_address(roles):
     report["speech_address"] = {"speech_registers.csv": n_reg, "address_forms.csv": n_af,
                                  "no_source_rows": sum(bool(row["no_source"]) for row in af_rows),
                                  "start_directed_pairs": 2 * len(pairs),
-                                 "start_directed_pf_season_contexts": 2 * len({(pair, pf, season)
-                                     for pair, contexts in pairs.items() for _, pf, season in contexts})}
+                                 "start_directed_node_season_contexts": 2 * len({(pair, node, season)
+                                     for pair, contexts in pairs.items() for node, _, season in contexts})}
 
 
 # ---------------------------------------------------------------------------

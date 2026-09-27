@@ -194,11 +194,26 @@ for i, r in enumerate(af_rows):
     if "поклон от" in r["form_ru"].lower() and "письмо" not in r["situation"].lower():
         errors.append(f"{prefix}: epistolary opening used as oral address")
 
-# Builder and checker derive the same PF/season/phase pairs.
+# Builder and checker derive the same G5-node/season/phase pairs.
 from build import starting_pairs
 start_pairs, same_pf_pairs, _, _, _, _ = starting_pairs()
 if not start_pairs:
     errors.append("starting pairs: empty set")
+
+ferry_pairs = {
+    frozenset(("nov_occ_ferryman", "nov_occ_fisher")),
+    frozenset(("nov_occ_crossing_guard", "nov_occ_ferryman")),
+    frozenset(("nov_occ_crossing_guard", "nov_occ_fisher")),
+}
+
+
+def missing_ferry_pairs(pairs):
+    return [f"ferry scene: missing {sorted(pair)}" for pair in ferry_pairs
+            if not any(frozenset(roles) == pair and any(pf == "pf_ferry_landing" for _, pf, _ in contexts)
+                       for roles, contexts in pairs.items())]
+
+
+errors.extend(missing_ferry_pairs(start_pairs))
 
 
 def coverage_failures(relations, forms):
@@ -249,6 +264,12 @@ if "--probe" in sys.argv and start_pairs:
             errors.append(f"negative coverage probe failed to detect missing oral {kind}")
         else:
             print(f"OK: negative coverage probe detected missing oral {kind}")
+    for pair in ferry_pairs:
+        reduced_pairs = {roles: contexts for roles, contexts in start_pairs.items() if frozenset(roles) != pair}
+        if not missing_ferry_pairs(reduced_pairs):
+            errors.append(f"negative coverage probe failed to detect missing ferry pair {sorted(pair)}")
+        else:
+            print(f"OK: negative coverage probe detected missing ferry pair {sorted(pair)}")
 
 # social_norms: every norm with legal_weight_ref resolves (non-empty string); confidence in A/B/C
 sn_rows = read_csv(os.path.join(ROOT, "social_norms_honour_hospitality", "norms.csv"))

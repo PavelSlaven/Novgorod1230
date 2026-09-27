@@ -25,6 +25,8 @@ import { createProductionLlmRoleRunner } from
   '../../apps/game-server/src/infrastructure/provider/deepseek.js';
 import { DEFAULT_GAMEPLAY_MODEL } from
   '../../apps/game-server/src/runtime/llm-settings.js';
+import { applyV17WorldSchemaOrderedParts } from
+  '../../scripts/bootstrap-live-world-v17.mjs';
 
 const POSTGRES_IMAGE = 'postgres:16-alpine';
 
@@ -56,6 +58,9 @@ export async function startLowerDvinaProductionAcceptanceEnv({
     });
     worldPool = new pg.Pool({ connectionString: worldUrl, max: 4 });
     partyPool = new pg.Pool({ connectionString: partyUrl, max: 8 });
+    // Production path is bootstrap→local-play. Acceptance only createdb'd empty
+    // DBs; apply the same pinned ordered_parts bootstrap uses before local-play.
+    await applyAcceptanceWorldSchema(worldPool);
     const activation = await installActivatedRuntimeCatalog({
       worldPool,
       partyPool,
@@ -212,6 +217,20 @@ function initializeAcceptanceDatabases(container) {
       'exec', container, 'createdb', '-U', 'postgres', '-O', user, database
     ]);
     assert.equal(created.status, 0, created.stderr);
+  }
+}
+
+async function applyAcceptanceWorldSchema(worldPool) {
+  const client = await worldPool.connect();
+  try {
+    await client.query('BEGIN');
+    await applyV17WorldSchemaOrderedParts(client);
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally {
+    client.release();
   }
 }
 

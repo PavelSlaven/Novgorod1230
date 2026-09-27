@@ -513,3 +513,227 @@ test('open gate with full admitted scores changes packed order', async () => {
     'rerank must change packed order when all admitted are scored');
   await loaded.encoder?.close?.();
 });
+
+test('A1: scorePairs receives lexical-only admitted refs, not vector top-k alone', async () => {
+  // Mutation kill: if grounding scores only vectorScores.keys(), lexical-only
+  // admitted claim never reaches scorePairs and all-or-nothing rerank fails.
+  const loaded = await loadProductionWorldKnowledge({ rootDir: ROOT });
+  const vectorOnly = 'claim:vector-only-hit';
+  const lexicalOnly = 'claim:lexical-only-admitted';
+  const scoredRefs = [];
+  const worldKnowledge = {
+    ...loaded,
+    core: {
+      admittedCandidateRefs() {
+        return Object.freeze([vectorOnly, lexicalOnly]);
+      },
+      resolveWorldKnowledge(_query, options) {
+        assert.ok(options?.rerankScores instanceof Map);
+        assert.deepEqual([...options.rerankScores.keys()].sort(),
+          [lexicalOnly, vectorOnly].sort());
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'environment', status: 'covered' }],
+          verdict: 'supported',
+          hard_constraints: [],
+          facts: [{ claim_ref: lexicalOnly }],
+          disputes: [],
+          gaps: [],
+          context_text: '',
+          search_hint_hits: [true],
+          search_hint_relevance: [0.9],
+          rerank_applied: true
+        };
+      }
+    },
+    reranker_profile: Object.freeze({
+      ...loaded.reranker_profile,
+      production_enabled: true,
+      gate: { ...loaded.reranker_profile.gate, decision: 'enabled' }
+    }),
+    reranker: {
+      scorePairs: async ({ candidates }) => {
+        scoredRefs.push(...candidates.map((entry) => entry.claim_ref));
+        return new Map(candidates.map((entry) => [entry.claim_ref, 1]));
+      }
+    },
+    encoder: { encode: async () => new Float32Array(1024) },
+    vector_index: {
+      search: () => new Map([[vectorOnly, 0.99]])
+    }
+  };
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge,
+    year: 1230,
+    placeRefs: ['region_novgorod_land'],
+    roleRunner: {
+      async run() {
+        return {
+          output: {
+            schema: 'world_knowledge_query_plan_v1',
+            query_locale: 'ru',
+            domains: ['environment'],
+            focus_refs: [],
+            requested_predicates: [],
+            search_hints: ['рыба']
+          },
+          provider_record: {
+            scope: 'turn_runtime', role_id: 'world_knowledge_query_planner',
+            provider: 'test', model: 'test'
+          }
+        };
+      }
+    }
+  });
+  await grounder.ground({
+    request_id: 'turn:a1-lexical-score',
+    remaining_intent: 'Есть ли здесь рыба?'
+  }, 'semantic_resolution');
+  assert.ok(scoredRefs.includes(lexicalOnly),
+    'scorePairs must include lexical-only admitted claim');
+  assert.ok(scoredRefs.includes(vectorOnly));
+  await loaded.encoder?.close?.();
+});
+
+test('S2: grounding falls back when min_hint_relevance is non-finite', async () => {
+  // Mutation kill: if grounding passes NaN through, sufficiency threshold
+  // collapses to 0 and weak relevance becomes SUFFICIENT.
+  const loaded = await loadProductionWorldKnowledge({ rootDir: ROOT });
+  const worldKnowledge = {
+    ...loaded,
+    sufficiency_profile: Object.freeze({
+      ...loaded.sufficiency_profile,
+      min_hint_relevance: Number.NaN,
+      sufficient_enabled: true
+    }),
+    encoder: { encode: async () => new Float32Array(1024) },
+    vector_index: {
+      search: () => new Map([['claim:regional-fish-exploitation', 0.9]])
+    },
+    core: {
+      resolveWorldKnowledge() {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'environment', status: 'covered' }],
+          verdict: 'supported',
+          hard_constraints: [],
+          facts: [{ claim_ref: 'claim:regional-fish-exploitation' }],
+          disputes: [],
+          gaps: [],
+          context_text: '',
+          search_hint_hits: [true],
+          search_hint_relevance: [0.10]
+        };
+      }
+    }
+  };
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge,
+    year: 1230,
+    placeRefs: ['region_novgorod_land'],
+    roleRunner: {
+      async run() {
+        return {
+          output: {
+            schema: 'world_knowledge_query_plan_v1',
+            query_locale: 'ru',
+            domains: ['environment'],
+            focus_refs: ['wk:environment:regional-fish-exploitation'],
+            requested_predicates: [],
+            search_hints: ['рыба']
+          },
+          provider_record: {
+            scope: 'turn_runtime', role_id: 'world_knowledge_query_planner',
+            provider: 'test', model: 'test'
+          }
+        };
+      }
+    }
+  });
+  const grounded = await grounder.ground({
+    request_id: 'turn:s2-nonfinite-floor',
+    remaining_intent: 'Есть ли здесь рыба?'
+  }, 'semantic_resolution');
+  assert.equal(grounded.world_knowledge.sufficiency, 'PARTIAL_KNOWLEDGE');
+  // Control: same relevance clears DEFAULT floor (0.28) when finite + enabled.
+  assert.equal(groundingSufficiencyOf({
+    facts: [{ claim_ref: 'c' }], hard_constraints: [], disputes: [],
+    coverage: [{ domain: 'environment', status: 'covered' }],
+    search_hint_hits: [true], search_hint_relevance: [0.10], verdict: 'supported'
+  }, { minHintRelevance: DEFAULT_MIN_HINT_RELEVANCE, sufficientEnabled: true }),
+  'PARTIAL_KNOWLEDGE');
+  await loaded.encoder?.close?.();
+});
+
+test('A3: production loader rejects sufficiency profile without sufficient_enabled', async () => {
+  const tempRoot = mkdtempSync(join(tmpdir(), 'novgorod-suff-a3-'));
+  try {
+    const rel = 'data/world-catalogs/novgorod/world-knowledge';
+    mkdirSync(join(tempRoot, rel, 'sufficiency-profiles'), { recursive: true });
+    mkdirSync(join(tempRoot, rel, 'embedding-profiles'), { recursive: true });
+    mkdirSync(join(tempRoot, rel, 'production-v1'), { recursive: true });
+    for (const part of [
+      'embedding-profiles/giga-480m-0826-v1.json',
+      'embedding-profiles/bge-reranker-v2-m3-v1.json',
+      'production-v1/runtime-bundle.json',
+      'production-v1/vector-index.json',
+      'production-v1/vectors.f32'
+    ]) {
+      try {
+        symlinkSync(join(ROOT, rel, part), join(tempRoot, rel, part));
+      } catch {
+        copyFileSync(join(ROOT, rel, part), join(tempRoot, rel, part));
+      }
+    }
+    const valid = JSON.parse(readFileSync(
+      join(ROOT, rel, 'sufficiency-profiles/giga-cosine-v1.json'), 'utf8'));
+    const { sufficient_enabled: _drop, ...withoutFlag } = valid;
+    writeFileSync(join(tempRoot, rel, 'sufficiency-profiles/giga-cosine-v1.json'),
+      JSON.stringify(withoutFlag));
+    await assert.rejects(
+      () => loadProductionWorldKnowledge({ rootDir: tempRoot }),
+      (err) => err instanceof TypeError
+        && /sufficiency profile is invalid/.test(err.message));
+  } finally {
+    rmSync(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('C26: production loader rejects wrong sufficiency schema alone', async () => {
+  const tempRoot = mkdtempSync(join(tmpdir(), 'novgorod-suff-c26-'));
+  try {
+    const rel = 'data/world-catalogs/novgorod/world-knowledge';
+    mkdirSync(join(tempRoot, rel, 'sufficiency-profiles'), { recursive: true });
+    mkdirSync(join(tempRoot, rel, 'embedding-profiles'), { recursive: true });
+    mkdirSync(join(tempRoot, rel, 'production-v1'), { recursive: true });
+    for (const part of [
+      'embedding-profiles/giga-480m-0826-v1.json',
+      'embedding-profiles/bge-reranker-v2-m3-v1.json',
+      'production-v1/runtime-bundle.json',
+      'production-v1/vector-index.json',
+      'production-v1/vectors.f32'
+    ]) {
+      try {
+        symlinkSync(join(ROOT, rel, part), join(tempRoot, rel, part));
+      } catch {
+        copyFileSync(join(ROOT, rel, part), join(tempRoot, rel, part));
+      }
+    }
+    const valid = JSON.parse(readFileSync(
+      join(ROOT, rel, 'sufficiency-profiles/giga-cosine-v1.json'), 'utf8'));
+    writeFileSync(join(tempRoot, rel, 'sufficiency-profiles/giga-cosine-v1.json'),
+      JSON.stringify({ ...valid, schema: 'world_knowledge_sufficiency_profile_v0' }));
+    await assert.rejects(
+      () => loadProductionWorldKnowledge({ rootDir: tempRoot }),
+      (err) => err instanceof TypeError
+        && /sufficiency profile is invalid/.test(err.message));
+  } finally {
+    rmSync(tempRoot, { recursive: true, force: true });
+  }
+});

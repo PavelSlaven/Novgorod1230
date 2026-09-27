@@ -199,6 +199,18 @@ async function applyCatalogDdl(pool, schema, migrations, tables) {
     throw new Error(`V17_CATALOG_DDL_READBACK_MISMATCH:${schema}`);
 }
 
+/** Same ordered_parts + digest pins bootstrap uses. Caller owns BEGIN/COMMIT. */
+export async function applyV17WorldSchemaOrderedParts(client, {
+  worldSchema = null
+} = {}) {
+  const schema = worldSchema
+    ?? (await json(`${v17}/fresh-schema-request.json`)).world_schema;
+  for (const source of schema.ordered_parts)
+    await client.query((await exact(source.path, source.sha256, source.bytes)).toString());
+  await client.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
+  return schema;
+}
+
 export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest = null,
   activationApprovalsPath = localV17ApprovalsPath() }) {
   if (!adminUrl) throw new Error('V17_ADMIN_URL_REQUIRED');
@@ -245,9 +257,9 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     try {
       for (const commit of [false, true]) {
         await client.query('BEGIN');
-        for (const source of schema.world_schema.ordered_parts)
-          await client.query((await exact(source.path, source.sha256, source.bytes)).toString());
-        await client.query('REVOKE CREATE ON SCHEMA world_base FROM PUBLIC');
+        await applyV17WorldSchemaOrderedParts(client, {
+          worldSchema: schema.world_schema
+        });
         await client.query(commit ? 'COMMIT' : 'ROLLBACK');
         if (!commit && await countTables(client, 'world_base'))
           throw new Error('V17_SCHEMA_ROLLBACK_MISMATCH');

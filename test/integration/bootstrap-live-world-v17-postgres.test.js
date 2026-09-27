@@ -1,28 +1,32 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import test from 'node:test';
 import pg from 'pg';
 
 import { bootstrapV17Imports } from '../../scripts/bootstrap-live-world-v17.mjs';
 import { digestEnvelope } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
-import { ensureLocalPostgres, LOCAL_POSTGRES } from '../../tools/local-play/local-postgres.js';
+import { testContainerLabel } from '../helpers/test-containers.js';
+
+// Pin 16.14: bootstrap refuses other 16.x cluster identities.
+const POSTGRES_IMAGE = 'postgres:16.14-alpine';
 
 test('v17 bootstrap imports and activates item and actor catalogs in a fresh isolated pair',
   { timeout: 1_200_000 }, async (t) => {
+    assert.equal(docker(['version']).status, 0, 'Docker is required.');
     const dataRoot = await mkdtemp(join(tmpdir(), 'novgorod-v17-bootstrap-test-'));
-    const settings = { ...LOCAL_POSTGRES,
-      worldDatabase: 'pr17_bootstrap_old_world',
-      partyDatabase: 'pr17_bootstrap_old_party' };
-    const managed = await ensureLocalPostgres({ dataRoot, settings });
+    const postgresContainer = `v17-bootstrap-pg-${randomUUID().slice(0, 12)}`;
+    startPostgres(postgresContainer);
     t.after(async () => {
-      await managed.close();
+      docker(['rm', '-fv', postgresContainer]);
       await rm(dataRoot, { recursive: true, force: true });
     });
-    const adminUrl = new URL(managed.worldUrl);
-    adminUrl.username = 'postgres';
-    adminUrl.pathname = '/postgres';
+    await waitForPostgres(postgresContainer);
+    initializeBootstrapRoles(postgresContainer);
+    const adminUrl = adminDatabaseUrl(postgresContainer);
     const candidateDir = process.env.V17_BOOTSTRAP_CANDIDATE_DIR;
     if (candidateDir) {
       await mkdir(candidateDir, { recursive: true });
@@ -41,7 +45,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
       return attestation;
     };
     const activationApprovalsPath = join(dataRoot, 'v17-activation-approvals.json');
-    const result = await bootstrapV17Imports({ adminUrl: adminUrl.href,
+    const result = await bootstrapV17Imports({ adminUrl,
       activationApprovalsPath,
       onRequest: async ({ stage, request }) => {
         if (process.env.V17_BOOTSTRAP_REQUEST_DIR) {
@@ -136,7 +140,7 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
       assert.ok(approvals[key].request);
       assert.ok(approvals[key].attestation);
     }
-    const admin = new pg.Pool({ connectionString: adminUrl.href, max: 1 });
+    const admin = new pg.Pool({ connectionString: adminUrl, max: 1 });
     try {
       const rows = (await admin.query(`SELECT datname FROM pg_database
         WHERE datname LIKE 'pr17_bootstrap_old_%' ORDER BY datname`)).rows;
@@ -144,3 +148,60 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
         ['pr17_bootstrap_old_party', 'pr17_bootstrap_old_world']);
     } finally { await admin.end(); }
   });
+
+function startPostgres(name) {
+  const result = docker([
+    'run', ...testContainerLabel(), '-d', '--name', name, '-p', '127.0.0.1::5432',
+    '-e', 'POSTGRES_PASSWORD=local_only',
+    POSTGRES_IMAGE
+  ], { timeout: 90_000 });
+  assert.equal(result.status, 0, result.stderr);
+}
+
+function initializeBootstrapRoles(container) {
+  for (const user of ['world_operator', 'party_operator']) {
+    const role = docker([
+      'exec', container, 'psql', '-v', 'ON_ERROR_STOP=1', '-U', 'postgres',
+      '-d', 'postgres', '-c',
+      `CREATE ROLE ${user} LOGIN SUPERUSER PASSWORD 'local_only'`
+    ]);
+    assert.equal(role.status, 0, role.stderr);
+  }
+  // Leftover pair proves bootstrap does not drop unrelated databases.
+  for (const [user, database] of [
+    ['world_operator', 'pr17_bootstrap_old_world'],
+    ['party_operator', 'pr17_bootstrap_old_party']
+  ]) {
+    const created = docker([
+      'exec', container, 'createdb', '-U', 'postgres', '-O', user, database
+    ]);
+    assert.equal(created.status, 0, created.stderr);
+  }
+}
+
+async function waitForPostgres(name) {
+  for (let attempt = 0; attempt < 120; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const logs = docker(['logs', name]);
+    const initialized = `${logs.stdout}\n${logs.stderr}`.includes(
+      'PostgreSQL init process complete; ready for start up.');
+    if (initialized && docker(
+      ['exec', name, 'pg_isready', '-U', 'postgres', '-d', 'postgres']
+    ).status === 0) return;
+  }
+  throw new Error(`${name} did not become ready.`);
+}
+
+function adminDatabaseUrl(container) {
+  const output = docker(['port', container, '5432']).stdout;
+  const port = Number(output.match(/:(\d+)\s*$/u)?.[1]);
+  assert.ok(Number.isInteger(port));
+  return `postgresql://postgres:local_only@127.0.0.1:${port}/postgres`;
+}
+
+function docker(args, options = {}) {
+  return spawnSync('docker', args, {
+    encoding: 'utf8',
+    timeout: options.timeout ?? 30_000
+  });
+}

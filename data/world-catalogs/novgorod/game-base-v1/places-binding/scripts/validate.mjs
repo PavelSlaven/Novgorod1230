@@ -3,6 +3,7 @@
 // as "external" and do not fail the run.
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { REPO, GROUP, readJson, readCsv, readTsv, writeJson, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry, WK_PLACE_FIRST, V6_G4, SEEDS } from './build-place-families.mjs';
 import { parseHouseholds } from './build-generation-limits.mjs';
@@ -13,6 +14,22 @@ const checks = [];
 const check = (domain, name, failures, extra = {}, external = false) => checks.push({ domain, name, pass: failures.length === 0, failures: failures.length, sample: failures.slice(0, 15), external, ...extra });
 const P = (...p) => path.join(GROUP, ...p);
 const TIME_ORDER = ['morning', 'day', 'evening', 'night'];
+function presenceIds(rows) {
+  const keys = new Set(), ids = new Set(), failures = [];
+  for (const row of rows) {
+    const seasons = String(row.allowed_seasons ?? '').trim();
+    const ordered = SEASONS.filter((s) => split(seasons).includes(s)).join(';');
+    const canonical = seasons === 'all' || ordered === SEASONS.join(';') ? 'all' : ordered;
+    const key = JSON.stringify([row.scope_kind, row.scope_ref, row.region_id, row.subject_kind, row.subject_ref, canonical].map((s) => String(s ?? '').trim()));
+    const expected = `pr_${crypto.createHash('sha256').update(key).digest('hex').slice(0, 16)}`;
+    if (seasons !== canonical) failures.push(`${row.pr_id}: noncanonical seasons`);
+    if (row.pr_id !== expected) failures.push(`${row.pr_id}: expected ${expected}`);
+    if (keys.has(key)) failures.push(`${row.pr_id}: duplicate key`);
+    if (ids.has(row.pr_id)) failures.push(`${row.pr_id}: duplicate ID`);
+    keys.add(key); ids.add(row.pr_id);
+  }
+  return failures;
+}
 function seasonOverlaps(rows) {
   const seen = new Map(), failures = [];
   for (const r of rows) {
@@ -76,6 +93,17 @@ if (process.argv.includes('--self-test')) {
   if (seasonOverlaps([probe, { ...probe, pr_id: 'probe_winter', allowed_seasons: 'winter' }]).length !== 1) throw new Error('season overlap negative probe failed');
   for (const seasons of ['all;winter', 'winter;winter', 'monsoon']) if (!seasonOverlaps([{ ...probe, allowed_seasons: seasons }]).length) throw new Error(`season field negative probe failed: ${seasons}`);
   console.log('PASS presence_rules / season_overlap_negative_probes');
+  const keyed = { ...probe, pr_id: 'invalid' };
+  if (!presenceIds([keyed]).some((f) => f.includes('expected'))) throw new Error('tampered presence ID negative probe failed');
+  if (!presenceIds([keyed, { ...keyed, scope_ref: 'other' }]).some((f) => f.includes('duplicate ID'))) throw new Error('presence ID collision negative probe failed');
+  console.log('PASS presence_rules / identity_negative_probes');
+  const [first, second, third] = buildPresenceRules({ write: false }).rows;
+  if ([first, second, third].some((row) => !row) ||
+      presenceIds([first, second]).length ||
+      presenceIds([third, first, second]).length ||
+      presenceIds([first]).length)
+    throw new Error('presence IDs changed after inserting or removing another row');
+  console.log('PASS presence_rules / identity_stability_probe');
 }
 
 const wk = readJson(WK_PLACE_FIRST);
@@ -172,6 +200,7 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     ...(pr.length === rebuilt.length ? [] : [`rows ${pr.length} != rebuilt ${rebuilt.length}`]),
     ...pr.flatMap((row, i) => rebuilt[i] && JSON.stringify(values(row)) !== JSON.stringify(values(rebuilt[i])) ? [`row ${i + 2}: ${row.pr_id}`] : []),
   ], { rows: pr.length, rebuilt_rows: rebuilt.length });
+  check('presence_rules', 'canonical_unique_identity', presenceIds(pr));
   const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
   const nb = readCsv(P('places/node_binding.csv'));
   const nodes = new Set(nb.map((r) => r.node_ref.replace(/@\d+$/, '')));

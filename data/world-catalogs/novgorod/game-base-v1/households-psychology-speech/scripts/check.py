@@ -196,9 +196,21 @@ for i, r in enumerate(af_rows):
 
 # Builder and checker derive the same G5-node/season/phase pairs.
 from build import starting_pairs
-start_pairs, same_pf_pairs, _, _, _, _ = starting_pairs()
+start_pairs, same_pf_pairs, _, _, intersections, colocated, dead_pairs = starting_pairs()
 if not start_pairs:
     errors.append("starting pairs: empty set")
+if (colocated, intersections) != (1236, 10269):
+    errors.append(f"starting reachable contexts/intersections: {(colocated, intersections)} != (1236, 10269)")
+with open(os.path.join(ROOT, "scripts", "build_report.json"), encoding="utf-8") as f:
+    start_report = json.load(f)["households_kinship"]
+if (start_report["start_colocated_node_season_contexts"], start_report["start_phase_intersections"]) != (colocated, intersections):
+    errors.append("starting reachable counts differ from build report")
+for row in rel_rows:
+    if row["rel_rule_id"].startswith("rel_start_") and (row["subject_role_ref"], row["object_role_ref"]) in dead_pairs:
+        errors.append(f"{row['rel_rule_id']}: generated relation for never-created pair")
+for row in af_rows:
+    if row["sp_id"].startswith("form_start_") and tuple(sorted((row["speaker_role_ref"], row["addressee_role_ref"]))) in dead_pairs:
+        errors.append(f"{row['sp_id']}: generated form for never-created pair")
 
 ferry_pairs = {
     frozenset(("nov_occ_ferryman", "nov_occ_fisher")),
@@ -281,9 +293,11 @@ if "--probe" in sys.argv and start_pairs:
             errors.append(f"negative coverage probe failed to detect missing ferry pair {sorted(pair)}")
         else:
             print(f"OK: negative coverage probe detected missing ferry pair {sorted(pair)}")
-    reduced_pairs = {roles: contexts for roles, contexts in start_pairs.items() if frozenset(roles) != homestead_pair}
-    if not missing_homestead_pair(reduced_pairs):
-        errors.append("negative coverage probe failed to detect missing homestead pair")
+    with open(os.path.join(os.path.dirname(ROOT), "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+        gaps = {row["subject_ref"] for row in json.load(f)["never_created_gaps"]}
+    changed_pairs, *_ = starting_pairs(gaps | {"nov_role_household_mistress"})
+    if not missing_homestead_pair(changed_pairs):
+        errors.append("negative coverage probe failed to detect never-created homestead mistress")
     else:
         print("OK: negative coverage probe detected missing homestead pair")
 

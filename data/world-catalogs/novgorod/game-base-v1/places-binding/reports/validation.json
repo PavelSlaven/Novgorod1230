@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 24,
-  "own_checks_total": 24,
+  "own_checks_passed": 25,
+  "own_checks_total": 25,
   "checks": [
     {
       "domain": "people_composition",
@@ -141,6 +141,14 @@
       "external": false,
       "rows": 5719,
       "rebuilt_rows": 5719
+    },
+    {
+      "domain": "presence_rules",
+      "name": "canonical_unique_identity",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false
     },
     {
       "domain": "presence_rules",

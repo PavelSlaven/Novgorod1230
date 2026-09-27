@@ -31,7 +31,7 @@ def read_csv(path):
         return list(csv.DictReader(f))
 
 
-def starting_pairs():
+def starting_pairs(gaps=None):
     """Potential co-presence across every PF of a bound G5 node."""
     presence = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_presence_authoring.csv"))
     bindings = read_csv(os.path.join(GAME_BASE_V1, "places-binding", "places", "node_binding.csv"))
@@ -64,7 +64,6 @@ def starting_pairs():
     pairs = {}
     same_pf_pairs = set()
     intersections = set()
-    colocated_contexts = set()
     bound_pf = set()
     occupations = {row["occupation_id"] for row in read_tsv(OCC_TSV)}
     occupations.update(row["occupation_id"] for row in read_csv(os.path.join(
@@ -81,15 +80,24 @@ def starting_pairs():
                 if a[0] == b[0]:
                     continue
                 key = tuple(sorted((a[0], b[0])))
-                colocated_contexts.add((node["node_ref"], season, key))
                 if max(a[1], b[1]) >= min(a[2], b[2]):
                     continue
                 pairs.setdefault(key, set()).add((node["node_ref"], node["pf_id"], season))
                 intersections.add((node["node_ref"], season, *sorted((a, b))))
                 if a[3] == b[3] and all(subject in occupations for subject in key):
                     same_pf_pairs.add(key)
+    if gaps is None:
+        with open(os.path.join(GAME_BASE_V1, "places-binding", "presence", "people_composition_authoring.json"), encoding="utf-8") as f:
+            gaps = {row["subject_ref"] for row in json.load(f)["never_created_gaps"]}
+    dead_pairs = {pair: contexts for pair, contexts in pairs.items() if set(pair) & gaps}
+    pairs = {pair: contexts for pair, contexts in pairs.items() if pair not in dead_pairs}
+    same_pf_pairs.difference_update(dead_pairs)
+    colocated_contexts = {(node, season, pair) for pair, contexts in pairs.items()
+                           for node, _, season in contexts}
+    intersections = {context for context in intersections
+                     if tuple(sorted((context[2][0], context[3][0]))) not in dead_pairs}
     return pairs, same_pf_pairs, len({pf for pf, _ in by_pf if pf in bound_pf}), {
-        person[0] for (pf, _), people in by_pf.items() if pf in bound_pf for person in people}, len(intersections), len(colocated_contexts)
+        person[0] for (pf, _), people in by_pf.items() if pf in bound_pf for person in people}, len(intersections), len(colocated_contexts), dead_pairs
 
 
 def read_tsv(path):
@@ -368,7 +376,7 @@ def build_households_kinship(occs, roles):
         ("rel_dependent_servant", "role_pair", "", "nov_role_smerd_householder", "nov_occ_household_servant", "dependent_patron", "directed", "Only a named household servant and their named employer in a materialized household.", "book:641352 §1814", "", "", "C"),
         ("rel_joint_work", "work_assignment", "", "", "", "joint_work", "symmetric", "Only named people with a shared work assignment at the same place and time; acquaintance alone implies no kinship, debt or enmity.", "", "editorial_joint_work_acquaintance_c", "", "C"),
     ]
-    pairs, same_pf_pairs, start_pf_count, start_subjects, intersections, colocated_contexts = starting_pairs()
+    pairs, same_pf_pairs, start_pf_count, start_subjects, intersections, colocated_contexts, dead_pairs = starting_pairs()
     explicit_pairs = {frozenset((row[3], row[4])) for row in relation_rows if row[1] == "role_pair" and row[3] and row[4]}
     for index, pair in enumerate(sorted(pairs), 1):
         if frozenset(pair) in explicit_pairs:
@@ -395,6 +403,8 @@ def build_households_kinship(occs, roles):
         "start_subjects": len(start_subjects),
         "start_subjects_in_pairs": len({subject for pair in pairs for subject in pair}),
         "start_role_pairs": len(pairs),
+        "start_dead_pair_gap_count": len(dead_pairs),
+        "start_dead_pair_gaps": ["|".join(pair) for pair in sorted(dead_pairs)],
         "start_pair_node_season_contexts": len({(pair, node, season) for pair, contexts in pairs.items()
                                                  for node, _, season in contexts}),
         "start_colocated_node_season_contexts": colocated_contexts,
@@ -587,7 +597,7 @@ def build_speech_address(roles):
     ]
     columns = ["sp_id", "channel", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
     af_rows = [dict(zip(columns, (row[0], "written" if row[1] == "written_letter" or row[0] == "form_brother" else "oral", *row[1:], "candidate"))) for row in FORMS]
-    pairs, same_pf_pairs, _, _, _, _ = starting_pairs()
+    pairs, same_pf_pairs, _, _, _, _, _ = starting_pairs()
     explicit_kinds = {(r["subject_role_ref"], r["object_role_ref"]): r["relationship_kind"]
                       for r in read_csv(os.path.join(ROOT, "households_kinship", "relationship_rules.csv"))
                       if r["scope_kind"] == "role_pair"}

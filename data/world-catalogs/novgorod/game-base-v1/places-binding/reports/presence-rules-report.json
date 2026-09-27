@@ -7807,140 +7807,140 @@
   "class_capped_by_master_link": 28,
   "class_capped_sample": [
     {
-      "pr_id": "pr_000594",
+      "pr_id": "pr_4d0ce99956fe62d0",
       "scope_ref": "pf_cellar_granary",
       "category_ref": "cat_item_object_iron_clamp_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_000608",
+      "pr_id": "pr_e7d42c62154bef79",
       "scope_ref": "pf_cellar_granary",
       "category_ref": "cat_item_object_parchment_leaf_v1",
       "from": "common",
       "to": "rare"
     },
     {
-      "pr_id": "pr_000634",
+      "pr_id": "pr_4ce6780ccd4d1fb9",
       "scope_ref": "pf_cellar_granary",
       "category_ref": "cat_item_object_wax_tablet_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_000639",
+      "pr_id": "pr_2b64582cd9dd5b2d",
       "scope_ref": "pf_cellar_granary",
       "category_ref": "cat_item_object_wooden_box_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_000677",
+      "pr_id": "pr_4c2756ab5f36a998",
       "scope_ref": "pf_church_interior",
       "category_ref": "cat_item_object_birch_bark_sheet_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_000711",
+      "pr_id": "pr_e7c28cfce604498d",
       "scope_ref": "pf_church_interior",
       "category_ref": "cat_item_object_wax_tablet_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_001095",
+      "pr_id": "pr_ad988a94bb69cb9b",
       "scope_ref": "pf_dwelling_interior",
       "category_ref": "cat_item_object_ceramic_bowl_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_001105",
+      "pr_id": "pr_2a9b8b3a99f7cb4d",
       "scope_ref": "pf_dwelling_interior",
       "category_ref": "cat_item_object_comb_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_001208",
+      "pr_id": "pr_d124ae333cbbcb25",
       "scope_ref": "pf_dwelling_interior",
       "category_ref": "cat_item_object_wax_tablet_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_001212",
+      "pr_id": "pr_9425ec504b18dede",
       "scope_ref": "pf_dwelling_interior",
       "category_ref": "cat_item_object_wooden_bowl_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_001213",
+      "pr_id": "pr_68853419fd8234fb",
       "scope_ref": "pf_dwelling_interior",
       "category_ref": "cat_item_object_wooden_box_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_001217",
+      "pr_id": "pr_4211d37c5e7cfdcc",
       "scope_ref": "pf_dwelling_interior",
       "category_ref": "cat_item_object_wooden_spoon_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_003456",
+      "pr_id": "pr_77988973d665fcbe",
       "scope_ref": "pf_market_square",
       "category_ref": "cat_item_object_folding_balance_v1",
       "from": "common",
       "to": "rare"
     },
     {
-      "pr_id": "pr_004006",
+      "pr_id": "pr_7deaa0d8132b9fcd",
       "scope_ref": "pf_monastery_yard",
       "category_ref": "cat_item_object_birch_bark_sheet_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004014",
+      "pr_id": "pr_39bde0f381367039",
       "scope_ref": "pf_monastery_yard",
       "category_ref": "cat_item_object_parchment_leaf_v1",
       "from": "common",
       "to": "rare"
     },
     {
-      "pr_id": "pr_004021",
+      "pr_id": "pr_bdd9675459424d96",
       "scope_ref": "pf_monastery_yard",
       "category_ref": "cat_item_object_wax_tablet_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004211",
+      "pr_id": "pr_97c6b0077905c868",
       "scope_ref": "pf_ordinary_workshop",
       "category_ref": "cat_item_object_comb_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004230",
+      "pr_id": "pr_0155aae84ce514dc",
       "scope_ref": "pf_ordinary_workshop",
       "category_ref": "cat_item_object_iron_clamp_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004302",
+      "pr_id": "pr_2ccd7932c7f2b7fc",
       "scope_ref": "pf_outbuildings",
       "category_ref": "cat_item_object_iron_clamp_v1",
       "from": "common",
       "to": "contextual"
     },
     {
-      "pr_id": "pr_004308",
+      "pr_id": "pr_612d095a1c3dc4d5",
       "scope_ref": "pf_outbuildings",
       "category_ref": "cat_item_object_parchment_leaf_v1",
       "from": "common",

@@ -14,7 +14,16 @@ const DERIVED = P('presence/presence_rules.csv');
 const exact = (object, keys) => object && typeof object === 'object' && !Array.isArray(object) &&
   Object.keys(object).sort().join('|') === keys.sort().join('|');
 const named = (value) => typeof value === 'string' && value.trim().length > 0;
+const reasoned = (value) => named(value) && value.trim().length >= 15 && value.trim().split(/\s+/u).length >= 2 &&
+  !/^(?:x|n\/a|unknown|неизвестно|нет данных|нет сведений о причине)(?:$|[^\p{L}])/iu.test(value.trim());
 const subjectKey = (kind, ref) => `${kind}:${ref}`;
+const evidenceDir = path.join(BASE, '../sources/books-evidence-v1');
+const bookEvidence = new Map();
+for (const file of fs.readdirSync(evidenceDir).filter((name) => name.endsWith('.csv'))) for (const row of readCsv(path.join(evidenceDir, file))) {
+  const key = `${row.book_id}|${row.para_no}`;
+  if (!bookEvidence.has(key)) bookEvidence.set(key, new Set());
+  bookEvidence.get(key).add(row.section_path);
+}
 
 export function checkPeopleComposition(data, startTerritory = null, people = readCsv(PEOPLE), derived = readCsv(DERIVED)) {
   const errors = [];
@@ -68,7 +77,7 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
     if (!bound.has(c.pf_id) || seenPf.has(c.pf_id)) errors.push(`${c.pf_id}: unknown/duplicate PF`);
     seenPf.add(c.pf_id);
     if (!Array.isArray(c.population_groups) || !Array.isArray(c.scheduled_absences)) { errors.push(`${c.pf_id}: groups/absences arrays`); continue; }
-    if ((c.population_groups.length === 0) !== named(c.empty_reason)) errors.push(`${c.pf_id}: empty_reason must exist exactly for empty composition`);
+    if ((c.population_groups.length === 0) !== reasoned(c.empty_reason)) errors.push(`${c.pf_id}: empty_reason must be substantive exactly for empty composition`);
     const covered = new Set();
     for (const g of c.population_groups) {
       const id = g?.group_id;
@@ -97,12 +106,19 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
           g.min_count !== 1 || g.max_count !== 1 || g.count_weights.length !== 1 || g.count_weights[0] !== 1)
         errors.push(`${id}: unsupported count basis/range/weights`);
       if (named(g.rule_ref) && g.confidence !== 'C') errors.push(`${id}: editorial rule requires confidence C`);
+      if (named(g.source_refs)) for (const ref of g.source_refs.split(';').map((s) => s.trim())) {
+        if (ref === g.household_profile_ref) continue;
+        const book = /^book:(\d+) §(?:(.+) ¶)?(\d+)$/u.exec(ref);
+        const paths = bookEvidence.get(`${book?.[1]}|${book?.[3]}`);
+        if (!book || !paths || (book[2] && !paths.has(book[2]))) errors.push(`${id}: unresolved source_ref ${ref}`);
+      }
       if (!Array.isArray(g.weighted_subjects) || !g.weighted_subjects.length) { errors.push(`${id}: weighted_subjects`); continue; }
       for (const s of g.weighted_subjects) {
         if (!exact(s, ['subject_kind', 'subject_ref', 'profile_ref', 'household_member_class', 'weight'])) { errors.push(`${id}: subject fields`); continue; }
         if (!({ occupation: occupations, social_role: roles })[s.subject_kind]?.has(s.subject_ref)) errors.push(`${id}: unknown subject ${s.subject_kind}:${s.subject_ref}`);
         if (!Number.isInteger(s.weight) || s.weight <= 0) errors.push(`${id}: subject weight`);
         if (s.household_member_class !== null && !['adult', 'child', 'elder'].includes(s.household_member_class)) errors.push(`${id}: household_member_class`);
+        if (s.household_member_class !== null && !['household', 'residents'].includes(g.group_kind)) errors.push(`${id}: household_member_class requires household/residents`);
         if (s.profile_ref !== null && (!profiles.has(s.profile_ref) || profiles.get(s.profile_ref)?.[s.subject_kind === 'occupation' ? 'occupation_ref' : 'role_ref'] !== s.subject_ref)) errors.push(`${id}: unknown/mismatched profile ${s.profile_ref}`);
         const key = subjectKey(s.subject_kind, s.subject_ref);
         if (covered.has(key)) errors.push(`${c.pf_id}: duplicate composition subject ${key}`);
@@ -113,7 +129,7 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
       }
     }
     for (const absence of c.scheduled_absences) {
-      if (!exact(absence, ['subject_kind', 'subject_ref', 'reason']) || !named(absence.reason)) { errors.push(`${c.pf_id}: absence fields/reason`); continue; }
+      if (!exact(absence, ['subject_kind', 'subject_ref', 'reason']) || !reasoned(absence.reason)) { errors.push(`${c.pf_id}: absence fields/reason`); continue; }
       if (absence.subject_kind !== 'household_member' && !({ occupation: occupations, social_role: roles })[absence.subject_kind]?.has(absence.subject_ref)) errors.push(`${c.pf_id}: unknown absent subject ${absence.subject_kind}:${absence.subject_ref}`);
       if (absence.subject_kind === 'household_member' && absence.subject_ref !== 'child') errors.push(`${c.pf_id}: unknown household member absence`);
       const key = subjectKey(absence.subject_kind, absence.subject_ref);
@@ -142,7 +158,7 @@ export function checkPeopleComposition(data, startTerritory = null, people = rea
   }
   const actualGaps = new Set();
   for (const gap of data.never_created_gaps) {
-    if (!exact(gap, ['subject_kind', 'subject_ref', 'reason']) || !named(gap.reason)) { errors.push('invalid never_created gap'); continue; }
+    if (!exact(gap, ['subject_kind', 'subject_ref', 'reason']) || !reasoned(gap.reason)) { errors.push('invalid never_created gap'); continue; }
     const key = subjectKey(gap.subject_kind, gap.subject_ref);
     if (actualGaps.has(key)) errors.push(`duplicate never_created gap ${key}`);
     actualGaps.add(key);
@@ -182,6 +198,16 @@ if (isMain) {
     probe('duplicate subject on PF', 'duplicate composition subject', (d) => { const c = d.compositions.find((x) => x.pf_id === 'pf_ferry_landing'); c.population_groups[1].weighted_subjects[0] = structuredClone(c.population_groups[0].weighted_subjects[0]); });
     probe('composition without D1 or source', 'subject lacks D1 schedule at PF or source_refs', (d) => { const c = d.compositions.find((x) => x.pf_id === 'pf_ferry_landing'); c.population_groups[0].weighted_subjects[0].subject_ref = 'nov_occ_potter'; });
     probe('missing never-created gap', 'missing never_created gap', (d) => { d.never_created_gaps.pop(); });
+    probe('unresolved book paragraph', 'unresolved source_ref', (d) => { d.compositions.find((c) => c.pf_id === 'pf_peasant_homestead').population_groups.find((g) => g.source_refs).source_refs = 'book:622242 §999999'; });
+    probe('wrong book section', 'unresolved source_ref', (d) => { d.compositions.find((c) => c.pf_id === 'pf_peasant_homestead').population_groups.find((g) => g.source_refs).source_refs = 'book:622242 §wrong section ¶519'; });
+    probe('worker with household class', 'household_member_class requires household/residents', (d) => { d.compositions.find((c) => c.pf_id === 'pf_ferry_landing').population_groups[0].weighted_subjects[0].household_member_class = 'adult'; });
+    probe('vague gap reason', 'invalid never_created gap', (d) => { d.never_created_gaps[0].reason = 'too vague'; });
+    probe('one-word gap reason', 'invalid never_created gap', (d) => { d.never_created_gaps[0].reason = 'unsubstantiated'; });
+    probe('missing-data gap reason', 'invalid never_created gap', (d) => { d.never_created_gaps[0].reason = 'Нет данных'; });
+    probe('no-reason gap placeholder', 'invalid never_created gap', (d) => { d.never_created_gaps[0].reason = 'Нет сведений о причине'; });
+    probe('vague absence reason', 'absence fields/reason', (d) => { d.compositions.find((c) => c.scheduled_absences.length).scheduled_absences[0].reason = 'too vague'; });
+    probe('missing-data absence reason', 'absence fields/reason', (d) => { d.compositions.find((c) => c.scheduled_absences.length).scheduled_absences[0].reason = 'Нет данных'; });
+    probe('missing-data empty reason', 'empty_reason', (d) => { d.compositions.find((c) => !c.population_groups.length).empty_reason = 'Нет данных'; });
     {
       const people = readCsv(PEOPLE);
       if (checkPeopleComposition(original, bridge, people.filter((row) => row.creation_owner !== 'composition')).length)
@@ -218,6 +244,6 @@ if (isMain) {
       [nodes[0].place_type, other.place_type] = [other.place_type, nodes[0].place_type];
     }
   }
-  if (!errors.length) console.log(`PASS people composition: ${original.compositions.length} PF, ${original.compositions.reduce((n, c) => n + c.population_groups.length, 0)} groups${process.argv.includes('--self-test') ? `, ${bridge ? 20 : 19} negative probes` : ''}`);
+  if (!errors.length) console.log(`PASS people composition: ${original.compositions.length} PF, ${original.compositions.reduce((n, c) => n + c.population_groups.length, 0)} groups${process.argv.includes('--self-test') ? `, ${bridge ? 30 : 29} negative probes` : ''}`);
   process.exitCode = errors.length ? 1 : 0;
 }

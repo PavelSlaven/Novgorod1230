@@ -10,6 +10,7 @@
 //   optional: region_id, count_limit|max_count, allowed_seasons|season_period|seasons|season, refresh_class, source_refs, confidence
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { REPO, GROUP, GAME_BASE, readJson, readCsv, readTsv, writeCsv, writeJson, rel, split, SEASONS } from './lib.mjs';
 import { loadTemplateRegistry } from './build-place-families.mjs';
 
@@ -224,7 +225,17 @@ export function build({ write = true } = {}) {
   for (const p of resolved) { const k = baseKey(p); if (!byBase.has(k)) byBase.set(k, []); byBase.get(k).push(p); }
   const compact = [...byBase.values()].flatMap((seasonRows) => seasonRows.length === SEASONS.length && seasonRows.every((p) => behavior(p) === behavior(seasonRows[0]) && provenance.every((field) => p[field] === seasonRows[0][field]))
     ? [{ ...seasonRows[0], allowed_seasons: 'all' }] : seasonRows);
-  const rows = compact.sort((a, b) => `${baseKey(a)}|${a.allowed_seasons}`.localeCompare(`${baseKey(b)}|${b.allowed_seasons}`)).map((p, i) => ({ pr_id: `pr_${String(i + 1).padStart(6, '0')}`, ...p }));
+  const keys = new Set(), ids = new Set();
+  const rows = compact.sort((a, b) => `${baseKey(a)}|${a.allowed_seasons}`.localeCompare(`${baseKey(b)}|${b.allowed_seasons}`)).map((p) => {
+    const ordered = SEASONS.filter((s) => split(p.allowed_seasons).includes(s)).join(';');
+    const seasons = p.allowed_seasons === 'all' || ordered === SEASONS.join(';') ? 'all' : ordered;
+    const key = JSON.stringify([p.scope_kind, p.scope_ref, p.region_id, p.subject_kind, p.subject_ref, seasons].map((s) => String(s ?? '').trim()));
+    const pr_id = `pr_${crypto.createHash('sha256').update(key).digest('hex').slice(0, 16)}`;
+    if (keys.has(key)) throw new Error(`duplicate presence key ${key}`);
+    if (ids.has(pr_id)) throw new Error(`presence ID collision ${pr_id}`);
+    keys.add(key); ids.add(pr_id);
+    return { pr_id, ...p, allowed_seasons: seasons };
+  });
   const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'item_ref', 'variants', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
   const n = write ? writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows) : rows.length;
   const cappedRows = rows.filter((r) => r.class_capped_from);

@@ -204,16 +204,40 @@ for (const t of [...mRows, ...bRows]) for (const season of SEASONS) {
   for (const phase of phaseRules.phases) {
     const mapped = dormant ? 'no' : phaseRules.rules[t.activity_time][phase];
     const voiceFact = voicePhase(t, season, phase, audible, dormant);
-    const voice = voiceFact === null ? mapped : voiceFact;
-    const completeGap = mapped === 'no_source' && voice === 'no_source';
+    let visibility = mapped;
+    let voice = phaseRules.voice_rules[t.activity_time]?.[phase] && voiceFact !== 'yes' ? phaseRules.voice_rules[t.activity_time][phase] :
+      voiceFact === null ? mapped : voiceFact;
+    const owner = `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}`;
+    let source = dormant ? `${owner}.dormant_seasons` : voiceFact === 'yes' ?
+      `${owner}.${t.class === 'Aves' ? 'voice_description' : 'signs_sounds'}` :
+      t.class === 'Aves' && !audible ? `${owner}.audible_seasons` : '';
+    let visibilityDirect = false;
+    let voiceDirect = voiceFact === 'yes';
+    const books = 'books-evidence-v1/fauna-mammals-birds.csv';
+    if (t.fa_id === 'fa_b_bittern' && ['spring', 'summer'].includes(season) && ['daylight', 'civil_dusk', 'night'].includes(phase)) {
+      voice = 'yes'; source = `${books}#L178`; voiceDirect = true;
+    }
+    if (t.fa_id === 'fa_b_common_crane' && season === 'autumn' && phase === 'night') {
+      voice = 'yes'; source = `${books}#L160`; voiceDirect = true;
+    }
+    if (t.fa_id === 'fa_m_wild_boar' && season === 'summer' && phase === 'civil_dusk') {
+      visibility = 'yes'; source = `${books}#L68`; visibilityDirect = true;
+    }
+    if (t.fa_id === 'fa_b_capercaillie' && season === 'spring' && phase === 'civil_dusk') {
+      visibility = 'yes'; source = `${books}#L147`; visibilityDirect = true;
+    }
+    if (t.fa_id === 'fa_b_swift' && season === 'summer' && phase === 'civil_dawn') {
+      voice = 'yes'; source = `${books}#L299`; voiceDirect = true;
+    }
+    const completeGap = visibility === 'no_source' && voice === 'no_source';
+    if (completeGap) source = '';
+    const ruleRef = !completeGap && !source ? `fauna/activity_phase_rules.json#${phaseRules.id}.${t.activity_time}.${phase}` : '';
     phaseRows.push({ phase_rule_id: `fpa_${t.fa_id}_${season}_${phase}`, fa_id: t.fa_id, season, phase,
-      visibility_state: mapped, voice_state: voice, voice_text_ref: voice === 'yes' ?
+      visibility_state: visibility, voice_state: voice, voice_text_ref: voice === 'yes' ?
         `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}.${t.class === 'Aves' ? 'voice_description' : 'signs_sounds'}` : '',
-      source_refs: completeGap ? '' : voice === 'yes' && mapped === 'no_source' ?
-        `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}.${t.class === 'Aves' ? 'voice_description' : 'signs_sounds'}` :
-        `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}.activity_time`,
-      rule_ref: '', no_source: completeGap ? 'visibility and voice phase unknown' : '',
-      confidence: t.presence_1230_confidence === 'C' ? 'C' : t.confidence, status: 'candidate' });
+      source_refs: source, rule_ref: ruleRef, no_source: completeGap ? 'visibility and voice phase unknown' : '',
+      confidence: visibilityDirect && voiceDirect && visibility !== 'no_source' && voice !== 'no_source' ?
+        (t.presence_1230_confidence === 'C' ? 'C' : t.confidence) : 'C', status: 'candidate' });
   }
 }
 counts.phase_activity = writeCsv(path.join(OUT, 'phase_activity.csv'), ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence', 'status'], phaseRows);

@@ -1,9 +1,21 @@
 {
+  "id": "activity-phase-v1",
   "phases": ["civil_dawn", "daylight", "civil_dusk", "night"],
+  "basis": "editorial",
+  "confidence": "C",
+  "reason": "Coarse activity classes identify a principal phase; other visibility remains unknown unless explicitly observed.",
   "rules": {
     "diurnal": {"civil_dawn": "no_source", "daylight": "yes", "civil_dusk": "no_source", "night": "no"},
-    "nocturnal": {"civil_dawn": "no_source", "daylight": "no", "civil_dusk": "no_source", "night": "yes"},
+    "nocturnal": {"civil_dawn": "no_source", "daylight": "no_source", "civil_dusk": "no_source", "night": "yes"},
     "crepuscular": {"civil_dawn": "yes", "daylight": "no_source", "civil_dusk": "yes", "night": "no_source"},
     "cathemeral": {"civil_dawn": "yes", "daylight": "yes", "civil_dusk": "yes", "night": "yes"}
-  }
+  },
+  "voice_rules": {"nocturnal": {"daylight": "no"}},
+  "derived_rules": [
+    {"id": "frog-damp-night", "basis": "editorial", "confidence": "C", "source": "claim:fauna-frog-damp-foraging", "reason": "Night foraging is conditional on damp or rainy habitat."},
+    {"id": "heat-daylight", "basis": "editorial", "confidence": "C", "source": "invertebrates_herps.csv#fa_ins_grasshoppers.perceptual_cues", "reason": "Heat cue is placed in daylight."},
+    {"id": "sunny-daylight", "basis": "editorial", "confidence": "C", "source": "invertebrates_herps.csv#fa_ins_dragonflies.season_peak", "reason": "Sunny summer is placed in daylight."},
+    {"id": "mosquito-dawn-sound", "basis": "editorial", "confidence": "C", "source": "claim:fauna-culex-dusk-rest;invertebrates_herps.csv#fa_ins_mosquitoes.perceptual_cues", "reason": "WK dusk-to-dawn activity and owner dusk/night sound are combined editorially for dawn sound."},
+    {"id": "rooster-four-am", "basis": "editorial", "confidence": "C", "source": "books-evidence-v1/time-calendar-church.csv#L66;livestock_types.csv#ls_chicken_rooster.primary_uses;nature-materials-weather/weather_climate/light_profile_by_month.csv", "reason": "Approximate 04:00 call is mapped through the median month of each season and that month's civil dawn/sunrise in local mean solar time."}
+  ]
 }

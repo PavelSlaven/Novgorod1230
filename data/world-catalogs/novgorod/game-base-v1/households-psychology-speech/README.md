@@ -8,13 +8,15 @@ WK production-v1 `family-social-context.json`) плюс курированный
 книжными `source_refs`. Проверено `scripts/check.py` (все проверки проходят
 на текущий момент, см. вывод ниже).
 
+**D-3.** Добавлены `households_kinship/relationship_rules.csv` и адресные формы с проверяемыми ссылками на роли, регистры, двор и PF. Это кандидаты правил, а не готовые отношения произвольных NPC. Неподтверждённые пары, соседство и устные обращения обозначены `no_source`; письменный «поклон» ограничен письмом. Генерация и проверка — `scripts/build.py` и `scripts/check.py`.
+
 **Rework 2026-09-26.** Независимый verifier (см. `VERIFICATION.md`) вернул
 5 из 7 таблиц группы на переработку: `household_composition_profiles.csv`,
 `kinship_terms.csv`, `psychology_profiles.csv`, `speech_registers.csv`,
 `norms.csv`. Все пять исправлены (см. секцию «Исправления 2026-09-26» в
 `VERIFICATION.md` и README каждого домена); `marriage_inheritance_rules.csv`
-и `address_forms.csv` (`approve_with_limits`) не входили в объём этой
-переработки и не менялись, кроме статистики в README households_kinship.
+и `address_forms.csv` (`approve_with_limits`) не входили в объём той
+переработки; `address_forms.csv` расширен отдельно в D-3.
 Статус всех таблиц остаётся `candidate` — переработка не является
 самоутверждением.
 
@@ -22,9 +24,9 @@ WK production-v1 `family-social-context.json`) плюс курированный
 
 | Домен | Файлы | Строк | Приоритет брифа | Статус покрытия |
 |---|---|---|---|---|
-| households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv | 139 / 8 / 32 | M2c | частично: состав двора теперь оценён по book evidence (min/max по wealth_band), но не по relation/sex/age_band (гэп) |
+| households_kinship | household_composition_profiles.csv, marriage_inheritance_rules.csv, kinship_terms.csv, relationship_rules.csv | 139 / 8 / 32 / 5 | M2c | состав и связи — кандидаты; конкретные отношения устанавливаются только при материализации |
 | npc_psychology | psychology_profiles.csv | 139 | M2c | покрытие 68 occupation + 71 role; контекстные мотивы и страхи привязаны только к применимым свидетельствам; шкала ценностей не утверждена владельцем |
-| speech_address | speech_registers.csv, address_forms.csv | 71 / 3 | M3 | speech_registers.csv переработан (правило починено); address_forms.csv по-прежнему частичен: берестяно-грамотный корпус не собран |
+| speech_address | speech_registers.csv, address_forms.csv | 71 / 7 | M3 | 3 построчно подтверждённые формы и 4 явных пробела; полного покрытия устной речи нет |
 | social_norms_honour_hospitality | norms.csv | 19 | M3 | 4 из 5 ранее пустых norm_kind закрыты book evidence; gift всё ещё 0 строк |
 
 Подробности, правила вывода и гэпы — в README.md каждого домена.

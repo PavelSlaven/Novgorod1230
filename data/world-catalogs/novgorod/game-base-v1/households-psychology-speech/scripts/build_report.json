@@ -6,7 +6,8 @@
   "households_kinship": {
     "household_composition_profiles.csv": 139,
     "marriage_inheritance_rules.csv": 8,
-    "kinship_terms.csv": 32
+    "kinship_terms.csv": 32,
+    "relationship_rules.csv": 5
   },
   "npc_psychology": {
     "psychology_profiles.csv": 139,
@@ -15,8 +16,8 @@
   },
   "speech_address": {
     "speech_registers.csv": 71,
-    "address_forms.csv": 3,
-    "gap": "berestyanaya-grammota corpus not collected row-by-row in this pass; brief fill_method=research not fulfilled beyond 3 seed formulas"
+    "address_forms.csv": 7,
+    "gap": "candidate forms are limited to cited cases; other oral and role-pair forms are explicit no_source gaps"
   },
   "social_norms_honour_hospitality": {
     "norms.csv": 19,

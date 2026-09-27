@@ -1,4 +1,8 @@
-sp_id,speaker_role_ref,addressee_role_ref,form_ru,register,situation,legal_weight_ref,attestation,source_refs,confidence
-form_poklon,боярин/госпожа,равный/родня,поклон от {А} к {Б},epistolary_opening,письмо (берестяная грамота),law_none,formula type attested across many birchbark letters,"gramoty.ru corpus; Зализняк, Древненовгородский диалект — formula description (not verbatim quoted here)",A
-form_gospodine,просящий/младший,боярин/начальник,господине,respectful_address,"просьба, письмо",law_none,vocative respectful address attested in letters,"Зализняк, Древненовгородский диалект — general description of address forms",B
-form_bratie,равный,равный/сослуживец,братие,collegial_address,устная и письменная речь,law_none,"collective address term, standard Old East Slavic usage","general historical-linguistic reconstruction, no row-level attestation yet",C
+sp_id,relationship_kind,speaker_role_ref,addressee_role_ref,register_ref,form_ru,situation,legal_weight_ref,attestation,source_refs,rule_ref,no_source,confidence,status
+form_poklon,unspecified,,,formal_literate,Поклон от {отправитель} к {адресат},"письмо, письменный зачин",,грамота № 717: игуменья к Офросении,book:641351 §2966,,,A,candidate
+form_prince,unspecified,,nov_role_prince,,Господин князь,устный доклад воина князю; роль говорящего не установлена,,воин докладывает князю,book:641352 §423,,,A,candidate
+form_bishop,unspecified,,nov_role_archbishop,formal_literate,Владыко,обращение к епископу; роль говорящего не установлена,,вопрос епископу,book:641352 §2037,,,A,candidate
+form_master_servant_gap,master_servant,nov_role_servant,nov_role_boyar,plain_oral,,устный доклад слуги боярину,,,,,No role-pair oral form: the attested 'Господин' case concerns a different named master.,C,candidate
+form_household_gap,co_resident,,,everyday_oral,,разговор жильцов одного двора,,,,,No universal address follows from shared residence.,C,candidate
+form_spouse_gap,unspecified,nov_role_householder,nov_role_household_mistress,everyday_oral,,устное обращение; конкретный брак не установлен,,,,,No sourced address for arbitrary holders of these roles.,C,candidate
+form_neighbor_gap,unspecified,,,everyday_oral,,устное обращение соседей,,,,,No universal oral form or tie strength for neighboring households.,C,candidate

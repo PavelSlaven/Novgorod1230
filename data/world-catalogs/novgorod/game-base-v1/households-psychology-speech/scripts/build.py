@@ -60,7 +60,7 @@ def write_csv(path, rows, fieldnames):
     with open(path, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames,
                            lineterminator="\n" if os.path.basename(path) in
-                           {"household_composition_profiles.csv", "psychology_profiles.csv"} else "\r\n")
+                           {"household_composition_profiles.csv", "psychology_profiles.csv", "relationship_rules.csv", "address_forms.csv"} else "\r\n")
         w.writeheader()
         for row in rows:
             out = {}
@@ -281,10 +281,23 @@ def build_households_kinship(occs, roles):
         ["term_id", "term_ru", "gloss_en", "category", "source_refs", "confidence", "note"],
     )
 
+    relation_rows = [
+        ("rel_boyar_servant", "role_pair", "", "nov_role_boyar", "nov_role_servant", "master_servant", "directed", "Only for a named servant attached to a named boyar's household; the role pair alone creates no edge.", "book:622242 §510", "", "", "B"),
+        ("rel_prince_druzhinnik", "role_pair", "", "nov_role_prince", "nov_role_princely_druzhinnik", "unspecified", "symmetric", "Require named actors and an independent service record before assigning a relationship.", "", "", "Book:641352 §423 records a warrior's oral report to a prince, not the warrior's role as a princely druzhinnik or a continuing service tie.", "C"),
+        ("rel_boyar_household", "household", "hh_role_nov_role_boyar", "", "", "co_resident", "symmetric", "Only for named actors placed in the same materialized household; residence does not imply kinship.", "book:709382 §596", "", "", "B"),
+        ("rel_householder_mistress_gap", "role_pair", "", "nov_role_householder", "nov_role_household_mistress", "unspecified", "symmetric", "Require an explicit actor-level marriage or household record; titles do not establish marriage.", "", "", "No evidence that arbitrary holders of these roles are spouses.", "C"),
+        ("rel_rural_neighbor_gap", "neighborhood", "pf_rural_yard", "", "", "unspecified", "symmetric", "Require named neighboring households and an attested tie before assigning direction or strength.", "", "", "No sourced direction or strength for arbitrary rural-yard neighbors.", "C"),
+    ]
+    n_rel = write_csv(os.path.join(out_dir, "relationship_rules.csv"), [dict(zip(
+        ["rel_rule_id", "scope_kind", "scope_ref", "subject_role_ref", "object_role_ref", "relationship_kind", "direction", "materialization_guard", "source_refs", "rule_ref", "no_source", "confidence", "status"],
+        (*row, "candidate"))) for row in relation_rows],
+        ["rel_rule_id", "scope_kind", "scope_ref", "subject_role_ref", "object_role_ref", "relationship_kind", "direction", "materialization_guard", "source_refs", "rule_ref", "no_source", "confidence", "status"])
+
     report["households_kinship"] = {
         "household_composition_profiles.csv": n_comp,
         "marriage_inheritance_rules.csv": n_mi,
         "kinship_terms.csv": n_kt,
+        "relationship_rules.csv": n_rel,
     }
 
 
@@ -437,40 +450,24 @@ def build_speech_address(roles):
         ["role_id", "register", "literacy_expectation_ru", "speech_notes_ru", "derivation_rule", "source_refs", "confidence"],
     )
 
-    # address_forms.csv — a seed closed set of period address formulas,
-    # attested in scholarship on birchbark letters (formula "поклон отъ ... къ ...")
-    # but NOT yet checked row-by-row against gramoty.ru texts (stated gap:
-    # fill_method=research in the brief; this pass only seeds the structure
-    # and the two best-known attested formula types).
-    SEED = [
-        ("form_poklon", "боярин/госпожа", "равный/родня", "поклон от {А} к {Б}",
-         "epistolary_opening", "письмо (берестяная грамота)",
-         "law_none", "formula type attested across many birchbark letters",
-         "A", "gramoty.ru corpus; Зализняк, Древненовгородский диалект — formula description (not verbatim quoted here)"),
-        ("form_gospodine", "просящий/младший", "боярин/начальник", "господине",
-         "respectful_address", "просьба, письмо",
-         "law_none", "vocative respectful address attested in letters",
-         "B", "Зализняк, Древненовгородский диалект — general description of address forms"),
-        ("form_bratie", "равный", "равный/сослуживец", "братие",
-         "collegial_address", "устная и письменная речь",
-         "law_none", "collective address term, standard Old East Slavic usage",
-         "C", "general historical-linguistic reconstruction, no row-level attestation yet"),
+    # A letter opening is a written formula, never a default oral address.
+    FORMS = [
+        ("form_poklon", "unspecified", "", "", "formal_literate", "Поклон от {отправитель} к {адресат}", "письмо, письменный зачин", "", "грамота № 717: игуменья к Офросении", "book:641351 §2966", "", "", "A"),
+        ("form_prince", "unspecified", "", "nov_role_prince", "", "Господин князь", "устный доклад воина князю; роль говорящего не установлена", "", "воин докладывает князю", "book:641352 §423", "", "", "A"),
+        ("form_bishop", "unspecified", "", "nov_role_archbishop", "formal_literate", "Владыко", "обращение к епископу; роль говорящего не установлена", "", "вопрос епископу", "book:641352 §2037", "", "", "A"),
+        ("form_master_servant_gap", "master_servant", "nov_role_servant", "nov_role_boyar", "plain_oral", "", "устный доклад слуги боярину", "", "", "", "", "No role-pair oral form: the attested 'Господин' case concerns a different named master.", "C"),
+        ("form_household_gap", "co_resident", "", "", "everyday_oral", "", "разговор жильцов одного двора", "", "", "", "", "No universal address follows from shared residence.", "C"),
+        ("form_spouse_gap", "unspecified", "nov_role_householder", "nov_role_household_mistress", "everyday_oral", "", "устное обращение; конкретный брак не установлен", "", "", "", "", "No sourced address for arbitrary holders of these roles.", "C"),
+        ("form_neighbor_gap", "unspecified", "", "", "everyday_oral", "", "устное обращение соседей", "", "", "", "", "No universal oral form or tie strength for neighboring households.", "C"),
     ]
-    af_rows = []
-    for sid, speaker, addressee, form, register, situation, legal, attest, conf, src in SEED:
-        af_rows.append({
-            "sp_id": sid, "speaker_role_ref": speaker, "addressee_role_ref": addressee,
-            "form_ru": form, "register": register, "situation": situation,
-            "legal_weight_ref": legal, "attestation": attest, "source_refs": src, "confidence": conf,
-        })
+    columns = ["sp_id", "relationship_kind", "speaker_role_ref", "addressee_role_ref", "register_ref", "form_ru", "situation", "legal_weight_ref", "attestation", "source_refs", "rule_ref", "no_source", "confidence", "status"]
+    af_rows = [dict(zip(columns, (*row, "candidate"))) for row in FORMS]
     n_af = write_csv(
         os.path.join(out_dir, "address_forms.csv"), af_rows,
-        ["sp_id", "speaker_role_ref", "addressee_role_ref", "form_ru", "register", "situation",
-         "legal_weight_ref", "attestation", "source_refs", "confidence"],
+        columns,
     )
     report["speech_address"] = {"speech_registers.csv": n_reg, "address_forms.csv": n_af,
-                                 "gap": "berestyanaya-grammota corpus not collected row-by-row in this pass; "
-                                        "brief fill_method=research not fulfilled beyond 3 seed formulas"}
+                                 "gap": "candidate forms are limited to cited cases; other oral and role-pair forms are explicit no_source gaps"}
 
 
 # ---------------------------------------------------------------------------
@@ -599,7 +596,7 @@ def main():
     build_npc_psychology(occs, roles)
     build_speech_address(roles)
     build_social_norms()
-    with open(os.path.join(os.path.dirname(__file__), "build_report.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(os.path.dirname(__file__), "build_report.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)
     print(json.dumps(report, ensure_ascii=False, indent=2))
 

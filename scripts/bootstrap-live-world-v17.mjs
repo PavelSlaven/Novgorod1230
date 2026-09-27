@@ -80,8 +80,23 @@ function digestJson(value) {
   return createHash('sha256').update(JSON.stringify(canonicalize(value))).digest('hex');
 }
 
+const gate1RequestV2Path =
+  `${gate1}/v17-bootstrap-import-request-v2.json`;
+const gate1AttestationV2Path =
+  `${gate1}/v17-bootstrap-import-approval-attestation-v2.json`;
+const gate1AttestationV2Schema = 'rus.gate1_v17_bootstrap_import_approval.v1';
+const gate1AttestationV2Verdicts = new Set(['APPROVE', 'APPROVE_CONDITIONAL']);
+
 export function assertV17Gate1V2Attestation(request, attestation) {
   if (!attestation) throw new Error('V17_GATE1_ATTESTATION_V2_REQUIRED');
+  if (attestation.schema !== gate1AttestationV2Schema)
+    throw new Error('V17_GATE1_ATTESTATION_SCHEMA_MISMATCH');
+  if (!gate1AttestationV2Verdicts.has(attestation.verdict))
+    throw new Error('V17_GATE1_ATTESTATION_VERDICT_REJECTED');
+  if (attestation.request_path !== gate1RequestV2Path)
+    throw new Error('V17_GATE1_ATTESTATION_REQUEST_PATH_MISMATCH');
+  if (attestation.runner_sha256 !== request.runner?.sha256)
+    throw new Error('V17_GATE1_ATTESTATION_RUNNER_MISMATCH');
   if (attestation.request_digest !== request.request_digest)
     throw new Error('V17_GATE1_ATTESTATION_DIGEST_MISMATCH');
   return attestation;
@@ -96,7 +111,9 @@ async function exact(path, sha256, bytes) {
 
 async function json(path) { return JSON.parse(await readFile(resolve(root, path), 'utf8')); }
 
-export async function checkV17BootstrapInputs() {
+export async function checkV17BootstrapInputs({
+  attestationV2Path = gate1AttestationV2Path
+} = {}) {
   const schema = await json(`${v17}/fresh-schema-request.json`);
   for (const source of [schema.world_schema.entrypoint,
     ...schema.world_schema.ordered_parts,
@@ -106,7 +123,7 @@ export async function checkV17BootstrapInputs() {
   for (const [path, sha256] of [...catalogDdl.world, ...catalogDdl.party])
     await exact(path, sha256);
 
-  const gate = await json(`${gate1}/v17-bootstrap-import-request-v2.json`);
+  const gate = await json(gate1RequestV2Path);
   const { request_digest: claimedGateDigest, ...gateBody } = gate;
   if (digestJson(gateBody) !== claimedGateDigest)
     throw new Error('V17_GATE1_REQUEST_DIGEST_MISMATCH');
@@ -122,7 +139,7 @@ export async function checkV17BootstrapInputs() {
     throw new Error('V17_GATE1_RUNNER_ARGS_MISMATCH');
   let gateAttestation = null;
   try {
-    gateAttestation = await json(`${gate1}/v17-bootstrap-import-approval-attestation-v2.json`);
+    gateAttestation = await json(attestationV2Path);
   } catch (error) {
     if (error?.code === 'ENOENT') throw new Error('V17_GATE1_ATTESTATION_V2_REQUIRED');
     throw error;

@@ -31,13 +31,39 @@ test('Gate1 local-play modes reject crossed expected databases before connect', 
 });
 
 test('Gate1 v2 attestation gate refuses missing and mismatched digest', async () => {
-  const request = { request_digest: 'a'.repeat(64) };
+  const request = {
+    request_digest: 'a'.repeat(64),
+    runner: { sha256: 'c'.repeat(64) }
+  };
+  const requestPath =
+    'data/world-catalogs/novgorod/runtime-catalog/gate1-owner-data-v1/'
+    + 'v17-bootstrap-import-request-v2.json';
+  const valid = {
+    schema: 'rus.gate1_v17_bootstrap_import_approval.v1',
+    verdict: 'APPROVE_CONDITIONAL',
+    request_path: requestPath,
+    runner_sha256: request.runner.sha256,
+    request_digest: request.request_digest
+  };
   assert.throws(() => assertV17Gate1V2Attestation(request, null),
     /V17_GATE1_ATTESTATION_V2_REQUIRED/u);
-  assert.throws(() => assertV17Gate1V2Attestation(request, { request_digest: 'b'.repeat(64) }),
+  assert.throws(() => assertV17Gate1V2Attestation(request,
+    { ...valid, request_digest: 'b'.repeat(64) }),
     /V17_GATE1_ATTESTATION_DIGEST_MISMATCH/u);
-  assertV17Gate1V2Attestation(request, { request_digest: request.request_digest });
-  await assert.rejects(() => checkV17BootstrapInputs(),
+  assert.throws(() => assertV17Gate1V2Attestation(request,
+    { ...valid, verdict: 'REJECT' }),
+    /V17_GATE1_ATTESTATION_VERDICT_REJECTED/u);
+  assert.throws(() => assertV17Gate1V2Attestation(request,
+    { ...valid, runner_sha256: 'd'.repeat(64) }),
+    /V17_GATE1_ATTESTATION_RUNNER_MISMATCH/u);
+  assert.throws(() => assertV17Gate1V2Attestation(request,
+    { ...valid, request_path: 'other/path.json' }),
+    /V17_GATE1_ATTESTATION_REQUEST_PATH_MISMATCH/u);
+  assertV17Gate1V2Attestation(request, valid);
+  const missingPath = join(tmpdir(),
+    `novgorod-missing-attestation-v2-${process.pid}.json`);
+  await assert.rejects(
+    () => checkV17BootstrapInputs({ attestationV2Path: missingPath }),
     /V17_GATE1_ATTESTATION_V2_REQUIRED/u);
 });
 

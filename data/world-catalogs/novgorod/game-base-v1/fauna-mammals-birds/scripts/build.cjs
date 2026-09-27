@@ -14,6 +14,9 @@ const checks = require('./src/checks.cjs');
 const sources = require('./src/sources.cjs');
 const pant = require('./input_snapshots/panteleev2001_list.json').species;
 const malf = require('./input_snapshots/malchevsky1983_flags.json').species;
+const phaseRules = require('../fauna/activity_phase_rules.json');
+const voicePhase = require('./voice-phase.cjs');
+const startPf = new Set(fs.readFileSync(path.join(GB, 'places-binding/places/node_binding.csv'), 'utf8').trim().split(/\r?\n/).slice(1).map((line) => line.split(',')[4]).filter(Boolean));
 
 const SEASONS = ['winter', 'spring', 'summer', 'autumn'];
 const LEVELS = ['rare', 'contextual', 'common', 'ubiquitous'];
@@ -191,5 +194,28 @@ counts.wild_habitat_presence = writeCsv(path.join(OUT, 'wild_habitat_presence.cs
 counts.fauna_categories = writeCsv(path.join(OUT, 'fauna_categories.csv'), Object.keys(catRows[0]), catRows);
 counts.taxa_checks = writeCsv(path.join(OUT, 'taxa_checks.csv'), Object.keys(chkRows[0]), chkRows);
 counts.sources = writeCsv(path.join(OUT, 'sources.csv'), Object.keys(srcRows[0]), srcRows);
+const phaseRows = [];
+const scoped = new Set(pres.filter((p) => startPf.has(p.pf_id)).map((p) => `${p.fa_id}|${p.season}`));
+for (const t of [...mRows, ...bRows]) for (const season of SEASONS) {
+  if (!scoped.has(`${t.fa_id}|${season}`)) continue;
+  const dormant = t.dormant_seasons?.split(';').includes(season);
+  const audible = t.class === 'Aves' ? t.audible_seasons.split(';').includes(season) :
+    pres.some((p) => p.fa_id === t.fa_id && p.season === season && p.audible === 'true');
+  for (const phase of phaseRules.phases) {
+    const mapped = dormant ? 'no' : phaseRules.rules[t.activity_time][phase];
+    const voiceFact = voicePhase(t, season, phase, audible, dormant);
+    const voice = voiceFact === null ? mapped : voiceFact;
+    const completeGap = mapped === 'no_source' && voice === 'no_source';
+    phaseRows.push({ phase_rule_id: `fpa_${t.fa_id}_${season}_${phase}`, fa_id: t.fa_id, season, phase,
+      visibility_state: mapped, voice_state: voice, voice_text_ref: voice === 'yes' ?
+        `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}.${t.class === 'Aves' ? 'voice_description' : 'signs_sounds'}` : '',
+      source_refs: completeGap ? '' : voice === 'yes' && mapped === 'no_source' ?
+        `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}.${t.class === 'Aves' ? 'voice_description' : 'signs_sounds'}` :
+        `${t.class === 'Aves' ? 'birds.csv' : 'mammals.csv'}#${t.fa_id}.activity_time`,
+      rule_ref: '', no_source: completeGap ? 'visibility and voice phase unknown' : '',
+      confidence: t.presence_1230_confidence === 'C' ? 'C' : t.confidence, status: 'candidate' });
+  }
+}
+counts.phase_activity = writeCsv(path.join(OUT, 'phase_activity.csv'), ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence', 'status'], phaseRows);
 fs.writeFileSync(path.join(DOM, 'build-report.json'), JSON.stringify({ built_by: 'scripts/build.cjs', counts }, null, 1) + '\n');
 console.log(counts);

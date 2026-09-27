@@ -30,6 +30,9 @@ const SEASONS = ['winter', 'spring', 'summer', 'autumn'];
 const LEVELS = { rare: 1, contextual: 2, common: 4, ubiquitous: 8 };
 const errors = [], warnings = [];
 const err = (m) => errors.push(m), warn = (m) => warnings.push(m);
+const phase = require('./validate-phase.cjs');
+const phaseTable = phase.csv(F('phase_activity.csv'));
+errors.push(...phase.validate('fauna-mammals-birds', phaseTable.rows, phaseTable.header));
 
 // ids
 const all = [...mammals, ...birds]; const ids = new Set();
@@ -101,7 +104,7 @@ for (const p of pres) if (['fa_b_magpie', 'fa_b_starling'].includes(p.fa_id) && 
 
 const report = {
   checked_by: 'scripts/validate.cjs', ok: errors.length === 0,
-  counts: { mammals: mammals.length, birds: birds.length, presence_rows: pres.length, place_families_with_rows: new Set(pres.map((p) => p.pf_id)).size,
+  counts: { mammals: mammals.length, birds: birds.length, presence_rows: pres.length, phase_activity_rows: phaseTable.rows.length, place_families_with_rows: new Set(pres.map((p) => p.pf_id)).size,
     presence_by_class: Object.fromEntries(Object.keys(LEVELS).map((k) => [k, pres.filter((p) => p.frequency_class === k).length])),
     presence_confidence: { B: pres.filter((p) => p.confidence === 'B').length, C: pres.filter((p) => p.confidence === 'C').length },
     taxa_presence_1230_confidence: ['A', 'B', 'C'].reduce((a, k) => ((a[k] = all.filter((t) => t.presence_1230_confidence === k).length), a), {}),

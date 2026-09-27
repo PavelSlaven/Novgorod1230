@@ -83,10 +83,15 @@ Presence rows by season: winter 768, spring 1175, summer 1132, autumn 1156. By c
 
 ## Rebuild
 
+`fauna/phase_activity.csv` covers every `fa_id × season` appearing in `wild_habitat_presence.csv` on the 16 PF read from `places-binding/places/node_binding.csv` (`pf_id` of bound G4/G5 nodes), with four civil-light phases per pair. `fauna/activity_phase_rules.json` is the single coarse `activity_time → phase` mapping; a `no_source` phase is not a claim of absence. The row points to the taxon's owner field; `voice_text_ref` points to the owner voice/sign field without repeating its text. The builder and validator recompute the PF set from the binding, rather than pinning a second territory list. The searched evidence locations were `fauna/birds.csv` (`activity_time`, `audible_seasons`, `voice_description`), `fauna/mammals.csv` (`activity_time`, `signs_sounds`), `wild_habitat_presence.csv`, `sources/books-evidence-v1/fauna-mammals-birds.csv`, WK `production-v1/fauna-ecology.json`, MASTER archive, adjacent fish/invertebrate/livestock group, and recorded C rules.
+
+Exactly one of `source_refs`, `rule_ref`, and `no_source` is set per row. An unknown individual facet is marked by its `*_state=no_source`; a fully unknown row uses `no_source`. A source pointer for one facet never changes the other facet's gap state. A call limited to dawn, night, a nest, migration, or a stated season is not promoted to an unconditional daily voice. The crane's dawn call is kept at dawn; the black stork's nest-only calls remain voice gaps.
+
 ```
 python scripts/extract_regional_bird_sources.py <panteleev_cyberleninka.html> <dir with malchevski_*.html> scripts/input_snapshots
 node scripts/build.cjs
 node scripts/validate.cjs
+node scripts/validate-phase.cjs fauna-mammals-birds --self-test
 ```
 Download the pages first with curl from the URLs in `scripts/src/sources.cjs`. The snapshots are already committed, so `build.cjs` and `validate.cjs` run offline. `validate.cjs` reads WK from the main checkout; set `NOVGOROD_MAIN` to point elsewhere.
 

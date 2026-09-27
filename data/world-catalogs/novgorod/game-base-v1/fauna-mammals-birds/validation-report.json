@@ -5,6 +5,7 @@
   "mammals": 44,
   "birds": 149,
   "presence_rows": 4231,
+  "phase_activity_rows": 2632,
   "place_families_with_rows": 38,
   "presence_by_class": {
    "rare": 1445,

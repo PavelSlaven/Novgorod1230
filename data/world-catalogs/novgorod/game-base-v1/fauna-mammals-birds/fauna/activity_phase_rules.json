@@ -1,0 +1,9 @@
+{
+  "phases": ["civil_dawn", "daylight", "civil_dusk", "night"],
+  "rules": {
+    "diurnal": {"civil_dawn": "no_source", "daylight": "yes", "civil_dusk": "no_source", "night": "no"},
+    "nocturnal": {"civil_dawn": "no_source", "daylight": "no", "civil_dusk": "no_source", "night": "yes"},
+    "crepuscular": {"civil_dawn": "yes", "daylight": "no_source", "civil_dusk": "yes", "night": "no_source"},
+    "cathemeral": {"civil_dawn": "yes", "daylight": "yes", "civil_dusk": "yes", "night": "yes"}
+  }
+}

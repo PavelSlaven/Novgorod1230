@@ -53,10 +53,22 @@ test('v17 pins World Knowledge production-v2; v16 keeps production-v1', async ()
     'wk-embedding:giga-480m-0826:v1');
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_revision,
     'revision:production-v1');
-  const loaded = await loadProductionWorldKnowledge();
-  assert.equal(loaded.bundle.manifest.revision_id, 'revision:production-v2');
-  assert.equal(loaded.embedding_profile.embedding_profile_ref,
+  const loadedV2 = await loadProductionWorldKnowledge({
+    packRevision: SPATIAL_V3_TARGET_PRODUCTION_RELEASE.world_knowledge_pack_revision
+  });
+  assert.equal(loadedV2.bundle.manifest.revision_id, 'revision:production-v2');
+  assert.equal(loadedV2.embedding_profile.embedding_profile_ref,
     'wk-embedding:giga-480m-0826:v1');
+  const loadedV1 = await loadProductionWorldKnowledge({
+    packRevision: SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_revision
+  });
+  assert.equal(loadedV1.bundle.manifest.revision_id, 'revision:production-v1');
+  assert.equal(loadedV1.embedding_profile.embedding_profile_ref,
+    'wk-embedding:giga-480m-0826:v1');
+  await assert.rejects(
+    () => loadProductionWorldKnowledge({ packRevision: 'revision:production-v9' }),
+    /unsupported World Knowledge pack revision/u
+  );
 });
 
 test('target selection is explicit and the official root rejects absent operator approvals before database access', async () => {

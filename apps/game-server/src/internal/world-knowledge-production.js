@@ -8,29 +8,45 @@ import { loadRerankerProfile, rerankerProductionEnabled,
   createBgeRerankerScorePairs, wireRerankerIfEnabled } from
   '../runtime/world-knowledge-reranker.js';
 
-const BUNDLE_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v2/runtime-bundle.json';
-const EMBEDDING_PROFILE_PATH = 'data/world-catalogs/novgorod/world-knowledge/embedding-profiles/giga-480m-0826-v1.json';
-const SUFFICIENCY_PROFILE_PATH = 'data/world-catalogs/novgorod/world-knowledge/sufficiency-profiles/giga-cosine-v1.json';
-const VECTOR_METADATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v2/vector-index.json';
-const VECTOR_DATA_PATH = 'data/world-catalogs/novgorod/world-knowledge/production-v2/vectors.f32';
+const WK_ROOT = 'data/world-catalogs/novgorod/world-knowledge';
+const EMBEDDING_PROFILE_PATH = `${WK_ROOT}/embedding-profiles/giga-480m-0826-v1.json`;
+const SUFFICIENCY_PROFILE_PATH = `${WK_ROOT}/sufficiency-profiles/giga-cosine-v1.json`;
+// Closed map: release.world_knowledge_pack_revision selects the pack directory.
+const PRODUCTION_PACKS = Object.freeze({
+  'revision:production-v1': Object.freeze({
+    dir: `${WK_ROOT}/production-v1`
+  }),
+  'revision:production-v2': Object.freeze({
+    dir: `${WK_ROOT}/production-v2`
+  })
+});
 
 export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
   python = 'python', requireEncoderReady = false,
   encoderFactory = createGigaQueryEncoder,
-  rerankerModelPath = process.env.WK_RERANKER_MODEL_PATH ?? null } = {}) {
+  rerankerModelPath = process.env.WK_RERANKER_MODEL_PATH ?? null,
+  packRevision = 'revision:production-v2' } = {}) {
+  const pack = PRODUCTION_PACKS[packRevision];
+  if (pack == null) {
+    throw new TypeError(
+      `unsupported World Knowledge pack revision: ${String(packRevision)}`);
+  }
+  const bundlePath = `${pack.dir}/runtime-bundle.json`;
+  const vectorMetadataPath = `${pack.dir}/vector-index.json`;
+  const vectorDataPath = `${pack.dir}/vectors.f32`;
   const [bundle, embeddingProfile, sufficiencyProfile, vectorMetadata,
     vectorBytes, rerankerProfile] =
     await Promise.all([
-    readJson(resolve(rootDir, BUNDLE_PATH)),
+    readJson(resolve(rootDir, bundlePath)),
     readJson(resolve(rootDir, EMBEDDING_PROFILE_PATH)),
     readJson(resolve(rootDir, SUFFICIENCY_PROFILE_PATH)),
-    readJson(resolve(rootDir, VECTOR_METADATA_PATH)),
-    readFile(resolve(rootDir, VECTOR_DATA_PATH)),
+    readJson(resolve(rootDir, vectorMetadataPath)),
+    readFile(resolve(rootDir, vectorDataPath)),
     loadRerankerProfile({ rootDir })
-  ]);
+    ]);
   if (bundle?.schema !== 'world_knowledge_runtime_bundle_v1'
       || bundle.manifest?.pack_ref !== 'wk-pack:novgorod-1230'
-      || bundle.manifest?.revision_id !== 'revision:production-v2'
+      || bundle.manifest?.revision_id !== packRevision
       || bundle.manifest?.status !== 'production') {
     throw new TypeError('production World Knowledge bundle is invalid');
   }
@@ -97,10 +113,11 @@ export async function loadProductionWorldKnowledge({ rootDir = process.cwd(),
 }
 
 export async function checkProductionWorldKnowledgeReadiness({
-  rootDir = process.cwd(), python = 'python'
+  rootDir = process.cwd(), python = 'python',
+  packRevision = 'revision:production-v2'
 } = {}) {
   const loaded = await loadProductionWorldKnowledge({ rootDir, python,
-    requireEncoderReady: true });
+    requireEncoderReady: true, packRevision });
   try {
     const russian = await loaded.encoder.encode(
       'Как вода, мороз и грязь влияют на зимнюю дорогу?');
@@ -132,6 +149,7 @@ export async function checkProductionWorldKnowledgeReadiness({
       model_id: loaded.embedding_profile.model_id,
       model_revision: loaded.embedding_profile.model_revision,
       dimension: loaded.embedding_profile.dimension,
+      pack_revision: loaded.bundle.manifest.revision_id,
       russian_norm: vectorNorm(russian), english_norm: vectorNorm(english),
       deterministic_max_delta: difference,
       russian_top_refs: [...russianHits.keys()],

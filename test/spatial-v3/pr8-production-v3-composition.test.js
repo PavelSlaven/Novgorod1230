@@ -50,7 +50,9 @@ const TEST_PIN_MANIFEST_DIGEST = 'e'.repeat(64);
 const TEST_RELEASE = createSpatialV3ProductionRelease(
   TEST_PIN_MANIFEST_DIGEST
 );
-const TEST_WORLD_KNOWLEDGE = await loadProductionWorldKnowledge();
+const TEST_WORLD_KNOWLEDGE = await loadProductionWorldKnowledge({
+  packRevision: TEST_RELEASE.world_knowledge_pack_revision
+});
 const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
   schema: 'rus.runtime_catalog_pin.v2',
   catalog_scope: 'item_container_materialization_v2',

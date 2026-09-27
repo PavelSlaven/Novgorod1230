@@ -130,6 +130,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       loadProductionWorldKnowledge({ rootDir: config.rootDir ?? process.cwd(),
         python: env.RUS_WORLD_KNOWLEDGE_PYTHON ?? 'python',
         requireEncoderReady: true,
+        packRevision: release.world_knowledge_pack_revision,
         ...(worldKnowledgeEncoderFactory == null ? {}
           : { encoderFactory: worldKnowledgeEncoderFactory }) }),
       targetContext == null ? loadLowerDvinaTraceMaterializationBundle({

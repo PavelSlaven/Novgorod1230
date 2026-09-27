@@ -4,6 +4,8 @@
 
 - data(wk): World Knowledge pack revision production-v2 — D15 access reclassification with strict review, book-sourced claims, in-world law rewrites, 1230 famine claims gated by the event (D19/D22), final WR §21.1 approval of every changed claim, Giga vectors and benchmark; runtime still pins production-v1 until #153 step 7 (#154) LW-060..LW-065 added
 - data(temporal-v4): 1230 famine rule re-issued 14.09.1230–31.12.1231 with book 667380 source (D19/D22, #154)
+- fix(runtime): commit Gate1 activation-amendment attestation v2; assertGate1Authority runs full validateGate1RuntimeActivationAttestation; v2 forgery tests
+- fix(runtime): Gate1 activation-amendment v2 (restart sha drift); fail-closed without attestation v2; LW-055 added
 - fix(wk): #153 REVIEW-049 — Core `admittedCandidateRefs` + grounding scores admitted (not vector top-k); `rerank_applied` telemetry; `sufficient_enabled=false` caps SUFFICIENT; C26 single-field loader test; §63/LW-053/054 (#153, PR #98)
 - fix(wk): #153 REVIEW-048 — sufficiency_profile mutation kills; owner-server D21 remeasure (GPU/CPU p95 + 120-sit audit ON/OFF) keeps rerank OFF; LW-053 (#153, PR #98) LW-053 updated
 - feat(wk): #153 Part C D17/D21 — Core `rerankScores`, gated-off bge pin+provision, SUFFICIENT relevance floor, plan-mode harness in world-catalog-workflow, M16 body-only auth; §49/§63/§74; LW-053/054 (#153, PR #98)

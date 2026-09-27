@@ -59,6 +59,7 @@
 | 052 | turn-step `player_utterance` / `intent_paraphrase` | WK может впитаться в речь — вне Part B guard | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 053 | `bge-reranker-v2-m3` / D17 wiring | D21 гейт не пройден — production rerank OFF | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 054 | `wk-sufficiency:giga-cosine:v1` | `sufficient_enabled=false`; per-hint relevance pending | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 055 | `activation-amendment` / `item-compatibility-request` | pin sha restart-теста в утверждаемом запросе; item-compat ещё на старом sha | — |
 | 060 | `world-knowledge/production-v2` claims `domain_internal_only` | знание эпохи скрыто из-за формулировки (служебные обороты, историография, наука) — нужна переписка языком 1230 года и повторное утверждение | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 | 061 | `audits/production-v2/step4-*-coverage.json`, `category-cartography.json` | пробелы аудита WK не закрыты: 37 must отклонены на утверждении, 22 без источника; `missing_families` (шаг 4.8) не делались | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 | 062 | WK `applicability.conditions.started_historical_events`, история событий | события с датой внутри года — только через условие события; события `novgorod_famine_1230` (фазы), `novgorod_upheaval_december_1230` и поздние события голода должны быть заведены при импорте истории; компилятор не проверяет существование event id | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
@@ -281,6 +282,11 @@
 - **Что.** Профиль `wk-sufficiency:giga-cosine:v1` (`status: provisional`, `sufficient_enabled: false`) хранит `min_hint_relevance=0.28` как параметр будущего включения. Сигнал — Giga cosine claim ко всему search-query (hints joined); в 188/360 live-записей у всех подсказок одно значение — порог почти не отделяет верные SUFFICIENT. Калибровка REVIEW-049 по `judgments.json`: live×3 при 0.28 → SUFFICIENT 158, из них 127 (0.80) без must-need; лучшее — 0.76 при пороге 0.45 (38 SUFFICIENT); порога с долей ≤0.10 нет. Plan (120): 0.10 только при 0.52 и SUFFICIENT=1. Поэтому production не выдаёт `SUFFICIENT_KNOWLEDGE` (макс. `PARTIAL_KNOWLEDGE`).
 - **Как жить.** Путь дальше — релевантность по каждой подсказке (отдельный эмбеддинг hint) и повторная калибровка; до того не ставить `sufficient_enabled: true`. Не сравнивать bge logits с cosine-порогом.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
+
+### LW-055 — pin sha restart-теста в утверждаемом Gate1-запросе
+- **Что.** `completed_import_readback.restart_verification` в `activation-amendment-v1/request.json` и в `spatial-v3-target-v1/item-compatibility-request.json` закрепляет sha256 `test/integration/gate1-owner-data-import-postgres.test.js`. Любая правка этого теста ломает reproduce-exact / attestation pin. Amendment ушёл в v2 (`activation-amendment-v2/request.json`, digest `61384359…`); v1 + его attestation — история. `item-compatibility-request.json` всё ещё указывает старый sha `698dcbeb…` — отдельный запрос, в этом шаге не трогали.
+- **Как жить.** Не regenerate in-place утверждённый request; новый digest → новый amendment/package + независимое утверждение. item-compat — отдельный CR/пакет, когда его тест реально упадёт или понадобится activation-совместимость.
+- **Issue.** —
 
 ### LW-060 — знание эпохи скрыто из-за формулировки
 - **Где.** `data/world-catalogs/novgorod/world-knowledge/production-v2` — claims класса `domain_internal_only` с суть-знанием 1230 года (около 800 после #154: служебные хвосты «не устанавливает…», «в описанном…», научные термины).

@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 26,
-  "own_checks_total": 26,
+  "own_checks_passed": 27,
+  "own_checks_total": 27,
   "checks": [
     {
       "domain": "people_composition",
@@ -131,6 +131,15 @@
       "failures": 0,
       "sample": [],
       "external": false
+    },
+    {
+      "domain": "node_binding",
+      "name": "secondary_access_exact_for_all_nodes",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "nodes_checked": 227
     },
     {
       "domain": "presence_rules",

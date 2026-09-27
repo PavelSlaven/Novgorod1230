@@ -868,6 +868,45 @@
   },
   "node_binding": {
     "source": "pr98:data/world-catalogs/novgorod/m2c-natural/candidate.json natural_profiles[].authoring_axes (landscape, land_use, function)",
+    "pf_secondary": {
+      "meaning": "part of the node scene accessible without transition",
+      "candidate_basis": "scene_templates.map",
+      "include_rule": {
+        "rule_id": "scene_candidate_access_v1",
+        "statement": "Include each scene-template candidate as a secondary place family when it is accessible in the node scene without a transition, except the editorial exclusions below and the primary family.",
+        "confidence": "C"
+      },
+      "exclusions": [
+        {
+          "scene_template_id": "stfv3__g5_boundary_access_v1",
+          "pf_id": "town_wall_edge",
+          "rule_ref": "exclude_boundary_town_wall_edge_v1",
+          "confidence": "C",
+          "reason": "Editorial decision: do not infer a town wall from boundary access at these nodes."
+        },
+        {
+          "scene_template_id": "stfv3__g5_boundary_access_v1",
+          "pf_id": "field_margin",
+          "rule_ref": "exclude_boundary_field_margin_v1",
+          "confidence": "C",
+          "reason": "Editorial decision: boundary access at these river and burial nodes does not imply a field margin."
+        },
+        {
+          "scene_template_id": "stfv3__g5_burial_ritual_buffer_v1",
+          "pf_id": "churchyard",
+          "rule_ref": "exclude_burial_churchyard_v1",
+          "confidence": "C",
+          "reason": "Editorial decision: do not place this burial scene in a churchyard."
+        },
+        {
+          "scene_template_id": "stfv3__g5_landing_transition_v1",
+          "pf_id": "river_wharf",
+          "rule_ref": "exclude_landing_river_wharf_v1",
+          "confidence": "C",
+          "reason": "Editorial decision: a landing transition does not imply a town wharf here."
+        }
+      ]
+    },
     "g4_function_to_pf": {
       "rule": "Primary pf of a v17 G4 = map of its authoring_axes.function; the function axis is marked direct/high in the source. Unmapped or ambiguous functions stay a gap.",
       "map": {

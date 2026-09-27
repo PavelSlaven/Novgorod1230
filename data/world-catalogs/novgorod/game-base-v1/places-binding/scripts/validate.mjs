@@ -100,6 +100,63 @@ function itemVariantSelection(resolutions, actual) {
   return Object.keys(expected).filter((key) => JSON.stringify(actual?.[key]) !== JSON.stringify(expected[key])).map((key) => `${key}: expected ${JSON.stringify(expected[key])}, got ${JSON.stringify(actual?.[key])}`)
     .concat(Object.keys(actual || {}).filter((key) => !(key in expected)).map((key) => `unexpected field ${key}`));
 }
+function secondaryFailures(nodes, extract, crosswalk) {
+  const failures = [];
+  const contract = crosswalk.node_binding.pf_secondary;
+  const sceneMap = crosswalk.scene_templates.map;
+  const exact = (value, fields) => value && typeof value === 'object' && !Array.isArray(value) &&
+    Object.keys(value).sort().join('|') === fields.slice().sort().join('|');
+  if (!exact(contract, ['meaning', 'candidate_basis', 'include_rule', 'exclusions']) ||
+      contract.meaning !== 'part of the node scene accessible without transition' || contract.candidate_basis !== 'scene_templates.map' ||
+      !exact(contract.include_rule, ['rule_id', 'statement', 'confidence']) ||
+      typeof contract.include_rule.rule_id !== 'string' || !contract.include_rule.rule_id.trim() ||
+      typeof contract.include_rule.statement !== 'string' || !contract.include_rule.statement.trim() ||
+      contract.include_rule.confidence !== 'C' || !Array.isArray(contract.exclusions))
+    return ['malformed pf_secondary contract'];
+  const candidateScenes = new Set(extract.scene_templates.map((scene) => scene.id));
+  const usedScenes = new Set([...extract.g4.flatMap((g) => g.scene_template_refs.map((ref) => ref.replace(/@\d+$/, ''))), ...extract.g5.map((g) => g.scene_template_id)]);
+  const seen = new Set(), ruleIds = new Set([contract.include_rule.rule_id]);
+  for (const exclusion of contract.exclusions) {
+    if (!exact(exclusion, ['scene_template_id', 'pf_id', 'rule_ref', 'confidence', 'reason'])) {
+      failures.push('malformed exclusion');
+      continue;
+    }
+    const { scene_template_id: scene, pf_id: pf, rule_ref: rule, confidence, reason } = exclusion;
+    if (typeof scene !== 'string' || !scene || typeof pf !== 'string' || !pf) {
+      failures.push('malformed exclusion key');
+      continue;
+    }
+    const key = `${scene}|${pf}`;
+    if (seen.has(key)) failures.push(`duplicate exclusion ${key}`);
+    seen.add(key);
+    if (typeof rule !== 'string' || !rule.trim() || ruleIds.has(rule)) failures.push(`missing or duplicate exclusion rule ${key}`);
+    ruleIds.add(rule);
+    if (confidence !== 'C') failures.push(`invalid exclusion confidence ${key}`);
+    if (!candidateScenes.has(scene) || !usedScenes.has(scene) || !sceneMap[scene]?.includes(pf)) failures.push(`stale exclusion ${key}`);
+    if (typeof reason !== 'string' || !reason.trim()) failures.push(`missing exclusion reason ${key}`);
+  }
+  const input = [
+    ...extract.g4.map((g) => [`${g.g4_id}@${g.g4_version}`, g.scene_template_refs]),
+    ...extract.g5.map((g) => [`${g.g5_id}@${g.g5_version}`, [g.scene_template_id]]),
+  ];
+  const excluded = new Set(contract.exclusions.filter((e) => e?.scene_template_id && e?.pf_id).map((e) => `${e.scene_template_id}|${e.pf_id}`));
+  const byNode = new Map(nodes.map((node) => [node.node_ref, node]));
+  for (const [ref, scenes] of input) {
+    const node = byNode.get(ref);
+    if (!node) { failures.push(`missing node ${ref}`); continue; }
+    const actual = node.pf_secondary;
+    if (failures.some((failure) => failure.includes('malformed exclusion'))) continue;
+    const expected = [...new Set(scenes.flatMap((ref) => {
+      const scene = ref.replace(/@\d+$/, '');
+      return (sceneMap[scene] ?? []).filter((pf) => !excluded.has(`${scene}|${pf}`));
+    }))].filter((pf) => `pf_${pf}` !== node.pf_id).map((pf) => `pf_${pf}`).join(';');
+    if (actual !== expected) failures.push(`${ref}: pf_secondary expected ${expected}, got ${actual}`);
+    if (!node.binding_basis.includes(`#node_binding.pf_secondary.include_rule[rule_id=${contract.include_rule.rule_id}]`) ||
+                     !split(node.source_refs).includes('data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/crosswalk-rules.json'))
+      failures.push(`${ref}: secondary rule/source missing`);
+  }
+  return failures;
+}
 if (process.argv.includes('--self-test')) {
   const probe = { pr_id: 'probe_all', scope_kind: 'place_family', scope_ref: 'probe', region_id: '', subject_kind: 'category', subject_ref: 'probe', allowed_seasons: 'all' };
   if (seasonOverlaps([probe, { ...probe, pr_id: 'probe_winter', allowed_seasons: 'winter' }]).length !== 1) throw new Error('season overlap negative probe failed');
@@ -116,6 +173,42 @@ if (process.argv.includes('--self-test')) {
       presenceIds([first]).length)
     throw new Error('presence IDs changed after inserting or removing another row');
   console.log('PASS presence_rules / identity_stability_probe');
+  const extracted = readJson(P('inputs/pr98-extract.json'));
+  const crosswalk = readJson(P('scripts/crosswalk-rules.json'));
+  const nodes = readCsv(P('places/node_binding.csv'));
+  if (secondaryFailures(nodes, extracted, crosswalk).length) throw new Error('baseline secondary binding failed');
+  const withSecondary = nodes.find((node) => node.pf_secondary);
+  const excluded = crosswalk.node_binding.pf_secondary.exclusions[0];
+  const excludedNode = nodes.find((node) => split(node.scene_template_refs).some((ref) => ref.startsWith(`${excluded.scene_template_id}@`)));
+  if (!withSecondary || !excludedNode) throw new Error('secondary binding probes lack targets');
+  const changed = (target, value) => nodes.map((node) => node === target ? { ...node, pf_secondary: value } : node);
+  if (!secondaryFailures(changed(withSecondary, ''), extracted, crosswalk).length ||
+      !secondaryFailures(changed(excludedNode, [excludedNode.pf_secondary, `pf_${excluded.pf_id}`].filter(Boolean).join(';')), extracted, crosswalk).length)
+    throw new Error('secondary omission/extra probes failed');
+  for (const field of ['reason', 'rule_ref', 'confidence']) {
+    const bad = structuredClone(crosswalk);
+    bad.node_binding.pf_secondary.exclusions[0][field] = '';
+    if (!secondaryFailures(nodes, extracted, bad).length) throw new Error(`exclusion ${field} probe failed`);
+  }
+  const duplicateRule = structuredClone(crosswalk);
+  duplicateRule.node_binding.pf_secondary.exclusions[1].rule_ref = duplicateRule.node_binding.pf_secondary.exclusions[0].rule_ref;
+  if (!secondaryFailures(nodes, extracted, duplicateRule).some((failure) => failure.includes('duplicate exclusion rule')))
+    throw new Error('duplicate exclusion rule probe failed');
+  const badInclude = structuredClone(crosswalk);
+  badInclude.node_binding.pf_secondary.include_rule.statement = '';
+  if (!secondaryFailures(nodes, extracted, badInclude).includes('malformed pf_secondary contract'))
+    throw new Error('empty include statement probe failed');
+  const changedCrosswalk = structuredClone(crosswalk);
+  const firstPf = split(withSecondary.pf_secondary)[0].replace(/^pf_/, '');
+  const firstScene = split(withSecondary.scene_template_refs).map((ref) => ref.replace(/@\d+$/, ''))
+    .find((scene) => changedCrosswalk.scene_templates.map[scene].includes(firstPf));
+  changedCrosswalk.scene_templates.map[firstScene] = changedCrosswalk.scene_templates.map[firstScene].filter((pf) => pf !== firstPf);
+  if (!secondaryFailures(nodes, extracted, changedCrosswalk).some((failure) => failure.includes('pf_secondary expected')))
+    throw new Error('mutated crosswalk negative probe failed');
+  const malformed = structuredClone(crosswalk);
+  malformed.node_binding.pf_secondary.exclusions.push(null);
+  if (!secondaryFailures(nodes, extracted, malformed).includes('malformed exclusion')) throw new Error('malformed exclusion probe failed');
+  console.log('PASS node_binding / secondary_negative_probes');
 }
 
 const wk = readJson(WK_PLACE_FIRST);
@@ -199,6 +292,7 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
     if (r.node_level === 'G4' && !(fn in cw.node_binding.g4_function_to_pf.map)) basisFail.push(`${r.node_ref}: rule key ${fn} missing`);
   }
   check('node_binding', 'binding_basis_files_and_ids_exist', basisFail);
+  check('node_binding', 'secondary_access_exact_for_all_nodes', secondaryFailures(nb, ex, cw), { nodes_checked: ex.g4.length + ex.g5.length });
 }
 
 // ---- presence_rules

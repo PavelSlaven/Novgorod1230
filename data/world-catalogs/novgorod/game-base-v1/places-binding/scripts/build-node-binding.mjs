@@ -11,6 +11,14 @@ const SCN = 'pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_sc
 const PAR = 'pr98:data/world-catalogs/novgorod/spatial-v3/datasets/spatial_v3_node_parents.json';
 const CW = 'data/world-catalogs/novgorod/game-base-v1/places-binding/scripts/crosswalk-rules.json';
 
+export function secondaryPfs(sceneRefs, primary, cw) {
+  const excluded = new Set(cw.node_binding.pf_secondary.exclusions.map((e) => `${e.scene_template_id}|${e.pf_id}`));
+  return [...new Set(sceneRefs.flatMap((ref) => {
+    const scene = ref.replace(/@\d+$/, '');
+    return (cw.scene_templates.map[scene] ?? []).filter((pf) => !excluded.has(`${scene}|${pf}`));
+  }))].filter((pf) => pf !== primary);
+}
+
 export function build() {
   const ex = readJson(path.join(GROUP, 'inputs/pr98-extract.json'));
   const cw = readJson(path.join(GROUP, 'scripts/crosswalk-rules.json'));
@@ -28,7 +36,7 @@ export function build() {
     else if (typeof m === 'string') pf = m;
     else gap = `function axis '${g.axes.function}' has no crosswalk entry`;
     g4pf.set(g.g4_id, pf);
-    const secondary = [...new Set(g.scene_template_refs.flatMap((s) => sceneMap[s.replace(/@\d+$/, '')] ?? []))].filter((x) => x !== pf);
+    const secondary = secondaryPfs(g.scene_template_refs, pf, cw);
     const tr = g.template_refs;
     rows.push({
       node_ref: `${g.g4_id}@${g.g4_version}`, node_level: 'G4', parent_node_ref: '', region_id: ex.region_id,
@@ -37,7 +45,7 @@ export function build() {
       landscape_regional_link_ids: tr.landscape_regional_link_ids ?? [], water_regional_link_ids: tr.water_regional_link_ids ?? [],
       authoring_axes: `landscape=${g.axes.landscape}; land_use=${g.axes.land_use}; function=${g.axes.function}`,
       scene_template_refs: g.scene_template_refs,
-      binding_basis: `pf: ${CW}#node_binding.g4_function_to_pf.map.${g.axes.function} applied to ${NAT}#natural_profiles[profile_id=${g.profile_id}].authoring_axes.function (${g.axes_directness.function}); templates: ${NAT}#natural_profiles[profile_id=${g.profile_id}].template_refs`,
+      binding_basis: `pf: ${CW}#node_binding.g4_function_to_pf.map.${g.axes.function} applied to ${NAT}#natural_profiles[profile_id=${g.profile_id}].authoring_axes.function (${g.axes_directness.function}); pf_secondary: ${CW}#node_binding.pf_secondary.include_rule[rule_id=${cw.node_binding.pf_secondary.include_rule.rule_id}]; templates: ${NAT}#natural_profiles[profile_id=${g.profile_id}].template_refs`,
       binding_status: pf ? 'bound' : 'gap',
       gaps: [gap, 'land_use_template_id: no v17 node-level source (authoring land_use axis is not a lu_* template id)', 'place_template_id: no v17 node-level source'].filter(Boolean),
       source_refs: [`${NAT}#${g.profile_id}`, CW], source_status: ex.statuses.natural, confidence: 'C', status: 'candidate',
@@ -65,12 +73,12 @@ export function build() {
     const tr = parent.template_refs;
     rows.push({
       node_ref: `${g5.g5_id}@${g5.g5_version}`, node_level: 'G5', parent_node_ref: `${g5.parent_g4_id}@1`, region_id: ex.region_id,
-      pf_id: pf ? 'pf_' + pf : '', pf_secondary: scenePfs.filter((x) => x !== pf).map((x) => 'pf_' + x),
+      pf_id: pf ? 'pf_' + pf : '', pf_secondary: secondaryPfs([g5.scene_template_id], pf, cw).map((x) => 'pf_' + x),
       landscape_template_id: tr.landscape_template_id ?? '', land_use_template_id: '', place_template_id: '', water_body_template_id: tr.water_body_template_id ?? '',
       landscape_regional_link_ids: tr.landscape_regional_link_ids ?? [], water_regional_link_ids: tr.water_regional_link_ids ?? [],
       authoring_axes: `inherited from parent: landscape=${parent.axes.landscape}; land_use=${parent.axes.land_use}; function=${parent.axes.function}; g5_suffix=${suffix.slice(1)}`,
       scene_template_refs: [g5.scene_template_id + '@1'],
-      binding_basis: pf ? `pf: ${CW}#node_binding.g5_suffix_rules ${rule}; scene template from ${SCN}; parent from ${PAR}; templates inherited from parent ${NAT}#natural_profiles[g4=${g5.parent_g4_id}].template_refs` : '',
+      binding_basis: pf ? `pf: ${CW}#node_binding.g5_suffix_rules ${rule}; pf_secondary: ${CW}#node_binding.pf_secondary.include_rule[rule_id=${cw.node_binding.pf_secondary.include_rule.rule_id}]; scene template from ${SCN}; parent from ${PAR}; templates inherited from parent ${NAT}#natural_profiles[g4=${g5.parent_g4_id}].template_refs` : `pf_secondary: ${CW}#node_binding.pf_secondary.include_rule[rule_id=${cw.node_binding.pf_secondary.include_rule.rule_id}]`,
       binding_status: pf ? (rule.startsWith('rule4') ? 'bound_inherited' : 'bound') : 'gap',
       gaps: [gap, 'land_use_template_id: no v17 node-level source', 'place_template_id: no v17 node-level source', 'landscape/water inherited from parent G4, not attested for the G5 itself'].filter(Boolean),
       source_refs: [`${SCN}#${g5.g5_id}`, PAR, `${NAT}#${parent.profile_id}`, CW], source_status: `g5 node ${g5.status}; natural ${ex.statuses.natural}`, confidence: 'C', status: 'candidate',

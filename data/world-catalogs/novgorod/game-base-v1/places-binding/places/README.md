@@ -25,6 +25,7 @@
 6. **Привязка узлов (`build-node-binding.mjs`).**
    - G4: pf выводится из `authoring_axes.function`; в источнике эта ось помечена direct/high. Landscape и water_body копируются из `template_refs` кандидата m2c-natural.
    - G5: pf выбирается по заявленному правилу из 4 шагов. Шаг 1: ключевое слово в id G5. Шаг 2: pf родителя, если он есть в crosswalk scene template. Шаг 3: pf scene template из `composes_with` родителя. Шаг 4: наследование от родителя. Использованный шаг записан в `binding_basis`. Итог на момент сборки: 125 строк по шагу 1, 6 по шагу 2, 26 по шагу 3, 32 по шагу 4 (`bound_inherited`), 6 gap. Точные числа — в `reports/build-node-binding.json`.
+   - `pf_secondary` означает часть сцены узла, доступную без перехода. `scene_templates.map` даёт кандидатов, а `node_binding.pf_secondary` в `crosswalk-rules.json` задаёт редакционное правило включения и четыре исключения с уникальными `rule_ref`. Их причины — суждение confidence C, а не утверждения источника scene template. Это не меняет crosswalk кандидатов. Исключены `boundary_access → town_wall_edge`, `boundary_access → field_margin`, `burial_ritual_buffer → churchyard`, `landing_transition → river_wharf`. До правила было 579 назначений вторичных pf, после — 545: удалено 34. `validate.mjs` независимо пересчитывает вторичные pf для всех 227 узлов и сверяет их с CSV и registry правил.
    - Шаблоны G5 наследуются от родительского G4. Это отмечено в gaps.
 
 ## Источники

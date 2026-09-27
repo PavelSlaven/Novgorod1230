@@ -156,10 +156,23 @@ def check_dark_onsite(rows):
             elapsed = end
 
 
-def check_coverage(rows, presence):
+def binding_scopes():
     with (GAME_BASE / "places-binding/places/node_binding.csv").open(encoding="utf-8", newline="") as stream:
-        start_scopes = {node["pf_id"] for node in csv.DictReader(stream) if node["pf_id"] in places}
-    assert {p["scope_ref"] for p in presence} == start_scopes, "presence scopes differ from start node bindings"
+        nodes = list(csv.DictReader(stream))
+    primary = {node["pf_id"] for node in nodes if node["pf_id"] in places}
+    accessible = primary | {scope for node in nodes for scope in node["pf_secondary"].split(";") if scope in places}
+    return primary, accessible
+
+
+def scope_failures(presence_rows, primary, accessible):
+    scopes = {item["scope_ref"] for item in presence_rows}
+    return (primary - scopes, scopes - accessible)
+
+
+def check_coverage(rows, presence):
+    primary, accessible = binding_scopes()
+    missing, off_node = scope_failures(presence, primary, accessible)
+    assert not missing and not off_node, f"presence scopes: missing primary {sorted(missing)}, off node {sorted(off_node)}"
     for item in presence:
         for season in item["allowed_seasons"].split(";"):
             sunrise, sunset = daylight(season)
@@ -191,6 +204,10 @@ except AssertionError as error:
 else:
     raise AssertionError("dark market probe was not rejected")
 check_coverage(rows, presence)
+primary, accessible = binding_scopes()
+assert scope_failures([*presence, {**presence[0], "scope_ref": "pf_off_node_probe"}], primary, accessible)[1] == {"pf_off_node_probe"}
+covered_primary = next(iter(primary))
+assert scope_failures([item for item in presence if item["scope_ref"] != covered_primary], primary, accessible)[0] == {covered_primary}
 
 
 for season, place in (("winter", "pf_winter_ice_crossing"), ("summer", "pf_ferry_landing")):

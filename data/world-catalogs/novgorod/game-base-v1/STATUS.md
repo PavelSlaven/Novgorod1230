@@ -19,13 +19,13 @@
 | [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | rework | 3 | 7 | 1 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | rework | 1 | 7 | 1 |
-| [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | rework | 9 | 23 | 1 |
+| [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | rework | 8 | 22 | 1 |
 | [occupations-activities](occupations-activities/VERIFICATION.md) | rework | 0 | 5 | 2 |
 | [places-binding](places-binding/VERIFICATION.md) | rework | 4 | 21 | 1 |
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 6 | 0 |
-| **Итого** | | **54** | **202** | **11** |
+| **Итого** | | **53** | **201** | **11** |
 
 ## Вердикты по файлам
 
@@ -314,12 +314,10 @@
 | `presentation_texts.csv` | [rework](nature-materials-weather/VERIFICATION.md#presentation_textscsv--rework-узкий) |
 | `member_phrases.csv` | [approve_with_limits](nature-materials-weather/VERIFICATION.md#member_phrasescsv--approve_with_limits) |
 | `habitat_allowlist.csv` | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_texts) |
-| `reports` | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
-| `denied_landscape_words.csv` | [approve](nature-materials-weather/VERIFICATION.md#natural_presentation_texts) |
-| `_shared` | [approve_with_limits](nature-materials-weather/VERIFICATION.md#_shared-reports) |
-| `g4_nature_index.json` | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
-| `anachronism_denylist.json` | [approve_with_limits](nature-materials-weather/VERIFICATION.md#_shared-reports) |
-| `counts.json` | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
+| `reports/denied_landscape_words.csv` | [approve](nature-materials-weather/VERIFICATION.md#natural_presentation_texts) |
+| `_shared/g4_nature_index.json` | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
+| `_shared/anachronism_denylist.json` | [approve_with_limits](nature-materials-weather/VERIFICATION.md#_shared-reports) |
+| `reports/counts.json` | [approve](nature-materials-weather/VERIFICATION.md#_shared-reports) |
 | `natural_presentation_texts/presentation_texts.csv` | [approve_with_limits](nature-materials-weather/VERIFICATION.md#natural_presentation_textspresentation_textscsv--approve_with_limits-2) |
 
 ### occupations-activities

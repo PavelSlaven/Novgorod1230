@@ -8,7 +8,7 @@ const severity = { approve: 0, approve_with_limits: 1, rework: 2 };
 
 function verdict(text) {
   const value = text.replace(/\*/g, '').trim().toLowerCase();
-  return verdicts.find(v => value.startsWith(v) || value.includes(` ${v}`) || value.includes(`(${v}`)) ?? null;
+  return value.match(/^(approve_with_limits|approve|rework)(?=$|[\s(.,:;])/)?.[1] ?? null;
 }
 
 function clean(text) {
@@ -53,7 +53,7 @@ function parse(group) {
       const token = clean(match[1]);
       if (!/[.\\/]/.test(token)) continue;
       const status = verdict(match[2]);
-      for (const file of token.split(/\s*\/\s*|,\s*/).map(s => s.trim())) record(file, status, heading);
+      for (const file of token.split(/\s*,\s*|\s+\/\s+/).map(s => s.trim())) record(file, status, heading);
     }
 
     if (!line.trim().startsWith('|')) { inTable = false; continue; }

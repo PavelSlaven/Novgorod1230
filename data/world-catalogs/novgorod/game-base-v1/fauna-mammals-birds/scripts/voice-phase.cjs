@@ -1,5 +1,29 @@
 'use strict';
 const rules = require('../fauna/activity_phase_rules.json').rules;
+const commaBoundary = /^,\s*(?=когда|вес(?:н|ен)|лет(?:н|ом|о)|осен|зим(?:н|ой|е|у)|ноч(?:ью|ами)|по ночам|и ноч(?:ью|ами)|слышно и ночью|дн[её]м|на (?:рассвет|закат|зар|зор)|перед рассвет|в сумерк|вечером|утром|особенно|у гнезда|у птенцов|[^,;]*при тревоге|в гон|ранний прил[её]т|(?:в пик|на|во время|при|в период) прол[её]т[а-я]*[^,;]*(?:голос|крик|песн|свист|слыш|звуч))/;
+function splitVoiceFragments(description) {
+  const fragments = [];
+  let fragment = '', parentheses = 0, quote = '';
+  for (let i = 0; i < description.length; i++) {
+    const char = description[i];
+    if (char === quote) quote = '';
+    else if (!quote && (char === '«' || char === '“' || char === '"')) quote = char === '«' ? '»' : char === '“' ? '”' : '"';
+    else if (!quote && char === '(') parentheses++;
+    else if (!quote && char === ')' && parentheses) parentheses--;
+    if (!quote && !parentheses) {
+      const comma = char === ',' && commaBoundary.exec(description.slice(i));
+      if (/[;.!?]/.test(char) || comma) {
+        fragments.push(fragment);
+        fragment = '';
+        if (comma) i += comma[0].length - 1;
+        continue;
+      }
+    }
+    fragment += char;
+  }
+  fragments.push(fragment);
+  return fragments;
+}
 // A call described only at a nest, in a season, or at a time is not an unconditional daily call.
 module.exports = function voicePhase(taxon, season, phase, audible, dormant) {
   if (dormant) return 'no';
@@ -13,7 +37,7 @@ module.exports = function voicePhase(taxon, season, phase, audible, dormant) {
   const rutSeasons = [/декабр|январ|феврал/.test(rut) && 'winter', /март|апрел|ма[йяею]/.test(rut) && 'spring',
     /июн|июл|август/.test(rut) && 'summer', /сентябр|октябр|ноябр/.test(rut) && 'autumn'].filter(Boolean);
   // Keep linked sound enumerations together, but split a new independent time clause.
-  const fragments = description.toLowerCase().replace(/(при тревоге|крик тревоги),\s*/g, '$1; ').split(/[;.!?]|,\s*(?=когда|вес(?:н|ен)|лет(?:н|ом|о)|осен|зим(?:н|ой|е|у)|ноч(?:ью|ами)|по ночам|и ноч(?:ью|ами)|слышно и ночью|дн[её]м|на (?:рассвет|закат|зар|зор)|перед рассвет|в сумерк|вечером|утром|особенно|у гнезда|у птенцов|[^,;]*при тревоге|в гон|ранний прил[её]т|(?:в пик|на|во время|при|в период) прол[её]т[а-я]*[^,;]*(?:голос|крик|песн|свист|слыш|звуч))/);
+  const fragments = splitVoiceFragments(description.toLowerCase().replace(/(при тревоге|крик тревоги),\s*/g, '$1; '));
   for (let i = 0; i < fragments.length; i++) {
     let fragment = fragments[i];
     if (/^\s*когда(?:\s|$)/.test(fragment) && i && !/крик|голос|песн|свист|писк|всплеск|звуч|звон|шорох|хрюкан|рев|рёв/.test(fragments[i - 1]))

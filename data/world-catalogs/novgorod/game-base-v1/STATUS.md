@@ -9,7 +9,7 @@
 | [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 12 | 0 |
 | [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 1 | 8 | 0 |
 | [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 5 | 15 | 0 |
-| [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 1 | 11 | 0 |
+| [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | rework | 2 | 9 | 1 |
 | [flora-herbs-berries-mushrooms](flora-herbs-berries-mushrooms/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
 | [flora-trees-shrubs](flora-trees-shrubs/VERIFICATION.md) | approve_with_limits | 4 | 3 | 0 |
 | [food-drink](food-drink/VERIFICATION.md) | approve_with_limits | 10 | 8 | 0 |
@@ -25,7 +25,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **54** | **206** | **0** |
+| **Итого** | | **55** | **204** | **1** |
 
 ## Вердикты по файлам
 
@@ -129,7 +129,7 @@
 | [`fauna/livestock_products.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_products.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/livestock_species.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_species.csv) | [approve](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/livestock_types.csv`](fauna-fish-invertebrates-livestock/fauna/livestock_types.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
-| [`fauna/phase_activity.csv`](fauna-fish-invertebrates-livestock/fauna/phase_activity.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#faunaphase_activitycsv--approve_with_limits-1) |
+| [`fauna/phase_activity.csv`](fauna-fish-invertebrates-livestock/fauna/phase_activity.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#faunaphase_activitycsv--approve_with_limits-2) |
 | [`fauna/place_type_livestock.csv`](fauna-fish-invertebrates-livestock/fauna/place_type_livestock.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
 | [`fauna/rpgr_pf_crosswalk.csv`](fauna-fish-invertebrates-livestock/fauna/rpgr_pf_crosswalk.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#faunarpgr_pf_crosswalkcsv--approve_with_limits) |
 | [`fauna/water_body_pf_crosswalk.csv`](fauna-fish-invertebrates-livestock/fauna/water_body_pf_crosswalk.csv) | [approve_with_limits](fauna-fish-invertebrates-livestock/VERIFICATION.md#3-вердикты-по-файлам) |
@@ -145,10 +145,10 @@
 | [`fauna/birds.csv`](fauna-mammals-birds/fauna/birds.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunabirdscsv--approve_with_limits-149-rows-16-checked-in-full-against-sources-all-149-by-script) |
 | [`fauna/fauna_categories.csv`](fauna-mammals-birds/fauna/fauna_categories.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunafauna_categoriescsv--approve_with_limits-was-rework) |
 | [`fauna/mammals.csv`](fauna-mammals-birds/fauna/mammals.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunamammalscsv--approve_with_limits-44-rows-10-checked-in-full-against-sources-all-44-by-script) |
-| [`fauna/phase_activity.csv`](fauna-mammals-birds/fauna/phase_activity.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunaphase_activitycsv--approve_with_limits-1) |
+| [`fauna/phase_activity.csv`](fauna-mammals-birds/fauna/phase_activity.csv) | [rework](fauna-mammals-birds/VERIFICATION.md#faunaphase_activitycsv--rework-1) |
 | [`fauna/sources.csv`](fauna-mammals-birds/fauna/sources.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunasourcescsv--approve_with_limits-21-rows-12-checked-against-the-url-or-file) |
 | [`fauna/taxa_checks.csv`](fauna-mammals-birds/fauna/taxa_checks.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunataxa_checkscsv--approve_with_limits-27-rows-13-checked-against-sources) |
-| [`fauna/wild_habitat_presence.csv`](fauna-mammals-birds/fauna/wild_habitat_presence.csv) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#faunawild_habitat_presencecsv--approve_with_limits) |
+| [`fauna/wild_habitat_presence.csv`](fauna-mammals-birds/fauna/wild_habitat_presence.csv) | [approve](fauna-mammals-birds/VERIFICATION.md#faunawild_habitat_presencecsv--approve) |
 | [`README.md`](fauna-mammals-birds/README.md) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#readmemd--approve_with_limits) |
 | [`scripts/extract_regional_bird_sources.py`](fauna-mammals-birds/scripts/extract_regional_bird_sources.py) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#scriptsvoice-phasecjs-validate-phasecjs-buildcjs--approve_with_limits) |
 | [`scripts/input_snapshots/malchevsky1983_flags.json`](fauna-mammals-birds/scripts/input_snapshots/malchevsky1983_flags.json) | [approve_with_limits](fauna-mammals-birds/VERIFICATION.md#scriptsvoice-phasecjs-validate-phasecjs-buildcjs--approve_with_limits) |

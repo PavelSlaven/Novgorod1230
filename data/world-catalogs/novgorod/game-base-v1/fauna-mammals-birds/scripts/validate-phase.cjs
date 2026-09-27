@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const GB = path.resolve(__dirname, '../..');
 const rules = require('../fauna/activity_phase_rules.json');
+const voicePhase = require('./voice-phase.cjs');
 const HEADER = ['phase_rule_id', 'fa_id', 'season', 'phase', 'visibility_state', 'voice_state', 'voice_text_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence', 'status'];
 function csv(file) {
   const text = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '');
@@ -210,6 +211,13 @@ if (require.main === module) {
       if (!validate(group, bad, table.header).some((e) => e.startsWith(error))) errors.push(`negative probe accepted ${id}/${field}`);
     };
     if (group === 'fauna-mammals-birds') {
+      const thrush = { class: 'Aves', activity_time: 'crepuscular',
+        voice_description: 'звучная песня с повторами фраз по два-три раза («Филипп, Филипп, чай пить!») на вечерней заре' };
+      for (const season of ['spring', 'summer', 'autumn']) {
+        if (voicePhase(thrush, season, 'civil_dawn', true, false) !== 'no_source') errors.push(`quoted thrush dawn ${season}`);
+        expect('fa_b_song_thrush', season, 'civil_dawn', 'voice_state', 'no_source');
+        expect('fa_b_song_thrush', season, 'civil_dusk', 'voice_state', 'yes');
+      }
       expect('fa_b_common_crane', 'spring', 'civil_dawn', 'voice_state', 'yes');
       expect('fa_b_black_stork', 'spring', 'daylight', 'voice_state', 'no_source');
       expect('fa_b_great_crested_grebe', 'summer', 'daylight', 'voice_state', 'yes');

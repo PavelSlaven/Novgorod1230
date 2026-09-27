@@ -1,0 +1,530 @@
+[
+ {
+  "need_id": "ACT-01-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-sword-elite-rare-weapon"
+  ],
+  "note": "Меч как дорогое оружие знати/дружины и признак отсутствия в раскопках подтверждён (книга 709382); специализированные городские мастерские мечей vs. рядовой деревенский кузнец подтверждены (книга 622242). Существующий claim occupation-smith-specialisation (специализация кузнеца по изделиям) дополняет, не дублирует.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-sword-elite-rare-weapon",
+    "verdict": "REJECT",
+    "reason": "Третий book_row не по теме (устройство двора); мастерские оружейников и изделия деревенского кузнеца не подтверждены."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-05-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-no-mechanical-clock"
+  ],
+  "note": "Косые часы по Кирику Новгородцу (12 дневных/12 ночных часов разной длины по сезону) и повседневность колокольного звона как временного ориентира — прямые книжные факты (375645, 512565).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-no-mechanical-clock",
+    "verdict": "REJECT",
+    "reason": "Второй book_row не по теме (наложницы); «минуты» и «ещё не знают» анахроничны для речи 1230 года."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-05-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-boyar-wealth-markers"
+  ],
+  "note": "Привозные ткани (сукно/шёлк/парча), стеклянная и поливная посуда/кубки, слюдяные/стеклянные окна, массовые замки/ключи — все четыре признака подтверждены книжными фактами (624953, 709382, 622242).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-boyar-wealth-markers",
+    "verdict": "REJECT",
+    "reason": "Строка poliva/стеклянных кубков — medieval_general, а qualifiers direct/attested; «рыбий пузырь у бедных» не в этих book_row."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-05-n3-stone_vessel_silver_extra",
+  "status": "no_source",
+  "refs": [],
+  "note": "Серебряная посуда как отдельный маркер достатка не добавлена отдельной строкой: найденные факты о серебре (слитки-гривны, надписи на серебряной утвари) не о посуде именно в боярском доме как маркере; не сочинено, использованы только подтверждённые пункты (ткани/стекло/полива/слюда/замки).",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "WLD-06-n3",
+  "status": "no_source",
+  "refs": [
+   "claim:v2-g3-banya-stone-stove"
+  ],
+  "note": "Точный факт (вытираются льняным утиральником; воду греют, бросая раскалённые камни в кадку) книгами не найден. Добавлен смежный claim о бане с печью-каменкой и дощатым полом со стоком (книга 709382) — частичная материализационная опора, не замена исходного факта.",
+  "final_status": "no_source",
+  "final_refs": [
+   "claim:v2-g3-banya-stone-stove"
+  ]
+ },
+ {
+  "need_id": "SOC-07-n1",
+  "status": "no_source",
+  "refs": [
+   "claim:v2-g3-gate-locking-mechanism"
+  ],
+  "note": "Запирание ворот Детинца именно на ночь и точное расположение владычного двора «внутри Детинца у Софии» книгами не подтверждены впрямую. Добавлен общий claim о запирании новгородских ворот изнутри задвижкой (книга 709382, частный пример); найден лишь косвенный факт про архиепископский двор (событие 1227 г., книга 260041), для точной пространственной привязки к Детинцу/Софии недостаточен.",
+  "final_status": "no_source",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-gate-locking-mechanism",
+    "verdict": "REJECT",
+    "reason": "Book_row о воротах построек/усадеб, claim переносит на городские ворота; «с наскока не войдёшь» добавлено."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-09-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Факт о «белом» женатом приходском духовенстве в книжных фактах группы не найден; не сочинено.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "ACT-11-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-kurnaya-izba-no-chimney"
+  ],
+  "note": "Топка по-чёрному без дымовой трубы, дым через устье печи/волоковое окно/дымник — прямые книжные факты (622242, 709382).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-kurnaya-izba-no-chimney",
+    "verdict": "REJECT",
+    "reason": "Confidence high при источниках B (должно быть medium); «крестьянская печь» и дымник в потолке не в book_row; опечатка «курная избы»."
+   }
+  ]
+ },
+ {
+  "need_id": "ACT-11-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-rye-bread-preferred-staple"
+  ],
+  "note": "Ржаной хлеб на закваске и предпочтение ржаного хлеба пшеничному как более питательного — прямые книжные факты (301539, 814112).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-rye-bread-preferred-staple",
+    "verdict": "REJECT",
+    "reason": "Строка о предпочтении — medieval_general при directness direct; «пшеница хуже растёт, дороже, по праздникам и у знати» сверх источника."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-11-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-squirrel-pelt-main-export"
+  ],
+  "note": "Белка как самый спрашиваемый мех у ганзейцев и вывоз «несметными сороками» подтверждены (855852, 167434). Факт о браке подмоченных шкурок конкретно книгами не найден — в claim и runtime_text не включён, не сочинён.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-squirrel-pelt-main-export",
+    "verdict": "REJECT",
+    "reason": "Источник не ставит белку на первое место; строка Ганзы medieval_general при qualifiers direct."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-11-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-temple-rings-womens-jewelry"
+  ],
+  "note": "Ромбощитковые височные кольца как этноопределяющий признак новгородских словенок и частые находки стеклянных браслетов — прямые книжные факты (624953).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-temple-rings-womens-jewelry",
+    "verdict": "REJECT",
+    "reason": "Confidence high при источниках B (должно быть medium); бусы в источниках отсутствуют."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-12-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Факт про потраву озимой ржи весной книгами не найден (найдены только термины «озимица/вершь» и общие сведения о сезонах сева, без потравы); не сочинено.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "WLD-12-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-lent-fast-no-meat-dairy-eggs",
+   "claim:v2-g3-lent-cabbage-mushrooms-analogy"
+  ],
+  "note": "Запрет мяса в постные дни со заменой рыбой/сыром и конопляное/льняное масло — прямые книжные факты (641351, 877660), c1230. Солёная капуста и грибы на постном столе — только по позднейшей аналогии (474912, 814112, XVI–XVII вв.), оформлено отдельным claim с directness analogical/confidence medium/typicality unknown. Репа, горох, лук, чеснок отдельно книгами для поста не найдены — не включены.",
+  "final_status": "partly_covered",
+  "final_refs": [
+   "claim:v2-g3-lent-cabbage-mushrooms-analogy"
+  ],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-lent-fast-no-meat-dairy-eggs",
+    "verdict": "REJECT",
+    "reason": "Запрет мяса, молока, яиц в Великий пост и «не сливочное масло» отсутствуют в источниках; confidence high завышен."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-12-n4",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-kvass-water-common-drinks"
+  ],
+  "note": "Ржаной квас как предпочитаемый напиток (473497) и вода как питьё бедняка у Даниила Заточника (301539) — книжные факты, скомбинированы (directness inferred).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-kvass-water-common-drinks",
+    "verdict": "REJECT",
+    "reason": "Источник ставит квас, медовуху и вино в один ряд; разделение «мёд и вино — для познатнее» и «больше квас и вода» не подтверждено."
+   }
+  ]
+ },
+ {
+  "need_id": "ACT-13-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-mushroom-identification-edible-poisonous"
+  ],
+  "note": "Груздь/рыжик как съедобные (засолка после вымачивания, жарка) и мухомор/бледная поганка как смертельно ядовитые — грибоведческие факты (376895), general_physical/universal, не завязаны на эпоху.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-mushroom-identification-edible-poisonous",
+    "verdict": "REJECT",
+    "reason": "Смертельность красного мухомора не в источнике; «даже малый ребёнок знает» — сверх источника."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-13-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Прямого факта «ребёнок отдаёт находку отцу» книгами не найдено. Найден смежный, но не тождественный факт о вдове как полновластной главе семьи без опекунов (616519) — не использован, чтобы не подменять другой тезис.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "WLD-13-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Найденный книжный факт (622242, Колчин) описывает КАБЛУК ИЗ СЛОЁВ КОЖИ НА ГВОЗДЯХ с applicability c1230 — то есть противоречит исходному тезису потребности (гвоздей/жёсткого каблука якобы нет для первой половины XIII в.). Claim не создан во избежание противоречия источнику; конфликт зафиксирован, не решается этим шагом.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "ACT-14-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-berries-natural-preservation"
+  ],
+  "note": "Природная лёжкость морошки (залитая водой) и брусники при хранении — общефизические/биологические факты ягод (472733, 586734), general_physical/universal. Историческая рамка «важная часть крестьянского питания именно в Новгородской земле» отдельно книгами не подтверждена — не заявлена как историческая, claim ограничен природным свойством.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g3-berries-natural-preservation"
+  ]
+ },
+ {
+  "need_id": "ACT-15-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-famine-foraged-plants-historical"
+  ],
+  "note": "Лебеда (301539), голод 1128 г. — липовый лист/берёзовая кора/мох/шелуха с мякиной и соломой (512565), повторяющийся голод в Новгородской/Суздальской землях 1212–1214 гг. — дубовая кора/мох/солома/падаль (479350). Все примеры датированы ДО 1230 г. (applicability 1100–1229); голод 1230–1231 гг. сознательно не затронут (отдельный шаг по инструкции).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-famine-foraged-plants-historical",
+    "verdict": "REJECT",
+    "reason": "Applicability 1100–1229 не накрывает 1230; «пухнут», «мох болотный» сверх источников."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-15-n4",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-non-monetary-period"
+  ],
+  "note": "Серебряные слитки-гривны ~200 г (177850) и переплавка привозного немецкого серебра в русские гривны для крупных платежей (622242) — книжные факты; безмонетность выражена через практику расчёта серебром/кунами/векшами, без современного термина в runtime_text.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-non-monetary-period",
+    "verdict": "REJECT",
+    "reason": "Отсутствие своей монеты и счёт мелочи на куны и векши не в book_row — только в выводах note."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-16-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-no-firearms-gunpowder"
+  ],
+  "note": "Прямых книжных фактов «пороха/пищали нет» в группе G3 не найдено (только одно попутное примечание о позднем пороховом угле в flora-trees-shrubs.csv). Оформлено как editorial anachronism-guard по образцу уже одобренного в пакете claim:r7-potato-... (source:r7-gap-repair-editorial), knowledge_access domain_internal_only, directness editorial, confidence medium — как и указано в задаче для щитов от анахронизмов.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g3-no-firearms-gunpowder"
+  ]
+ },
+ {
+  "need_id": "SOC-19-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-lent-fast-no-meat-dairy-eggs",
+   "claim:v2-g3-lent-cabbage-mushrooms-analogy"
+  ],
+  "note": "Переиспользованы те же два claim, что и для WLD-12-n1 (тот же предметный факт, другая ситуация/purpose=conversation) — дублирования не создано.",
+  "final_status": "partly_covered",
+  "final_refs": [
+   "claim:v2-g3-lent-cabbage-mushrooms-analogy"
+  ],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-lent-fast-no-meat-dairy-eggs",
+    "verdict": "REJECT",
+    "reason": "Запрет мяса, молока, яиц в Великий пост и «не сливочное масло» отсутствуют в источниках; confidence high завышен."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-19-n2",
+  "status": "no_source",
+  "refs": [
+   "claim:v2-g3-children-toys-homemade"
+  ],
+  "note": "Ядро потребности (дети рано пасут, носят воду, нянчат младших) книгами не подтверждено — не сочинено. Добавлен смежный claim о самодельных игрушках (624953); грамота Онфима (учёба письму/счёту) уже в пакете (claim:candidate-v7-museum-onfim-learning-writing-reading-counting, already_in_pack).",
+  "final_status": "no_source",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-children-toys-homemade",
+    "verdict": "REJECT",
+    "reason": "Примеры (лук, коник, костяная жужжалка, глиняный шарик) отсутствуют в цитате — сверх источника."
+   }
+  ]
+ },
+ {
+  "need_id": "WLD-20-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-travel-food-rusks-dried-fish"
+  ],
+  "note": "Сушёная/вяленая/копчёная/мороженая рыба (622242) как непортящаяся дорожная еда; сухари/толокно/солонина и вода из снега/проруби зимой — общий бытовой вывод (directness inferred), отдельного книжного факта именно про дорожный набор не найдено, поэтому confidence medium, а не high.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-travel-food-rusks-dried-fish",
+    "verdict": "REJECT",
+    "reason": "Солонина, толокно, сухари и вода из снега/проруби в источнике отсутствуют."
+   }
+  ]
+ },
+ {
+  "need_id": "ACT-23-n3",
+  "status": "no_source",
+  "refs": [],
+  "note": "Факт о невозможности быстро снять кольчугу в воде (стаскивание через голову, наклонившись) книгами не найден; не сочинено.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "SOC-25-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-honey-main-sweet-sugar-rare"
+  ],
+  "note": "Сахар как редкий дорогой привоз, доступный лишь очень богатым, мёд как замена сахара у людей среднего достатка — прямые книжные факты (814112, помечены в CSV anachronism_denylist_hit).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-honey-main-sweet-sugar-rare",
+    "verdict": "REJECT",
+    "reason": "Периоды medieval_general/ethnographic_late при directness direct и typicality attested; «про сахар не всякий слыхал» сверх источника."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-25-n4",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-no-mechanical-clock"
+  ],
+  "note": "Переиспользован тот же claim, что и для WLD-05-n2 (косые часы по церковному/суточному счёту) — тот же факт закрывает обе потребности, дублирования не создано.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-no-mechanical-clock",
+    "verdict": "REJECT",
+    "reason": "Второй book_row не по теме (наложницы); «минуты» и «ещё не знают» анахроничны для речи 1230 года."
+   }
+  ]
+ },
+ {
+  "need_id": "ACT-26-n2",
+  "status": "no_source",
+  "refs": [],
+  "note": "Сознательно не тронуто: ситуация потребности прямо привязана к голоду зимы 1230/31 г. в Новгороде, а это отдельный шаг по инструкции задачи («Голод 1230–1231 не трогай»). Книжные факты по конкретно этому голоду (food-drink.csv строки 2–7, книга 301539) в данном шаге не использованы для claim, хотя и присутствуют в пакете CSV.",
+  "final_status": "no_source",
+  "final_refs": []
+ },
+ {
+  "need_id": "WLD-26-n1",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-bells-few-small-bilo"
+  ],
+  "note": "Распространение (но не крупный размер) колоколов в XII – первой половине XIII в. (230944), звон раскачиванием колокола, а не языком (814112), било в домонгольской Руси (230944) — книжные факты.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-bells-few-small-bilo",
+    "verdict": "REJECT",
+    "reason": "«Не как звон позднее» ссылается на будущее (D18); «в монастырях чаще», «молоток», «деревянная или железная доска», «невелики» сверх book_row."
+   }
+  ]
+ },
+ {
+  "need_id": "ACT-30-n2",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-honey-main-sweet-sugar-rare"
+  ],
+  "note": "Переиспользован тот же claim, что и для SOC-25-n1 (сахар редкость/мёд как подсластитель) — та же потребность про сахар, дублирования не создано.",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-honey-main-sweet-sugar-rare",
+    "verdict": "REJECT",
+    "reason": "Периоды medieval_general/ethnographic_late при directness direct и typicality attested; «про сахар не всякий слыхал» сверх источника."
+   }
+  ]
+ },
+ {
+  "need_id": "SOC-33-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-marriage-parents-decide"
+  ],
+  "note": "Брачный сговор как имущественная сделка с окончательным решением родителей/родни невесты и учётом согласия молодых, включая невесту, — прямые книжные факты (616519).",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g3-marriage-parents-decide"
+  ]
+ },
+ {
+  "need_id": "ACT-38-n3",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-windows-volokovoe-bladder"
+  ],
+  "note": "Малые волоковые окна, затянутые рыбьим пузырём, в бедных/простых домах и связанный с этим полумрак в жилище — прямые книжные факты (709382, 624953).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-windows-volokovoe-bladder",
+    "verdict": "REJECT",
+    "reason": "Confidence high при источниках B; «простой дом» обобщает «бедные»; стекло у бояр не в этих book_row."
+   }
+  ]
+ },
+ {
+  "need_id": "CR154-4.5-knife",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-knife-construction"
+  ],
+  "note": "Устройство ножа (клинок, клиновидный черенок, костяная/деревянная рукоять, наварка стального лезвия на железо) и типы ножей — прямые книжные факты (624953, 622242).",
+  "final_status": "rejected_at_approval",
+  "final_refs": [],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-knife-construction",
+    "verdict": "REJECT",
+    "reason": "Объяснение «так кузнецы берегут дорогую сталь» сверх источника; остальное подтверждено — убрать эту фразу."
+   }
+  ]
+ },
+ {
+  "need_id": "CR154-4.5-white-nights",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-white-nights-june"
+  ],
+  "note": "Белые ночи Севера (вечерняя заря сходится с утренней) — книжный факт (728823), период ethnographic_late, оформлено как аналогия: directness analogical, confidence medium, typicality unknown, knowledge_access general_physical.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g3-white-nights-june"
+  ]
+ },
+ {
+  "need_id": "CR154-4.6-tobacco",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-no-tobacco"
+  ],
+  "note": "Прямых книжных фактов про табак в группе G3 не найдено (поиск по всем CSV пуст). Оформлено как editorial anachronism-guard по образцу claim:r7-potato-... (source:r7-gap-repair-editorial), knowledge_access domain_internal_only, directness editorial, confidence medium.",
+  "final_status": "covered",
+  "final_refs": [
+   "claim:v2-g3-no-tobacco"
+  ]
+ },
+ {
+  "need_id": "CR154-4.6-paper",
+  "status": "covered",
+  "refs": [
+   "claim:v2-g3-writing-birchbark-parchment",
+   "claim:v2-g3-no-paper-anachronism"
+  ],
+  "note": "Позитивная часть (берестяные письма выбрасывали после прочтения, для долгих записей — пергамен, есть отдельное ремесло пергаменщиков) — прямые книжные факты (624953, 755331). Отсутствие бумаги в 1230 г. отдельно оформлено как editorial anachronism-guard (source:r7-gap-repair-editorial, книжных фактов про бумагу в группе не найдено), knowledge_access domain_internal_only, directness editorial.",
+  "final_status": "partly_covered",
+  "final_refs": [
+   "claim:v2-g3-no-paper-anachronism"
+  ],
+  "rejected_refs": [
+   {
+    "claim_ref": "claim:v2-g3-writing-birchbark-parchment",
+    "verdict": "REJECT",
+    "reason": "Источник говорит «вероятно», claim утверждает; «куда дороже бересты», «недорого» сверх источника."
+   }
+  ]
+ }
+]

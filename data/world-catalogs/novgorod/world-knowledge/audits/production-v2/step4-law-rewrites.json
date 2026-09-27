@@ -1,0 +1,218 @@
+[
+  {
+    "claim_ref": "claim:residual-law-arson-remedy-and-sanction",
+    "ru": "Кто сожжёт гумно или двор, того отдают на поток и разграбление, но прежде отдают хозяину за его потерю — сперва возмещают убыток, а уже потом вершится дальнейшая княжеская расправа над виновным.",
+    "en": "Whoever burns a threshing barn or a household yard is sent into exile with his goods seized, but first the owner is paid for his loss — the loss is made good before the prince deals further with the guilty man.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Убраны номер статьи, «Пространная Правда», «Троицкий список» и метаязык источника; смысл (возмещение раньше расправы, поток и разграбление как санкция) сохранён без изменений и добавлений."
+  },
+  {
+    "claim_ref": "claim:residual-law-boundaries-and-marked-trees",
+    "ru": "За перевод бортного знака платят одно, за снос межи — другое, а за подрубку отмеченного или межевого дуба — своё; каждое разбирают порознь. Бортный знак и межевое дерево — это межа, и трогать их без права нельзя.",
+    "en": "Altering a bee-tree mark, breaking a boundary, and cutting down a marked or boundary oak are each answered with their own payment — every one of these is judged apart. A bee-tree mark and a boundary tree mark the line, and no one may touch them without right.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Три отдельных нарушения и их правовое значение сохранены как в evidence, без единой суммы и без нового обобщения."
+  },
+  {
+    "claim_ref": "claim:residual-law-creditor-priority",
+    "ru": "Если у должника много долгов, то первым получает своё приезжий торговец, который не знал о прочих его долгах, а уж после — местные заимодавцы и княжьи деньги; так делят выручку от продажи должника. Кто уже взял с должника большой рез, тому вовсе не достаётся — деньги не делят поровну между всеми.",
+    "en": "When a debtor owes many, the visiting trader who did not know of the other debts is paid first from what the debtor is sold for; only after him come the local creditors and the prince's money. One who has already taken much interest gets nothing from this — the money is not shared out equally among everyone owed.",
+    "class": "role_bound",
+    "roles": ["nov_role_local_merchant", "nov_role_foreign_guest", "nov_role_posadnik"],
+    "keep_text": false,
+    "note": "Процедура распределения выручки среди кредиторов должника — специальное знание торговцев и того, кто ведает разбором долгов; порядок очерёдности и исключение взявшего большой рез сохранены без изменения."
+  },
+  {
+    "claim_ref": "claim:residual-law-daughters-and-status-inheritance",
+    "ru": "У бояр и у дружины наследство не отходит к князю: если сыновей нет, его получают дочери.",
+    "en": "For boyars and for the druzhina, the estate does not go to the prince — if there are no sons, the daughters receive it.",
+    "class": "role_bound",
+    "roles": ["nov_role_boyar", "nov_role_druzhina_companion", "nov_role_princely_druzhinnik"],
+    "keep_text": false,
+    "note": "Правило прямо ограничено боярскими и дружинными родами, как в evidence; пояснительная оговорка про «не универсальный запрет» опущена как метакомментарий, сама норма её и так не расширяет."
+  },
+  {
+    "claim_ref": "claim:residual-law-debt-denial-witness-oath",
+    "ru": "Если должник отпирается от денежного долга, то получить своё можно, выставив послухов, которые под ротой подтвердят долг. Одно дело — сказать «он мне должен», и другое — доказать это послухами.",
+    "en": "If a debtor denies owing money, the money can be recovered by bringing forth witnesses who confirm the debt under oath. Simply saying 'he owes me' is one thing — proving it with witnesses is another.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Базовое знание о взыскании долга, доступное любому взрослому в долговых делах."
+  },
+  {
+    "claim_ref": "claim:residual-law-dependency-and-agreement",
+    "ru": "В холопство обельное человек попадает без ряда — если женится на робе, пойдёт в тиуны или возьмёт ключ, не оговорив условий заранее. А если условия оговорены рядом наперёд, то это иное дело. Кто просто взял хлеб или дачу от хозяина, тот холопом от этого не становится.",
+    "en": "A person falls into full slavery without an agreement — by marrying an enslaved woman, taking service as a tiun, or taking up the key without settling terms beforehand. But if the terms are settled by agreement in advance, that is a different matter. Simply taking bread or an advance from a master does not by itself make a person a slave.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Знание о том, что превращает в холопа, жизненно важно для любого свободного, рассматривающего службу; все три основания и исключение (хлеб/дача) сохранены."
+  },
+  {
+    "claim_ref": "claim:residual-law-detained-thief-and-princely-court",
+    "ru": "Вора можно убить на месте кражи. А если его продержали до света, то ведут на княжий двор — там с ним разбираются. А если уже связанного вора, которого видели связанным другие люди, всё же убьют, то за это берут особый платёж.",
+    "en": "A thief may be killed at the site of the theft. But if he is held until daylight, he is led to the prince's court to be dealt with there. And if a thief who is already bound — whom other people have seen bound — is killed anyway, a separate payment is taken for that.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Общинное знание о поимке вора; три случая (на месте, до света, уже связан) сохранены раздельно, как в evidence."
+  },
+  {
+    "claim_ref": "claim:residual-law-injury-and-treatment-payments",
+    "ru": "За телесные раны берут не одно, а порознь: продажу — плату князю, плату самому пострадавшему и особо — лечебное на его рану. Это разные взыскания, а не одна общая плата.",
+    "en": "For bodily wounds, several things are taken, not one: a fine to the prince, a payment to the injured person himself, and separately, money for treating his wound. These are different payments, not a single lump sum.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Три разных взыскания за рану сохранены отдельно, без слияния в одну сумму и без новой оценки ущерба."
+  },
+  {
+    "claim_ref": "claim:residual-law-interest-agreement-and-witnesses",
+    "ru": "Деньги дают в рост под рез, мёд — под настав, а зерно — под присоп; на такие условия зовут послухов. Что получишь назад, зависит от того, о чём стороны договорились.",
+    "en": "Money is lent out at rez, honey at nastav, and grain at prisop; witnesses are called for such terms. What is recovered depends on what the parties agreed.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Три вида займа под проценты и роль послухов сохранены как в evidence, без указания величины реза."
+  },
+  {
+    "claim_ref": "claim:residual-law-merchant-entrustment-proof-exception",
+    "ru": "Когда один купец передаёт деньги другому купцу для торговли, послухи наперёд не нужны — так у купцов заведено. Если тот станет отпираться, дело решает его собственная рота. Так бывает только в купеческом деле, а не при всяком займе.",
+    "en": "When one merchant hands money to another merchant for trading, witnesses are not needed beforehand — that is the custom among merchants. If he denies it, the matter is settled by his own oath. This holds only in merchant dealings, not for every loan.",
+    "class": "role_bound",
+    "roles": ["nov_role_local_merchant", "nov_role_merchant_guest", "nov_role_merchant_companion", "nov_role_trader"],
+    "keep_text": false,
+    "note": "Исключение из правила о послухах касается именно купеческой передачи денег для торговли; ограничение «не для всякого займа» сохранено."
+  },
+  {
+    "claim_ref": "claim:residual-law-monthly-and-longer-interest",
+    "ru": "Месячный рез берут, только пока срок короткий; если же деньги остаются до года, то счёт уже другой. Доказать долг можно, если есть послухи и известна сумма. Месячный рез не растёт бесконечно сам по себе.",
+    "en": "Monthly interest is taken only while the term is short; if the money stays out until the year is up, the reckoning is different. The debt can be proven when there are witnesses and the amount is known. Monthly interest does not simply keep growing without end.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Различие короткого и годового расчёта сохранено; явно передано, что месячный рез не бесконечно нарастающий тариф, как в evidence."
+  },
+  {
+    "claim_ref": "claim:residual-law-status-and-witness-exceptions",
+    "ru": "Холопа в послухи не берут. Но если нужда велика, можно взять боярского тиуна, а в малой тяжбе — закупа. Это разные случаи, один другого не заменяет.",
+    "en": "A kholop is not taken as a witness. But in great need, a boyar's tiun may be taken, and in a minor dispute, a zakup. These are different cases, and one does not substitute for another.",
+    "class": "role_bound",
+    "roles": ["nov_role_posadnik", "nov_role_sotsky", "nov_role_starosta"],
+    "keep_text": false,
+    "note": "Правило о допустимых послухах касается ведущих разбор тяжбы; три статусные категории и их условия сохранены раздельно."
+  },
+  {
+    "claim_ref": "claim:residual-law-stepchildren-paternal-inheritance",
+    "ru": "У детей одной матери, но от разных отцов — каждое наследство своё: одни получают наследство своего отца, другие — своего. Общая мать не сливает эти наследства в одно.",
+    "en": "For children of one mother but different fathers, each inheritance stays its own: one group receives the estate of their own father, the other the estate of theirs. A shared mother does not merge these estates into one.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Семейно-наследственное знание, актуальное при повторных браках; разделение наследств по отцам сохранено без изменений."
+  },
+  {
+    "claim_ref": "claim:residual-law-unauthorized-horse-use",
+    "ru": "Кто сядет на чужого коня без спросу, с того берут особую плату — это не то же самое, что украсть коня.",
+    "en": "Whoever mounts another person's horse without asking pays a separate fee for it — that is not the same as stealing the horse.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Различие пользования конём без спроса и кражи коня сохранено, как в evidence."
+  },
+  {
+    "claim_ref": "claim:residual-law-visible-injury-and-witness",
+    "ru": "Если человек пришёл с кровью или в побоях — это одно, а если следов не видно — тогда нужен видок. Но и при видимых побоях дело может обернуться иначе, если найдётся свидетель, кто первым начал драку.",
+    "en": "If a person comes with blood or bruises, that is one thing; if there are no visible marks, then a witness is needed. But even with visible bruises, the case can turn out differently if there is a witness to who started the fight.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Оба случая (видимые/невидимые следы) и влияние свидетельства о зачинщике сохранены без изменений."
+  },
+  {
+    "claim_ref": "claim:residual-law-widow-separate-property",
+    "ru": "Вдовья доля и то, что муж ей особо дал при жизни — это не то же, что его наследство. А что после матери останется — то причитается её детям особо. Хозяйство в семье — не нераздельное владение одного из супругов.",
+    "en": "A widow's portion, and what her husband gave her separately in his lifetime, is not the same as his estate. And whatever remains after the mother belongs separately to her children. Household property is not the undivided holding of just one spouse.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Три различения (вдовья доля/наследство мужа, материнское имущество детям, неделимость на одного супруга) сохранены."
+  },
+  {
+    "claim_ref": "claim:residual-law-zakup-complaint-not-escape",
+    "ru": "Если закуп тайно сбежит — это бегство. А если он открыто уйдёт искать свои деньги, либо пойдёт к князю или к судьям с жалобой на обиду от господина — это иное дело: за это его в обельные холопы не обращают, а дают ему правду.",
+    "en": "If a zakup runs away in secret, that is flight. But if he openly leaves to seek money owed to him, or goes to the prince or the judges to complain of a wrong done by his master, that is a different matter — for this he is not turned into a full slave, but is given pravda: justice, redress.",
+    "class": "role_bound",
+    "roles": ["nov_role_dependent_peasant", "nov_role_posadnik"],
+    "keep_text": false,
+    "note": "В roles.json нет отдельной роли «закуп»; взята ближайшая — nov_role_dependent_peasant, плюс тот, кто разбирает такую жалобу. Различие бегства и открытой жалобы сохранено без изменений."
+  },
+  {
+    "claim_ref": "claim:residual-law-zakup-illegal-sale",
+    "ru": "Закуп — не то же самое, что обельный холоп. Если господин продаст закупа в обельное холопство, того по этому делу отпускают на волю, а с господина берут плату за то, что он сделал.",
+    "en": "A zakup is not the same as a fully enslaved person. If a master sells a zakup into full slavery, the zakup is set free on this account, and a payment is taken from the master for what he did.",
+    "class": "role_bound",
+    "roles": ["nov_role_dependent_peasant", "nov_role_householder"],
+    "keep_text": false,
+    "note": "Та же оговорка про отсутствие роли «закуп» в roles.json, взята ближайшая nov_role_dependent_peasant плюс хозяин-господин. Оба следствия (свобода закупа и плата с господина) сохранены."
+  },
+  {
+    "claim_ref": "claim:residual-law-zakup-loss-context",
+    "ru": "Если закуп что-то потеряет, исполняя поручение хозяина, — это одно дело. Если товар украдут из хлева — другое. А если скотину, которую было велено загнать и запереть, закуп не загонит и она пропадёт — с него спросят иначе, чем в прочих случаях. Смотрят на обстоятельства утраты, а не только на саму пропажу.",
+    "en": "If a zakup loses something while carrying out his master's errand, that is one matter. If goods are stolen from a shed, that is another. And if livestock that he was told to drive in and secure is lost because he did not drive it in, he answers for it differently than in the other cases. What matters is the circumstance of the loss, not only the loss itself.",
+    "class": "role_bound",
+    "roles": ["nov_role_dependent_peasant", "nov_role_householder"],
+    "keep_text": false,
+    "note": "Три различных случая утраты и зависимость ответственности от обстоятельств сохранены раздельно, без добавления новых условий."
+  },
+  {
+    "claim_ref": "claim:rp-entrusted-goods-claim-relates-reference",
+    "ru": "Отдавая вещи на сохранение, послухов заранее не берут. А если потом с хранителя потребуют больше, чем ему передали, то он идёт под роту — клянётся, сколько принял, ведь хранил он не за плату, а по-соседски.",
+    "en": "When goods are handed over for safekeeping, witnesses are not taken in advance. If afterward more is demanded from the keeper than was given to him, he goes under oath — he swears to how much he received, since he kept it not for payment but as a favor to a neighbor.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Бытовое знание о хранении чужих вещей без платы; отсутствие требования послухов и путь через роту сохранены."
+  },
+  {
+    "claim_ref": "claim:rp-market-purchase-relates-proof-participant",
+    "ru": "Если купленную на торгу вещь после оспорят, то покупатель зовёт двух свободных мужей либо мытника — они подтвердят покупку. А если покупатель не знает, у кого купил, то дело дальше идёт через видоков и роту.",
+    "en": "If a thing bought at the market is later disputed, the buyer calls two free men or a mytnik to confirm the purchase. And if the buyer does not know from whom he bought it, the matter proceeds further through witnesses and an oath.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Самозащитное знание любого покупателя на торгу; оба пути (известный/неизвестный продавец) сохранены раздельно."
+  },
+  {
+    "claim_ref": "claim:rp-merchant-credit-relates-third-party-goods",
+    "ru": "Если купец, идя в путь с чужими кунами, потеряет товар от потопления, от рати или от пожара — его нельзя тотчас принуждать или продавать, он может платить исподволь, хоть по прошествии года. А если он сам пропьёт или по глупости погубит чужой товар, то хозяева вольны сами решить — ждать ли его или продать.",
+    "en": "If a merchant, travelling with another's money, loses the goods to sinking, to war, or to fire, he cannot be compelled or sold at once — he may pay it back gradually, even after a year has passed. But if he himself drinks away or foolishly ruins another's goods, the owners are free to decide for themselves whether to wait for him or to sell him.",
+    "class": "role_bound",
+    "roles": ["nov_role_local_merchant", "nov_role_merchant_guest", "nov_role_merchant_companion", "nov_role_trader"],
+    "keep_text": false,
+    "note": "Различие непреодолимой утраты и собственной вины купца сохранено; условие рассрочки «до года» и выбор хозяев в другом случае не изменены."
+  },
+  {
+    "claim_ref": "claim:rp-property-claim-relates-acquisition-chain",
+    "ru": "Кто узнает свою пропавшую или украденную вещь, тому мало сказать «это моё» — надо идти по своду: спрашивать, у кого вещь взял тот, у кого она нашлась, и так далее назад.",
+    "en": "Whoever recognizes his lost or stolen thing must not merely say 'this is mine' — he must go through the svod: asking from whom the one who has it got it, and so on back.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Базовое знание о разборе спора за пропавшую вещь через свод, без утверждения исхода конкретного дела."
+  },
+  {
+    "claim_ref": "claim:river-landing-category",
+    "ru": "На Подоле в Новгороде вымолом называли место речной пристани.",
+    "en": "In the Podol of Novgorod, a vymol was the name for a place that served as a river landing.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Только словарное значение слова «вымол» в новгородском Подоле, без утверждения о конкретной пристани, её виде или доступе."
+  },
+  {
+    "claim_ref": "claim:river-landing-surfacing-allocation",
+    "ru": "За разными участками вымолов было закреплено, кому их мостить.",
+    "en": "Different stretches of the landings had it fixed who was to pave them.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Факт распределения обязанности мощения по участкам сохранён без указания конкретного лица, налога или стандарта."
+  },
+  {
+    "claim_ref": "claim:river-landing-market-approaches",
+    "ru": "От Великого ряда на торгу мостовые вели к вымолам.",
+    "en": "From the Great Row at the market, the paved roads led to the landings.",
+    "class": "common_cultural",
+    "keep_text": false,
+    "note": "Только связь торга и пристаней мостовыми, без маршрута, груза или состоявшегося переноса."
+  }
+]

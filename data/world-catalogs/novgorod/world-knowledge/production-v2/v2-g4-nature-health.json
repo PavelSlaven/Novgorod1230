@@ -1,0 +1,884 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-cranberry-bog-berry",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-cloudberry-bog-berry",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-skylark-field-song",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:v2-hunting-snares-and-traps",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-roadside-weeds-plantain-nettle",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:v2-ice-fishing-net-technique",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-volkhov-rapids-pilots",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-from-cold-without-shelter",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-cranberry-bog-berry",
+      "locale": "ru",
+      "labels": [
+        "клюква"
+      ],
+      "short_definition": "Кислая ягода на болотах, цветёт в мае-июне, зреет к осени.",
+      "search_aliases": [
+        "клюква",
+        "клюква болотная"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-cranberry-bog-berry",
+      "locale": "en",
+      "labels": [
+        "cranberry"
+      ],
+      "short_definition": "A sour bog berry that flowers in May-June and ripens toward autumn.",
+      "search_aliases": [
+        "cranberry",
+        "bog cranberry"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-cloudberry-bog-berry",
+      "locale": "ru",
+      "labels": [
+        "морошка"
+      ],
+      "short_definition": "Ягода верховых болот, поспевает в конце лета — в июле-августе.",
+      "search_aliases": [
+        "морошка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-cloudberry-bog-berry",
+      "locale": "en",
+      "labels": [
+        "cloudberry"
+      ],
+      "short_definition": "A high-bog berry that ripens in late summer — in July-August.",
+      "search_aliases": [
+        "cloudberry"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-skylark-field-song",
+      "locale": "ru",
+      "labels": [
+        "жаворонок полевой"
+      ],
+      "short_definition": "Птица открытых полей и лугов, чья звонкая песня льётся с высоты и далеко разносится.",
+      "search_aliases": [
+        "жаворонок",
+        "жаворонок полевой"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-skylark-field-song",
+      "locale": "en",
+      "labels": [
+        "skylark"
+      ],
+      "short_definition": "A bird of open fields and meadows whose ringing song pours down from on high and carries far.",
+      "search_aliases": [
+        "skylark",
+        "lark"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-hunting-snares-and-traps",
+      "locale": "ru",
+      "labels": [
+        "силки, тенета, кляпцы и перевес"
+      ],
+      "short_definition": "Названные в источниках виды ловчих снастей на зверя и птицу без лука.",
+      "search_aliases": [
+        "силки",
+        "тенета",
+        "кляпцы",
+        "перевес",
+        "ловчие снасти"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-hunting-snares-and-traps",
+      "locale": "en",
+      "labels": [
+        "snares and hunting traps"
+      ],
+      "short_definition": "Named types of hunting gear for catching animals and birds without a bow.",
+      "search_aliases": [
+        "snares",
+        "hunting traps",
+        "game nets"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-roadside-weeds-plantain-nettle",
+      "locale": "ru",
+      "labels": [
+        "подорожник и крапива у дорог"
+      ],
+      "short_definition": "Подорожник и крапива растут вдоль дорог и на пустырях возле жилья.",
+      "search_aliases": [
+        "подорожник",
+        "крапива",
+        "придорожные травы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-roadside-weeds-plantain-nettle",
+      "locale": "en",
+      "labels": [
+        "plantain and nettle by the road"
+      ],
+      "short_definition": "Plantain and nettle grow along roads and on waste ground near dwellings.",
+      "search_aliases": [
+        "plantain",
+        "nettle",
+        "roadside weeds"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-ice-fishing-net-technique",
+      "locale": "ru",
+      "labels": [
+        "подлёдный лов сетью"
+      ],
+      "short_definition": "Сеть под лёд протаскивают жердями-релями из проруби в прорубь; наледь вычерпывают черпаком.",
+      "search_aliases": [
+        "подлёдный лов",
+        "жерди-рели",
+        "лов сетью подо льдом"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:v2-ice-fishing-net-technique",
+      "locale": "en",
+      "labels": [
+        "under-ice net fishing"
+      ],
+      "short_definition": "A net is dragged under the ice with pole-rods from hole to hole; slush ice is scooped out with a ladle.",
+      "search_aliases": [
+        "under-ice fishing",
+        "ice fishing net"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-volkhov-rapids-pilots",
+      "locale": "ru",
+      "labels": [
+        "лоцманы волховских порогов"
+      ],
+      "short_definition": "Местные лоцманы сопровождают суда через волховские пороги на протяжении многих вёрст.",
+      "search_aliases": [
+        "волховские пороги",
+        "лоцман на порогах",
+        "порожане"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-volkhov-rapids-pilots",
+      "locale": "en",
+      "labels": [
+        "Volkhov rapids pilots"
+      ],
+      "short_definition": "Local pilots guide boats through the Volkhov rapids over many versts.",
+      "search_aliases": [
+        "Volkhov rapids",
+        "river pilot"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-from-cold-without-shelter",
+      "locale": "ru",
+      "labels": [
+        "смерть от мороза без крова"
+      ],
+      "short_definition": "В очень лютую зиму люди без крова и защиты от мороза гибнут от холода.",
+      "search_aliases": [
+        "замёрзнуть насмерть",
+        "лютый мороз",
+        "смерть от мороза"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-death-from-cold-without-shelter",
+      "locale": "en",
+      "labels": [
+        "death from cold without shelter"
+      ],
+      "short_definition": "In a very harsh winter, people without shelter or protection from the frost die of the cold.",
+      "search_aliases": [
+        "freeze to death",
+        "death from frost",
+        "harsh winter cold"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-cranberry-season",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-cranberry-bog-berry",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cranberries_flower_in_may_june_and_ripen_by_september"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-cranberry-season"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-cloudberry-season",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-cloudberry-bog-berry",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cloudberries_ripen_in_late_july_to_august"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-cloudberry-season"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-skylark-song-over-fields",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-skylark-field-song",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "skylarks_sing_high_over_open_fields_and_meadows"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-skylark-song"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-snares-traps-terminology",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:v2-hunting-snares-and-traps",
+      "predicate": "historical_availability",
+      "object": {
+        "kind": "literal",
+        "value": "snares_nets_pin_traps_and_bird_nets_are_named_hunting_gear"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-snares-traps-terms"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-plantain-nettle-roadside",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-roadside-weeds-plantain-nettle",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "plantain_and_nettle_grow_along_roads_and_waste_ground_near_dwellings"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-plantain-roadside",
+        "evidence:v2-g4-nettle-roadside"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-ice-fishing-net-technique",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:v2-ice-fishing-net-technique",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "under_ice_nets_are_dragged_pole_to_pole_between_holes_cut_in_the_ice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": [
+          "role_ref"
+        ],
+        "required_values": {
+          "role_ref": [
+            "nov_role_fisher"
+          ]
+        }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-ice-net-poles",
+        "evidence:v2-g4-ice-net-general"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-volkhov-rapids-pilots",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-volkhov-rapids-pilots",
+      "predicate": "historically_attested",
+      "object": {
+        "kind": "literal",
+        "value": "local_pilots_guide_boats_through_the_volkhov_rapids"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-volkhov-rapids-pilots"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g4-harsh-winter-cold-can-kill",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-death-from-cold-without-shelter",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "a_harsh_winter_without_shelter_or_warm_clothing_can_freeze_a_person_to_death"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g4-cold-death-galician"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cranberry-season",
+      "locale": "ru",
+      "runtime_text": "Клюква на болоте цветёт в мае-июне, а поспевает к осени, в сентябре.",
+      "search_aliases": [
+        "клюква",
+        "когда зреет клюква",
+        "клюква на болоте",
+        "болотная ягода осенью"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cranberry-season",
+      "locale": "en",
+      "runtime_text": "Cranberries on the bog flower in May-June and ripen in autumn, by September.",
+      "search_aliases": [
+        "cranberry season",
+        "when cranberries ripen",
+        "bog berry autumn"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cloudberry-season",
+      "locale": "ru",
+      "runtime_text": "Морошка на болоте поспевает в конце лета — в июле да августе, раньше клюквы.",
+      "search_aliases": [
+        "морошка",
+        "когда зреет морошка",
+        "болотная ягода летом"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-cloudberry-season",
+      "locale": "en",
+      "runtime_text": "Cloudberries on the bog ripen in late summer — in July and August, before cranberries.",
+      "search_aliases": [
+        "cloudberry season",
+        "when cloudberries ripen"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-skylark-song-over-fields",
+      "locale": "ru",
+      "runtime_text": "Жаворонок держится открытых полей и лугов — его звонкая песня льётся с высоты и далеко разносится по воздуху.",
+      "search_aliases": [
+        "жаворонок",
+        "песня жаворонка",
+        "жаворонок над полем",
+        "птица над пашней"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-skylark-song-over-fields",
+      "locale": "en",
+      "runtime_text": "The skylark keeps to open fields and meadows — its ringing song pours down from on high and carries far through the air.",
+      "search_aliases": [
+        "skylark",
+        "skylark song",
+        "lark over the field"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-snares-traps-terminology",
+      "locale": "ru",
+      "runtime_text": "На зверя и птицу без лука ставят силки, тенета, кляпцы да перевес — так это зовётся в здешних краях.",
+      "search_aliases": [
+        "силки",
+        "тенета",
+        "кляпцы",
+        "перевес",
+        "ловушка на зверя"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-snares-traps-terminology",
+      "locale": "en",
+      "runtime_text": "For catching animals and birds without a bow people set silki (snares), teneta (nets), klyaptsy (pin traps) and pereves (bird nets) — that is what they are called here.",
+      "search_aliases": [
+        "snares",
+        "hunting nets",
+        "pin traps",
+        "bird nets"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-plantain-nettle-roadside",
+      "locale": "ru",
+      "runtime_text": "Подорожник растёт вдоль дорог, а крапива — по дорогам да пустырям возле жилья.",
+      "search_aliases": [
+        "подорожник у дороги",
+        "крапива у жилья",
+        "придорожная трава",
+        "сорные травы у двора"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-plantain-nettle-roadside",
+      "locale": "en",
+      "runtime_text": "Plantain grows along roads, and nettle along roads and waste ground near dwellings.",
+      "search_aliases": [
+        "plantain by the road",
+        "nettle near a homestead",
+        "roadside weed"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-ice-fishing-net-technique",
+      "locale": "ru",
+      "runtime_text": "Подо льдом сеть или невод тащат жердями-релями от проруби к проруби, а наледь из полыньи вычерпывают черпаком.",
+      "search_aliases": [
+        "подлёдный лов",
+        "сеть подо льдом",
+        "жерди-рели",
+        "ловля зимой на льду"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-ice-fishing-net-technique",
+      "locale": "en",
+      "runtime_text": "Under the ice a net is dragged pole-rod by pole-rod from one hole to the next, while slush ice in the hole is scooped out with a ladle.",
+      "search_aliases": [
+        "under-ice fishing",
+        "net under the ice",
+        "winter net fishing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-volkhov-rapids-pilots",
+      "locale": "ru",
+      "runtime_text": "На волховских порогах суда одним ходом не пускают — их через пороги, что тянутся не одну версту, ведут местные лоцманы.",
+      "search_aliases": [
+        "волховские пороги",
+        "лоцман на порогах",
+        "проводник через пороги",
+        "порожане"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-volkhov-rapids-pilots",
+      "locale": "en",
+      "runtime_text": "On the Volkhov rapids boats are not sent through alone — local pilots guide them through the rapids, which stretch for many versts.",
+      "search_aliases": [
+        "Volkhov rapids",
+        "river pilot",
+        "rapids guide"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-harsh-winter-cold-can-kill",
+      "locale": "ru",
+      "runtime_text": "В лютую зиму человек без крова, без огня и без тёплой одежи от мороза может насмерть замёрзнуть.",
+      "search_aliases": [
+        "замёрзнуть насмерть",
+        "лютый мороз",
+        "без крова зимой",
+        "смерть от холода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g4-harsh-winter-cold-can-kill",
+      "locale": "en",
+      "runtime_text": "In a very harsh winter, a person without shelter, fire, or warm clothing can freeze to death.",
+      "search_aliases": [
+        "freeze to death",
+        "death from cold",
+        "harsh winter without shelter"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-cranberry-season",
+      "source_ref": "source:book-333580",
+      "anchor": {
+        "section": "Клюква ¶5892",
+        "record_id": "book:333580"
+      },
+      "note": "«Цветет клюква в мае-июне, созревает в сентябре.» — задаёт цветение и созревание клюквы.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-cloudberry-season",
+      "source_ref": "source:book-333580",
+      "anchor": {
+        "section": "Морошка ¶5880",
+        "record_id": "book:333580"
+      },
+      "note": "«Плоды созревают в конце июля-августе.» — задаёт время созревания морошки.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-skylark-song",
+      "source_ref": "source:book-756195",
+      "anchor": {
+        "section": "21. Полевой жаворонок (Alauda arvensis) ¶127",
+        "record_id": "book:756195"
+      },
+      "note": "«Любитель открытых пространств, обитатель полей и лугов, чьи звенящие песни льются с высоты и далеко разносятся в воздухе.» — подтверждает пение жаворонка над полями и лугами.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-snares-traps-terms",
+      "source_ref": "source:book-622242",
+      "anchor": {
+        "section": "Глава пятая Земледелие и промыслы А.В. Чернецов, А.В. Куза, Н.А. Кирьянова ¶1498",
+        "record_id": "book:622242"
+      },
+      "note": "«В источниках также упоминаются силки, тенета, кляпцы, перевес.» — прямо перечисляет исторически засвидетельствованные виды ловчих снастей.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-plantain-roadside",
+      "source_ref": "source:book-315166",
+      "anchor": {
+        "section": "Археобиологические методы > Е. А. Спиридонова, А. С. Алешинская, М. Д. Кочанова Особенности природной среды в окрестностях Рюрикова городища и возде ¶982",
+        "record_id": "book:315166"
+      },
+      "note": "«Вокруг построек появилось много сорных растений из семейств маревых (Chenopodiaceae) и цикориевых (Cichoriaceae), а также растений произрастающих вдоль дорог — подорожник (Plantago), горец птичий» — подтверждает рост подорожника вдоль дорог в округе Новгорода.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-nettle-roadside",
+      "source_ref": "source:book-315166",
+      "anchor": {
+        "section": "Археобиологические методы > Е. А. Спиридонова, А. С. Алешинская, М. Д. Кочанова Особенности природной среды в окрестностях Рюрикова городища и возде ¶965",
+        "record_id": "book:315166"
+      },
+      "note": "«Также присутствуют рудеральные виды, растущие по дорогам и мусорным местам, так или иначе связанные с человеком: одуванчик, мятлик, крапива, крестовник.» — подтверждает рост крапивы у дорог и на пустырях близ жилья.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-ice-net-poles",
+      "source_ref": "source:book-622242",
+      "anchor": {
+        "section": "Глава пятая Земледелие и промыслы А.В. Чернецов, А.В. Куза, Н.А. Кирьянова ¶1460",
+        "record_id": "book:622242"
+      },
+      "note": "«жерди-рели, с помощью которых сеть протаскивалась из проруби в прорубь; костыль-сошило для пропихивания жердей; черпак для удаления наледи из полыньи и др.» — задаёт снаряжение и технику подлёдного лова сетью.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-ice-net-general",
+      "source_ref": "source:book-455907",
+      "anchor": {
+        "section": "Глава III. Промысловые орудия и снаряжение древнерусских рыбаков > Сети > а) Отцеживающие сети ¶168",
+        "record_id": "book:455907"
+      },
+      "note": "«Неводом можно было ловить как с берега или лодок, так и подо льдом.» — подтверждает ловлю неводом подо льдом.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-volkhov-rapids-pilots",
+      "source_ref": "source:book-804838",
+      "anchor": {
+        "section": "III. Варяги на Руси > 6. Остров Хольмгард > 6.1. Путь по Волхову ¶3323",
+        "record_id": "book:804838"
+      },
+      "note": "«Специальные местные лоцманы должны были сопровождать суда на протяжении 19 км, вдоль которых тянулись пороги.» — подтверждает сопровождение судов местными лоцманами через волховские пороги.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g4-cold-death-galician",
+      "source_ref": "source:book-641352",
+      "anchor": {
+        "section": "ГАЛИЦКО-ВОЛЫНСКАЯ ЛЕТОПИСЬ > ОРИГИНАЛ ¶1191",
+        "record_id": "book:641352"
+      },
+      "note": "«кто же выехашеть из города, овы избиваша, а друзии поимаша, а иныя излупивше, пущаху нагы, а теи от мороза изомроша, зане бысть зима люта велми» — прямо говорит, что люди, оставленные раздетыми на морозе в очень лютую зиму, замерзали насмерть.",
+      "review_status": "approved"
+    }
+  ]
+}

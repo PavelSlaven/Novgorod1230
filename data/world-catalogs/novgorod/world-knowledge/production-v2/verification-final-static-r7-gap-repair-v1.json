@@ -1,0 +1,6 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {"schema":"world_knowledge_verification_v1","verification_ref":"wk-verification:final-static-r7-potato-anachronism","claim_ref":"claim:r7-potato-must-not-be-assumed-locally-available-in-novgorod-rus-1200-1300","claim_digest":"3b56bcca3feb649334aad3fe1804192622bce92f86a3caf05b841230390422ad","candidate_ref":"git:f2e068b60365efb67f94a6cf61e307c790ecca8a:data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r7-gap-repair-v1.json#claim:r7-potato-must-not-be-assumed-locally-available-in-novgorod-rus-1200-1300","auditor_ref":"/root/r7_gap_repair_verifier","independence_basis":"Independent review by an auditor who did not author the exact candidate; checked its bounded editorial reconstruction, current assembled corpus, domain/applicability, localizations, evidence and authority limits.","evidence_checked":["evidence:r7-potato-anachronism"],"review_ref":"verification/final-static-r7-gap-repair-v1.md#per-claim-verdicts","verdict":"APPROVE","limits":"Historical defaulting boundary for Novgorod Land/Rus in 1200–1300 only; no universal botanical claim, crop inventory, trade proof, local food stock, authority or outcome."}
+  ]
+}

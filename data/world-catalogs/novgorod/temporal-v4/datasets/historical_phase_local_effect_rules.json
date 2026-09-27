@@ -15,6 +15,7 @@
       "reference:historical_phase_local_effect_rules:novgorod_famine_1230_v2"
     ],
     "source_history_refs": [
+      "source:historical_phase_local_effect_rules:book_667380_svod_letopisnyh_izvestiy",
       "source:historical_phase_local_effect_rules:canonical_historical_policy",
       "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
       "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
@@ -30,6 +31,7 @@
           },
           "authoring_version": "1",
           "source_ids": [
+            "source:historical_phase_local_effect_rules:book_667380_svod_letopisnyh_izvestiy",
             "source:historical_phase_local_effect_rules:canonical_historical_policy",
             "source:historical_phase_local_effect_rules:epimeddat_1230_novgorod",
             "source:historical_phase_local_effect_rules:temporal_world_v4_normative",
@@ -62,36 +64,36 @@
             "novgorod"
           ]
         },
-        "source_precision": "calendar_year only",
-        "source_year": "1230",
+        "source_precision": "mixed: start at calendar_day (¶486, Воздвижение 1230-09-14); end at calendar_year (¶487, event dated to source year 1231, exact month/day not given)",
+        "source_year": "1230 (day-level start, ¶486); 1231 (year-level end basis, ¶487)",
         "formal_range": {
           "start_inclusive": {
             "year": "1230",
-            "month": "1",
-            "day": "1",
+            "month": "9",
+            "day": "14",
             "boundary": "local_day_start"
           },
           "end_exclusive": {
-            "year": "1231",
+            "year": "1232",
             "month": "1",
             "day": "1",
             "boundary": "local_day_start"
           }
         },
-        "range_semantics": "formal representation of the cited source year, not a claim that intensity was constant throughout the year",
+        "range_semantics": "day-level start from an exact cited calendar day (¶486, frost on Воздвижение/Exaltation of the Cross struck the winter crops, 1230-09-14) combined with a year-level end derived from the source's year-level dating of the famine's continuation through 1231 and its cessation (¶487, arrival of German bread, exact month/day not given); not a claim that intensity was constant, and not a claim that the end boundary is attested to day precision",
         "runtime_may_narrow_or_shift_without_new_source": "forbidden",
         "formal_game_timestamp_range": {
           "start_inclusive": {
-            "whole_minutes": "0",
+            "whole_minutes": "368640",
             "subminute_numerator": "0",
             "subminute_denominator": "1"
           },
           "end_exclusive": {
-            "whole_minutes": "525600",
+            "whole_minutes": "1051200",
             "subminute_numerator": "0",
             "subminute_denominator": "1"
           },
-          "derivation": "365 Julian days of source year 1230 from the approved party epoch"
+          "derivation": "start_inclusive: day 256 of source year 1230 (1230-09-14, Воздвижение — the day the frost struck the winter crops per ¶486); 256 * 1440 = 368640 whole_minutes from the approved party epoch (game_timestamp_zero = 1230-01-01 local_day_start). end_exclusive: source years 1230 and 1231 are both common (non-leap) Julian years, 365 + 365 = 730 days; 730 * 1440 = 1051200 whole_minutes, i.e. 1232-01-01 local_day_start — a year-level boundary per ¶487 (famine attested through 1231, cessation tied to the arrival of German bread, exact month/day not given), not a day-level claim for the end."
         }
       },
       "region_and_place_applicability": [

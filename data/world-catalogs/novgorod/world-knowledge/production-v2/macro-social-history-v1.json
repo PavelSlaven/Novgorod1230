@@ -1,0 +1,24 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {"schema":"world_knowledge_source_v1","source_ref":"source:candidate-gramota334","title":"Новгородская берестяная грамота №334","authors":[],"publication":"Древнерусские берестяные грамоты; НИУ ВШЭ и Институт славяноведения РАН","source_kind":"primary_text","citation":"https://gramoty.ru/birchbark/document/show/novgorod/334/","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:candidate-gramota334-private-letter","source_ref":"source:candidate-gramota334","anchor":{"record_id":"novgorod/334","section":"Metadata: conditional date 1220–1240; private letter; content ‘От Мирослава к Ратмиру (денежные дела)’"},"note":"Direct catalogue record: complete private letter from Miroslav to Ratmir, dated 1220–1240. It attests this document’s named sender/addressee and monetary-business context only; not a literacy rate, general naming rule, amount, debt state, transfer, delivery, reading, or truth of a current message.","review_status":"approved"}
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:social_law_economy:candidate-private-letter-named-correspondents","domain":"social_law_economy","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:candidate-gramota334-named-private-letter-monetary-context","domain":"social_law_economy","subject_ref":"wk:social_law_economy:candidate-private-letter-named-correspondents","predicate":"supported_fact","object":{"kind":"literal","value":"novgorod_gramota_334_is_a_private_letter_from_miroslav_to_ratmir_about_monetary_matters"},"polarity":"support","applicability":{"time":{"from":1220,"to":1240,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:candidate-gramota334-private-letter"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:social_law_economy:candidate-private-letter-named-correspondents","locale":"ru","labels":["Частное письмо с именованными корреспондентами"],"short_definition":"Документный контекст, а не правило именования или грамотности.","search_aliases":["Мирослав","Ратмир","берестяная грамота"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:social_law_economy:candidate-private-letter-named-correspondents","locale":"en","labels":["Private letter with named correspondents"],"short_definition":"A document context, not a naming or literacy rule.","search_aliases":["Miroslav","Ratmir","birch-bark letter"]}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:candidate-gramota334-named-private-letter-monetary-context","locale":"ru","runtime_text":"Грамота №334 — частное письмо Мирослава к Ратмиру по денежным делам, датированное 1220–1240 гг. Это документный факт, не правило грамотности, имени, долга или передачи денег в текущей сцене.","search_aliases":["Мирослав","Ратмир","денежные дела"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:candidate-gramota334-named-private-letter-monetary-context","locale":"en","runtime_text":"Letter 334 is a private letter from Miroslav to Ratmir about monetary matters, dated 1220–1240. This is a document fact, not a rule of literacy, naming, debt, or money transfer in the current scene.","search_aliases":["Miroslav","Ratmir","monetary matters"]}
+  ]
+}

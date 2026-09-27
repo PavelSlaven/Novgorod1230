@@ -1,0 +1,928 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:v2-g3-white-nights-june",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-firearms-gunpowder",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-tobacco",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-paper-anachronism",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g3-lent-cabbage-mushrooms-analogy",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:v2-g3-marriage-parents-decide",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:v2-g3-berries-natural-preservation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:v2-g3-banya-stone-stove",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-white-nights-evidence",
+      "source_ref": "source:book-728823",
+      "anchor": {
+        "section": "Медицина у первоселов русского Севера > Глава I. Краткие историко-географические сведения о Севере ¶763",
+        "record_id": "book:728823"
+      },
+      "note": "Белые ночи на Севере: вечерняя заря сходится с утренней — источник этнографически поздний, используется только как аналогия для широты Новгорода.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-no-firearms-editorial",
+      "source_ref": "source:r7-gap-repair-editorial",
+      "anchor": {
+        "section": "Candidate reusable premises"
+      },
+      "note": "Historical availability exclusion for firearms and gunpowder-in-battle in Novgorod/Rus in 1200–1300: gunpowder weapons are not used in European warfare in the 13th c., and pishchali appear in Rus only from the late 14th c.; no current weapon or stock in a 1230 scene.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-no-tobacco-editorial",
+      "source_ref": "source:r7-gap-repair-editorial",
+      "anchor": {
+        "section": "Candidate reusable premises"
+      },
+      "note": "Historical availability exclusion for tobacco in Novgorod/Rus in 1200–1300: tobacco is a New World plant unknown in Europe before the late 15th–16th c.; no current stock, habit or good in a 1230 scene.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-no-paper-editorial",
+      "source_ref": "source:r7-gap-repair-editorial",
+      "anchor": {
+        "section": "Candidate reusable premises"
+      },
+      "note": "Historical availability exclusion for paper in Novgorod/Rus in 1200–1300: paper manufacture reaches Rus only from the 14th c.; the period writing supports are birch bark and parchment, not paper.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-lent-salted-cabbage-late",
+      "source_ref": "source:book-474912",
+      "anchor": {
+        "section": "ИНОЙ ПЕРЕВОД С ВЕЛИКА ДНИ ¶117",
+        "record_id": "book:474912"
+      },
+      "note": "Домострой (XVI в.) описывает солёную капусту и вяленую рыбу на постном столе — используется только как позднейшая аналогия.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-lent-mushrooms-late",
+      "source_ref": "source:book-814112",
+      "anchor": {
+        "section": "Съедобное (Стол) ¶1222",
+        "record_id": "book:814112"
+      },
+      "note": "Грибы (жареные, варёные, солёные) охотно ели в пост — источник этнографически поздний, используется как аналогия.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-marriage-property-deal",
+      "source_ref": "source:book-616519",
+      "anchor": {
+        "section": "Глава II. «Поиди за мене…» (Женщина в древнерусской семье X–XV вв.) > Заключение и расторжение брака ¶191",
+        "record_id": "book:616519"
+      },
+      "note": "Брачный сговор — имущественная сделка, окончательное решение принимали родители или родственники невесты.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-marriage-consent-of-young",
+      "source_ref": "source:book-616519",
+      "anchor": {
+        "section": "Глава II. «Поиди за мене…» (Женщина в древнерусской семье X–XV вв.) > Заключение и расторжение брака ¶190",
+        "record_id": "book:616519"
+      },
+      "note": "Родители договаривались о приданом и дне свадьбы при согласии молодых, включая невесту.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-cloudberry-water-keeps",
+      "source_ref": "source:book-472733",
+      "anchor": {
+        "section": "I. Растительная мозаика > Щедрость зеленых друзей > Живая аптека > Ягодные растения ¶1175",
+        "record_id": "book:472733"
+      },
+      "note": "Морошка, залитая водой, хорошо хранится всю зиму — природное свойство ягоды, не зависящее от эпохи.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-lingonberry-keeps",
+      "source_ref": "source:book-586734",
+      "anchor": {
+        "section": "Глава IV. Весенние явления у лесных кустарников и кустарничков > Кустарнички > Брусника (Vaccinium vitisidaea) ¶430",
+        "record_id": "book:586734"
+      },
+      "note": "Брусника почти не портится при хранении — природное свойство ягоды.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:v2-g3-banya-stone-stove-floor",
+      "source_ref": "source:book-709382",
+      "anchor": {
+        "section": "Новгородские постройки ¶276",
+        "record_id": "book:709382"
+      },
+      "note": "В банях (постройках с печью-каменкой) полы настилали из досок не по всей площади — для стока воды.",
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g3-white-nights-june",
+      "domain": "environment",
+      "subject_ref": "wk:environment:v2-g3-white-nights-june",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "in_the_novgorod_north_around_midsummer_the_night_barely_darkens_evening_glow_meets_morning_glow"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g3-white-nights-evidence"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g3-no-firearms-gunpowder",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:v2-g3-no-firearms-gunpowder",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "firearms_and_gunpowder_in_battle_must_not_be_assumed_present_in_novgorod_in_1230_their_mention_is_an_anachronism_boundary"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g3-no-firearms-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g3-no-tobacco",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:v2-g3-no-tobacco",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "tobacco_must_not_be_assumed_present_in_novgorod_in_1230_its_mention_is_an_anachronism_boundary_not_a_present_good_or_habit"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g3-no-tobacco-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g3-no-paper-anachronism",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:v2-g3-no-paper-anachronism",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "paper_must_not_be_assumed_present_in_novgorod_in_1230_people_write_on_birch_bark_and_parchment_not_paper"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g3-no-paper-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g3-lent-cabbage-mushrooms-analogy",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:v2-g3-lent-cabbage-mushrooms-analogy",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "by_later_analogy_the_lenten_table_also_includes_salted_cabbage_and_mushrooms_fried_boiled_or_salted"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "analogical"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g3-lent-salted-cabbage-late",
+        "evidence:v2-g3-lent-mushrooms-late"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g3-marriage-parents-decide",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:v2-g3-marriage-parents-decide",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_marriage_arrangement_is_a_matter_of_property_the_final_decision_rests_with_the_brides_parents_or_kin_though_the_young_couples_consent_is_usually_also_sought"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g3-marriage-property-deal",
+        "evidence:v2-g3-marriage-consent-of-young"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g3-berries-natural-preservation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:v2-g3-berries-natural-preservation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cloudberries_and_lingonberries_keep_naturally_well_soaked_in_water_or_simply_stored_they_resist_spoiling_for_a_long_time"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g3-cloudberry-water-keeps",
+        "evidence:v2-g3-lingonberry-keeps"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:v2-g3-banya-stone-stove",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:v2-g3-banya-stone-stove",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "bathhouses_have_a_stone_heap_stove_and_a_board_floor_with_gaps_for_water_to_drain_through"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:v2-g3-banya-stone-stove-floor"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-g3-white-nights-june",
+      "locale": "ru",
+      "labels": [
+        "белые ночи"
+      ],
+      "short_definition": "На новгородском севере в дни близкие к летнему солнцевороту ночь почти не темнеет: вечерняя заря сходится с утренней.",
+      "search_aliases": [
+        "белые ночи",
+        "светлая ночь летом",
+        "заря не гаснет",
+        "июньская ночь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:v2-g3-white-nights-june",
+      "locale": "en",
+      "labels": [
+        "white nights"
+      ],
+      "short_definition": "In the Novgorod north, around midsummer the night barely darkens: the evening glow meets the morning glow.",
+      "search_aliases": [
+        "white nights",
+        "bright summer night",
+        "midsummer glow"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-firearms-gunpowder",
+      "locale": "ru",
+      "labels": [
+        "граница анахронизма: огнестрельное оружие"
+      ],
+      "short_definition": "Огнестрельного оружия и пороха в бою в Новгороде 1230 г. нет; это анахронизм, а не наличный товар или боевое средство.",
+      "search_aliases": [
+        "порох",
+        "пищаль",
+        "огнестрельное оружие",
+        "пистоль на торгу"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-firearms-gunpowder",
+      "locale": "en",
+      "labels": [
+        "anachronism boundary: firearms"
+      ],
+      "short_definition": "Firearms and gunpowder in battle do not exist in Novgorod in 1230; mentioning them is an anachronism boundary, not a present good or weapon.",
+      "search_aliases": [
+        "gunpowder",
+        "firearm",
+        "anachronism weapon"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-tobacco",
+      "locale": "ru",
+      "labels": [
+        "граница анахронизма: табак"
+      ],
+      "short_definition": "Табака в Новгороде 1230 г. нет и быть не может; это анахронизм, а не наличный товар или привычка.",
+      "search_aliases": [
+        "табак",
+        "курить трубку",
+        "нюхательный табак",
+        "анахронизм табак"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-tobacco",
+      "locale": "en",
+      "labels": [
+        "anachronism boundary: tobacco"
+      ],
+      "short_definition": "Tobacco does not exist in Novgorod in 1230; mentioning it is an anachronism boundary, not a present good or habit.",
+      "search_aliases": [
+        "tobacco",
+        "smoking pipe",
+        "anachronism tobacco"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-paper-anachronism",
+      "locale": "ru",
+      "labels": [
+        "граница анахронизма: бумага"
+      ],
+      "short_definition": "Бумаги в Новгороде 1230 г. нет; пишут на бересте и пергамене, а не на бумаге.",
+      "search_aliases": [
+        "бумага",
+        "бумага для письма",
+        "анахронизм бумага",
+        "лист бумаги"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:v2-g3-no-paper-anachronism",
+      "locale": "en",
+      "labels": [
+        "anachronism boundary: paper"
+      ],
+      "short_definition": "Paper does not exist in Novgorod in 1230; people write on birch bark and parchment, not on paper.",
+      "search_aliases": [
+        "paper",
+        "sheet of paper",
+        "anachronism paper"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g3-lent-cabbage-mushrooms-analogy",
+      "locale": "ru",
+      "labels": [
+        "постный стол: капуста, грибы"
+      ],
+      "short_definition": "На постном столе, по позднейшей аналогии, бывают солёная капуста и грибы — жареные, варёные, солёные.",
+      "search_aliases": [
+        "капуста солёная пост",
+        "грибы в пост",
+        "постная еда овощи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:v2-g3-lent-cabbage-mushrooms-analogy",
+      "locale": "en",
+      "labels": [
+        "lenten table: cabbage, mushrooms"
+      ],
+      "short_definition": "By later analogy, the lenten table also includes salted cabbage and mushrooms — fried, boiled or salted.",
+      "search_aliases": [
+        "salted cabbage lent",
+        "mushrooms in lent"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-g3-marriage-parents-decide",
+      "locale": "ru",
+      "labels": [
+        "брак решают родители"
+      ],
+      "short_definition": "Сговор о браке — дело имущественное, окончательное решение принимают родители или родня невесты; согласие самих молодых, включая невесту, обычно тоже учитывают.",
+      "search_aliases": [
+        "сговор о браке",
+        "кто решает свадьбу",
+        "согласие невесты",
+        "родители невесты"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:v2-g3-marriage-parents-decide",
+      "locale": "en",
+      "labels": [
+        "parents decide the marriage"
+      ],
+      "short_definition": "A marriage arrangement is a matter of property; the final decision rests with the bride’s parents or kin, though the consent of the young couple, including the bride, is usually also sought.",
+      "search_aliases": [
+        "marriage arrangement",
+        "who decides the wedding",
+        "bride’s consent"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-g3-berries-natural-preservation",
+      "locale": "ru",
+      "labels": [
+        "ягоды хранятся, залитые водой"
+      ],
+      "short_definition": "Морошка и брусника от природы хорошо хранятся: залитые водой или просто собранные, они почти не портятся и не гниют долгое время.",
+      "search_aliases": [
+        "ягоды на зиму",
+        "морошка хранение",
+        "брусника не портится",
+        "запас ягод"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:v2-g3-berries-natural-preservation",
+      "locale": "en",
+      "labels": [
+        "berries keep when soaked in water"
+      ],
+      "short_definition": "Cloudberries and lingonberries keep naturally well: soaked in water or simply stored, they resist spoiling for a long time.",
+      "search_aliases": [
+        "berries for winter",
+        "cloudberry storage",
+        "lingonberry keeps"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:v2-g3-banya-stone-stove",
+      "locale": "ru",
+      "labels": [
+        "баня с печью-каменкой"
+      ],
+      "short_definition": "В банях ставят печь-каменку, а пол настилают из плотных досок с промежутками для стока воды.",
+      "search_aliases": [
+        "баня печь",
+        "каменка в бане",
+        "пол в бане",
+        "устройство бани"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:v2-g3-banya-stone-stove",
+      "locale": "en",
+      "labels": [
+        "bathhouse with a stone stove"
+      ],
+      "short_definition": "Bathhouses have a stone-heap stove, and the floor is laid with tight boards leaving gaps for water to drain through.",
+      "search_aliases": [
+        "bathhouse stove",
+        "stone heap",
+        "bathhouse floor"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-white-nights-june",
+      "locale": "ru",
+      "runtime_text": "В самые долгие дни лета, ближе к Иванову дню, ночь у нас на севере толком и не темнеет — вечерняя заря так и не гаснет до самого утра, сходится с утренней.",
+      "search_aliases": [
+        "белые ночи",
+        "светлая ночь летом",
+        "заря не гаснет",
+        "июньская ночь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-white-nights-june",
+      "locale": "en",
+      "runtime_text": "On the longest days of summer, near Midsummer, the night in our northern land barely darkens at all — the evening glow never quite fades before morning, meeting the sunrise glow.",
+      "search_aliases": [
+        "white nights",
+        "bright summer night",
+        "midsummer glow"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-no-firearms-gunpowder",
+      "locale": "ru",
+      "runtime_text": "Огнестрельного оружия и пороха для боя в 1230 году нет и быть не может — такого на Торгу не продают и в дружине не носят. Воюют мечом, копьём, луком да самострелом.",
+      "search_aliases": [
+        "порох",
+        "пищаль",
+        "огнестрельное оружие",
+        "пистоль на торгу"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-no-firearms-gunpowder",
+      "locale": "en",
+      "runtime_text": "Firearms and gunpowder for battle do not exist in 1230 and could not — nothing of the sort is sold at the market or carried by the retinue. War is fought with sword, spear, bow and crossbow.",
+      "search_aliases": [
+        "gunpowder",
+        "firearm",
+        "anachronism weapon"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-no-tobacco",
+      "locale": "ru",
+      "runtime_text": "Табака у нас не знают и не курят — такого зелья на Торге нет и слова такого никто не слыхивал.",
+      "search_aliases": [
+        "табак",
+        "курить трубку",
+        "нюхательный табак",
+        "анахронизм табак"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-no-tobacco",
+      "locale": "en",
+      "runtime_text": "Tobacco is unknown here and no one smokes it — no such plant is sold at the market, and no one has even heard the word.",
+      "search_aliases": [
+        "tobacco",
+        "smoking pipe",
+        "anachronism tobacco"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-no-paper-anachronism",
+      "locale": "ru",
+      "runtime_text": "Бумаги у нас нет и в помине — такого товара на Торгу не сыщешь. Пишут на бересте да на пергамене.",
+      "search_aliases": [
+        "бумага",
+        "бумага для письма",
+        "анахронизм бумага",
+        "лист бумаги"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-no-paper-anachronism",
+      "locale": "en",
+      "runtime_text": "There is no paper here at all — no such good can be found at the market. People write on birch bark and on parchment.",
+      "search_aliases": [
+        "paper",
+        "sheet of paper",
+        "anachronism paper"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-lent-cabbage-mushrooms-analogy",
+      "locale": "ru",
+      "runtime_text": "На постном столе бывает, помимо прочего, капуста солёная да грибы — жареные, варёные, солёные, как у кого заведено.",
+      "search_aliases": [
+        "капуста солёная пост",
+        "грибы в пост",
+        "постная еда овощи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-lent-cabbage-mushrooms-analogy",
+      "locale": "en",
+      "runtime_text": "The lenten table also has, besides other things, salted cabbage and mushrooms — fried, boiled or salted, as each household keeps them.",
+      "search_aliases": [
+        "salted cabbage lent",
+        "mushrooms in lent"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-marriage-parents-decide",
+      "locale": "ru",
+      "runtime_text": "Сговор о браке — дело хозяйское, о приданом и дне свадьбы уговариваются родители. Последнее слово — за родителями либо родней невесты, но и согласия самих молодых, и невесты в том числе, по чести спрашивают.",
+      "search_aliases": [
+        "сговор о браке",
+        "кто решает свадьбу",
+        "согласие невесты",
+        "родители невесты"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-marriage-parents-decide",
+      "locale": "en",
+      "runtime_text": "A marriage arrangement is a household matter — the parents settle the dowry and the wedding day between them. The final word belongs to the bride’s parents or kin, but the consent of the young couple, the bride included, is properly asked for too.",
+      "search_aliases": [
+        "marriage arrangement",
+        "who decides the wedding",
+        "bride’s consent"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-berries-natural-preservation",
+      "locale": "ru",
+      "runtime_text": "Морошку, залитую водой, да бруснику мочёную можно держать всю зиму — они от природы не портятся и не гниют долгое время, оттого их и запасают впрок.",
+      "search_aliases": [
+        "ягоды на зиму",
+        "морошка хранение",
+        "брусника не портится",
+        "запас ягод"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-berries-natural-preservation",
+      "locale": "en",
+      "runtime_text": "Cloudberries soaked in water, and lingonberries put up wet, can be kept all winter — by their nature they resist spoiling and rotting for a long time, which is why people lay them in for the winter.",
+      "search_aliases": [
+        "berries for winter",
+        "cloudberry storage",
+        "lingonberry keeps"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-banya-stone-stove",
+      "locale": "ru",
+      "runtime_text": "В бане стоит печь-каменка, а пол настелен из добрых досок, только не сплошь — оставлены промежутки, чтобы вода стекала.",
+      "search_aliases": [
+        "баня печь",
+        "каменка в бане",
+        "пол в бане",
+        "устройство бани"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:v2-g3-banya-stone-stove",
+      "locale": "en",
+      "runtime_text": "The bathhouse has a stone-heap stove, and the floor is laid with good boards, though not solid all over — gaps are left so the water can drain away.",
+      "search_aliases": [
+        "bathhouse stove",
+        "stone heap",
+        "bathhouse floor"
+      ]
+    }
+  ]
+}

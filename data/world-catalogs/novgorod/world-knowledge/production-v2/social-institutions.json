@@ -1,0 +1,1815 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:novgorod-museum-cup-2024",
+      "title": "Фонды Новгородского музея-заповедника пополнились новым сокровищем",
+      "authors": [],
+      "publication": "Новгородский музей-заповедник, 27.08.2024; музейная атрибуция предмета",
+      "source_kind": "catalogue",
+      "citation": "https://novgorodmuseum.ru/o-muzee-zapovednike/novosti/fondy-novgorodskogo-muzeya-zapovednika-popolnilis-novym-sokrovishchem",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:novsu-ilinskii-burials-2026",
+      "title": "Археологи НовГУ нашли в Старой Руссе несколько детских захоронений домонгольского периода",
+      "authors": [],
+      "publication": "Новгородский государственный университет, 20.03.2026; предварительное сообщение с наблюдениями Е. Тороповой",
+      "source_kind": "excavation",
+      "citation": "https://www.novsu.ru/university/press/news/242499/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota718",
+      "title": "Берестяная грамота № 718 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/718/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota531",
+      "title": "Берестяная грамота № 531 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/531/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota705",
+      "title": "Берестяная грамота № 705 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/705/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota715",
+      "title": "Берестяная грамота № 715 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/715/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota778",
+      "title": "Берестяная грамота № 778 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/778/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota739",
+      "title": "Берестяная грамота № 739 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/739/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota907",
+      "title": "Берестяная грамота № 907 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/907/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:hse-church-statutes",
+      "title": "Великокняжеские уставы",
+      "authors": [],
+      "publication": "НИУ ВШЭ; текст по Российскому законодательству X–XX вв., том 1, 1984",
+      "source_kind": "primary_text",
+      "citation": "https://nnov.hse.ru/ba/law/igpr/churchustavy",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:museum-vladimir-statute",
+      "title": "Устав князя Владимира Святославича о десятинах, судах и людях церковных",
+      "authors": [],
+      "publication": "Музей российских реформ имени П. А. Столыпина; текст и историко-текстовый комментарий",
+      "source_kind": "primary_text",
+      "citation": "http://xn--e1aaejmenocxq.xn--p1ai/node/13619",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:museum-yaroslav-statute",
+      "title": "Устав князя Ярослава Владимировича о церковных судах",
+      "authors": [],
+      "publication": "Музей российских реформ имени П. А. Столыпина; текст и историко-текстовый комментарий",
+      "source_kind": "primary_text",
+      "citation": "http://xn--e1aaejmenocxq.xn--p1ai/node/13620",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:probable-travel-chalice-communion",
+      "source_ref": "source:novgorod-museum-cup-2024",
+      "anchor": {
+        "section": "Домонгольская чаша XII–XIII веков; вероятный походный потир"
+      },
+      "note": "RPO-03 independently APPROVE_WITH_LIMITS: the museum explicitly presents a probable communion function, not certain identification. Broad Old-Rus-period analogue only, 1100–1300 inferred/medium. No material or medieval provenance is supplied; current museum location is not medieval Novgorod presence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ilinskii-burial-containers",
+      "source_ref": "source:novsu-ilinskii-burials-2026",
+      "anchor": {
+        "section": "Наблюдения Елены Тороповой о первом, втором и третьем захоронениях Ильинского II"
+      },
+      "note": "Institutional preliminary field-news, not a final excavation monograph. Probable peripheral pre-Mongol necropolis, preliminary early-XII dating; mostly child burials and disturbed contexts. Direct/high reported container observations; only inferred/medium Novgorod-Land 1100–1300 compatibility. Independently approved BOP-01–03; no rite or current scene.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota718",
+      "source_ref": "source:gramota718",
+      "anchor": {
+        "record_id": "novgorod/718"
+      },
+      "note": "Corpus metadata identifies a Novgorod register of income/payments; its dating has an earlier alternative and it establishes no fiscal rule.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota531",
+      "source_ref": "source:gramota531",
+      "anchor": {
+        "record_id": "novgorod/531"
+      },
+      "note": "Corpus metadata identifies an early-13th-century private letter from Anna to her brother Klimyata asking protection against an alleged accusation.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota705",
+      "source_ref": "source:gramota705",
+      "anchor": {
+        "record_id": "novgorod/705"
+      },
+      "note": "Corpus metadata identifies an early-13th-century kin-directed private request with a stated contingency; it asks that a male referent remain as a son, while the returned referent is unresolved.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota715",
+      "source_ref": "source:gramota715",
+      "anchor": {
+        "record_id": "novgorod/715"
+      },
+      "note": "Corpus metadata classifies a 1220–1240 Novgorod written charm-prayer invoking the Mother of God.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota778",
+      "source_ref": "source:gramota778",
+      "anchor": {
+        "record_id": "novgorod/778"
+      },
+      "note": "Corpus metadata classifies an early-13th-century Novgorod alphabet exercise.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota739",
+      "source_ref": "source:gramota739",
+      "anchor": {
+        "record_id": "novgorod/739"
+      },
+      "note": "Corpus metadata identifies an earlier Novgorod instruction to pay a church due; it is not target-period institutional evidence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gramota907",
+      "source_ref": "source:gramota907",
+      "anchor": {
+        "record_id": "novgorod/907"
+      },
+      "note": "Corpus metadata identifies an earlier Novgorod letter to a posadnik about a theft inquiry; it is not a procedural code.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:religion-olenin-people",
+      "source_ref": "source:hse-church-statutes",
+      "anchor": {
+        "section": "Устав Владимира, Оленинская редакция, §§10–11"
+      },
+      "note": "Перечень церковных людей и уставное отнесение разбора их вины; не действующий местный суд.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:religion-olenin-dating",
+      "source_ref": "source:museum-vladimir-statute",
+      "anchor": {
+        "section": "Историко-текстовый комментарий перед Оленинской редакцией"
+      },
+      "note": "Сложная редакционная история; основа текста сохранившихся списков отнесена к середине/второй половине XII века. Поддерживает inferred/medium совместимость традиции с 1100–1300, не датировку атрибуцией князю и не местное исполнение.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:religion-priest-baptism",
+      "source_ref": "source:hse-church-statutes",
+      "anchor": {
+        "section": "Устав Ярослава, Пространная редакция, §48"
+      },
+      "note": "Связь священника с крещением детей в чужом уезде прямо названа; повреждённая/неясная формула исключения не нормализуется.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:religion-yaroslav-dating",
+      "source_ref": "source:museum-yaroslav-statute",
+      "anchor": {
+        "section": "Историко-текстовый комментарий перед Пространной редакцией"
+      },
+      "note": "Древнейшая Пространная редакция отнесена к XII–первой четверти XIII века после переработок; применение указанных санкций прямо поставлено под сомнение. Нет утверждения о местном исполнении.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:probable-travel-chalice",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:plank-burial-container",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:hollowed-log-burial-container",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:payment-register",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:accounting-amount"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:accounting-or-commodity-entry",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:kin-addressed-letter",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:protection-request"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:protection-request",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:kin-directed-request",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:contingent-return-request"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:contingent-return-request",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:written-prayer-text",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:christian-invocation-text"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:christian-invocation-text",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:alphabet-exercise",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:alphabetic-text"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:alphabetic-text",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:church-payment-instruction",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:church-payment-demand"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:church-payment-demand",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:authority-addressed-letter",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:social_law_economy:theft-inquiry-allegation"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:theft-inquiry-allegation",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:church-people-statutory-category",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:ecclesiastical-adjudication",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:priest-baptism-statutory-context",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:probable-travel-chalice-communion",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:probable-travel-chalice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "museum_pre_mongol_twelfth_thirteenth_century_cross_bowl_most_likely_travel_chalice_for_communion"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:probable-travel-chalice-communion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:burial-plank-coffin-nails",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:plank-burial-container",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ilinskii_ii_preliminary_plank_coffin_examples_nailed_together"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ilinskii-burial-containers"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:burial-coffin-lid-transverse-plank",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:plank-burial-container",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ilinskii_ii_one_damaged_coffin_lid_visible_transverse_plank"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ilinskii-burial-containers"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:burial-hollowed-log-container",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:hollowed-log-burial-container",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ilinskii_ii_third_deceased_hollowed_log_probably_child_by_size"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ilinskii-burial-containers"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-payment-register-records-entry",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:payment-register",
+      "predicate": "records",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:accounting-or-commodity-entry"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota718"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-kin-letter-reports-protection-request",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:kin-addressed-letter",
+      "predicate": "reports",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:protection-request"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota531"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-kin-request-reports-contingent-return",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:kin-directed-request",
+      "predicate": "reports",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:contingent-return-request"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota705"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-written-prayer-relates-invocation",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:written-prayer-text",
+      "predicate": "relates_to",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:christian-invocation-text"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota715"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-alphabet-exercise-records-text",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:alphabet-exercise",
+      "predicate": "records",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:alphabetic-text"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota778"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-church-instruction-reports-demand",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:church-payment-instruction",
+      "predicate": "reports",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:church-payment-demand"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota739"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-authority-letter-relates-theft-inquiry",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:authority-addressed-letter",
+      "predicate": "relates_to",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:social_law_economy:theft-inquiry-allegation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gramota907"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:religion-olenin-church-people",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:church-people-statutory-category",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "olenin_vladimir_statute_lists_abbot_priest_deacon_among_church_people"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:religion-olenin-people",
+        "evidence:religion-olenin-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:religion-olenin-adjudication",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:ecclesiastical-adjudication",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "olenin_vladimir_statute_assigns_adjudication_of_listed_church_peoples_offence_to_metropolitan_and_bishops_apart_from_laypeople"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:religion-olenin-people",
+        "evidence:religion-olenin-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:religion-priest-child-baptism",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:priest-baptism-statutory-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "extended_yaroslav_statute_treats_priest_baptising_children_in_another_priests_district_as_regulated_act"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:religion-priest-baptism",
+        "evidence:religion-yaroslav-dating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:probable-travel-chalice",
+      "locale": "ru",
+      "labels": [
+        "Вероятный походный потир"
+      ],
+      "short_definition": "Музейная вероятная атрибуция чаши для причастия",
+      "search_aliases": [
+        "чаша",
+        "потир",
+        "причастие"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:probable-travel-chalice",
+      "locale": "en",
+      "labels": [
+        "Probable travel chalice"
+      ],
+      "short_definition": "A museum’s probable identification of a communion bowl",
+      "search_aliases": [
+        "bowl",
+        "chalice",
+        "communion vessel"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:plank-burial-container",
+      "locale": "ru",
+      "labels": [
+        "Дощатый погребальный контейнер"
+      ],
+      "short_definition": "Дощатые гробы в предварительном сообщении об Ильинском II",
+      "search_aliases": [
+        "гроб",
+        "доски",
+        "гвозди"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:plank-burial-container",
+      "locale": "en",
+      "labels": [
+        "Plank burial container"
+      ],
+      "short_definition": "Plank coffins in the preliminary Il’inskii II report",
+      "search_aliases": [
+        "coffin",
+        "planks",
+        "nails"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hollowed-log-burial-container",
+      "locale": "ru",
+      "labels": [
+        "Долблёная погребальная колода"
+      ],
+      "short_definition": "Долблёная колода в предварительном сообщении об Ильинском II",
+      "search_aliases": [
+        "колода",
+        "погребение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hollowed-log-burial-container",
+      "locale": "en",
+      "labels": [
+        "Hollowed-log burial container"
+      ],
+      "short_definition": "A hollowed log in the preliminary Il’inskii II report",
+      "search_aliases": [
+        "hollowed log",
+        "burial"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:payment-register",
+      "locale": "ru",
+      "labels": [
+        "Реестр поступлений или выплат"
+      ],
+      "short_definition": "Тип счётного или платёжного реестра",
+      "search_aliases": [
+        "реестр выплат",
+        "товарная запись"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:payment-register",
+      "locale": "en",
+      "labels": [
+        "Income-or-payment register"
+      ],
+      "short_definition": "An accounting or payment register type",
+      "search_aliases": [
+        "payment register",
+        "commodity entry"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:kin-addressed-letter",
+      "locale": "ru",
+      "labels": [
+        "Письмо родственнику"
+      ],
+      "short_definition": "Письмо, обращённое к родственнику",
+      "search_aliases": [
+        "родственное письмо"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:kin-addressed-letter",
+      "locale": "en",
+      "labels": [
+        "Kin-addressed letter"
+      ],
+      "short_definition": "A letter addressed to kin",
+      "search_aliases": [
+        "kin letter"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:kin-directed-request",
+      "locale": "ru",
+      "labels": [
+        "Родственное адресное прошение"
+      ],
+      "short_definition": "Прошение, адресованное родственнику",
+      "search_aliases": [
+        "родственная просьба"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:kin-directed-request",
+      "locale": "en",
+      "labels": [
+        "Kin-directed request"
+      ],
+      "short_definition": "A request addressed to kin",
+      "search_aliases": [
+        "kin request"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:written-prayer-text",
+      "locale": "ru",
+      "labels": [
+        "Письменный текст молитвы-заговора"
+      ],
+      "short_definition": "Письменный текст молитвы-заговора",
+      "search_aliases": [
+        "молитва-заговор"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:written-prayer-text",
+      "locale": "en",
+      "labels": [
+        "Written charm-prayer text"
+      ],
+      "short_definition": "A written charm-prayer text",
+      "search_aliases": [
+        "charm-prayer"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:alphabet-exercise",
+      "locale": "ru",
+      "labels": [
+        "Азбучное упражнение"
+      ],
+      "short_definition": "Учебный алфавитный текст",
+      "search_aliases": [
+        "азбука"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:alphabet-exercise",
+      "locale": "en",
+      "labels": [
+        "Alphabet exercise"
+      ],
+      "short_definition": "An instructional alphabet text",
+      "search_aliases": [
+        "alphabet"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:church-payment-instruction",
+      "locale": "ru",
+      "labels": [
+        "Поручение о церковной выплате"
+      ],
+      "short_definition": "Документное поручение о выплате",
+      "search_aliases": [
+        "церковная выплата"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:church-payment-instruction",
+      "locale": "en",
+      "labels": [
+        "Church-payment instruction"
+      ],
+      "short_definition": "A documentary instruction concerning payment",
+      "search_aliases": [
+        "church payment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:authority-addressed-letter",
+      "locale": "ru",
+      "labels": [
+        "Письмо, адресованное власти"
+      ],
+      "short_definition": "Обращённое к власти письмо",
+      "search_aliases": [
+        "обращение к посаднику"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:authority-addressed-letter",
+      "locale": "en",
+      "labels": [
+        "Authority-addressed letter"
+      ],
+      "short_definition": "A letter addressed to an authority",
+      "search_aliases": [
+        "authority letter"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:accounting-or-commodity-entry",
+      "locale": "ru",
+      "labels": [
+        "Счётная или товарная запись"
+      ],
+      "short_definition": "Позиция в счётном или товарном реестре",
+      "search_aliases": [
+        "товарная запись"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:accounting-or-commodity-entry",
+      "locale": "en",
+      "labels": [
+        "Accounting-or-commodity entry"
+      ],
+      "short_definition": "An entry in an accounting or commodity register",
+      "search_aliases": [
+        "commodity entry"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:protection-request",
+      "locale": "ru",
+      "labels": [
+        "Просьба о защите"
+      ],
+      "short_definition": "Заявленная просьба о защите",
+      "search_aliases": [
+        "защита"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:protection-request",
+      "locale": "en",
+      "labels": [
+        "Protection request"
+      ],
+      "short_definition": "A stated request for protection",
+      "search_aliases": [
+        "protection"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:contingent-return-request",
+      "locale": "ru",
+      "labels": [
+        "Условная просьба о возвращении"
+      ],
+      "short_definition": "Условно сформулированная просьба о возвращении",
+      "search_aliases": [
+        "возвращение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:contingent-return-request",
+      "locale": "en",
+      "labels": [
+        "Contingent return request"
+      ],
+      "short_definition": "A contingently framed return request",
+      "search_aliases": [
+        "return request"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:christian-invocation-text",
+      "locale": "ru",
+      "labels": [
+        "Христианский призывный текст"
+      ],
+      "short_definition": "Текст с христианским призывом",
+      "search_aliases": [
+        "христианский призыв"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:christian-invocation-text",
+      "locale": "en",
+      "labels": [
+        "Christian invocation text"
+      ],
+      "short_definition": "A text with Christian invocation",
+      "search_aliases": [
+        "Christian invocation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:alphabetic-text",
+      "locale": "ru",
+      "labels": [
+        "Алфавитный текст"
+      ],
+      "short_definition": "Текст алфавитного упражнения",
+      "search_aliases": [
+        "алфавит"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:alphabetic-text",
+      "locale": "en",
+      "labels": [
+        "Alphabetic text"
+      ],
+      "short_definition": "Text of an alphabet exercise",
+      "search_aliases": [
+        "alphabetic text"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:church-payment-demand",
+      "locale": "ru",
+      "labels": [
+        "Требование церковной выплаты"
+      ],
+      "short_definition": "Заявленное требование выплаты",
+      "search_aliases": [
+        "церковная выплата"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:church-payment-demand",
+      "locale": "en",
+      "labels": [
+        "Church-payment demand"
+      ],
+      "short_definition": "A stated demand for payment",
+      "search_aliases": [
+        "church payment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:theft-inquiry-allegation",
+      "locale": "ru",
+      "labels": [
+        "Заявление о расследовании кражи"
+      ],
+      "short_definition": "Заявление о расследовании предполагаемой кражи",
+      "search_aliases": [
+        "кража",
+        "расследование"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:theft-inquiry-allegation",
+      "locale": "en",
+      "labels": [
+        "Theft-inquiry allegation"
+      ],
+      "short_definition": "An allegation concerning a theft inquiry",
+      "search_aliases": [
+        "theft allegation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:church-people-statutory-category",
+      "locale": "ru",
+      "labels": [
+        "Церковные люди в Оленинской редакции"
+      ],
+      "short_definition": "Перечень церковных ролей в историческом уставном тексте.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:church-people-statutory-category",
+      "locale": "en",
+      "labels": [
+        "Church people in the Olenin redaction"
+      ],
+      "short_definition": "A church-role category in a historical statutory text.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:ecclesiastical-adjudication",
+      "locale": "ru",
+      "labels": [
+        "Церковная подсудность в Оленинской редакции"
+      ],
+      "short_definition": "Текстовое отнесение разбора вины перечисленных церковных людей к митрополиту и епископам.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:ecclesiastical-adjudication",
+      "locale": "en",
+      "labels": [
+        "Ecclesiastical adjudication in the Olenin redaction"
+      ],
+      "short_definition": "Textual allocation of adjudication involving listed church people to the metropolitan and bishops.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:priest-baptism-statutory-context",
+      "locale": "ru",
+      "labels": [
+        "Крещение священником в уставном контексте"
+      ],
+      "short_definition": "Связь священника с крещением детей как регулируемым действием в Пространной редакции Устава Ярослава.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:priest-baptism-statutory-context",
+      "locale": "en",
+      "labels": [
+        "Priestly baptism in statutory context"
+      ],
+      "short_definition": "Priest-to-child-baptism relation as a regulated act in the Extended Yaroslav statute.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:probable-travel-chalice-communion",
+      "locale": "ru",
+      "runtime_text": "Новгородский музей описывает домонгольскую чашу XII–XIII веков с процветшим византийским крестом на днище как предмет, который вероятнее всего служил походным потиром для причастия. Это вероятная музейная атрибуция и широкий древнерусский аналог для 1100–1300 гг. с выводом средней уверенности, а не доказательство средневекового присутствия в Новгородской земле. Материал, место находки, изготовление и история происхождения не названы. Факт не создаёт потир, духовенство, освящение, церковь, вино, причастие, право доступа, официальную подлинность или нынешний обряд.",
+      "search_aliases": [
+        "походный потир",
+        "чаша для причастия"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:probable-travel-chalice-communion",
+      "locale": "en",
+      "runtime_text": "The Novgorod Museum describes a pre-Mongol twelfth–thirteenth-century bowl with a flowering Byzantine cross on its base as most likely a travel chalice for communion. This is a probable museum attribution and broad Old-Rus analogue for 1100–1300, inferred with medium confidence, not evidence of medieval presence in Novgorod Land. Material, findspot, manufacture and provenance are unspecified. It creates no chalice, clergy, consecration, church, wine, communion event, access right, official authenticity or current rite.",
+      "search_aliases": [
+        "travel chalice",
+        "communion bowl"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:burial-plank-coffin-nails",
+      "locale": "ru",
+      "runtime_text": "В предварительном сообщении НовГУ об Ильинском II в Старой Руссе дощатые гробы описаны как сколоченные гвоздями. Комплекс предварительно датируется началом XII века; контексты повреждены, погребения преимущественно детские. Наблюдения относятся к отдельным находкам; совместимость с Новгородской землёй 1100–1300 гг. — вывод средней уверенности. Это не единая конструкция или обряд, не число гвоздей, порода дерева, размер, изготовитель, запас материала или гроб в текущей сцене.",
+      "search_aliases": [
+        "гроб",
+        "гвозди",
+        "Старая Русса"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:burial-plank-coffin-nails",
+      "locale": "en",
+      "runtime_text": "The preliminary NovSU report on Il’inskii II in Staraya Russa describes plank coffins nailed together. The complex is preliminarily dated to the early twelfth century; contexts are disturbed and burials mostly child. These are individual observations; compatibility with Novgorod Land in 1100–1300 is inferred with medium confidence. They establish no uniform construction or rite, nail count, wood species, size, maker, material stock or coffin in the current scene.",
+      "search_aliases": [
+        "coffin",
+        "nails",
+        "Staraya Russa"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:burial-coffin-lid-transverse-plank",
+      "locale": "ru",
+      "runtime_text": "По предварительному сообщению НовГУ, у крышки одного повреждённого дощатого гроба Ильинского II была видна поперечная планка. Ранний XII век — предварительная датировка комплекса; совместимость с Новгородской землёй 1100–1300 гг. — вывод средней уверенности. Деталь одной находки не задаёт стандартную крышку, соединение, размеры, прочность, инструмент, запас материала или нынешний контейнер.",
+      "search_aliases": [
+        "крышка гроба",
+        "поперечная планка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:burial-coffin-lid-transverse-plank",
+      "locale": "en",
+      "runtime_text": "The preliminary NovSU report says that one damaged Il’inskii II plank-coffin lid had a visible transverse plank. Early-twelfth-century dating of the complex is preliminary; Novgorod-Land compatibility for 1100–1300 is inferred with medium confidence. This single observed detail establishes no standard lid, joint, dimensions, strength, tool, material stock or present container.",
+      "search_aliases": [
+        "coffin lid",
+        "transverse plank"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:burial-hollowed-log-container",
+      "locale": "ru",
+      "runtime_text": "По предварительному сообщению НовГУ, третий покойный Ильинского II был похоронен в долблёной колоде; по размеру колоды погребение предположительно детское. Комплекс предварительно датируется началом XII века; совместимость с Новгородской землёй 1100–1300 гг. — вывод средней уверенности. Это не норма и не доказательство применения для взрослых, веры, обряда, священника, молитвы, кладбищенской топологии, права погребения, тела, могилы, древесины или инструмента в текущей сцене.",
+      "search_aliases": [
+        "долблёная колода",
+        "детское погребение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:burial-hollowed-log-container",
+      "locale": "en",
+      "runtime_text": "The preliminary NovSU report states that the third Il’inskii II deceased was buried in a hollowed log; its size makes the burial probably child. The complex is preliminarily dated to the early twelfth century; Novgorod-Land compatibility for 1100–1300 is inferred with medium confidence. This is neither a norm nor evidence of adult use, belief, rite, clergy, prayer, cemetery topology, burial rights, a body, grave, timber or tool in the current scene.",
+      "search_aliases": [
+        "hollowed log",
+        "child burial"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-payment-register-records-entry",
+      "locale": "ru",
+      "runtime_text": "Новгородский реестр поступлений или выплат, датируемый 1220–1240 гг. с более ранним альтернативным датированием, содержит счётные и товарные записи. Он не устанавливает систему выплат, ставку, плательщика, получателя, имущество или текущую обязанность.",
+      "search_aliases": [
+        "реестр выплат",
+        "товарная запись"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-payment-register-records-entry",
+      "locale": "en",
+      "runtime_text": "A Novgorod income-or-payment register dated 1220–1240 with an earlier alternative date contains accounting and commodity entries. It establishes no payment system, rate, payer, recipient, property, or current duty.",
+      "search_aliases": [
+        "payment register",
+        "commodity entry"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-kin-letter-reports-protection-request",
+      "locale": "ru",
+      "runtime_text": "Ранне-XIII-вековое новгородское письмо родственнику сообщает просьбу о защите от заявленного обвинения. Оно не создаёт родство, обязанность защиты, представительство, правдивость обвинения или решение.",
+      "search_aliases": [
+        "родственник",
+        "просьба о защите"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-kin-letter-reports-protection-request",
+      "locale": "en",
+      "runtime_text": "An early-13th-century Novgorod letter to kin reports a request for protection from an alleged accusation. It creates no kinship, duty of protection, representation, truth of the accusation, or decision.",
+      "search_aliases": [
+        "kin",
+        "protection request"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-kin-request-reports-contingent-return",
+      "locale": "ru",
+      "runtime_text": "Новгородское родственное прошение раннего XIII века поддерживает широкую историческую категорию условной просьбы о возвращении; в тексте есть формула «за сына», но возвращаемый референт не установлен. Оно не создаёт опеку, наследование, обязательную службу, домохозяйство, ребёнка или NPC-отношение.",
+      "search_aliases": [
+        "родственная просьба",
+        "возвращение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-kin-request-reports-contingent-return",
+      "locale": "en",
+      "runtime_text": "An early-13th-century Novgorod kin-directed request supports a broad historical category of contingent return requests; its wording includes “as a son,” but the returned referent is unresolved. It creates no custody, inheritance, compulsory service, household, child, or NPC relation.",
+      "search_aliases": [
+        "kin request",
+        "return request"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-written-prayer-relates-invocation",
+      "locale": "ru",
+      "runtime_text": "Новгородский текст 1220–1240 гг. классифицирован как молитва-заговор с христианским призывом. Он не доказывает исцеление, личную веру, духовный сан, посещение церкви или обязанность практики.",
+      "search_aliases": [
+        "молитва-заговор",
+        "христианский призыв"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-written-prayer-relates-invocation",
+      "locale": "en",
+      "runtime_text": "A 1220–1240 Novgorod text is classified as a charm-prayer with Christian invocation. It proves no cure, personal belief, clergy role, church attendance, or compulsory practice.",
+      "search_aliases": [
+        "charm-prayer",
+        "Christian invocation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-alphabet-exercise-records-text",
+      "locale": "ru",
+      "runtime_text": "В ранне-XIII-вековом Новгороде засвидетельствовано азбучное упражнение. Один учебный текст не измеряет грамотность населения и не доказывает умение читать или писать конкретного actor.",
+      "search_aliases": [
+        "азбука",
+        "учебный текст"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-alphabet-exercise-records-text",
+      "locale": "en",
+      "runtime_text": "An alphabet exercise is attested in early-13th-century Novgorod. One instructional text neither measures population literacy nor proves a particular actor can read or write.",
+      "search_aliases": [
+        "alphabet",
+        "instructional text"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-church-instruction-reports-demand",
+      "locale": "ru",
+      "runtime_text": "Более раннее новгородское поручение о церковной выплате поддерживает широкую документную категорию, но не церковь 1230 года, ставку, администратора, принуждение или должника.",
+      "search_aliases": [
+        "церковная выплата",
+        "поручение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-church-instruction-reports-demand",
+      "locale": "en",
+      "runtime_text": "An earlier Novgorod church-payment instruction supports a broad documentary category, not a 1230 church, rate, administrator, enforcement, or debtor.",
+      "search_aliases": [
+        "church payment",
+        "instruction"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-authority-letter-relates-theft-inquiry",
+      "locale": "ru",
+      "runtime_text": "Более раннее новгородское письмо посаднику о расследовании кражи поддерживает широкую документную категорию обращения к власти по заявлению. Оно не задаёт процедуру, свидетеля, полномочие, арест, санкцию или исход.",
+      "search_aliases": [
+        "посадник",
+        "обращение о краже"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-authority-letter-relates-theft-inquiry",
+      "locale": "en",
+      "runtime_text": "An earlier Novgorod letter to a posadnik about a theft inquiry supports a broad documentary category of addressing authority about an allegation. It defines no procedure, witness, power, arrest, sanction, or outcome.",
+      "search_aliases": [
+        "posadnik",
+        "theft allegation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:religion-olenin-church-people",
+      "locale": "ru",
+      "runtime_text": "В Оленинской редакции Устава Владимира игумен, поп и дьякон перечислены среди церковных людей. Это историко-текстовая категория с выводной совместимостью для 1100–1300, не местный список духовенства, статус, умение или власть конкретного лица.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:religion-olenin-church-people",
+      "locale": "en",
+      "runtime_text": "In the Olenin redaction of the Vladimir statute, an abbot, priest and deacon are listed among church people. This is a historical textual category with inferred compatibility for 1100–1300, not a local clergy roster or an individual's status, skill or authority.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:religion-olenin-adjudication",
+      "locale": "ru",
+      "runtime_text": "Оленинская редакция Устава Владимира относит разбор вины перечисленных церковных людей к митрополиту и епископам, отдельно от мирян. Это норма многослойного текста, не доказательство суда, санкции, разделения всех споров или исполнения в Новгороде.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:religion-olenin-adjudication",
+      "locale": "en",
+      "runtime_text": "The Olenin redaction of the Vladimir statute assigns adjudication of an offence involving its listed church people to the metropolitan and bishops, apart from laypeople. This is a norm in a layered text, not proof of a court, sanction, division of all disputes or enforcement in Novgorod.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:religion-priest-child-baptism",
+      "locale": "ru",
+      "runtime_text": "Пространная редакция Устава Ярослава рассматривает крещение детей священником в чужом уезде как регулируемое действие. Неясная формула исключения не толкуется; местная граница, обряд, его действительность, болезнь, согласие, умение и исполнение нормы не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:religion-priest-child-baptism",
+      "locale": "en",
+      "runtime_text": "The Extended redaction of the Yaroslav statute treats a priest's baptism of children in another priest's district as a regulated act. The unclear exception is not interpreted; no local boundary, rite, validity, illness, consent, competence or enforcement is established.",
+      "search_aliases": []
+    }
+  ]
+}

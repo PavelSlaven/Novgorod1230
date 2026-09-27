@@ -50,5 +50,18 @@
     "locator_or_citation": "Current task instruction, 2026-07-24",
     "evidence_role": "authoring_authorization",
     "notes": "Authorizes bounded reconstruction while requiring three clean audit cycles; reconstruction remains labeled and is not represented as a primary historical fact."
+  },
+  {
+    "source_id": "source:historical_phase_local_effect_rules:book_667380_svod_letopisnyh_izvestiy",
+    "status": "approved",
+    "source_path": "data/world-catalogs/novgorod/temporal-v4/sources/historical_phase_local_effect_rules/book_667380_svod_letopisnyh_izvestiy_excerpt.txt",
+    "source_sha256": "90ec964e14cf67f36af061de2473f63df0cd1d33c4c543b0aa39e21fe8aeca19",
+    "title": "Свод летописных известий о Новгородской земле в хронологическом порядке (Приложение 2), §486-487",
+    "author_or_issuing_body": "Экземплярский Андрей Васильевич (составитель свода); НПЛ (первичная летопись)",
+    "publication_or_record_date": "2019 (издание); событие 1230-09-14 / 1231, по НПЛ",
+    "license_or_transfer_basis": "Excerpt copied verbatim from an external repository catalog row supplied for project integration; see cross-repository locator in notes",
+    "locator_or_citation": "Novgorod-game-base/data/world-catalogs/novgorod/sources/books-evidence-v1/history-events-knowledge.csv, book_id 667380, para_no 486 and 487; owner decision D19 (issue #133, comment 5846311836), D22 (issue #133, comment 5848564249)",
+    "evidence_role": "historical_source",
+    "notes": "Cross-repository evidence: bytes copied from the external repository Novgorod-game-base into this family's source directory; source_sha256 pins the copied local excerpt bytes, not a live reference to the other repository. Supports day-level precision for the famine onset (Воздвижение, 14 September 1230, ¶486) and the year-level basis for the famine's practical cessation (arrival of German bread in 1231, ¶487, no exact month/day given)."
   }
 ]

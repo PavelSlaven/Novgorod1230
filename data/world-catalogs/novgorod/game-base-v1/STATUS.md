@@ -213,10 +213,10 @@
 | [`households_kinship/household_composition_profiles.csv`](households-psychology-speech/households_kinship/household_composition_profiles.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#households_kinshiphousehold_composition_profilescsv--approve_with_limits) |
 | [`households_kinship/kinship_terms.csv`](households-psychology-speech/households_kinship/kinship_terms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#kinship_termscsv--approve_with_limits) |
 | [`households_kinship/marriage_inheritance_rules.csv`](households-psychology-speech/households_kinship/marriage_inheritance_rules.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#marriage_inheritance_rulescsv--approve_with_limits) |
-| [`households_kinship/relationship_rules.csv`](households-psychology-speech/households_kinship/relationship_rules.csv) | [rework](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--rework-1) |
+| [`households_kinship/relationship_rules.csv`](households-psychology-speech/households_kinship/relationship_rules.csv) | [rework](households-psychology-speech/VERIFICATION.md#households_kinshiprelationship_rulescsv--rework-2) |
 | [`npc_psychology/psychology_profiles.csv`](households-psychology-speech/npc_psychology/psychology_profiles.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#npc_psychologypsychology_profilescsv--approve_with_limits) |
 | [`social_norms_honour_hospitality/norms.csv`](households-psychology-speech/social_norms_honour_hospitality/norms.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#normscsv--approve_with_limits) |
-| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [rework](households-psychology-speech/VERIFICATION.md#speech_addressaddress_formscsv--rework-1) |
+| [`speech_address/address_forms.csv`](households-psychology-speech/speech_address/address_forms.csv) | [rework](households-psychology-speech/VERIFICATION.md#speech_addressaddress_formscsv--rework-2) |
 | [`speech_address/speech_registers.csv`](households-psychology-speech/speech_address/speech_registers.csv) | [approve_with_limits](households-psychology-speech/VERIFICATION.md#speech_registerscsv--approve_with_limits) |
 
 ### items-household-personal
@@ -375,7 +375,7 @@
 | [`religion/lifecycle_rites_burial.csv`](time-calendar-church/religion/lifecycle_rites_burial.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#religionlifecycle_rites_burialcsv--approve_with_limits) |
 | [`time/calendar_1230_1250.csv`](time-calendar-church/time/calendar_1230_1250.csv) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timecalendar_1230_1250csv--approve_with_limits) |
 | [`time/paschalia_1230_1250.json`](time-calendar-church/time/paschalia_1230_1250.json) | [approve_with_limits](time-calendar-church/VERIFICATION.md#timepaschalia_1230_1250json--approve_with_limits) |
-| [`time/schedules_routines.csv`](time-calendar-church/time/schedules_routines.csv) | [rework](time-calendar-church/VERIFICATION.md#timeschedules_routinescsv--rework-1) |
+| [`time/schedules_routines.csv`](time-calendar-church/time/schedules_routines.csv) | [rework](time-calendar-church/VERIFICATION.md#timeschedules_routinescsv--rework-2) |
 
 ### transport-health-recreation
 

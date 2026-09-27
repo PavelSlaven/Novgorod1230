@@ -1,6 +1,7 @@
 export function retrievalObservabilityOf({ bundle, embeddingProfile,
   vectorScores, slice, embeddingMs, vectorMs, coreResolutionMs,
-  totalRetrievalMs, cacheOutcome = 'miss' }) {
+  totalRetrievalMs, cacheOutcome = 'miss',
+  rerankScoredCandidateCount = 0 } = {}) {
   const vectorHitRefs = Object.freeze([...vectorScores.keys()]);
   return Object.freeze({
     pack_ref: bundle.manifest.pack_ref,
@@ -18,6 +19,10 @@ export function retrievalObservabilityOf({ bundle, embeddingProfile,
     lexical_ms: null, lexical_status: 'included_in_core_resolution',
     cache_outcome: cacheOutcome === 'hit' ? 'hit' : 'miss',
     hard_constraint_count: slice.hard_constraints.length,
-    gaps: Object.freeze([...slice.gaps])
+    gaps: Object.freeze([...slice.gaps]),
+    // D21 audit: true only when Core all-or-nothing rerank actually reordered.
+    rerank_applied: slice.rerank_applied === true,
+    rerank_scored_candidate_count: Number.isInteger(rerankScoredCandidateCount)
+      ? rerankScoredCandidateCount : 0
   });
 }

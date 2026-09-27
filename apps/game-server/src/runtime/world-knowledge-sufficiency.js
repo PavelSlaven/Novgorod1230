@@ -6,7 +6,8 @@ export const DEFAULT_MIN_HINT_RELEVANCE = 0.28;
 
 export function groundingSufficiencyOf(slice, {
   fromDefaultQuery = false,
-  minHintRelevance = DEFAULT_MIN_HINT_RELEVANCE
+  minHintRelevance = DEFAULT_MIN_HINT_RELEVANCE,
+  sufficientEnabled = true
 } = {}) {
   const facts = slice?.facts ?? [];
   const hard = slice?.hard_constraints ?? [];
@@ -27,6 +28,9 @@ export function groundingSufficiencyOf(slice, {
   // Default-query slices never claim SUFFICIENT: lexical hit ≠ topical relevance
   // (LW-047; #153 step 8 adds a relevance floor).
   if (fromDefaultQuery) return 'PARTIAL_KNOWLEDGE';
+  // Production profile keeps sufficient_enabled=false until per-hint relevance
+  // exists (LW-054 / REVIEW-049): joined-hint cosine cannot calibrate SUFFICIENT.
+  if (sufficientEnabled === false) return 'PARTIAL_KNOWLEDGE';
   const allHintsHit = hits.length === 0 || hits.every(Boolean);
   const allCovered = coverage.length > 0
     && coverage.every((entry) => entry.status === 'covered');

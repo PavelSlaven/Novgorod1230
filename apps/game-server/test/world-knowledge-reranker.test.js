@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { writeFileSync, mkdtempSync, mkdirSync, symlinkSync, rmSync, copyFileSync } from 'node:fs';
+import { writeFileSync, mkdtempSync, mkdirSync, symlinkSync, rmSync, copyFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -166,12 +166,15 @@ test('production loader attaches reranker_profile + sufficiency and keeps rerank
     assert.equal(loaded.sufficiency_profile.status, 'provisional');
     assert.equal(loaded.sufficiency_profile.min_hint_relevance,
       DEFAULT_MIN_HINT_RELEVANCE);
+    assert.equal(loaded.sufficiency_profile.sufficient_enabled, false);
   } finally {
     await loaded.encoder?.close?.();
   }
 });
 
-test('production loader rejects invalid sufficiency profile', async () => {
+test('production loader rejects single-field invalid sufficiency profile (C26)', async () => {
+  // Mutation kill: change ONE field of a valid profile so validation must
+  // reach schema/ref/relevance_source/sufficient_enabled checks.
   const tempRoot = mkdtempSync(join(tmpdir(), 'novgorod-suff-'));
   try {
     const rel = 'data/world-catalogs/novgorod/world-knowledge';
@@ -191,11 +194,15 @@ test('production loader rejects invalid sufficiency profile', async () => {
         copyFileSync(join(ROOT, rel, part), join(tempRoot, rel, part));
       }
     }
+    const valid = JSON.parse(readFileSync(
+      join(ROOT, rel, 'sufficiency-profiles/giga-cosine-v1.json'), 'utf8'));
+    // Only relevance_source is wrong — schema/ref/min_hint stay valid.
     writeFileSync(join(tempRoot, rel, 'sufficiency-profiles/giga-cosine-v1.json'),
-      JSON.stringify({ schema: 'not_a_sufficiency_profile', min_hint_relevance: 0.28 }));
+      JSON.stringify({ ...valid, relevance_source: 'not_giga_cosine' }));
     await assert.rejects(
       () => loadProductionWorldKnowledge({ rootDir: tempRoot }),
-      /sufficiency profile is invalid/);
+      (err) => err instanceof TypeError
+        && /sufficiency profile is invalid/.test(err.message));
   } finally {
     rmSync(tempRoot, { recursive: true, force: true });
   }
@@ -209,17 +216,188 @@ test('sufficiency_profile min_hint_relevance changes SUFFICIENT marker', () => {
     search_hint_relevance: [0.30],
     verdict: 'supported'
   };
-  assert.equal(groundingSufficiencyOf(slice, { minHintRelevance: 0.28 }),
-    'SUFFICIENT_KNOWLEDGE');
-  assert.equal(groundingSufficiencyOf(slice, { minHintRelevance: 0.35 }),
-    'PARTIAL_KNOWLEDGE');
+  assert.equal(groundingSufficiencyOf(slice, {
+    minHintRelevance: 0.28, sufficientEnabled: true
+  }), 'SUFFICIENT_KNOWLEDGE');
+  assert.equal(groundingSufficiencyOf(slice, {
+    minHintRelevance: 0.35, sufficientEnabled: true
+  }), 'PARTIAL_KNOWLEDGE');
+});
+
+test('sufficient_enabled false caps at PARTIAL even when relevance passes', () => {
+  const slice = {
+    facts: [{ claim_ref: 'claim:a' }], hard_constraints: [], disputes: [],
+    coverage: [{ domain: 'materials_substances', status: 'covered' }],
+    search_hint_hits: [true],
+    search_hint_relevance: [0.99],
+    verdict: 'supported'
+  };
+  assert.equal(groundingSufficiencyOf(slice, {
+    minHintRelevance: 0.28, sufficientEnabled: false
+  }), 'PARTIAL_KNOWLEDGE');
+  assert.equal(groundingSufficiencyOf(slice, {
+    minHintRelevance: 0.28, sufficientEnabled: true
+  }), 'SUFFICIENT_KNOWLEDGE');
+});
+
+test('grounding applies sufficiency_profile threshold, not DEFAULT fallback', async () => {
+  // Mutation kill: if grounding ignores sufficiency_profile and falls back to
+  // DEFAULT_MIN_HINT_RELEVANCE (0.28), relevance 0.30 would stay SUFFICIENT.
+  const loaded = await loadProductionWorldKnowledge({ rootDir: ROOT });
+  const profileThreshold = 0.50;
+  assert.notEqual(profileThreshold, DEFAULT_MIN_HINT_RELEVANCE);
+  const worldKnowledge = {
+    ...loaded,
+    sufficiency_profile: Object.freeze({
+      ...loaded.sufficiency_profile,
+      min_hint_relevance: profileThreshold,
+      // Force-enable so threshold mutation is observable (production stays off).
+      sufficient_enabled: true
+    }),
+    encoder: { encode: async () => new Float32Array(1024) },
+    vector_index: {
+      search: () => new Map([['claim:regional-fish-exploitation', 0.9]])
+    },
+    core: {
+      resolveWorldKnowledge() {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'environment', status: 'covered' }],
+          verdict: 'supported',
+          hard_constraints: [],
+          facts: [{ claim_ref: 'claim:regional-fish-exploitation',
+            runtime_text: 'fish' }],
+          disputes: [],
+          gaps: [],
+          context_text: 'fish',
+          search_hint_hits: [true],
+          search_hint_relevance: [0.30],
+          rerank_applied: false
+        };
+      },
+      admittedCandidateRefs() { return ['claim:regional-fish-exploitation']; }
+    }
+  };
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge,
+    year: 1230,
+    placeRefs: ['region_novgorod_land'],
+    roleRunner: {
+      async run() {
+        return {
+          output: {
+            schema: 'world_knowledge_query_plan_v1',
+            query_locale: 'ru',
+            domains: ['environment'],
+            focus_refs: ['wk:environment:regional-fish-exploitation'],
+            requested_predicates: [],
+            search_hints: ['рыбные ресурсы']
+          },
+          provider_record: {
+            scope: 'turn_runtime', role_id: 'world_knowledge_query_planner',
+            provider: 'test', model: 'test'
+          }
+        };
+      }
+    }
+  });
+  const grounded = await grounder.ground({
+    request_id: 'turn:sufficiency-profile',
+    remaining_intent: 'Можно ли здесь добыть рыбу?'
+  }, 'semantic_resolution');
+  assert.equal(grounded.world_knowledge.sufficiency, 'PARTIAL_KNOWLEDGE');
+  assert.equal(
+    groundingSufficiencyOf({
+      facts: grounded.world_knowledge.facts,
+      hard_constraints: [],
+      disputes: [],
+      coverage: [{ domain: 'environment', status: 'covered' }],
+      search_hint_hits: [true],
+      search_hint_relevance: [0.30]
+    }, { minHintRelevance: DEFAULT_MIN_HINT_RELEVANCE, sufficientEnabled: true }),
+    'SUFFICIENT_KNOWLEDGE',
+    'control: same relevance is SUFFICIENT under DEFAULT 0.28');
+  await loaded.encoder?.close?.();
+});
+
+test('grounding with sufficient_enabled false never emits SUFFICIENT', async () => {
+  const loaded = await loadProductionWorldKnowledge({ rootDir: ROOT });
+  assert.equal(loaded.sufficiency_profile.sufficient_enabled, false);
+  const worldKnowledge = {
+    ...loaded,
+    encoder: { encode: async () => new Float32Array(1024) },
+    vector_index: {
+      search: () => new Map([['claim:regional-fish-exploitation', 0.9]])
+    },
+    core: {
+      resolveWorldKnowledge() {
+        return {
+          schema: 'world_knowledge_slice_v1',
+          pack_ref: loaded.bundle.manifest.pack_ref,
+          pack_revision: loaded.bundle.manifest.revision_id,
+          purpose: 'semantic_resolution',
+          coverage: [{ domain: 'environment', status: 'covered' }],
+          verdict: 'supported',
+          hard_constraints: [],
+          facts: [{ claim_ref: 'claim:regional-fish-exploitation',
+            runtime_text: 'fish' }],
+          disputes: [],
+          gaps: [],
+          context_text: 'fish',
+          search_hint_hits: [true],
+          search_hint_relevance: [0.99],
+          rerank_applied: false
+        };
+      },
+      admittedCandidateRefs() { return ['claim:regional-fish-exploitation']; }
+    }
+  };
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge,
+    year: 1230,
+    placeRefs: ['region_novgorod_land'],
+    roleRunner: {
+      async run() {
+        return {
+          output: {
+            schema: 'world_knowledge_query_plan_v1',
+            query_locale: 'ru',
+            domains: ['environment'],
+            focus_refs: ['wk:environment:regional-fish-exploitation'],
+            requested_predicates: [],
+            search_hints: ['рыбные ресурсы']
+          },
+          provider_record: {
+            scope: 'turn_runtime', role_id: 'world_knowledge_query_planner',
+            provider: 'test', model: 'test'
+          }
+        };
+      }
+    }
+  });
+  const grounded = await grounder.ground({
+    request_id: 'turn:sufficient-disabled',
+    remaining_intent: 'Можно ли здесь добыть рыбу?'
+  }, 'semantic_resolution');
+  assert.equal(grounded.world_knowledge.sufficiency, 'PARTIAL_KNOWLEDGE');
+  await loaded.encoder?.close?.();
 });
 
 test('grounding passes rerankScores into Core when D21 gate open', async () => {
   const loaded = await loadProductionWorldKnowledge({ rootDir: ROOT });
   const resolveCalls = [];
+  const admittedCalls = [];
   const realResolve = loaded.core.resolveWorldKnowledge.bind(loaded.core);
+  const realAdmitted = loaded.core.admittedCandidateRefs.bind(loaded.core);
   const core = {
+    admittedCandidateRefs(query, options) {
+      const refs = realAdmitted(query, options);
+      admittedCalls.push(refs);
+      return refs;
+    },
     resolveWorldKnowledge(query, options) {
       resolveCalls.push(options);
       return realResolve(query, options);
@@ -230,25 +408,30 @@ test('grounding passes rerankScores into Core when D21 gate open', async () => {
     production_enabled: true,
     gate: { ...loaded.reranker_profile.gate, decision: 'enabled' }
   });
-  const fakeScores = new Map([
-    ['claim:regional-fish-exploitation', 0.42]
-  ]);
+  const scoredRefs = [];
   const worldKnowledge = {
     ...loaded,
     core,
     reranker_profile: openProfile,
     reranker: {
-      scorePairs: async () => fakeScores
+      scorePairs: async ({ candidates }) => {
+        scoredRefs.push(...candidates.map((entry) => entry.claim_ref));
+        return new Map(candidates.map((entry, index) =>
+          [entry.claim_ref, index === 0 ? 0.1 : 10 - index]));
+      }
     },
     encoder: { encode: async () => new Float32Array(1024) },
     vector_index: {
+      // Only one vector hit — admission may still add lexical/exact partners.
       search: () => new Map([['claim:regional-fish-exploitation', 0.9]])
     }
   };
+  const diagnostics = [];
   const grounder = createProductionWorldKnowledgeGrounder({
     worldKnowledge,
     year: 1230,
     placeRefs: ['region_novgorod_land'],
+    telemetry: { onDetail: (detail) => diagnostics.push(detail) },
     roleRunner: {
       async run() {
         return {
@@ -273,8 +456,60 @@ test('grounding passes rerankScores into Core when D21 gate open', async () => {
     remaining_intent: 'Можно ли здесь добыть рыбу?'
   }, 'semantic_resolution');
   assert.ok(resolveCalls.length >= 1);
+  assert.ok(admittedCalls.length >= 1);
   const withRerank = resolveCalls.find((opts) => opts?.rerankScores instanceof Map);
   assert.ok(withRerank, 'Core must receive rerankScores when gate open');
-  assert.equal(withRerank.rerankScores.get('claim:regional-fish-exploitation'), 0.42);
+  // Worker must score admitted set, not merely vector top-k.
+  assert.deepEqual([...withRerank.rerankScores.keys()].sort(),
+    [...admittedCalls[0]].sort());
+  assert.ok(scoredRefs.length >= admittedCalls[0].length);
+  const diag = diagnostics.find((entry) =>
+    entry?.schema === 'world_knowledge_grounding_diagnostic_v1'
+    && entry?.retrieval_observability);
+  assert.equal(diag?.retrieval_observability?.rerank_applied, true);
+  assert.ok(diag?.retrieval_observability?.rerank_scored_candidate_count
+    >= admittedCalls[0].length);
+  await loaded.encoder?.close?.();
+});
+
+test('open gate with full admitted scores changes packed order', async () => {
+  const loaded = await loadProductionWorldKnowledge({ rootDir: ROOT });
+  const envClaims = loaded.bundle.claims
+    .filter((claim) => claim.domain === 'environment')
+    .map((claim) => claim.claim_ref);
+  assert.ok(envClaims.length >= 2);
+  const [alpha, beta] = envClaims;
+  const query = {
+    schema: 'world_knowledge_query_v1',
+    pack_ref: loaded.bundle.manifest.pack_ref,
+    pack_revision: loaded.bundle.manifest.revision_id,
+    purpose: 'semantic_resolution',
+    query_locale: 'ru',
+    domains: ['environment'],
+    focus_refs: [],
+    requested_predicates: [],
+    search_hints: [],
+    context: {
+      time: { year: 1230 },
+      place_refs: ['region_novgorod_land'],
+      actor_facets: {},
+      conditions: { started_historical_events: [] }
+    },
+    budget: { max_facts: 2, max_candidates: 2, max_context_chars: 5000 }
+  };
+  const vectorScores = new Map([[alpha, 0.95], [beta, 0.90]]);
+  const baseline = loaded.core.resolveWorldKnowledge(query, { vectorScores });
+  assert.equal(baseline.rerank_applied, false);
+  assert.equal(baseline.facts[0]?.claim_ref, alpha);
+  const admitted = loaded.core.admittedCandidateRefs(query, { vectorScores });
+  assert.ok(admitted.includes(alpha) && admitted.includes(beta));
+  // Invert: score baseline-first last so packed order flips.
+  const inverted = new Map(admitted.map((ref) => [ref, ref === alpha ? 0.01 : 10]));
+  const reranked = loaded.core.resolveWorldKnowledge(query, {
+    vectorScores, rerankScores: inverted
+  });
+  assert.equal(reranked.rerank_applied, true);
+  assert.notEqual(reranked.facts[0]?.claim_ref, alpha,
+    'rerank must change packed order when all admitted are scored');
   await loaded.encoder?.close?.();
 });

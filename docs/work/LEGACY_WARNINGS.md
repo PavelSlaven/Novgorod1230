@@ -58,6 +58,7 @@
 | 051 | `authored-opening-narration` | opening narration без WK вовсе — owner рассказчика | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 052 | turn-step `player_utterance` / `intent_paraphrase` | WK может впитаться в речь — вне Part B guard | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 053 | `bge-reranker-v2-m3` / D17 wiring | D21 гейт не пройден — production rerank OFF | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
+| 054 | `wk-sufficiency:giga-cosine:v1` | `sufficient_enabled=false`; per-hint relevance pending | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 054 | `wk-sufficiency:giga-cosine:v1` | порог SUFFICIENT provisional; judge-калибровка pending | [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153) |
 | 060 | `world-knowledge/production-v2` claims `domain_internal_only` | знание эпохи скрыто из-за формулировки (служебные обороты, историография, наука) — нужна переписка языком 1230 года и повторное утверждение | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
 | 061 | `audits/production-v2/step4-*-coverage.json`, `category-cartography.json` | пробелы аудита WK не закрыты: 37 must отклонены на утверждении, 22 без источника; `missing_families` (шаг 4.8) не делались | [#154](https://github.com/PavelSlaven/Novgorod1230/issues/154) |
@@ -244,7 +245,7 @@
 
 ### LW-047 — SUFFICIENT = лексическое попадание, не относимость; калибровка в #153
 - **Что.** `search_hint_hits` / `strongest > 0` проверяет лексическое совпадение hint с допущенным claim, а не topical relevance. Default-запрос §50 поэтому никогда не получает `SUFFICIENT_KNOWLEDGE` (максимум `PARTIAL`). `resolveTurnStepWorldKnowledge` в `@rus/turn` не дублирует default-query (owner — game-server grounder); у helper нет production-вызова — кандидат на удаление при чистке #127.
-- **Как жить.** Не поднимать default-query slice до SUFFICIENT. Часть C (#153) добавила `search_hint_relevance` + профиль `wk-sufficiency:giga-cosine:v1` (`min_hint_relevance` 0.28); независимая judge-калибровка ≤10% ложных SUFFICIENT — LW-054.
+- **Как жить.** Не поднимать default-query slice до SUFFICIENT. Часть C (#153) добавила `search_hint_relevance` + профиль `wk-sufficiency:giga-cosine:v1` (`min_hint_relevance` 0.28, `sufficient_enabled=false`); SUFFICIENT в production выключен до per-hint relevance — LW-054.
 - **Issue.** [#152](https://github.com/PavelSlaven/Novgorod1230/issues/152) → [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-048 — `historical_context.applicable_norms` / `known_local_customs` пусты в v17
@@ -273,13 +274,13 @@
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-053 — D17 reranker за гейтом D21 (production OFF)
-- **Что.** Core принимает `rerankScores` (all-or-nothing + min-max), pin `wk-reranker:bge-v2-m3:v1` (revision sha + file digests), `provisionReranker` и production loader читают профиль, но `production_enabled=false`. Бенчмарк 2026-09-17 (REPORT.md T1): B1 Giga cosine recall@10 0.9825 / MRR 0.9579 не хуже bge (0.9795 / 0.9512); bge CPU p95 ≈ 6523 мс ≫ 150 мс; GPU p95 71.6 мс на бенчмарк-машине; owner-server p95 и 120-situation audit с rerank ON/OFF ещё не пересданы (REVIEW-046 R5).
-- **Как жить.** Не включать rerank в production path без нового замера на сервере владельца, который проходит D21 (меньше retrieval_miss **и** шума на audit set **и** p95 ≤ 150 мс). При будущем enable — только локальный snapshot (`HF_HUB_OFFLINE`), деградация к гибриду с telemetry-событием на каждый отказ.
+- **Что.** Core принимает `rerankScores` (all-or-nothing + min-max) и отдаёт `admittedCandidateRefs` для скоринга admitted до ранжирования; pin `wk-reranker:bge-v2-m3:v1` (revision sha + file digests), `provisionReranker` и production loader читают профиль, но `production_enabled=false`. Бенчмарк 2026-09-17 (REPORT.md T1): B1 Giga cosine recall@10 0.9825 / MRR 0.9579 не хуже bge (0.9795 / 0.9512). Owner-server p95 2026-09-27 (`p95.json`): GPU ≈ 59.6 мс ≤ 150 мс; CPU ≈ 925 мс > 150 мс. После REVIEW-049 (скоринг admitted, не vector top-k): `r5-compare.json` — `rerank_applied` 120/120, порядок claim_refs сменился в 119/120; retrieval_miss_like_rate 0.502→0.531 и mean_noise_ratio 0.897→0.904 — **оба хуже**, не лучше.
+- **Как жить.** Не включать rerank в production path, пока D21 не выполнен целиком (меньше retrieval_miss **и** шума на audit set **и** p95 ≤ 150 мс на пути обслуживания). При будущем enable — только локальный snapshot (`HF_HUB_OFFLINE`), деградация к гибриду с telemetry-событием на каждый отказ; grounder обязан скорить `admittedCandidateRefs`, не vector top-k.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-054 — SUFFICIENT relevance threshold provisional
-- **Что.** Профиль `wk-sufficiency:giga-cosine:v1` (`status: provisional`) ставит `min_hint_relevance=0.28`; production loader передаёт порог в `groundingSufficiencyOf`. Источник — Giga cosine claim ко всему search-query; rerank logits сравнивать с этим порогом нельзя. Порог подобран по smoke vector scores, не по независимому судейскому проходу на 120 ситуациях (цель CR: ≤10% SUFFICIENT без must-need).
-- **Как жить.** Владелец пересчитывает live-метрики независимыми судьями (JSONL handoff `Novgorod-wk-audit/run-partc/`) и при необходимости двигает порог в профиле + §63. До того не объявлять калибровку закрытой.
+- **Что.** Профиль `wk-sufficiency:giga-cosine:v1` (`status: provisional`, `sufficient_enabled: false`) хранит `min_hint_relevance=0.28` как параметр будущего включения. Сигнал — Giga cosine claim ко всему search-query (hints joined); в 188/360 live-записей у всех подсказок одно значение — порог почти не отделяет верные SUFFICIENT. Калибровка REVIEW-049 по `judgments.json`: live×3 при 0.28 → SUFFICIENT 158, из них 127 (0.80) без must-need; лучшее — 0.76 при пороге 0.45 (38 SUFFICIENT); порога с долей ≤0.10 нет. Plan (120): 0.10 только при 0.52 и SUFFICIENT=1. Поэтому production не выдаёт `SUFFICIENT_KNOWLEDGE` (макс. `PARTIAL_KNOWLEDGE`).
+- **Как жить.** Путь дальше — релевантность по каждой подсказке (отдельный эмбеддинг hint) и повторная калибровка; до того не ставить `sufficient_enabled: true`. Не сравнивать bge logits с cosine-порогом.
 - **Issue.** [#153](https://github.com/PavelSlaven/Novgorod1230/issues/153)
 
 ### LW-060 — знание эпохи скрыто из-за формулировки

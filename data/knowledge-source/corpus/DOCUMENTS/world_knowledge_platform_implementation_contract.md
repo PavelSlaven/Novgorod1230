@@ -2550,7 +2550,9 @@ verdict. Правила (CR #152 / REVIEW-033):
   иначе Giga-cosine; порог `min_hint_relevance` из профиля
   `wk-sufficiency:giga-cosine:v1` сравнивают только с cosine
   (`relevance_source: giga_cosine`) — logits bge с cosine-порогом не
-  смешивают; статус профиля provisional до судейской калибровки LW-054);
+  смешивают; статус профиля provisional; пока `sufficient_enabled: false` в
+  `wk-sufficiency:giga-cosine:v1`, production не выдаёт `SUFFICIENT_KNOWLEDGE`
+  (максимум `PARTIAL_KNOWLEDGE`; LW-054 — нет per-hint relevance сигнала);
   срез из **default-запроса** §50 никогда не получает
   `SUFFICIENT_KNOWLEDGE` — максимум `PARTIAL_KNOWLEDGE` (LW-047 / LW-054);
 - `PARTIAL_KNOWLEDGE` — есть факты, hard constraints или disputes, но хотя бы

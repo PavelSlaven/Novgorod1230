@@ -27,6 +27,9 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 - optional caller-provided `rerankScores` (D17): reorder admitted candidates
   only (between ranking and packing); do not expand recall; production wiring
   stays behind D21 gate (LW-053);
+- `admittedCandidateRefs(query, { vectorScores? })` — pure list of admitted
+  claim refs before ranking/packing; grounding scores exactly this set for
+  D17 so all-or-nothing rerank can apply (not vector top-k alone);
 - pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing;
 - lexicographic ranking: hard constraints, exact focus, requested predicates,
   query relevance (lexical+vector, or rerank when supplied), context specificity, qualifiers, stable claim reference;
@@ -60,7 +63,7 @@ LLM calls, filesystem/network/DB, party state, presence/materialization, actor d
 - `candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit|options)`;
   optional `options.{limit,purpose,context}` applies the same `isApplicable` /
   `canAccess` date/access gate as Core before offering concepts to the planner;
-- `createWorldKnowledgeCore(bundle)` → frozen `{ resolveWorldKnowledge(query, { vectorScores?, rerankScores? }) }`;
+- `createWorldKnowledgeCore(bundle)` → frozen `{ resolveWorldKnowledge(query, { vectorScores?, rerankScores? }), admittedCandidateRefs(query, { vectorScores? }) }`;
 - `createWorldKnowledgeFlatVectorIndex(metadata, bytes,
   { conceptToClaimRefs? })` → frozen `{ search(vector, options) }`; optional
   mapping is snapshotted and collapses concept hits to claim refs before limit.

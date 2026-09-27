@@ -74,7 +74,7 @@ def daylight(season):
     return int(value["sunrise_minute_of_day"]), int(value["sunset_minute_of_day"])
 
 
-def routine_blocks(origin, work, season, action, *, household=False, sleep_location="", early_service=False, baker=False, night=False, market=False, until_sunset=False):
+def routine_blocks(origin, work, season, action, *, household=False, sleep_location="", early_service=False, baker=False, night=False, market=False):
     sunrise, sunset = daylight(season)
     wake = min(sunrise, 270 if season == "winter" else 330) if season in {"winter", "autumn"} else sunrise
     bedtime = max(sunset + 60, 1260) if season != "summer" else max(sunset + 60, 1320)
@@ -85,7 +85,8 @@ def routine_blocks(origin, work, season, action, *, household=False, sleep_locat
             return
         presence = presence or ("on_site" if location else "away")
         reason = (f"занятие у {location}" if location else
-                  ("ночлег требует индивидуальной привязки" if "sleep" in state else
+                  ("дома; место не установлено" if state in {"preparation", "evening_tasks"} else
+                   "ночлег требует индивидуальной привязки" if "sleep" in state else
                    "место вне службы требует индивидуальной привязки")) if presence == "away" else ""
         parts.append(phase(state, end - start, summary, presence, location, reason))
 
@@ -106,14 +107,13 @@ def routine_blocks(origin, work, season, action, *, household=False, sleep_locat
         return parts
     else:
         add("sleep_before_dawn", 0, wake, "Сон в своём дворе." if household else "Ночной сон; место неизвестно.", sleep_location if household else "", "on_site" if household else "away")
-        add("preparation", wake, min(720, wake + 60), "Утренние дела: забота о скоте, печи и воде (поздняя аналогия)." if household else "Готовится к работе.", origin)
-        add("morning_work", min(720, wake + 60), 720, action, work)
-    add("noon_meal", 720, 765, "Полуденная трапеза (аналогия).", "" if early_service else origin)
+        work_start = max(wake + 60, sunrise)
+        add("preparation", wake, work_start, "Утренние дела: забота о скоте, печи и воде (поздняя аналогия)." if household else "Готовится к работе дома; место не установлено.", origin if household else "")
+        add("morning_work", work_start, 720, action, work)
+    add("noon_meal", 720, 765, "Полуденная трапеза (аналогия).", origin if household else "")
     add("post_meal_rest", 765, 855, "Послеобеденный отдых (аналогия; длительность редакционная).", origin if household else "", "on_site" if household else "away")
-    end = sunset if until_sunset else max(855, sunset - 60)
-    add("afternoon_work", 855, end, "Послеобеденные расчёты и домашние дела (поздняя аналогия)." if market else action, work)
-    add("evening_return", end, sunset, "Завершает дела.", "" if early_service else origin)
-    add("evening_tasks", sunset, bedtime, "Вечерние дела при свете лучины; конкретный свет зависит от сцены.", origin)
+    add("afternoon_work", 855, sunset, "Послеобеденные расчёты и домашние дела (поздняя аналогия)." if market else action, "" if market else work)
+    add("evening_tasks", sunset, bedtime, "Вечерние дела при свете лучины; конкретный свет зависит от сцены." if household else "Вечерние дела дома; место не установлено.", origin if household else "")
     add("sleep_after_dusk", bedtime, 1440, "Сон в своём дворе." if household else "Ночной сон; место неизвестно.", sleep_location if household else "", "on_site" if household else "away")
     assert sum(p["duration_minutes"] for p in parts) == 1440
     return parts
@@ -148,8 +148,6 @@ def build():
                              ("nov_occ_church_guard", "pf_churchyard"),
                              ("nov_occ_market_guard", "pf_market_square")):
             specs[("occupation", guard, place, season, "night_watch")] = (place, "night_behavior", "Ночная стража при назначенной смене.")
-        specs[("social_role", "nov_role_smerd_householder", "pf_peasant_homestead", season, "night_watch")] = (
-            "pf_peasant_homestead", "night_behavior", "Ночная домашняя смена при необходимости (редакторское допущение).")
     specs[("occupation", "nov_occ_fisher", "pf_riverbank", "summer", "night_fishing")] = (
         "pf_riverbank", "night_behavior", "Ночной лов с огнём при подходящих условиях.")
     rows = []
@@ -172,7 +170,7 @@ def build():
         if occupation and subject.startswith("occ_"):
             seasonal = occupation.get(season_field, "")
             if seasonal.startswith("то же"):
-                seasonal = occupation.get("daily_schedule_winter", "") + "; " + seasonal[6:].strip()
+                seasonal = occupation.get("daily_schedule_winter", "") + ("; " + seasonal[6:].strip() if seasonal[6:].strip() else "")
             action = seasonal or action
             field = season_field if seasonal else field
         elif occupation and not action:
@@ -187,8 +185,7 @@ def build():
         blocks = routine_blocks(origin, work, season, action, household=household, sleep_location=sleep_location,
                                 early_service=subject in {"nov_occ_ponomar", "nov_occ_parish_priest_service"},
                                 baker=subject == "occ_market_baker", night=day_type in {"night_watch", "night_fishing"},
-                                market=day_type == "market_day",
-                                until_sunset=subject == "nov_occ_ferryman" and season == "winter")
+                                market=day_type == "market_day")
         source = ("data/novgorod-region/novgorod_occupations_v1_enriched.tsv" if subject.startswith("nov_")
                   else "occupations-activities/occupations/occupations_additions.csv")
         refs = ([f"{source}#{subject}:{field}"] if occupation else

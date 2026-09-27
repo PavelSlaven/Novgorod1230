@@ -86,7 +86,8 @@ roles = anchor_values(ROLES, "role_id")
 with PRESENCE.open(encoding="utf-8", newline="") as stream:
     presence = list(csv.DictReader(stream))
 with PLACES.open(encoding="utf-8", newline="") as stream:
-    places = {row["pf_id"] for row in csv.DictReader(stream)}
+    place_kinds = {row["pf_id"]: row["pf_kind"] for row in csv.DictReader(stream)}
+places = set(place_kinds)
 seen = set()
 for row in rows:
     key = row["sch_id"]
@@ -139,6 +140,22 @@ def block_at(row, minute):
     raise AssertionError(row["sch_id"])
 
 
+def check_dark_onsite(rows):
+    for row in rows:
+        sunrise, sunset = daylight(row["season"])
+        elapsed = int(row["local_start_minute"])
+        for block in json.loads(row["time_blocks"]):
+            end = elapsed + block["duration_minutes"]
+            if (block["presence_state"] == "on_site" and block["runtime_status"] == "available"
+                    and place_kinds[block["location_ref"]] not in {"structure", "interior"}
+                    and block["location_ref"] not in {"pf_peasant_homestead", "pf_rural_yard", "pf_town_courtyard"}
+                    and (elapsed < sunrise or end > sunset)):
+                assert row["day_type"] == "night_fishing" or (
+                    row["day_type"] == "night_watch" and row["occupation_ref"] in {
+                        "nov_occ_crossing_guard", "nov_occ_church_guard", "nov_occ_market_guard"}), row["sch_id"]
+            elapsed = end
+
+
 def check_coverage(rows, presence):
     with (GAME_BASE / "places-binding/places/node_binding.csv").open(encoding="utf-8", newline="") as stream:
         start_scopes = {node["pf_id"] for node in csv.DictReader(stream) if node["pf_id"] in places}
@@ -146,17 +163,33 @@ def check_coverage(rows, presence):
     for item in presence:
         for season in item["allowed_seasons"].split(";"):
             sunrise, sunset = daylight(season)
-            minutes = {"morning": sunrise + 30, "day": 900, "evening": sunset + 30, "night": 1380}
+            minutes = {"morning": sunrise + 90, "day": 900, "evening": sunset + 30, "night": 1380}
             for window in item["allowed_times"].split(";"):
                 minute = minutes[window]
                 assert any(r["season"] == season and
                            r["occupation_ref" if item["subject_kind"] == "occupation" else "role_ref"] == item["subject_ref"] and
                            (block := block_at(r, minute))["location_ref"] == item["scope_ref"] and
                            block["presence_state"] in {"on_site", "nearby"} and
-                           (window not in {"evening", "night"} or block["runtime_status"] == "available")
+                           (window != "evening" or block["runtime_status"] == "available") and
+                           (window != "night" or block["runtime_status"] == "available" or
+                            (item["guards"] == "inhabited_household" and
+                             block["presence_state"] == "on_site" and block["runtime_status"] == "sleeping"))
                            for r in rows), f"missing awake presence: {item['subject_ref']} {item['scope_ref']} {season} {window}"
 
 
+check_dark_onsite(rows)
+market_probe = {
+    "sch_id": "probe_market_dark", "season": "winter", "local_start_minute": "0",
+    "day_type": "normal", "occupation_ref": "",
+    "time_blocks": json.dumps([{"duration_minutes": 1440, "presence_state": "on_site",
+                                "runtime_status": "available", "location_ref": "pf_market_square"}]),
+}
+try:
+    check_dark_onsite([market_probe])
+except AssertionError as error:
+    assert error.args == (market_probe["sch_id"],)
+else:
+    raise AssertionError("dark market probe was not rejected")
 check_coverage(rows, presence)
 
 

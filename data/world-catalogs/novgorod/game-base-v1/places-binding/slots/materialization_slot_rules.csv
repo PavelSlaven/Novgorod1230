@@ -1,0 +1,8 @@
+slot_id,pf_id,slot_kind,required,candidate_category_refs,candidate_record_ref,count_min,count_max,applicability,source_refs,rule_ref,confidence,status,presence_relation
+msr_ferry_vessel,pf_ferry_landing,item,true,,transport:trv_047,1,1,all,book:566840,MSR-C003-ferry-vessel,B,candidate,identity_requirement_not_frequency
+msr_homestead_dwelling,pf_peasant_homestead,building,true,spatial.g3.built_site,building:bt_izba_heated_single,1,1,all,matcult:ARC0020|nov1230db:B028|matcult_scene:SCN008,SF-PF-1,B,candidate,identity_requirement_not_frequency
+msr_homestead_fence,pf_peasant_homestead,building,true,,building:bt_wattle_fence,1,1,all,matcult:ARC0002|matcult_scene:SCN008,SF-PF-1,B,candidate,identity_requirement_not_frequency
+msr_rural_yard_dwelling,pf_rural_yard,building,true,spatial.g3.built_site,building:bt_izba_heated_single,1,1,all,matcult:ARC0020|matcult_scene:SCN008,MSR-C003-rural-yard-uses-peasant-building-candidates,C,candidate,identity_requirement_not_frequency
+msr_rural_yard_fence,pf_rural_yard,building,true,,building:bt_wattle_fence,1,1,all,matcult:ARC0002|matcult_scene:SCN008,MSR-C003-rural-yard-uses-peasant-building-candidates,C,candidate,identity_requirement_not_frequency
+msr_outbuildings_economic,pf_outbuildings,building,true,spatial.g3.built_site,building:bt_light_shed,1,1,all,matcult:ARC0017|matcult_scene:SCN008,SF-PF-1,B,candidate,identity_requirement_not_frequency
+msr_winter_ice_road,pf_winter_ice_crossing,anchor,true,seasonal_route,route:rt_winter_road,1,1,winter,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=winter_ice_crossing],MSR-C003-ice-road,B,candidate,identity_requirement_not_frequency

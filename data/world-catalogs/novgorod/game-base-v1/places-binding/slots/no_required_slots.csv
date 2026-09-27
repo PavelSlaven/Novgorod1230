@@ -1,0 +1,12 @@
+pf_id,reason,source_refs,confidence,status
+pf_bog,natural wetland has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=bog],C,candidate
+pf_conifer_woodland,natural forest has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=conifer_woodland],C,candidate
+pf_floodplain_meadow,natural open ground has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=floodplain_meadow],C,candidate
+pf_forest_edge,natural forest edge has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=forest_edge],C,candidate
+pf_forest_track,route has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=forest_track],C,candidate
+pf_hunting_ground,natural use area has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=hunting_ground],C,candidate
+pf_marshy_stream,natural water has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=marshy_stream],C,candidate
+pf_river_channel,natural water has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=river_channel],C,candidate
+pf_riverbank,natural bank has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=riverbank],C,candidate
+pf_road,route has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=road],C,candidate
+pf_village_lane,route has no sourced required materialization slot,data/world-catalogs/novgorod/world-knowledge/production-v1/place-first-cartography.json#environment_families[id=village_lane],C,candidate

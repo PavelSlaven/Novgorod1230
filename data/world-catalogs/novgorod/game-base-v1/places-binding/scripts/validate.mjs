@@ -187,6 +187,49 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   check('presence_rules', 'input_pool_rows_rejected (external)', Array(rr.rejected_rows).fill('x'), { reasons: rr.reject_reasons, by_file: rr.rejected_by_file }, true);
 }
 
+// ---- materialization_slot_rules
+{
+  const slots = readCsv(P('slots/materialization_slot_rules.csv'));
+  const gaps = readCsv(P('slots/no_required_slots.csv'));
+  const boundPf = new Set(readCsv(P('places/node_binding.csv')).map((r) => r.pf_id).filter(Boolean));
+  const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
+  const buildings = new Map(readCsv(P('../buildings-interiors-containers/buildings/building_types.csv')).map((r) => [r.bt_id, r]));
+  const transport = new Set(readCsv(P('../transport-health-recreation/transport_travel/transport_entities.csv')).map((r) => r.tr_id));
+  const presence = readCsv(P('presence/presence_rules.csv'));
+  const f = [];
+  const ids = new Set();
+  const covered = new Set();
+  for (const r of slots) {
+    if (ids.has(r.slot_id) || !r.slot_id) f.push(`duplicate/empty slot_id ${r.slot_id}`);
+    ids.add(r.slot_id);
+    if (!boundPf.has(r.pf_id)) f.push(`${r.slot_id}: unbound PF ${r.pf_id}`);
+    covered.add(r.pf_id);
+    if (!['anchor', 'item', 'container', 'building', 'npc'].includes(r.slot_kind) || !['true', 'false'].includes(r.required)) f.push(`${r.slot_id}: kind/required`);
+    if (!/^\d+$/.test(r.count_min) || !/^\d+$/.test(r.count_max) || +r.count_min > +r.count_max || (r.required === 'true' && +r.count_min < 1) || (r.required === 'false' && +r.count_min !== 0)) f.push(`${r.slot_id}: count/required`);
+    if (!['all', 'winter'].includes(r.applicability) || (r.pf_id === 'pf_winter_ice_crossing') !== (r.applicability === 'winter')) f.push(`${r.slot_id}: applicability`);
+    if (r.status !== 'candidate' || !['A', 'B', 'C'].includes(r.confidence) || !r.source_refs && !r.rule_ref) f.push(`${r.slot_id}: provenance/status`);
+    for (const c of split(r.candidate_category_refs)) if (!cats.has(c)) f.push(`${r.slot_id}: unknown category ${c}`);
+    const [kind, ref] = r.candidate_record_ref.split(':');
+    if (r.candidate_record_ref && !(kind === 'building' && buildings.has(ref) || kind === 'transport' && transport.has(ref) || kind === 'route' && routes.has(ref))) f.push(`${r.slot_id}: candidate record ${r.candidate_record_ref}`);
+    if (!r.candidate_category_refs && !r.candidate_record_ref || r.slot_kind === 'building' && kind !== 'building' || kind === 'transport' && r.slot_kind !== 'item' || r.slot_kind === 'anchor' && (kind !== 'route' || !r.candidate_category_refs)) f.push(`${r.slot_id}: kind/candidate`);
+    if (kind === 'building') {
+      const candidate = buildings.get(ref);
+      const pf = r.pf_id.slice(3);
+      if (candidate && !candidate.pf_ids.split('|').includes(pf) && !(r.pf_id === 'pf_rural_yard' && candidate.pf_ids.split('|').includes('peasant_homestead') && r.rule_ref === 'MSR-C003-rural-yard-uses-peasant-building-candidates')) f.push(`${r.slot_id}: building not applicable to ${pf}`);
+      if (!r.source_refs || !candidate?.source_refs) f.push(`${r.slot_id}: building without source`);
+    }
+    if (r.slot_kind === 'building' && fam.find((x) => x.pf_id === r.pf_id)?.pf_kind?.startsWith('natural') && !r.source_refs) f.push(`${r.slot_id}: unsourced natural building`);
+    if (r.presence_relation !== 'identity_requirement_not_frequency' || split(r.candidate_category_refs).some((c) => presence.some((p) => p.scope_ref === r.pf_id && p.category_ref === c))) f.push(`${r.slot_id}: presence relation`);
+  }
+  for (const r of gaps) {
+    if (!boundPf.has(r.pf_id) || covered.has(r.pf_id) || !r.reason || !r.source_refs || r.status !== 'candidate' || !['A', 'B', 'C'].includes(r.confidence)) f.push(`${r.pf_id}: invalid no-required-slot record`);
+    covered.add(r.pf_id);
+  }
+  for (const pf of boundPf) if (!covered.has(pf)) f.push(`uncovered ${pf}`);
+  if (boundPf.size !== 16 || slots.length !== 7 || gaps.length !== 11 || covered.size !== 16) f.push(`coverage: ${boundPf.size} PF, ${slots.length} slots, ${gaps.length} gaps, ${covered.size} covered`);
+  check('materialization_slot_rules', 'c003_required_slots_and_explicit_gaps', f, { slots: slots.length, gaps: gaps.length, place_families: covered.size });
+}
+
 // ---- category_registry
 {
   const r = readJson(P('reports/category-registry-report.json'));

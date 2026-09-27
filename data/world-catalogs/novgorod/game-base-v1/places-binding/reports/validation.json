@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 19,
-  "own_checks_total": 19,
+  "own_checks_passed": 20,
+  "own_checks_total": 20,
   "checks": [
     {
       "domain": "place_families",
@@ -230,6 +230,17 @@
       "by_file": {
         "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 10818
       }
+    },
+    {
+      "domain": "materialization_slot_rules",
+      "name": "c003_required_slots_and_explicit_gaps",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "slots": 7,
+      "gaps": 11,
+      "place_families": 16
     },
     {
       "domain": "category_registry",

@@ -12,6 +12,7 @@ test('target resolution keeps paths and reports ambiguity and missing files', ()
   assert.deepEqual(targets('b/x.csv (было rework)', files), [{ token: 'b/x.csv', file: 'b/x.csv' }]);
   assert.deepEqual(targets('wrong/y.json', files), [{ token: 'wrong/y.json', file: 'b/y.json' }]);
   assert.deepEqual(targets('a/x.csv + b/y.json', files).map(row => row.file), ['a/x.csv', 'b/y.json']);
+  assert.deepEqual(targets('b/y.json (и b/nested/z.py)', files).map(row => row.file), ['b/y.json', 'b/nested/z.py']);
   assert.deepEqual(targets('a/', files).map(row => row.file), ['a/README.md', 'a/x.csv']);
   assert.deepEqual(targets('b/', files).map(row => row.file), ['b/x.csv', 'b/y.json', 'b/nested/z.py']);
   assert.deepEqual(targets('x.csv', files)[0].candidates, ['a/x.csv', 'b/x.csv']);
@@ -47,9 +48,11 @@ test('later verdict wins across bare filename, directory, and full path', () => 
       '### x.csv — approve_with_limits',
       '### a/nested/z.py и пояснение — approve',
       '### README.md — rework',
+      '## Вердикт',
+      '- `a/x.csv` — **approve** (было rework).',
     ].join('\n'));
     const { files, unresolved } = parse(root);
-    assert.equal(files.get('a/x.csv').status, 'approve_with_limits');
+    assert.equal(files.get('a/x.csv').status, 'approve');
     assert.equal(files.get('a/nested/z.py').status, 'approve');
     assert.equal(files.get('README.md').status, 'rework');
     assert.deepEqual(unresolved, []);

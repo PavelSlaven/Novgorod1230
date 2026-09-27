@@ -7,7 +7,7 @@
 | [buildings-interiors-containers](buildings-interiors-containers/VERIFICATION.md) | approve_with_limits | 5 | 19 | 0 |
 | [clothing-appearance](clothing-appearance/VERIFICATION.md) | approve_with_limits | 5 | 13 | 0 |
 | [crafts-tools-processes](crafts-tools-processes/VERIFICATION.md) | approve_with_limits | 0 | 12 | 0 |
-| [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
+| [economy-trade-measures](economy-trade-measures/VERIFICATION.md) | approve_with_limits | 1 | 8 | 0 |
 | [fauna-fish-invertebrates-livestock](fauna-fish-invertebrates-livestock/VERIFICATION.md) | approve_with_limits | 5 | 14 | 0 |
 | [fauna-mammals-birds](fauna-mammals-birds/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
 | [flora-herbs-berries-mushrooms](flora-herbs-berries-mushrooms/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
@@ -16,7 +16,7 @@
 | [history-events-knowledge](history-events-knowledge/VERIFICATION.md) | approve_with_limits | 1 | 5 | 0 |
 | [households-psychology-speech](households-psychology-speech/VERIFICATION.md) | approve_with_limits | 0 | 7 | 0 |
 | [items-household-personal](items-household-personal/VERIFICATION.md) | approve_with_limits | 4 | 8 | 0 |
-| [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | rework | 3 | 7 | 1 |
+| [items-weapons-armour](items-weapons-armour/VERIFICATION.md) | approve_with_limits | 3 | 8 | 0 |
 | [misc](misc/VERIFICATION.md) | approve_with_limits | 0 | 2 | 0 |
 | [names-peoples](names-peoples/VERIFICATION.md) | approve_with_limits | 1 | 7 | 0 |
 | [nature-materials-weather](nature-materials-weather/VERIFICATION.md) | approve_with_limits | 8 | 22 | 0 |
@@ -25,7 +25,7 @@
 | [social-strata-law](social-strata-law/VERIFICATION.md) | approve_with_limits | 0 | 9 | 0 |
 | [time-calendar-church](time-calendar-church/VERIFICATION.md) | approve_with_limits | 0 | 5 | 0 |
 | [transport-health-recreation](transport-health-recreation/VERIFICATION.md) | approve_with_limits | 1 | 4 | 0 |
-| **Итого** | | **52** | **189** | **7** |
+| **Итого** | | **52** | **191** | **6** |
 
 ## Вердикты по файлам
 
@@ -109,6 +109,7 @@
 | [`services_hire_labor/services.csv`](economy-trade-measures/services_hire_labor/services.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#services_hire_laborservicescsv--approve_with_limits) |
 | [`sources/books.csv`](economy-trade-measures/sources/books.csv) | [approve](economy-trade-measures/VERIFICATION.md#sourcesbookscsv--approve) |
 | [`trade_goods_markets/markets_practice.csv`](economy-trade-measures/trade_goods_markets/markets_practice.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#trade_goods_marketsmarkets_practicecsv-и-scriptsbuild_trade_goods_marketsmjs--approve_with_limits-было-rework) |
+| [`trade_goods_markets/scripts/build_trade_goods_markets.mjs`](economy-trade-measures/trade_goods_markets/scripts/build_trade_goods_markets.mjs) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#trade_goods_marketsmarkets_practicecsv-и-scriptsbuild_trade_goods_marketsmjs--approve_with_limits-было-rework) |
 | [`trade_goods_markets/trade_goods.csv`](economy-trade-measures/trade_goods_markets/trade_goods.csv) | [approve_with_limits](economy-trade-measures/VERIFICATION.md#trade_goods_marketstrade_goodscsv--approve_with_limits) |
 
 ### fauna-fish-invertebrates-livestock
@@ -244,7 +245,7 @@
 | [`items/weapon_denylist.csv`](items-weapons-armour/items/weapon_denylist.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapon_denylistcsv--approve_with_limits) |
 | [`items/weapon_equipment_profiles.csv`](items-weapons-armour/items/weapon_equipment_profiles.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapon_equipment_profilescsv--approve_with_limits) |
 | [`items/weapon_source_crosswalk.csv`](items-weapons-armour/items/weapon_source_crosswalk.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapon_source_crosswalkcsv--approve_with_limits) |
-| [`items/weapon_status_access.csv`](items-weapons-armour/items/weapon_status_access.csv) | [rework](items-weapons-armour/VERIFICATION.md#itemsweapon_status_accesscsv--rework) |
+| [`items/weapon_status_access.csv`](items-weapons-armour/items/weapon_status_access.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#вердикт) |
 | [`items/weapons_armour.csv`](items-weapons-armour/items/weapons_armour.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#itemsweapons_armourcsv--approve_with_limits) |
 | [`military/combat_likelihood_by_role.csv`](items-weapons-armour/military/combat_likelihood_by_role.csv) | [approve_with_limits](items-weapons-armour/VERIFICATION.md#militarycombat_likelihood_by_rolecsv--approve_with_limits) |
 | [`military/military_events.csv`](items-weapons-armour/military/military_events.csv) | [approve](items-weapons-armour/VERIFICATION.md#militarymilitary_eventscsv--approve) |

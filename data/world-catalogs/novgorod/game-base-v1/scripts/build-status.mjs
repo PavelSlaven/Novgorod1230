@@ -42,7 +42,7 @@ export function targets(raw, available) {
       : [{ token: original, reason: `ожидалось ${readmeCount[1]} README.md, найдено ${matches.length}`, candidates: matches }];
   }
   const groupReadme = /(?:the )?group README\.md|README\.md\s*\(группа\)/i.test(original);
-  const normalized = original.replace(/\\/g, '/').replace(/\([^)]*\)/g, '');
+  const normalized = original.replace(/\\/g, '/');
   const tokens = [...normalized.matchAll(targetPattern)].map(match => match[0]);
   if (groupReadme && !tokens.includes('README.md')) tokens.push('README.md');
   if (!tokens.length) return [{ token: original, reason: 'нет пути к файлу или каталогу' }];
@@ -92,6 +92,12 @@ export function parse(groupRoot) {
       const dash = match[1].indexOf('—');
       if (dash !== -1 && /^#{2,5}\s/.test(line)) record(match[1].slice(0, dash), verdict(match[1].slice(dash + 1)), number);
       continue;
+    }
+
+    const bullet = line.match(/^\s*[-*]\s+(.+?)\s+—\s+(.+)$/);
+    if (bullet) {
+      const status = verdict(bullet[2]);
+      if (status && /[.\/]|README/i.test(bullet[1])) record(bullet[1], status, number);
     }
 
     const bold = /\*\*([^*]+?)\s*—\s*([^*]+?)\*\*/g;

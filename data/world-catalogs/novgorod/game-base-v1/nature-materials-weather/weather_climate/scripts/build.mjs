@@ -233,7 +233,7 @@ writeJson(path.join(DIR, 'weather_transition_profile_v2.candidate.json'), {
   stationary_distribution_report: stationary,
 });
 await import('./build-sensory-profiles.mjs');
-counts.water_profiles = 24;
+counts.water_profiles = readCsv(path.join(DIR, 'water_profiles.csv')).length;
 counts.wind_air_profiles = readCsv(path.join(DIR, 'wind_air_profiles.csv')).length;
 console.log(JSON.stringify(counts));
 console.log('stationary vs target (winter):', JSON.stringify(stationary.winter));

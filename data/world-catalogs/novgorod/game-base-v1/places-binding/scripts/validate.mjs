@@ -196,6 +196,7 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   const boundPf = new Set(readCsv(P('places/node_binding.csv')).map((r) => r.pf_id).filter(Boolean));
   const cats = new Set(readCsv(P('categories/category_registry.csv')).map((r) => r.category_id));
   const buildings = new Map(readCsv(P('../buildings-interiors-containers/buildings/building_types.csv')).map((r) => [r.bt_id, r]));
+  const routeModes = new Map(readCsv(P('../transport-health-recreation/transport_travel/route_modes.csv')).map((r) => [r.route_template_id, r]));
   const ruralMix = readCsv(P('../buildings-interiors-containers/buildings/settlement_building_mix.csv')).filter((r) => r.sf_id === 'sf_yard_peasant');
   const transport = new Set(readCsv(P('../transport-health-recreation/transport_travel/transport_entities.csv')).map((r) => r.tr_id));
   const presence = readCsv(P('presence/presence_rules.csv'));
@@ -274,14 +275,16 @@ const ex = readJson(P('inputs/pr98-extract.json'));
       if (!facet || !exact(facet, ['value', 'value_ref', 'source_refs', 'rule_ref', 'no_source', 'confidence'])) { variantFailures.push(`${key}/${name}: keys`); continue; }
       const routes = ['source_refs', 'rule_ref', 'no_source'].filter((route) => Boolean(facet[route]));
       if (routes.length !== 1 || !['A', 'B', 'C'].includes(facet.confidence) || (facet.no_source ? Boolean(facet.value || facet.value_ref) : !Boolean(facet.value || facet.value_ref))) variantFailures.push(`${key}/${name}: evidence/value`);
-      if (facet.source_refs && (!building || !building.source_refs || facet.source_refs !== building.source_refs)) variantFailures.push(`${key}/${name}: source`);
-      if (facet.rule_ref && (!building || facet.rule_ref !== `building:${id}.${name}_states` || !building[`${name}_states`]?.split('|').includes(facet.value))) variantFailures.push(`${key}/${name}: rule`);
-      if (name === 'material' && facet.value_ref && (!materials.has(facet.value_ref) || !building?.materials.split('|').includes(facet.value_ref))) variantFailures.push(`${key}: material ref`);
-      if (name === 'size' && facet.value && facet.value !== building?.size_note) variantFailures.push(`${key}: size ref`);
+      if (facet.source_refs && facet.source_refs.split('|').some((ref) => !ref.startsWith('book:') && !building?.source_refs.split('|').includes(ref))) variantFailures.push(`${key}/${name}: source`);
+      if (facet.rule_ref && facet.rule_ref !== (name === 'material' && building ? `building:${id}.materials` : `route_modes.csv#${routeModes.get(id)?.rm_id}.game_use_ru`)) variantFailures.push(`${key}/${name}: rule`);
+      if (name === 'material' && facet.value_ref && (!building || facet.value_ref !== building.materials || facet.value_ref.split('|').some((ref) => !materials.has(ref)))) variantFailures.push(`${key}: material ref`);
+      if (name === 'material' && kind === 'route' && facet.value !== routeModes.get(id)?.game_use_ru) variantFailures.push(`${key}: route material`);
+      if (name === 'size' && facet.value && facet.value !== building?.size_note && !facet.source_refs.startsWith('book:')) variantFailures.push(`${key}: size ref`);
+      if (['condition', 'age'].includes(name) && facet.rule_ref) variantFailures.push(`${key}/${name}: catalogue states are not instance values`);
     }
   }
   for (const key of candidateKeys) if (!variantKeys.has(key)) variantFailures.push(`${key}: no variant`);
-  if (variantKeys.size !== variants.length) variantFailures.push('duplicate variant candidate');
+  if (variantKeys.size !== variants.length || variantKeys.size !== new Set(candidates.map((c) => `${c.slot_id}|${c.candidate_record_ref}`)).size) variantFailures.push('duplicate or missing variant candidate');
   check('slot_instance_variants', 'all_candidates_and_four_sourced_or_gap_facets', variantFailures, { variants: variants.length, candidates: candidates.length });
 }
 

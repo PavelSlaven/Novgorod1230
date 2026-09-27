@@ -351,7 +351,7 @@
 | [`presence/frequency_rule.json`](places-binding/presence/frequency_rule.json) | [approve_with_limits](places-binding/VERIFICATION.md#presencefrequency_rulejson--approve_with_limits) |
 | [`presence/people_composition_authoring.json`](places-binding/presence/people_composition_authoring.json) | [rework](places-binding/VERIFICATION.md#presencepeople_composition_authoringjson--rework) |
 | [`presence/people_presence_authoring.csv`](places-binding/presence/people_presence_authoring.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepeople_presence_authoringcsv--approve_with_limits) |
-| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepresence_rulescsv-перенос-placement_owner_ref--approve_with_limits) |
+| [`presence/presence_rules.csv`](places-binding/presence/presence_rules.csv) | [approve_with_limits](places-binding/VERIFICATION.md#presencepresence_rulescsv-люди--approve_with_limits) |
 | [`reports/validation.json`](places-binding/reports/validation.json) | [approve_with_limits](places-binding/VERIFICATION.md#reportsvalidationjson--approve_with_limits) |
 | [`scripts/validate.mjs`](places-binding/scripts/validate.mjs) | [approve_with_limits](places-binding/VERIFICATION.md#scriptsvalidatemjs-слоты-c003b--approve_with_limits) |
 | [`slots/materialization_rules.json`](places-binding/slots/materialization_rules.json) | [approve_with_limits](places-binding/VERIFICATION.md#slotsmaterialization_rulesjson--approve_with_limits) |

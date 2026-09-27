@@ -1,7 +1,7 @@
 {
   "generated_by": "scripts/validate.mjs",
-  "own_checks_passed": 23,
-  "own_checks_total": 23,
+  "own_checks_passed": 24,
+  "own_checks_total": 24,
   "checks": [
     {
       "domain": "people_composition",
@@ -158,6 +158,15 @@
       "failures": 0,
       "sample": [],
       "external": false
+    },
+    {
+      "domain": "presence_rules",
+      "name": "accepted_occurrences_exactly_once",
+      "pass": true,
+      "failures": 0,
+      "sample": [],
+      "external": false,
+      "accepted_occurrences": 10898
     },
     {
       "domain": "presence_rules",

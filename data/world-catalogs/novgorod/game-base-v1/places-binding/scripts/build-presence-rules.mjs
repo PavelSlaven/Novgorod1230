@@ -25,12 +25,16 @@ const CONTRACT_SCOPES = ['landscape_template', 'place_template', 'scene_template
 // links support and flags it, instead of trusting the pool's own class blindly.
 const CLASS_RANK = { ubiquitous: 4, common: 3, contextual: 2, rare: 1 };
 const MASTER_LINKS_PATH = path.join(GAME_BASE, '../sources/master-archive-v1/data/normalized_source_tables/material_entities/item_location_links.csv');
-const MASTER_LINKS = new Map(readCsv(MASTER_LINKS_PATH).map((r) => [r.link_id, r.spawn_frequency]));
+const MASTER_LINKS = new Map(readCsv(MASTER_LINKS_PATH).map((r) => [r.link_id, r]));
+const AVAILABILITY_RANK = { common: 2, context_bound: 1 };
+const DERIVATION_RANK = { R_SPAWN_PROFILE: 2, R_MASTER_LINK: 2, R_WHERE_USED_TEXT: 1, R_GROUP_DEFAULT: 1 };
+const CONFIDENCE_RANK = { A: 3, B: 2, C: 1 };
+const linkIds = (refs) => [...String(refs || '').matchAll(/master_link:(ILO\d+)/g)].map((m) => m[1]);
 
 function capByMasterLinks(cls, sourceRefsRaw) {
-  const ids = [...String(sourceRefsRaw || '').matchAll(/master_link:(ILO\d+)/g)].map((m) => m[1]);
+  const ids = linkIds(sourceRefsRaw);
   for (const id of ids) if (!MASTER_LINKS.has(id)) throw new Error(`MASTER link ${id} not found in ${MASTER_LINKS_PATH}`);
-  const attested = ids.map((id) => MASTER_LINKS.get(id)).filter((c) => CLASS_RANK[c]);
+  const attested = ids.map((id) => MASTER_LINKS.get(id).spawn_frequency).filter((c) => CLASS_RANK[c]);
   if (!attested.length) return { cls, capped: false };
   const maxAttested = attested.reduce((best, c) => (CLASS_RANK[c] > CLASS_RANK[best] ? c : best), attested[0]);
   if (CLASS_RANK[cls] > CLASS_RANK[maxAttested]) return { cls: maxAttested, capped: true, from: cls };
@@ -129,6 +133,9 @@ export function build({ write = true } = {}) {
         entry_exposed_weight: itemPool ? r.entry_exposed_weight : '', search_concealed_weight: itemPool ? r.search_concealed_weight : '',
         placement_basis_ref: itemPool ? r.placement_basis_ref : '', placement_owner_ref: itemPool ? r.placement_owner_ref : '',
         wild_arrival_cause_required: itemPool ? r.wild_arrival_cause_required : '',
+        item_ref: itemPool && r.ref_kind === 'it' ? r.item_or_category_ref : '',
+        derivation_rule: itemPool ? r.derivation_rule : '',
+        availability: 0,
         // probability_ppm is always derived by the unapproved, uncalibrated frequency_rule.json convention
         // (confidence C, see its basis[]), regardless of how confident the pool was in the underlying item/place
         // link. confidence here can never be stronger than that. pool_confidence keeps the pool's own rating for
@@ -159,13 +166,13 @@ export function build({ write = true } = {}) {
     for (const season of seasonList) for (const time of times) {
       candidates.push({ scope_kind: p.scope_kind, scope_ref: p.scope_ref, region_id: 'region_novgorod_land', category_ref: '', subject_kind: p.subject_kind, subject_ref: p.subject_ref,
         frequency_class: fc.cls, class_capped_from: '', probability_ppm: fc.ppm, probability_rule_ref: `${RULE.rule_id}@${RULE.rule_version}`, count_limit: +p.count_limit, count_limit_basis: 'people_authoring',
-        allowed_seasons: season, allowed_times: time, guards: p.guards, entry_visible_if: '', search_only_if: '', entry_exposed_weight: '', search_concealed_weight: '', placement_basis_ref: '', placement_owner_ref: '', wild_arrival_cause_required: '', refresh_class: p.refresh_class, contract_scope_kind: 'no_needs_cr', source_pool: where, source_row_id: `${i + 2}`, source_refs: p.source_refs,
+        allowed_seasons: season, allowed_times: time, guards: p.guards, entry_visible_if: '', search_only_if: '', entry_exposed_weight: '', search_concealed_weight: '', placement_basis_ref: '', placement_owner_ref: '', wild_arrival_cause_required: '', item_ref: '', derivation_rule: '', availability: 0, refresh_class: p.refresh_class, contract_scope_kind: 'no_needs_cr', source_pool: where, source_row_id: `${i + 2}`, source_refs: p.source_refs,
         confidence: p.confidence, pool_confidence: '', status: p.status });
     }
   }
   const baseKey = (p) => [p.scope_kind, p.scope_ref, p.region_id, p.subject_kind, p.subject_ref].join('|');
-  const provenance = ['source_pool', 'source_row_id', 'source_refs', 'placement_basis_ref', 'placement_owner_ref', 'pool_confidence', 'class_capped_from'];
-  const behavior = (p, includeTime = true) => JSON.stringify(Object.entries(p).filter(([k]) => !provenance.includes(k) && k !== 'allowed_seasons' && (includeTime || k !== 'allowed_times')).sort(([a], [b]) => a.localeCompare(b)));
+  const provenance = ['source_pool', 'source_row_id', 'source_refs', 'placement_basis_ref', 'placement_owner_ref', 'pool_confidence', 'class_capped_from', 'derivation_rule', 'availability'];
+  const behavior = (p, includeTime = true) => JSON.stringify(Object.entries(p).filter(([k]) => !provenance.includes(k) && !['allowed_seasons', 'item_ref', 'variants'].includes(k) && (includeTime || k !== 'allowed_times')).sort(([a], [b]) => a.localeCompare(b)));
   const union = (values, separator) => [...new Set(values.flatMap((v) => String(v || '').split(separator).map((s) => s.trim()).filter(Boolean)))].sort().join(separator === ';' ? ';' : ' | ');
   const groups = new Map();
   for (const p of candidates) for (const season of p.allowed_seasons.includes('all') ? SEASONS : Array.isArray(p.allowed_seasons) ? p.allowed_seasons : split(p.allowed_seasons)) {
@@ -173,24 +180,42 @@ export function build({ write = true } = {}) {
     if (!groups.has(k)) groups.set(k, []);
     groups.get(k).push({ ...p, allowed_seasons: season });
   }
-  const resolved = [], resolutions = [];
+  const derivationRank = (p) => Math.max(0, ...String(p.derivation_rule || '').split('+').map((rule) => DERIVATION_RANK[rule] || 0));
+  const evidence = (p) => ({ availability: p.availability, derivation: derivationRank(p), confidence: CONFIDENCE_RANK[p.pool_confidence] || 0, probability_ppm: p.probability_ppm });
+  const compare = (a, b) => b.availability - a.availability || derivationRank(b) - derivationRank(a)
+    || (CONFIDENCE_RANK[b.pool_confidence] || 0) - (CONFIDENCE_RANK[a.pool_confidence] || 0) || a.probability_ppm - b.probability_ppm
+    || a.source_row_id.localeCompare(b.source_row_id) || a.source_pool.localeCompare(b.source_pool);
+  const decisionReason = (winner, other) => winner.availability !== other.availability ? 'evidence_stronger:availability'
+    : derivationRank(winner) !== derivationRank(other) ? 'evidence_stronger:derivation'
+      : (CONFIDENCE_RANK[winner.pool_confidence] || 0) !== (CONFIDENCE_RANK[other.pool_confidence] || 0) ? 'evidence_stronger:confidence'
+        : winner.probability_ppm !== other.probability_ppm ? 'equal_evidence_lower_ppm' : 'equal_evidence_stable_tie';
+  const resolved = [], resolutionSeasons = [];
   for (const [key, group] of [...groups].sort(([a], [b]) => a.localeCompare(b))) {
-    const sorted = [...group].sort((a, b) => a.probability_ppm - b.probability_ppm || JSON.stringify(a).localeCompare(JSON.stringify(b)));
+    // Compare only link archetypes actually shared by linked competitors. A PF mapping is
+    // deliberately not inferred from these links. For several same-archetype links use max.
+    const linked = group.map((p) => linkIds(p.source_refs).map((id) => MASTER_LINKS.get(id))).filter((links) => links.length);
+    const shared = linked.length ? linked.slice(1).reduce((set, links) => new Set([...set].filter((a) => links.some((link) => link.location_archetype === a))), new Set(linked[0].map((link) => link.location_archetype))) : new Set();
+    for (const p of group) p.availability = Math.max(0, ...linkIds(p.source_refs).map((id) => MASTER_LINKS.get(id)).filter((link) => shared.has(link.location_archetype)).map((link) => AVAILABILITY_RANK[link.availability_class] || 0));
+    const sorted = [...group].sort(compare);
     const winner = sorted[0];
-    const same = sorted.filter((p) => behavior(p, false) === behavior(winner, false));
+    const same = sorted.filter((p) => p.item_ref === winner.item_ref && behavior(p, false) === behavior(winner, false));
     const compatible = winner.subject_kind === 'category' ? same.filter((p) => p.allowed_times === winner.allowed_times) : same;
     const chosen = { ...winner };
-    for (const field of provenance) chosen[field] = union(compatible.map((p) => p[field]), field === 'source_pool' || field === 'source_row_id' ? ';' : '|');
+    for (const field of provenance.filter((field) => !['derivation_rule', 'availability'].includes(field))) chosen[field] = union(compatible.map((p) => p[field]), field === 'source_pool' || field === 'source_row_id' ? ';' : '|');
+    const source = (p) => ({ source_pool: p.source_pool, source_row_id: p.source_row_id, item_ref: p.item_ref });
+    const alternatives = sorted.filter((p) => !compatible.includes(p));
+    chosen.variants = JSON.stringify(alternatives.filter((p) => p.item_ref && p.item_ref !== winner.item_ref).map(source));
     if (chosen.subject_kind !== 'category') chosen.allowed_times = ['morning', 'day', 'evening', 'night'].filter((t) => compatible.some((p) => split(p.allowed_times).includes(t))).join(';');
     resolved.push(chosen);
     if (group.length > 1) {
-      const reason = compatible.length === group.length ? chosen.subject_kind !== 'category' && new Set(group.map((p) => p.allowed_times)).size > 1 ? 'time_union' : 'equivalent_merged'
-        : sorted.some((p) => p.probability_ppm !== winner.probability_ppm) ? 'conservative_lower_ppm_equal_evidence' : 'stable_tie_break';
-      const source = (p) => ({ source_pool: p.source_pool, source_row_id: p.source_row_id });
-      const conflict = compatible.length !== group.length;
-      resolutions.push({ key, reason,
-        chosen: { ...source(chosen), ...(conflict ? { probability_ppm: chosen.probability_ppm, count_limit: chosen.count_limit, allowed_times: chosen.allowed_times, guards: chosen.guards, entry_visible_if: chosen.entry_visible_if, search_only_if: chosen.search_only_if, entry_exposed_weight: chosen.entry_exposed_weight, search_concealed_weight: chosen.search_concealed_weight, wild_arrival_cause_required: chosen.wild_arrival_cause_required } : {}) },
-        dropped: group.filter((p) => !compatible.includes(p)).map(source),
+      const runner = alternatives.find((p) => p.availability !== winner.availability || derivationRank(p) !== derivationRank(winner) || p.pool_confidence !== winner.pool_confidence || p.probability_ppm !== winner.probability_ppm) || alternatives[0];
+      const reason = !runner ? chosen.subject_kind !== 'category' && new Set(group.map((p) => p.allowed_times)).size > 1 ? 'time_union' : 'equivalent_merged' : decisionReason(winner, runner);
+      resolutionSeasons.push({ key: key.slice(0, key.lastIndexOf('|')), season: key.slice(key.lastIndexOf('|') + 1), reason,
+        tie_break: alternatives[0] && decisionReason(winner, alternatives[0]) === 'equal_evidence_stable_tie' ? 'equal_evidence_stable_tie' : '',
+        behavior_conflict: alternatives.some((p) => behavior(p, false) !== behavior(winner, false)),
+        chosen: source(winner), equivalent: compatible.filter((p) => p !== winner).map(source), variants: alternatives.filter((p) => p.item_ref && p.item_ref !== winner.item_ref).map(source),
+        dropped: alternatives.filter((p) => !p.item_ref || p.item_ref === winner.item_ref).map(source),
+        compared: runner ? sorted.map((p) => ({ ...source(p), ...evidence(p) })) : [],
       });
     }
   }
@@ -200,9 +225,17 @@ export function build({ write = true } = {}) {
   const compact = [...byBase.values()].flatMap((seasonRows) => seasonRows.length === SEASONS.length && seasonRows.every((p) => behavior(p) === behavior(seasonRows[0]) && provenance.every((field) => p[field] === seasonRows[0][field]))
     ? [{ ...seasonRows[0], allowed_seasons: 'all' }] : seasonRows);
   const rows = compact.sort((a, b) => `${baseKey(a)}|${a.allowed_seasons}`.localeCompare(`${baseKey(b)}|${b.allowed_seasons}`)).map((p, i) => ({ pr_id: `pr_${String(i + 1).padStart(6, '0')}`, ...p }));
-  const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
+  const cols = ['pr_id', 'scope_kind', 'scope_ref', 'region_id', 'category_ref', 'subject_kind', 'subject_ref', 'item_ref', 'variants', 'frequency_class', 'class_capped_from', 'probability_ppm', 'probability_rule_ref', 'count_limit', 'count_limit_basis', 'allowed_seasons', 'allowed_times', 'guards', 'entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'placement_owner_ref', 'wild_arrival_cause_required', 'refresh_class', 'contract_scope_kind', 'source_pool', 'source_row_id', 'source_refs', 'confidence', 'pool_confidence', 'status'];
   const n = write ? writeCsv(path.join(GROUP, 'presence/presence_rules.csv'), cols, rows) : rows.length;
   const cappedRows = rows.filter((r) => r.class_capped_from);
+  const resolutions = [];
+  for (const r of resolutionSeasons) {
+    const signature = JSON.stringify({ ...r, season: undefined });
+    const previous = resolutions.find((x) => x._signature === signature);
+    if (previous) previous.seasons.push(r.season);
+    else resolutions.push({ ...r, seasons: [r.season], _signature: signature });
+  }
+  for (const r of resolutions) { delete r.season; delete r._signature; }
   const report = {
     rule: `${RULE.rule_id}@${RULE.rule_version}`, pool_files: poolFiles.map(rel), frequency_files_not_matching_pool_contract: poolLike, pool_rows_accepted: pools.length, rules_written: n, category_rules: rows.filter((r) => r.subject_kind === 'category').length, people_rules: rows.filter((r) => r.subject_kind !== 'category').length,
     seasonal_candidate_rows: [...groups.values()].reduce((n, g) => n + g.length, 0), resolutions,

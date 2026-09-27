@@ -48,7 +48,7 @@
 Подробности, метод, источники и пробелы — в README каждой папки.
 ## Правки C002 — people presence
 
-`presence/people_presence_authoring.csv` задаёт 19 candidate-привязок людей к 16 PF с сезонным и суточным измерением. `creation_owner=composition` направляет 5 строк в состав при создании места; `creation_owner=presence_rule` оставляет 14 строк для производных правил наличия. Охват PF обеспечивают оба владельца вместе. Проверка ссылок, ключей и условий — в `scripts/validate.mjs`. Числа и guards — редакционные кандидаты, не approved historical frequency; подробности в `presence/README.md`.
+`presence/people_presence_authoring.csv` задаёт 19 candidate-привязок людей к 16 PF с сезонным и суточным измерением. `creation_owner=composition` направляет 5 строк в состав при создании места; `creation_owner=presence_rule` оставляет 14 строк для производных правил наличия. Состав не получает повторного броска presence. Охват PF обеспечивают оба владельца вместе. Проверка ссылок, ключей и условий — в `scripts/validate.mjs`. `allowed_times` — provenance, не runtime-фильтр C5; guards — авторский текст, не исполняемый evaluator. Числа — редакционные кандидаты, не approved historical frequency; подробности в `presence/README.md`.
 
 ## Варианты слотов C006a2
 

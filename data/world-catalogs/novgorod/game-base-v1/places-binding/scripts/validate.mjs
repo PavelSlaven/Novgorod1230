@@ -30,6 +30,47 @@ function seasonOverlaps(rows) {
   }
   return failures;
 }
+function acceptedCoverage(expected, rules, resolutions, itemRows) {
+  const failures = [], counts = new Map(expected.map((x) => [x.key, 0]));
+  const sourceKey = (pool, scope, season, time = '') => `${pool}|${scope}|${season}|${time}`;
+  const assign = (pool, scope, season, time, itemRef, role) => {
+    const key = sourceKey(pool, scope, season, time);
+    if (!counts.has(key)) { failures.push(`unexpected ${role}: ${key}`); return; }
+    const source = itemRows.get(pool);
+    if (source && (!itemRef || itemRef !== source.item_or_category_ref)) failures.push(`${role}: missing or mismatched item_ref ${pool}`);
+    counts.set(key, counts.get(key) + 1);
+  };
+  const reported = new Map();
+  for (const r of resolutions) for (const season of r.seasons) {
+    const key = `${r.key}|${season}`;
+    if (reported.has(key)) failures.push(`duplicate resolution ${key}`);
+    reported.set(key, r);
+  }
+  for (const r of resolutions) for (const entry of [r.chosen, ...r.equivalent, ...r.variants, ...r.dropped]) {
+    const item = itemRows.get(entry.source_pool);
+    if (item && (entry.item_ref !== item.item_or_category_ref || entry.source_row_id !== item.ipf_id)) failures.push(`resolution item ref/id differs from source ${entry.source_pool}`);
+  }
+  for (const rule of rules) for (const season of rule.allowed_seasons === 'all' ? SEASONS : split(rule.allowed_seasons)) {
+    const scope = [rule.scope_kind, rule.scope_ref, rule.region_id, rule.subject_kind, rule.subject_ref].join('|');
+    const resolution = reported.get(`${scope}|${season}`);
+    const sources = split(rule.source_pool);
+    const reportSources = resolution ? [resolution.chosen, ...resolution.equivalent].map((x) => x.source_pool).sort() : sources.slice().sort();
+    if (JSON.stringify(sources.slice().sort()) !== JSON.stringify(reportSources)) failures.push(`${scope}|${season}: chosen/equivalent sources differ from rule`);
+    const variants = JSON.parse(rule.variants || '[]');
+    if (JSON.stringify(variants) !== JSON.stringify(resolution?.variants || [])) failures.push(`${scope}|${season}: variants differ from report`);
+    for (const pool of sources) {
+      const times = rule.subject_kind === 'category' ? [''] : split(rule.allowed_times).filter((time) => {
+        const source = expected.find((x) => x.pool === pool && x.scope === scope && x.season === season && x.time === time);
+        return Boolean(source);
+      });
+      for (const time of times) assign(pool, scope, season, time, rule.item_ref, 'chosen/equivalent');
+    }
+    for (const variant of variants) assign(variant.source_pool, scope, season, '', variant.item_ref, 'variant');
+    for (const dropped of resolution?.dropped || []) assign(dropped.source_pool, scope, season, '', dropped.item_ref, 'dropped');
+  }
+  for (const [key, count] of counts) if (count !== 1) failures.push(`${count ? 'double assignment' : 'orphan'} ${key} (${count})`);
+  return failures;
+}
 if (process.argv.includes('--self-test')) {
   const probe = { pr_id: 'probe_all', scope_kind: 'place_family', scope_ref: 'probe', region_id: '', subject_kind: 'category', subject_ref: 'probe', allowed_seasons: 'all' };
   if (seasonOverlaps([probe, { ...probe, pr_id: 'probe_winter', allowed_seasons: 'winter' }]).length !== 1) throw new Error('season overlap negative probe failed');
@@ -179,6 +220,40 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   }
   check('presence_rules', 'rows_resolve_and_follow_rule', f, { rows: pr.length });
   check('presence_rules', 'one_rule_per_base_key_and_season', seasonOverlaps(pr));
+  const rr = readJson(P('reports/presence-rules-report.json'));
+  const expected = [], itemRows = new Map();
+  const add = (pool, scope, seasons, times = ['']) => { for (const season of seasons) for (const time of times) expected.push({ pool, scope, season, time, key: `${pool}|${scope}|${season}|${time}` }); };
+  const itemPath = 'data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv';
+  itemSources.forEach((row, i) => {
+    if (!row.category_id || !cats.has(row.category_id)) return;
+    const pool = `${itemPath}#row${i + 2}`;
+    const scope = `place_family|pf_${row.pf_id}||category|${row.category_id}`;
+    itemRows.set(pool, row);
+    add(pool, scope, split(row.allowed_seasons));
+  });
+  const faunaPath = 'data/world-catalogs/novgorod/game-base-v1/fauna-mammals-birds/fauna/wild_habitat_presence.csv';
+  readCsv(P('../fauna-mammals-birds/fauna/wild_habitat_presence.csv')).forEach((row, i) => {
+    const scope = `place_family|${row.pf_id}|${row.region_id}|category|${row.category_ref}`;
+    add(`${faunaPath}#row${i + 2}`, scope, row.season === 'all' ? SEASONS : [row.season]);
+  });
+  peopleSources.forEach((row, i) => {
+    if (row.creation_owner !== 'presence_rule') return;
+    const scope = `${row.scope_kind}|${row.scope_ref}|region_novgorod_land|${row.subject_kind}|${row.subject_ref}`;
+    add(`presence/people_presence_authoring.csv#row${i + 2}`, scope, split(row.allowed_seasons), split(row.allowed_times));
+  });
+  check('presence_rules', 'accepted_occurrences_exactly_once', acceptedCoverage(expected, pr, rr.resolutions, itemRows), { accepted_occurrences: expected.length });
+  if (process.argv.includes('--self-test')) {
+    const target = rr.resolutions.find((r) => r.variants.some((v) => v.item_ref === 'it_ps_leather_purse'));
+    if (!target) throw new Error('leather purse variant probe target missing');
+    const altered = rr.resolutions.map((r) => r === target ? { ...r, variants: r.variants.filter((v) => v.item_ref !== 'it_ps_leather_purse') } : r);
+    const targetPool = target.variants.find((v) => v.item_ref === 'it_ps_leather_purse').source_pool;
+    const probe = acceptedCoverage(expected, pr.map((r) => {
+      if ([r.scope_kind, r.scope_ref, r.region_id, r.subject_kind, r.subject_ref].join('|') !== target.key) return r;
+      return { ...r, variants: JSON.stringify(JSON.parse(r.variants || '[]').filter((v) => v.item_ref !== 'it_ps_leather_purse')) };
+    }), altered, itemRows);
+    if (!probe.some((f) => f.startsWith(`orphan ${targetPool}|`))) throw new Error('leather purse variant orphan diagnostic missing');
+    console.log('PASS presence_rules / leather_purse_variant_orphan_negative_probe');
+  }
   const people = pr.filter((r) => r.subject_kind !== 'category');
   const expectedPf = new Set(nb.map((r) => r.pf_id).filter(Boolean));
   check('presence_rules', 'people_cover_16_bound_pf', [
@@ -215,7 +290,6 @@ check('people_composition', 'schema_refs_pf_coverage_and_schedules', checkPeople
   }
   check('presence_rules', 'c002_crosswalks_account_for_16_bound_pf', crosswalkFailures,
     { place_families: expectedPf.size, rows: crosswalkCounts });
-  const rr = readJson(P('reports/presence-rules-report.json'));
   check('presence_rules', 'input_pool_rows_rejected (external)', Array(rr.rejected_rows).fill('x'), { reasons: rr.reject_reasons, by_file: rr.rejected_by_file }, true);
 }
 

@@ -109,8 +109,8 @@ test('v17 bootstrap imports and activates item and actor catalogs in a fresh iso
         });
         throw new Error(`UNEXPECTED_ATTESTATION_STAGE:${stage}`);
       } });
-    assert.equal(result.schema.world_tables, 208);
-    assert.equal(result.schema.party_migrations, 36);
+    assert.equal(result.schema.world_tables, 217);
+    assert.equal(result.schema.party_migrations, 37);
     assert.equal(result.gate1.status, 'imported_exact_readback_verified');
     assert.equal(result.p12.inserted_rows, 12359);
     assert.deepEqual(result.additional_start_owners,

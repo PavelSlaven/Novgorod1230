@@ -55,3 +55,12 @@ test('validatePrimarySecondaryPresenceSubjects keeps secondary additive-only', (
   assert.equal(failures.length, 1);
   assert.match(failures[0], /cat_a/);
 });
+
+test('primary/secondary subject overlap ignores region (norm keys subjects only)', () => {
+  const failures = validatePrimarySecondaryPresenceSubjects(
+    [{ subject_kind: 'occupation', subject_ref: 'occ_a', region_id: 'r1' }],
+    [{ subject_kind: 'occupation', subject_ref: 'occ_a', region_id: 'r2' }]
+  );
+  assert.equal(failures.length, 1);
+  assert.doesNotMatch(failures[0], /region/u);
+});

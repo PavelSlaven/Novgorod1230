@@ -4,10 +4,13 @@ import { computeMaterializationEnvelopeDigest,
   computeStage24ArtifactDigest } from '@rus/contracts';
 import { normalizedContainer } from
   './lower-dvina-trace-phase-1a-read-assets.js';
-import { buildActualPersistedProjection } from
+import { buildActualPersistedProjection, projectPersistedNpcRoutineSchedules,
+  NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS, NPC_ROUTINE_SCHEDULE_PROJECTION_SELECT } from
   './lower-dvina-trace-phase-1a-projection.js';
 import { projectPlayerSafeScenePackages } from
   './player-safe-scene-packages.js';
+
+export { NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS };
 
 export function createLowerDvinaTracePhase1ARepository({query}={}) {
   if (typeof query !== 'function') throw new TypeError('query function is required.');
@@ -133,12 +136,8 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         [partyId]
       )).rows;
       const npcSpatialSchedules = Object.hasOwn(snapshot.state_payload?.persisted_projection ?? {}, 'npc_spatial_schedules')
-        ? (await query(`SELECT * FROM party_runtime.party_npc_spatial_schedules
-            WHERE party_id=$1 ORDER BY id`, [partyId])).rows.map((row) => ({ ...row,
-            state_version: Number(row.state_version),
-            ...Object.fromEntries(['next_transition_at_whole_minutes',
-              'next_transition_at_subminute_numerator', 'next_transition_at_subminute_denominator']
-              .map((key) => [key, row[key] == null ? null : Number(row[key])])) })) : null;
+        ? projectPersistedNpcRoutineSchedules(
+            (await query(NPC_ROUTINE_SCHEDULE_PROJECTION_SELECT, [partyId])).rows) : null;
       const obligations = (await query(
         `SELECT obligation_id,policy_ref,policy_version,promisor_ref,
                 beneficiary_ref,witness_refs,scope_snapshot,current_state,
@@ -496,15 +495,7 @@ function assertRoundTrip({
     projectionSchema: expectedProjection?.schema
   });
   if (npcSpatialSchedules != null) {
-    // Projection round-trip must ignore party DDL columns sealed after the approved
-    // snapshot (F13 / 037 candidate_profile_refs). Compare on expected field set only.
-    const expectedSchedules = expectedProjection?.npc_spatial_schedules;
-    const keys = Array.isArray(expectedSchedules) && expectedSchedules[0]
-      ? Object.keys(expectedSchedules[0])
-      : null;
-    actualProjection.npc_spatial_schedules = keys
-      ? npcSpatialSchedules.map((row) => Object.fromEntries(keys.map((key) => [key, row[key]])))
-      : npcSpatialSchedules;
+    actualProjection.npc_spatial_schedules = npcSpatialSchedules;
   }
   const expectedDigest = sha256(expectedProjection);
   if (!['rus.lower_dvina_trace_persisted_projection.v2',

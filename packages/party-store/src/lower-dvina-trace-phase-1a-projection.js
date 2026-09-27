@@ -1,5 +1,51 @@
 import { normalizedPartyAssets } from './lower-dvina-trace-phase-1a-read-assets.js';
 
+/**
+ * Schedule columns carried by the approved projection versions
+ * `rus.lower_dvina_trace_persisted_projection.v2` and
+ * `rus.authored_start_persisted_projection.v1`; the writer of those rows is
+ * `initialNpcRoutineRecords` (stage 24). Party columns sealed after the
+ * approved snapshot — `candidate_profile_refs` (037) — are not part of the
+ * projection, so the round-trip selects this list explicitly. A column added
+ * to the projection needs a new projection schema version.
+ */
+export const NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS = Object.freeze([
+  'id', 'party_id', 'npc_id', 'current_position_node_id', 'schedule_profile_ref',
+  'dependency_pins', 'causal_state_ref', 'status', 'state_version',
+  'next_transition_at_whole_minutes', 'next_transition_at_subminute_numerator',
+  'next_transition_at_subminute_denominator', 'current_activity_execution_id',
+  'attention_state_ref', 'body_state_ref', 'knowledge_state_ref',
+  'relationship_state_ref', 'updated_change_set_id'
+]);
+
+const NUMERIC_SCHEDULE_COLUMNS = new Set(['state_version',
+  'next_transition_at_whole_minutes', 'next_transition_at_subminute_numerator',
+  'next_transition_at_subminute_denominator']);
+
+export const NPC_ROUTINE_SCHEDULE_PROJECTION_SELECT =
+  `SELECT ${[...NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS, 'candidate_profile_refs'].join(',')}
+     FROM party_runtime.party_npc_spatial_schedules
+    WHERE party_id=$1
+    ORDER BY id`;
+
+/** Narrows committed schedule rows to the approved projection columns. */
+export function projectPersistedNpcRoutineSchedules(rows) {
+  return rows.map((row) => {
+    if (JSON.stringify(row.candidate_profile_refs ?? []) !== '[]') {
+      const error = new Error(
+        'Committed schedule rows carry candidate routine profiles outside the approved projection.'
+      );
+      error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
+      throw error;
+    }
+    return Object.fromEntries(NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS.map((column) => {
+      const value = row[column] ?? null;
+      return [column, NUMERIC_SCHEDULE_COLUMNS.has(column) && value != null
+        ? Number(value) : value];
+    }));
+  });
+}
+
 export function buildActualPersistedProjection({
   player,
   position,

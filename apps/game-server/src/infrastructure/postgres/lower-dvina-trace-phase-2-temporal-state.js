@@ -4,6 +4,16 @@ import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { localFireItemPin, localFireItemQuery } from
   './local-fire-persistence-pins.js';
+import { NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS } from
+  '@rus/party-store/internal/lower-dvina-trace-phase-1a';
+
+// Schedule rows enter npc_schedule_runtime and npc_routine_transition.before:
+// select the projection columns explicitly so columns added later (037
+// candidate_profile_refs) cannot enter runtime state (REVIEW-069 N14).
+const SCHEDULE_COLUMNS = NPC_ROUTINE_SCHEDULE_PROJECTION_COLUMNS
+  .map((column) => (column.startsWith('next_transition_at_')
+    ? `s.${column}::text AS ${column}` : `s.${column}`))
+  .join(',');
 
 const TEMPORAL_OWNER =
   '@rus/time-events-history/temporal-boundaries';
@@ -44,12 +54,9 @@ export async function loadTracePhase2TemporalSourceProof(
       [partyId]
     ),
     partyPool.query(
-      `SELECT s.*,s.id,s.npc_id,s.schedule_profile_ref,s.causal_state_ref,
+      `SELECT ${SCHEDULE_COLUMNS},
               jsonb_build_object('instance_id',n.npc_id,'anchor_id',n.anchor_id,
-                'machine_state',n.machine_state) AS npc_snapshot,
-              next_transition_at_whole_minutes::text,
-              next_transition_at_subminute_numerator::text,
-              next_transition_at_subminute_denominator::text
+                'machine_state',n.machine_state) AS npc_snapshot
          FROM party_runtime.party_npc_spatial_schedules s
          JOIN party_runtime.party_npcs n ON n.party_id=s.party_id AND n.npc_id=s.npc_id
         WHERE s.party_id=$1

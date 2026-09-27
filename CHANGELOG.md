@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix(r1): REVIEW-069 — explicit schedule projection columns instead of `SELECT *` and first-row slice (party-store owner, `candidate_profile_refs='[]'` checked); same column list in phase-2 temporal state; behavioral PG immutability test (error text, positive control, 23505/23514, 012–037 через раннер); `source_commit`/review.md tests; primary/secondary subjects keyed without region (LW-066); narration MODULE repair-then-fail-closed order; game-base-v1 files reverted to Codex state; fullsuite schema pins 217/133 (#158)
 - fix(r1): REVIEW-067 — Lower Dvina projection ignores post-snapshot schedule columns (037 `candidate_profile_refs`); presence equal-season conflicts; fresh-schema CI/source_commit/review.md; PG behavioral DDL; prose index/MODULE/LW (#158)
 - fix(r1): REVIEW-066 — party-store SCOPE_KINDS from contracts (g5); presence-rule negative validation + tests; LW-071 (#158)
 - fix(r1): CR #158 REVIEW-065 — party weather log numeric timestamps; fresh-schema rebuild+test; presence primary/secondary+season overlap; `wild_arrival_cause` TEXT; corpus/LW/CHANGELOG sync; PG DDL test; attestation withdrawn (LW-069/070) (#158)

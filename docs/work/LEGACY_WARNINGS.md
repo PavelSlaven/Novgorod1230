@@ -324,6 +324,7 @@
 ### LW-066 — place_family secondary ещё не утверждены
 - **Где.** `world_base.spatial_node_place_family_bindings`; lookup presence/routines/water/slots.
 - **Как жить.** До решения Codex по смыслу `pf_secondary` и проверки 227 узлов импортировать только `binding_role='primary'`. Один путь кода `resolveNodePlaceFamilies` = primary ∪ утверждённые secondary; флагов нет. Тест (будет): `pf_river_wharf` вне secondary не даёт правил пристани.
+- **Ещё.** `validatePrimarySecondaryPresenceSubjects` (`packages/materialization/src/presence-rule-conflicts.js`) уже приведён к норме — ключ по субъекту без `region`, — но вызывать его пока некому: импортёр R-1 и secondary-привязки не появились. Подключить в валидаторе импорта вместе с `pf_secondary`. Авторский валидатор игровой базы — инструмент Codex, второго владельца правила в нём не держать.
 - **Issue.** [#158](https://github.com/PavelSlaven/Novgorod1230/issues/158)
 
 ### LW-067 — presence guards не исполняются

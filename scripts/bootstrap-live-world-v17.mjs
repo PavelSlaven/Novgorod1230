@@ -332,7 +332,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
     const partyMigration = await runSpatialV3TargetMigrations(party);
     if (await countTables(world, 'world_base') !== schema.world_schema.expected_world_base_tables
         || partyMigration.applied !== schema.party_schema.ordered_migrations.length
-        || await countTables(party, 'party_runtime') !== 132)
+        || await countTables(party, 'party_runtime') !== 133)
       throw new Error('V17_SCHEMA_READBACK_MISMATCH');
 
     const gatePath = join(work, 'gate1.json');
@@ -630,7 +630,7 @@ export async function bootstrapV17Imports({ adminUrl, attest = null, onRequest =
       await rename(pendingPath, activationApprovalsPath);
     } finally { await rm(pendingPath, { force: true }); }
     return { database: worldName, party_database: partyName,
-      schema: { world_tables: 208, party_migrations: partyMigration.applied },
+      schema: { world_tables: 217, party_migrations: partyMigration.applied },
       gate1: { status: gateReadback.status, digest: gate.first_state_digest },
       p12: { inserted_rows: p12Request.expected_readback.distinct_pinned_rows,
         source_records: afterP12.source_records },

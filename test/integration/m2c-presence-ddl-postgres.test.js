@@ -98,7 +98,10 @@ test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', 
       world_revision_id, node_id, node_version, place_family_id, place_family_version,
       binding_role, status, confidence
     ) VALUES ('m2c-rev', 'node-1', 1, 'pf_b', 1, 'primary', 'approved', 'high')
-  `));
+  `), (error) => {
+    assert.equal(error.code, '23505', 'second primary must break the unique index');
+    return true;
+  });
   const wildCol = await world.query(
     `SELECT data_type, is_nullable FROM information_schema.columns
      WHERE table_schema='world_base' AND table_name='presence_rules'
@@ -161,9 +164,15 @@ test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', 
       INSERT INTO party_runtime.party_ordinary_materialization_aggregates(
         party_id, scope_kind, scope_id, state_version, aggregate_payload
       ) VALUES ('p', 'g4', 'site-bad', 0, '{}'::jsonb)
-    `));
+    `), (error) => {
+      assert.equal(error.code, '23514', 'g4 must break the scope_kind CHECK');
+      return true;
+    });
 
     // schedule_profile_ref / candidate_profile_refs immutable via real UPDATE.
+    // The party reference trigger stays disabled for the whole block: with it
+    // enabled it rejects every UPDATE of this row on its own, so immutability
+    // would be proved by the wrong owner (REVIEW-069 N9).
     await pool.query(`
       ALTER TABLE party_runtime.party_npc_spatial_schedules
         DISABLE TRIGGER party_npc_schedule_party_reference_valid
@@ -183,22 +192,48 @@ test('27.sql + 037 apply on fresh DBs; 037 upgrades 001-036; constraints hold', 
         'active', 1, 'cs', 10, 0, 1
       )
     `);
+    for (const assignment of [`candidate_profile_refs='["x"]'::jsonb`,
+      `schedule_profile_ref='{}'::jsonb`, `dependency_pins='{}'::jsonb`]) {
+      await assert.rejects(() => pool.query(`
+        UPDATE party_runtime.party_npc_spatial_schedules
+        SET ${assignment}, state_version=state_version+1
+        WHERE id='sched'
+      `), /npc schedule identity, pins or state version changed/u);
+    }
+    // Positive control: a permitted UPDATE with state_version+1 does pass.
+    const bumped = await pool.query(`
+      UPDATE party_runtime.party_npc_spatial_schedules
+      SET causal_state_ref='{"entity_ref":{"entity_kind":"npc_causal_state","entity_id":"dusk"}}'::jsonb,
+          state_version=state_version+1
+      WHERE id='sched'
+      RETURNING state_version
+    `);
+    assert.equal(Number(bumped.rows[0].state_version), 2);
     await pool.query(`
       ALTER TABLE party_runtime.party_npc_spatial_schedules
         ENABLE TRIGGER party_npc_schedule_party_reference_valid
     `);
-    await assert.rejects(() => pool.query(`
-      UPDATE party_runtime.party_npc_spatial_schedules
-      SET candidate_profile_refs='["x"]'::jsonb, state_version=state_version+1
-      WHERE id='sched'
-    `));
-    await assert.rejects(() => pool.query(`
-      UPDATE party_runtime.party_npc_spatial_schedules
-      SET schedule_profile_ref='{}'::jsonb, state_version=state_version+1
-      WHERE id='sched'
-    `));
 
-    // Re-apply 037 is idempotent on already-migrated party DB.
-    await pool.query(await readFile('schemas/party-db/037_party_runtime_m2c_presence_routines.sql', 'utf8'));
+    // Server start re-runs 012-037 through the runner over an existing party DB
+    // that already holds rows (F13). Ledger row makes the runner reuse 001-011.
+    await pool.query(await readFile(
+      'tools/runtime-catalog-activation/migrations/party/001_runtime_catalog_pins.sql', 'utf8'));
+    const ledger = { migration_id: 'm2c-ledger', migration_digest: 'a'.repeat(64),
+      target_schema_fingerprint: 'b'.repeat(64) };
+    await pool.query(`
+      INSERT INTO party_runtime.schema_migrations(
+        migration_id, migration_digest, source_schema_fingerprint,
+        target_schema_fingerprint, applied_by
+      ) VALUES ($1,$2,$3,$4,'m2c-presence-ddl-test')
+    `, [ledger.migration_id, ledger.migration_digest, 'c'.repeat(64),
+      ledger.target_schema_fingerprint]);
+    const restart = await runSpatialV3TargetMigrations(pool, {
+      exactAppliedMigration: ledger
+    });
+    assert.equal(restart.execution_mode, 'extended_existing');
+    assert.equal(restart.newly_applied, 26);
+    assert.equal((await pool.query(
+      `SELECT count(*)::int AS n FROM party_runtime.party_npc_spatial_schedules`
+    )).rows[0].n, 1);
   }
 });

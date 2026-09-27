@@ -32,8 +32,9 @@ Narrator использует только confirmed player-safe факты; н�
 Первый приход во время игры идёт тем же turn-путем (`surface: turn` / Strategy B),
 не отдельным opening-режимом (D25). Strategy D: auditor + ≤1 format repair + ≤1 semantic rewrite
 + code checks; второго model «revise» нет. Порог выдумок разделён: 0 изобретённых токенов в коде
-и прозаический порог CR (§3.1 ситуационной нормы). Провал проверки 0 токенов в игре —
-fail-closed (flow блокируется) либо единственный допустимый repair-путь; deterministic prose
+и прозаический порог CR (§3.1 ситуационной нормы). Порядок при провале проверки 0 токенов в игре:
+сначала единственный уже существующий цельный repair без нового role/call, затем, если результат
+malformed, невалиден или снова провален, flow блокируется fail-closed; deterministic prose
 fallback запрещён.
 
 ## Не делает

@@ -15,7 +15,7 @@
 | Схема | Назначение | Где лежит DDL | Кто пишет |
 |---|---|---|---|
 | `world_base` | утверждённые справочные данные мира, read-only для runtime | [schema.sql](../../infra/world-base/schema.sql) + части `infra/world-base/schema/01.sql`–`26.sql` | только утверждённый импорт (`world-db:import:*`), не runtime |
-| `party_runtime` | состояние конкретной партии | `schemas/party-db/` 001–036; [справочник](../../infra/party-db/SCHEMA_REFERENCE.md) | единственный physical transaction owner — `@rus/game-server` |
+| `party_runtime` | состояние конкретной партии | `schemas/party-db/` 001–037; [справочник](../../infra/party-db/SCHEMA_REFERENCE.md) | единственный physical transaction owner — `@rus/game-server` |
 | `operator_control` | append-only журнал событий operator cutover | [001_lower_dvina_v3_cutover_events.sql](../../infra/operator-control/001_lower_dvina_v3_cutover_events.sql) | только operator tooling |
 
 Подключение: `RUS_WORLD_DATABASE_URL` (или `DATABASE_URL`) и `RUS_PARTY_DATABASE_URL` (или `PARTY_DATABASE_URL`),
@@ -40,13 +40,13 @@ migration/rollback source.
 
 ## 2. `world_base` (read-only)
 
-- **Entrypoint:** [schema.sql](../../infra/world-base/schema.sql) подключает **26** частей через `\ir schema/NN.sql`
-  (`01`–`26`) и снимает `CREATE` на схеме с `PUBLIC`.
-- **Число таблиц: 208.** Проверяется в двух местах:
-  - [check-world-base-schema.mjs](../../scripts/check-world-base-schema.mjs): `EXPECTED_TABLE_COUNT = 208`
+- **Entrypoint:** [schema.sql](../../infra/world-base/schema.sql) подключает **27** частей через `\ir schema/NN.sql`
+  (`01`–`27`) и снимает `CREATE` на схеме с `PUBLIC`.
+- **Число таблиц: 217.** Проверяется в двух местах:
+  - [check-world-base-schema.mjs](../../scripts/check-world-base-schema.mjs): `EXPECTED_TABLE_COUNT = 217`
     (`npm run world-db:schema-check`);
   - [test.yml](../../.github/workflows/test.yml), шаг «Execute world_base DDL in PostgreSQL»: DDL
-    исполняется в `postgres:16`, затем `test "$table_count" -eq 208`. Там же проверяется роль `world_reader`:
+    исполняется в `postgres:16`, затем `test "$table_count" -eq 217`. Там же проверяется роль `world_reader`:
     не superuser, есть `USAGE`, нет `CREATE`, `SELECT` на каждую таблицу, других грантов нет.
 - **Read-only порт:** [packages/world-base/MODULE.md](../../packages/world-base/MODULE.md): `createWorldBaseReader`
   отклоняет mutating SQL до вызова adapter. Production reader — `spatial-v3-world-base-reader.js` в
@@ -55,7 +55,7 @@ migration/rollback source.
   [tools/db-tools/MODULE.md](../../tools/db-tools/MODULE.md).
 - **Описания полей:** только из [field-descriptions.js](../../infra/world-base/field-descriptions.js);
   справочник генерируется, вручную его не правят.
-- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/world-base/SCHEMA_REFERENCE.md) — 208 заголовков `### `,
+- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/world-base/SCHEMA_REFERENCE.md) — 217 заголовков `### `,
   22 группы `## ` (скрипт на HEAD). Текст `infra/world-base/README.md` ещё пишет «201 таблиц» — расхождение,
   не источник счёта (см. LEGACY_WARNINGS, LW-040).
 
@@ -72,16 +72,17 @@ Generated-файл (`npm run world-db:schema-doc`, проверка — `world-d
 ## 3. `party_runtime`
 
 - **Файлы:** `schemas/party-db/` — от [001_party_runtime.sql](../../schemas/party-db/001_party_runtime.sql)
-  до `036_party_runtime_visibility_modifiers.sql` (**36** SQL-файлов на диске).
+  до `037_party_runtime_m2c_presence_routines.sql` (**37** SQL-файлов на диске).
 - **Порядок и состав цепочки** задаёт массив `files` в
   [spatial-v3-target-migrations.js](../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js).
-  `SPATIAL_V3_TARGET_MIGRATION_FILES.length === 36`; хвост `033`–`036`:
+  `SPATIAL_V3_TARGET_MIGRATION_FILES.length === 37`; хвост `033`–`037`:
   `033_party_runtime_initial_semantic_decision.sql`,
   `034_party_runtime_actor_base_attributes.sql`,
   `035_party_runtime_nonportal_availability.sql`,
-  `036_party_runtime_visibility_modifiers.sql`.
+  `036_party_runtime_visibility_modifiers.sql`,
+  `037_party_runtime_m2c_presence_routines.sql`.
   Digest цепочки — `SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST`.
-- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/party-db/SCHEMA_REFERENCE.md) — «001–036», **132** таблицы
+- **Справочник:** [SCHEMA_REFERENCE.md](../../infra/party-db/SCHEMA_REFERENCE.md) — «001–037», **133** таблицы
   (generated header на HEAD).
 - **Когда применяется.** При каждом старте production composition
   ([production-spatial-v3.js](../../apps/game-server/src/composition/production-spatial-v3.js)). Если в

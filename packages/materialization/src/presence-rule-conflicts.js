@@ -28,6 +28,8 @@ export function presenceRuleSeasonConflict(a, b) {
 }
 
 /**
+ * Subject overlap is keyed by subject only: the norm compares subjects of the
+ * node's primary and secondary place families, not regions.
  * @param {object[]} primaryRules rules for primary place_family
  * @param {object[]} secondaryRules rules for secondary place_family
  * @returns {string[]} failure messages
@@ -36,14 +38,12 @@ export function validatePrimarySecondaryPresenceSubjects(primaryRules, secondary
   const failures = [];
   const primaryKeys = new Set();
   for (const rule of primaryRules ?? []) {
-    primaryKeys.add(`${rule.subject_kind}\0${rule.subject_ref}\0${rule.region_id ?? ''}`);
+    primaryKeys.add(`${rule.subject_kind}\0${rule.subject_ref}`);
   }
   for (const rule of secondaryRules ?? []) {
-    const key = `${rule.subject_kind}\0${rule.subject_ref}\0${rule.region_id ?? ''}`;
-    if (primaryKeys.has(key)) {
+    if (primaryKeys.has(`${rule.subject_kind}\0${rule.subject_ref}`)) {
       failures.push(
         `secondary subject already on primary: ${rule.subject_kind}/${rule.subject_ref}`
-          + ` region=${rule.region_id ?? 'NULL'}`
       );
     }
   }

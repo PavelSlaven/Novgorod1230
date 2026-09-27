@@ -7,11 +7,15 @@ import { SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST } from
 import {
   buildFreshSchemaRequest,
   renderFreshSchemaRequest,
+  renderFreshSchemaReviewRequest,
   resolveFreshSchemaSourceCommit
 } from '../../scripts/build-live-world-v17-fresh-schema-request.mjs';
 
 const REQUEST_PATH = resolve(
   'data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-request.json'
+);
+const REVIEW_PATH = resolve(
+  'data/world-catalogs/novgorod/live-world-runtime-v17/fresh-schema-review-request.md'
 );
 
 test('fresh-schema-request rebuild equals committed file and pins chain_digest', () => {
@@ -47,6 +51,22 @@ test('fresh-schema source_commit comes from explicit pin or input history, not s
     argv: []
   });
   assert.equal(fromEnv, 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
-  const fromInputs = resolveFreshSchemaSourceCommit({ envCommit: undefined, argv: [] });
+  // envCommit: '' keeps the process environment out of the check.
+  const fromInputs = resolveFreshSchemaSourceCommit({ envCommit: '', argv: [] });
   assert.match(fromInputs, /^[0-9a-f]{40}$/i);
+  assert.equal(
+    fromInputs,
+    JSON.parse(readFileSync(REQUEST_PATH, 'utf8')).source_commit,
+    'committed source_commit must be the last commit that touched schema inputs'
+  );
+});
+
+test('fresh-schema-review-request.md is rendered from the committed request', () => {
+  const committed = readFileSync(REQUEST_PATH, 'utf8');
+  const request = JSON.parse(committed);
+  assert.equal(
+    renderFreshSchemaReviewRequest(request, Buffer.byteLength(committed)),
+    readFileSync(REVIEW_PATH, 'utf8'),
+    'fresh-schema-review-request.md must be rebuilt by the request generator'
+  );
 });

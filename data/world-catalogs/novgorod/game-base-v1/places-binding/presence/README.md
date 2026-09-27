@@ -48,7 +48,7 @@
 
 Необязательные поля: `region_id` (пусто = общемировое), `count_limit` / `max_count` / `count_limit_rule`, `allowed_seasons` / `season_period` / `seasons` / `season`, `refresh_class`, `confidence`.
 
-Для `items-household-personal/items/item_place_frequency.csv` условия `entry_visible_if` и `search_only_if` обязательны. Они переносятся в одно правило категории без превращения в безусловную видимость: частота означает возможность присутствия, а способ обнаружения зависит от фактического размещения экземпляра. Для `pf_class=wild` также требуется `wild_arrival_cause_required=prior_visitor_loss_or_discard`; без установленной причины рукотворная вещь не появляется. У правил fauna и people эти три колонки пусты. Слияние категориальных строк допускается только при совпадении всех трёх условий.
+Для `items-household-personal/items/item_place_frequency.csv` условия `entry_visible_if` и `search_only_if` обязательны. Вместе с ними переносятся `entry_exposed_weight`, `search_concealed_weight` и `placement_basis_ref`: частота означает возможность присутствия, а способ обнаружения зависит от фактического размещения экземпляра либо от явно названного владельца этого решения. Для `pf_class=wild` также требуется `wild_arrival_cause_required=prior_visitor_loss_or_discard`; без установленной причины рукотворная вещь не появляется. У правил fauna и people эти шесть колонок пусты. Слияние категориальных строк допускается только при совпадении всех условий размещения и обнаружения.
 
 `source_refs` обязателен.
 

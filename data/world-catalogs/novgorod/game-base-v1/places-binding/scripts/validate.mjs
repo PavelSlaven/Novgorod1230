@@ -106,7 +106,7 @@ const ex = readJson(P('inputs/pr98-extract.json'));
   const roles = new Set(readTsv(path.join(REPO, 'data/novgorod-region/novgorod_social_roles_v1.tsv')).map((r) => r.role_id));
   const itemSources = readCsv(P('../items-household-personal/items/item_place_frequency.csv'));
   const peopleSources = readCsv(P('presence/people_presence_authoring.csv'));
-  const itemConditions = ['entry_visible_if', 'search_only_if', 'wild_arrival_cause_required'];
+  const itemConditions = ['entry_visible_if', 'search_only_if', 'entry_exposed_weight', 'search_concealed_weight', 'placement_basis_ref', 'wild_arrival_cause_required'];
   const f = [];
   const seen = new Set();
   for (const r of pr) {

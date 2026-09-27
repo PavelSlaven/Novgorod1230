@@ -131,8 +131,8 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 10292,
-      "rebuilt_rows": 10292
+      "rows": 10280,
+      "rebuilt_rows": 10280
     },
     {
       "domain": "presence_rules",
@@ -141,7 +141,7 @@
       "failures": 0,
       "sample": [],
       "external": false,
-      "rows": 10292
+      "rows": 10280
     },
     {
       "domain": "presence_rules",
@@ -186,11 +186,11 @@
           "no_source_place_families": 39
         },
         "tools": {
-          "rows": 174,
-          "linked_rows": 152,
-          "no_source_rows": 22,
-          "linked_place_families": 25,
-          "no_source_place_families": 19
+          "rows": 222,
+          "linked_rows": 205,
+          "no_source_rows": 17,
+          "linked_place_families": 30,
+          "no_source_place_families": 14
         },
         "weapons": {
           "rows": 628,
@@ -205,7 +205,7 @@
       "domain": "presence_rules",
       "name": "input_pool_rows_rejected (external)",
       "pass": false,
-      "failures": 10818,
+      "failures": 10977,
       "sample": [
         "x",
         "x",
@@ -225,10 +225,10 @@
       ],
       "external": true,
       "reasons": {
-        "category_ref empty": 10818
+        "category_ref empty": 10977
       },
       "by_file": {
-        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 10818
+        "data/world-catalogs/novgorod/game-base-v1/items-household-personal/items/item_place_frequency.csv": 10977
       }
     },
     {

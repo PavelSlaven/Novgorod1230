@@ -10,6 +10,7 @@ APPEARANCE = DATA / "spatial-v3/candidates/spatial-v3-production-v4/datasets/reg
 DEMOGRAPHIC = DATA / "spatial-v3/candidates/spatial-v3-production-v4/datasets/region_demographic_profile_entries.json"
 CLOTHING = DATA / "game-base-v1/clothing-appearance/outfits_by_role/outfits.csv"
 ROLE_CLOTHING = DATA / "game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv"
+ROLES = DATA.parents[1] / "novgorod-region/novgorod_social_roles_v1_enriched.tsv"
 EQUIPMENT = DATA / "game-base-v1/items-weapons-armour/authoring/equipment_profiles.json"
 SOURCE = Path(r"C:\Users\Slaven\Documents\Novgorod-runtime\data\world-catalogs\novgorod\m2c-npc")
 BASE = SOURCE / "candidate.json"
@@ -22,11 +23,38 @@ DEMOGRAPHIC_REF = "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3
 CLOTHING_REF = "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv"
 ROLE_CLOTHING_REF = "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv"
 EQUIPMENT_REF = "data/world-catalogs/novgorod/game-base-v1/items-weapons-armour/authoring/equipment_profiles.json"
+ROLES_REF = "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
+NEW_CONTEXT = "game_base_v1_npc_regional_occupations_candidate_v1"
 
 
-def rows(path):
+def rows(path, delimiter=","):
     with path.open(encoding="utf-8", newline="") as f:
-        return list(csv.DictReader(f))
+        return list(csv.DictReader(f, delimiter=delimiter))
+
+
+def refs(value):
+    return [part.strip() for part in value.split(";") if part.strip() and not part.strip().startswith("no_source")]
+
+
+def actor_applicability(role, occupation):
+    female = "nov_1200_1250_sex_category_female"
+    if occupation == "occ_wetnurse":
+        return {"sex_category": [female],
+                "age_category": ["nov_1200_1250_age_category_young_adult",
+                                 "nov_1200_1250_age_category_adult",
+                                 "nov_1200_1250_age_category_middle_aged"],
+                "source_refs": ["occupations/occupations_additions.csv#occ_wetnurse"],
+                "rule": "female follows the occupation; age range is editorial for an individual nursing actor",
+                "age_basis": "editorial", "no_source": "individual_marital_status_not_derived_from_occupation"}
+    if role == "nov_role_household_mistress":
+        return {"sex_category": [female], "source_refs": [ROLES_REF + "#" + role],
+                "rule": "role definition specifies a woman"}
+    if role == "nov_role_apprentice":
+        return {"age_category": ["nov_1200_1250_age_category_young_adult"],
+                "source_refs": [ROLES_REF + "#" + role],
+                "rule": "role definition specifies an adolescent or young person; exclude middle-aged and old",
+                "no_source": "adolescent_age_category_not_in_approved_demographic_enum"}
+    return None
 
 
 def option(value, weight, source_ref=None, rule=None, no_source=None, **conditions):
@@ -36,6 +64,7 @@ def option(value, weight, source_ref=None, rule=None, no_source=None, **conditio
 
 def regional_options(profile, role, regions, outfits, clothing_by_role, equipment):
     occupation = profile["occupation_ref"]
+    eligibility = actor_applicability(role, occupation)
     clothing_profile = clothing_by_role.get(role)
     clothing = [option(row["of_id"], 1, CLOTHING_REF + "#" + row["of_id"],
                        "equal gameplay weight; filter by sex, age, season and marital status",
@@ -43,7 +72,12 @@ def regional_options(profile, role, regions, outfits, clothing_by_role, equipmen
                        age_categories=row["age_categories"].split("|"),
                        seasons=row["seasons"].split("|"), marital_status=row["marital_status"])
                 for row in outfits if row["clothing_profile_id"] == clothing_profile
-                and row["runtime_selectable"] == "true"]
+                and row["runtime_selectable"] == "true"
+                and (not eligibility or all(
+                    not eligibility.get(facet) or any(
+                        value.endswith("_" + category) for value in eligibility[facet]
+                        for category in row["sex_categories" if facet == "sex_category" else "age_categories"].split("|"))
+                    for facet in ("sex_category", "age_category")))]
     if not clothing:
         clothing = [option(None, 1, no_source="no_applicable_clothing_outfit")]
     matching = [entry for entry in equipment if
@@ -67,6 +101,7 @@ def regional_options(profile, role, regions, outfits, clothing_by_role, equipmen
         equip_options = [option(None, 1, no_source="equipment_options_not_authored")]
     return [{"region_ref": region, "role_ref": role, "occupation_ref": occupation,
              "status": "candidate", "appearance_option_set_ref": "novgorod_shared_facets_v1",
+             "actor_applicability": eligibility,
              "clothing_profile_ref": clothing_profile,
              "clothing_profile_source_ref": ROLE_CLOTHING_REF + "#" + role if clothing_profile else None,
              "clothing_options": clothing, "equipment_options": equip_options,
@@ -78,22 +113,36 @@ def regional_options(profile, role, regions, outfits, clothing_by_role, equipmen
 def main():
     baseline = json.loads(BASE.read_text(encoding="utf-8"))
     bindings = json.loads(BINDINGS.read_text(encoding="utf-8"))
-    regional_contexts = [{"id": r["id"],
-                          "allowed_role_refs": r["allowed_role_refs"].copy(),
-                          "allowed_occupation_refs": r["allowed_occupation_refs"].copy(),
-                          "source_ref": BASE_REF + "#regional_context_profiles." + r["id"]}
-                         for r in baseline["regional_context_profiles"]]
-    region_ids = {r["id"] for r in regional_contexts}
+    regional_contexts = [dict(r) for r in baseline["regional_context_profiles"]]
     occupations = rows(OCC)
+    roles = {r["role_id"]: r for r in rows(ROLES, "\t")}
+    regional_contexts.append({
+        "schema": "rus.npc_regional_context_profile.v1", "id": NEW_CONTEXT,
+        "version": 1, "status": "candidate", "world_revision_id": None,
+        "allowed_role_refs": sorted({role for row in occupations for role in refs(row["allowed_social_role_ids"])}),
+        "allowed_occupation_refs": [row["occupation_id"] for row in occupations],
+        "applicability": [{"occupation_ref": row["occupation_id"], "role_ref": role,
+                           "g3_place_types": refs(row["typical_g3_place_types"]),
+                           "g4_location_types": refs(row["typical_g4_location_types"]),
+                           "g3_no_source": row["typical_g3_place_types"] if row["typical_g3_place_types"].startswith("no_source:") else None,
+                           "g4_no_source": row["typical_g4_location_types"] if row["typical_g4_location_types"].startswith("no_source:") else None,
+                           "role_g3_place_types": refs(roles[role]["typical_g3_place_types"]),
+                           "role_g4_location_types": refs(roles[role]["typical_g4_location_types"]),
+                           "source_refs": ["occupations/occupations_additions.csv#" + row["occupation_id"],
+                                           ROLES_REF + "#" + role],
+                           "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+                           "no_source": "concrete_g4_and_generation_template_binding"}
+                          for row in occupations for role in refs(row["allowed_social_role_ids"])],
+        "origin": {"no_source": "individual_regional_origin_not_derived_from_occupation_or_role"},
+        "language_status": "unknown", "language_repertoire": None,
+        "gameplay_weight": 1, "weight_basis": "editorial_equal_choice_not_historical_frequency",
+        "source_refs": ["occupations/occupations_additions.csv", ROLES_REF],
+        "rule": "candidate context for new occupations; no PR98 G4 applicability or runtime presence inherited",
+        "no_source": "world_revision_and_concrete_g4_applicability"})
+    region_ids = {r["id"] for r in regional_contexts}
     outfit_rows = rows(CLOTHING)
     role_clothing = {row["role_ref"]: row["clothing_profile_id"] for row in rows(ROLE_CLOTHING)}
     equipment = json.loads(EQUIPMENT.read_text(encoding="utf-8"))["profiles"]
-    local_context = next(r for r in regional_contexts if r["id"] == "m2c_npc_regional_novgorod_land_v1")
-    local_context["allowed_role_refs"] = sorted(set(local_context["allowed_role_refs"]) |
-                                                {role.strip() for row in occupations for role in row["allowed_social_role_ids"].split(";")})
-    local_context["allowed_occupation_refs"] = sorted(set(local_context["allowed_occupation_refs"]) |
-                                                      {row["occupation_id"] for row in occupations})
-    local_context["additional_source_ref"] = "occupations/occupations_additions.csv"
     appearance = [(DEMOGRAPHIC_REF, json.loads(DEMOGRAPHIC.read_text(encoding="utf-8"))),
                   (APPEARANCE_REF, json.loads(APPEARANCE.read_text(encoding="utf-8")))]
     appearance_sets = {facet: [option(row["option_id"], row["weight"],
@@ -158,14 +207,9 @@ def main():
         profiles[-1]["required_facets"] = baseline["appearance_policy"]["required_facets"]
         profiles[-1]["allowed_role_refs"] = [role.strip() for role in occupation["allowed_social_role_ids"].split(";")]
         if oid == "occ_wetnurse":
-            profiles[-1]["actor_applicability"] = {
-                "sex_category": ["nov_1200_1250_sex_category_female"],
-                "age_category": ["nov_1200_1250_age_category_young_adult",
-                                 "nov_1200_1250_age_category_adult",
-                                 "nov_1200_1250_age_category_middle_aged"],
-                "rule": "select an eligible actor before choosing appearance, clothing, or equipment"}
+            profiles[-1]["actor_applicability"] = actor_applicability(profiles[-1]["role_ref"], oid)
         profiles[-1]["regional_option_sets"] = [regional for role in profiles[-1]["allowed_role_refs"]
-            for regional in regional_options(profiles[-1], role, ["m2c_npc_regional_novgorod_land_v1"],
+            for regional in regional_options(profiles[-1], role, [NEW_CONTEXT],
                                             outfit_rows, role_clothing, equipment)]
     result = {
         "artifact_type": "npc_runtime_profiles_candidate", "status": "candidate",

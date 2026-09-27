@@ -408,21 +408,18 @@
   },
   "regional_context_profiles": [
     {
+      "schema": "rus.npc_regional_context_profile.v1",
       "id": "m2c_npc_regional_novgorod_land_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
       "allowed_role_refs": [
-        "nov_role_apprentice",
         "nov_role_boatman",
-        "nov_role_craftsman_master",
         "nov_role_fisher",
         "nov_role_forest_promyslovik",
         "nov_role_guide",
-        "nov_role_hired_worker",
-        "nov_role_household_mistress",
         "nov_role_hunter",
-        "nov_role_journeyman",
-        "nov_role_kholop",
         "nov_role_merchant_guest",
-        "nov_role_monastery_worker",
         "nov_role_servant",
         "nov_role_trader"
       ],
@@ -434,69 +431,2594 @@
         "nov_occ_hunter_trapper",
         "nov_occ_local_trader",
         "nov_occ_long_distance_merchant",
-        "nov_occ_route_guide",
-        "occ_arrowsmith",
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_settlement_center",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__heritage_access_limited__archaeological_settlement",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_burial_area",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__heritage_access_limited__burial_area",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_reed_backwater",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_backwater_wetland__low_intensity_natural_use__reed_backwater",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_old_channel_pool",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_backwater_wetland__waterway_access__old_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_mixing_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_estuary__low_intensity_natural_use__estuary_mixing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_outer_exposed_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_estuary__waterway_access__outer_exposed",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_flooded_interior_basin",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_floodplain__low_intensity_natural_use__floodplain_basin",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_island_ridge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_floodplain__low_intensity_natural_use__island_ridge",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_wet_conifer_tract",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_forest__forest_resource_use__forest_tract",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_dry_pine_ridge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_forest__forest_resource_use__pine_ridge",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_channel_split_islet",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_large_island_head",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_island__low_intensity_natural_use__island_head",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_forest_stream_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__forest_resource_use__forest_stream",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_hidden_backwater",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__low_intensity_natural_use__backwater",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__forest_resource_use__forest_tract",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__recurrent_settlement_use__vikhtuy_locality",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_driftwood_bar",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_shoal__low_intensity_natural_use__driftwood_bar",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_shifting_shoal_field",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_shoal__low_intensity_natural_use__shoal_field",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Новгородская земля",
+        "kind": "regional_affiliation",
+        "source_refs": [
+          "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Approved regional role basis; an individual affiliation is proposed gameplay reconstruction."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_gotland_guest_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_foreign_guest"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_long_distance_merchant"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Готланд",
+        "kind": "guest_origin",
+        "source_refs": [
+          "m2c_npc_treaty_gotland_german_cities_1191_1192"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Gotland merchants are directly attested for Novgorod; presence in target generated G5 is analogical reconstruction."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_german_baltic_guest_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_foreign_guest"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_long_distance_merchant"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_zaostrovye_landing",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_archaeological_area__waterway_access__local_landing",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__landing_terrace",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_navigation_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_exposed_turn",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_north_outflow_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_inner_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_south_entry_reach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__river_reach",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_settlement_landscape__waterway_access__landing_terrace",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Немецкие города Балтийского торгового круга",
+        "kind": "guest_origin",
+        "source_refs": [
+          "m2c_npc_treaty_gotland_german_cities_1191_1192"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "German merchant contacts are directly attested; Baltic denotes trading geography, not Baltic ethnicity."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_karelian_traveler_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Корела",
+        "kind": "traveler_origin",
+        "source_refs": [
+          "m2c_npc_npl_younger_1228"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Karelians are named in the chronicle near Ladoga/Neva. An ordinary traveler in target G5 is explicitly analogical authoring."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "m2c_npc_regional_ingrian_traveler_v1",
+      "version": 1,
+      "status": "draft",
+      "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+      "allowed_role_refs": [
+        "nov_role_guide"
+      ],
+      "allowed_occupation_refs": [
+        "nov_occ_route_guide"
+      ],
+      "applicability": [
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_floodplain_ridge_route",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_ridge__waterway_access__dry_ridge_route",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_central_current_split",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__channel_split",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_flood_bypass",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_east_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_west_side_channel",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__side_channel",
+            "version": 1
+          }
+        },
+        {
+          "g4_ref": {
+            "world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+            "id": "g4v3__gn_nov_g3_xp017_yp026_r2_tributary_mouth",
+            "version": 1
+          },
+          "generation_template_ref": {
+            "id": "m2c_g5_river_channel__waterway_access__tributary_mouth",
+            "version": 1
+          }
+        }
+      ],
+      "origin": {
+        "label": "Ижора",
+        "kind": "traveler_origin",
+        "source_refs": [
+          "m2c_npc_npl_younger_1228"
+        ],
+        "directness": "analogical",
+        "confidence": "low",
+        "historical_basis": "Izhorians are named in the chronicle near Ladoga/Neva. An ordinary traveler in target G5 is explicitly analogical authoring."
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency"
+    },
+    {
+      "schema": "rus.npc_regional_context_profile.v1",
+      "id": "game_base_v1_npc_regional_occupations_candidate_v1",
+      "version": 1,
+      "status": "candidate",
+      "world_revision_id": null,
+      "allowed_role_refs": [
+        "nov_role_apprentice",
+        "nov_role_craftsman_master",
+        "nov_role_hired_worker",
+        "nov_role_household_mistress",
+        "nov_role_journeyman",
+        "nov_role_kholop",
+        "nov_role_monastery_worker",
+        "nov_role_trader"
+      ],
+      "allowed_occupation_refs": [
+        "occ_jeweler_caster",
         "occ_bone_carver",
+        "occ_wood_turner",
+        "occ_furrier",
+        "occ_dyer",
+        "occ_ropemaker_netmaker",
+        "occ_netmaker",
+        "occ_locksmith",
         "occ_bowyer",
+        "occ_arrowsmith",
+        "occ_mason",
+        "occ_limeburner",
+        "occ_icon_painter",
         "occ_brewer_meadmaker",
         "occ_butcher",
-        "occ_dyer",
-        "occ_fish_trader",
-        "occ_furrier",
-        "occ_icon_painter",
-        "occ_jeweler_caster",
-        "occ_limeburner",
-        "occ_locksmith",
         "occ_market_baker",
-        "occ_mason",
-        "occ_netmaker",
-        "occ_ropemaker_netmaker",
-        "occ_shield_maker",
+        "occ_fish_trader",
         "occ_wetnurse",
-        "occ_wood_turner"
+        "occ_shield_maker"
       ],
-      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_novgorod_land_v1",
-      "additional_source_ref": "occupations/occupations_additions.csv"
-    },
-    {
-      "id": "m2c_npc_regional_gotland_guest_v1",
-      "allowed_role_refs": [
-        "nov_role_foreign_guest"
+      "applicability": [
+        {
+          "occupation_ref": "occ_jeweler_caster",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_jeweler_caster",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_jeweler_caster",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_jeweler_caster",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_jeweler_caster",
+          "role_ref": "nov_role_apprentice",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_jeweler_caster",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_apprentice"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_bone_carver",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_bone_carver",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_bone_carver",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_bone_carver",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_bone_carver",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_bone_carver",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_wood_turner",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_wood_turner",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_wood_turner",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_wood_turner",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_wood_turner",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_wood_turner",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_furrier",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_furrier",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_furrier",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_furrier",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_furrier",
+          "role_ref": "nov_role_apprentice",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_furrier",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_apprentice"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_dyer",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_dyer",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_dyer",
+          "role_ref": "nov_role_household_mistress",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_dyer",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_dyer",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_dyer",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_ropemaker_netmaker",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_ropemaker_netmaker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_ropemaker_netmaker",
+          "role_ref": "nov_role_household_mistress",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_ropemaker_netmaker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_ropemaker_netmaker",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_ropemaker_netmaker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_netmaker",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_netmaker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_netmaker",
+          "role_ref": "nov_role_household_mistress",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_netmaker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_netmaker",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_netmaker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_locksmith",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_locksmith",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_locksmith",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_locksmith",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_locksmith",
+          "role_ref": "nov_role_apprentice",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_locksmith",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_apprentice"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_bowyer",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_bowyer",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_bowyer",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_bowyer",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_bowyer",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_bowyer",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_arrowsmith",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_arrowsmith",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_arrowsmith",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_arrowsmith",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_arrowsmith",
+          "role_ref": "nov_role_apprentice",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_arrowsmith",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_apprentice"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_mason",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_mason",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_mason",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_mason",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_mason",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_mason",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_limeburner",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [],
+          "g4_location_types": [],
+          "g3_no_source": "no_source:lime_kiln_place_family",
+          "g4_no_source": "no_source:lime_kiln_location",
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_limeburner",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_limeburner",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [],
+          "g4_location_types": [],
+          "g3_no_source": "no_source:lime_kiln_place_family",
+          "g4_no_source": "no_source:lime_kiln_location",
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_limeburner",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_icon_painter",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_monastery",
+            "pt_rural_church_center"
+          ],
+          "g4_location_types": [
+            "church",
+            "church_yard",
+            "cells"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_icon_painter",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_icon_painter",
+          "role_ref": "nov_role_monastery_worker",
+          "g3_place_types": [
+            "pt_monastery",
+            "pt_rural_church_center"
+          ],
+          "g4_location_types": [
+            "church",
+            "church_yard",
+            "cells"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_pogost_center",
+            "pt_monastery",
+            "pt_rural_church_center"
+          ],
+          "role_g4_location_types": [
+            "church_yard",
+            "church",
+            "cells",
+            "cemetery_edge",
+            "detinets_bishop_core"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_icon_painter",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_monastery_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_brewer_meadmaker",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb"
+          ],
+          "g4_location_types": [
+            "household_yards",
+            "work_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_brewer_meadmaker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_brewer_meadmaker",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb"
+          ],
+          "g4_location_types": [
+            "household_yards",
+            "work_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_brewer_meadmaker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_butcher",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_market_place",
+            "pt_city_major_center"
+          ],
+          "g4_location_types": [
+            "market_square",
+            "household_yards"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_butcher",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_butcher",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_market_place",
+            "pt_city_major_center"
+          ],
+          "g4_location_types": [
+            "market_square",
+            "household_yards"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_butcher",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_market_baker",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_market_place",
+            "pt_city_major_center"
+          ],
+          "g4_location_types": [
+            "market_square",
+            "household_yards"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_market_baker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_market_baker",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_market_place",
+            "pt_city_major_center"
+          ],
+          "g4_location_types": [
+            "market_square",
+            "household_yards"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_market_baker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_fish_trader",
+          "role_ref": "nov_role_trader",
+          "g3_place_types": [
+            "pt_market_place",
+            "pt_river_landing",
+            "pt_town",
+            "pt_city_major_center"
+          ],
+          "g4_location_types": [
+            "market_square",
+            "merchant_yards",
+            "cargo_stack",
+            "storehouses",
+            "river_landings"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_market_place",
+            "pt_river_landing",
+            "pt_town"
+          ],
+          "role_g4_location_types": [
+            "market_square",
+            "merchant_yards",
+            "cargo_stack",
+            "river_landings"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_fish_trader",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_trader"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_fish_trader",
+          "role_ref": "nov_role_household_mistress",
+          "g3_place_types": [
+            "pt_market_place",
+            "pt_river_landing",
+            "pt_town",
+            "pt_city_major_center"
+          ],
+          "g4_location_types": [
+            "market_square",
+            "merchant_yards",
+            "cargo_stack",
+            "storehouses",
+            "river_landings"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_fish_trader",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_fish_trader",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_market_place",
+            "pt_river_landing",
+            "pt_town",
+            "pt_city_major_center"
+          ],
+          "g4_location_types": [
+            "market_square",
+            "merchant_yards",
+            "cargo_stack",
+            "storehouses",
+            "river_landings"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_fish_trader",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_wetnurse",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place",
+            "pt_monastery"
+          ],
+          "g4_location_types": [
+            "servant_yards",
+            "kitchen_service",
+            "stable_yard",
+            "work_yard",
+            "storage_klet"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_wetnurse",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_wetnurse",
+          "role_ref": "nov_role_kholop",
+          "g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place",
+            "pt_monastery"
+          ],
+          "g4_location_types": [
+            "servant_yards",
+            "kitchen_service",
+            "stable_yard",
+            "work_yard",
+            "storage_klet"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_pogost_center",
+            "pt_crossroads"
+          ],
+          "role_g4_location_types": [
+            "poor_edge",
+            "church_gate",
+            "road_exit",
+            "guest_waiting"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_wetnurse",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_kholop"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_shield_maker",
+          "role_ref": "nov_role_craftsman_master",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_shield_maker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_craftsman_master"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_shield_maker",
+          "role_ref": "nov_role_journeyman",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_city_major_center",
+            "pt_posad_suburb",
+            "pt_estate_center"
+          ],
+          "role_g4_location_types": [
+            "dense_posad_yards",
+            "rich_yards",
+            "craft_yards",
+            "household_yards"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_shield_maker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_journeyman"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        },
+        {
+          "occupation_ref": "occ_shield_maker",
+          "role_ref": "nov_role_hired_worker",
+          "g3_place_types": [
+            "pt_posad_suburb",
+            "pt_market_place",
+            "pt_village",
+            "pt_boatyard_or_shipyard"
+          ],
+          "g4_location_types": [
+            "craft_yards",
+            "work_sheds",
+            "craft_street",
+            "store_yard"
+          ],
+          "g3_no_source": null,
+          "g4_no_source": null,
+          "role_g3_place_types": [
+            "pt_estate_center",
+            "pt_village",
+            "pt_market_place"
+          ],
+          "role_g4_location_types": [
+            "servant_yards",
+            "work_yard",
+            "kitchen_service",
+            "storage_klet"
+          ],
+          "source_refs": [
+            "occupations/occupations_additions.csv#occ_shield_maker",
+            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_hired_worker"
+          ],
+          "rule": "candidate place types from occupation and role sources; concrete presence requires scene evidence",
+          "no_source": "concrete_g4_and_generation_template_binding"
+        }
       ],
-      "allowed_occupation_refs": [
-        "nov_occ_long_distance_merchant"
+      "origin": {
+        "no_source": "individual_regional_origin_not_derived_from_occupation_or_role"
+      },
+      "language_status": "unknown",
+      "language_repertoire": null,
+      "gameplay_weight": 1,
+      "weight_basis": "editorial_equal_choice_not_historical_frequency",
+      "source_refs": [
+        "occupations/occupations_additions.csv",
+        "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"
       ],
-      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_gotland_guest_v1"
-    },
-    {
-      "id": "m2c_npc_regional_german_baltic_guest_v1",
-      "allowed_role_refs": [
-        "nov_role_foreign_guest"
-      ],
-      "allowed_occupation_refs": [
-        "nov_occ_long_distance_merchant"
-      ],
-      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_german_baltic_guest_v1"
-    },
-    {
-      "id": "m2c_npc_regional_karelian_traveler_v1",
-      "allowed_role_refs": [
-        "nov_role_guide"
-      ],
-      "allowed_occupation_refs": [
-        "nov_occ_route_guide"
-      ],
-      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_karelian_traveler_v1"
-    },
-    {
-      "id": "m2c_npc_regional_ingrian_traveler_v1",
-      "allowed_role_refs": [
-        "nov_role_guide"
-      ],
-      "allowed_occupation_refs": [
-        "nov_occ_route_guide"
-      ],
-      "source_ref": "pr98:data/world-catalogs/novgorod/m2c-npc/candidate.json#regional_context_profiles.m2c_npc_regional_ingrian_traveler_v1"
+      "rule": "candidate context for new occupations; no PR98 G4 applicability or runtime presence inherited",
+      "no_source": "world_revision_and_concrete_g4_applicability"
     }
   ],
   "appearance_policy_source": {
@@ -601,6 +3123,7 @@
           "occupation_ref": "nov_occ_boatman",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_water_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_boatman",
           "clothing_options": [
@@ -829,6 +3352,7 @@
           "occupation_ref": "nov_occ_fisher",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_water_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_fisher",
           "clothing_options": [
@@ -1057,6 +3581,7 @@
           "occupation_ref": "nov_occ_route_guide",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_forest_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_guide",
           "clothing_options": [
@@ -1216,6 +3741,7 @@
           "occupation_ref": "nov_occ_route_guide",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_forest_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_guide",
           "clothing_options": [
@@ -1375,6 +3901,7 @@
           "occupation_ref": "nov_occ_route_guide",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_forest_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_guide",
           "clothing_options": [
@@ -1603,6 +4130,7 @@
           "occupation_ref": "nov_occ_hunter_trapper",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_forest_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hunter",
           "clothing_options": [
@@ -1833,6 +4361,7 @@
           "occupation_ref": "nov_occ_forest_worker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_forest_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_forest_promyslovik",
           "clothing_options": [
@@ -2061,6 +4590,7 @@
           "occupation_ref": "nov_occ_local_trader",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_trader",
           "clothing_options": [
@@ -2289,6 +4819,7 @@
           "occupation_ref": "nov_occ_long_distance_merchant",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_merchant_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_merchant_guest",
           "clothing_options": [
@@ -2519,6 +5050,7 @@
           "occupation_ref": "nov_occ_long_distance_merchant",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_foreign_west_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_foreign_guest",
           "clothing_options": [
@@ -2612,6 +5144,7 @@
           "occupation_ref": "nov_occ_long_distance_merchant",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_foreign_west_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_foreign_guest",
           "clothing_options": [
@@ -2774,6 +5307,7 @@
           "occupation_ref": "nov_occ_household_servant",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_servant",
           "clothing_options": [
@@ -2986,11 +5520,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_jeweler_caster",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -3145,11 +5680,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_jeweler_caster",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -3304,11 +5840,21 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_apprentice",
           "occupation_ref": "occ_jeweler_caster",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "age_category": [
+              "nov_1200_1250_age_category_young_adult"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_apprentice"
+            ],
+            "rule": "role definition specifies an adolescent or young person; exclude middle-aged and old",
+            "no_source": "adolescent_age_category_not_in_approved_demographic_enum"
+          },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_apprentice",
           "clothing_options": [
@@ -3521,11 +6067,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_bone_carver",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -3680,11 +6227,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_bone_carver",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -3839,11 +6387,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_bone_carver",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -4056,11 +6605,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_wood_turner",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -4215,11 +6765,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_wood_turner",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -4374,11 +6925,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_wood_turner",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -4591,11 +7143,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_furrier",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -4750,11 +7303,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_furrier",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -4909,11 +7463,21 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_apprentice",
           "occupation_ref": "occ_furrier",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "age_category": [
+              "nov_1200_1250_age_category_young_adult"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_apprentice"
+            ],
+            "rule": "role definition specifies an adolescent or young person; exclude middle-aged and old",
+            "no_source": "adolescent_age_category_not_in_approved_demographic_enum"
+          },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_apprentice",
           "clothing_options": [
@@ -5126,11 +7690,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_dyer",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -5285,82 +7850,23 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_household_mistress",
           "occupation_ref": "occ_dyer",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "sex_category": [
+              "nov_1200_1250_sex_category_female"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+            ],
+            "rule": "role definition specifies a woman"
+          },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
           "clothing_options": [
-            {
-              "value": "of_urban_middle_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_urban_middle_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_urban_middle_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
             {
               "value": "of_urban_middle_female_warm_married",
               "weight": 1,
@@ -5444,11 +7950,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_dyer",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -5661,11 +8168,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_ropemaker_netmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -5820,82 +8328,23 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_household_mistress",
           "occupation_ref": "occ_ropemaker_netmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "sex_category": [
+              "nov_1200_1250_sex_category_female"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+            ],
+            "rule": "role definition specifies a woman"
+          },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
           "clothing_options": [
-            {
-              "value": "of_urban_middle_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_urban_middle_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_urban_middle_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
             {
               "value": "of_urban_middle_female_warm_married",
               "weight": 1,
@@ -5979,11 +8428,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_ropemaker_netmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -6196,11 +8646,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_netmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -6355,82 +8806,23 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_household_mistress",
           "occupation_ref": "occ_netmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "sex_category": [
+              "nov_1200_1250_sex_category_female"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+            ],
+            "rule": "role definition specifies a woman"
+          },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
           "clothing_options": [
-            {
-              "value": "of_urban_middle_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_urban_middle_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_urban_middle_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
             {
               "value": "of_urban_middle_female_warm_married",
               "weight": 1,
@@ -6514,11 +8906,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_netmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -6731,11 +9124,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_locksmith",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -6890,11 +9284,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_locksmith",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -7049,11 +9444,21 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_apprentice",
           "occupation_ref": "occ_locksmith",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "age_category": [
+              "nov_1200_1250_age_category_young_adult"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_apprentice"
+            ],
+            "rule": "role definition specifies an adolescent or young person; exclude middle-aged and old",
+            "no_source": "adolescent_age_category_not_in_approved_demographic_enum"
+          },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_apprentice",
           "clothing_options": [
@@ -7266,11 +9671,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_bowyer",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -7425,11 +9831,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_bowyer",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -7584,11 +9991,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_bowyer",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -7801,11 +10209,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_arrowsmith",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -7960,11 +10369,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_arrowsmith",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -8119,11 +10529,21 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_apprentice",
           "occupation_ref": "occ_arrowsmith",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "age_category": [
+              "nov_1200_1250_age_category_young_adult"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_apprentice"
+            ],
+            "rule": "role definition specifies an adolescent or young person; exclude middle-aged and old",
+            "no_source": "adolescent_age_category_not_in_approved_demographic_enum"
+          },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_apprentice",
           "clothing_options": [
@@ -8336,11 +10756,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_mason",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -8495,11 +10916,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_mason",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -8654,11 +11076,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_mason",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -8870,11 +11293,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_limeburner",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -9029,11 +11453,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_limeburner",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -9245,11 +11670,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_icon_painter",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -9404,11 +11830,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_monastery_worker",
           "occupation_ref": "occ_icon_painter",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_rural_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_monastery_worker",
           "clothing_options": [
@@ -9620,11 +12047,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_brewer_meadmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -9779,11 +12207,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_brewer_meadmaker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -9995,11 +12424,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_butcher",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -10154,11 +12584,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_butcher",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -10370,11 +12801,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_market_baker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -10529,11 +12961,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_market_baker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -10746,11 +13179,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_trader",
           "occupation_ref": "occ_fish_trader",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_trader",
           "clothing_options": [
@@ -10905,82 +13339,23 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_household_mistress",
           "occupation_ref": "occ_fish_trader",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "sex_category": [
+              "nov_1200_1250_sex_category_female"
+            ],
+            "source_refs": [
+              "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#nov_role_household_mistress"
+            ],
+            "rule": "role definition specifies a woman"
+          },
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_household_mistress",
           "clothing_options": [
-            {
-              "value": "of_urban_middle_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_urban_middle_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_urban_middle_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_urban_middle_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
             {
               "value": "of_urban_middle_female_warm_married",
               "weight": 1,
@@ -11064,11 +13439,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_fish_trader",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
@@ -11287,86 +13663,39 @@
           "nov_1200_1250_age_category_adult",
           "nov_1200_1250_age_category_middle_aged"
         ],
-        "rule": "select an eligible actor before choosing appearance, clothing, or equipment"
+        "source_refs": [
+          "occupations/occupations_additions.csv#occ_wetnurse"
+        ],
+        "rule": "female follows the occupation; age range is editorial for an individual nursing actor",
+        "age_basis": "editorial",
+        "no_source": "individual_marital_status_not_derived_from_occupation"
       },
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_wetnurse",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "sex_category": [
+              "nov_1200_1250_sex_category_female"
+            ],
+            "age_category": [
+              "nov_1200_1250_age_category_young_adult",
+              "nov_1200_1250_age_category_adult",
+              "nov_1200_1250_age_category_middle_aged"
+            ],
+            "source_refs": [
+              "occupations/occupations_additions.csv#occ_wetnurse"
+            ],
+            "rule": "female follows the occupation; age range is editorial for an individual nursing actor",
+            "age_basis": "editorial",
+            "no_source": "individual_marital_status_not_derived_from_occupation"
+          },
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [
-            {
-              "value": "of_poor_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
             {
               "value": "of_poor_female_warm_married",
               "weight": 1,
@@ -11450,82 +13779,30 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_kholop",
           "occupation_ref": "occ_wetnurse",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": {
+            "sex_category": [
+              "nov_1200_1250_sex_category_female"
+            ],
+            "age_category": [
+              "nov_1200_1250_age_category_young_adult",
+              "nov_1200_1250_age_category_adult",
+              "nov_1200_1250_age_category_middle_aged"
+            ],
+            "source_refs": [
+              "occupations/occupations_additions.csv#occ_wetnurse"
+            ],
+            "rule": "female follows the occupation; age range is editorial for an individual nursing actor",
+            "age_basis": "editorial",
+            "no_source": "individual_marital_status_not_derived_from_occupation"
+          },
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_kholop",
           "clothing_options": [
-            {
-              "value": "of_poor_male_warm_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_warm_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "summer"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cool_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cool_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "spring",
-                  "spring_rasputitsa",
-                  "autumn"
-                ],
-                "marital_status": "any"
-              }
-            },
-            {
-              "value": "of_poor_male_cold_any",
-              "weight": 1,
-              "source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/outfits.csv#of_poor_male_cold_any",
-              "rule": "equal gameplay weight; filter by sex, age, season and marital status",
-              "no_source": null,
-              "applicability": {
-                "sex_categories": [
-                  "male"
-                ],
-                "age_categories": [
-                  "young_adult",
-                  "adult",
-                  "middle_aged",
-                  "old"
-                ],
-                "seasons": [
-                  "winter"
-                ],
-                "marital_status": "any"
-              }
-            },
             {
               "value": "of_poor_female_warm_married",
               "weight": 1,
@@ -11667,11 +13944,12 @@
       ],
       "regional_option_sets": [
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_craftsman_master",
           "occupation_ref": "occ_shield_maker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_craftsman_master",
           "clothing_options": [
@@ -11826,11 +14104,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_journeyman",
           "occupation_ref": "occ_shield_maker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_urban_middle_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_journeyman",
           "clothing_options": [
@@ -11985,11 +14264,12 @@
           "no_source": "regional_frequency_weights_not_authored"
         },
         {
-          "region_ref": "m2c_npc_regional_novgorod_land_v1",
+          "region_ref": "game_base_v1_npc_regional_occupations_candidate_v1",
           "role_ref": "nov_role_hired_worker",
           "occupation_ref": "occ_shield_maker",
           "status": "candidate",
           "appearance_option_set_ref": "novgorod_shared_facets_v1",
+          "actor_applicability": null,
           "clothing_profile_ref": "nov_clothing_poor_v1",
           "clothing_profile_source_ref": "data/world-catalogs/novgorod/game-base-v1/clothing-appearance/outfits_by_role/role_clothing_map.csv#nov_role_hired_worker",
           "clothing_options": [

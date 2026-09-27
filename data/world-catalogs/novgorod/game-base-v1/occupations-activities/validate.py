@@ -1,10 +1,18 @@
 """Check candidate occupation artifacts and their source catalog references."""
 import csv
+import hashlib
 import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT_DATA = HERE.parents[3]
+ORIGINAL_CONTEXT = "m2c_npc_regional_novgorod_land_v1"
+ORIGINAL_CONTEXT_SHA256 = "43399ce6523e58476339832b4bf8281838871f2ebc02c72c011e2968d2d87d72"
+NEW_CONTEXT = "game_base_v1_npc_regional_occupations_candidate_v1"
+
+
+def refs(value):
+    return [part.strip() for part in value.split(";") if part.strip() and not part.strip().startswith("no_source")]
 
 
 def csv_rows(path, delimiter=","):
@@ -14,7 +22,8 @@ def csv_rows(path, delimiter=","):
 
 def main():
     pinned = csv_rows(ROOT_DATA / "novgorod-region/novgorod_occupations_v1_enriched.tsv", "\t")
-    roles = {r["role_id"] for r in csv_rows(ROOT_DATA / "novgorod-region/novgorod_social_roles_v1_enriched.tsv", "\t")}
+    role_rows = {r["role_id"]: r for r in csv_rows(ROOT_DATA / "novgorod-region/novgorod_social_roles_v1_enriched.tsv", "\t")}
+    roles = set(role_rows)
     occupations = csv_rows(HERE / "occupations/occupations_additions.csv")
     activities = csv_rows(HERE / "activities_observable/activities_new_occupations.csv")
     npc = json.loads((HERE / "npc_runtime_profiles/npc_runtime_profiles.json").read_text(encoding="utf-8"))
@@ -61,6 +70,36 @@ def main():
     profiles = npc["profiles"]
     contexts = {r["id"]: r for r in npc["regional_context_profiles"]}
     assert len(contexts) == len(npc["regional_context_profiles"])
+    original = contexts[ORIGINAL_CONTEXT]
+    original_digest = hashlib.sha256(json.dumps(original, sort_keys=True, ensure_ascii=False,
+                                                separators=(",", ":")).encode()).hexdigest()
+    assert original_digest == ORIGINAL_CONTEXT_SHA256, "original PR98 context changed"
+    candidate = contexts[NEW_CONTEXT]
+    assert candidate["status"] == "candidate" and candidate["world_revision_id"] is None
+    assert candidate["no_source"] == "world_revision_and_concrete_g4_applicability"
+    assert candidate["origin"] == {"no_source": "individual_regional_origin_not_derived_from_occupation_or_role"}
+    assert candidate["source_refs"] == ["occupations/occupations_additions.csv",
+                                        "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv"]
+    assert candidate["rule"]
+    expected_pairs = {(row["occupation_id"], role) for row in occupations for role in refs(row["allowed_social_role_ids"])}
+    assert set(candidate["allowed_occupation_refs"]) == occ_ids
+    assert set(candidate["allowed_role_refs"]) == {role for _, role in expected_pairs}
+    applicability = {(a["occupation_ref"], a["role_ref"]): a for a in candidate["applicability"]}
+    assert len(applicability) == len(candidate["applicability"]) == len(expected_pairs)
+    assert set(applicability) == expected_pairs
+    for row in occupations:
+        for role in refs(row["allowed_social_role_ids"]):
+            entry = applicability[row["occupation_id"], role]
+            assert entry["g3_place_types"] == refs(row["typical_g3_place_types"])
+            assert entry["g4_location_types"] == refs(row["typical_g4_location_types"])
+            assert entry["g3_no_source"] == (row["typical_g3_place_types"] if row["typical_g3_place_types"].startswith("no_source:") else None)
+            assert entry["g4_no_source"] == (row["typical_g4_location_types"] if row["typical_g4_location_types"].startswith("no_source:") else None)
+            assert entry["role_g3_place_types"] == refs(role_rows[role]["typical_g3_place_types"])
+            assert entry["role_g4_location_types"] == refs(role_rows[role]["typical_g4_location_types"])
+            assert entry["source_refs"] == ["occupations/occupations_additions.csv#" + row["occupation_id"],
+                                            "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#" + role]
+            assert entry["rule"]
+            assert entry["no_source"] == "concrete_g4_and_generation_template_binding"
     assert len({p["profile_id"] for p in profiles}) == len(profiles) == 28
     assert occ_ids <= {p["occupation_ref"] for p in profiles}
     assert all(not p["executable"] and p["appearance"] and p["clothing"] and p["equipment"] for p in profiles)
@@ -81,6 +120,14 @@ def main():
             assert regional["status"] == "candidate"
             assert regional["role_ref"] in profile["allowed_role_refs"] and regional["occupation_ref"] == profile["occupation_ref"]
             context = contexts[regional["region_ref"]]
+            if profile["occupation_ref"] in occ_ids:
+                assert regional["region_ref"] == NEW_CONTEXT
+            else:
+                assert regional["region_ref"] != NEW_CONTEXT
+            if regional["region_ref"] == NEW_CONTEXT:
+                assert (regional["occupation_ref"], regional["role_ref"]) in applicability
+            else:
+                assert context["status"] == "draft" and regional["region_ref"] != NEW_CONTEXT
             assert regional["role_ref"] in context["allowed_role_refs"], (profile["profile_id"], regional["region_ref"], regional["role_ref"])
             assert regional["occupation_ref"] in context["allowed_occupation_refs"], (profile["profile_id"], regional["region_ref"], regional["occupation_ref"])
             appearance_options = npc["appearance_option_sets"][regional["appearance_option_set_ref"]]
@@ -93,6 +140,25 @@ def main():
             assert all(o["value"] is None or o["value"] in outfit_ids for o in regional["clothing_options"])
             assert all(o["value"] is None or o["value"] in equipment_ids or o["source_ref"].startswith(("occupations/", "pr98:"))
                        for o in regional["equipment_options"])
+            eligibility = regional["actor_applicability"]
+            role = regional["role_ref"]
+            occupation = regional["occupation_ref"]
+            if occupation == "occ_wetnurse" or role == "nov_role_household_mistress":
+                assert eligibility["sex_category"] == ["nov_1200_1250_sex_category_female"]
+                assert eligibility["source_refs"]
+            if role == "nov_role_apprentice":
+                assert eligibility["age_category"] == ["nov_1200_1250_age_category_young_adult"]
+                assert eligibility["source_refs"] == ["data/novgorod-region/novgorod_social_roles_v1_enriched.tsv#" + role]
+                assert eligibility["no_source"] == "adolescent_age_category_not_in_approved_demographic_enum"
+            if occupation == "occ_wetnurse":
+                assert eligibility["age_basis"] == "editorial"
+                assert eligibility["no_source"] == "individual_marital_status_not_derived_from_occupation"
+            if eligibility:
+                for facet, column in (("sex_category", "sex_categories"), ("age_category", "age_categories")):
+                    if eligibility.get(facet):
+                        assert set(eligibility[facet]) <= {option["value"] for option in appearance_options[facet]}
+                        valid = {value.removeprefix("nov_1200_1250_" + facet + "_") for value in eligibility[facet]}
+                        assert all(valid.intersection(option["applicability"][column]) for option in regional["clothing_options"] if option["value"] is not None)
     wet_nurse = next(p for p in profiles if p["occupation_ref"] == "occ_wetnurse")
     eligibility = wet_nurse["actor_applicability"]
     assert eligibility["sex_category"] == ["nov_1200_1250_sex_category_female"]

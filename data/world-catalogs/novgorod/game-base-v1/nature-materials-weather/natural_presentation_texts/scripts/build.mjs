@@ -2,7 +2,7 @@
 // and light variants, habitat allowlists and pool-member phrases. node natural_presentation_texts/scripts/build.mjs
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readJson, readTsv, readCsv, writeCsv, SEASONS, SHARED, GROUP_DIR } from '../../_shared/scripts/lib.mjs';
+import { readJson, readTsv, readCsv, writeCsv, scentGroundForFamilies, SEASONS, SHARED, GROUP_DIR } from '../../_shared/scripts/lib.mjs';
 import * as L from '../authoring/lexicon.mjs';
 import MEMBERS, { LANDSCAPE_TAXA, EXTRA_MEMBERS } from '../authoring/members.mjs';
 
@@ -12,16 +12,11 @@ const landscapes = Object.fromEntries(readTsv(path.join(SHARED, 'novgorod_landsc
 const deny = readJson(path.join(SHARED, 'anachronism_denylist.json'));
 const clim = readCsv(path.join(GROUP_DIR, 'weather_climate', 'weather_season_climatology.csv'));
 const lightProfile = readCsv(path.join(GROUP_DIR, 'weather_climate', 'light_profile_by_month.csv'));
-const groundTypes = new Set(readCsv(path.join(GROUP_DIR, 'natural_materials_soils', 'ground_types.csv')).map((r) => r.soil_ground_type));
+const groundRows = readCsv(path.join(GROUP_DIR, 'natural_materials_soils', 'ground_types.csv'));
+const groundTypes = new Set(groundRows.map((r) => r.soil_ground_type));
 const bindings = readCsv(path.resolve(DIR, '../../places-binding/places/node_binding.csv'));
+const scentGround = scentGroundForFamilies(readCsv(path.resolve(DIR, '../../places-binding/places/place_families.csv')), groundRows);
 const TARGET_PF = ['bog', 'conifer_woodland', 'ferry_landing', 'floodplain_meadow', 'forest_edge', 'forest_track', 'hunting_ground', 'marshy_stream', 'outbuildings', 'peasant_homestead', 'river_channel', 'riverbank', 'road', 'rural_yard', 'village_lane', 'winter_ice_crossing'];
-const SCENT_GROUND = {
-  bog: ['mineral_mud_silt'], conifer_woodland: ['needle_litter_roots', 'wet_roots_mud'],
-  floodplain_meadow: ['alluvial_silt_clay'], forest_edge: ['needle_litter_roots', 'wet_roots_mud'],
-  forest_track: ['needle_litter_roots', 'wet_roots_mud'], hunting_ground: ['needle_litter_roots', 'wet_roots_mud'],
-  marshy_stream: ['wet_roots_mud', 'mineral_mud_silt'], river_channel: ['alluvial_silt_mud', 'alluvial_silt_clay'],
-  riverbank: ['alluvial_silt_mud', 'alluvial_silt_clay', 'alluvial_mud_roots'],
-};
 const ALL_MEMBERS = { ...MEMBERS, ...EXTRA_MEMBERS };
 const SRC_G4 = 'pr98:data/world-catalogs/novgorod/m2c-natural/nature-successor-candidate-v2.json';
 const SRC_PRES = 'pr98:data/world-catalogs/novgorod/m2c-natural-presentation/candidate.json';
@@ -72,7 +67,7 @@ for (const g of g4index.g4) {
     if (s !== 'winter' && groundTypes.has(g.surface) && L.OLFACTORY[g.surface]) {
       const p = L.OLFACTORY[g.surface];
       add(g, 'ground_scent', s, 'unfrozen', 'olfactory', p[0], p[1], {
-        cls: g.surface, requires: 'ground_state!=frozen',
+        cls: g.surface, requires: 'ground_state!=snow and ground_state!=ice',
         src: [`game-base-v1/nature-materials-weather/natural_materials_soils/ground_types.csv#soil_ground_type=${g.surface}`],
       });
     }
@@ -189,7 +184,7 @@ const sensoryCoverage = [];
 for (const pf of TARGET_PF) {
   const refs = new Set(bindings.filter((b) => b.node_level === 'G4' && [b.pf_id, ...b.pf_secondary.split(';')].includes(`pf_${pf}`)).map((b) => b.node_ref.replace(/@1$/, '')));
   for (const season of (pf === 'winter_ice_crossing' ? ['winter'] : SEASONS)) for (const [aspect, channel] of [['visual', 'visual'], ['acoustic', 'acoustic'], ['olfactory', 'olfactory']]) {
-    const evidence = rows.find((r) => refs.has(r.g4_ref) && r.season_period === season && r.channel === channel && (!SCENT_GROUND[pf] || aspect !== 'olfactory' || SCENT_GROUND[pf].includes(r.layer_class)) && r.clear_text && r.partial_text);
+    const evidence = rows.find((r) => refs.has(r.g4_ref) && r.season_period === season && r.channel === channel && (aspect !== 'olfactory' || scentGround.get(`pf_${pf}`)?.has(r.layer_class)) && r.clear_text && r.partial_text);
     sensoryCoverage.push({ pf_id: pf, season_period: season, aspect, coverage: evidence ? 'sourced' : 'no_source', basis_ref: evidence ? evidence.npt_id : `no_source:${aspect}_pf_season`, status: 'candidate' });
   }
 }
